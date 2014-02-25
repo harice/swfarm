@@ -28,6 +28,7 @@ class CreateUsersTable extends Migration {
 			$table->boolean('status')->default(true)->index();
 			$table->boolean('deleted')->default(false)->index();
 			$table->timestamps();
+			$table->softDeletes();
 		});
 	}
 

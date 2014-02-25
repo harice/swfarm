@@ -11,6 +11,13 @@
 |
 */
 
+/* API ROUTES */
+Route::group(array('prefix' => 'apiv1'), function()
+{
+  Route::resource('posts', 'APIv1\PostsController');
+});
+
+
 Route::get('/', function(){
 	return View::make('hello');
 });
