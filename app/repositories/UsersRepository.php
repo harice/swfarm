@@ -13,7 +13,8 @@ class UsersRepository implements UsersRepositoryInterface {
     'password' => 'required|regex:/^(?=.*[A-Z])(?=.*[0-9]).+$/i',
     'email' => 'required|email|unique:users',
     'firstname' => 'required',
-    'lastname' => 'required'
+    'lastname' => 'required',
+    'emp_no' => 'unique'
   );
 
   public function findById($id){
