@@ -27,27 +27,27 @@ class UsersRepository implements UsersRepositoryInterface {
   public function paginate($limit = null){}
 
   public function store($data){
-	$this->validate($data);
+  	$this->validate($data);
 
-	$user = new User;
-	$user->username = Request::get('username');
-	$user->password = Request::get('password');
-	$user->email = Request::get('email');
-	$user->firstname = Request::get('firstname');
-	$user->lastname = Request::get('lastname');
-	$user->suffix = Request::get('suffix');
-	$user->emp_no = Request::get('emp_no');
-	$user->mobile = Request::get('mobile');
-	$user->phone = Request::get('phone');
-	$user->position = Request::get('position');
+  	$user = new User;
+  	$user->username = Request::get('username');
+  	$user->password = Request::get('password');
+  	$user->email = Request::get('email');
+  	$user->firstname = Request::get('firstname');
+  	$user->lastname = Request::get('lastname');
+  	$user->suffix = Request::get('suffix');
+  	$user->emp_no = Request::get('emp_no');
+  	$user->mobile = Request::get('mobile');
+  	$user->phone = Request::get('phone');
+  	$user->position = Request::get('position');
 
-	$user->save();
+  	$user->save();
 
-	return Response::json(array(
-	    'error' => false,
-	    'user' => $user->toArray()),
-	    200
-	);
+  	return Response::json(array(
+  	    'error' => false,
+  	    'user' => $user->toArray()),
+  	    200
+  	);
   }
 
   public function update($id, $data){}
