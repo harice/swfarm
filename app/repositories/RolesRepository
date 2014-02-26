@@ -1,0 +1,17 @@
+<?php
+ 
+class RolesRepository implements RolesRepositoryInterface {
+  
+  public function validate($data)
+  {
+    $validator = Validator::make($data, Roles::$rules);
+    if($validator->fails()) throw new ValidationException($validator);
+    return true;
+  }
+
+  public function instance($data = array())
+  {
+    return new Roles($data);
+  }
+ 
+}
