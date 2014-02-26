@@ -14,7 +14,8 @@
 /* API ROUTES */
 Route::group(array('prefix' => 'apiv1'), function()
 {
-  Route::resource('posts', 'APIv1\PostsController');
+	Route::resource('roles', 'APIv1\RolesController');
+	Route::resource('roles/store', 'APIv1\RolesController@create');
 });
 
 

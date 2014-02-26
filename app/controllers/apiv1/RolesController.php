@@ -2,9 +2,18 @@
 
 namespace APIv1;
 
-user BaseController;
+use BaseController;
+use RolesRepositoryInterface;
+use Input;
 
-class UsersController extends BaseController {
+class RolesController extends BaseController {
+	
+	private $roles;
+
+	public function __construct(RolesRepositoryInterface $roles)
+	{
+		$this->roles = $roles;
+	}
 
 	/**
 	 * Display a listing of the resource.
@@ -13,17 +22,7 @@ class UsersController extends BaseController {
 	 */
 	public function index()
 	{
-        return View::make('users.index');
-	}
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-        return View::make('users.create');
+        return $this->roles->findAll();
 	}
 
 	/**
@@ -33,7 +32,7 @@ class UsersController extends BaseController {
 	 */
 	public function store()
 	{
-		//
+		return $this->roles->store( Input::all() );
 	}
 
 	/**
@@ -44,18 +43,7 @@ class UsersController extends BaseController {
 	 */
 	public function show($id)
 	{
-        return View::make('users.show');
-	}
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-        return View::make('users.edit');
+        return $this->roles->findById($id);
 	}
 
 	/**
@@ -66,7 +54,7 @@ class UsersController extends BaseController {
 	 */
 	public function update($id)
 	{
-		//
+		return $this->roles->update($id, Input::all());
 	}
 
 	/**
@@ -77,7 +65,7 @@ class UsersController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+		$this->roles->destroy($id);
 	}
 
 }
