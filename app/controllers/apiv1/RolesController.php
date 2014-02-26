@@ -2,7 +2,7 @@
 
 namespace APIv1;
 
-user BaseController;
+use BaseController;
 
 class RolesController extends BaseController {
 
@@ -12,7 +12,7 @@ class RolesController extends BaseController {
 	 * @return Response
 	 */
 	public function index()
-	{
+	{echo "test";
         return View::make('roles.index');
 	}
 
