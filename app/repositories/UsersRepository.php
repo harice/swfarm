@@ -10,7 +10,7 @@ class UsersRepository implements UsersRepositoryInterface {
    */
   public static $rules = array(
     'username' => 'required|unique:users',
-    'password' => 'required',
+    'password' => 'required|regex:/^(?=.*[A-Z])(?=.*[0-9]).+$/i',
     'email' => 'required|email|unique:users',
     'firstname' => 'required',
     'lastname' => 'required'
@@ -28,18 +28,19 @@ class UsersRepository implements UsersRepositoryInterface {
 
   public function store($data){
   	$this->validate($data);
-
+    //var_dump($data['username']);
+    //return 1;
   	$user = new User;
-  	$user->username = Request::get('username');
-  	$user->password = Request::get('password');
-  	$user->email = Request::get('email');
-  	$user->firstname = Request::get('firstname');
-  	$user->lastname = Request::get('lastname');
-  	$user->suffix = Request::get('suffix');
-  	$user->emp_no = Request::get('emp_no');
-  	$user->mobile = Request::get('mobile');
-  	$user->phone = Request::get('phone');
-  	$user->position = Request::get('position');
+  	$user->username = $data['username'];
+  	$user->password = $data['password'];
+  	$user->email = $data['email'];
+  	$user->firstname = $data['firstname'];
+  	$user->lastname = $data['lastname'];
+  	$user->suffix = $data['suffix'];
+  	$user->emp_no = $data['emp_no'];
+  	$user->mobile = $data['mobile'];
+  	$user->phone = $data['phone'];
+  	$user->position = $data['position'];
 
   	$user->save();
 
@@ -60,7 +61,6 @@ class UsersRepository implements UsersRepositoryInterface {
     if($validator->fails()) { 
     	throw new ValidationException($validator); 
     }
-    //return true;
   }
 
   public function instance(){}
