@@ -10,11 +10,16 @@ class UsersRepository implements UsersRepositoryInterface {
    */
   public static $rules = array(
     'username' => 'required|unique:users',
-    'password' => 'required|regex:/^(?=.*[A-Z])(?=.*[0-9]).+$/i',
+    'password' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|between:8,15|confirmed',
+    'password_confirmation' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|between:8,15',
     'email' => 'required|email|unique:users',
-    'firstname' => 'required',
-    'lastname' => 'required',
-    'emp_no' => 'required|unique:users'
+    'firstname' => 'required|between:2,50',
+    'lastname' => 'required|between:2,50',
+    'emp_no' => 'required|unique:users',
+    'suffix' => 'between:2,6',
+    'phone' => 'between:6,13',
+    'mobile' => 'between:9,13',
+    'position' => 'between:2,50'
   );
 
   public function findById($id){
@@ -29,8 +34,7 @@ class UsersRepository implements UsersRepositoryInterface {
 
   public function store($data){
   	$this->validate($data);
-    //var_dump($data['username']);
-    //return 1;
+   
   	$user = new User;
   	$user->username = $data['username'];
   	$user->password = $data['password'];
