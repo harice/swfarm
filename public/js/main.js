@@ -6,6 +6,7 @@
 require.config({
 	paths: {
 		jquery: 'libs/jquery/jquery-min',
+		jqueryvalidate: 'libs/jquery/jquery.validate.min',
 		bootstrap: 'libs/bootstrap/bootstrap.min',
 		underscore: 'libs/underscore/underscore-min',
 		backbone: 'libs/backbone/backbone-min',
@@ -23,9 +24,14 @@ require.config({
 		'underscore': {
             exports: '_'
         },
+		'jqueryvalidate': {
+            deps: ['jquery'],
+			exports: 'Validate',
+        },
 		'jquery': {
             exports: '$'
         },
+		
 	},
 });
 

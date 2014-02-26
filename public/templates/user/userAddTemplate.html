@@ -1,52 +1,52 @@
-<form class="form-horizontal" role="form">
+<form id="addUserForm" class="form-horizontal" role="form" method="post">
 	<fieldset>
 		<legend>Personal Information</legend>
 		<div class="form-group">
 			<label for="firstname" class="col-sm-2 control-label">First Name *</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="firstname" name="firstname" placeholder="">
+				<input type="text" class="form-control" id="firstname" name="firstname" placeholder="" minlength="2" maxlength="50" required>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="lastname" class="col-sm-2 control-label">Last Name *</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="lastname" name="lastname" placeholder="">
+				<input type="text" class="form-control" id="lastname" name="lastname" placeholder="" minlength="2" maxlength="50" required>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="suffix" class="col-sm-2 control-label">Suffix</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="suffix" name="suffix" placeholder="">
+				<input type="text" class="form-control" id="suffix" name="suffix" placeholder="" minlength="2" maxlength="6">
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="email" class="col-sm-2 control-label">Email *</label>
 			<div class="col-sm-10">
-				<input type="email" class="form-control" id="email" name="email" placeholder="">
+				<input type="email" class="form-control" id="email" name="email" placeholder="" maxlength="250" required>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="position" class="col-sm-2 control-label">Position</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="position" name="position" placeholder="">
+				<input type="text" class="form-control" id="position" name="position" placeholder="" minlength="2" maxlength="50">
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="employeenumber" class="col-sm-2 control-label">Employee No.</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="employeenumber" name="employeenumber" placeholder="">
+				<input type="text" class="form-control" id="employeenumber" name="employeenumber" placeholder="" maxlength="250">
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="phone" class="col-sm-2 control-label">Phone</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="phone" name="phone" placeholder="">
+				<input type="text" class="form-control" id="phone" name="phone" placeholder="" minlength="6" maxlength="13">
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="mobile" class="col-sm-2 control-label">Mobile</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="mobile" name="mobile" placeholder="">
+				<input type="text" class="form-control" id="mobile" name="mobile" placeholder="" minlength="9" maxlength="13">
 			</div>
 		</div>
 	</fieldset>
@@ -55,31 +55,31 @@
 		<div class="form-group">
 			<label for="street" class="col-sm-2 control-label">Street</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="street" name="street" placeholder="">
+				<input type="text" class="form-control" id="street" name="street" placeholder="" maxlength="250">
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="city" class="col-sm-2 control-label">City</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="city" name="city" placeholder="">
+				<input type="text" class="form-control" id="city" name="city" placeholder="" maxlength="250">
 			</div>
 		</div>
 		<div class="form-group">
-			<label for="stateorprovince" class="col-sm-2 control-label">State/Provonce</label>
+			<label for="stateprovince" class="col-sm-2 control-label">State/Provonce</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="stateorprovince" name="stateprovince" placeholder="">
+				<input type="text" class="form-control" id="stateprovince" name="stateprovince" placeholder="" maxlength="250">
 			</div>
 		</div>
 		<div class="form-group">
-			<label for="stateprovince" class="col-sm-2 control-label">Zip/Postal Code</label>
+			<label for="zippostalcode" class="col-sm-2 control-label">Zip/Postal Code</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="stateprovince" name="stateprovince" placeholder="">
+				<input type="text" class="form-control" id="zippostalcode" name="zippostalcode" placeholder="" maxlength="250">
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="country" class="col-sm-2 control-label">Country</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="country" name="country" placeholder="">
+				<input type="text" class="form-control" id="country" name="country" placeholder="" maxlength="250">
 			</div>
 		</div>
 	</fieldset>
@@ -88,41 +88,23 @@
 		<div class="form-group">
 			<label for="newpassword" class="col-sm-2 control-label">New Password</label>
 			<div class="col-sm-10">
-				<input type="password" class="form-control" id="newpassword" name="newpassword" placeholder="">
+				<input type="password" class="form-control" id="newpassword" name="newpassword" placeholder="" minlength="8" maxlength="15" required>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="verifynewpassword" class="col-sm-2 control-label">Verify New Password</label>
 			<div class="col-sm-10">
-				<input type="password" class="form-control" id="verifynewpassword" name="verifynewpassword" placeholder="">
+				<input type="password" class="form-control" id="verifynewpassword" name="verifynewpassword" placeholder="" minlength="8" maxlength="15" required>
 			</div>
 		</div>
 	</fieldset>
 	<fieldset>
 		<legend>User Settings</legend>
-		<div class="form-group">
-			<label for="" class="col-sm-2 control-label">Validate</label>
-			<div class="col-sm-10">
-				 <label><input type="checkbox"></label>
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="" class="col-sm-2 control-label">Status</label>
-			<div class="col-sm-10">
-				 <label><input type="checkbox"></label>
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="" class="col-sm-2 control-label">Deleted</label>
-			<div class="col-sm-10">
-				 <label><input type="checkbox"></label>
-			</div>
-		</div>
 	</fieldset>
 	<div class="form-group">
 		<label for="" class="col-sm-2 control-label"></label>
 		<div class="col-sm-10">
-			 <button id="save" type="button" class="save btn btn-default">Save</button>
+			 <button id="save" type="submit" class="save btn btn-default">Save</button>
 			 <a id="cancel-user-save" class="btn btn-default" href="#/administration/users/">Cancel</a>
 		</div>
 	</div>
