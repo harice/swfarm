@@ -3,8 +3,17 @@
 namespace APIv1;
 
 use BaseController;
+use RolesRepositoryInterface;
+use Input;
 
 class RolesController extends BaseController {
+	
+	private $roles;
+
+	public function __construct(RolesRepositoryInterface $roles)
+	{
+		$this->roles = $roles;
+	}
 
 	/**
 	 * Display a listing of the resource.
@@ -12,8 +21,8 @@ class RolesController extends BaseController {
 	 * @return Response
 	 */
 	public function index()
-	{echo "test";
-        return View::make('roles.index');
+	{
+        return $this->roles->findAll();
 	}
 
 	/**
@@ -23,7 +32,7 @@ class RolesController extends BaseController {
 	 */
 	public function store()
 	{
-		//
+		return $this->roles->store( Input::all() );
 	}
 
 	/**
@@ -34,7 +43,7 @@ class RolesController extends BaseController {
 	 */
 	public function show($id)
 	{
-        return View::make('roles.show');
+        return $this->roles->findById($id);
 	}
 
 	/**
@@ -45,7 +54,7 @@ class RolesController extends BaseController {
 	 */
 	public function update($id)
 	{
-		//
+		return $this->roles->update($id, Input::all());
 	}
 
 	/**
@@ -56,7 +65,7 @@ class RolesController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+		$this->roles->destroy($id);
 	}
 
 }

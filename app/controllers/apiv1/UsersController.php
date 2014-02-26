@@ -5,6 +5,7 @@ namespace APIv1;
 use BaseController;
 use UsersRepositoryInterface;
 use View;
+use Input;
 
 class UsersController extends BaseController {
 
@@ -19,24 +20,12 @@ class UsersController extends BaseController {
 	 */
 	public function index()
 	{
-		echo "Controller";
-		//$this->users->findAll();
-
+		return $this->users->findAll();
 		// return Response::json(array(
 		// 	'error' => false,
-		// 	'urls' => $urls->toArray())
+		// 	'users' => $this->users->findAll())
 		// );
         //return View::make('users.index');
-	}
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-        return View::make('users.create');
 	}
 
 	/**
@@ -46,7 +35,7 @@ class UsersController extends BaseController {
 	 */
 	public function store()
 	{
-		//
+		return $this->users->store( Input::all() );
 	}
 
 	/**
