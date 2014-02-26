@@ -22,9 +22,9 @@ define([
 			this.$el.html(compiledTemplate);
 			$('#addUserForm').validate({
 				rules: {
-					newpassword: 'required',
+					password: 'required',
 					verifynewpassword: {
-						equalTo: '#newpassword'
+						equalTo: '#password'
 					}
 				},
 				messages: {
@@ -40,7 +40,7 @@ define([
 					console.log('submitHandler start');
 					var data = $(form).serializeObject();
 					var userModel = new UserModel(data);
-					userModel.save({success: function (model, response, options) {
+					/*userModel.save({success: function (model, response, options) {
 						console.log('success');
 						console.log(model);
 						console.log(response);
@@ -50,7 +50,8 @@ define([
 						console.log(model);
 						console.log(response);
 						console.log(options);
-					}});
+					}});*/
+					userModel.save();
 					console.log('submitHandler end');
 				}
 			});
