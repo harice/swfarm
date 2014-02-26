@@ -14,7 +14,7 @@ class UsersRepository implements UsersRepositoryInterface {
     'email' => 'required|email|unique:users',
     'firstname' => 'required',
     'lastname' => 'required',
-    'emp_no' => 'unique:users'
+    'emp_no' => 'required|unique:users'
   );
 
   public function findById($id){
