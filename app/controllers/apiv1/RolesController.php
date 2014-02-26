@@ -4,7 +4,7 @@ namespace APIv1;
 
 user BaseController;
 
-class UsersController extends BaseController {
+class RolesController extends BaseController {
 
 	/**
 	 * Display a listing of the resource.
@@ -13,17 +13,7 @@ class UsersController extends BaseController {
 	 */
 	public function index()
 	{
-        return View::make('users.index');
-	}
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-        return View::make('users.create');
+        return View::make('roles.index');
 	}
 
 	/**
@@ -44,18 +34,7 @@ class UsersController extends BaseController {
 	 */
 	public function show($id)
 	{
-        return View::make('users.show');
-	}
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-        return View::make('users.edit');
+        return View::make('roles.show');
 	}
 
 	/**
