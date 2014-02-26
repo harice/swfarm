@@ -16,9 +16,13 @@ Route::group(array('prefix' => 'apiv1'), function()
 {
 	Route::resource('roles', 'APIv1\RolesController');
 	Route::resource('roles/store', 'APIv1\RolesController@create');
+
+	Route::resource('users', 'APIv1\UsersController');
 });
 
 
 Route::get('/', function(){
 	return View::make('main');
 });
+
+Route::get('roles/add','RolesController@create');
