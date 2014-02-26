@@ -4,7 +4,8 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/user/userAddTemplate.html',
 	'models/user/UserModel',
-], function(Backbone, Validate, contentTemplate, userAddTemplate, UserModel){
+	'global',
+], function(Backbone, Validate, contentTemplate, userAddTemplate, UserModel, Global){
 
 	var UserAddView = Backbone.View.extend({
 		el: $("#content"),
@@ -23,36 +24,27 @@ define([
 			$('#addUserForm').validate({
 				rules: {
 					password: 'required',
-					verifynewpassword: {
+					password_confirmation: {
 						equalTo: '#password'
 					}
 				},
 				messages: {
-					verifynewpassword: {
+					password_confirmation: {
 						equalTo: 'password does no match'
 					}
 				},
 				submitHandler: function(form) {
-					//alert(4444);
-					//console.log('email: '+$(form).find('#email').val());
-					//console.log($(form).serializeArray());
-					//console.log($(form).serializeObject());
-					console.log('submitHandler start');
 					var data = $(form).serializeObject();
 					var userModel = new UserModel(data);
-					/*userModel.save({success: function (model, response, options) {
-						console.log('success');
-						console.log(model);
-						console.log(response);
-						console.log(options);
+					userModel.save(null, {success: function (model, response, options) {
+						//console.log('success '+Global.getGlobalVars().app_router);
+						Global.getGlobalVars().app_router.navigate("/administration/users/", {trigger: true});
 					}, error: function (model, response, options) {
 						console.log('error');
 						console.log(model);
 						console.log(response);
 						console.log(options);
-					}});*/
-					userModel.save();
-					console.log('submitHandler end');
+					}});
 				}
 			});
 		},
