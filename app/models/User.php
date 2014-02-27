@@ -50,6 +50,15 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	{
 		return $this->email;
 	}
+  
+  /**
+   * Get the user that created the model
+   * @return \Illuminate\Database\Eloquent\Model User instance
+   */
+  public function createdBy()
+  {
+    return $this->belongsTo('User');
+  }
 
 }
 
