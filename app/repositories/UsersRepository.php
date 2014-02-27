@@ -26,19 +26,19 @@ class UsersRepository implements UsersRepositoryInterface {
   	$user = User::find($id);
 
     if($user){
-      return Response::json(array(
-        'error' => false,
-        'user' => $user->toArray()),
+      $response = Response::json(
+        $user->toArray(),
         200
       );
     } else {
-      return Response::json(array(
+      $response = Response::json(array(
         'error' => true,
         'message' => "User not found"),
         200
       );
     }
-    
+
+    return $response;
     
   }
 
@@ -46,7 +46,9 @@ class UsersRepository implements UsersRepositoryInterface {
   	return User::where('id', '!=', 1)->get(); //exclude the super admin
   }
 
-  public function paginate($limit = null){}
+  public function paginate($limit = null){
+    return User::paginate($limit);
+  }
 
   public function store($data){
     $rules = array(
@@ -102,39 +104,63 @@ class UsersRepository implements UsersRepositoryInterface {
       'position' => 'between:2,50'
     );
 
-    $this->validate($data, $rules);
 
     $user = User::find($id); //get the user row
-    $user->username = $data['username'];
-    //$user->password = $data['password'];
-    $user->email = $data['email'];
-    $user->firstname = $data['firstname'];
-    $user->lastname = $data['lastname'];
-    $user->suffix = $data['suffix'];
-    $user->emp_no = $data['emp_no'];
-    $user->mobile = $data['mobile'];
-    $user->phone = $data['phone'];
-    $user->position = $data['position'];
 
-    $user->save();
+    if($user) {
+      $this->validate($data, $rules);
 
-    return Response::json(array(
-        'error' => false,
-        'user' => $user->toArray()),
-        200
-    );
+      $user->username = $data['username'];
+      //$user->password = $data['password'];
+      $user->email = $data['email'];
+      $user->firstname = $data['firstname'];
+      $user->lastname = $data['lastname'];
+      $user->suffix = $data['suffix'];
+      $user->emp_no = $data['emp_no'];
+      $user->mobile = $data['mobile'];
+      $user->phone = $data['phone'];
+      $user->position = $data['position'];
+
+      $user->save();
+
+      $response = Response::json(array(
+          'error' => false,
+          'user' => $user->toArray()),
+          200
+      );
+    } else {
+      $response = Response::json(array(
+          'error' => true,
+          'message' => "User not found"),
+          200
+      );
+    }
+
+    return $response;
+    
 
   }
 
   public function destroy($id){
     $user = User::find($id);
-    $user->delete();
 
-    return Response::json(array(
-        'error' => false,
-        'user' => $user->toArray()),
-        200
-    );
+    if($user){
+      $user->delete();
+
+      $response = Response::json(array(
+          'error' => false,
+          'user' => $user->toArray()),
+          200
+      );
+    } else {
+      $response = Response::json(array(
+          'error' => true,
+          'message' => "User not found"),
+          200
+      );
+    }
+
+    return $response;
   }
 
   public function validate($data, $rules){
