@@ -22,7 +22,7 @@ Route::group(array('prefix' => 'apiv1'), function()
 
 
 Route::get('/', function(){
-	return View::make('hello');
+	return View::make('main');
 });
 
 Route::get('roles/add','RolesController@create');
