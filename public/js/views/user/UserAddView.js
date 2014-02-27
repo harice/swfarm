@@ -5,7 +5,8 @@ define([
 	'text!templates/user/userAddTemplate.html',
 	'models/user/UserModel',
 	'global',
-], function(Backbone, Validate, contentTemplate, userAddTemplate, UserModel, Global){
+	'constant',
+], function(Backbone, Validate, contentTemplate, userAddTemplate, UserModel, Global, Const){
 
 	var UserAddView = Backbone.View.extend({
 		el: $("#content"),
@@ -15,12 +16,15 @@ define([
 		},
 		
 		render: function(){
+			var innerTemplate = _.template(userAddTemplate, {'user_url' : '#/'+Const.URL.USER});
+			
 			var variables = {
 				h1_title: "Add User",
-				sub_content_template: userAddTemplate,
+				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+			
 			var validate = $('#addUserForm').validate({
 				rules: {
 					password: 'required',
@@ -38,7 +42,7 @@ define([
 					var userModel = new UserModel(data);
 					userModel.save(null, {success: function (model, response, options) {
 						//console.log('success: add user');
-						Global.getGlobalVars().app_router.navigate("/administration/users/", {trigger: true});
+						Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
 					}, error: function (model, response, options) {
 						//console.log('error: add user');
 						if(response.responseJSON)
