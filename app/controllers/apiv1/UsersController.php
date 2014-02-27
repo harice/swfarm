@@ -46,7 +46,7 @@ class UsersController extends BaseController {
 	 */
 	public function show($id)
 	{
-        return View::make('users.show');
+        return $this->users->findById($id);
 	}
 
 	/**
@@ -68,7 +68,7 @@ class UsersController extends BaseController {
 	 */
 	public function update($id)
 	{
-		//
+		return $this->users->update($id, Input::all());
 	}
 
 	/**
@@ -79,7 +79,7 @@ class UsersController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+		return $this->users->destroy($id);
 	}
 
 }

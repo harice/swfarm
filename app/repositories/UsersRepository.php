@@ -8,7 +8,7 @@ class UsersRepository implements UsersRepositoryInterface {
    * alternatively place them in your repository
    * @var array
    */
-  public static $rules = array(
+  /*public static $rules = array(
     'username' => 'required|unique:users',
     'password' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|between:8,15|confirmed',
     'password_confirmation' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|between:8,15',
@@ -20,24 +20,55 @@ class UsersRepository implements UsersRepositoryInterface {
     'phone' => 'between:6,13',
     'mobile' => 'between:9,13',
     'position' => 'between:2,50'
-  );
+  );*/
 
   public function findById($id){
-  	
+  	$user = User::find($id);
+
+    if($user){
+      return Response::json(array(
+        'error' => false,
+        'user' => $user->toArray()),
+        200
+      );
+    } else {
+      return Response::json(array(
+        'error' => true,
+        'message' => "User not found"),
+        200
+      );
+    }
+    
+    
   }
 
   public function findAll(){
-  	return User::all();
+  	return User::where('id', '!=', 1)->get(); //exclude the super admin
   }
 
   public function paginate($limit = null){}
 
   public function store($data){
-  	$this->validate($data);
+    $rules = array(
+      'username' => 'required|unique:users',
+      //'password' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|between:8,15|confirmed',
+      //'password_confirmation' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|between:8,15',
+      'email' => 'required|email|unique:users',
+      'firstname' => 'required|between:2,50',
+      'lastname' => 'required|between:2,50',
+      'emp_no' => 'required|unique:users',
+      'suffix' => 'between:2,6',
+      'phone' => 'between:6,13',
+      'mobile' => 'between:9,13',
+      'position' => 'between:2,50'
+    );
+
+
+  	$this->validate($data, $rules);
    
   	$user = new User;
   	$user->username = $data['username'];
-  	$user->password = $data['password'];
+  	$user->password = Str::random(10); //replace with this if the system has already email to user features - Hash::make(Str::random(10));
   	$user->email = $data['email'];
   	$user->firstname = $data['firstname'];
   	$user->lastname = $data['lastname'];
@@ -56,12 +87,58 @@ class UsersRepository implements UsersRepositoryInterface {
   	);
   }
 
-  public function update($id, $data){}
+  public function update($id, $data){
+    $rules = array(
+      'username' => 'required|unique:users,username,'.$id,
+      //'password' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|between:8,15|confirmed',
+      //'password_confirmation' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|between:8,15',
+      'email' => 'required|email|unique:users,email,'.$id,
+      'firstname' => 'required|between:2,50',
+      'lastname' => 'required|between:2,50',
+      'emp_no' => 'required|unique:users,emp_no,'.$id,
+      'suffix' => 'between:2,6',
+      'phone' => 'between:6,13',
+      'mobile' => 'between:9,13',
+      'position' => 'between:2,50'
+    );
 
-  public function destroy($id){}
+    $this->validate($data, $rules);
 
-  public function validate($data){
-    $validator = Validator::make($data, UsersRepository::$rules);
+    $user = User::find($id); //get the user row
+    $user->username = $data['username'];
+    //$user->password = $data['password'];
+    $user->email = $data['email'];
+    $user->firstname = $data['firstname'];
+    $user->lastname = $data['lastname'];
+    $user->suffix = $data['suffix'];
+    $user->emp_no = $data['emp_no'];
+    $user->mobile = $data['mobile'];
+    $user->phone = $data['phone'];
+    $user->position = $data['position'];
+
+    $user->save();
+
+    return Response::json(array(
+        'error' => false,
+        'user' => $user->toArray()),
+        200
+    );
+
+  }
+
+  public function destroy($id){
+    $user = User::find($id);
+    $user->delete();
+
+    return Response::json(array(
+        'error' => false,
+        'user' => $user->toArray()),
+        200
+    );
+  }
+
+  public function validate($data, $rules){
+    $validator = Validator::make($data, $rules);
 
     if($validator->fails()) { 
     	throw new ValidationException($validator); 
