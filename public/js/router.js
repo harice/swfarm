@@ -4,7 +4,8 @@ define([
 	'views/layout/HeaderView',
 	'views/admin/AdminView',
 	'controllers/user/UserController',
-], function(Backbone, HeaderView, AdminView, UserController) {
+	'global',
+], function(Backbone, HeaderView, AdminView, UserController, Global) {
 
 	var AppRouter = Backbone.Router.extend({
 		routes: {
@@ -43,6 +44,8 @@ define([
 		app_router.on('route:defaultAction', function (actions) {
 			console.log('default page');
 		});
+		
+		Global.getGlobalVars().app_router = app_router;
 		
 		var headerView = new HeaderView();
         headerView.render();

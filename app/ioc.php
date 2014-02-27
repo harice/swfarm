@@ -10,3 +10,5 @@
 */
 
 App::bind('RolesRepositoryInterface', 'RolesRepository');
+
+App::bind('UsersRepositoryInterface', 'UsersRepository');
