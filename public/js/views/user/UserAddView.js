@@ -21,7 +21,7 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
-			$('#addUserForm').validate({
+			var validate = $('#addUserForm').validate({
 				rules: {
 					password: 'required',
 					password_confirmation: {
@@ -37,13 +37,14 @@ define([
 					var data = $(form).serializeObject();
 					var userModel = new UserModel(data);
 					userModel.save(null, {success: function (model, response, options) {
-						//console.log('success '+Global.getGlobalVars().app_router);
+						//console.log('success: add user');
 						Global.getGlobalVars().app_router.navigate("/administration/users/", {trigger: true});
 					}, error: function (model, response, options) {
-						console.log('error');
-						console.log(model);
-						console.log(response);
-						console.log(options);
+						//console.log('error: add user');
+						if(response.responseJSON)
+							validate.showErrors(response.responseJSON);
+						else
+							alert(response.responseText);
 					}});
 				}
 			});
