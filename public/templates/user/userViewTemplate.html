@@ -1,1 +1,14 @@
-hello world
+<dl class="dl-horizontal">
+	<dt>Username</dt><dd><%= user.get("username") %></dd>
+	<dt>Position</dt><dd><%= user.get("position") %></dd>
+	<dt>Email</dt><dd><%= user.get("email") %></dd>
+	<dt>Phone</dt><dd><%= user.get("phone") %></dd>
+	<dt>Mobile</dt><dd><%= user.get("mobile") %></dd>
+	<dt></dt>
+	<dd>
+		<div class="clearfix"></div>
+		<a href="<%= user_url %>" class="btn btn-default">Back</a> 
+		<a href="<%= user_edit_url %>/<%= user.get("id") %>" class="btn btn-default">Edit</a> 
+		<a href="<%= user_delete_url %>/<%= user.get("id") %>" class="btn btn-default">Delete</a>
+	</dd>
+</dl>

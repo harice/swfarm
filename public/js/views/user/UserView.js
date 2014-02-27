@@ -3,7 +3,9 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/user/userViewTemplate.html',
 	'models/user/UserModel',
-], function(Backbone, contentTemplate, userViewTemplate, UserModel){
+	'global',
+	'constant',
+], function(Backbone, contentTemplate, userViewTemplate, UserModel, Global, Const){
 
 	var UserView = Backbone.View.extend({
 		el: $("#content"),
@@ -13,23 +15,40 @@ define([
 		},
 		
 		render: function(){
-			var variables = {
-				h1_title: "User View",
-				sub_content_template: userViewTemplate,
-			};
-			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			var thisObj = this;
 			
 			this.model.fetch({
 				success: function(model, response, options) {
-					console.log('success');
-					console.log(response);
+					console.log(response.error);
+					if(typeof response.error == 'undefined') {
+						thisObj.displayUser(model);
+					}
+					else {
+						alert(response.message);
+						Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
+					}
 				},
 				error: function(model, response, options) {
 					console.log('error');
-					console.log(response);
 				},
 			});
+		},
+		
+		displayUser: function (userModel) {
+			var innerTemplateVariables = {
+				user:userModel,
+				user_url:'#/'+Const.URL.USER,
+				user_edit_url:'#/'+Const.URL.USER+'/'+Const.CRUD.EDIT,
+				user_delete_url:'',
+			}
+			var innerTemplate = _.template(userViewTemplate, innerTemplateVariables);
+			
+			var variables = {
+				h1_title: userModel.get('lastname')+', '+userModel.get('firstname')+' '+userModel.get('suffix'),
+				sub_content_template: innerTemplate,
+			};
+			var compiledTemplate = _.template(contentTemplate, variables);
+			this.$el.html(compiledTemplate);
 		},
 		
 	});

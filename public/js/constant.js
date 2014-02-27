@@ -7,6 +7,7 @@ define(function () {
 		'CRUD': {
 			'ADD': 'add',
 			'EDIT': 'edit',
+			'DELETE': 'delete',
 		},
 	};
 	
