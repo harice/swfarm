@@ -1,8 +1,9 @@
 define([
 	'backbone',
 	'models/user/UserModel'
-], function($, _, Backbone, UserModel){
+], function(Backbone, UserModel){
 	var UserCollection = Backbone.Collection.extend({
+		url: '/apiv1/users',
 		model: UserModel,
 		
 		initialize: function(){
