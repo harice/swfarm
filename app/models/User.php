@@ -4,8 +4,10 @@ use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableInterface;
 
 class User extends Eloquent implements UserInterface, RemindableInterface {
+  
+  protected $blameable = array('created', 'updated', 'deleted');
 
-	/**
+  /**
 	 * The database table used by the model.
 	 *
 	 * @var string
@@ -50,3 +52,5 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 }
+
+User::observe(new Culpa\BlameableObserver);
