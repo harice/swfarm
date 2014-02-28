@@ -18,6 +18,10 @@ Route::group(array('prefix' => 'apiv1'), function()
 	Route::resource('roles/store', 'APIv1\RolesController@create');
 
 	Route::resource('users', 'APIv1\UsersController');
+
+
+
+	
 });
 
 
@@ -26,3 +30,7 @@ Route::get('/', function(){
 });
 
 Route::get('roles/add','RolesController@create');
+
+Route::get('paginate', 'APIv1\UsersController@paginate');
+
+
