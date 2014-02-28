@@ -2,9 +2,10 @@ define([
 	'backbone',
 	'views/user/UserListView',
 	'views/user/UserAddView',
+	'views/user/UserEditView',
 	'views/user/UserView',
 	'constant',
-], function(Backbone, UserListView, UserAddView, UserView, Const){
+], function(Backbone, UserListView, UserAddView, UserEditView, UserView, Const){
 	
 	function UserController () {	
 		
@@ -14,11 +15,14 @@ define([
 				case Const.CRUD.ADD:
 					return this.add();
 					break;
-					
+				
+				case Const.CRUD.EDIT:
+					if(id != null && this.IsInt(id))
+						return this.edit(id);
+				
 				default:
-					if(action != null && this.IsInt(action)) {
+					if(action != null && this.IsInt(action))
 						return this.view(action);
-					}
 					else
 						return this.listView();
 			}
@@ -26,6 +30,10 @@ define([
 		
 		this.add = function () {
 			return new UserAddView();
+		};
+		
+		this.edit = function (id) {
+			return new UserEditView({'id':id});
 		};
 		
 		this.listView = function () {

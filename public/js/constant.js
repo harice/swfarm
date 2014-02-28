@@ -9,6 +9,9 @@ define(function () {
 			'EDIT': 'edit',
 			'DELETE': 'delete',
 		},
+		'CONTAINER': {
+			'MAIN':'content',
+		},
 	};
 	
 	return constant;

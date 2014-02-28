@@ -11,27 +11,20 @@ define([
 		el: $("#content"),
 		
 		initialize: function(option) {
+			var thisObj = this;
+			
 			this.model = new UserModel({id:option.id});
+			this.model.on("change", function() {
+				console.log('onChange: UserModel');
+				if(this.hasChanged('firstname') && this.hasChanged('lastname') && this.hasChanged('email') && this.hasChanged('username')) {
+					thisObj.displayUser(this);
+					this.off("change");
+				}
+			});
 		},
 		
 		render: function(){
-			var thisObj = this;
-			
-			this.model.fetch({
-				success: function(model, response, options) {
-					console.log(response.error);
-					if(typeof response.error == 'undefined') {
-						thisObj.displayUser(model);
-					}
-					else {
-						alert(response.message);
-						Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
-					}
-				},
-				error: function(model, response, options) {
-					console.log('error');
-				},
-			});
+			this.model.runFetch();
 		},
 		
 		displayUser: function (userModel) {
@@ -49,6 +42,28 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+		},
+		
+		events: {
+			'click #delete' : 'removeUser',
+		},
+		
+		removeUser: function (){
+			var verifyDelete = confirm('Delete User?');
+			if(verifyDelete) {
+				this.model.destroy({
+					success: function (model, response, options) {
+						console.log('success: UserModel.destroy');
+						console.log(response);
+						Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
+					},
+					error: function (model, response, options) {
+						console.log('error: UserModel.destroy');
+						console.log(response);
+					},
+					wait: true,
+				});
+			}
 		},
 		
 	});

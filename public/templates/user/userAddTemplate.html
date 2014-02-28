@@ -1,4 +1,7 @@
 <form id="addUserForm" class="form-horizontal" role="form" method="post">
+	<% if (typeof user_id !== "undefined") { %>
+		<input type="hidden" id="id" name="id" value="<%= user_id %>" />
+	<% } %>
 	<fieldset>
 		<legend>Personal Information</legend>
 		<div class="form-group">
@@ -83,7 +86,7 @@
 			</div>
 		</div>
 	</fieldset>-->
-	<fieldset>
+	<!--<fieldset>
 		<legend>Password</legend>
 		<div class="form-group">
 			<label for="password" class="col-sm-2 control-label">New Password</label>
@@ -97,7 +100,7 @@
 				<input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="" minlength="8" maxlength="15" required>
 			</div>
 		</div>
-	</fieldset>
+	</fieldset>-->
 	<fieldset>
 		<legend>User Settings</legend>
 		<div class="form-group">
