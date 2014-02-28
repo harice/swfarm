@@ -19,7 +19,7 @@ class UsersController extends BaseController {
 	 * @return Response
 	 */
 	public function index()
-	{
+	{	
 		return $this->users->findAll();
 		// return Response::json(array(
 		// 	'error' => false,
@@ -80,6 +80,10 @@ class UsersController extends BaseController {
 	public function destroy($id)
 	{
 		return $this->users->destroy($id);
+	}
+
+	public function paginate($perPage = 2, $offest = 0){
+		return $this->users->paginate($perPage, $offest);
 	}
 
 }
