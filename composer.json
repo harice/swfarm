@@ -7,7 +7,8 @@
 		"laravel/framework": "4.1.*",
 		"way/generators": "dev-master",
 		"twitter/bootstrap": "dev-master",
-    "rmasters/culpa": "dev-master"
+    "rmasters/culpa": "dev-master",
+    "venturecraft/revisionable": "1.*"
 	},
 	"autoload": {
 		"classmap": [
