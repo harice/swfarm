@@ -10,23 +10,45 @@ define([
 			
 		},
 		
-		getModelsPerPage: function(page, numPerPage) {
+		getModelsPerPage: function(page, numPerPage, callback) {
+			//console.log('getModelsPerPage');
+			
 			var thisObj = this;
+			
+			this.setPaginationURL(page, numPerPage);
 			
 			this.sync('read', this, {
 				success: function (data, textStatus, jqXHR) {
-					console.log('success: getModelsPerPage');
-					console.log(data);
+					//console.log('success: getModelsPerPage');
+					//console.log(data);
+					//console.log(jqXHR);
 					
-					_.each(data, function (userData) {
-						thisObj.add(new UserModel(userData));
-						console.log(userData);
-					});
+					if(textStatus == 'success') {
+						var users = data.data;
+						
+						thisObj.reset();
+						
+						_.each(users, function (user) {
+							thisObj.add(new UserModel(user));
+						});
+						
+						callback(thisObj, data.total);
+					}
+					else
+						alert(jqXHR.statusText);
 				},
 				error:  function (jqXHR, textStatus, errorThrown) {
-					console.log('error: getModelsPerPage');
+					alert(jqXHR.statusText);
 				},
-			})
+			});
+		},
+		
+		setDefaultURL: function () {
+			this.url = '/apiv1/users';
+		},
+		
+		setPaginationURL: function (page, numPerPage) {
+			this.url = '/apiv1/users/paginate' + '?' + $.param({perpage: numPerPage, page: page});
 		},
 	});
 
