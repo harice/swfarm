@@ -3,6 +3,7 @@ define(function () {
 		'URL': {
 			'ADMIN': 'administration',
 			'USER': 'administration/user',
+			'ROLE': 'administration/role',
 		},
 		'CRUD': {
 			'ADD': 'add',

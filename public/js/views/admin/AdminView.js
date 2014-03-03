@@ -14,7 +14,11 @@ define([
 		
 		render: function(){
 			
-			var innerTemplate = _.template(adminTemplate, {'user_url': '#/'+Const.URL.USER});
+			var innerTemplateVariables = {
+				'user_url': '#/'+Const.URL.USER,
+				'role_url': '#/'+Const.URL.ROLE,
+			};
+			var innerTemplate = _.template(adminTemplate, innerTemplateVariables);
 			
 			var variables = {
 				h1_title: "Administration",

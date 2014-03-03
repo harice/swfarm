@@ -4,17 +4,29 @@ define([
 	'views/layout/HeaderView',
 	'views/admin/AdminView',
 	'controllers/user/UserController',
+	'controllers/role/RoleController',
 	'global',
 	'constant',
-], function(Backbone, HeaderView, AdminView, UserController, Global, Const) {
+], function(Backbone, HeaderView, AdminView, UserController, RoleController, Global, Const) {
 	
 	var routerRoutes = {};
+	
+	//admin
 	routerRoutes[Const.URL.ADMIN] = 'showAdminPage';
 	routerRoutes[Const.URL.ADMIN+'/'] = 'showAdminPage';
+	
+	//user
 	routerRoutes[Const.URL.USER] = 'showUserPage';
 	routerRoutes[Const.URL.USER+'/'] = 'showUserPage';
 	routerRoutes[Const.URL.USER+'/:action'] = 'showUserPage';
 	routerRoutes[Const.URL.USER+'/:action/:id'] = 'showUserPage';
+	
+	//role
+	routerRoutes[Const.URL.ROLE] = 'showRolePage';
+	routerRoutes[Const.URL.ROLE+'/'] = 'showRolePage';
+	routerRoutes[Const.URL.ROLE+'/:action'] = 'showRolePage';
+	routerRoutes[Const.URL.ROLE+'/:action/:id'] = 'showRolePage';
+	
 	routerRoutes['*actions'] = 'defaultAction';
 	
 	var AppRouter = Backbone.Router.extend({
@@ -41,6 +53,13 @@ define([
 			this.closeView();
 			var userController = new UserController();
 			this.currView = userController.setAction(action, id);
+			this.currView.render();
+		});
+		
+		app_router.on('route:showRolePage', function (action, id) {
+			this.closeView();
+			var roleController = new RoleController();
+			this.currView = roleController.setAction(action, id);
 			this.currView.render();
 		});
 		
