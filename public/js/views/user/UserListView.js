@@ -56,11 +56,18 @@ define([
 				
 				for(var i=1; i <= lastPage; i++) {
 					var lastClass = '';
+					var active = '';
+					var activeValue = '';
 					
 					if(i == lastPage)
 						lastClass = ' last';
 					
-					$('.pagination .last-page').parent().before('<li><a class="page-number'+lastClass+'" href="#">'+i+'</a></li>');
+					if(i == userCollection.options.currentPage) {
+						active = ' class="active"';
+						activeValue = ' <span class="sr-only">(current)</span>';
+					}
+						
+					$('.pagination .last-page').parent().before('<li'+active+'><a class="page-number'+lastClass+'" href="#" data-pagenum="'+i+'">'+i+activeValue+'</a></li>');
 				}
 			}
 			else {
@@ -87,7 +94,7 @@ define([
 		},
 		
 		gotoLastPage: function () {
-			var lastPage = $('.user-list-pagination .last').text();
+			var lastPage = $('.user-list-pagination .last').attr('data-pagenum');
 			
 			if(this.collection.currentPage != lastPage) {
 				this.collection.options.currentPage = lastPage;
@@ -98,7 +105,7 @@ define([
 		},
 		
 		gotoPage: function (ev) {
-			var page = $(ev.target).text();
+			var page = $(ev.target).attr('data-pagenum');
 			if(this.collection.currentPage != page) {
 				this.collection.options.currentPage = page;
 				this.collection.getModelsPerPage(page , Const.MAXITEMPERPAGE, this.displayList);
@@ -124,6 +131,7 @@ define([
 				this.collection.options.sort[sortField] = !this.collection.options.sort[sortField];
 			
 			this.collection.options.currentSort = sortField;
+			this.collection.options.currentPage = 1;
 			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE, this.displayList);
 		},
 	});
