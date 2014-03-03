@@ -6,8 +6,7 @@
 	"require": {
 		"laravel/framework": "4.1.*",
 		"way/generators": "dev-master",
-		"twitter/bootstrap": "dev-master",
-    "rmasters/culpa": "dev-master"
+		"twitter/bootstrap": "dev-master"
 	},
 	"autoload": {
 		"classmap": [
