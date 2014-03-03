@@ -20,12 +20,13 @@ class UsersController extends BaseController {
 	 */
 	public function index()
 	{	
-		return $this->users->findAll();
-		// return Response::json(array(
-		// 	'error' => false,
-		// 	'users' => $this->users->findAll())
-		// );
-        //return View::make('users.index');
+		//return $this->users->findAll();
+		$perPage = Input::get('perpage', '10'); //default to 10 items
+		$page = Input::get('page', '1'); //default to page 1
+		$offset = $page*$perPage-$perPage;
+		
+		return $this->users->paginate($perPage, $offset);
+		
 	}
 
 	/**
