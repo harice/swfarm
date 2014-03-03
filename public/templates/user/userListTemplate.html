@@ -1,14 +1,20 @@
 <div>
 	<a href="<%= user_add_url %>">+ Add User</a>
 </div>
+<div>
+	<ul class="pagination user-list-pagination">
+		<li><a class="first-page" href="#">&laquo;</a></li>
+		<li><a class="last-page" href="#">&raquo;</a></li>
+	</ul>
+</div>
 <div class="table-responsive">
 	<table id="user-list" class="table table-bordered">
 		<thead>
 			<tr>
-				<th>Last Name</th>
-				<th>First Name</th>
+				<th class="sort-lastname">Last Name <span class="glyphicon glyphicon-sort"></span></th>
+				<th class="sort-firstname">First Name  <span class="glyphicon glyphicon-sort"></span></th>
 				<th>Suffix</th>
-				<th>Email</th>
+				<th class="sort-email">Email  <span class="glyphicon glyphicon-sort"></span></th>
 				<th>Role</th>
 				<th>Validated</th>
 				<th>Status</th>
@@ -17,4 +23,10 @@
 		</thead>
 		<tbody></tbody>
 	</table>
+</div>
+<div>
+	<ul class="pagination">
+		<li><a class="first-page" href="#">&laquo;</a></li>
+		<li><a class="last-page" href="#">&raquo;</a></li>
+	</ul>
 </div>

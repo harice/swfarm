@@ -13,5 +13,4 @@ class RolesRepository implements RolesRepositoryInterface {
   {
     return new Roles($data);
   }
- 
 }

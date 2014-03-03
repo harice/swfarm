@@ -37,7 +37,7 @@ define([
 						Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
 					}, error: function (model, response, options) {
 						//console.log('error: add user');
-						if(response.responseJSON)
+						if(typeof response.responseJSON.error == 'undefined')
 							validate.showErrors(response.responseJSON);
 						else
 							alert(response.responseText);

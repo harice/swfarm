@@ -12,30 +12,18 @@ define([
 		el: $("#content"),
 		
 		initialize: function() {
+			//console.log('UserListView:init');
+			//console.log('this.options.currentPage:'+this.options.currentPage);
 			this.collection = new UserCollection();
 		},
 		
 		render: function(){
-			//var users = new UserCollection();
-			this.collection.fetch({
-				success: function (collection, response, options) {
-					var data = {
-						user_url: '#/'+Const.URL.USER,
-						user_edit_url: '#/'+Const.URL.USER+'/'+Const.CRUD.EDIT,
-						users: collection.models,
-						_: _ 
-					};
-
-					var innerListTemplate = _.template( userInnerListTemplate, data );
-					$("#user-list tbody").html(innerListTemplate);
-					
-				},
-				error: function (collection, response, options) {
-					alert(response.responseText);
-				},
-				reset: true,
-			});
-			
+			this.displayUser();
+			this.collection.options.currentPage = 1;
+			this.collection.getModelsPerPage(this.collection.options.currentPage , Const.MAXITEMPERPAGE, this.displayList);
+		},
+		
+		displayUser: function (UserCollection) {
 			var innerTemplate = _.template(userListTemplate, {'user_add_url' : '#/'+Const.URL.USER+'/'+Const.CRUD.ADD});
 			
 			var variables = {
@@ -44,8 +32,100 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
-		}
-
+		},
+		
+		displayList: function (userCollection) {
+			//console.log('displayUser');
+			//console.log(userCollection);
+			
+			var data = {
+				user_url: '#/'+Const.URL.USER,
+				user_edit_url: '#/'+Const.URL.USER+'/'+Const.CRUD.EDIT,
+				users: userCollection.models,
+				_: _ 
+			};
+			
+			var innerListTemplate = _.template( userInnerListTemplate, data );
+			$("#user-list tbody").html(innerListTemplate);
+			
+			$('.page-number').remove();
+			var lastPage = Math.ceil(userCollection.options.maxItem / Const.MAXITEMPERPAGE);
+			
+			if(lastPage > 1) {
+				$('.pagination').show();
+				
+				for(var i=1; i <= lastPage; i++) {
+					var lastClass = '';
+					
+					if(i == lastPage)
+						lastClass = ' last';
+					
+					$('.pagination .last-page').parent().before('<li><a class="page-number'+lastClass+'" href="#">'+i+'</a></li>');
+				}
+			}
+			else {
+				$('.pagination').hide();
+			}
+		},
+		
+		events: {
+			'click .first-page' : 'gotoFirstPage',
+			'click .last-page' : 'gotoLastPage',
+			'click .page-number' : 'gotoPage',
+			'click .sort-lastname' : 'sortLastname',
+			'click .sort-firstname' : 'sortFirstname',
+			'click .sort-email' : 'sortEmail',
+		},
+		
+		gotoFirstPage: function () {
+			if(this.collection.currentPage != 1) {
+				this.collection.options.currentPage = 1;
+				this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE, this.displayList);
+			}
+			
+			return false;
+		},
+		
+		gotoLastPage: function () {
+			var lastPage = $('.user-list-pagination .last').text();
+			
+			if(this.collection.currentPage != lastPage) {
+				this.collection.options.currentPage = lastPage;
+				this.collection.getModelsPerPage(lastPage , Const.MAXITEMPERPAGE, this.displayList);
+			}
+			
+			return false;
+		},
+		
+		gotoPage: function (ev) {
+			var page = $(ev.target).text();
+			if(this.collection.currentPage != page) {
+				this.collection.options.currentPage = page;
+				this.collection.getModelsPerPage(page , Const.MAXITEMPERPAGE, this.displayList);
+			}
+			
+			return false;
+		},
+		
+		sortLastname: function () {
+			this.sortByField('lastname');
+		},
+		
+		sortFirstname: function () {
+			this.sortByField('firstname');
+		},
+		
+		sortEmail: function () {
+			this.sortByField('email');
+		},
+		
+		sortByField: function (sortField) {
+			if(this.collection.options.currentSort == sortField)
+				this.collection.options.sort[sortField] = !this.collection.options.sort[sortField];
+			
+			this.collection.options.currentSort = sortField;
+			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE, this.displayList);
+		},
 	});
 
   return UserListView;

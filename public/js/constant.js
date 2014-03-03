@@ -12,6 +12,7 @@ define(function () {
 		'CONTAINER': {
 			'MAIN':'content',
 		},
+		'MAXITEMPERPAGE': 10,
 	};
 	
 	return constant;
