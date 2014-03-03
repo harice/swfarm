@@ -2,19 +2,29 @@ define([
 	'backbone',
 	'views/user/UserListView',
 	'views/user/UserAddView',
-], function(Backbone, UserListView, UserAddView){
+	'views/user/UserEditView',
+	'views/user/UserView',
+	'constant',
+], function(Backbone, UserListView, UserAddView, UserEditView, UserView, Const){
 	
 	function UserController () {	
 		
-		this.setAction = function (action) {
+		this.setAction = function (action, id) {
 			
 			switch (action) {
-				case 'add':
+				case Const.CRUD.ADD:
 					return this.add();
 					break;
-					
+				
+				case Const.CRUD.EDIT:
+					if(id != null && this.IsInt(id))
+						return this.edit(id);
+				
 				default:
-					return this.listView();
+					if(action != null && this.IsInt(action))
+						return this.view(action);
+					else
+						return this.listView();
 			}
 		};
 		
@@ -22,8 +32,21 @@ define([
 			return new UserAddView();
 		};
 		
+		this.edit = function (id) {
+			return new UserEditView({'id':id});
+		};
+		
 		this.listView = function () {
 			return new UserListView();
+		};
+		
+		this.view = function (id) {
+			return new UserView({'id':id});
+		};
+		
+		this.IsInt = function (i) {
+			var reg = /^\d+$/;
+			return reg.test(i);
 		};
 	};
 

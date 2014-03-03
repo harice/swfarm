@@ -6,6 +6,7 @@ use BaseController;
 use UsersRepositoryInterface;
 use View;
 use Input;
+use Config;
 
 class UsersController extends BaseController {
 
@@ -19,13 +20,16 @@ class UsersController extends BaseController {
 	 * @return Response
 	 */
 	public function index()
-	{	
-		return $this->users->findAll();
-		// return Response::json(array(
-		// 	'error' => false,
-		// 	'users' => $this->users->findAll())
-		// );
-        //return View::make('users.index');
+	{
+		//return $this->users->findAll();
+		$perPage = Input::get('perpage', Config::get('constants.USERS_PER_LIST')); //default to 10 items, see app/config/constants
+		$page = Input::get('page', '1'); //default to page 1
+		$sortby = Input::get('sortby', 'lastname'); //default sort to lastname
+		$orderby = Input::get('orderby', 'ASC'); //default order is Ascending
+		$offset = $page*$perPage-$perPage;
+		
+		return $this->users->paginate($perPage, $offset, $sortby, $orderby);
+		
 	}
 
 	/**
@@ -82,12 +86,5 @@ class UsersController extends BaseController {
 		return $this->users->destroy($id);
 	}
 
-	public function paginate(){
-		$perPage = Input::get('perpage', '10'); //default to 10 items
-		$page = Input::get('page', '1'); //default to page 1
-		$offset = $page*$perPage-$perPage;
-		
-		return $this->users->paginate($perPage, $offset);
-	}
 
 }

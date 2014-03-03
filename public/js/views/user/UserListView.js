@@ -5,7 +5,8 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/user/userListTemplate.html',
 	'text!templates/user/userInnerListTemplate.html',
-], function(Backbone, UserModel, UserCollection, contentTemplate, userListTemplate, userInnerListTemplate){
+	'constant',
+], function(Backbone, UserModel, UserCollection, contentTemplate, userListTemplate, userInnerListTemplate, Const){
 
 	var UserListView = Backbone.View.extend({
 		el: $("#content"),
@@ -18,10 +19,9 @@ define([
 			//var users = new UserCollection();
 			this.collection.fetch({
 				success: function (collection, response, options) {
-					console.log('success');
-					//console.log(collection);
-					
 					var data = {
+						user_url: '#/'+Const.URL.USER,
+						user_edit_url: '#/'+Const.URL.USER+'/'+Const.CRUD.EDIT,
 						users: collection.models,
 						_: _ 
 					};
@@ -36,9 +36,11 @@ define([
 				reset: true,
 			});
 			
+			var innerTemplate = _.template(userListTemplate, {'user_add_url' : '#/'+Const.URL.USER+'/'+Const.CRUD.ADD});
+			
 			var variables = {
 				h1_title: "Users",
-				sub_content_template: userListTemplate,
+				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);

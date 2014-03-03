@@ -47,15 +47,36 @@ class UsersRepository implements UsersRepositoryInterface {
   }
 
 
-  public function paginate($perPage, $offset){
-    $count = User::where('id', '!=', 1)->count();
-    $usersList = User::where('id', '!=', 1)->take($perPage)->offset($offset)->get();
-    
-    return Response::json(array(
-      'data'=>$usersList->toArray(),
-      'total'=>$count
-    ));
+  public function paginate($perPage, $offset, $sortby, $orderby){
+    $errorMsg = null;
+    $sortby = strtolower($sortby);
+    $orderby = strtolower($orderby);
+    //check if input pass are valid
+    if(!($sortby == 'firstname' || $sortby == 'lastname' || $sortby == 'email')){
+      $errorMsg = 'Sort by category not found.';
+    } else if(!($orderby == 'asc' || $orderby == 'desc')){
+      $errorMsg = 'Order by category not found(ASC or DESC expected).';
+    } else {
+      //pulling of data
+      $count = User::where('id', '!=', 1)->count();
+      $usersList = User::where('id', '!=', 1)->take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
 
+      $response = Response::json(array(
+        'data'=>$usersList->toArray(),
+        'total'=>$count
+      ));
+    }
+
+    if($errorMsg){
+      $response = Response::json(array(
+        'error' => true,
+        'message' => $errorMsg),
+        200
+      );
+    }
+
+    return $response;
+    
   }
 
   public function store($data){

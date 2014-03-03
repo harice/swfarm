@@ -5,17 +5,20 @@ define([
 	'views/admin/AdminView',
 	'controllers/user/UserController',
 	'global',
-], function(Backbone, HeaderView, AdminView, UserController, Global) {
-
+	'constant',
+], function(Backbone, HeaderView, AdminView, UserController, Global, Const) {
+	
+	var routerRoutes = {};
+	routerRoutes[Const.URL.ADMIN] = 'showAdminPage';
+	routerRoutes[Const.URL.ADMIN+'/'] = 'showAdminPage';
+	routerRoutes[Const.URL.USER] = 'showUserPage';
+	routerRoutes[Const.URL.USER+'/'] = 'showUserPage';
+	routerRoutes[Const.URL.USER+'/:action'] = 'showUserPage';
+	routerRoutes[Const.URL.USER+'/:action/:id'] = 'showUserPage';
+	routerRoutes['*actions'] = 'defaultAction';
+	
 	var AppRouter = Backbone.Router.extend({
-		routes: {
-		// Define some URL routes
-			'administration/': 'showAdminPage',
-			'administration/users/*action': 'showUserPage',
-
-			// Default
-			'*actions': 'defaultAction'
-		},
+		routes:routerRoutes,
 		currView:null,
 		closeView: function () {
 			if(this.currView) {
@@ -34,10 +37,10 @@ define([
 			this.currView.render();
 		});
 		
-		app_router.on('route:showUserPage', function (action) {
+		app_router.on('route:showUserPage', function (action, id) {
 			this.closeView();
 			var userController = new UserController();
-			this.currView = userController.setAction(action);
+			this.currView = userController.setAction(action, id);
 			this.currView.render();
 		});
 		

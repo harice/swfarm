@@ -27,6 +27,9 @@ class CreateUsersTable extends Migration {
 			$table->boolean('validated')->default(false)->index();
 			$table->boolean('status')->default(true)->index();
 			$table->boolean('deleted')->default(false)->index();
+      $table->integer('created_by_id');
+      $table->integer('updated_by_id');
+      $table->integer('deleted_by_id');
 			$table->timestamps();
 			$table->softDeletes();
 		});
