@@ -5,6 +5,8 @@ class UsersTableSeeder extends Seeder {
 	public function run()
 	{
 		// DB::table('users')->truncate();
+    $currentdate = new Datetime();
+    $currentdate = $currentdate->format('Y-m-d H:i:s');
 
 		$users = array(
 			array(
@@ -17,8 +19,11 @@ class UsersTableSeeder extends Seeder {
 					'validated' => true,
 					'status' => true,
 					'deleted' => false,
-					'created_at' => new Datetime(),
-					'updated_at' => new Datetime()
+					'created_at' => $currentdate,
+					'updated_at' => $currentdate,
+//          'created_by_id' => 0,
+//          'updated_by_id' => 0,
+//          'deleted_by_id' => 0
 				)
 		);
 
