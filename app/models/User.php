@@ -4,6 +4,8 @@ use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableInterface;
 
 class User extends Eloquent implements UserInterface, RemindableInterface {
+  
+  protected $blameable = array('created', 'updated', 'deleted');
 
 	protected $softDelete = true;
 	/**
@@ -49,5 +51,34 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	{
 		return $this->email;
 	}
+  
+  /**
+   * Get the user that created the model
+   * @return \Illuminate\Database\Eloquent\Model User instance
+   */
+  public function createdBy()
+  {
+    return $this->belongsTo('User');
+  }
+  
+  /**
+   * Get the user that created the model
+   * @return \Illuminate\Database\Eloquent\Model User instance
+   */
+  public function updatedBy()
+  {
+    return $this->belongsTo('User');
+  }
+  
+  /**
+   * Get the user that created the model
+   * @return \Illuminate\Database\Eloquent\Model User instance
+   */
+  public function deletedBy()
+  {
+    return $this->belongsTo('User');
+  }
 
 }
+
+User::observe(new Culpa\BlameableObserver);
