@@ -14,7 +14,7 @@
 /* API ROUTES */
 Route::group(array('prefix' => 'apiv1'), function()
 {
-	Route::get('users/paginate', 'APIv1\UsersController@paginate');
+	//Route::get('users/paginate', 'APIv1\UsersController@paginate');
 	Route::resource('users', 'APIv1\UsersController');
 	
 	Route::resource('roles', 'APIv1\RolesController');
@@ -29,6 +29,5 @@ Route::get('/', function(){
 
 Route::get('roles/add','RolesController@create');
 
-//Route::get('paginate', 'APIv1\UsersController@paginate');
 
 
