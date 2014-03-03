@@ -16,8 +16,11 @@ define([
 		},
 		
 		render: function(){
+		
+			this.collection.getModelsPerPage(1,1);
+		
 			//var users = new UserCollection();
-			this.collection.fetch({
+			/*this.collection.fetch({
 				success: function (collection, response, options) {
 					var data = {
 						user_url: '#/'+Const.URL.USER,
@@ -43,7 +46,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.$el.html(compiledTemplate);*/
 		}
 
 	});
