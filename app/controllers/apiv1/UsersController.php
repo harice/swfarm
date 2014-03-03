@@ -23,9 +23,11 @@ class UsersController extends BaseController {
 		//return $this->users->findAll();
 		$perPage = Input::get('perpage', '10'); //default to 10 items
 		$page = Input::get('page', '1'); //default to page 1
+		$sortby = Input::get('sortby', 'lastname'); //default sort to lastname
+		$orderby = Input::get('orderby', 'ASC'); //default order is Ascending
 		$offset = $page*$perPage-$perPage;
 		
-		return $this->users->paginate($perPage, $offset);
+		return $this->users->paginate($perPage, $offset, $sortby, $orderby);
 		
 	}
 
@@ -84,11 +86,14 @@ class UsersController extends BaseController {
 	}
 
 	public function paginate(){
+		//return $this->users->findAll();
 		$perPage = Input::get('perpage', '10'); //default to 10 items
 		$page = Input::get('page', '1'); //default to page 1
+		$sortby = Input::get('sortby', 'lastname'); //default sort to lastname
+		$orderby = Input::get('orderby', 'ASC'); //default order is Ascending
 		$offset = $page*$perPage-$perPage;
 		
-		return $this->users->paginate($perPage, $offset);
+		return $this->users->paginate($perPage, $offset, $sortby, $orderby);
 	}
 
 }
