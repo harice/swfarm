@@ -47,10 +47,14 @@ class UsersRepository implements UsersRepositoryInterface {
   }
 
 
-  public function paginate($limit = null){
+  public function paginate($perPage, $offset){
     //return User::paginate($limit);
-
-    return User::findAll()->take($perPage)->offset($offset)->get();
+    $count = User::where('id', '!=', 1)->count();
+    $usersList = User::where('id', '!=', 1)->take($perPage)->offset($offset)->get();
+    return Response::json(array(
+      'data'=>$usersList->toArray(),
+      'total'=>$count
+    ));
 
   }
 

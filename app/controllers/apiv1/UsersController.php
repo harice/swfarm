@@ -82,8 +82,12 @@ class UsersController extends BaseController {
 		return $this->users->destroy($id);
 	}
 
-	public function paginate($perPage = 2, $offest = 0){
-		return $this->users->paginate($perPage, $offest);
+	public function paginate(){
+		$perPage = Input::get('perpage', '10'); //default to 10 items
+		$page = Input::get('page', '1'); //default to page 1
+		$offset = $page*$perPage-$perPage;
+		
+		return $this->users->paginate($perPage, $offset);
 	}
 
 }
