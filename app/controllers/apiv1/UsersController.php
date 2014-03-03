@@ -10,7 +10,8 @@ use Config;
 
 class UsersController extends BaseController {
 
-	public function __construct(UsersRepositoryInterface $users){
+	public function __construct(UsersRepositoryInterface $users)
+	{
 		$this->users = $users;
 	}
 

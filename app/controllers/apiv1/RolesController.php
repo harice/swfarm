@@ -4,11 +4,11 @@ namespace APIv1;
 
 use BaseController;
 use RolesRepositoryInterface;
+use View;
 use Input;
+use Config;
 
 class RolesController extends BaseController {
-	
-	private $roles;
 
 	public function __construct(RolesRepositoryInterface $roles)
 	{
@@ -22,7 +22,18 @@ class RolesController extends BaseController {
 	 */
 	public function index()
 	{
-        return $this->roles->findAll();
+		echo "test";
+		return 1;
+	}
+
+	/**
+	 * Show the form for creating a new resource.
+	 *
+	 * @return Response
+	 */
+	public function create()
+	{
+		//
 	}
 
 	/**
@@ -32,7 +43,7 @@ class RolesController extends BaseController {
 	 */
 	public function store()
 	{
-		return $this->roles->store( Input::all() );
+		//
 	}
 
 	/**
@@ -43,7 +54,18 @@ class RolesController extends BaseController {
 	 */
 	public function show($id)
 	{
-        return $this->roles->findById($id);
+		//
+	}
+
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function edit($id)
+	{
+		//
 	}
 
 	/**
@@ -54,7 +76,7 @@ class RolesController extends BaseController {
 	 */
 	public function update($id)
 	{
-		return $this->roles->update($id, Input::all());
+		//
 	}
 
 	/**
@@ -65,7 +87,7 @@ class RolesController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		$this->roles->destroy($id);
+		//
 	}
 
 }
