@@ -46,8 +46,8 @@ class UsersRepository implements UsersRepositoryInterface {
   	return User::where('id', '!=', 1)->get(); //exclude the super admin
   }
 
-  public function paginate($limit = null){
-    return User::paginate($limit);
+  public function paginate($perPage, $offset){
+    return User::findAll()->take($perPage)->offset($offset)->get();
   }
 
   public function store($data){
