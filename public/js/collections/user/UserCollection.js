@@ -5,7 +5,16 @@ define([
 	var UserCollection = Backbone.Collection.extend({
 		url: '/apiv1/users',
 		model: UserModel,
-		
+		options: {
+			currentPage: 1,
+			maxItem: 0,
+			currentSort: 'lastname',
+			sort: {
+				firstname: true,
+				lastname: true,
+				email: true,
+			},
+		},
 		initialize: function(){
 			
 		},
@@ -32,7 +41,8 @@ define([
 							thisObj.add(new UserModel(user));
 						});
 						
-						callback(thisObj, data.total);
+						thisObj.options.maxItem = data.total;
+						callback(thisObj);
 					}
 					else
 						alert(jqXHR.statusText);
@@ -47,8 +57,9 @@ define([
 			this.url = '/apiv1/users';
 		},
 		
-		setPaginationURL: function (page, numPerPage) {
-			this.url = '/apiv1/users/paginate' + '?' + $.param({perpage: numPerPage, page: page});
+		setPaginationURL: function (page, numPerPage) {	
+			var orderBy = (this.options.sort[this.options.currentSort])? 'asc' : 'desc';
+			this.url = '/apiv1/users' + '?' + $.param({perpage: numPerPage, page: page, sortby:this.options.currentSort, orderby:orderBy});
 		},
 	});
 

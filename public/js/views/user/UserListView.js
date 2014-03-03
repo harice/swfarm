@@ -11,11 +11,6 @@ define([
 	var UserListView = Backbone.View.extend({
 		el: $("#content"),
 		
-		options: {
-			currentPage: 1,
-			maxItem: 0,
-		},
-		
 		initialize: function() {
 			//console.log('UserListView:init');
 			//console.log('this.options.currentPage:'+this.options.currentPage);
@@ -24,7 +19,8 @@ define([
 		
 		render: function(){
 			this.displayUser();
-			this.collection.getModelsPerPage(this.options.currentPage , Const.MAXITEMPERPAGE, this.displayList);
+			this.collection.options.currentPage = 1;
+			this.collection.getModelsPerPage(this.collection.options.currentPage , Const.MAXITEMPERPAGE, this.displayList);
 		},
 		
 		displayUser: function (UserCollection) {
@@ -38,7 +34,7 @@ define([
 			this.$el.html(compiledTemplate);
 		},
 		
-		displayList: function (userCollection, maxUsers) {
+		displayList: function (userCollection) {
 			//console.log('displayUser');
 			//console.log(userCollection);
 			
@@ -53,14 +49,22 @@ define([
 			$("#user-list tbody").html(innerListTemplate);
 			
 			$('.page-number').remove();
-			var lastPage = Math.ceil(maxUsers / Const.MAXITEMPERPAGE);
-			for(var i=1; i <= lastPage; i++) {
-				var lastClass = '';
+			var lastPage = Math.ceil(userCollection.options.maxItem / Const.MAXITEMPERPAGE);
+			
+			if(lastPage > 1) {
+				$('.pagination').show();
 				
-				if(i == lastPage)
-					lastClass = ' last';
-				
-				$('.pagination .last-page').parent().before('<li><a class="page-number'+lastClass+'" href="#">'+i+'</a></li>');
+				for(var i=1; i <= lastPage; i++) {
+					var lastClass = '';
+					
+					if(i == lastPage)
+						lastClass = ' last';
+					
+					$('.pagination .last-page').parent().before('<li><a class="page-number'+lastClass+'" href="#">'+i+'</a></li>');
+				}
+			}
+			else {
+				$('.pagination').hide();
 			}
 		},
 		
@@ -68,11 +72,14 @@ define([
 			'click .first-page' : 'gotoFirstPage',
 			'click .last-page' : 'gotoLastPage',
 			'click .page-number' : 'gotoPage',
+			'click .sort-lastname' : 'sortLastname',
+			'click .sort-firstname' : 'sortFirstname',
+			'click .sort-email' : 'sortEmail',
 		},
 		
 		gotoFirstPage: function () {
-			if(this.options.currentPage != 1) {
-				this.options.currentPage = 1;
+			if(this.collection.currentPage != 1) {
+				this.collection.options.currentPage = 1;
 				this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE, this.displayList);
 			}
 			
@@ -82,8 +89,8 @@ define([
 		gotoLastPage: function () {
 			var lastPage = $('.user-list-pagination .last').text();
 			
-			if(this.options.currentPage != lastPage) {
-				this.options.currentPage = lastPage;
+			if(this.collection.currentPage != lastPage) {
+				this.collection.options.currentPage = lastPage;
 				this.collection.getModelsPerPage(lastPage , Const.MAXITEMPERPAGE, this.displayList);
 			}
 			
@@ -92,12 +99,32 @@ define([
 		
 		gotoPage: function (ev) {
 			var page = $(ev.target).text();
-			if(this.options.currentPage != page) {
-				this.options.currentPage = page;
+			if(this.collection.currentPage != page) {
+				this.collection.options.currentPage = page;
 				this.collection.getModelsPerPage(page , Const.MAXITEMPERPAGE, this.displayList);
 			}
 			
 			return false;
+		},
+		
+		sortLastname: function () {
+			this.sortByField('lastname');
+		},
+		
+		sortFirstname: function () {
+			this.sortByField('firstname');
+		},
+		
+		sortEmail: function () {
+			this.sortByField('email');
+		},
+		
+		sortByField: function (sortField) {
+			if(this.collection.options.currentSort == sortField)
+				this.collection.options.sort[sortField] = !this.collection.options.sort[sortField];
+			
+			this.collection.options.currentSort = sortField;
+			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE, this.displayList);
 		},
 	});
 
