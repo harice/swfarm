@@ -22,18 +22,11 @@ class RolesController extends BaseController {
 	 */
 	public function index()
 	{
-		echo "test";
-		return 1;
-	}
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		//
+		$perPage = Input::get('perpage', Config::get('constants.ROLES_PER_LIST')); //default to 10 items, see app/config/constants
+		$page = Input::get('page', '1'); //default to page 1
+		$offset = $page*$perPage-$perPage;
+		
+		return $this->roles->paginate($perPage, $offset);
 	}
 
 	/**
@@ -43,7 +36,7 @@ class RolesController extends BaseController {
 	 */
 	public function store()
 	{
-		//
+		return $this->roles->store( Input::all() );
 	}
 
 	/**
@@ -54,19 +47,9 @@ class RolesController extends BaseController {
 	 */
 	public function show($id)
 	{
-		//
+		return $this->roles->findById($id);
 	}
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
 
 	/**
 	 * Update the specified resource in storage.
@@ -76,7 +59,7 @@ class RolesController extends BaseController {
 	 */
 	public function update($id)
 	{
-		//
+		return $this->roles->update($id, Input::all());
 	}
 
 	/**
