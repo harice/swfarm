@@ -3,9 +3,10 @@ define([
 	'jqueryvalidate',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/role/roleAddTemplate.html',
+	'models/role/RoleModel',
 	'global',
 	'constant',
-], function(Backbone, Validate, contentTemplate, roleAddTemplate, Global, Const){
+], function(Backbone, Validate, contentTemplate, roleAddTemplate, RoleModel, Global, Const){
 
 	var RoleAddView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -27,13 +28,14 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
-			/*var validate = $('#addUserForm').validate({
+			var validate = $('#addRolesForm').validate({
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
-					var userModel = new UserModel(data);
-					userModel.save(null, {success: function (model, response, options) {
+					console.log(data);
+					var roleModel = new RoleModel(data);
+					roleModel.save(null, {success: function (model, response, options) {
 						//console.log('success: add role');
-						Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
+						Global.getGlobalVars().app_router.navigate(Const.URL.ROLE, {trigger: true});
 					}, error: function (model, response, options) {
 						//console.log('error: add role');
 						if(typeof response.responseJSON.error == 'undefined')
@@ -42,7 +44,7 @@ define([
 							alert(response.responseText);
 					}});
 				}
-			});*/
+			});
 		},
 		
 	});
