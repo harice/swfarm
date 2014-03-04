@@ -26,10 +26,6 @@ class ProductsRepository implements ProductsRepositoryInterface {
   	return Product::where('id', '!=', 1)->get(); //exclude the super admin
   }
 
-  public function paginate($perPage, $offset){
-    return Product::findAll()->take($perPage)->offset($offset)->get();
-  }
-
   public function store($data){
     $rules = array(
       'title' => 'required|unique:products',
