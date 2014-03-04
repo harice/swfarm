@@ -14,12 +14,18 @@
 /* API ROUTES */
 Route::group(array('prefix' => 'apiv1'), function()
 {
+<<<<<<< HEAD
 	
 	Route::resource('users', 'APIv1\UsersController');
 	
 	Route::resource('roles', 'APIv1\RolesController');
 
   	Route::resource('products', 'APIv1\ProductsController');
+=======
+	Route::resource('users', 'APIv1\UsersController');	
+	Route::resource('roles', 'APIv1\RolesController');
+	
+>>>>>>> dev-avs
 });
 
 
@@ -27,4 +33,9 @@ Route::get('/', function(){
 	return View::make('main');
 });
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> dev-avs
 

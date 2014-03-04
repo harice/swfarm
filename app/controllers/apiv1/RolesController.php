@@ -4,11 +4,11 @@ namespace APIv1;
 
 use BaseController;
 use RolesRepositoryInterface;
+use View;
 use Input;
+use Config;
 
 class RolesController extends BaseController {
-	
-	private $roles;
 
 	public function __construct(RolesRepositoryInterface $roles)
 	{
@@ -22,7 +22,11 @@ class RolesController extends BaseController {
 	 */
 	public function index()
 	{
-        return $this->roles->findAll();
+		$perPage = Input::get('perpage', Config::get('constants.ROLES_PER_LIST')); //default to 10 items, see app/config/constants
+		$page = Input::get('page', '1'); //default to page 1
+		$offset = $page*$perPage-$perPage;
+		
+		return $this->roles->paginate($perPage, $offset);
 	}
 
 	/**
@@ -43,8 +47,9 @@ class RolesController extends BaseController {
 	 */
 	public function show($id)
 	{
-        return $this->roles->findById($id);
+		return $this->roles->findById($id);
 	}
+
 
 	/**
 	 * Update the specified resource in storage.
@@ -65,7 +70,7 @@ class RolesController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		$this->roles->destroy($id);
+		//
 	}
 
 }
