@@ -87,7 +87,25 @@ class RolesRepository implements RolesRepositoryInterface {
   }
 
   public function destroy($id){
+    $role = Roles::find($id);
 
+    if($role){
+      $role->delete();
+
+      $response = Response::json(array(
+          'error' => false,
+          'role' => $role->toArray()),
+          200
+      );
+    } else {
+      $response = Response::json(array(
+          'error' => true,
+          'message' => "Role not found"),
+          200
+      );
+    }
+
+    return $response;
   }
   
   public function validate($data, $rules){
