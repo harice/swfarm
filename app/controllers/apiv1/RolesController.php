@@ -70,7 +70,7 @@ class RolesController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+		return $this->roles->destroy($id);
 	}
 
 }
