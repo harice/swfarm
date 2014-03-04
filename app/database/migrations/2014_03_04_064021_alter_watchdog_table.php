@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterWatchdogsTable extends Migration {
+class AlterWatchdogTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,7 +12,7 @@ class AlterWatchdogsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::table('watchdogs',function($table){
+		Schema::table('watchdog',function($table){
       // $table->foreign('user_id')->references('id')->on('users');
 		});
 	}

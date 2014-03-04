@@ -1,6 +1,6 @@
 <?php
 
-class WatchdogsTableSeeder extends Seeder {
+class WatchdogTableSeeder extends Seeder {
 
 	public function run()
 	{
@@ -33,7 +33,7 @@ class WatchdogsTableSeeder extends Seeder {
       )
 		);
 
-		DB::table('watchdogs')->insert($log);
+		DB::table('watchdog')->insert($log);
 	}
 
 }

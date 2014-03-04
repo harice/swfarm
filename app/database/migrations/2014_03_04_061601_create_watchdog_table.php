@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateWatchdogsTable extends Migration {
+class CreateWatchdogTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,7 +12,7 @@ class CreateWatchdogsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('watchdogs',function($table){
+		Schema::create('watchdog',function($table){
 			$table->increments('id');
       $table->integer('user_id')->unsigned()->nullable();
       // $table->foreign('user_id')->references('id')->on('users');
@@ -28,7 +28,7 @@ class CreateWatchdogsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('watchdogs');
+		Schema::dropIfExists('watchdog');
 	}
 
 }
