@@ -52,13 +52,13 @@ define([
 			if(verifyDelete) {
 				this.model.destroy({
 					success: function (model, response, options) {
-						console.log('success: UserModel.destroy');
-						console.log(response);
-						Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
+						//console.log('success: UserModel.destroy');
+						//console.log(response);
+						Global.getGlobalVars().app_router.navigate(Const.URL.ROLE, {trigger: true});
 					},
 					error: function (model, response, options) {
-						console.log('error: UserModel.destroy');
-						console.log(response);
+						//console.log('error: UserModel.destroy');
+						//console.log(response);
 					},
 					wait: true,
 				});
