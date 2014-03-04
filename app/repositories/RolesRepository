@@ -1,13 +1,56 @@
 <?php
  
 class RolesRepository implements RolesRepositoryInterface {
-  
-  public function validate($data)
-  {
-    $validator = Validator::make($data, Roles::$rules);
-    if($validator->fails()) throw new ValidationException($validator);
-    return true;
+
+  public function findById($id){
+
   }
+
+  public function findAll(){
+
+  }
+
+  public function paginate($perPage, $offset, $sortby, $orderby){
+
+  }
+
+  public function store($data){
+    $rules = array(
+      'name' => 'required|between:5,20|unique:roles',
+      'description' => 'required'
+    );
+
+    $this->validate($data, $rules);
+
+    $role = new Roles;
+    $role->name = $data['name'];
+    $role->description = $data['position'];
+
+    $role->save();
+
+    return Response::json(array(
+        'error' => false,
+        'user' => $role->toArray()),
+        200
+    );
+  }
+
+  public function update($id, $data){
+
+  }
+
+  public function destroy($id){
+
+  }
+  
+  public function validate($data, $rules){
+    $validator = Validator::make($data, $rules);
+
+    if($validator->fails()) { 
+      throw new ValidationException($validator); 
+    }
+  }
+
 
   public function instance($data = array())
   {

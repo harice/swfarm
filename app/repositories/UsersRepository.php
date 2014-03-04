@@ -2,26 +2,6 @@
  
 class UsersRepository implements UsersRepositoryInterface {
 
-  /**
-   * Validation Rules
-   * this is just a place for us to store these, you could
-   * alternatively place them in your repository
-   * @var array
-   */
-  /*public static $rules = array(
-    'username' => 'required|unique:users',
-    'password' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|between:8,15|confirmed',
-    'password_confirmation' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|between:8,15',
-    'email' => 'required|email|unique:users',
-    'firstname' => 'required|between:2,50',
-    'lastname' => 'required|between:2,50',
-    'emp_no' => 'required|unique:users',
-    'suffix' => 'between:2,6',
-    'phone' => 'between:6,13',
-    'mobile' => 'between:9,13',
-    'position' => 'between:2,50'
-  );*/
-
   public function findById($id){
   	$user = User::find($id);
 
@@ -48,14 +28,35 @@ class UsersRepository implements UsersRepositoryInterface {
 
 
   public function paginate($perPage, $offset, $sortby, $orderby){
-    //return User::paginate($limit);
-    $count = User::where('id', '!=', 1)->count();
-    $usersList = User::where('id', '!=', 1)->take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
-    return Response::json(array(
-      'data'=>$usersList->toArray(),
-      'total'=>$count
-    ));
+    $errorMsg = null;
+    $sortby = strtolower($sortby);
+    $orderby = strtolower($orderby);
+    //check if input pass are valid
+    if(!($sortby == 'firstname' || $sortby == 'lastname' || $sortby == 'email')){
+      $errorMsg = 'Sort by category not found.';
+    } else if(!($orderby == 'asc' || $orderby == 'desc')){
+      $errorMsg = 'Order by category not found(ASC or DESC expected).';
+    } else {
+      //pulling of data
+      $count = User::where('id', '!=', 1)->count();
+      $usersList = User::where('id', '!=', 1)->take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
 
+      $response = Response::json(array(
+        'data'=>$usersList->toArray(),
+        'total'=>$count
+      ));
+    }
+
+    if($errorMsg){
+      $response = Response::json(array(
+        'error' => true,
+        'message' => $errorMsg),
+        200
+      );
+    }
+
+    return $response;
+    
   }
 
   public function store($data){
