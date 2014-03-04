@@ -10,7 +10,7 @@ define([
             name: '',
             description: '',
         },
-		/*runFetch: function () {
+		runFetch: function () {
 			this.fetch({
 				success: function(model, response, options) {
 					//console.log('success: UserModel.fetch()');
@@ -23,7 +23,7 @@ define([
 					//console.log('error: UserModel.fetch()');
 				},
 			});
-		},*/
+		},
 	});
 
 	return RoleModel;

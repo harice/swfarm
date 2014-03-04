@@ -32,7 +32,6 @@ define([
 				user:userModel,
 				user_url:'#/'+Const.URL.USER,
 				user_edit_url:'#/'+Const.URL.USER+'/'+Const.CRUD.EDIT,
-				user_delete_url:'',
 			}
 			var innerTemplate = _.template(userViewTemplate, innerTemplateVariables);
 			
@@ -53,12 +52,12 @@ define([
 			if(verifyDelete) {
 				this.model.destroy({
 					success: function (model, response, options) {
-						console.log('success: UserModel.destroy');
-						console.log(response);
+						//console.log('success: UserModel.destroy');
+						//console.log(response);
 						Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
 					},
 					error: function (model, response, options) {
-						console.log('error: UserModel.destroy');
+						//console.log('error: UserModel.destroy');
 						console.log(response);
 					},
 					wait: true,
