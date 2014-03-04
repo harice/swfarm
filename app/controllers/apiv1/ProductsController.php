@@ -9,9 +9,9 @@ use Input;
 
 class ProductsController extends BaseController {
 
-//	public function __construct(ProductsRepositoryInterface $products){
-//		$this->products = $products;
-//	}
+	public function __construct(ProductsRepositoryInterface $products){
+		$this->products = $products;
+	}
 
 	/**
 	 * Display a listing of the resource.
@@ -20,8 +20,7 @@ class ProductsController extends BaseController {
 	 */
 	public function index()
 	{	
-		// return $this->products->findAll();
-    return 1;
+		return $this->products->findAll();
     
 		// return Response::json(array(
 		// 	'error' => false,
