@@ -3,15 +3,11 @@
 namespace APIv1;
 
 use BaseController;
-use ProductsRepositoryInterface;
+use UsersRepositoryInterface;
 use View;
 use Input;
 
-class ProductsController extends BaseController {
-
-//	public function __construct(ProductsRepositoryInterface $products){
-//		$this->products = $products;
-//	}
+class DblogController extends BaseController {
 
 	/**
 	 * Display a listing of the resource.
@@ -19,15 +15,18 @@ class ProductsController extends BaseController {
 	 * @return Response
 	 */
 	public function index()
-	{	
-		// return $this->products->findAll();
-    return 1;
-    
-		// return Response::json(array(
-		// 	'error' => false,
-		// 	'users' => $this->products->findAll())
-		// );
-    //return View::make('users.index');
+	{
+		return 1;
+	}
+
+	/**
+	 * Show the form for creating a new resource.
+	 *
+	 * @return Response
+	 */
+	public function create()
+	{
+		//
 	}
 
 	/**
@@ -37,7 +36,7 @@ class ProductsController extends BaseController {
 	 */
 	public function store()
 	{
-		return $this->products->store( Input::all() );
+		//
 	}
 
 	/**
@@ -48,7 +47,7 @@ class ProductsController extends BaseController {
 	 */
 	public function show($id)
 	{
-        return $this->products->findById($id);
+		//
 	}
 
 	/**
@@ -59,7 +58,7 @@ class ProductsController extends BaseController {
 	 */
 	public function edit($id)
 	{
-        return View::make('products.edit');
+		//
 	}
 
 	/**
@@ -70,7 +69,7 @@ class ProductsController extends BaseController {
 	 */
 	public function update($id)
 	{
-		return $this->products->update($id, Input::all());
+		//
 	}
 
 	/**
@@ -81,11 +80,7 @@ class ProductsController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		return $this->products->destroy($id);
-	}
-
-	public function paginate($perPage = 2, $offest = 0){
-		return $this->products->paginate($perPage, $offest);
+		//
 	}
 
 }
