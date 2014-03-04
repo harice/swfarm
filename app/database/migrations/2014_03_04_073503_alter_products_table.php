@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddBlameableToUsers extends Migration {
+class AlterProductsTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,7 +12,7 @@ class AddBlameableToUsers extends Migration {
 	 */
 	public function up()
 	{
-		Schema::table('users',function($table){
+		Schema::table('products',function($table){
       $table->integer('created_by_id')->unsigned();
       $table->integer('updated_by_id')->unsigned();
       $table->integer('deleted_by_id')->unsigned()->nullable();

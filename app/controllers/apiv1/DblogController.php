@@ -3,11 +3,16 @@
 namespace APIv1;
 
 use BaseController;
-use UsersRepositoryInterface;
+use WatchdogRepositoryInterface;
 use View;
 use Input;
 
 class DblogController extends BaseController {
+  
+  public function __construct(WatchdogRepositoryInterface $watchdog)
+	{
+		$this->watchdog = $watchdog;
+	}
 
 	/**
 	 * Display a listing of the resource.
@@ -16,7 +21,8 @@ class DblogController extends BaseController {
 	 */
 	public function index()
 	{
-		return 1;
+    return $this->watchdog->findAll();
+		// return 1;
 	}
 
 	/**
