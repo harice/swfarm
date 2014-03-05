@@ -5,11 +5,6 @@ use Illuminate\Auth\Reminders\RemindableInterface;
 
 class User extends Eloquent implements UserInterface, RemindableInterface {
   
-  use Culpa\CreatedBy;
-  use Culpa\DeletedBy;
-  use Culpa\UpdatedBy;
-  
-  protected $blameable = array('created', 'updated', 'deleted');
   protected $softDelete = true;
   
 	/**
@@ -57,5 +52,3 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 }
-
-User::observe(new Culpa\BlameableObserver);

@@ -4,11 +4,6 @@ use Venturecraft\Revisionable\Revisionable;
 
 class Product extends Revisionable {
   
-  use Culpa\CreatedBy;
-  use Culpa\DeletedBy;
-  use Culpa\UpdatedBy;
-  
-  protected $blameable = array('created', 'updated', 'deleted');
   protected $softDelete = true;
   
 	/**
@@ -19,5 +14,3 @@ class Product extends Revisionable {
 	protected $table = 'products';
 
 }
-
-Product::observe(new Culpa\BlameableObserver);
