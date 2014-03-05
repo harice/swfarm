@@ -6,17 +6,18 @@ class UsersRepository implements UsersRepositoryInterface {
   	$user = User::find($id);
     
     if($user){
+      $user['roles'] = null;
       $userRoles = $user->userRoles()->with('roles')->get();
 
-      if($userRoles){
+      if($userRoles->count() > 0){
         $roles = array();
         $userRoles = $userRoles->toArray();
         foreach($userRoles as $role){
           array_push($roles, $role['roles'][0]);
         }
+        $user['roles'] = $roles;
       }
-
-      $user['roles'] = $roles;
+      
       $response = Response::json(
         $user,
         200
@@ -156,6 +157,26 @@ class UsersRepository implements UsersRepositoryInterface {
       $user->position = $data['position'];
 
       $user->save();
+
+      //saving user roles posted by client
+      if(isset($data['roles'])){
+        //client must pass value in comma separated format
+        $rolesIds = explode(',', $data['roles']); 
+
+        //deleting role that is uncheck in client side
+        UserRoles::where('user', '=', $id)->whereNotIn('role', $rolesIds)->delete(); 
+        
+        foreach($rolesIds as $role){
+            if(UserRoles::where('user', '=', $id)->where('role', '=', $role)->count() > 0){
+              continue; //skip if role already exist
+            }   
+            $userRole = new UserRoles;
+            $userRole->user = $user->id;
+            $userRole->role = $role;
+
+            $userRole->save();
+        }
+      }
 
       $response = Response::json(array(
           'error' => false,
