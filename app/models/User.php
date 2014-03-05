@@ -4,8 +4,7 @@ use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableInterface;
 
 class User extends Eloquent implements UserInterface, RemindableInterface {
-  
-  protected $blameable = array('created', 'updated', 'deleted');
+
   protected $softDelete = true;
 
   	
@@ -58,4 +57,6 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->email;
 	}
 
+
 }
+
