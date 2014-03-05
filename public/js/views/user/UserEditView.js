@@ -83,7 +83,7 @@ define([
 			var checkboxes = '';
 			_.each(roleCollection.models, function (role) {
 				
-				var roleId = role.get('id'); console.log('roleId: '+roleId)
+				var roleId = role.get('id');
 				var checked = '';
 				
 				for(var key in userRoles) {
