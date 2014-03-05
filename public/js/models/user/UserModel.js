@@ -12,6 +12,7 @@ define([
 			email:'',
             emp_no: '',
 			username:'',
+			roles:'',
         },
 		runFetch: function () {
 			this.fetch({

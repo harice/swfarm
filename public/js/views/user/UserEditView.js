@@ -58,6 +58,10 @@ define([
 			var validate = $('#addUserForm').validate({
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
+					
+					if(typeof data.roles != 'undefined')
+						data.roles = data.roles.join(',');
+					
 					var userModel = new UserModel(data);
 					userModel.save(null, {success: function (model, response, options) {
 						//console.log('success: add user');
