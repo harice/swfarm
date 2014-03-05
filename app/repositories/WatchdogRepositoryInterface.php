@@ -1,8 +1,8 @@
 <?php
  
-interface ProductsRepositoryInterface {
+interface WatchdogRepositoryInterface {
 	public function findById($id);
-	public function findAll();
+	public function paginate($perPage, $offset);
 	public function store($data);
 	public function update($id, $data);
 	public function destroy($id);

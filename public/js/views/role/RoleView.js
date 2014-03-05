@@ -1,11 +1,11 @@
 define([
 	'backbone',
 	'text!templates/layout/contentTemplate.html',
-	'text!templates/user/userViewTemplate.html',
-	'models/user/UserModel',
+	'text!templates/role/roleViewTemplate.html',
+	'models/role/RoleModel',
 	'global',
 	'constant',
-], function(Backbone, contentTemplate, userViewTemplate, UserModel, Global, Const){
+], function(Backbone, contentTemplate, roleViewTemplate, RoleModel, Global, Const){
 
 	var UserView = Backbone.View.extend({
 		el: $("#content"),
@@ -13,11 +13,11 @@ define([
 		initialize: function(option) {
 			var thisObj = this;
 			
-			this.model = new UserModel({id:option.id});
+			this.model = new RoleModel({id:option.id});
 			this.model.on("change", function() {
-				console.log('onChange: UserModel');
-				if(this.hasChanged('firstname') && this.hasChanged('lastname') && this.hasChanged('email') && this.hasChanged('username')) {
-					thisObj.displayUser(this);
+				console.log('onChange: RoleModel');
+				if(this.hasChanged('name')) {
+					thisObj.displayRole(this);
 					this.off("change");
 				}
 			});
@@ -27,16 +27,16 @@ define([
 			this.model.runFetch();
 		},
 		
-		displayUser: function (userModel) {
+		displayRole: function (roleModel) {
 			var innerTemplateVariables = {
-				user:userModel,
-				user_url:'#/'+Const.URL.USER,
-				user_edit_url:'#/'+Const.URL.USER+'/'+Const.CRUD.EDIT,
+				role:roleModel,
+				role_url:'#/'+Const.URL.ROLE,
+				role_edit_url:'#/'+Const.URL.ROLE+'/'+Const.CRUD.EDIT,
 			}
-			var innerTemplate = _.template(userViewTemplate, innerTemplateVariables);
+			var innerTemplate = _.template(roleViewTemplate, innerTemplateVariables);
 			
 			var variables = {
-				h1_title: userModel.get('lastname')+', '+userModel.get('firstname')+' '+userModel.get('suffix'),
+				h1_title: roleModel.get('name'),
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
@@ -44,21 +44,21 @@ define([
 		},
 		
 		events: {
-			'click #delete' : 'removeUser',
+			'click #delete' : 'removeRole',
 		},
 		
-		removeUser: function (){
-			var verifyDelete = confirm('Delete User?');
+		removeRole: function (){
+			var verifyDelete = confirm('Delete Role?');
 			if(verifyDelete) {
 				this.model.destroy({
 					success: function (model, response, options) {
 						//console.log('success: UserModel.destroy');
 						//console.log(response);
-						Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
+						Global.getGlobalVars().app_router.navigate(Const.URL.ROLE, {trigger: true});
 					},
 					error: function (model, response, options) {
 						//console.log('error: UserModel.destroy');
-						console.log(response);
+						//console.log(response);
 					},
 					wait: true,
 				});

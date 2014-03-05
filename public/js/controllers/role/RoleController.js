@@ -2,8 +2,10 @@ define([
 	'backbone',
 	'views/role/RoleListView',
 	'views/role/RoleAddView',
+	'views/role/RoleEditView',
+	'views/role/RoleView',
 	'constant',
-], function(Backbone, RoleListView, RoleAddView, Const){
+], function(Backbone, RoleListView, RoleAddView, RoleEditView, RoleView, Const){
 	
 	function RoleController () {	
 		
@@ -31,7 +33,7 @@ define([
 		};
 		
 		this.edit = function (id) {
-			//return new UserEditView({'id':id});
+			return new RoleEditView({'id':id});
 		};
 		
 		this.listView = function () {
@@ -39,7 +41,7 @@ define([
 		};
 		
 		this.view = function (id) {
-			//return new UserView({'id':id});
+			return new RoleView({'id':id});
 		};
 		
 		this.IsInt = function (i) {
