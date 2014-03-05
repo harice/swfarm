@@ -162,19 +162,22 @@ class UsersRepository implements UsersRepositoryInterface {
       if(isset($data['roles'])){
         //client must pass value in comma separated format
         $rolesIds = explode(',', $data['roles']); 
-
         //deleting role that is uncheck in client side
-        UserRoles::where('user', '=', $id)->whereNotIn('role', $rolesIds)->delete(); 
-        
-        foreach($rolesIds as $role){
-            if(UserRoles::where('user', '=', $id)->where('role', '=', $role)->count() > 0){
-              continue; //skip if role already exist
-            }   
-            $userRole = new UserRoles;
-            $userRole->user = $user->id;
-            $userRole->role = $role;
+        if($data['roles'] == '' || $data['roles'] == null){
+          UserRoles::where('user', '=', $id)->delete(); //deleting all roles if client send empty role value
+        } else {
+          UserRoles::where('user', '=', $id)->whereNotIn('role', $rolesIds)->delete(); 
 
-            $userRole->save();
+          foreach($rolesIds as $role){
+              if(UserRoles::where('user', '=', $id)->where('role', '=', $role)->count() > 0){
+                continue; //skip if role already exist
+              }   
+              $userRole = new UserRoles;
+              $userRole->user = $user->id;
+              $userRole->role = $role;
+
+              $userRole->save();
+          }
         }
       }
 
@@ -226,6 +229,8 @@ class UsersRepository implements UsersRepositoryInterface {
     }
   }
 
-  public function instance(){}
+  public function instance($data = array()){
+    return new User($data);
+  }
 
 }
