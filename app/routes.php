@@ -14,8 +14,11 @@
 /* API ROUTES */
 Route::group(array('prefix' => 'apiv1'), function()
 {
-	Route::resource('users', 'APIv1\UsersController');	
+	Route::resource('users', 'APIv1\UsersController');
+		
+	Route::get('roles/all', 'APIv1\RolesController@all');
 	Route::resource('roles', 'APIv1\RolesController');
+
     Route::resource('products', 'APIv1\ProductsController');
     Route::resource('dblog', 'APIv1\DblogController');
 });

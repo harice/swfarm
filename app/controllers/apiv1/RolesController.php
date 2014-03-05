@@ -15,6 +15,10 @@ class RolesController extends BaseController {
 		$this->roles = $roles;
 	}
 
+	public function all(){
+		return $this->roles->findAll();
+	}
+
 	/**
 	 * Display a listing of the resource.
 	 *

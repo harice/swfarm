@@ -1,6 +1,7 @@
 <?php
  
 interface RolesRepositoryInterface {
+	public function findAll();
 	public function findById($id);
 	public function paginate($perPage, $offset);
 	public function store($data);

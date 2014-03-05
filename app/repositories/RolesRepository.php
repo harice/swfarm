@@ -2,6 +2,15 @@
  
 class RolesRepository implements RolesRepositoryInterface {
 
+  public function findAll(){
+    $rolesList = Roles::orderby('name', 'ASC')->get();
+
+    return Response::json(
+        $rolesList->toArray(),
+        200
+      );
+  }
+
   public function findById($id){
     $role = Roles::find($id);
 
