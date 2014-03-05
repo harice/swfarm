@@ -4,13 +4,10 @@ use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableInterface;
 
 class User extends Eloquent implements UserInterface, RemindableInterface {
-  
-  use Culpa\CreatedBy;
-  use Culpa\DeletedBy;
-  use Culpa\UpdatedBy;
-  
-  protected $blameable = array('created', 'updated', 'deleted');
+
   protected $softDelete = true;
+
+  	
   
 	/**
 	 * The database table used by the model.
@@ -25,6 +22,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 * @var array
 	 */
 	protected $hidden = array('password');
+
+	public function userRoles(){
+  		return $this->belongsTo('UserRoles', 'id', 'user');
+  	}
 
 	/**
 	 * Get the unique identifier for the user.
@@ -56,6 +57,6 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->email;
 	}
 
+
 }
 
-User::observe(new Culpa\BlameableObserver);

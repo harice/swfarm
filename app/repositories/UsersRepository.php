@@ -4,10 +4,21 @@ class UsersRepository implements UsersRepositoryInterface {
 
   public function findById($id){
   	$user = User::find($id);
-
+    
     if($user){
+      $userRoles = $user->userRoles()->with('roles')->get();
+
+      if($userRoles){
+        $roles = array();
+        $userRoles = $userRoles->toArray();
+        foreach($userRoles as $role){
+          array_push($roles, $role['roles'][0]);
+        }
+      }
+
+      $user['roles'] = $roles;
       $response = Response::json(
-        $user->toArray(),
+        $user,
         200
       );
     } else {
@@ -60,6 +71,7 @@ class UsersRepository implements UsersRepositoryInterface {
   }
 
   public function store($data){
+
     $rules = array(
       'username' => 'required|unique:users',
       //'password' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|between:8,15|confirmed',
@@ -89,7 +101,20 @@ class UsersRepository implements UsersRepositoryInterface {
   	$user->phone = $data['phone'];
   	$user->position = $data['position'];
 
-  	$user->save();
+    $user->save();
+
+    //saving user roles posted by client
+    if(isset($data['roles'])){
+      $rolesId = explode(',', $data['roles']);
+      foreach($rolesId as $role){   
+          $userRole = new UserRoles;
+          $userRole->user = $user->id;
+          $userRole->role = $role;
+
+          $userRole->save();
+      }
+
+    }
 
   	return Response::json(array(
   	    'error' => false,

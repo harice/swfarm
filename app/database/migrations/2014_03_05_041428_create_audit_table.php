@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProductsTable extends Migration {
+class CreateAuditTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,12 +12,12 @@ class CreateProductsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('products',function($table){
+		Schema::create('audit',function($table){
 			$table->increments('id');
-			$table->string('title')->unique();
-			$table->string('body');
-			$table->timestamps();
-			$table->softDeletes();
+      $table->string('type');
+      $table->string('event');
+			$table->string('value');
+      $table->timestamps();
 		});
 	}
 
@@ -28,7 +28,7 @@ class CreateProductsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('products');
+		Schema::dropIfExists('audit');
 	}
 
 }
