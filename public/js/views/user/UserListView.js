@@ -101,7 +101,7 @@ define([
 		
 		gotoPage: function (ev) {
 			var page = $(ev.target).attr('data-pagenum');
-			if(this.collection.currentPage != page) {
+			if(this.collection.options.currentPage != page) {
 				this.collection.options.currentPage = page;
 				this.collection.getModelsPerPage(page , Const.MAXITEMPERPAGE, this.displayList);
 			}

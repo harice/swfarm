@@ -42,7 +42,10 @@ define([
 						});
 						
 						thisObj.options.maxItem = data.total;
-						callback(thisObj);
+						
+						var getType = {};
+						if(callback && getType.toString.call(callback) === '[object Function]')
+							callback(thisObj);
 					}
 					else
 						alert(jqXHR.statusText);

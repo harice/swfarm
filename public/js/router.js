@@ -5,9 +5,10 @@ define([
 	'views/admin/AdminView',
 	'controllers/user/UserController',
 	'controllers/role/RoleController',
+	'controllers/permission/PermissionController',
 	'global',
 	'constant',
-], function(Backbone, HeaderView, AdminView, UserController, RoleController, Global, Const) {
+], function(Backbone, HeaderView, AdminView, UserController, RoleController, PermissionController, Global, Const) {
 	
 	var routerRoutes = {};
 	
@@ -26,6 +27,11 @@ define([
 	routerRoutes[Const.URL.ROLE+'/'] = 'showRolePage';
 	routerRoutes[Const.URL.ROLE+'/:action'] = 'showRolePage';
 	routerRoutes[Const.URL.ROLE+'/:action/:id'] = 'showRolePage';
+	
+	//permission
+	routerRoutes[Const.URL.PERMISSION] = 'showPermissionPage';
+	routerRoutes[Const.URL.PERMISSION+'/'] = 'showPermissionPage';
+	routerRoutes[Const.URL.PERMISSION+'/:id'] = 'showPermissionPage';
 	
 	routerRoutes['*actions'] = 'defaultAction';
 	
@@ -60,6 +66,13 @@ define([
 			this.closeView();
 			var roleController = new RoleController();
 			this.currView = roleController.setAction(action, id);
+			this.currView.render();
+		});
+		
+		app_router.on('route:showPermissionPage', function (id) {
+			this.closeView();
+			var permissionController = new PermissionController();
+			this.currView = permissionController.setAction(id);
 			this.currView.render();
 		});
 		
