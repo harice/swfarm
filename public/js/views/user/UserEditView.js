@@ -4,9 +4,10 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/user/userAddTemplate.html',
 	'models/user/UserModel',
+	'collections/role/RoleCollection',
 	'global',
 	'constant',
-], function(Backbone, Validate, contentTemplate, userAddTemplate, UserModel, Global, Const){
+], function(Backbone, Validate, contentTemplate, userAddTemplate, UserModel, RoleCollection, Global, Const){
 
 	var UserEditView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -22,6 +23,8 @@ define([
 					this.off("change");
 				}
 			});
+			
+			this.collection = new RoleCollection();
 		},
 		
 		render: function(){
@@ -68,6 +71,29 @@ define([
 					}});
 				}
 			});
+			
+			this.collection.getAllModels(this.displayRoles, userModel.get('roles'));
+		},
+		
+		displayRoles: function (roleCollection, userRoles){
+			var checkboxes = '';
+			_.each(roleCollection.models, function (role) {
+				
+				var roleId = role.get('id'); console.log('roleId: '+roleId)
+				var checked = '';
+				
+				for(var key in userRoles) {
+					if(typeof userRoles[key] !== 'function' && userRoles[key].id == roleId) {
+						checked = ' checked';
+						break;
+					}
+				}
+				
+				checkboxes += '<div class="checkbox"><label><input type="checkbox" name="roles" value="'+roleId+'"'+checked+'>'+role.get('name')+'</label></div>';
+			});
+			
+			$('.user-role-container').html(checkboxes);
+			$('.form-button-container').show();
 		},
 	});
 

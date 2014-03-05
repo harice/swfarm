@@ -13,9 +13,9 @@ define([
 			
 		},
 		
-		getAllModels: function (callback) {
+		getAllModels: function (callback, args) {
 			this.setDefaultURL();
-			this.getModels(callback);
+			this.getModels(callback, args);
 		},
 		
 		getModelsPerPage: function(page, numPerPage, callback) {
@@ -24,7 +24,7 @@ define([
 			this.getModels(callback);
 		},
 		
-		getModels: function (callback) {
+		getModels: function (callback, args) {
 			var thisObj = this;
 		
 			this.sync('read', this, {
@@ -46,7 +46,7 @@ define([
 						
 						var getType = {};
 						if(callback && getType.toString.call(callback) === '[object Function]')
-							callback(thisObj);
+							callback(thisObj, args);
 					}
 					else
 						alert(jqXHR.statusText);
