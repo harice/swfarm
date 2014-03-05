@@ -25,9 +25,16 @@
 			&nbsp;
 		<% } %>
 	</dd>
+	<dt>Roles</dt>
+	<dd>
+		<% _.each(user.get("roles"), function(role){ %>
+			<%= role.name %><br />
+		<% }); %>
+	</dd>
 	<dt></dt>
 	<dd>
 		<div class="clearfix"></div>
+		<br />
 		<a href="<%= user_url %>" class="btn btn-default">Back</a> 
 		<a href="<%= user_edit_url %>/<%= user.get("id") %>" class="btn btn-default">Edit</a>
 		<button id="delete" type="button" class="btn btn-default" value="Delete">Delete</button>

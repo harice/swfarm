@@ -36,6 +36,7 @@ define([
 			var data = {
 				role_url: '#/'+Const.URL.ROLE,
 				role_edit_url: '#/'+Const.URL.ROLE+'/'+Const.CRUD.EDIT,
+				permission_edit_url: '#/'+Const.URL.PERMISSION,
 				roles: roleCollection.models,
 				_: _ 
 			};
@@ -93,7 +94,7 @@ define([
 		
 		gotoPage: function (ev) {
 			var page = $(ev.target).attr('data-pagenum');
-			if(this.collection.currentPage != page) {
+			if(this.collection.options.currentPage != page) {
 				this.collection.options.currentPage = page;
 				this.collection.getModelsPerPage(page , Const.MAXITEMPERPAGE, this.displayList);
 			}

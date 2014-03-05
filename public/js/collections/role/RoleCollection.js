@@ -13,13 +13,20 @@ define([
 			
 		},
 		
+		getAllModels: function (callback, args) {
+			this.setDefaultURL();
+			this.getModels(callback, args);
+		},
+		
 		getModelsPerPage: function(page, numPerPage, callback) {
 			//console.log('getModelsPerPage');
-			
-			var thisObj = this;
-			
 			this.setPaginationURL(page, numPerPage);
-			
+			this.getModels(callback);
+		},
+		
+		getModels: function (callback, args) {
+			var thisObj = this;
+		
 			this.sync('read', this, {
 				success: function (data, textStatus, jqXHR) {
 					//console.log('success: getModelsPerPage');
@@ -36,7 +43,10 @@ define([
 						});
 						
 						thisObj.options.maxItem = data.total;
-						callback(thisObj);
+						
+						var getType = {};
+						if(callback && getType.toString.call(callback) === '[object Function]')
+							callback(thisObj, args);
 					}
 					else
 						alert(jqXHR.statusText);

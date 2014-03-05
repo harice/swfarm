@@ -4,6 +4,7 @@ define(function () {
 			'ADMIN': 'administration',
 			'USER': 'administration/user',
 			'ROLE': 'administration/role',
+			'PERMISSION': 'administration/permission',
 		},
 		'CRUD': {
 			'ADD': 'add',

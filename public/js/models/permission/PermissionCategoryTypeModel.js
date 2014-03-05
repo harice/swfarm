@@ -4,15 +4,11 @@ define([
 	'constant',
 ], function(Backbone, Global, Const) {
 
-	var UserModel = Backbone.Model.extend({
-		urlRoot: '/apiv1/users',
+	var PermissionCategoryTypeModel = Backbone.Model.extend({
+		urlRoot: '',
 		defaults: {
-            firstname: '',
-            lastname: '',
-			email:'',
-            emp_no: '',
-			username:'',
-			roles:'',
+            permissioncategory: '',
+            permissiontype: '',
         },
 		runFetch: function () {
 			this.fetch({
@@ -20,7 +16,7 @@ define([
 					//console.log('success: UserModel.fetch()');
 					if(typeof response.error != 'undefined') {
 						alert(response.message);
-						Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
+						//Global.getGlobalVars().app_router.navigate(Const.URL.ADMIN, {trigger: true});
 					}
 					/*else {
 						console.log(model);
@@ -33,6 +29,6 @@ define([
 		},
 	});
 
-	return UserModel;
+	return PermissionCategoryTypeModel;
 
 });

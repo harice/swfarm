@@ -17,6 +17,7 @@ define([
 			var innerTemplateVariables = {
 				'user_url': '#/'+Const.URL.USER,
 				'role_url': '#/'+Const.URL.ROLE,
+				'permission_url': '#/'+Const.URL.PERMISSION,
 			};
 			var innerTemplate = _.template(adminTemplate, innerTemplateVariables);
 			
