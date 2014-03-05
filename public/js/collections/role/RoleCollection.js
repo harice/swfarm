@@ -14,8 +14,19 @@ define([
 		},
 		
 		getAllModels: function (callback, args) {
-			this.setDefaultURL();
-			this.getModels(callback, args);
+			var thisObj = this;
+			this.setGetAllURL();
+			this.fetch({
+				success: function (collection, response, options) {
+					callback(thisObj, args);
+				},
+				error: function (collection, response, options) {
+					if(typeof response.responseJSON.error == 'undefined')
+						alert(response.responseJSON);
+					else
+						alert(response.responseText);
+				},
+			})
 		},
 		
 		getModelsPerPage: function(page, numPerPage, callback) {
@@ -55,6 +66,10 @@ define([
 					alert(jqXHR.statusText);
 				},
 			});
+		},
+		
+		setGetAllURL: function () {
+			this.url = '/apiv1/roles/all';
 		},
 		
 		setDefaultURL: function () {

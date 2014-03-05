@@ -59,7 +59,7 @@ define([
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
 					
-					if(typeof data.roles != 'undefined')
+					if(typeof data.roles != 'undefined' && typeof data.roles != 'string')
 						data.roles = data.roles.join(',');
 					
 					var userModel = new UserModel(data);
