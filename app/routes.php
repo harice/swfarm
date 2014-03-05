@@ -18,9 +18,7 @@ Route::group(array('prefix' => 'apiv1'), function()
 		
 	Route::get('roles/all', 'APIv1\RolesController@all');
 	Route::resource('roles', 'APIv1\RolesController');
-
-    Route::resource('products', 'APIv1\ProductsController');
-    Route::resource('dblog', 'APIv1\DblogController');
+  Route::resource('audit', 'APIv1\AuditController');
 });
 
 
