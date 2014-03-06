@@ -21,7 +21,7 @@ class AuditRepository implements AuditRepositoryInterface {
     return $response;
   }
   
-  public function paginate($perPage, $offset, $sortby, $orderby){
+  public function paginate($perPage, $offset, $sortby, $orderby, $type, $data_id){
     $errorMsg = null;
     $sortby = strtolower($sortby);
     $orderby = strtolower($orderby);
@@ -32,8 +32,13 @@ class AuditRepository implements AuditRepositoryInterface {
       $errorMsg = 'Order by category not found(ASC or DESC expected).';
     } else {
       //pulling of data
-      $count = Audit::count();
-      $auditList = Audit::take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
+      if($type && $data_id) {
+        $count = Audit::where('type', $type)->where('data_id', $data_id)->count();
+        $auditList = Audit::where('type', $type)->where('data_id', $data_id)->take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
+      } else {
+        $count = Audit::count();
+        $auditList = Audit::take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
+      }
       $auditList = $auditList->toArray();
       
       for ($i=0; $i<count($auditList); $i++) {
