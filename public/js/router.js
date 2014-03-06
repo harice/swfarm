@@ -34,7 +34,7 @@ define([
 	routerRoutes[Const.URL.PERMISSION+'/:id'] = 'showPermissionPage';
 	
 	routerRoutes['*actions'] = 'defaultAction';
-	
+
 	var AppRouter = Backbone.Router.extend({
 		routes:routerRoutes,
 		currView:null,
