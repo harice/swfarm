@@ -9,6 +9,7 @@ define([
 		defaults: {
             name: '',
             description: '',
+			permission: '',
         },
 		runFetch: function () {
 			this.fetch({
@@ -16,13 +17,18 @@ define([
 					//console.log('success: UserModel.fetch()');
 					if(typeof response.error != 'undefined') {
 						alert(response.message);
-						Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
+						Global.getGlobalVars().app_router.navigate(Const.URL.ROLE, {trigger: true});
 					}
 				},
 				error: function(model, response, options) {
 					//console.log('error: UserModel.fetch()');
 				},
 			});
+		},
+		getPermission: function (id) {
+			this.clear('silent');
+			urlRoot: '/apiv1/permission/'+id;
+			this.runFetch();
 		},
 	});
 

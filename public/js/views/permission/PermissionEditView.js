@@ -1,17 +1,22 @@
 define([
 	'backbone',
+	'models/role/RoleModel',
 	'collections/permission/PermissionCategoryTypeCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/permission/permissionListTemplate.html',
 	'constant',
-], function(Backbone, PermissionCategoryTypeCollection, contentTemplate, permissionListTemplate, Const){
+], function(Backbone, RoleModel, PermissionCategoryTypeCollection, contentTemplate, permissionListTemplate, Const){
 
 	var PermissionListView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
+		options: {
+			id: null,
+		},
+		initialize: function(options) {
+			this.options.id = options.id;
 		
-		initialize: function() {
 			this.collection = new PermissionCategoryTypeCollection();
-			this.module
+			this.model = new RoleModel();
 		},
 		
 		render: function(){
@@ -19,6 +24,7 @@ define([
 		
 			this.displayPermission();
 			this.collection.getAllModels(this.displayPermissionCategoryType, thisObj);
+			this.model.getPermission(this.options.id);
 		},
 		
 		displayPermission: function () {
