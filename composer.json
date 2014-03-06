@@ -4,9 +4,7 @@
 	"keywords": ["framework", "laravel"],
 	"license": "MIT",
 	"require": {
-		"laravel/framework": "4.1.*",
-		"way/generators": "dev-master",
-		"twitter/bootstrap": "dev-master"
+		"laravel/framework": "4.1.*"
 	},
 	"autoload": {
 		"classmap": [
@@ -36,5 +34,5 @@
 	"config": {
 		"preferred-install": "dist"
 	},
-	"minimum-stability": "dev"
+	"minimum-stability": "stable"
 }

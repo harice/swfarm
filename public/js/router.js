@@ -42,7 +42,7 @@ define([
 	
 	
 	routerRoutes['*actions'] = 'defaultAction';
-	
+
 	var AppRouter = Backbone.Router.extend({
 		routes:routerRoutes,
 		currView:null,
