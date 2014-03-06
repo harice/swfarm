@@ -18,6 +18,7 @@ define([
 				'user_url': '#/'+Const.URL.USER,
 				'role_url': '#/'+Const.URL.ROLE,
 				'permission_url': '#/'+Const.URL.PERMISSION,
+				'audittrail_url': '#/'+Const.URL.AUDITTRAIL,
 			};
 			var innerTemplate = _.template(adminTemplate, innerTemplateVariables);
 			

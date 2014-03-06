@@ -7,7 +7,7 @@ define([
 		
 		this.setAction = function (table, id) {
 			
-			return false;
+			return new AuditTrailListView();
 		};
 	};
 

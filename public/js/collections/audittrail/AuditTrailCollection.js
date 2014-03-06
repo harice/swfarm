@@ -2,8 +2,8 @@ define([
 	'backbone',
 	'models/role/RoleModel',
 ], function(Backbone, RoleModel){
-	var UserCollection = Backbone.Collection.extend({
-		url: '/apiv1/roles',
+	var AuditTrailCollection = Backbone.Collection.extend({
+		url: '/apiv1/audit',
 		model: RoleModel,
 		options: {
 			currentPage: 1,
@@ -85,5 +85,5 @@ define([
 		},
 	});
 
-	return UserCollection;
+	return AuditTrailCollection;
 });
