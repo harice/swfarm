@@ -68,7 +68,7 @@ define([
 					$("#permission-list tbody").append('<tr><td colspan="2">'+i+'</td></tr>');
 					for(var ii=0; ii < permissions[i].length; ii++) {
 						var checked = (rolePermissions.indexOf(permissions[i][ii].id) != -1)? ' checked' : '';
-						var checkbox = '<input type="checkbox" name="permissions" value="'+permissions[i][ii].id+'"'+checked+'>';
+						var checkbox = '<input type="checkbox" name="permission" value="'+permissions[i][ii].id+'"'+checked+'>';
 						$("#permission-list tbody").append('<tr><td>'+permissions[i][ii].name+'</td><td>'+checkbox+'</td></tr>');
 					}
 				}
@@ -79,13 +79,11 @@ define([
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
 					
-					if(typeof data.permissions != 'undefined' && typeof data.permissions != 'string')
-						data.permissions = data.permissions.join(',');
+					if(typeof data.permission != 'undefined' && typeof data.permission != 'string')
+						data.permission = data.permission.join(',');
 					
-					console.log(data);
 					
 					var roleModel = new RoleModel(data);
-					console.log(roleModel);
 					roleModel.savePermissions();
 				}
 			});

@@ -33,9 +33,7 @@ define([
 		savePermissions: function () {
 			this.urlRoot = '/apiv1/permission',
 			this.save(null, {success: function (model, response, options) {
-				console.log('success: add user');
 			}, error: function (model, response, options) {
-				console.log('error: add user');
 				if(typeof response.responseJSON.error == 'undefined')
 					validate.showErrors(response.responseJSON);
 				else
