@@ -3,17 +3,18 @@
 namespace APIv1;
 
 use BaseController;
-use WatchdogRepositoryInterface;
+use AuditRepositoryInterface;
 use View;
 use Input;
+use Config;
 
-class DblogController extends BaseController {
-  
-  public function __construct(WatchdogRepositoryInterface $watchdog)
+class AuditController extends BaseController {
+
+  public function __construct(AuditRepositoryInterface $audit)
 	{
-		$this->watchdog = $watchdog;
+		$this->audit = $audit;
 	}
-
+  
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -21,8 +22,11 @@ class DblogController extends BaseController {
 	 */
 	public function index()
 	{
-    return $this->watchdog->findAll();
-		// return 1;
+    $perPage = Input::get('perpage', Config::get('constants.GLOBAL_PER_LIST')); //default to 10 items, see app/config/constants
+		$page = Input::get('page', '1'); //default to page 1
+		$offset = $page*$perPage-$perPage;
+		
+		return $this->audit->paginate($perPage, $offset);
 	}
 
 	/**
