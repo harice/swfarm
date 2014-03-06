@@ -19,10 +19,13 @@ Route::group(array('prefix' => 'apiv1'), function()
 	Route::get('roles/all', 'APIv1\RolesController@all');
 	Route::resource('roles', 'APIv1\RolesController');
 
+	Route::get('permission/getAllPermissionCategoryType', 'APIv1\PermissionController@getAllPermissionCategoryType');
+	Route::get('permission/getAllRoleWithPermission', 'APIv1\PermissionController@getAllRoleWithPermission');
+	Route::get('permission/getPermissionByRoleId', 'APIv1\PermissionController@getPermissionByRoleId');
 	Route::resource('permission', 'APIv1\PermissionController');
 
     Route::resource('products', 'APIv1\ProductsController');
-    
+
     Route::resource('dblog', 'APIv1\DblogController');
 
   	Route::resource('audit', 'APIv1\AuditController');

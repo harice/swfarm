@@ -21,7 +21,7 @@ class PermissionController extends BaseController {
 	 */
 	public function index()
 	{
-		return $this->permission->findAll();
+		
 	}
 
 	/**
@@ -41,7 +41,7 @@ class PermissionController extends BaseController {
 	 */
 	public function store()
 	{
-		//
+		return $this->permission->store(Input::all());
 	}
 
 	/**
@@ -86,6 +86,15 @@ class PermissionController extends BaseController {
 	public function destroy($id)
 	{
 		//
+	}
+
+	public function getAllPermissionCategoryType(){
+		return $this->permission->getAllPermissionCategoryType();
+	}
+
+	public function getPermissionByRoleId(){
+		$roleId = Input::get('roleId', 0); //default to page 1
+		return $this->permission->getPermissionByRoleId($roleId);
 	}
 
 }
