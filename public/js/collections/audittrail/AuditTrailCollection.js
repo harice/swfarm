@@ -18,8 +18,8 @@ define([
 			},
 		},
 		initialize: function(){
-			this.options.show.type = null;
-			this.options.show.id = null;
+			//this.options.show.type = null;
+			//this.options.show.id = null;
 		},
 		
 		getAllModels: function (callback, args) {
