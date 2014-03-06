@@ -10,7 +10,7 @@ class PermissionRepository implements PermissionRepositoryInterface {
    $this->validate($data, $rules);
 
     //client must pass value in comma separated format
-    $permissionIds = explode(',', $data['permissions']);
+    $permissionIds = explode(',', $data['permission']);
 
     //check if permission given exist in the database
     foreach($permissionIds as $item){
@@ -25,7 +25,7 @@ class PermissionRepository implements PermissionRepositoryInterface {
     }
     
     //deleting permissions that is uncheck in client side
-    if($data['permissions'] == '' || $data['permissions'] == null){
+    if($data['permission'] == '' || $data['permission'] == null){
       Permission::where('role', '=', $data['role'])->delete(); //deleting all permission to role if client send empty permission value
     } else {
       //deleting the permissions on db if it doesn't exist on the current given permission
