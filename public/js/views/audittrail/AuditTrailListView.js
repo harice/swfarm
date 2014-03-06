@@ -67,6 +67,7 @@ define([
 			'click .first-page' : 'gotoFirstPage',
 			'click .last-page' : 'gotoLastPage',
 			'click .page-number' : 'gotoPage',
+			'click .sort-date' : 'sortDate',
 		},
 		
 		gotoFirstPage: function () {
@@ -98,6 +99,18 @@ define([
 			return false;
 		},
 		
+		sortDate: function () {
+			this.sortByField('created_at');
+		},
+		
+		sortByField: function (sortField) {
+			if(this.collection.options.currentSort == sortField)
+				this.collection.options.sort[sortField] = !this.collection.options.sort[sortField];
+			
+			this.collection.options.currentSort = sortField;
+			this.collection.options.currentPage = 1;
+			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE, this.displayList);
+		},
 	});
 
   return AuditTrailListView;

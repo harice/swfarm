@@ -8,6 +8,10 @@ define([
 		options: {
 			currentPage: 1,
 			maxItem: 0,
+			currentSort: 'created_at',
+			sort: {
+				created_at: true,
+			},
 		},
 		initialize: function(){
 			
@@ -81,7 +85,8 @@ define([
 		},
 		
 		setPaginationURL: function (page, numPerPage) {	
-			this.url = this.getDefaultURL() + '?' + $.param({perpage: numPerPage, page: page});
+			var orderBy = (this.options.sort[this.options.currentSort])? 'asc' : 'desc';
+			this.url = this.getDefaultURL() + '?' + $.param({perpage: numPerPage, page: page, sortby:this.options.currentSort, orderby:orderBy});
 		},
 	});
 
