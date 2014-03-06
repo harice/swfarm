@@ -15,9 +15,7 @@ class UsersTableSeeder extends Seeder {
 					'emp_no' => 'SU-123',
 					'validated' => true,
 					'status' => true,
-					'deleted' => false,
-					'created_at' => $currentdate,
-					'updated_at' => $currentdate
+					'deleted' => false
 				),
       array(
 					'username' => 'mike.sr',
@@ -29,9 +27,7 @@ class UsersTableSeeder extends Seeder {
 					'emp_no' => 'E01',
 					'validated' => true,
 					'status' => true,
-					'deleted' => false,
-					'created_at' => $currentdate,
-					'updated_at' => $currentdate
+					'deleted' => false
 				),
       array(
 					'username' => 'mike.jr',
@@ -43,9 +39,7 @@ class UsersTableSeeder extends Seeder {
 					'emp_no' => 'E02',
 					'validated' => true,
 					'status' => true,
-					'deleted' => false,
-					'created_at' => $currentdate,
-					'updated_at' => $currentdate
+					'deleted' => false
 				),
       array(
 					'username' => 'vince',
@@ -57,9 +51,7 @@ class UsersTableSeeder extends Seeder {
 					'emp_no' => 'E03',
 					'validated' => true,
 					'status' => true,
-					'deleted' => false,
-					'created_at' => $currentdate,
-					'updated_at' => $currentdate
+					'deleted' => false
 				),
       array(
 					'username' => 'eric',
@@ -71,9 +63,7 @@ class UsersTableSeeder extends Seeder {
 					'emp_no' => 'E04',
 					'validated' => true,
 					'status' => true,
-					'deleted' => false,
-					'created_at' => $currentdate,
-					'updated_at' => $currentdate
+					'deleted' => false
 				),
       array(
 					'username' => 'dee',
@@ -85,9 +75,7 @@ class UsersTableSeeder extends Seeder {
 					'emp_no' => 'E05',
 					'validated' => true,
 					'status' => true,
-					'deleted' => false,
-					'created_at' => $currentdate,
-					'updated_at' => $currentdate
+					'deleted' => false
 				),
       array(
 					'username' => 'robert',
@@ -99,9 +87,7 @@ class UsersTableSeeder extends Seeder {
 					'emp_no' => 'E06',
 					'validated' => true,
 					'status' => true,
-					'deleted' => false,
-					'created_at' => $currentdate,
-					'updated_at' => $currentdate
+					'deleted' => false
 				),
       array(
 					'username' => 'bob',
@@ -113,9 +99,7 @@ class UsersTableSeeder extends Seeder {
 					'emp_no' => 'E07',
 					'validated' => true,
 					'status' => true,
-					'deleted' => false,
-					'created_at' => $currentdate,
-					'updated_at' => $currentdate
+					'deleted' => false
 				),
       array(
 					'username' => 'user1',
@@ -127,9 +111,7 @@ class UsersTableSeeder extends Seeder {
 					'emp_no' => 'E08',
 					'validated' => true,
 					'status' => true,
-					'deleted' => false,
-					'created_at' => $currentdate,
-					'updated_at' => $currentdate
+					'deleted' => false
 				),
       array(
 					'username' => 'user2',
@@ -141,9 +123,7 @@ class UsersTableSeeder extends Seeder {
 					'emp_no' => 'E09',
 					'validated' => true,
 					'status' => true,
-					'deleted' => false,
-					'created_at' => $currentdate,
-					'updated_at' => $currentdate
+					'deleted' => false
 				),
       array(
 					'username' => 'user3',
@@ -155,9 +135,7 @@ class UsersTableSeeder extends Seeder {
 					'emp_no' => 'E10',
 					'validated' => true,
 					'status' => true,
-					'deleted' => false,
-					'created_at' => $currentdate,
-					'updated_at' => $currentdate
+					'deleted' => false
 				),
       array(
 					'username' => 'user4',
@@ -169,9 +147,7 @@ class UsersTableSeeder extends Seeder {
 					'emp_no' => 'E11',
 					'validated' => true,
 					'status' => true,
-					'deleted' => false,
-					'created_at' => $currentdate,
-					'updated_at' => $currentdate
+					'deleted' => false
 				)
 		);
 
