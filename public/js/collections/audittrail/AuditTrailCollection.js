@@ -69,7 +69,7 @@ define([
 		},
 		
 		getDefaultURL: function () {
-			return '/apiv1/roles';
+			return '/apiv1/audit';
 		},
 		
 		setDefaultURL: function () {
