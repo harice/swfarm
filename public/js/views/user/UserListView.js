@@ -9,7 +9,7 @@ define([
 ], function(Backbone, UserModel, UserCollection, contentTemplate, userListTemplate, userInnerListTemplate, Const){
 
 	var UserListView = Backbone.View.extend({
-		el: $("#content"),
+		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
 			//console.log('UserListView:init');

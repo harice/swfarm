@@ -8,7 +8,7 @@ define([
 ], function(Backbone, contentTemplate, roleViewTemplate, RoleModel, Global, Const){
 
 	var UserView = Backbone.View.extend({
-		el: $("#content"),
+		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
 			var thisObj = this;

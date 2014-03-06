@@ -17,6 +17,9 @@ Route::group(array('prefix' => 'apiv1'), function()
 	Route::resource('users', 'APIv1\UsersController');
 	Route::get('roles/all', 'APIv1\RolesController@all');
 	Route::resource('roles', 'APIv1\RolesController');
+
+	Route::get('permission/getAllPermissionCategoryType', 'APIv1\PermissionController@getAllPermissionCategoryType');
+	Route::resource('permission', 'APIv1\PermissionController');
   	Route::resource('audit', 'APIv1\AuditController');
 });
 

@@ -8,7 +8,7 @@ class Roles extends Eloquent {
 
 
 	public function permission(){
-		return $this->belongsTo('Permission');
+		return $this->hasMany('Permission', 'role', 'id');
 	}
 
 	public function userRoles(){
