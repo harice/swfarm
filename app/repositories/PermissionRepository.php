@@ -11,17 +11,19 @@ class PermissionRepository implements PermissionRepositoryInterface {
 
     //client must pass value in comma separated format
     $permissionIds = explode(',', $data['permission']);
-
-    //check if permission given exist in the database
-    foreach($permissionIds as $item){
-      if(count(PermissionCategoryType::find($item)) > 0) {
-        continue;
+    
+    if($data['permission'] != ''){
+      //check if permission given exist in the database
+      foreach($permissionIds as $item){
+        if(count(PermissionCategoryType::find($item)) > 0) {
+          continue;
+        }
+        return Response::json(array(
+            'error' => true,
+            'message' => 'One of the permission given does not exist on the database.'),
+            200
+        );
       }
-      return Response::json(array(
-          'error' => true,
-          'message' => 'One of the permission given does not exist on the database.'),
-          200
-      );
     }
     
     //deleting permissions that is uncheck in client side
@@ -42,14 +44,13 @@ class PermissionRepository implements PermissionRepositoryInterface {
 
           $permission->save();
       }
-
-      $response = Response::json(array(
-          'error' => false,
-          'message' => 'Updated user roles.'),
-          200
-      );
-
     }
+
+    $response = Response::json(array(
+        'error' => false,
+        'message' => 'Updated user roles.'),
+        200
+    );
 
     return $response;
       
