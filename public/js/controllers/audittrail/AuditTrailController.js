@@ -6,7 +6,7 @@ define([
 	function AuditTrailController () {	
 		
 		this.setAction = function (table, id) {
-			return new AuditTrailListView(table, id);
+			return new AuditTrailListView({table:table, id:id});
 		};
 	};
 

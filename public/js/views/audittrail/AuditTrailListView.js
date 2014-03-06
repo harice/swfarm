@@ -10,14 +10,14 @@ define([
 	var AuditTrailListView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
-		initialize: function() {
+		initialize: function(options) {
 			this.collection = new AuditTrailCollection();
 			//console.log(table);
-			/*if(table != null)
-				this.collection.options.show.type = table;
+			if(options.table != null)
+				this.collection.options.show.type = options.table;
 				
-			if(id != null)
-				this.collection.options.show.id = id;*/
+			if(options.id != null)
+				this.collection.options.show.id = options.id;
 		},
 		
 		render: function(){
