@@ -5,6 +5,7 @@ define(function () {
 			'USER': 'administration/user',
 			'ROLE': 'administration/role',
 			'PERMISSION': 'administration/permission',
+			'AUDITTRAIL': 'administration/audittrail',
 		},
 		'CRUD': {
 			'ADD': 'add',
