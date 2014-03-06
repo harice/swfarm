@@ -6,7 +6,7 @@ define([
 ], function(Backbone, contentTemplate, adminTemplate, Const){
 
 	var AdminView = Backbone.View.extend({
-		el: $("#content"),
+		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
 			

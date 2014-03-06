@@ -9,7 +9,7 @@ define([
 ], function(Backbone, RoleModel, RoleCollection, contentTemplate, roleListTemplate, roleInnerListTemplate, Const){
 
 	var RoleListView = Backbone.View.extend({
-		el: $("#content"),
+		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
 			this.collection = new RoleCollection();

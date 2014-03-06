@@ -10,7 +10,7 @@ define([
 ], function(Backbone, Validate, contentTemplate, userAddTemplate, UserModel, RoleCollection, Global, Const){
 
 	var UserAddView = Backbone.View.extend({
-		el: $("#content"),
+		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
 			this.collection = new RoleCollection();

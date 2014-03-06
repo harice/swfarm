@@ -20,22 +20,47 @@ class AuditRepository implements AuditRepositoryInterface {
 
     return $response;
   }
-
-  public function paginate($perPage, $offset){
-    //pulling of data
-    $count = Audit::count();
-    $auditList = Audit::take($perPage)->offset($offset)->orderBy('updated_at', 'ASC')->get();
-    $auditList = $auditList->toArray();
+  
+  public function paginate($perPage, $offset, $sortby, $orderby, $type, $data_id){
+    $errorMsg = null;
+    $sortby = strtolower($sortby);
+    $orderby = strtolower($orderby);
     
-    for ($i=0; $i<$count; $i++) {
-      $oldValue = unserialize($auditList[$i]["value"])->toArray();
-      $auditList[$i]["value"] = $oldValue;
+    if(!($sortby == 'created_at')){
+      $errorMsg = 'Sort by category not found.';
+    } else if(!($orderby == 'asc' || $orderby == 'desc')){
+      $errorMsg = 'Order by category not found(ASC or DESC expected).';
+    } else {
+      //pulling of data
+      if($type && $data_id) {
+        $count = Audit::where('type', $type)->where('data_id', $data_id)->count();
+        $auditList = Audit::where('type', $type)->where('data_id', $data_id)->take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
+      } else {
+        $count = Audit::count();
+        $auditList = Audit::take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
+      }
+      $auditList = $auditList->toArray();
+      
+      for ($i=0; $i<count($auditList); $i++) {
+        $oldValue = unserialize($auditList[$i]["value"])->toArray();
+        $auditList[$i]["value"] = $oldValue;
+      }
+
+      $response = Response::json(array(
+        'data'=>$auditList,
+        'total'=>$count
+      ));
     }
     
-    return Response::json(array(
-      'data' => $auditList,
-      'total' => $count
-    ));
+    if($errorMsg){
+      $response = Response::json(array(
+        'error' => true,
+        'message' => $errorMsg),
+        200
+      );
+    }
+
+    return $response;
 
   }
 
