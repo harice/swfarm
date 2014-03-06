@@ -17,6 +17,16 @@ define([
 		
 			this.collection = new PermissionCategoryTypeCollection();
 			this.model = new RoleModel();
+			console.log('before change');
+			this.model.on("change", function() {
+				console.log('change model');
+				console.log(this);
+				if(this.hasChanged('id')) {
+					console.log('change');
+					console.log(this);
+					this.off("change");
+				}
+			});
 		},
 		
 		render: function(){

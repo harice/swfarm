@@ -26,8 +26,8 @@ define([
 			});
 		},
 		getPermission: function (id) {
-			this.clear('silent');
-			urlRoot: '/apiv1/permission/'+id;
+			this.clear({silent:true});
+			this.urlRoot = '/apiv1/permission/'+id;
 			this.runFetch();
 		},
 	});
