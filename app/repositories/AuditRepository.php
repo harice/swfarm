@@ -24,10 +24,10 @@ class AuditRepository implements AuditRepositoryInterface {
   public function paginate($perPage, $offset){
     //pulling of data
     $count = Audit::count();
-    $auditList = Audit::take($perPage)->offset($offset)->orderBy('updated_at', 'ASC')->get();
+    $auditList = Audit::take($perPage)->offset($offset)->orderBy('created_at', 'ASC')->get();
     $auditList = $auditList->toArray();
     
-    for ($i=0; $i<$count; $i++) {
+    for ($i=0; $i<count($auditList); $i++) {
       $oldValue = unserialize($auditList[$i]["value"])->toArray();
       $auditList[$i]["value"] = $oldValue;
     }

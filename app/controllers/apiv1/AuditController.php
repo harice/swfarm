@@ -23,7 +23,7 @@ class AuditController extends BaseController {
 	public function index()
 	{
     $perPage = Input::get('perpage', Config::get('constants.GLOBAL_PER_LIST')); //default to 10 items, see app/config/constants
-		$page = Input::get('page', '1'); //default to page 1
+		$page = Input::get('page', 1); //default to page 1
 		$offset = $page*$perPage-$perPage;
 		
 		return $this->audit->paginate($perPage, $offset);
