@@ -1,12 +1,10 @@
 <?php
  
 interface PermissionRepositoryInterface {
-	public function findAll();
-	public function findById($id);
-	public function paginate($perPage, $offset);
 	public function store($data);
-	public function update($id, $data);
-	public function destroy($id);
 	public function validate($data, $rules);
 	public function instance();
+	public function getAllPermissionCategoryType();
+	public function getPermissionByRoleId($id);
+	public function getAllRoleWithPermission();
 }
