@@ -32,7 +32,6 @@ define([
 		},
 		
 		displayList: function (auditTrailCollection) {
-			console.log(auditTrailCollection.models);
 			var data = {
 				audittrail: auditTrailCollection.models,
 				_: _ 
