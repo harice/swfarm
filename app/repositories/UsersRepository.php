@@ -92,7 +92,6 @@ class UsersRepository implements UsersRepositoryInterface {
    
   	$user = new User;
   	$user->username = $data['username'];
-  	$user->password = Str::random(10); //replace with this if the system has already email to user features - Hash::make(Str::random(10));
   	$user->email = $data['email'];
   	$user->firstname = $data['firstname'];
   	$user->lastname = $data['lastname'];
@@ -101,8 +100,14 @@ class UsersRepository implements UsersRepositoryInterface {
   	$user->mobile = $data['mobile'];
   	$user->phone = $data['phone'];
   	$user->position = $data['position'];
+    $generatedPassword = Str::random(10); //replace with this if the system has already email to user features - Hash::make(Str::random(10));
+    $user->confirmcode = Hash::make(Str::random(10)); //use for email verification
+    $user->password = Hash::make($generatedPassword);
 
     $user->save();
+
+    //send email verification
+    $this->sendEmailVerification($user->email, $generatedPassword, $user->confirmcode);
 
     //saving user roles posted by client
     if(isset($data['roles']) && $data['roles']!=''){
@@ -231,6 +236,22 @@ class UsersRepository implements UsersRepositoryInterface {
 
   public function instance($data = array()){
     return new User($data);
+  }
+
+  public function sendEmailVerification($email, $password, $confirmcode){
+    $data = array();
+    $data['email'] = $email;
+    $data['emailHashed'] = Hash::make($email);
+    $data['password'] = $password;
+    $data['confirmcode'] = $confirmcode;
+
+    // Mail::send('emails.emailVerification', $data, function($message)
+    // {
+    //     $message->from('donotreply@swfarm.com', 'SouthWest Farm');
+
+    //     $message->to($email)->cc('avelino.ceriola@elementzinteractive.com');
+
+    // });
   }
 
 }

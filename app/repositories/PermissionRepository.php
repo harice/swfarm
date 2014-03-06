@@ -5,7 +5,6 @@ class PermissionRepository implements PermissionRepositoryInterface {
   public function store($data){
    $rules = array(
       'role' => 'required',
-      'permissions' => 'required'
     );
 
    $this->validate($data, $rules);
@@ -26,8 +25,8 @@ class PermissionRepository implements PermissionRepositoryInterface {
     }
     
     //deleting permissions that is uncheck in client side
-    if($data['role'] == '' || $data['role'] == null){
-      Permission::where('role', '=', $data['role'])->delete(); //deleting all permission to role if client send empty role value
+    if($data['permissions'] == '' || $data['permissions'] == null){
+      Permission::where('role', '=', $data['role'])->delete(); //deleting all permission to role if client send empty permission value
     } else {
       //deleting the permissions on db if it doesn't exist on the current given permission
       Permission::where('role', '=', $data['role'])->whereNotIn('permissioncategorytype', $permissionIds)->delete(); 

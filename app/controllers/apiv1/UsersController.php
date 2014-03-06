@@ -76,5 +76,9 @@ class UsersController extends BaseController {
 		return $this->users->destroy($id);
 	}
 
+	public function verifyAccount(){
+		
+	}
+
 
 }
