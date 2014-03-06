@@ -105,7 +105,7 @@ class UsersRepository implements UsersRepositoryInterface {
     $user->save();
 
     //saving user roles posted by client
-    if(isset($data['roles']) && $data['roles']==''){
+    if(isset($data['roles']) && $data['roles']!=''){
       $rolesId = explode(',', $data['roles']);
       foreach($rolesId as $role){   
           $userRole = new UserRoles;
