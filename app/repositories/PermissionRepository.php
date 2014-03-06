@@ -85,7 +85,7 @@ class PermissionRepository implements PermissionRepositoryInterface {
   }
 
   public function getPermissionByRoleId($id){
-    $rolesWithPermission = Roles::where('id', '=', $id)->with('permission')->firstOrFail();
+    $rolesWithPermission = Roles::where('id', '=', $id)->with('permission')->get();
 
     if($rolesWithPermission->count() > 0){
       $response = Response::json(
