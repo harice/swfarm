@@ -18,7 +18,9 @@ define([
 			this.setGetAllURL();
 			this.fetch({
 				success: function (collection, response, options) {
-					callback(thisObj, args);
+					var getType = {};
+					if(callback && getType.toString.call(callback) === '[object Function]')
+						callback(thisObj, args);
 				},
 				error: function (collection, response, options) {
 					if(typeof response.responseJSON.error == 'undefined')
