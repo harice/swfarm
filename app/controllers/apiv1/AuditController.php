@@ -26,7 +26,7 @@ class AuditController extends BaseController {
 		$page = Input::get('page', 1); //default to page 1
 		$offset = $page*$perPage-$perPage;
 		
-		return $this->audit->paginate($perPage, $offset);
+		return $this->audit->paginate($perPage, $offset, $sortby = 'created_at', $orderby = 'desc');
 	}
 
 	/**
