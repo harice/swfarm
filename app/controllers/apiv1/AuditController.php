@@ -24,9 +24,11 @@ class AuditController extends BaseController {
 	{
     $perPage = Input::get('perpage', Config::get('constants.GLOBAL_PER_LIST')); //default to 10 items, see app/config/constants
 		$page = Input::get('page', 1); //default to page 1
+    $sortby = Input::get('sortby', 'created_at'); //default sort to lastname
+		$orderby = Input::get('orderby', 'ASC'); //default order is Ascending
 		$offset = $page*$perPage-$perPage;
 		
-		return $this->audit->paginate($perPage, $offset, $sortby = 'created_at', $orderby = 'desc');
+		return $this->audit->paginate($perPage, $offset, $sortby, $orderby, $type = '', $data_id = '');
 	}
 
 	/**
