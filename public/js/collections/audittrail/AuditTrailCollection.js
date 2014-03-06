@@ -12,9 +12,14 @@ define([
 			sort: {
 				created_at: true,
 			},
+			show: {
+				type: null,
+				id: null,
+			},
 		},
 		initialize: function(){
-			
+			this.options.show.type = null;
+			this.options.show.id = null;
 		},
 		
 		getAllModels: function (callback, args) {
