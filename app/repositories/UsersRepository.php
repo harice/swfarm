@@ -233,4 +233,8 @@ class UsersRepository implements UsersRepositoryInterface {
     return new User($data);
   }
 
+  public function auth() {
+    return $this->findById(Auth::user()->id);
+  }
+
 }

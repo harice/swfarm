@@ -8,5 +8,6 @@ interface UsersRepositoryInterface {
 	public function update($id, $data);
 	public function destroy($id);
 	public function validate($data, $rules);
+	public function auth();
 	public function instance();
 }
