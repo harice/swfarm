@@ -10,11 +10,11 @@ class UserRoles extends Eloquent {
 	 */
 	protected $table = 'userroles';
 
-    public function roles(){
-    	return $this->hasMany('Roles', 'id', 'role');
-    }
+    // public function roles(){
+    // 	return $this->hasMany('Roles', 'id', 'role');
+    // }
 
-    public function users(){
-    	return $this->hasMany('Users');
-    }
+    // public function users(){
+    // 	return $this->hasMany('Users', 'user', 'id');
+    // }
 }

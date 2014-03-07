@@ -45,6 +45,18 @@ class PermissionController extends BaseController {
 		return $this->permission->getPermissionByRoleId($roleId);
 	}
 
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function update($id)
+	{
+		return $this->permission->update($id, Input::all());
+	}
+
+
 	public function getAllPermissionCategoryType(){
 		return $this->permission->getAllPermissionCategoryType();
 	}
