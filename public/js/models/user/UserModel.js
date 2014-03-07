@@ -15,6 +15,8 @@ define([
 			roles:'',
         },
 		runFetch: function () {
+			var thisObj = this;
+			
 			this.fetch({
 				success: function(model, response, options) {
 					//console.log('success: UserModel.fetch()');
@@ -29,6 +31,7 @@ define([
 				error: function(model, response, options) {
 					//console.log('error: UserModel.fetch()');
 				},
+				headers: thisObj.getAuth(),
 			});
 		},
 	});

@@ -12,6 +12,7 @@ define([
 			permission: '',
         },
 		runFetch: function () {
+			var thisObj = this;
 			this.fetch({
 				success: function(model, response, options) {
 					//console.log('success: UserModel.fetch()');
@@ -23,6 +24,7 @@ define([
 				error: function(model, response, options) {
 					//console.log('error: UserModel.fetch()');
 				},
+				headers: thisObj.getAuth(),
 			});
 		},
 		fetchPermission: function (id) {
@@ -31,6 +33,7 @@ define([
 			this.runFetch();
 		},
 		savePermissions: function () {
+			var thisObj = this;
 			this.urlRoot = '/apiv1/permission',
 			this.save(null, {success: function (model, response, options) {
 				Global.getGlobalVars().app_router.navigate(Const.URL.ROLE, {trigger: true});
@@ -39,7 +42,8 @@ define([
 					validate.showErrors(response.responseJSON);
 				else
 					alert(response.responseText);
-			}});
+			},
+			headers: thisObj.getAuth(),});
 		},
 		getPermissionIds: function () {
 			var roleAttributes = this.toJSON();

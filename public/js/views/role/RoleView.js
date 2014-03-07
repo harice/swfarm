@@ -48,6 +48,8 @@ define([
 		},
 		
 		removeRole: function (){
+			var thisObj = this;
+			
 			var verifyDelete = confirm('Delete Role?');
 			if(verifyDelete) {
 				this.model.destroy({
@@ -61,6 +63,7 @@ define([
 						//console.log(response);
 					},
 					wait: true,
+					headers: thisObj.model.getAuth(),
 				});
 			}
 		},

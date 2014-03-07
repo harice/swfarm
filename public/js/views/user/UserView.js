@@ -47,6 +47,8 @@ define([
 		},
 		
 		removeUser: function (){
+			var thisObj = this;
+			
 			var verifyDelete = confirm('Delete User?');
 			if(verifyDelete) {
 				this.model.destroy({
@@ -60,6 +62,7 @@ define([
 						console.log(response);
 					},
 					wait: true,
+					headers: thisObj.model.getAuth(),
 				});
 			}
 		},

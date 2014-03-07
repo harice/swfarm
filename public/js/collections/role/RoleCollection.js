@@ -25,6 +25,7 @@ define([
 					else
 						alert(response.responseText);
 				},
+				headers: thisObj.getAuth(),
 			})
 		},
 		
@@ -58,6 +59,7 @@ define([
 					thisObj.trigger('error');
 					alert(jqXHR.statusText);
 				},
+				headers: thisObj.getAuth(),
 			});
 		},
 		

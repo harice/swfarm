@@ -2,13 +2,22 @@
 define([ 
 	'backbone',
 	'bootstrap',
-	'router', // Request router.js
-], function(Backbone, Bootstrap, Router){
+	'router',
+	'models/session/SessionModel',
+], function(Backbone, Bootstrap, Router, SessionModel){
 	var initialize = function(){
 		
 		Backbone.View.prototype.close = function () {
 			this.$el.empty();
 			this.unbind();
+		};
+		
+		Backbone.Collection.prototype.getAuth = function () {
+			return {'Authorization': 'Basic '+SessionModel.get('token')};
+		};
+		
+		Backbone.Model.prototype.getAuth = function () {
+			return {'Authorization': 'Basic '+SessionModel.get('token')};
 		};
 		
 		$.fn.serializeObject = function() {

@@ -52,6 +52,7 @@ define([
 					thisObj.trigger('error');
 					alert(jqXHR.statusText);
 				},
+				headers: thisObj.getAuth(),
 			});
 		},
 		
