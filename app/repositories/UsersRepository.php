@@ -88,7 +88,8 @@ class UsersRepository implements UsersRepositoryInterface {
   	$user->mobile = $data['mobile'];
   	$user->phone = $data['phone'];
   	$user->position = $data['position'];
-    $generatedPassword = Str::random(10); //replace with this if the system has already email to user features - Hash::make(Str::random(10));
+    // $generatedPassword = Str::random(10); //replace with this if the system has already email to user features - Hash::make(Str::random(10));
+    $generatedPassword = 'elementz123'; //replace with this if the system has already email to user features - Hash::make(Str::random(10));
     $user->confirmcode = Hash::make(Str::random(5)); //use for email verification
     $user->password = Hash::make($generatedPassword);
 
