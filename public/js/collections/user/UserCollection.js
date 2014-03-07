@@ -19,7 +19,7 @@ define([
 			
 		},
 		
-		getModelsPerPage: function(page, numPerPage, callback) {
+		getModelsPerPage: function(page, numPerPage) {
 			//console.log('getModelsPerPage');
 			
 			var thisObj = this;
@@ -43,26 +43,29 @@ define([
 						
 						thisObj.options.maxItem = data.total;
 						
-						var getType = {};
-						if(callback && getType.toString.call(callback) === '[object Function]')
-							callback(thisObj);
+						thisObj.trigger('sync');
 					}
 					else
 						alert(jqXHR.statusText);
 				},
 				error:  function (jqXHR, textStatus, errorThrown) {
+					thisObj.trigger('error');
 					alert(jqXHR.statusText);
 				},
 			});
 		},
 		
+		getDefaultURL: function () {
+			return '/apiv1/users';
+		},
+		
 		setDefaultURL: function () {
-			this.url = '/apiv1/users';
+			this.url = this.getDefaultURL();
 		},
 		
 		setPaginationURL: function (page, numPerPage) {	
 			var orderBy = (this.options.sort[this.options.currentSort])? 'asc' : 'desc';
-			this.url = '/apiv1/users' + '?' + $.param({perpage: numPerPage, page: page, sortby:this.options.currentSort, orderby:orderBy});
+			this.url = this.getDefaultURL() + '?' + $.param({perpage: numPerPage, page: page, sortby:this.options.currentSort, orderby:orderBy});
 		},
 	});
 

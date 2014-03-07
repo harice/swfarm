@@ -1,0 +1,6 @@
+<% _.each(permissions, function(categoryItems, category){ %>
+	<tr><td colspan="2"><strong><%= category %></strong></td></tr>
+	<% _.each(categoryItems, function(permission){ %>
+		<tr><td><%= permission.name %></td><td><input type="checkbox" name="permission" value="<%= permission.id %>"<% if (rolePermissions.indexOf(permission.id) != -1) { %> checked<% } %>/></td></tr>
+	<% }); %>
+<% }); %>

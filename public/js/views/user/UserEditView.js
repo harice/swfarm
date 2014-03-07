@@ -17,23 +17,35 @@ define([
 			
 			this.model = new UserModel({id:option.id});
 			this.model.on("change", function() {
-				console.log('onChange: UserModel');
 				if(this.hasChanged('firstname') && this.hasChanged('lastname') && this.hasChanged('email') && this.hasChanged('username')) {
-					thisObj.displayUser(this);
+					thisObj.displayUser();
 					this.off("change");
 				}
 			});
 			
 			this.collection = new RoleCollection();
+			this.collection.on('sync', function() {
+				//console.log('collection.on.sync')
+				thisObj.displayRoles();
+				this.off('sync');
+			});
+			
+			this.collection.on('error', function(collection, response, options) {
+				//console.log('collection.on.error')
+				//console.log(collection);
+				//console.log(response);
+				//console.log(options);
+				this.off('error');
+			});
 		},
 		
 		render: function(){
 			this.model.runFetch();
 		},
 		
-		displayUser: function(userModel) {
+		displayUser: function() {
 			var innerTemplateVariables = {
-				user_id: userModel.get('id'),
+				user_id: this.model.get('id'),
 				'user_url' : '#/'+Const.URL.USER
 			};
 			var innerTemplate = _.template(userAddTemplate, innerTemplateVariables);
@@ -45,15 +57,15 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
-			this.$el.find('#firstname').val(userModel.get('firstname'));
-			this.$el.find('#lastname').val(userModel.get('lastname'));
-			this.$el.find('#suffix').val(userModel.get('suffix'));
-			this.$el.find('#email').val(userModel.get('email'));
-			this.$el.find('#position').val(userModel.get('position'));
-			this.$el.find('#emp_no').val(userModel.get('emp_no'));
-			this.$el.find('#phone').val(userModel.get('phone'));
-			this.$el.find('#mobile').val(userModel.get('mobile'));
-			this.$el.find('#username').val(userModel.get('username'));
+			this.$el.find('#firstname').val(this.model.get('firstname'));
+			this.$el.find('#lastname').val(this.model.get('lastname'));
+			this.$el.find('#suffix').val(this.model.get('suffix'));
+			this.$el.find('#email').val(this.model.get('email'));
+			this.$el.find('#position').val(this.model.get('position'));
+			this.$el.find('#emp_no').val(this.model.get('emp_no'));
+			this.$el.find('#phone').val(this.model.get('phone'));
+			this.$el.find('#mobile').val(this.model.get('mobile'));
+			this.$el.find('#username').val(this.model.get('username'));
 			
 			var validate = $('#addUserForm').validate({
 				submitHandler: function(form) {
@@ -76,12 +88,13 @@ define([
 				}
 			});
 			
-			this.collection.getAllModels(this.displayRoles, userModel.get('roles'));
+			this.collection.getAllModels();
 		},
 		
-		displayRoles: function (roleCollection, userRoles){
+		displayRoles: function (userRoles){
+			var userRoles = this.model.get('roles');
 			var checkboxes = '';
-			_.each(roleCollection.models, function (role) {
+			_.each(this.collection.models, function (role) {
 				
 				var roleId = role.get('id');
 				var checked = '';

@@ -82,5 +82,9 @@ class UsersController extends BaseController {
 		return $this->users->destroy($id);
 	}
 
+	public function verifyAccount(){
+		return $this->users->verifyAccount(Input::all());
+	}
+
 
 }

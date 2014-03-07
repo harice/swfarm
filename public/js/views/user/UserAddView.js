@@ -13,7 +13,22 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
+			var thisObj = this;
+			
 			this.collection = new RoleCollection();
+			this.collection.on('sync', function() {
+				//console.log('collection.on.sync')
+				thisObj.displayRoles();
+				this.off('sync');
+			});
+			
+			this.collection.on('error', function(collection, response, options) {
+				//console.log('collection.on.error')
+				//console.log(collection);
+				//console.log(response);
+				//console.log(options);
+				this.off('error');
+			});
 		},
 		
 		render: function(){
@@ -52,12 +67,12 @@ define([
 				}
 			});
 			
-			this.collection.getAllModels(this.displayRoles);
+			this.collection.getAllModels();
 		},
 		
-		displayRoles: function (roleCollection){
+		displayRoles: function (){
 			var checkboxes = '';
-			_.each(roleCollection.models, function (role) {
+			_.each(this.collection.models, function (role) {
 				checkboxes += '<div class="checkbox"><label><input type="checkbox" name="roles" value="'+role.get('id')+'">'+role.get('name')+'</label></div>';
 			});
 			

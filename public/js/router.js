@@ -8,11 +8,11 @@ define([
 	'controllers/user/UserController',
 	'controllers/role/RoleController',
 	'controllers/permission/PermissionController',
-	//'controllers/audittrail/AuditTrailController',
+	'controllers/audittrail/AuditTrailController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
-], function(Backbone, BaseRouter, HeaderView, AdminView, LoginController, UserController, RoleController, PermissionController, /*AuditTrailController,*/ Global, Const, Session) {
+], function(Backbone, BaseRouter, HeaderView, AdminView, LoginController, UserController, RoleController, PermissionController, AuditTrailController, Global, Const, Session) {
 	
 	var routerRoutes = {};
 
@@ -43,13 +43,13 @@ define([
 	routerRoutes[Const.URL.PERMISSION+'/:id'] = 'showPermissionPage';
 	
 	//audittrail
-	/*routerRoutes[Const.URL.AUDITTRAIL] = 'showAuditTrailPage';
+	routerRoutes[Const.URL.AUDITTRAIL] = 'showAuditTrailPage';
 	routerRoutes[Const.URL.AUDITTRAIL+'/'] = 'showAuditTrailPage';
 	routerRoutes[Const.URL.AUDITTRAIL+'/:table'] = 'showAuditTrailPage';
-	routerRoutes[Const.URL.AUDITTRAIL+'/:table/:id'] = 'showAuditTrailPage';*/
+	routerRoutes[Const.URL.AUDITTRAIL+'/:table/:id'] = 'showAuditTrailPage';
 	
 	
-	//routerRoutes['*actions'] = 'defaultAction';
+	routerRoutes['*actions'] = 'defaultAction';
 
 	var AppRouter = BaseRouter.extend({
 		routes:routerRoutes,
@@ -131,14 +131,15 @@ define([
 			this.currView.render();
 		});
 		
-		/*app_router.on('route:showAuditTrailPage', function (table, id) {
+		app_router.on('route:showAuditTrailPage', function (table, id) {
 			this.closeView();
 			var auditTrailController = new AuditTrailController();
 			this.currView = auditTrailController.setAction(table, id);
 			this.currView.render();
-		});*/
+		});
 		
 		app_router.on('route:defaultAction', function (actions) {
+			this.closeView();
 			console.log('default page');
 		});
 		

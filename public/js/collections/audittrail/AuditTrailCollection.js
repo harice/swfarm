@@ -2,30 +2,24 @@ define([
 	'backbone',
 	'models/role/RoleModel',
 ], function(Backbone, RoleModel){
-	var UserCollection = Backbone.Collection.extend({
-		url: '/apiv1/roles',
+	var AuditTrailCollection = Backbone.Collection.extend({
+		url: '/apiv1/audit',
 		model: RoleModel,
 		options: {
 			currentPage: 1,
 			maxItem: 0,
+			currentSort: 'created_at',
+			sort: {
+				created_at: true,
+			},
+			show: {
+				type: null,
+				id: null,
+			},
 		},
 		initialize: function(){
-			
-		},
-		
-		getAllModels: function () {
-			var thisObj = this;
-			this.setGetAllURL();
-			this.fetch({
-				success: function (collection, response, options) {
-				},
-				error: function (collection, response, options) {
-					if(typeof response.responseJSON.error == 'undefined')
-						alert(response.responseJSON);
-					else
-						alert(response.responseText);
-				},
-			})
+			this.options.show.type = null;
+			this.options.show.id = null;
 		},
 		
 		getModelsPerPage: function(page, numPerPage) {
@@ -48,7 +42,7 @@ define([
 						});
 						
 						thisObj.options.maxItem = data.total;
-						
+							
 						thisObj.trigger('sync');
 					}
 					else
@@ -62,7 +56,7 @@ define([
 		},
 		
 		getDefaultURL: function () {
-			return '/apiv1/roles';
+			return '/apiv1/audit';
 		},
 		
 		setDefaultURL: function () {
@@ -74,9 +68,13 @@ define([
 		},
 		
 		setPaginationURL: function (page, numPerPage) {	
-			this.url = this.getDefaultURL() + '?' + $.param({perpage: numPerPage, page: page});
+			var orderBy = (this.options.sort[this.options.currentSort])? 'asc' : 'desc';
+			var type = (this.options.show.type != null)? this.options.show.type : '';
+			var dataId = (this.options.show.id != null)? this.options.show.id : '';	
+			
+			this.url = this.getDefaultURL() + '?' + $.param({perpage: numPerPage, page: page, sortby:this.options.currentSort, orderby:orderBy, type:type, data_id:dataId});
 		},
 	});
 
-	return UserCollection;
+	return AuditTrailCollection;
 });
