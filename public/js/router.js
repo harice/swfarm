@@ -48,6 +48,7 @@ define([
 	routerRoutes[Const.URL.AUDITTRAIL+'/:table'] = 'showAuditTrailPage';
 	routerRoutes[Const.URL.AUDITTRAIL+'/:table/:id'] = 'showAuditTrailPage';
 	
+	//for commit
 	
 	routerRoutes['*actions'] = 'defaultAction';
 
