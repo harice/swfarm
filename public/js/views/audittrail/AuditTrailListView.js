@@ -11,8 +11,22 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(options) {
+			var thisObj = this;
+			
 			this.collection = new AuditTrailCollection();
-			//console.log(table);
+			this.collection.on('sync', function() {
+				//console.log('collection.on.sync')
+				thisObj.displayList();
+			});
+			
+			this.collection.on('error', function(collection, response, options) {
+				//console.log('collection.on.error')
+				//console.log(collection);
+				//console.log(response);
+				//console.log(options);
+				this.off('error');
+			});
+			
 			if(options.table != null)
 				this.collection.options.show.type = options.table;
 				
@@ -23,7 +37,7 @@ define([
 		render: function(){
 			this.displayAuditTrail();
 			this.collection.options.currentPage = 1;
-			this.collection.getModelsPerPage(this.collection.options.currentPage , Const.MAXITEMPERPAGE, this.displayList);//last
+			this.collection.getModelsPerPage(this.collection.options.currentPage , Const.MAXITEMPERPAGE);
 		},
 		
 		displayAuditTrail: function () {
@@ -37,10 +51,10 @@ define([
 			this.$el.html(compiledTemplate);
 		},
 		
-		displayList: function (auditTrailCollection) {
+		displayList: function () {
 			var data = {
 				audittrail_url: '#/'+Const.URL.AUDITTRAIL,
-				audittrail: auditTrailCollection.models,
+				audittrail: this.collection.models,
 				_: _ 
 			};
 			
@@ -48,7 +62,7 @@ define([
 			$("#audit-trail-list tbody").html(innerListTemplate);
 			
 			$('.page-number').remove();
-			var lastPage = Math.ceil(auditTrailCollection.options.maxItem / Const.MAXITEMPERPAGE);
+			var lastPage = Math.ceil(this.collection.options.maxItem / Const.MAXITEMPERPAGE);
 			
 			if(lastPage > 1) {
 				$('.pagination').show();
@@ -57,7 +71,7 @@ define([
 					var active = '';
 					var activeValue = '';
 					
-					if(i == auditTrailCollection.options.currentPage) {
+					if(i == this.collection.options.currentPage) {
 						active = ' class="active"';
 						activeValue = ' <span class="sr-only">(current)</span>';
 					}
@@ -80,7 +94,7 @@ define([
 		gotoFirstPage: function () {
 			if(this.collection.options.currentPage != 1) {
 				this.collection.options.currentPage = 1;
-				this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE, this.displayList);
+				this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
 			}
 			
 			return false;
@@ -90,7 +104,7 @@ define([
 			var lastPage = Math.ceil(this.collection.options.maxItem / Const.MAXITEMPERPAGE);
 			if(this.collection.options.currentPage != lastPage) {
 				this.collection.options.currentPage = lastPage;
-				this.collection.getModelsPerPage(lastPage , Const.MAXITEMPERPAGE, this.displayList);
+				this.collection.getModelsPerPage(lastPage , Const.MAXITEMPERPAGE);
 			}
 			
 			return false;
@@ -100,7 +114,7 @@ define([
 			var page = $(ev.target).attr('data-pagenum');
 			if(this.collection.options.currentPage != page) {
 				this.collection.options.currentPage = page;
-				this.collection.getModelsPerPage(page , Const.MAXITEMPERPAGE, this.displayList);
+				this.collection.getModelsPerPage(page , Const.MAXITEMPERPAGE);
 			}
 			
 			return false;
@@ -116,7 +130,7 @@ define([
 			
 			this.collection.options.currentSort = sortField;
 			this.collection.options.currentPage = 1;
-			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE, this.displayList);
+			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
 		},
 	});
 

@@ -12,15 +12,27 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
-			//console.log('UserListView:init');
-			//console.log('this.options.currentPage:'+this.options.currentPage);
+			var thisObj = this;
+			
 			this.collection = new UserCollection();
+			this.collection.on('sync', function() {
+				//console.log('collection.on.sync')
+				thisObj.displayList();
+			});
+			
+			this.collection.on('error', function(collection, response, options) {
+				//console.log('collection.on.error')
+				//console.log(collection);
+				//console.log(response);
+				//console.log(options);
+				this.off('error');
+			});
 		},
 		
 		render: function(){
 			this.displayUser();
 			this.collection.options.currentPage = 1;
-			this.collection.getModelsPerPage(this.collection.options.currentPage , Const.MAXITEMPERPAGE, this.displayList);
+			this.collection.getModelsPerPage(this.collection.options.currentPage , Const.MAXITEMPERPAGE);
 		},
 		
 		displayUser: function () {
@@ -34,14 +46,14 @@ define([
 			this.$el.html(compiledTemplate);
 		},
 		
-		displayList: function (userCollection) {
+		displayList: function () {
 			//console.log('displayUser');
-			//console.log(userCollection);
+			//console.log(this.collection);
 			
 			var data = {
 				user_url: '#/'+Const.URL.USER,
 				user_edit_url: '#/'+Const.URL.USER+'/'+Const.CRUD.EDIT,
-				users: userCollection.models,
+				users: this.collection.models,
 				_: _ 
 			};
 			
@@ -49,7 +61,7 @@ define([
 			$("#user-list tbody").html(innerListTemplate);
 			
 			$('.page-number').remove();
-			var lastPage = Math.ceil(userCollection.options.maxItem / Const.MAXITEMPERPAGE);
+			var lastPage = Math.ceil(this.collection.options.maxItem / Const.MAXITEMPERPAGE);
 			
 			if(lastPage > 1) {
 				$('.pagination').show();
@@ -58,7 +70,7 @@ define([
 					var active = '';
 					var activeValue = '';
 					
-					if(i == userCollection.options.currentPage) {
+					if(i == this.collection.options.currentPage) {
 						active = ' class="active"';
 						activeValue = ' <span class="sr-only">(current)</span>';
 					}
@@ -83,7 +95,7 @@ define([
 		gotoFirstPage: function () {
 			if(this.collection.options.currentPage != 1) {
 				this.collection.options.currentPage = 1;
-				this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE, this.displayList);
+				this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
 			}
 			
 			return false;
@@ -93,7 +105,7 @@ define([
 			var lastPage = Math.ceil(this.collection.options.maxItem / Const.MAXITEMPERPAGE);
 			if(this.collection.options.currentPage != lastPage) {
 				this.collection.options.currentPage = lastPage;
-				this.collection.getModelsPerPage(lastPage , Const.MAXITEMPERPAGE, this.displayList);
+				this.collection.getModelsPerPage(lastPage , Const.MAXITEMPERPAGE);
 			}
 			
 			return false;
@@ -103,7 +115,7 @@ define([
 			var page = $(ev.target).attr('data-pagenum');
 			if(this.collection.options.currentPage != page) {
 				this.collection.options.currentPage = page;
-				this.collection.getModelsPerPage(page , Const.MAXITEMPERPAGE, this.displayList);
+				this.collection.getModelsPerPage(page , Const.MAXITEMPERPAGE);
 			}
 			
 			return false;
