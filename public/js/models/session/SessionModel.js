@@ -74,9 +74,9 @@ define([
               that.set('token', token);
               that.set('roles', response.roles);
 
-              if(Session.get('redirectFrom')){
-                 var path = Session.get('redirectFrom');
-                 Session.unset('redirectFrom');
+              if(that.get('redirectFrom')){
+                 var path = that.get('redirectFrom');
+                 that.unset('redirectFrom');
                  Backbone.history.navigate(path, { trigger : true });
              }else{
                  Backbone.history.navigate('#/'+Const.URL.DASHBOARD, { trigger : true });
