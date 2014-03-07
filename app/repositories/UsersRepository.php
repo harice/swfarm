@@ -259,7 +259,7 @@ class UsersRepository implements UsersRepositoryInterface {
         'password' => $password,
         'confirmcodeHashed'  => urlencode(Hash::make($userObj->confirmcode))
     );
-     
+    Mail::pretend();
     // use Mail::send function to send email passing the data and using the $user variable in the closure
     Mail::send('emails.emailVerification', $data, function($message) use ($user)
     {
