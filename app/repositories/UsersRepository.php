@@ -3,21 +3,9 @@
 class UsersRepository implements UsersRepositoryInterface {
 
   public function findById($id){
-  	$user = User::find($id);
+  	$user = User::with('roles')->find($id);
     
     if($user){
-      $user['roles'] = null;
-      $userRoles = $user->userRoles()->with('roles')->get();
-
-      if($userRoles->count() > 0){
-        $roles = array();
-        $userRoles = $userRoles->toArray();
-        foreach($userRoles as $role){
-          array_push($roles, $role['roles'][0]);
-        }
-        $user['roles'] = $roles;
-      }
-      
       $response = Response::json(
         $user,
         200
@@ -51,7 +39,7 @@ class UsersRepository implements UsersRepositoryInterface {
     } else {
       //pulling of data
       $count = User::where('id', '!=', 1)->count();
-      $usersList = User::where('id', '!=', 1)->take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
+      $usersList = User::with('roles')->where('id', '!=', 1)->take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
 
       $response = Response::json(array(
         'data'=>$usersList->toArray(),
@@ -101,25 +89,18 @@ class UsersRepository implements UsersRepositoryInterface {
   	$user->phone = $data['phone'];
   	$user->position = $data['position'];
     $generatedPassword = Str::random(10); //replace with this if the system has already email to user features - Hash::make(Str::random(10));
-    $user->confirmcode = Hash::make(Str::random(10)); //use for email verification
+    $user->confirmcode = Hash::make(Str::random(5)); //use for email verification
     $user->password = Hash::make($generatedPassword);
 
     $user->save();
 
     //send email verification
-    $this->sendEmailVerification($user->email, $generatedPassword, $user->confirmcode);
+    //$this->sendEmailVerification($user, $generatedPassword);
 
     //saving user roles posted by client
-    if(isset($data['roles']) && $data['roles']!=''){
-      $rolesId = explode(',', $data['roles']);
-      foreach($rolesId as $role){   
-          $userRole = new UserRoles;
-          $userRole->user = $user->id;
-          $userRole->role = $role;
-
-          $userRole->save();
-      }
-
+    if(isset($data['roles']) && $data['roles'] != ''){
+        $roleIds = explode(',', $data['roles']);
+        $user->roles()->sync($roleIds);
     }
 
   	return Response::json(array(
@@ -162,14 +143,15 @@ class UsersRepository implements UsersRepositoryInterface {
       $user->position = $data['position'];
 
       $user->save();
-
+/*
       //saving user roles posted by client
       if(isset($data['roles'])){
         //client must pass value in comma separated format
         $rolesIds = explode(',', $data['roles']); 
         //deleting role that is uncheck in client side
         if($data['roles'] == '' || $data['roles'] == null){
-          UserRoles::where('user', '=', $id)->delete(); //deleting all roles if client send empty role value
+          // UserRoles::where('user', '=', $id)->delete(); //deleting all roles if client send empty role value
+          User::role()-
         } else {
           UserRoles::where('user', '=', $id)->whereNotIn('role', $rolesIds)->delete(); 
 
@@ -183,6 +165,16 @@ class UsersRepository implements UsersRepositoryInterface {
 
               $userRole->save();
           }
+        }
+      }
+*/
+      if(isset($data['roles'])){
+        if($data['roles'] != ''){
+          $roleIds = explode(',', $data['roles']);
+          $user->roles()->sync($roleIds);
+        } else {
+          //remove all assign roles to user
+          $user->roles()->detach();
         }
       }
 
@@ -238,12 +230,13 @@ class UsersRepository implements UsersRepositoryInterface {
     return new User($data);
   }
 
-  public function sendEmailVerification($email, $password, $confirmcode){
-    $data = array();
-    $data['email'] = $email;
-    $data['emailHashed'] = Hash::make($email);
-    $data['password'] = $password;
-    $data['confirmcode'] = $confirmcode;
+  public function sendEmailVerification($userObj, $password){
+    var_dump($userObj);
+    // $data = array();
+    // $data['email'] = $email;
+    // $data['emailHashed'] = Hash::make($email);
+    // $data['password'] = $password;
+    // $data['confirmcode'] = $confirmcode;
 
     // Mail::send('emails.emailVerification', $data, function($message)
     // {

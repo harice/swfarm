@@ -6,11 +6,11 @@ class Permission extends Eloquent {
     protected $table = 'permission';
     public $timestamps = false;
 
-    public function permissionCategoryType(){
-    	return $this->hasMany('PermissionCategoryType');
-    }
+    // public function permissionCategoryType(){
+    // 	return $this->hasMany('PermissionCategoryType');
+    // }
 
-    public function roles(){
-    	return $this->belongsTo('Roles');
-    }
+    // public function roles(){
+    // 	return $this->belongsTo('Roles');
+    // }
 }
