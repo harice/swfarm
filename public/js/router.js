@@ -1,25 +1,17 @@
 // Filename: router.js
 define([
 	'backbone',
-	'baserouter',
 	'views/layout/HeaderView',
 	'views/admin/AdminView',
-	'controllers/login/LoginController',
 	'controllers/user/UserController',
 	'controllers/role/RoleController',
 	'controllers/permission/PermissionController',
 	'controllers/audittrail/AuditTrailController',
 	'global',
 	'constant',
-	'models/session/SessionModel'
-], function(Backbone, BaseRouter, HeaderView, AdminView, LoginController, UserController, RoleController, PermissionController, AuditTrailController, Global, Const, Session) {
+], function(Backbone, HeaderView, AdminView, UserController, RoleController, PermissionController, AuditTrailController, Global, Const) {
 	
 	var routerRoutes = {};
-
-	//login
-	routerRoutes[Const.URL.LOGIN] = 'showLoginPage';
-	routerRoutes[Const.URL.LOGIN+'/'] = 'showLoginPage';
-	routerRoutes[Const.URL.USER+'/:action'] = 'showLoginPage';
 	
 	//admin
 	routerRoutes[Const.URL.ADMIN] = 'showAdminPage';
@@ -51,40 +43,8 @@ define([
 	
 	routerRoutes['*actions'] = 'defaultAction';
 
-	var AppRouter = BaseRouter.extend({
+	var AppRouter = Backbone.Router.extend({
 		routes:routerRoutes,
-
-		requiresAuthExcept : ['#/login'],
-
-		preventAccessWhenAuth : ['#/login'],
-
-		before : function(params, next){
-			var isAuth = Session.get('token');
-			var path = Backbone.history.location.hash;
-			var needAuth = _.contains(this.requiresAuthExcept, path);
-			var cancelAccess = _.contains(this.preventAccessWhenAuth, path);
-
-			if(!needAuth && !isAuth){
-				Session.set('redirectFrom', path);
-				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
-			}else if(isAuth && cancelAccess){
-				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.DASHBOARD, { trigger : true });
-			}else{
-			  return next();
-			}
-		},
-
-		after : function(){
-			//empty
-		},
-
-		fetchError : function(error){
-			if(error.status === 403){
-				Session.clear();
-				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
-			}
-		},
-
 		currView:null,
 		closeView: function () {
 			if(this.currView) {
@@ -96,13 +56,6 @@ define([
 	
 	var initialize = function(){
 		var app_router = new AppRouter;
-
-		app_router.on('route:showLoginPage',function (action) {
-			this.closeView();
-			var loginController = new LoginController();
-			this.currView = loginController.setAction(action);
-			this.currView.render();
-		});
 		
 		app_router.on('route:showAdminPage', function () {
 			this.closeView();
