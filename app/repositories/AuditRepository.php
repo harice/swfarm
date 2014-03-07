@@ -70,9 +70,11 @@ class AuditRepository implements AuditRepositoryInterface
      */
     public function paginate($input)
     {
-        $perPage = array_key_exists('perpage', $input) ? $input['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+        $perPage = array_key_exists('perpage', $input)
+            ? $input['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
         $page = array_key_exists('page', $input) ? $input['page'] : 1;
-        $sortby = array_key_exists('sortby', $input) ? $input['sortby'] : 'created_at';
+        $sortby = array_key_exists('sortby', $input)
+            ? $input['sortby'] : 'created_at';
         $orderby = array_key_exists('orderby', $input) ? $input['orderby'] : 'desc';
         $type = array_key_exists('type', $input) ? $input['type'] : '';
         $data_id = array_key_exists('data_id', $input) ? $input['data_id'] : '';
@@ -171,8 +173,8 @@ class AuditRepository implements AuditRepositoryInterface
     /**
      * Update data on db.
      * 
+     * @param int $id   data id.
      * @param int $data data.
-     * @param int $id data id.
      * 
      * @return string $response Description
      * 
@@ -248,7 +250,8 @@ class AuditRepository implements AuditRepositoryInterface
     /**
      * Validate data inputs.
      * 
-     * @param int $id data id.
+     * @param int    $data  data.
+     * @param string $rules rules.
      * 
      * @return string $response Description
      * 
@@ -265,7 +268,7 @@ class AuditRepository implements AuditRepositoryInterface
     /**
      * Create instance.
      * 
-     * @param int $id data id.
+     * @param int $data data.
      * 
      * @return string $response Description
      * 
