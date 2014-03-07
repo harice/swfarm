@@ -65,7 +65,7 @@ define([
 			
 			for(var i in permissions) {
 				if(typeof permissions[i] !== 'function') {
-					$("#permission-list tbody").append('<tr><td colspan="2">'+i+'</td></tr>');
+					$("#permission-list tbody").append('<tr><td colspan="2"><strong>'+i+'</strong></td></tr>');
 					for(var ii=0; ii < permissions[i].length; ii++) {
 						var checked = (rolePermissions.indexOf(permissions[i][ii].id) != -1)? ' checked' : '';
 						var checkbox = '<input type="checkbox" name="permission" value="'+permissions[i][ii].id+'"'+checked+'>';
