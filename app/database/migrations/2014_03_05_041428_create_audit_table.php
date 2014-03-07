@@ -15,7 +15,6 @@ class CreateAuditTable extends Migration {
 		Schema::create('audit',function($table){
 			$table->increments('id');
             $table->string('type');
-            $table->integer('user');
             $table->bigInteger('data_id')->unsigned()->index();
             $table->string('event');
 			$table->longText('value');
