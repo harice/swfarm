@@ -92,6 +92,7 @@ define([
 		});
 		
 		app_router.on('route:defaultAction', function (actions) {
+			this.closeView();
 			console.log('default page');
 		});
 		
