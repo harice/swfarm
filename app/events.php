@@ -7,7 +7,8 @@ foreach(Config::get('constants.AUDIT') as $class) {
               'type' => get_class($_data),
               'data_id' => $_data->id,
               'event' => Config::get('constants.AUDIT_CREATED'),
-              'value' => serialize($_data)
+              'value' => serialize($_data),
+              'user' => Auth::user()->id
           );
 
       $audit = new Audit($data);
@@ -23,7 +24,8 @@ foreach(Config::get('constants.AUDIT') as $class) {
               'type' => get_class($_data),
               'data_id' => $_data->id,
               'event' => Config::get('constants.AUDIT_UPDATED'),
-              'value' => serialize($_data)
+              'value' => serialize($_data),
+              'user' => Auth::user()->id
           );
 
       $audit = new Audit($data);
@@ -39,7 +41,8 @@ foreach(Config::get('constants.AUDIT') as $class) {
               'type' => get_class($_data),
               'data_id' => $_data->id,
               'event' => Config::get('constants.AUDIT_DELETED'),
-              'value' => serialize($_data)
+              'value' => serialize($_data),
+              'user' => Auth::user()->id
           );
 
       $audit = new Audit($data);
