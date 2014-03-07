@@ -261,7 +261,7 @@ class UsersRepository implements UsersRepositoryInterface {
      
     // the data that will be passed into the mail view blade template
     $data = array(
-        'email' => $userObj->email,
+        'username' => $userObj->username,
         'password' => $password,
         'verifyUrl' => url('apiv1/verifyAccount?passkey='.urlencode($userObj->confirmcode))
     );
