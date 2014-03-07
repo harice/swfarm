@@ -77,7 +77,7 @@ class UsersController extends BaseController {
 	}
 
 	public function verifyAccount(){
-		return $this->users->verifyAccount(Input::all());
+		return $this->users->verifyAccount(Input::get('passkey'));
 	}
 
 
