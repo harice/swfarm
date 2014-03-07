@@ -87,9 +87,15 @@ Route::filter('auth.basic', function()
 	return Auth::basic();
 });
 
-Route::filter('basic.once', function()
+Route::filter('basic', function()
 {
-    return Auth::onceBasic();
+	$auth = Auth::once(
+				array(  'username' => Request::header('php-auth-user'), 
+						'password' => Request::header('php-auth-pw'),
+						'status' => true
+					)
+				);
+	if(!$auth) return App::abort(403,'Invalid API key',['WWW-Authenticate' => 'Basic']);
 });
 
 /*

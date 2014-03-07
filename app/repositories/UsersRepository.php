@@ -230,19 +230,45 @@ class UsersRepository implements UsersRepositoryInterface {
     return new User($data);
   }
 
-  public function sendEmailVerification($userObj, $password){
+  public function auth() {
+    return $this->findById(Auth::user()->id);
+  }
+
+  public function sendEmailVerification2($userObj, $password){
     $data = array();
 
     $data['email'] = $userObj->email;
     $data['password'] = $password;
     $data['confirmcodeHashed'] = urlencode(Hash::make($userObj->confirmcode));
-    
-    Mail::send('emails.emailVerification', $data, function($message) Use ($data)
+    //Mail::pretend();
+    Mail::send('emails.emailVerification', $data, function($message) use ($data)
     {
         $message->from('donotreply@swfarm.com', 'SouthWest Farm');
 
         $message->to($data['email'])->cc('avelino.ceriola@elementzinteractive.com');
 
+    });
+  }
+
+  public function sendEmailVerification($userObj, $password){
+    // I'm creating an array with user's info but most likely you can use $user->email or pass $user object to closure later
+    $user = array(
+        'email'=>$userObj->email,
+        'name'=>$userObj->firstname.' '.$userObj->lastname
+    );
+     
+    // the data that will be passed into the mail view blade template
+    $data = array(
+        'email' => $userObj->email,
+        'password' => $password,
+        'confirmcodeHashed'  => urlencode(Hash::make($userObj->confirmcode))
+    );
+    
+    // use Mail::send function to send email passing the data and using the $user variable in the closure
+    Mail::send('emails.emailVerification', $data, function($message) use ($user)
+    {
+      $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator');
+      $message->to($user['email'], $user['name'])->subject('Southwest Farm - Verify your account');
     });
   }
 
