@@ -32,7 +32,6 @@ define([
 		},
 		
 		render: function(){
-			
 			var innerTemplateVariables = {
 				'user_url' : '#/'+Const.URL.USER
 			};
@@ -63,7 +62,8 @@ define([
 							validate.showErrors(response.responseJSON);
 						else
 							alert(response.responseText);
-					}});
+					},
+					headers: userModel.getAuth(),});
 				}
 			});
 			

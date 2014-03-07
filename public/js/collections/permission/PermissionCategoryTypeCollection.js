@@ -25,6 +25,7 @@ define([
 					else
 						alert(response.responseText);
 				},
+				headers: thisObj.getAuth(),
 			})
 		},
 		

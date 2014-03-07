@@ -40,6 +40,7 @@ define([
 	routerRoutes[Const.URL.AUDITTRAIL+'/:table'] = 'showAuditTrailPage';
 	routerRoutes[Const.URL.AUDITTRAIL+'/:table/:id'] = 'showAuditTrailPage';
 	
+	//for commit
 	
 	routerRoutes['*actions'] = 'defaultAction';
 
@@ -49,6 +50,7 @@ define([
 		closeView: function () {
 			if(this.currView) {
 				this.currView.close();
+				
 				this.currView.undelegateEvents();
 			}
 		},

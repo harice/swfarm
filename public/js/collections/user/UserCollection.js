@@ -1,6 +1,6 @@
 define([
 	'backbone',
-	'models/user/UserModel'
+	'models/user/UserModel',
 ], function(Backbone, UserModel){
 	var UserCollection = Backbone.Collection.extend({
 		url: '/apiv1/users',
@@ -52,6 +52,7 @@ define([
 					thisObj.trigger('error');
 					alert(jqXHR.statusText);
 				},
+				headers: thisObj.getAuth(),
 			});
 		},
 		

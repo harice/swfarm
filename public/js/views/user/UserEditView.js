@@ -84,7 +84,8 @@ define([
 							validate.showErrors(response.responseJSON);
 						else
 							alert(response.responseText);
-					}});
+					},
+					headers: userModel.getAuth(),});
 				}
 			});
 			
