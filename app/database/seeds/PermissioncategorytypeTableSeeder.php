@@ -25,7 +25,17 @@ class PermissioncategorytypeTableSeeder extends Seeder {
 			array('permissioncategory' => 4, 'permissiontype' => 13),
 			array('permissioncategory' => 4, 'permissiontype' => 14),
 			array('permissioncategory' => 4, 'permissiontype' => 15),
-			array('permissioncategory' => 4, 'permissiontype' => 16)
+			array('permissioncategory' => 4, 'permissiontype' => 16),
+
+			array('permissioncategory' => 5, 'permissiontype' => 17),
+			array('permissioncategory' => 5, 'permissiontype' => 18),
+			array('permissioncategory' => 5, 'permissiontype' => 19),
+			array('permissioncategory' => 5, 'permissiontype' => 20),
+
+			array('permissioncategory' => 6, 'permissiontype' => 21),
+			array('permissioncategory' => 6, 'permissiontype' => 22),
+			array('permissioncategory' => 6, 'permissiontype' => 23),
+			array('permissioncategory' => 6, 'permissiontype' => 24)
 		);
 
 		DB::table('permissioncategorytype')->insert($permissioncategorytype);
