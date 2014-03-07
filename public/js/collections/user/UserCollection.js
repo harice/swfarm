@@ -19,7 +19,7 @@ define([
 			
 		},
 		
-		getModelsPerPage: function(page, numPerPage, callback) {
+		getModelsPerPage: function(page, numPerPage) {
 			//console.log('getModelsPerPage');
 			
 			var thisObj = this;
@@ -43,14 +43,13 @@ define([
 						
 						thisObj.options.maxItem = data.total;
 						
-						var getType = {};
-						if(callback && getType.toString.call(callback) === '[object Function]')
-							callback(thisObj);
+						thisObj.trigger('sync');
 					}
 					else
 						alert(jqXHR.statusText);
 				},
 				error:  function (jqXHR, textStatus, errorThrown) {
+					thisObj.trigger('error');
 					alert(jqXHR.statusText);
 				},
 			});

@@ -20,8 +20,17 @@ define([
 		
 			this.collection = new PermissionCategoryTypeCollection();
 			this.collection.on('sync', function() {
-				thisObj.model.getPermission(thisObj.options.id);
+				//console.log('collection.on.sync')
+				thisObj.model.fetchPermission(thisObj.options.id);
 				this.off('sync');
+			});
+			
+			this.collection.on('error', function(collection, response, options) {
+				//console.log('collection.on.error')
+				//console.log(collection);
+				//console.log(response);
+				//console.log(options);
+				this.off('error');
 			});
 			
 			this.model = new RoleModel();
@@ -51,28 +60,19 @@ define([
 		},
 		
 		displayList: function () {
-			var roleAttributes = this.model.toJSON();
-			var rolePermissions = new Array();
+			var thisObj = this;
 			
-			_.each(roleAttributes.permission_category_type, function (permission) {
-				rolePermissions.push(permission.id);
-			});
+			$('#permission-list thead tr').append('<th>'+this.model.get('name')+'</th>');
 			
-			var permissions = this.getFormattedPermissionArray();
+			var data = {
+				permissions:  thisObj.collection.getFormattedPermissionArray(),
+				rolePermissions: thisObj.model.getPermissionIds(),
+				_: _ 
+			};
 			
-			$('#permission-list thead tr').append('<th>'+roleAttributes.name+'</th>');
-			//$('#role').val(roleAttributes.id);
+			var innerListTemplate = _.template(permissionInnerListTemplate, data);
+			$("#permission-list tbody").html(innerListTemplate);
 			
-			for(var i in permissions) {
-				if(typeof permissions[i] !== 'function') {
-					$("#permission-list tbody").append('<tr><td colspan="2"><strong>'+i+'</strong></td></tr>');
-					for(var ii=0; ii < permissions[i].length; ii++) {
-						var checked = (rolePermissions.indexOf(permissions[i][ii].id) != -1)? ' checked' : '';
-						var checkbox = '<input type="checkbox" name="permission" value="'+permissions[i][ii].id+'"'+checked+'>';
-						$("#permission-list tbody").append('<tr><td>'+permissions[i][ii].name+'</td><td>'+checkbox+'</td></tr>');
-					}
-				}
-			}
 			$('.form-button-container').show();
 			
 			var validate = $('#addPermissionToRoleForm').validate({
@@ -82,34 +82,13 @@ define([
 					if(typeof data.permission != 'undefined' && typeof data.permission != 'string')
 						data.permission = data.permission.join(',');
 					
-					data.id = roleAttributes.id;
+					data.id = thisObj.model.get('id');
 					
 					var roleModel = new RoleModel(data);
 					roleModel.savePermissions();
 				}
 			});
 			
-		},
-		
-		getFormattedPermissionArray: function (permissionCollection) {
-			var permissions = new Array();
-			
-			_.each(this.collection.models, function (permissionModel) {
-				permissions.push(permissionModel.toJSON());
-			});
-			
-			
-			var formatted = {};
-			for(var i in permissions) {
-				if(typeof permissions[i] !== 'function') {
-					var category = permissions[i].permission_category[0].name;
-					if(typeof formatted[category] == 'undefined')
-						formatted[category] = new Array();
-					formatted[category].push({id:permissions[i].permission_type[0].id, name:permissions[i].permission_type[0].name});
-				}
-			}
-			
-			return formatted;
 		},
 	});
 
