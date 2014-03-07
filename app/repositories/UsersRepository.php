@@ -95,7 +95,7 @@ class UsersRepository implements UsersRepositoryInterface {
     $user->save();
 
     //send email verification
-    $this->sendEmailVerification($user, $generatedPassword);
+    $emailStatus = $this->sendEmailVerification($user, $generatedPassword);
 
     //saving user roles posted by client
     if(isset($data['roles']) && $data['roles'] != ''){
@@ -105,7 +105,9 @@ class UsersRepository implements UsersRepositoryInterface {
 
   	return Response::json(array(
   	    'error' => false,
-  	    'user' => $user->toArray()),
+  	    'user' => $user->toArray(),
+        'emailStatus' => $emailStatus
+        ),
   	    200
   	);
   }
@@ -257,11 +259,11 @@ class UsersRepository implements UsersRepositoryInterface {
     $data = array(
         'email' => $userObj->email,
         'password' => $password,
-        'confirmcodeHashed'  => urlencode(Hash::make($userObj->confirmcode))
+        'verifyUrl' => url('apiv1/verifyAccount?passkey='.urlencode($userObj->confirmcode))
     );
-    
+    Mail::pretend();
     // use Mail::send function to send email passing the data and using the $user variable in the closure
-    Mail::send('emails.emailVerification', $data, function($message) use ($user)
+    return Mail::send('emails.emailVerification', $data, function($message) use ($user)
     {
       $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator');
       $message->to($user['email'], $user['name'])->subject('Southwest Farm - Verify your account');
@@ -270,7 +272,8 @@ class UsersRepository implements UsersRepositoryInterface {
 
   public function verifyAccount($confirmcode){
     $confirmcode = urldecode($confirmcode);
-    $user = User::where('confirmcode', '=', $confirmcode);
+    echo $confirmcode;
+    $user = User::where('confirmcode', '=', $confirmcode)->first();
     if($user){
       $user->validated = 1;
       $user->save();
@@ -281,7 +284,7 @@ class UsersRepository implements UsersRepositoryInterface {
       $message = "User with that confirmation code not found";
     }
 
-    $response = Response::json(array(
+    return Response::json(array(
         'error' => $error,
         'message' => $message),
         200
