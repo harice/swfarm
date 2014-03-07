@@ -16,7 +16,7 @@ class Roles extends Eloquent {
 	// }
 
 	public function user(){
-		return $this->belongsToMany('User', 'UserRoles', 'user', 'role');
+		return $this->belongsToMany('User', 'userroles', 'user', 'role');
 	}
 
 	public function permissionCategoryType(){
