@@ -10,14 +10,9 @@ require.config({
 		bootstrap: 'libs/bootstrap/bootstrap.min',
 		underscore: 'libs/underscore/underscore-min',
 		backbone: 'libs/backbone/backbone-min',
-		base64: 'libs/base64/base64.min',
 		templates: '../templates'
 	},
 	shim: {
-		'base64': {
-			deps:['jquery'],
-			exports: 'Base64'
-		},
 		'backbone': {
 			deps: ['underscore', 'jquery'],
 			exports: 'Backbone'

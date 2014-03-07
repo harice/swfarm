@@ -22,7 +22,7 @@ class AuditController extends BaseController {
 	 */
 	public function index()
 	{
-    return $this->audit->paginate(Input::get());
+        return $this->audit->paginate(Input::get());
 	}
 
 	/**
