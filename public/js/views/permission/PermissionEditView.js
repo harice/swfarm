@@ -54,14 +54,14 @@ define([
 			var roleAttributes = this.model.toJSON();
 			var rolePermissions = new Array();
 			
-			_.each(roleAttributes.permission, function (permission) {
-				rolePermissions.push(permission.permissioncategorytype);
+			_.each(roleAttributes.permission_category_type, function (permission) {
+				rolePermissions.push(permission.id);
 			});
 			
 			var permissions = this.getFormattedPermissionArray();
 			
 			$('#permission-list thead tr').append('<th>'+roleAttributes.name+'</th>');
-			$('#role').val(roleAttributes.id);
+			//$('#role').val(roleAttributes.id);
 			
 			for(var i in permissions) {
 				if(typeof permissions[i] !== 'function') {
@@ -82,6 +82,7 @@ define([
 					if(typeof data.permission != 'undefined' && typeof data.permission != 'string')
 						data.permission = data.permission.join(',');
 					
+					data.id = roleAttributes.id;
 					
 					var roleModel = new RoleModel(data);
 					roleModel.savePermissions();

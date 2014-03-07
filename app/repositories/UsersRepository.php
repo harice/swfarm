@@ -95,7 +95,7 @@ class UsersRepository implements UsersRepositoryInterface {
     $user->save();
 
     //send email verification
-    //$this->sendEmailVerification($user, $generatedPassword);
+    $this->sendEmailVerification($user, $generatedPassword);
 
     //saving user roles posted by client
     if(isset($data['roles']) && $data['roles'] != ''){
@@ -231,20 +231,39 @@ class UsersRepository implements UsersRepositoryInterface {
   }
 
   public function sendEmailVerification($userObj, $password){
-    var_dump($userObj);
-    // $data = array();
-    // $data['email'] = $email;
-    // $data['emailHashed'] = Hash::make($email);
-    // $data['password'] = $password;
-    // $data['confirmcode'] = $confirmcode;
+    $data = array();
 
-    // Mail::send('emails.emailVerification', $data, function($message)
-    // {
-    //     $message->from('donotreply@swfarm.com', 'SouthWest Farm');
+    $data['email'] = $userObj->email;
+    $data['password'] = $password;
+    $data['confirmcodeHashed'] = urlencode(Hash::make($userObj->confirmcode));
+    
+    Mail::send('emails.emailVerification', $data, function($message) Use ($data)
+    {
+        $message->from('donotreply@swfarm.com', 'SouthWest Farm');
 
-    //     $message->to($email)->cc('avelino.ceriola@elementzinteractive.com');
+        $message->to($data['email'])->cc('avelino.ceriola@elementzinteractive.com');
 
-    // });
+    });
+  }
+
+  public function verifyAccount($confirmcode){
+    $confirmcode = urldecode($confirmcode);
+    $user = User::where('confirmcode', '=', $confirmcode);
+    if($user){
+      $user->validated = 1;
+      $user->save();
+      $error = false;
+      $message = "User account validated";
+    } else {
+      $error = true;
+      $message = "User with that confirmation code not found";
+    }
+
+    $response = Response::json(array(
+        'error' => $error,
+        'message' => $message),
+        200
+    );
   }
 
 }
