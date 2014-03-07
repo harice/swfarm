@@ -95,7 +95,7 @@ class UsersRepository implements UsersRepositoryInterface {
     $user->save();
 
     //send email verification
-    //$this->sendEmailVerification($user, $generatedPassword);
+    $this->sendEmailVerification($user, $generatedPassword);
 
     //saving user roles posted by client
     if(isset($data['roles']) && $data['roles'] != ''){
@@ -230,21 +230,62 @@ class UsersRepository implements UsersRepositoryInterface {
     return new User($data);
   }
 
+  public function sendEmailVerification2($userObj, $password){
+    $data = array();
+
+    $data['email'] = $userObj->email;
+    $data['password'] = $password;
+    $data['confirmcodeHashed'] = urlencode(Hash::make($userObj->confirmcode));
+    //Mail::pretend();
+    Mail::send('emails.emailVerification', $data, function($message) use ($data)
+    {
+        $message->from('donotreply@swfarm.com', 'SouthWest Farm');
+
+        $message->to($data['email'])->cc('avelino.ceriola@elementzinteractive.com');
+
+    });
+  }
+
   public function sendEmailVerification($userObj, $password){
-    var_dump($userObj);
-    // $data = array();
-    // $data['email'] = $email;
-    // $data['emailHashed'] = Hash::make($email);
-    // $data['password'] = $password;
-    // $data['confirmcode'] = $confirmcode;
+    // I'm creating an array with user's info but most likely you can use $user->email or pass $user object to closure later
+    $user = array(
+        'email'=>$userObj->email,
+        'name'=>$userObj->firstname.' '.$userObj->lastname
+    );
+     
+    // the data that will be passed into the mail view blade template
+    $data = array(
+        'email' => $userObj->email,
+        'password' => $password,
+        'confirmcodeHashed'  => urlencode(Hash::make($userObj->confirmcode))
+    );
+    Mail::pretend();
+    // use Mail::send function to send email passing the data and using the $user variable in the closure
+    Mail::send('emails.emailVerification', $data, function($message) use ($user)
+    {
+      $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator');
+      $message->to($user['email'], $user['name'])->subject('Southwest Farm - Verify your account');
+    });
+  }
 
-    // Mail::send('emails.emailVerification', $data, function($message)
-    // {
-    //     $message->from('donotreply@swfarm.com', 'SouthWest Farm');
+  public function verifyAccount($confirmcode){
+    $confirmcode = urldecode($confirmcode);
+    $user = User::where('confirmcode', '=', $confirmcode);
+    if($user){
+      $user->validated = 1;
+      $user->save();
+      $error = false;
+      $message = "User account validated";
+    } else {
+      $error = true;
+      $message = "User with that confirmation code not found";
+    }
 
-    //     $message->to($email)->cc('avelino.ceriola@elementzinteractive.com');
-
-    // });
+    $response = Response::json(array(
+        'error' => $error,
+        'message' => $message),
+        200
+    );
   }
 
 }

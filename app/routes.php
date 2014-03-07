@@ -14,6 +14,7 @@
 /* API ROUTES */
 Route::group(array('prefix' => 'apiv1'), function()
 {
+	Route::get('verifyAccount', 'APIv1\UsersController@verifyAccount');
 	Route::resource('users', 'APIv1\UsersController');
 	Route::get('roles/all', 'APIv1\RolesController@all');
 	Route::resource('roles', 'APIv1\RolesController');
