@@ -56,7 +56,8 @@ define([
 		},
 		
 		displayRoles: function (roleCollection){
-			var checkboxes = '';
+			console.log('displayRoles');
+			var checkboxes = ''; console.log(roleCollection);
 			_.each(roleCollection.models, function (role) {
 				checkboxes += '<div class="checkbox"><label><input type="checkbox" name="roles" value="'+role.get('id')+'">'+role.get('name')+'</label></div>';
 			});

@@ -9,6 +9,7 @@ define([
 		defaults: {
             name: '',
             description: '',
+			permission: '',
         },
 		runFetch: function () {
 			this.fetch({
@@ -16,7 +17,7 @@ define([
 					//console.log('success: UserModel.fetch()');
 					if(typeof response.error != 'undefined') {
 						alert(response.message);
-						Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
+						Global.getGlobalVars().app_router.navigate(Const.URL.ROLE, {trigger: true});
 					}
 				},
 				error: function(model, response, options) {
@@ -24,6 +25,21 @@ define([
 				},
 			});
 		},
+		getPermission: function (id) {
+			this.clear({silent:true});
+			this.urlRoot = '/apiv1/permission/'+id;
+			this.runFetch();
+		},
+		savePermissions: function () {
+			this.urlRoot = '/apiv1/permission',
+			this.save(null, {success: function (model, response, options) {
+			}, error: function (model, response, options) {
+				if(typeof response.responseJSON.error == 'undefined')
+					validate.showErrors(response.responseJSON);
+				else
+					alert(response.responseText);
+			}});
+		}
 	});
 
 	return RoleModel;

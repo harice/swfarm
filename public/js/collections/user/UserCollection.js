@@ -56,13 +56,17 @@ define([
 			});
 		},
 		
+		getDefaultURL: function () {
+			return '/apiv1/users';
+		},
+		
 		setDefaultURL: function () {
-			this.url = '/apiv1/users';
+			this.url = this.getDefaultURL();
 		},
 		
 		setPaginationURL: function (page, numPerPage) {	
 			var orderBy = (this.options.sort[this.options.currentSort])? 'asc' : 'desc';
-			this.url = '/apiv1/users' + '?' + $.param({perpage: numPerPage, page: page, sortby:this.options.currentSort, orderby:orderBy});
+			this.url = this.getDefaultURL() + '?' + $.param({perpage: numPerPage, page: page, sortby:this.options.currentSort, orderby:orderBy});
 		},
 	});
 

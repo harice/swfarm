@@ -2,15 +2,24 @@ define([
 	'backbone',
 	'models/role/RoleModel',
 ], function(Backbone, RoleModel){
-	var UserCollection = Backbone.Collection.extend({
-		url: '/apiv1/roles',
+	var AuditTrailCollection = Backbone.Collection.extend({
+		url: '/apiv1/audit',
 		model: RoleModel,
 		options: {
 			currentPage: 1,
 			maxItem: 0,
+			currentSort: 'created_at',
+			sort: {
+				created_at: true,
+			},
+			show: {
+				type: null,
+				id: null,
+			},
 		},
 		initialize: function(){
-			
+			this.options.show.type = null;
+			this.options.show.id = null;
 		},
 		
 		getAllModels: function (callback, args) {
@@ -18,9 +27,7 @@ define([
 			this.setGetAllURL();
 			this.fetch({
 				success: function (collection, response, options) {
-					var getType = {};
-					if(callback && getType.toString.call(callback) === '[object Function]')
-						callback(thisObj, args);
+					callback(thisObj, args);
 				},
 				error: function (collection, response, options) {
 					if(typeof response.responseJSON.error == 'undefined')
@@ -71,7 +78,7 @@ define([
 		},
 		
 		getDefaultURL: function () {
-			return '/apiv1/roles';
+			return '/apiv1/audit';
 		},
 		
 		setDefaultURL: function () {
@@ -83,9 +90,13 @@ define([
 		},
 		
 		setPaginationURL: function (page, numPerPage) {	
-			this.url = this.getDefaultURL() + '?' + $.param({perpage: numPerPage, page: page});
+			var orderBy = (this.options.sort[this.options.currentSort])? 'asc' : 'desc';
+			var type = (this.options.show.type != null)? this.options.show.type : '';
+			var dataId = (this.options.show.id != null)? this.options.show.id : '';	
+			
+			this.url = this.getDefaultURL() + '?' + $.param({perpage: numPerPage, page: page, sortby:this.options.currentSort, orderby:orderBy, type:type, data_id:dataId});
 		},
 	});
 
-	return UserCollection;
+	return AuditTrailCollection;
 });

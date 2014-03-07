@@ -1,10 +1,10 @@
 define([
 	'backbone',
-	'models/role/RoleModel',
-], function(Backbone, RoleModel){
-	var UserCollection = Backbone.Collection.extend({
-		url: '/apiv1/roles',
-		model: RoleModel,
+	'models/permission/PermissionCategoryTypeModel',
+], function(Backbone, PermissionCategoryTypeModel){
+	var PermissionCategoryTypeCollection = Backbone.Collection.extend({
+		url: '/apiv1/permission',
+		model: PermissionCategoryTypeModel,
 		options: {
 			currentPage: 1,
 			maxItem: 0,
@@ -29,12 +29,6 @@ define([
 						alert(response.responseText);
 				},
 			})
-		},
-		
-		getModelsPerPage: function(page, numPerPage, callback) {
-			//console.log('getModelsPerPage');
-			this.setPaginationURL(page, numPerPage);
-			this.getModels(callback);
 		},
 		
 		getModels: function (callback, args) {
@@ -71,7 +65,7 @@ define([
 		},
 		
 		getDefaultURL: function () {
-			return '/apiv1/roles';
+			return '/apiv1/permission';
 		},
 		
 		setDefaultURL: function () {
@@ -79,13 +73,9 @@ define([
 		},
 		
 		setGetAllURL: function () {
-			this.url = this.getDefaultURL()+'/all';
-		},
-		
-		setPaginationURL: function (page, numPerPage) {	
-			this.url = this.getDefaultURL() + '?' + $.param({perpage: numPerPage, page: page});
+			this.url = this.getDefaultURL()+'/getAllPermissionCategoryType';
 		},
 	});
 
-	return UserCollection;
+	return PermissionCategoryTypeCollection;
 });

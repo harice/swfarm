@@ -2,7 +2,7 @@ define([
 	'backbone',
 	'views/permission/PermissionListView',
 	'views/permission/PermissionEditView',
-], function(Backbone, PermissionListView, PermissionEditView){
+], function(Backbone, PermissionListView, PermissionEditView) {
 	
 	function RoleController () {	
 		
