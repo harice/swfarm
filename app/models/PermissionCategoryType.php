@@ -13,7 +13,11 @@ class PermissionCategoryType extends Eloquent {
     	return $this->hasMany('PermissionCategory', 'id', 'permissioncategory');
     }
 
-    public function permission(){
-    	return $this->belongsTo('Permission');
+    // public function permission(){
+    // 	return $this->belongsTo('Permission');
+    // }
+
+    public function roles(){
+        return $this->belongsToMany('Roles', 'Permission', 'permissioncategorytype', 'role');
     }
 }
