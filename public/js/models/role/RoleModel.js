@@ -25,7 +25,7 @@ define([
 				},
 			});
 		},
-		getPermission: function (id) {
+		fetchPermission: function (id) {
 			this.clear({silent:true});
 			this.urlRoot = '/apiv1/permission/'+id;
 			this.runFetch();
@@ -33,13 +33,24 @@ define([
 		savePermissions: function () {
 			this.urlRoot = '/apiv1/permission',
 			this.save(null, {success: function (model, response, options) {
+				Global.getGlobalVars().app_router.navigate(Const.URL.ROLE, {trigger: true});
 			}, error: function (model, response, options) {
 				if(typeof response.responseJSON.error == 'undefined')
 					validate.showErrors(response.responseJSON);
 				else
 					alert(response.responseText);
 			}});
-		}
+		},
+		getPermissionIds: function () {
+			var roleAttributes = this.toJSON();
+			var rolePermissions = new Array();
+			
+			_.each(roleAttributes.permission_category_type, function (permission) {
+				rolePermissions.push(permission.id);
+			});
+			
+			return rolePermissions;
+		},
 	});
 
 	return RoleModel;

@@ -12,13 +12,27 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
+			var thisObj = this;
+			
 			this.collection = new RoleCollection();
+			this.collection.on('sync', function() {
+				//console.log('collection.on.sync')
+				thisObj.displayList();
+			});
+			
+			this.collection.on('error', function(collection, response, options) {
+				//console.log('collection.on.error')
+				//console.log(collection);
+				//console.log(response);
+				//console.log(options);
+				this.off('error');
+			});
 		},
 		
 		render: function(){
 			this.displayRole();
 			this.collection.options.currentPage = 1;
-			this.collection.getModelsPerPage(this.collection.options.currentPage , Const.MAXITEMPERPAGE, this.displayList);
+			this.collection.getModelsPerPage(this.collection.options.currentPage , Const.MAXITEMPERPAGE);
 		},
 		
 		displayRole: function () {
@@ -32,12 +46,12 @@ define([
 			this.$el.html(compiledTemplate);
 		},
 		
-		displayList: function (roleCollection) {
+		displayList: function () {
 			var data = {
 				role_url: '#/'+Const.URL.ROLE,
 				role_edit_url: '#/'+Const.URL.ROLE+'/'+Const.CRUD.EDIT,
 				permission_edit_url: '#/'+Const.URL.PERMISSION,
-				roles: roleCollection.models,
+				roles: this.collection.models,
 				_: _ 
 			};
 			
@@ -45,7 +59,7 @@ define([
 			$("#role-list tbody").html(innerListTemplate);
 			
 			$('.page-number').remove();
-			var lastPage = Math.ceil(roleCollection.options.maxItem / Const.MAXITEMPERPAGE);
+			var lastPage = Math.ceil(this.collection.options.maxItem / Const.MAXITEMPERPAGE);
 			
 			if(lastPage > 1) {
 				$('.pagination').show();
@@ -54,7 +68,7 @@ define([
 					var active = '';
 					var activeValue = '';
 					
-					if(i == roleCollection.options.currentPage) {
+					if(i == this.collection.options.currentPage) {
 						active = ' class="active"';
 						activeValue = ' <span class="sr-only">(current)</span>';
 					}
@@ -76,7 +90,7 @@ define([
 		gotoFirstPage: function () {
 			if(this.collection.options.currentPage != 1) {
 				this.collection.options.currentPage = 1;
-				this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE, this.displayList);
+				this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
 			}
 			
 			return false;
@@ -86,7 +100,7 @@ define([
 			var lastPage = Math.ceil(this.collection.options.maxItem / Const.MAXITEMPERPAGE);
 			if(this.collection.options.currentPage != lastPage) {
 				this.collection.options.currentPage = lastPage;
-				this.collection.getModelsPerPage(lastPage , Const.MAXITEMPERPAGE, this.displayList);
+				this.collection.getModelsPerPage(lastPage , Const.MAXITEMPERPAGE);
 			}
 			
 			return false;
@@ -96,7 +110,7 @@ define([
 			var page = $(ev.target).attr('data-pagenum');
 			if(this.collection.options.currentPage != page) {
 				this.collection.options.currentPage = page;
-				this.collection.getModelsPerPage(page , Const.MAXITEMPERPAGE, this.displayList);
+				this.collection.getModelsPerPage(page , Const.MAXITEMPERPAGE);
 			}
 			
 			return false;
