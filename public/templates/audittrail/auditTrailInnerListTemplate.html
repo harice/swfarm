@@ -2,6 +2,7 @@
 	<tr>
 		<td><a href="<%= audittrail_url %>/<%= trail.get("type") %>"><%= trail.get("type") %></a></td>
 		<td><%= trail.get("created_at") %></td>
+		<td><%= trail.get("user") %></td>
 		<td><%= trail.get("event") %></td>
 		<td>
 			<ul>
