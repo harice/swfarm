@@ -1,0 +1,16 @@
+<% _.each(audittrail, function(trail){ %>
+	<tr>
+		<td><a href="<%= audittrail_url %>/<%= trail.get("type") %>"><%= trail.get("type") %></a></td>
+		<td><%= trail.get("created_at") %></td>
+		<td><%= trail.get("event") %></td>
+		<td>
+			<ul>
+			<% _.each(trail.get("value"), function(value, key){ %>
+				<li><%= key %>: <%= value %></li>
+			<% }); %>
+			<ul>
+		</td>
+		<td><a href="<%= audittrail_url %>/<%= trail.get("type") %>/<%= trail.get("data_id") %>">View History</a></td>
+	</tr>
+<% }); %>
+
