@@ -3,6 +3,22 @@
 class PermissionRepository implements PermissionRepositoryInterface {
 
   public function update($id, $data){
+      
+      
+        // This needs to be moved
+        // Log on audit trail
+        $_data = Permission::find($data["id"]);
+        $event_data = array(
+                'type' => 'Permission',
+                'user' => Auth::user()->lastname . ', ' . Auth::user()->firstname,
+                'data_id' => $id,
+                'event' => 'Updated',
+                'value' => serialize($_data)
+            );
+
+        $audit = new Audit($event_data);
+        $audit->save();
+      
    $role = Roles::find($id);
     if($data['permission'] != ''){
       //client must pass value in comma separated format

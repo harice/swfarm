@@ -2,7 +2,7 @@
 
 foreach(Config::get('constants.AUDIT') as $class) {
     $class::created(function($_data){
-
+        
         if (Auth::check()) {
             $user = Auth::user()->lastname . ', ' . Auth::user()->firstname;
         } else {
@@ -39,7 +39,7 @@ foreach(Config::get('constants.AUDIT') as $class) {
                 'event' => Config::get('constants.AUDIT_UPDATED'),
                 'value' => serialize($_data)
             );
-
+        
         $audit = new Audit($data);
         $audit->save();
     });
