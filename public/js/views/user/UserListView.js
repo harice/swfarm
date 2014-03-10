@@ -146,10 +146,8 @@ define([
 		searchEmail: function () {
 			var keyword = $('#search-keyword').val();
 			
-			if(keyword != '') {
-				this.collection.options.search = keyword;
-				this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE, this.displayList);
-			}
+			this.collection.options.search = keyword;
+			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE, this.displayList);
 		},
 		
 	});
