@@ -273,23 +273,33 @@ class UsersRepository implements UsersRepositoryInterface {
 
   public function verifyAccount($confirmcode){
     $confirmcode = urldecode($confirmcode);
-    echo $confirmcode;
     $user = User::where('confirmcode', '=', $confirmcode)->first();
+    $data = array();
     if($user){
-      $user->validated = 1;
-      $user->save();
-      $error = false;
-      $message = "User account validated";
+      $data['firstname'] = ucfirst($user->firstname);
+      $data['lastname'] = ucfirst($user->lastname);
+      if($user->validated == 0) { //Account is not yet validated
+        $user->validated = 1;
+        $user->save();
+        $data['error'] = false;
+        $data['message'] = "Your user account is now validated. Click <a href='".url()."''>here</a> to login to Southwest Farm application.";
+      } else {
+        $data['error'] = true;
+        $data['message'] = "User account is already validated. Click <a href='".url()."''>here</a> to login to Southwest Farm application.";
+      }
     } else {
-      $error = true;
-      $message = "User with that confirmation code not found";
+      $data['error'] = true;
+      $data['message'] = "User with that confirmation code not found. Please check the link and try again.";
     }
 
-    return Response::json(array(
-        'error' => $error,
-        'message' => $message),
-        200
-    );
+    return View::make('verifyAccount', $data);
+
+    // return Response::json(array(
+    //     'error' => $data['error'],
+    //     'message' => $data['message']),
+    //     200
+    // );
+  
   }
 
 }
