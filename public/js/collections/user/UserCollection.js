@@ -14,6 +14,7 @@ define([
 				lastname: true,
 				email: true,
 			},
+			search: '',
 		},
 		initialize: function(){
 			
@@ -64,9 +65,13 @@ define([
 			this.url = this.getDefaultURL();
 		},
 		
-		setPaginationURL: function (page, numPerPage) {	
+		setPaginationURL: function (page, numPerPage) {
+			var searchURL = '';
+			if(this.options.search != '')
+				searchURL = '/search';
+		
 			var orderBy = (this.options.sort[this.options.currentSort])? 'asc' : 'desc';
-			this.url = this.getDefaultURL() + '?' + $.param({perpage: numPerPage, page: page, sortby:this.options.currentSort, orderby:orderBy});
+			this.url = this.getDefaultURL() + searchURL + '?' + $.param({perpage: numPerPage, page: page, sortby:this.options.currentSort, orderby:orderBy, search:this.options.search});
 		},
 	});
 

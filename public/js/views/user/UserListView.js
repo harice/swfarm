@@ -90,6 +90,7 @@ define([
 			'click .sort-lastname' : 'sortLastname',
 			'click .sort-firstname' : 'sortFirstname',
 			'click .sort-email' : 'sortEmail',
+			'click .user-search' : 'searchEmail',
 		},
 		
 		gotoFirstPage: function () {
@@ -141,6 +142,16 @@ define([
 			this.collection.options.currentPage = 1;
 			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE, this.displayList);
 		},
+		
+		searchEmail: function () {
+			var keyword = $('#search-keyword').val();
+			
+			if(keyword != '') {
+				this.collection.options.search = keyword;
+				this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE, this.displayList);
+			}
+		},
+		
 	});
 
   return UserListView;
