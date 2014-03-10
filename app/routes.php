@@ -14,6 +14,7 @@
 /* API ROUTES */
 Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 {
+	Route::get('users/search', 'APIv1\UsersController@search');
 	Route::get('users/auth', 'APIv1\UsersController@auth');
 	Route::get('verifyAccount', 'APIv1\UsersController@verifyAccount');
 	Route::resource('users', 'APIv1\UsersController');

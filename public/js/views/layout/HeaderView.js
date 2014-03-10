@@ -35,6 +35,7 @@ define([
 				'menu'			: Const.MENU,
 				'token'			: Session.get('token'),
 				'permission'	: Session.get('permission'),
+				'su'			: Session.get('su'),
 			};
 
 			var compiledTemplate = _.template(headerTemplate, innerTemplateVariables);
