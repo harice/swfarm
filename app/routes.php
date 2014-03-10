@@ -15,7 +15,6 @@
 Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 {
 	Route::get('users/auth', 'APIv1\UsersController@auth');
-	Route::get('verifyAccount', 'APIv1\UsersController@verifyAccount');
 	Route::resource('users', 'APIv1\UsersController');
 	
 	Route::get('roles/all', 'APIv1\RolesController@all');
@@ -25,6 +24,12 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 	Route::resource('permission', 'APIv1\PermissionController');
 
   	Route::resource('audit', 'APIv1\AuditController');
+});
+
+/* API ROUTES without HTTP Basic */
+Route::group(array('prefix' => 'apiv1'), function()
+{
+	Route::get('verifyAccount', 'APIv1\UsersController@verifyAccount');
 });
 
 
