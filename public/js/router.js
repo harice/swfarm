@@ -19,7 +19,10 @@ define([
 	//login
 	routerRoutes[Const.URL.LOGIN] = 'showLoginPage';
 	routerRoutes[Const.URL.LOGIN+'/'] = 'showLoginPage';
-	routerRoutes[Const.URL.USER+'/:action'] = 'showLoginPage';
+	routerRoutes[Const.URL.LOGIN+'/:action'] = 'showLoginPage';
+
+	//logout
+	routerRoutes[Const.URL.LOGOUT] = 'processLogOut';
 	
 	//admin
 	routerRoutes[Const.URL.ADMIN] = 'showAdminPage';
@@ -65,8 +68,18 @@ define([
 			var needAuth = _.contains(this.requiresAuthExcept, path);
 			var cancelAccess = _.contains(this.preventAccessWhenAuth, path);
 
+			if(path === '#/'+Const.URL.LOGOUT && isAuth)
+			{
+				Session.clear();
+				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
+				var headerView = new HeaderView();
+        		headerView.render();
+			}
+
 			if(!needAuth && !isAuth){
-				Session.set('redirectFrom', path);
+				if(path != '#/'+Const.URL.LOGOUT)
+					Session.set('redirectFrom', path);
+
 				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
 			}else if(isAuth && cancelAccess){
 				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.DASHBOARD, { trigger : true });
@@ -101,6 +114,7 @@ define([
 		
 		app_router.on('route:showLoginPage',function (action) {
 			this.closeView();
+
 			var loginController = new LoginController();
 			this.currView = loginController.setAction(action);
 			this.currView.render();
@@ -143,6 +157,9 @@ define([
 		app_router.on('route:defaultAction', function (actions) {
 			this.closeView();
 			console.log('default page');
+
+			var headerView = new HeaderView();
+        	headerView.render();
 		});
 		
 		Global.getGlobalVars().app_router = app_router;
