@@ -10,7 +10,7 @@ define([
 			maxItem: 0,
 			currentSort: 'created_at',
 			sort: {
-				created_at: true,
+				created_at: false,
 			},
 			show: {
 				type: null,
@@ -68,7 +68,7 @@ define([
 			this.url = this.getDefaultURL()+'/all';
 		},
 		
-		setPaginationURL: function (page, numPerPage) {	
+		setPaginationURL: function (page, numPerPage) {
 			var orderBy = (this.options.sort[this.options.currentSort])? 'asc' : 'desc';
 			var type = (this.options.show.type != null)? this.options.show.type : '';
 			var dataId = (this.options.show.id != null)? this.options.show.id : '';	
