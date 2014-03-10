@@ -1,8 +1,9 @@
 define([
 	'backbone',
 	'text!templates/layout/headerTemplate.html',
-	'constant'
-], function(Backbone, headerTemplate, Const){
+	'constant',
+	'models/session/SessionModel'
+], function(Backbone, headerTemplate, Const, Session){
 
 	var HeaderView = Backbone.View.extend({
 		el: $("#header"),
@@ -19,6 +20,21 @@ define([
 				'role_url': '#/'+Const.URL.ROLE,
 				'permission_url': '#/'+Const.URL.PERMISSION,
 				'audittrail_url': '#/'+Const.URL.AUDITTRAIL,
+
+				'contacts_url'	: '#/',
+				'accounts_url'	: '#/',
+				'purchases_url'	: '#/',
+				'sales_url'		: '#/',
+				'inventory_url'	: '#/',
+				'products_url'	: '#/',
+				'reports_url'	: '#/',
+
+				'logout_url'	: '#/'+Const.URL.LOGOUT,
+				'login_url'		: '#/'+Const.URL.LOGIN,
+
+				'menu'			: Const.MENU,
+				'token'			: Session.get('token'),
+				'permission'	: Session.get('permission'),
 			};
 
 			var compiledTemplate = _.template(headerTemplate, innerTemplateVariables);

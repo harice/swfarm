@@ -234,7 +234,34 @@ class UsersRepository implements UsersRepositoryInterface {
   }
 
   public function auth() {
-    return $this->findById(Auth::user()->id);
+    $userroles = DB::table('userroles')->where('user','=', Auth::user()->id)->select('role')->get();
+
+    $role_ids = array();
+    $permission_ids = array();
+    if(sizeof($userroles) > 0)
+    {
+      foreach ($userroles as $k) {
+        $role_ids[] = intval($k->role);
+      }
+
+      $permission = DB::table('permission')->whereIn('role',$role_ids)->groupBy('permissioncategorytype')->select('permissioncategorytype')->get();
+      if(sizeof($permission) > 0) {
+        foreach ($permission as $k) {
+          $permission_ids[] = intval($k->permissioncategorytype);
+        }
+      }
+    }
+
+    $user['id'] = Auth::user()->id;
+    $user['firstname'] = Auth::user()->firstname;
+    $user['lastname'] = Auth::user()->firstname;
+    $user['suffix'] = Auth::user()->firstname;
+
+    return Response::json(array(
+          'user' => $user,
+          'permission' => $permission_ids),
+          200
+      );
   }
 
   public function sendEmailVerification2($userObj, $password){

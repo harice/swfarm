@@ -67,12 +67,12 @@ define([
           });
 
           login.done(function(response){
-              that.set('su', response.id);
-              that.set('firstname', response.firstname);
-              that.set('lastname', response.lastname);
-              that.set('suffix', response.suffix);
+              that.set('su', response.user.id);
+              that.set('firstname', response.user.firstname);
+              that.set('lastname', response.user.lastname);
+              that.set('suffix', response.user.suffix);
+              that.set('permission', response.permission);
               that.set('token', token);
-              that.set('roles', response.roles);
 
               if(that.get('redirectFrom')){
                  var path = that.get('redirectFrom');
