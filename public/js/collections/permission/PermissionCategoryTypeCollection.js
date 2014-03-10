@@ -13,14 +13,11 @@ define([
 			
 		},
 		
-		getAllModels: function (callback, args) {
+		getAllModels: function () {
 			var thisObj = this;
 			this.setGetAllURL();
 			this.fetch({
 				success: function (collection, response, options) {
-					var getType = {};
-					if(callback && getType.toString.call(callback) === '[object Function]')
-						callback(thisObj, args);
 				},
 				error: function (collection, response, options) {
 					if(typeof response.responseJSON.error == 'undefined')
@@ -28,40 +25,8 @@ define([
 					else
 						alert(response.responseText);
 				},
+				headers: thisObj.getAuth(),
 			})
-		},
-		
-		getModels: function (callback, args) {
-			var thisObj = this;
-		
-			this.sync('read', this, {
-				success: function (data, textStatus, jqXHR) {
-					//console.log('success: getModelsPerPage');
-					//console.log(data);
-					//console.log(jqXHR);
-					
-					if(textStatus == 'success') {
-						var roles = data.data;
-						
-						thisObj.reset();
-						
-						_.each(roles, function (role) {
-							thisObj.add(new RoleModel(role));
-						});
-						
-						thisObj.options.maxItem = data.total;
-						
-						var getType = {};
-						if(callback && getType.toString.call(callback) === '[object Function]')
-							callback(thisObj, args);
-					}
-					else
-						alert(jqXHR.statusText);
-				},
-				error:  function (jqXHR, textStatus, errorThrown) {
-					alert(jqXHR.statusText);
-				},
-			});
 		},
 		
 		getDefaultURL: function () {
@@ -74,6 +39,26 @@ define([
 		
 		setGetAllURL: function () {
 			this.url = this.getDefaultURL()+'/getAllPermissionCategoryType';
+		},
+		
+		getFormattedPermissionArray: function () {
+			var permissions = new Array();
+			
+			_.each(this.models, function (permissionModel) {
+				permissions.push(permissionModel.toJSON());
+			});
+			
+			var formatted = {};
+			for(var i in permissions) {
+				if(typeof permissions[i] !== 'function') {
+					var category = permissions[i].permission_category[0].name;
+					if(typeof formatted[category] == 'undefined')
+						formatted[category] = new Array();
+					formatted[category].push({id:permissions[i].permission_type[0].id, name:permissions[i].permission_type[0].name});
+				}
+			}
+			
+			return formatted;
 		},
 	});
 

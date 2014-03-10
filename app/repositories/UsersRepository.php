@@ -88,14 +88,15 @@ class UsersRepository implements UsersRepositoryInterface {
   	$user->mobile = $data['mobile'];
   	$user->phone = $data['phone'];
   	$user->position = $data['position'];
-    $generatedPassword = Str::random(10); //replace with this if the system has already email to user features - Hash::make(Str::random(10));
+    // $generatedPassword = Str::random(10); //replace with this if the system has already email to user features - Hash::make(Str::random(10));
+    $generatedPassword = 'elementz123'; //replace with this if the system has already email to user features - Hash::make(Str::random(10));
     $user->confirmcode = Hash::make(Str::random(5)); //use for email verification
     $user->password = Hash::make($generatedPassword);
 
     $user->save();
 
     //send email verification
-    //$this->sendEmailVerification($user, $generatedPassword);
+    $emailStatus = $this->sendEmailVerification($user, $generatedPassword);
 
     //saving user roles posted by client
     if(isset($data['roles']) && $data['roles'] != ''){
@@ -105,7 +106,9 @@ class UsersRepository implements UsersRepositoryInterface {
 
   	return Response::json(array(
   	    'error' => false,
-  	    'user' => $user->toArray()),
+  	    'user' => $user->toArray(),
+        'emailStatus' => $emailStatus
+        ),
   	    200
   	);
   }
@@ -230,21 +233,63 @@ class UsersRepository implements UsersRepositoryInterface {
     return new User($data);
   }
 
+  public function sendEmailVerification2($userObj, $password){
+    $data = array();
+
+    $data['email'] = $userObj->email;
+    $data['password'] = $password;
+    $data['confirmcodeHashed'] = urlencode(Hash::make($userObj->confirmcode));
+    //Mail::pretend();
+    Mail::send('emails.emailVerification', $data, function($message) use ($data)
+    {
+        $message->from('donotreply@swfarm.com', 'SouthWest Farm');
+
+        $message->to($data['email'])->cc('avelino.ceriola@elementzinteractive.com');
+
+    });
+  }
+
   public function sendEmailVerification($userObj, $password){
-    var_dump($userObj);
-    // $data = array();
-    // $data['email'] = $email;
-    // $data['emailHashed'] = Hash::make($email);
-    // $data['password'] = $password;
-    // $data['confirmcode'] = $confirmcode;
+    // I'm creating an array with user's info but most likely you can use $user->email or pass $user object to closure later
+    $user = array(
+        'email'=>$userObj->email,
+        'name'=>$userObj->firstname.' '.$userObj->lastname
+    );
+     
+    // the data that will be passed into the mail view blade template
+    $data = array(
+        'username' => $userObj->username,
+        'password' => $password,
+        'verifyUrl' => url('apiv1/verifyAccount?passkey='.urlencode($userObj->confirmcode))
+    );
+    Mail::pretend();
+    // use Mail::send function to send email passing the data and using the $user variable in the closure
+    return Mail::send('emails.emailVerification', $data, function($message) use ($user)
+    {
+      $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator');
+      $message->to($user['email'], $user['name'])->subject('Southwest Farm - Verify your account');
+    });
+  }
 
-    // Mail::send('emails.emailVerification', $data, function($message)
-    // {
-    //     $message->from('donotreply@swfarm.com', 'SouthWest Farm');
+  public function verifyAccount($confirmcode){
+    $confirmcode = urldecode($confirmcode);
+    echo $confirmcode;
+    $user = User::where('confirmcode', '=', $confirmcode)->first();
+    if($user){
+      $user->validated = 1;
+      $user->save();
+      $error = false;
+      $message = "User account validated";
+    } else {
+      $error = true;
+      $message = "User with that confirmation code not found";
+    }
 
-    //     $message->to($email)->cc('avelino.ceriola@elementzinteractive.com');
-
-    // });
+    return Response::json(array(
+        'error' => $error,
+        'message' => $message),
+        200
+    );
   }
 
 }

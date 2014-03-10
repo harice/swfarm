@@ -40,7 +40,8 @@ define([
 							validate.showErrors(response.responseJSON);
 						else
 							alert(response.responseText);
-					}});
+					},
+					headers: roleModel.getAuth(),});
 				}
 			});
 		},

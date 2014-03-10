@@ -13,14 +13,11 @@ define([
 			
 		},
 		
-		getAllModels: function (callback, args) {
+		getAllModels: function () {
 			var thisObj = this;
 			this.setGetAllURL();
 			this.fetch({
 				success: function (collection, response, options) {
-					var getType = {};
-					if(callback && getType.toString.call(callback) === '[object Function]')
-						callback(thisObj, args);
 				},
 				error: function (collection, response, options) {
 					if(typeof response.responseJSON.error == 'undefined')
@@ -28,24 +25,20 @@ define([
 					else
 						alert(response.responseText);
 				},
+				headers: thisObj.getAuth(),
 			})
 		},
 		
-		getModelsPerPage: function(page, numPerPage, callback) {
-			//console.log('getModelsPerPage');
+		getModelsPerPage: function(page, numPerPage) {
 			this.setPaginationURL(page, numPerPage);
-			this.getModels(callback);
+			this.getModels();
 		},
 		
-		getModels: function (callback, args) {
+		getModels: function () {
 			var thisObj = this;
 		
 			this.sync('read', this, {
 				success: function (data, textStatus, jqXHR) {
-					//console.log('success: getModelsPerPage');
-					//console.log(data);
-					//console.log(jqXHR);
-					
 					if(textStatus == 'success') {
 						var roles = data.data;
 						
@@ -57,16 +50,16 @@ define([
 						
 						thisObj.options.maxItem = data.total;
 						
-						var getType = {};
-						if(callback && getType.toString.call(callback) === '[object Function]')
-							callback(thisObj, args);
+						thisObj.trigger('sync');
 					}
 					else
 						alert(jqXHR.statusText);
 				},
 				error:  function (jqXHR, textStatus, errorThrown) {
+					thisObj.trigger('error');
 					alert(jqXHR.statusText);
 				},
+				headers: thisObj.getAuth(),
 			});
 		},
 		

@@ -25,7 +25,17 @@ class PermissiontypeTableSeeder extends Seeder {
 			array('name' => 'View Contact', 'link' => NULL),
 			array('name' => 'Add Contact', 'link' => 'add'),
 			array('name' => 'Edit Contact', 'link' => NULL),
-			array('name' => 'Delete Contact', 'link' => NULL)
+			array('name' => 'Delete Contact', 'link' => NULL),
+
+			array('name' => 'View User', 'link' => NULL),
+			array('name' => 'Add User', 'link' => 'add'),
+			array('name' => 'Edit User', 'link' => NULL),
+			array('name' => 'Delete User', 'link' => NULL),
+
+			array('name' => 'View Role', 'link' => NULL),
+			array('name' => 'Add Role', 'link' => 'add'),
+			array('name' => 'Edit Role', 'link' => NULL),
+			array('name' => 'Delete Role', 'link' => NULL)
 		);
 
 		DB::table('permissiontype')->insert($permissiontype);

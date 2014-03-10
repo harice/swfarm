@@ -15,7 +15,6 @@ define([
 			
 			this.model = new UserModel({id:option.id});
 			this.model.on("change", function() {
-				console.log('onChange: UserModel');
 				if(this.hasChanged('firstname') && this.hasChanged('lastname') && this.hasChanged('email') && this.hasChanged('username')) {
 					thisObj.displayUser(this);
 					this.off("change");
@@ -48,6 +47,8 @@ define([
 		},
 		
 		removeUser: function (){
+			var thisObj = this;
+			
 			var verifyDelete = confirm('Delete User?');
 			if(verifyDelete) {
 				this.model.destroy({
@@ -61,6 +62,7 @@ define([
 						console.log(response);
 					},
 					wait: true,
+					headers: thisObj.model.getAuth(),
 				});
 			}
 		},
