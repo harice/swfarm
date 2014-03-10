@@ -266,7 +266,7 @@ class UsersRepository implements UsersRepositoryInterface {
         'password' => $password,
         'verifyUrl' => url('apiv1/verifyAccount?passkey='.urlencode($userObj->confirmcode))
     );
-    Mail::pretend();
+    //Mail::pretend();
     // use Mail::send function to send email passing the data and using the $user variable in the closure
     return Mail::send('emails.emailVerification', $data, function($message) use ($user)
     {
