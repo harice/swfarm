@@ -1,0 +1,42 @@
+<dl class="dl-horizontal">
+	<dt>Username</dt><dd><%= user.get("username") %></dd>
+	<dt>Position</dt>
+	<dd>
+		<% if (user.get("position") != "") { %>
+			<%= user.get("position") %>
+		<% } else { %>
+			&nbsp;
+		<% } %>
+	</dd>
+	<dt>Email</dt><dd><%= user.get("email") %></dd>
+	<dt>Phone</dt>
+	<dd>
+		<% if (user.get("phone") != "") { %>
+			<%= user.get("phone") %>
+		<% } else { %>
+			&nbsp;
+		<% } %>
+	</dd>
+	<dt>Mobile</dt>
+	<dd>
+		<% if (user.get("mobile") != "") { %>
+			<%= user.get("mobile") %>
+		<% } else { %>
+			&nbsp;
+		<% } %>
+	</dd>
+	<dt>Roles</dt>
+	<dd>
+		<% _.each(user.get("roles"), function(role){ %>
+			<%= role.name %><br />
+		<% }); %>
+	</dd>
+	<dt></dt>
+	<dd>
+		<div class="clearfix"></div>
+		<br />
+		<a href="<%= user_url %>" class="btn btn-default">Back</a> 
+		<a href="<%= user_edit_url %>/<%= user.get("id") %>" class="btn btn-default">Edit</a>
+		<button id="delete" type="button" class="btn btn-default" value="Delete">Delete</button>
+	</dd>
+</dl>
