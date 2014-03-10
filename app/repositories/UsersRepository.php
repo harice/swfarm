@@ -264,6 +264,25 @@ class UsersRepository implements UsersRepositoryInterface {
       );
   }
 
+  public function search($_search)
+  {
+    $perPage  = isset($_search['perpage']) ? $_search['perpage'] : Config::get('constants.USERS_PER_LIST');
+    $page     = isset($_search['page']) ? $_search['page'] : 1;
+    $sortby   = isset($_search['sortby']) ? $_search['sortby'] : 'lastname';
+    $orderby  = isset($_search['orderby']) ? $_search['orderby'] :'ASC';
+    $offset   = $page * $perPage - $perPage;
+
+    $_user = User::with('roles')->where('firstname','like','%'.$_search['search'].'%')
+                    ->orWhere('lastname','like','%'.$_search['search'].'%')
+                    ->orWhere('email','like','%'.$_search['search'].'%')
+                    ->where('id', '!=', 1)
+                    ->take($perPage)
+                    ->offset($offset)
+                    ->orderBy($sortby, $orderby)
+                    ->get();
+    return Response::json(array('data' => $_user->toArray(), 'total' => $_user->count()),200);
+  }
+
   public function sendEmailVerification2($userObj, $password){
     $data = array();
 

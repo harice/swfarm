@@ -16,6 +16,11 @@ class UsersController extends BaseController {
 		$this->users = $users;
 	}
 
+	public function search()
+	{
+		return $this->users->search( Input::all() );
+	}
+
 	public function auth()
 	{
 		return $this->users->auth();
