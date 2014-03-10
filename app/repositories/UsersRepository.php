@@ -233,6 +233,10 @@ class UsersRepository implements UsersRepositoryInterface {
     return new User($data);
   }
 
+  public function auth() {
+    return $this->findById(Auth::user()->id);
+  }
+
   public function sendEmailVerification2($userObj, $password){
     $data = array();
 
