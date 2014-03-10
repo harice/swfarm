@@ -243,7 +243,7 @@ class UsersRepository implements UsersRepositoryInterface {
     $data['email'] = $userObj->email;
     $data['password'] = $password;
     $data['confirmcodeHashed'] = urlencode(Hash::make($userObj->confirmcode));
-    Mail::pretend();
+    // Mail::pretend();
     Mail::send('emails.emailVerification', $data, function($message) use ($data)
     {
         $message->from('donotreply@swfarm.com', 'SouthWest Farm');
