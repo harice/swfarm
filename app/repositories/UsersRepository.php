@@ -88,14 +88,15 @@ class UsersRepository implements UsersRepositoryInterface {
   	$user->mobile = $data['mobile'];
   	$user->phone = $data['phone'];
   	$user->position = $data['position'];
-    $generatedPassword = Str::random(10); //replace with this if the system has already email to user features - Hash::make(Str::random(10));
+    // $generatedPassword = Str::random(10); //replace with this if the system has already email to user features - Hash::make(Str::random(10));
+    $generatedPassword = 'elementz123'; //replace with this if the system has already email to user features - Hash::make(Str::random(10));
     $user->confirmcode = Hash::make(Str::random(5)); //use for email verification
     $user->password = Hash::make($generatedPassword);
 
     $user->save();
 
     //send email verification
-    $this->sendEmailVerification($user, $generatedPassword);
+    $emailStatus = $this->sendEmailVerification($user, $generatedPassword);
 
     //saving user roles posted by client
     if(isset($data['roles']) && $data['roles'] != ''){
@@ -105,7 +106,9 @@ class UsersRepository implements UsersRepositoryInterface {
 
   	return Response::json(array(
   	    'error' => false,
-  	    'user' => $user->toArray()),
+  	    'user' => $user->toArray(),
+        'emailStatus' => $emailStatus
+        ),
   	    200
   	);
   }
@@ -230,10 +233,6 @@ class UsersRepository implements UsersRepositoryInterface {
     return new User($data);
   }
 
-  public function auth() {
-    return $this->findById(Auth::user()->id);
-  }
-
   public function sendEmailVerification2($userObj, $password){
     $data = array();
 
@@ -259,13 +258,13 @@ class UsersRepository implements UsersRepositoryInterface {
      
     // the data that will be passed into the mail view blade template
     $data = array(
-        'email' => $userObj->email,
+        'username' => $userObj->username,
         'password' => $password,
-        'confirmcodeHashed'  => urlencode(Hash::make($userObj->confirmcode))
+        'verifyUrl' => url('apiv1/verifyAccount?passkey='.urlencode($userObj->confirmcode))
     );
-    
+    Mail::pretend();
     // use Mail::send function to send email passing the data and using the $user variable in the closure
-    Mail::send('emails.emailVerification', $data, function($message) use ($user)
+    return Mail::send('emails.emailVerification', $data, function($message) use ($user)
     {
       $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator');
       $message->to($user['email'], $user['name'])->subject('Southwest Farm - Verify your account');
@@ -274,22 +273,27 @@ class UsersRepository implements UsersRepositoryInterface {
 
   public function verifyAccount($confirmcode){
     $confirmcode = urldecode($confirmcode);
-    $user = User::where('confirmcode', '=', $confirmcode);
+    $user = User::where('confirmcode', '=', $confirmcode)->first();
+    $data = array();
     if($user){
-      $user->validated = 1;
-      $user->save();
-      $error = false;
-      $message = "User account validated";
+      $data['firstname'] = ucfirst($user->firstname);
+      $data['lastname'] = ucfirst($user->lastname);
+      if($user->validated == 0) { //Account is not yet validated
+        $user->validated = 1;
+        $user->save();
+        $data['error'] = false;
+        $data['message'] = "Your user account is now validated. Click <a href='".url()."''>here</a> to login to Southwest Farm application.";
+      } else {
+        $data['error'] = true;
+        $data['message'] = "User account is already validated. Click <a href='".url()."''>here</a> to login to Southwest Farm application.";
+      }
     } else {
-      $error = true;
-      $message = "User with that confirmation code not found";
+      $data['error'] = true;
+      $data['message'] = "User with that confirmation code not found. Please check the link and try again.";
     }
 
-    $response = Response::json(array(
-        'error' => $error,
-        'message' => $message),
-        200
-    );
+    return View::make('verifyAccount', $data);
+  
   }
 
 }

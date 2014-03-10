@@ -8,17 +8,11 @@ use View;
 use Input;
 use Config;
 
-
 class UsersController extends BaseController {
 
 	public function __construct(UsersRepositoryInterface $users)
 	{
 		$this->users = $users;
-	}
-
-	public function auth()
-	{
-		return $this->users->auth();
 	}
 
 	/**
@@ -83,7 +77,7 @@ class UsersController extends BaseController {
 	}
 
 	public function verifyAccount(){
-		return $this->users->verifyAccount(Input::all());
+		return $this->users->verifyAccount(Input::get('passkey'));
 	}
 
 

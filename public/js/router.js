@@ -15,7 +15,7 @@ define([
 ], function(Backbone, BaseRouter, HeaderView, AdminView, LoginController, UserController, RoleController, PermissionController, AuditTrailController, Global, Const, Session) {
 	
 	var routerRoutes = {};
-
+	
 	//login
 	routerRoutes[Const.URL.LOGIN] = 'showLoginPage';
 	routerRoutes[Const.URL.LOGIN+'/'] = 'showLoginPage';
@@ -98,7 +98,7 @@ define([
 	
 	var initialize = function(){
 		var app_router = new AppRouter;
-
+		
 		app_router.on('route:showLoginPage',function (action) {
 			this.closeView();
 			var loginController = new LoginController();
