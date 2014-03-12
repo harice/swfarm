@@ -92,7 +92,7 @@ class UsersRepository implements UsersRepositoryInterface {
     // $generatedPassword = 'elementz123'; //replace with this if the system has already email to user features - Hash::make(Str::random(10));
     $user->confirmcode = Hash::make(Str::random(5)); //use for email verification
     $user->password = Hash::make($generatedPassword);
-
+    /*
     if(isset($data['profileimg'])){
       //saving image
       $file = $data['profileimg']; 
@@ -103,7 +103,19 @@ class UsersRepository implements UsersRepositoryInterface {
       $user->profileimg = $filename;
 
     }
+    */
+    //saving profile image
+    $isImgSave = $this->saveImage($data);
 
+    if(is_array($isImgSave)) {
+      return Response::json(
+          $isImgSave,
+          200
+      );
+    } else { //save successfully
+        $user->profileimg = $isImgSave;
+    }
+      
     $user->save();
 
     //send email verification
@@ -360,6 +372,34 @@ class UsersRepository implements UsersRepositoryInterface {
     }
 
     return View::make('verifyAccount', $data);
+    
+  }
+
+  public function saveImage($data){
+    
+    if(isset($data['imagedata'])) {
+      if(!(strstr($data['imagetype'], 'image/jpg') || strstr($data['imagetype'], 'image/jpeg') || strstr($data['imagetype'], 'image/gif') || strstr($data['imagetype'], 'image/png'))){
+        return  array(
+          'error' => true,
+          'message' => 'image extension must be in jpg, gif or png'
+          );
+      } else if(intval($data['imagesize']) > 3145728) { //3mb max file size
+        return array(
+          'error' => true,
+          'message' => 'image file size exceeded.'
+          );
+      }
+      
+      // $user->profileimg = $this->saveImage($data['imagedata'], $data['imagetype'], $data['username']);
+      define('UPLOAD_DIR', 'images/profile/');
+      $base64img = str_replace('data:'.$data['imagetype'].';base64,', '', $data['imagedata']);
+      $filedecode = base64_decode($base64img);
+      $file = UPLOAD_DIR . $data['username'] . '.jpg';
+      file_put_contents($file, $filedecode);
+
+      return $file;
+      
+    }
     
   }
 
