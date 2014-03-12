@@ -74,9 +74,9 @@ class ProductRepository implements ProductRepositoryInterface {
     }
     
     /**
-	 * Update the specified resource in storage.
+	 * Search product.
 	 *
-	 * @param  int  $id
+	 * @param  string  $_search
 	 * @return Response
 	 */
     public function search($_search)
@@ -87,24 +87,17 @@ class ProductRepository implements ProductRepositoryInterface {
         $orderby  = isset($_search['orderby']) ? $_search['orderby'] :'ASC';
         $offset   = $page * $perPage - $perPage;
 
+        $_cnt = Product::where('name','like','%'.$_search['search'].'%')->count();
+        
         $_product = Product::where('name','like','%'.$_search['search'].'%')
             ->take($perPage)
             ->offset($offset)
             ->orderBy($sortby, $orderby)
             ->get();
         
-//        $_product = User::with('roles')->where('firstname','like','%'.$_search['search'].'%')
-//            ->orWhere('lastname','like','%'.$_search['search'].'%')
-//            ->orWhere('email','like','%'.$_search['search'].'%')
-//            ->where('id', '!=', 1)
-//            ->take($perPage)
-//            ->offset($offset)
-//            ->orderBy($sortby, $orderby)
-//            ->get();
-        
         return Response::json(array(
             'data' => $_product->toArray(),
-            'total' => $_product->count()),
+            'total' => $_cnt),
             200
         );
     }
