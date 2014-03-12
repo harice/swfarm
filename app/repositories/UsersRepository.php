@@ -72,9 +72,9 @@ class UsersRepository implements UsersRepositoryInterface {
       'suffix' => 'between:2,6',
       'phone' => 'between:6,13',
       'mobile' => 'between:9,13',
-      'position' => 'between:2,50'
+      'position' => 'between:2,50',
+      'profileimg' => 'image|max:3000'
     );
-
 
   	$this->validate($data, $rules);
    
@@ -92,6 +92,17 @@ class UsersRepository implements UsersRepositoryInterface {
     // $generatedPassword = 'elementz123'; //replace with this if the system has already email to user features - Hash::make(Str::random(10));
     $user->confirmcode = Hash::make(Str::random(5)); //use for email verification
     $user->password = Hash::make($generatedPassword);
+
+    if(isset($data['profileimg'])){
+      //saving image
+      $file = $data['profileimg']; 
+      $destinationPath = 'images/profile'; //save on public/images/profile
+      $filename = $file->getClientOriginalName();
+      //$extension =$file->getClientOriginalExtension(); 
+      $upload_success = $data['profileimg']->move($destinationPath, $filename);
+      $user->profileimg = $filename;
+
+    }
 
     $user->save();
 
