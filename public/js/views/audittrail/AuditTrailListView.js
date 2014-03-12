@@ -61,8 +61,13 @@ define([
 			var innerListTemplate = _.template(auditTrailInnerListTemplate, data);
 			$("#audit-trail-list tbody").html(innerListTemplate);
 			
+			this.generatePagination(this.collection.options.maxItem, Const.MAXITEMPERPAGE);
+		},
+		
+		generatePagination: function (maxItem, maxItemPerPage) {
 			$('.page-number').remove();
-			var lastPage = Math.ceil(this.collection.options.maxItem / Const.MAXITEMPERPAGE);
+			
+			var lastPage = Math.ceil(maxItem / maxItemPerPage);
 			
 			if(lastPage > 1) {
 				$('.pagination').show();

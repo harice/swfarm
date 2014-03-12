@@ -12,6 +12,13 @@ define([
 	var UserAddView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
+		options: {
+			imagetype: '',
+			imagesize: '', 
+			imagename: '',
+			imagedata: '',
+		},
+		
 		initialize: function() {
 			var thisObj = this;
 			
@@ -32,6 +39,8 @@ define([
 		},
 		
 		render: function(){
+			var thisObj = this;
+			
 			var innerTemplateVariables = {
 				'user_url' : '#/'+Const.URL.USER
 			};
@@ -51,6 +60,13 @@ define([
 					if(typeof data.roles != 'undefined' && typeof data.roles != 'string')
 						data.roles = data.roles.join(',');
 					
+					if(thisObj.options.imagename != '') {
+						data.imagetype = thisObj.options.imagetype;
+						data.imagesize = thisObj.options.imagesize; 
+						data.imagename = thisObj.options.imagename;
+						data.imagedata = thisObj.options.imagedata;
+					}
+					
 					var userModel = new UserModel(data);
 					
 					userModel.save(null, {success: function (model, response, options) {
@@ -63,7 +79,8 @@ define([
 						else
 							alert(response.responseText);
 					},
-					headers: userModel.getAuth(),});
+					headers: userModel.getAuth(),
+					});
 				}
 			});
 			
@@ -79,6 +96,28 @@ define([
 			$('.user-role-container').html(checkboxes);
 			$('.form-button-container').show();
 		},
+		
+		events: {
+			'change .profile-pic' : 'readFile',
+		},
+		
+		readFile: function (ev) {
+			var thisObj = this;
+			
+			var file = ev.target.files[0];
+			
+			var reader = new FileReader();
+			reader.onload = function (event) {
+				thisObj.options.imagetype =  file.type;
+				thisObj.options.imagesize = file.size; 
+				thisObj.options.imagename = file.name;
+				thisObj.options.imagedata = event.target.result;
+				//console.log(thisObj.options);
+			};
+			
+			reader.readAsDataURL(file);
+		},
+		
 	});
 
   return UserAddView;
