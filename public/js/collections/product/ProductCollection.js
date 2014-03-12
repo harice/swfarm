@@ -8,25 +8,14 @@ define([
 		options: {
 			currentPage: 1,
 			maxItem: 0,
+      currentSort: 'name',
+      sort: {
+				name: true,
+			},
+			search: '',
 		},
 		initialize: function(){
 			
-		},
-		
-		getAllModels: function () {
-			var thisObj = this;
-			this.setGetAllURL();
-			this.fetch({
-				success: function (collection, response, options) {
-				},
-				error: function (collection, response, options) {
-					if(typeof response.responseJSON.error == 'undefined')
-						alert(response.responseJSON);
-					else
-						alert(response.responseText);
-				},
-				headers: thisObj.getAuth(),
-			})
 		},
 		
 		getModelsPerPage: function(page, numPerPage) {
@@ -36,7 +25,7 @@ define([
 		
 		getModels: function () {
 			var thisObj = this;
-		
+      
 			this.sync('read', this, {
 				success: function (data, textStatus, jqXHR) {
 					if(textStatus == 'success') {
@@ -71,12 +60,13 @@ define([
 			this.url = this.getDefaultURL();
 		},
 		
-		setGetAllURL: function () {
-			this.url = this.getDefaultURL()+'/all';
-		},
+		setPaginationURL: function (page, numPerPage) {
+			var searchURL = '';
+			if(this.options.search != '')
+				searchURL = '/search';
 		
-		setPaginationURL: function (page, numPerPage) {	
-			this.url = this.getDefaultURL() + '?' + $.param({perpage: numPerPage, page: page});
+			var orderBy = (this.options.sort[this.options.currentSort])? 'asc' : 'desc';
+			this.url = this.getDefaultURL() + searchURL + '?' + $.param({perpage: numPerPage, page: page, sortby:this.options.currentSort, orderby:orderBy, search:this.options.search});
 		},
 	});
 

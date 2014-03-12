@@ -89,6 +89,8 @@ define([
 			'click .first-page' : 'gotoFirstPage',
 			'click .last-page' : 'gotoLastPage',
 			'click .page-number' : 'gotoPage',
+      'click .sort-name' : 'sortName',
+			'click .product-search' : 'searchProduct',
 		},
 		
 		gotoFirstPage: function () {
@@ -116,6 +118,30 @@ define([
 				this.collection.options.currentPage = page;
 				this.collection.getModelsPerPage(page , Const.MAXITEMPERPAGE);
 			}
+			
+			return false;
+		},
+            
+    sortName: function () {
+			this.sortByField('name');
+		},
+		
+		sortByField: function (sortField) {
+			if(this.collection.options.currentSort == sortField)
+				this.collection.options.sort[sortField] = !this.collection.options.sort[sortField];
+			
+			this.collection.options.currentSort = sortField;
+			this.collection.options.currentPage = 1;
+			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
+			
+			return false;
+		},
+            
+    searchProduct: function () {
+			var keyword = $('#search-keyword').val();
+			
+			this.collection.options.search = keyword;
+			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
 			
 			return false;
 		},
