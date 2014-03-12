@@ -272,6 +272,12 @@ class UsersRepository implements UsersRepositoryInterface {
     $orderby  = isset($_search['orderby']) ? $_search['orderby'] :'ASC';
     $offset   = $page * $perPage - $perPage;
 
+    $_cnt = User::with('roles')->where('firstname','like','%'.$_search['search'].'%')
+                    ->orWhere('lastname','like','%'.$_search['search'].'%')
+                    ->orWhere('email','like','%'.$_search['search'].'%')
+                    ->where('id', '!=', 1)
+                    ->count();
+
     $_user = User::with('roles')->where('firstname','like','%'.$_search['search'].'%')
                     ->orWhere('lastname','like','%'.$_search['search'].'%')
                     ->orWhere('email','like','%'.$_search['search'].'%')
@@ -280,7 +286,7 @@ class UsersRepository implements UsersRepositoryInterface {
                     ->offset($offset)
                     ->orderBy($sortby, $orderby)
                     ->get();
-    return Response::json(array('data' => $_user->toArray(), 'total' => $_user->count()),200);
+    return Response::json(array('data' => $_user->toArray(), 'total' => $_cnt),200);
   }
 
   public function sendEmailVerification2($userObj, $password){
