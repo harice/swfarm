@@ -68,3 +68,7 @@ foreach(Config::get('constants.AUDIT') as $class) {
     });
   
 }
+
+// Event::listen('eloquent.saving: Pivot', function($pivot){
+//   var_dump($pivot); return false;
+// });

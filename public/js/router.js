@@ -122,8 +122,9 @@ define([
 		
 		app_router.on('route:showAdminPage', function () {
 			this.closeView();
+			// Global.getGlobalVars().app_router.navigate('#/'+Const.URL.DASHBOARD, { trigger : true });
 			this.currView = new AdminView();
-			this.currView.render();
+			this.currView.render();3
 		});
 		
 		app_router.on('route:showUserPage', function (action, id) {
