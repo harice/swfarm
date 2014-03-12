@@ -9,6 +9,7 @@ define(function () {
 			'ROLE': 'administration/role',
 			'PERMISSION': 'administration/permission',
 			'AUDITTRAIL': 'administration/audittrail',
+      'PRODUCT': 'product',
 		},
 		'MENU': {
 			'PURCHASE': {

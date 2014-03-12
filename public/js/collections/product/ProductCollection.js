@@ -1,10 +1,10 @@
 define([
 	'backbone',
-	'models/role/RoleModel',
-], function(Backbone, RoleModel){
-	var RoleCollection = Backbone.Collection.extend({
-		url: '/apiv1/roles',
-		model: RoleModel,
+	'models/product/ProductModel',
+], function(Backbone, ProductModel){
+	var ProductCollection = Backbone.Collection.extend({
+		url: '/apiv1/product',
+		model: ProductModel,
 		options: {
 			currentPage: 1,
 			maxItem: 0,
@@ -40,12 +40,12 @@ define([
 			this.sync('read', this, {
 				success: function (data, textStatus, jqXHR) {
 					if(textStatus == 'success') {
-						var roles = data.data;
+						var products = data.data;
 						
 						thisObj.reset();
 						
-						_.each(roles, function (role) {
-							thisObj.add(new RoleModel(role));
+						_.each(products, function (product) {
+							thisObj.add(new ProductModel(product));
 						});
 						
 						thisObj.options.maxItem = data.total;
@@ -64,7 +64,7 @@ define([
 		},
 		
 		getDefaultURL: function () {
-			return '/apiv1/roles';
+			return '/apiv1/product';
 		},
 		
 		setDefaultURL: function () {
@@ -80,5 +80,5 @@ define([
 		},
 	});
 
-	return RoleCollection;
+	return ProductCollection;
 });

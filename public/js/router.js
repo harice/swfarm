@@ -9,10 +9,11 @@ define([
 	'controllers/role/RoleController',
 	'controllers/permission/PermissionController',
 	'controllers/audittrail/AuditTrailController',
+  'controllers/product/ProductController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
-], function(Backbone, BaseRouter, HeaderView, AdminView, LoginController, UserController, RoleController, PermissionController, AuditTrailController, Global, Const, Session) {
+], function(Backbone, BaseRouter, HeaderView, AdminView, LoginController, UserController, RoleController, PermissionController, AuditTrailController, ProductController, Global, Const, Session) {
 	
 	var routerRoutes = {};
 	
@@ -50,6 +51,12 @@ define([
 	routerRoutes[Const.URL.AUDITTRAIL+'/'] = 'showAuditTrailPage';
 	routerRoutes[Const.URL.AUDITTRAIL+'/:table'] = 'showAuditTrailPage';
 	routerRoutes[Const.URL.AUDITTRAIL+'/:table/:id'] = 'showAuditTrailPage';
+  
+  //product
+	routerRoutes[Const.URL.PRODUCT] = 'showProductPage';
+	routerRoutes[Const.URL.PRODUCT+'/'] = 'showProductPage';
+	routerRoutes[Const.URL.PRODUCT+'/:action'] = 'showProductPage';
+	routerRoutes[Const.URL.PRODUCT+'/:action/:id'] = 'showProductPage';
 	
 	//for commit
 	
@@ -124,7 +131,7 @@ define([
 			this.closeView();
 			// Global.getGlobalVars().app_router.navigate('#/'+Const.URL.DASHBOARD, { trigger : true });
 			this.currView = new AdminView();
-			this.currView.render();3
+			this.currView.render();
 		});
 		
 		app_router.on('route:showUserPage', function (action, id) {
@@ -152,6 +159,13 @@ define([
 			this.closeView();
 			var auditTrailController = new AuditTrailController();
 			this.currView = auditTrailController.setAction(table, id);
+			this.currView.render();
+		});
+    
+    app_router.on('route:showProductPage', function (action, id) {
+			this.closeView();
+			var productController = new ProductController();
+			this.currView = productController.setAction(action, id);
 			this.currView.render();
 		});
 		
