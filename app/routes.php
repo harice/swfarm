@@ -16,7 +16,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 {
 	Route::get('users/search', 'APIv1\UsersController@search');
 	Route::get('users/auth', 'APIv1\UsersController@auth');
-	Route::post('users/updateprofile/{id}', 'APIv1\UsersController@updateProfile');
+	Route::put('users/updateprofile/{id}', 'APIv1\UsersController@updateProfile');
 	Route::resource('users', 'APIv1\UsersController');
 	
 	Route::get('roles/all', 'APIv1\RolesController@all');

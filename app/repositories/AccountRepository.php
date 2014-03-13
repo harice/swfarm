@@ -43,11 +43,6 @@ class AccountRepository implements AccountRepositoryInterface {
   }
 
   public function store($data){
-    return Response::json(array(
-        'error' => false,
-        'data' => $data),
-        200
-    );
     
     $rules = array(
       'name' => 'required|between:5,20|unique:roles'
