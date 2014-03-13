@@ -26,7 +26,7 @@ define([
 				'purchases_url'	: '#/',
 				'sales_url'		: '#/',
 				'inventory_url'	: '#/',
-				'products_url'	: '#/',
+				'product_url'	: '#/'+Const.URL.PRODUCT,
 				'reports_url'	: '#/',
 
 				'logout_url'	: '#/'+Const.URL.LOGOUT,

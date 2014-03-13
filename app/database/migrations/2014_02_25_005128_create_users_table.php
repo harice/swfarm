@@ -24,6 +24,7 @@ class CreateUsersTable extends Migration {
 			$table->string('mobile',13)->nullable();
 			$table->string('phone',13)->nullable();
 			$table->string('position',50)->nullable();
+			$table->string('profileimg',50)->nullable();
 			$table->string('confirmcode');
 			$table->boolean('validated')->default(false)->index();
 			$table->boolean('status')->default(true)->index();

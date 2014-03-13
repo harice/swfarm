@@ -11,10 +11,11 @@ define([
 	'controllers/audittrail/AuditTrailController',
 	'controllers/profile/ProfileController',
 	'controllers/account/AccountController',
+	'controllers/product/ProductController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
-], function(Backbone, BaseRouter, HeaderView, AdminView, LoginController, UserController, RoleController, PermissionController, AuditTrailController, ProfileController, AccountController, Global, Const, Session) {
+], function(Backbone, BaseRouter, HeaderView, AdminView, LoginController, UserController, RoleController, PermissionController, AuditTrailController, ProfileController, AccountController, ProductController, Global, Const, Session) {
 	
 	var routerRoutes = {};
 	
@@ -52,6 +53,12 @@ define([
 	routerRoutes[Const.URL.AUDITTRAIL+'/'] = 'showAuditTrailPage';
 	routerRoutes[Const.URL.AUDITTRAIL+'/:table'] = 'showAuditTrailPage';
 	routerRoutes[Const.URL.AUDITTRAIL+'/:table/:id'] = 'showAuditTrailPage';
+  
+	//product
+	routerRoutes[Const.URL.PRODUCT] = 'showProductPage';
+	routerRoutes[Const.URL.PRODUCT+'/'] = 'showProductPage';
+	routerRoutes[Const.URL.PRODUCT+'/:action'] = 'showProductPage';
+	routerRoutes[Const.URL.PRODUCT+'/:action/:id'] = 'showProductPage';
 	
 	//profile
 	routerRoutes[Const.URL.PROFILE] = 'showProfilePage';
@@ -164,6 +171,13 @@ define([
 			this.closeView();
 			var auditTrailController = new AuditTrailController();
 			this.currView = auditTrailController.setAction(table, id);
+			this.currView.render();
+		});
+    
+		app_router.on('route:showProductPage', function (action, id) {
+			this.closeView();
+			var productController = new ProductController();
+			this.currView = productController.setAction(action, id);
 			this.currView.render();
 		});
 		
