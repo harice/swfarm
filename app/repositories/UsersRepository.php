@@ -72,9 +72,9 @@ class UsersRepository implements UsersRepositoryInterface {
       'suffix' => 'between:2,6',
       'phone' => 'between:6,13',
       'mobile' => 'between:9,13',
-      'position' => 'between:2,50'
+      'position' => 'between:2,50',
+      'profileimg' => 'image|max:3000'
     );
-
 
   	$this->validate($data, $rules);
    
@@ -92,6 +92,29 @@ class UsersRepository implements UsersRepositoryInterface {
     // $generatedPassword = 'elementz123'; //replace with this if the system has already email to user features - Hash::make(Str::random(10));
     $user->confirmcode = Hash::make(Str::random(5)); //use for email verification
     $user->password = Hash::make($generatedPassword);
+    /*
+    if(isset($data['profileimg'])){
+      //saving image
+      $file = $data['profileimg']; 
+      $destinationPath = 'images/profile'; //save on public/images/profile
+      $filename = $file->getClientOriginalName();
+      //$extension =$file->getClientOriginalExtension(); 
+      $upload_success = $data['profileimg']->move($destinationPath, $filename);
+      $user->profileimg = $filename;
+
+    }
+    */
+    //saving profile image
+    $isImgSave = $this->saveImage($data);
+
+    if(is_array($isImgSave)) {
+      return Response::json(
+          $isImgSave,
+          200
+      );
+    } else { //save successfully
+        $user->profileimg = $isImgSave;
+    }
 
     $user->save();
 
@@ -145,6 +168,21 @@ class UsersRepository implements UsersRepositoryInterface {
       $user->phone = $data['phone'];
       $user->position = $data['position'];
 
+      //saving profile image
+      if(isset($data['imagedata'])) {
+        $isImgSave = $this->saveImage($data);
+
+        if(is_array($isImgSave)) {
+          return Response::json(
+              $isImgSave,
+              200
+          );
+        } else { //save successfully
+            $user->profileimg = $isImgSave;
+        }
+      } else if(isset($data['imageremove'])){
+        $user->profileimg = '';
+      }
       $user->save();
 /*
       //saving user roles posted by client
@@ -289,22 +327,6 @@ class UsersRepository implements UsersRepositoryInterface {
     return Response::json(array('data' => $_user->toArray(), 'total' => $_cnt),200);
   }
 
-  public function sendEmailVerification2($userObj, $password){
-    $data = array();
-
-    $data['email'] = $userObj->email;
-    $data['password'] = $password;
-    $data['confirmcodeHashed'] = urlencode(Hash::make($userObj->confirmcode));
-    // Mail::pretend();
-    Mail::send('emails.emailVerification', $data, function($message) use ($data)
-    {
-        $message->from('donotreply@swfarm.com', 'SouthWest Farm');
-
-        $message->to($data['email'])->cc('avelino.ceriola@elementzinteractive.com');
-
-    });
-  }
-
   public function sendEmailVerification($userObj, $password){
     // I'm creating an array with user's info but most likely you can use $user->email or pass $user object to closure later
     $user = array(
@@ -349,6 +371,33 @@ class UsersRepository implements UsersRepositoryInterface {
     }
 
     return View::make('verifyAccount', $data);
+    
+  }
+
+  public function saveImage($data){
+    if(isset($data['imagedata'])) {
+      if(!(strstr($data['imagetype'], 'image/jpg') || strstr($data['imagetype'], 'image/jpeg') || strstr($data['imagetype'], 'image/gif') || strstr($data['imagetype'], 'image/png'))){
+        return  array(
+          'error' => true,
+          'message' => 'image extension must be in jpg, gif or png'
+          );
+      } else if(intval($data['imagesize']) > 3145728) { //3mb max file size
+        return array(
+          'error' => true,
+          'message' => 'image file size exceeded.'
+          );
+      }
+      
+      // $user->profileimg = $this->saveImage($data['imagedata'], $data['imagetype'], $data['username']);
+      define('UPLOAD_DIR', 'images/profile/');
+      $base64img = str_replace('data:'.$data['imagetype'].';base64,', '', $data['imagedata']);
+      $filedecode = base64_decode($base64img);
+      $file = UPLOAD_DIR . $data['username'] . '.jpg';
+      file_put_contents($file, $filedecode);
+
+      return $file;
+      
+    }
     
   }
 
