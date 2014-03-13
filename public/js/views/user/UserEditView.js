@@ -80,7 +80,7 @@ define([
 			this.$el.find('#mobile').val(this.model.get('mobile'));
 			this.$el.find('#username').val(this.model.get('username'));
 			
-			if(this.model.get('profileimg') != null) {
+			if(this.model.get('profileimg') != null && this.model.get('profileimg') != '') {
 				$('#profile-pic-preview img').attr('src', this.model.get('profileimg')+"?qwert="+(new Date().getTime())); 
 				$('#profile-pic-upload').hide();
 				$('#profile-pic-preview').show();

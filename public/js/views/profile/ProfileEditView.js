@@ -33,7 +33,6 @@ define([
 		},
 		
 		render: function(){
-			console.log(this.model);
 			this.model.runFetch();
 		},
 		
@@ -42,7 +41,7 @@ define([
 			
 			var innerTemplateVariables = {
 				user_id: this.model.get('id'),
-				'user_url' : '#/'+Const.URL.USER
+				'user_url' : '#/'+Const.URL.PROFILE
 			};
 			var innerTemplate = _.template(profileEditTemplate, innerTemplateVariables);
 			
@@ -65,7 +64,7 @@ define([
 			this.$el.find('#mobile').val(this.model.get('mobile'));
 			this.$el.find('#username').val(this.model.get('username'));
 			
-			if(this.model.get('profileimg') != null) {
+			if(this.model.get('profileimg') != null && this.model.get('profileimg') != '') {
 				$('#profile-pic-preview img').attr('src', this.model.get('profileimg')+"?qwert="+(new Date().getTime())); 
 				$('#profile-pic-upload').hide();
 				$('#profile-pic-preview').show();
@@ -90,7 +89,7 @@ define([
 					var userModel = new ProfileModel(data);
 					userModel.save(null, {success: function (model, response, options) {
 						//console.log('success: add user');
-						Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
+						Global.getGlobalVars().app_router.navigate(Const.URL.PROFILE, {trigger: true});
 					}, error: function (model, response, options) {
 						//console.log('error: add user');
 						if(response.responseJSON)
