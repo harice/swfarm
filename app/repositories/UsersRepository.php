@@ -389,7 +389,9 @@ class UsersRepository implements UsersRepositoryInterface {
       $this->validate($data, $rules);
 
       //$user->username = $data['username'];
-      $user->password = Hash::make($data['password']);
+      if(isset($data['password']) && $data['password'] != ''){
+        $user->password = Hash::make($data['password']);
+      }
       $user->email = $data['email'];
       $user->firstname = $data['firstname'];
       $user->lastname = $data['lastname'];
