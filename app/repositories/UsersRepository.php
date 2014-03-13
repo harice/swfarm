@@ -403,6 +403,7 @@ class UsersRepository implements UsersRepositoryInterface {
 
       //saving profile image
       if(isset($data['imagedata'])) {
+        $data['username'] = $user->username;
         $isImgSave = $this->saveImage($data);
 
         if(is_array($isImgSave)) {
