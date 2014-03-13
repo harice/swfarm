@@ -91,5 +91,9 @@ class UsersController extends BaseController {
 		return $this->users->verifyAccount(Input::get('passkey'));
 	}
 
+	public function updateProfile($id){
+		return $this->users->updateProfile($id, Input::all() );
+	}
+
 
 }
