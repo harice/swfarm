@@ -115,7 +115,7 @@ class UsersRepository implements UsersRepositoryInterface {
     } else { //save successfully
         $user->profileimg = $isImgSave;
     }
-      
+
     $user->save();
 
     //send email verification
@@ -168,6 +168,21 @@ class UsersRepository implements UsersRepositoryInterface {
       $user->phone = $data['phone'];
       $user->position = $data['position'];
 
+      //saving profile image
+      if(isset($data['imagedata'])) {
+        $isImgSave = $this->saveImage($data);
+
+        if(is_array($isImgSave)) {
+          return Response::json(
+              $isImgSave,
+              200
+          );
+        } else { //save successfully
+            $user->profileimg = $isImgSave;
+        }
+      } else if(isset($data['imageremove'])){
+        $user->profileimg = '';
+      }
       $user->save();
 /*
       //saving user roles posted by client
@@ -312,22 +327,6 @@ class UsersRepository implements UsersRepositoryInterface {
     return Response::json(array('data' => $_user->toArray(), 'total' => $_cnt),200);
   }
 
-  public function sendEmailVerification2($userObj, $password){
-    $data = array();
-
-    $data['email'] = $userObj->email;
-    $data['password'] = $password;
-    $data['confirmcodeHashed'] = urlencode(Hash::make($userObj->confirmcode));
-    // Mail::pretend();
-    Mail::send('emails.emailVerification', $data, function($message) use ($data)
-    {
-        $message->from('donotreply@swfarm.com', 'SouthWest Farm');
-
-        $message->to($data['email'])->cc('avelino.ceriola@elementzinteractive.com');
-
-    });
-  }
-
   public function sendEmailVerification($userObj, $password){
     // I'm creating an array with user's info but most likely you can use $user->email or pass $user object to closure later
     $user = array(
@@ -376,7 +375,6 @@ class UsersRepository implements UsersRepositoryInterface {
   }
 
   public function saveImage($data){
-    
     if(isset($data['imagedata'])) {
       if(!(strstr($data['imagetype'], 'image/jpg') || strstr($data['imagetype'], 'image/jpeg') || strstr($data['imagetype'], 'image/gif') || strstr($data['imagetype'], 'image/png'))){
         return  array(
