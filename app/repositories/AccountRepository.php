@@ -43,6 +43,12 @@ class AccountRepository implements AccountRepositoryInterface {
   }
 
   public function store($data){
+    return Response::json(array(
+        'error' => false,
+        'data' => $data),
+        200
+    );
+    
     $rules = array(
       'name' => 'required|between:5,20|unique:roles'
     );
@@ -131,7 +137,17 @@ class AccountRepository implements AccountRepositoryInterface {
     return new Account($data);
   }
 
-  public function getAccountTypes(){
-      $accountTypes = AccountType::all()->orderby('name', 'asc');
+  public function getAccountAndAddressTypes(){
+      $accountTypes = AccountType::orderby('name', 'asc')->get();
+      $addressTypes = AddressType::orderby('name', 'asc')->get();
+
+      return Response::json(
+          array(
+          'accountTypes' => $accountTypes->toArray(),
+          'addressTypes' => $addressTypes->toArray()
+          ),
+          200
+      );
   }
+
 }
