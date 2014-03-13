@@ -9,6 +9,8 @@ define(function () {
 			'ROLE': 'administration/role',
 			'PERMISSION': 'administration/permission',
 			'AUDITTRAIL': 'administration/audittrail',
+			'PROFILE' : 'profile',
+			'ACCOUNT' : 'account',
 		},
 		'MENU': {
 			'PURCHASE': {

@@ -17,6 +17,7 @@ define([
 			imagesize: '', 
 			imagename: '',
 			imagedata: '',
+			fileFileClone: null,
 		},
 		
 		initialize: function() {
@@ -52,6 +53,8 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+			
+			this.fileFileClone = $("#profile-pic").clone(true);
 			
 			var validate = $('#addUserForm').validate({
 				submitHandler: function(form) {
@@ -99,9 +102,12 @@ define([
 		
 		events: {
 			'change .profile-pic' : 'readFile',
+			'click #remove-image' : 'resetImageField',
 		},
 		
 		readFile: function (ev) {
+			$('#remove-image').show();
+			
 			var thisObj = this;
 			
 			var file = ev.target.files[0];
@@ -118,6 +124,18 @@ define([
 			reader.readAsDataURL(file);
 		},
 		
+		resetImageField: function () {
+			var clone = this.fileFileClone.clone(true);
+			$("#profile-pic").replaceWith(clone);
+			$('#remove-image').hide();
+			
+			this.options.imagetype = '';
+			this.options.imagesize = ''; 
+			this.options.imagename = '';
+			this.options.imagedata = '';
+			
+			return false;
+		},
 	});
 
   return UserAddView;
