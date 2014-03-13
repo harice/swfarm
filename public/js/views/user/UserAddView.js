@@ -102,12 +102,10 @@ define([
 		
 		events: {
 			'change .profile-pic' : 'readFile',
-			'click #remove-image' : 'resetImageField',
+			'click .remove-image' : 'resetImageField',
 		},
 		
 		readFile: function (ev) {
-			$('#remove-image').show();
-			
 			var thisObj = this;
 			
 			var file = ev.target.files[0];
@@ -118,6 +116,10 @@ define([
 				thisObj.options.imagesize = file.size; 
 				thisObj.options.imagename = file.name;
 				thisObj.options.imagedata = event.target.result;
+				
+				$('#profile-pic-preview img').attr('src', event.target.result); 
+				$('#profile-pic-upload').hide();
+				$('#profile-pic-preview').show();
 				//console.log(thisObj.options);
 			};
 			
@@ -127,12 +129,14 @@ define([
 		resetImageField: function () {
 			var clone = this.fileFileClone.clone(true);
 			$("#profile-pic").replaceWith(clone);
-			$('#remove-image').hide();
 			
 			this.options.imagetype = '';
 			this.options.imagesize = ''; 
 			this.options.imagename = '';
 			this.options.imagedata = '';
+			
+			$('#profile-pic-preview').hide();
+			$('#profile-pic-upload').show();
 			
 			return false;
 		},

@@ -30,6 +30,7 @@ define([
 		displayUser: function (userModel) {
 			var innerTemplateVariables = {
 				user:userModel,
+				user_pic_default: Const.PLACEHOLDER.PROFILEPIC,
 			}
 			var innerTemplate = _.template(profileViewTemplate, innerTemplateVariables);
 			

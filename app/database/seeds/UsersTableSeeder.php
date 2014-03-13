@@ -29,6 +29,19 @@ class UsersTableSeeder extends Seeder {
                 'validated' => true,
                 'status' => true,
                 'deleted' => false
+            ),
+			
+			array(
+                'username' => 'test',
+                'password' => Hash::make('test1234'),
+                'email'	=> 'test@test.test',
+                'firstname' => '123',
+                'lastname' => 'test',
+                'suffix' => '',
+                'emp_no' => 'test',
+                'validated' => true,
+                'status' => true,
+                'deleted' => false
             )
 		);
 

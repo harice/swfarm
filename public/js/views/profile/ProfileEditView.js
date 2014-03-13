@@ -3,48 +3,43 @@ define([
 	'jqueryvalidate',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/profile/profileEditTemplate.html',
-	'models/user/UserModel',
-	'collections/role/RoleCollection',
+	'models/profile/ProfileModel',
 	'models/session/SessionModel',
 	'global',
 	'constant',
-], function(Backbone, Validate, contentTemplate, profileEditTemplate, UserModel, RoleCollection, SessionModel, Global, Const){
+], function(Backbone, Validate, contentTemplate, profileEditTemplate, ProfileModel, SessionModel, Global, Const){
 
 	var ProfileEditView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
+		options: {
+			imagetype: '',
+			imagesize: '', 
+			imagename: '',
+			imagedata: '',
+			imageremove: false,
+			fileFileClone: null,
+		},
+		
 		initialize: function() {
 			var thisObj = this;
-			
-			this.model = new UserModel({id:SessionModel.get('su')});
+			this.model = new ProfileModel({id:parseInt(SessionModel.get('su'))});
 			this.model.on("change", function() {
 				if(this.hasChanged('firstname') && this.hasChanged('lastname') && this.hasChanged('email') && this.hasChanged('username')) {
 					thisObj.displayUser();
 					this.off("change");
 				}
 			});
-			
-			this.collection = new RoleCollection();
-			this.collection.on('sync', function() {
-				//console.log('collection.on.sync')
-				thisObj.displayRoles();
-				this.off('sync');
-			});
-			
-			this.collection.on('error', function(collection, response, options) {
-				//console.log('collection.on.error')
-				//console.log(collection);
-				//console.log(response);
-				//console.log(options);
-				this.off('error');
-			});
 		},
 		
 		render: function(){
+			console.log(this.model);
 			this.model.runFetch();
 		},
 		
 		displayUser: function() {
+			var thisObj = this;
+			
 			var innerTemplateVariables = {
 				user_id: this.model.get('id'),
 				'user_url' : '#/'+Const.URL.USER
@@ -52,11 +47,13 @@ define([
 			var innerTemplate = _.template(profileEditTemplate, innerTemplateVariables);
 			
 			var variables = {
-				h1_title: "Edit User",
+				h1_title: "Profile Settings",
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+			
+			this.fileFileClone = $("#profile-pic").clone(true);
 			
 			this.$el.find('#firstname').val(this.model.get('firstname'));
 			this.$el.find('#lastname').val(this.model.get('lastname'));
@@ -68,14 +65,29 @@ define([
 			this.$el.find('#mobile').val(this.model.get('mobile'));
 			this.$el.find('#username').val(this.model.get('username'));
 			
+			if(this.model.get('profileimg') != null) {
+				$('#profile-pic-preview img').attr('src', this.model.get('profileimg')+"?qwert="+(new Date().getTime())); 
+				$('#profile-pic-upload').hide();
+				$('#profile-pic-preview').show();
+				$('.cancel-remove-image').show();
+			}
+			
 			var validate = $('#addUserForm').validate({
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
 					
-					if(typeof data.roles != 'undefined' && typeof data.roles != 'string')
-						data.roles = data.roles.join(',');
+					if(thisObj.options.imagename != '') {
+						data.imagetype = thisObj.options.imagetype;
+						data.imagesize = thisObj.options.imagesize; 
+						data.imagename = thisObj.options.imagename;
+						data.imagedata = thisObj.options.imagedata;
+					}
+					else {
+						if(thisObj.options.imageremove)
+							data.imageremove = true;
+					}
 					
-					var userModel = new UserModel(data);
+					var userModel = new ProfileModel(data);
 					userModel.save(null, {success: function (model, response, options) {
 						//console.log('success: add user');
 						Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
@@ -87,32 +99,74 @@ define([
 							alert(response.responseText);
 					},
 					headers: userModel.getAuth(),});
-				}
+				},
+				
+				rules: {
+					password_confirmation: {
+						equalTo: '#password',
+						required: '#password:filled',
+					},
+				},
+				messages: {
+					password_confirmation: {
+						equalTo: 'Password does not match',
+					},
+				},
 			});
 			
-			this.collection.getAllModels();
+			$('.form-button-container').show();
 		},
 		
-		displayRoles: function (userRoles){
-			var userRoles = this.model.get('roles');
-			var checkboxes = '';
-			_.each(this.collection.models, function (role) {
-				
-				var roleId = role.get('id');
-				var checked = '';
-				
-				for(var key in userRoles) {
-					if(typeof userRoles[key] !== 'function' && userRoles[key].id == roleId) {
-						checked = ' checked';
-						break;
-					}
-				}
-				
-				checkboxes += '<div class="checkbox"><label><input type="checkbox" name="roles" value="'+roleId+'"'+checked+'>'+role.get('name')+'</label></div>';
-			});
+		events: {
+			'change .profile-pic' : 'readFile',
+			'click .remove-image' : 'resetImageField',
+			'click .cancel-remove-image' : 'cancelRemoveImage',
+		},
+		
+		readFile: function (ev) {
+			var thisObj = this;
 			
-			$('.user-role-container').html(checkboxes);
-			$('.form-button-container').show();
+			var file = ev.target.files[0];
+			
+			var reader = new FileReader();
+			reader.onload = function (event) {
+				thisObj.options.imagetype =  file.type;
+				thisObj.options.imagesize = file.size; 
+				thisObj.options.imagename = file.name;
+				thisObj.options.imagedata = event.target.result;
+				
+				$('#profile-pic-preview img').attr('src', event.target.result); 
+				$('#profile-pic-upload').hide();
+				$('#profile-pic-preview').show();
+				//console.log(thisObj.options);
+			};
+			
+			reader.readAsDataURL(file);
+		},
+		
+		resetImageField: function () {
+			var clone = this.fileFileClone.clone(true);
+			$("#profile-pic").replaceWith(clone);
+			
+			this.options.imagetype = '';
+			this.options.imagesize = ''; 
+			this.options.imagename = '';
+			this.options.imagedata = '';
+			this.options.imageremove = true;
+			
+			$('#profile-pic-preview').hide();
+			$('#profile-pic-upload').show();
+			
+			return false;
+		},
+		
+		cancelRemoveImage: function () {
+			this.options.imageremove = false;
+			$('#profile-pic-preview img').attr('src', this.model.get('profileimg')+"?qwert="+(new Date().getTime())); 
+			$('#profile-pic-upload').hide();
+			$('#profile-pic-preview').show();
+			
+			return false;
 		},
 	});
 

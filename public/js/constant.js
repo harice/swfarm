@@ -60,6 +60,9 @@ define(function () {
 			'MAIN':'content',
 		},
 		'MAXITEMPERPAGE': 10,
+		'PLACEHOLDER': {
+			'PROFILEPIC': '/images/default_profile.jpg',
+		},
 	};
 	
 	return constant;
