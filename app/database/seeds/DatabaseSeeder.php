@@ -15,6 +15,10 @@ class DatabaseSeeder extends Seeder {
 		$this->call('PermissioncategoryTableSeeder');
 		$this->call('PermissiontypeTableSeeder');
 		$this->call('PermissioncategorytypeTableSeeder');
+        // $this->call('ProductsTableSeeder');
+		$this->call('AccountTypeTableSeeder');
+		$this->call('AddressTypeTableSeeder');
+
 	}
 
 }

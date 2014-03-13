@@ -1,0 +1,8 @@
+<% _.each(products, function(product){ %>
+	<tr>
+		<td><a href="<%= product_url %>/<%= product.get("id") %>"><%= product.get("name") %></a></td>
+		<td><%= product.get("description") %></td>
+		<td><a href="<%= product_edit_url %>/<%= product.get("id") %>">edit</a></td>
+	</tr>
+<% }); %>
+
