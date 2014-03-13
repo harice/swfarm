@@ -25,9 +25,13 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 	Route::resource('permission', 'APIv1\PermissionController');
 
   	Route::resource('audit', 'APIv1\AuditController');
-    
+
     Route::get('product/search', 'APIv1\ProductController@search');
     Route::resource('product', 'APIv1\ProductController');
+
+  	Route::get('account/types', 'APIv1\UsersController@getAccountTypes');
+	Route::resource('account', 'APIv1\AccountController');
+
 });
 
 /* API ROUTES without HTTP Basic */
