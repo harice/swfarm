@@ -21,7 +21,7 @@ class AccountController extends BaseController {
 	 */
 	public function index()
 	{
-		echo "index";
+		echo "indexs";
 	}
 
 	/**
