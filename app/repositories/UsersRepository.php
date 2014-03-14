@@ -92,18 +92,7 @@ class UsersRepository implements UsersRepositoryInterface {
     // $generatedPassword = 'elementz123'; //replace with this if the system has already email to user features - Hash::make(Str::random(10));
     $user->confirmcode = Hash::make(Str::random(5)); //use for email verification
     $user->password = Hash::make($generatedPassword);
-    /*
-    if(isset($data['profileimg'])){
-      //saving image
-      $file = $data['profileimg']; 
-      $destinationPath = 'images/profile'; //save on public/images/profile
-      $filename = $file->getClientOriginalName();
-      //$extension =$file->getClientOriginalExtension(); 
-      $upload_success = $data['profileimg']->move($destinationPath, $filename);
-      $user->profileimg = $filename;
-
-    }
-    */
+    
     //saving profile image
     $isImgSave = $this->saveImage($data);
 
@@ -184,31 +173,7 @@ class UsersRepository implements UsersRepositoryInterface {
         $user->profileimg = '';
       }
       $user->save();
-/*
-      //saving user roles posted by client
-      if(isset($data['roles'])){
-        //client must pass value in comma separated format
-        $rolesIds = explode(',', $data['roles']); 
-        //deleting role that is uncheck in client side
-        if($data['roles'] == '' || $data['roles'] == null){
-          // UserRoles::where('user', '=', $id)->delete(); //deleting all roles if client send empty role value
-          User::role()-
-        } else {
-          UserRoles::where('user', '=', $id)->whereNotIn('role', $rolesIds)->delete(); 
 
-          foreach($rolesIds as $role){
-              if(UserRoles::where('user', '=', $id)->where('role', '=', $role)->count() > 0){
-                continue; //skip if role already exist
-              }   
-              $userRole = new UserRoles;
-              $userRole->user = $user->id;
-              $userRole->role = $role;
-
-              $userRole->save();
-          }
-        }
-      }
-*/
       if(isset($data['roles'])){
         if($data['roles'] != ''){
           $roleIds = explode(',', $data['roles']);
@@ -232,9 +197,7 @@ class UsersRepository implements UsersRepositoryInterface {
       );
     }
 
-    return $response;
-    
-
+    return $response;    
   }
 
   public function destroy($id){
@@ -399,6 +362,77 @@ class UsersRepository implements UsersRepositoryInterface {
       
     }
     
+  }
+
+
+  public function updateProfile($id, $data){
+    $rules = array(
+      //'username' => 'required|unique:users,username,'.$id,
+      'password' => 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|between:8,15|confirmed',
+      'email' => 'required|email|unique:users,email,'.$id,
+      'firstname' => 'required|between:2,50',
+      'lastname' => 'required|between:2,50',
+      'emp_no' => 'required|unique:users,emp_no,'.$id,
+      'suffix' => 'between:2,6',
+      'phone' => 'between:6,13',
+      'mobile' => 'between:9,13',
+      'position' => 'between:2,50'
+    );
+
+    // $errorMessages = array(
+    //   'password.regex'    => 'The :attribute format is invalid, it must contain one numeric and one capital letters.'
+    // );
+
+    $user = User::find($id); //get the user row
+
+    if($user) {
+      $this->validate($data, $rules);
+
+      //$user->username = $data['username'];
+      if(isset($data['password']) && $data['password'] != ''){
+        $user->password = Hash::make($data['password']);
+      }
+      $user->email = $data['email'];
+      $user->firstname = $data['firstname'];
+      $user->lastname = $data['lastname'];
+      $user->suffix = $data['suffix'];
+      $user->emp_no = $data['emp_no'];
+      $user->mobile = $data['mobile'];
+      $user->phone = $data['phone'];
+      $user->position = $data['position'];
+
+      //saving profile image
+      if(isset($data['imagedata'])) {
+        $data['username'] = $user->username;
+        $isImgSave = $this->saveImage($data);
+
+        if(is_array($isImgSave)) {
+          return Response::json(
+              $isImgSave,
+              200
+          );
+        } else { //save successfully
+            $user->profileimg = $isImgSave;
+        }
+      } else if(isset($data['imageremove'])){
+        $user->profileimg = '';
+      }
+      $user->save();
+
+      $response = Response::json(array(
+          'error' => false,
+          'user' => $user->toArray()),
+          200
+      );
+    } else {
+      $response = Response::json(array(
+          'error' => true,
+          'message' => "User not found"),
+          200
+      );
+    }
+
+    return $response;    
   }
 
 }

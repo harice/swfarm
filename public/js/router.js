@@ -9,11 +9,13 @@ define([
 	'controllers/role/RoleController',
 	'controllers/permission/PermissionController',
 	'controllers/audittrail/AuditTrailController',
-  'controllers/product/ProductController',
+	'controllers/profile/ProfileController',
+	'controllers/account/AccountController',
+	'controllers/product/ProductController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
-], function(Backbone, BaseRouter, HeaderView, AdminView, LoginController, UserController, RoleController, PermissionController, AuditTrailController, ProductController, Global, Const, Session) {
+], function(Backbone, BaseRouter, HeaderView, AdminView, LoginController, UserController, RoleController, PermissionController, AuditTrailController, ProfileController, AccountController, ProductController, Global, Const, Session) {
 	
 	var routerRoutes = {};
 	
@@ -52,13 +54,23 @@ define([
 	routerRoutes[Const.URL.AUDITTRAIL+'/:table'] = 'showAuditTrailPage';
 	routerRoutes[Const.URL.AUDITTRAIL+'/:table/:id'] = 'showAuditTrailPage';
   
-  //product
+	//product
 	routerRoutes[Const.URL.PRODUCT] = 'showProductPage';
 	routerRoutes[Const.URL.PRODUCT+'/'] = 'showProductPage';
 	routerRoutes[Const.URL.PRODUCT+'/:action'] = 'showProductPage';
 	routerRoutes[Const.URL.PRODUCT+'/:action/:id'] = 'showProductPage';
 	
-	//for commit
+	//profile
+	routerRoutes[Const.URL.PROFILE] = 'showProfilePage';
+	routerRoutes[Const.URL.PROFILE+'/'] = 'showProfilePage';
+	routerRoutes[Const.URL.PROFILE+'/:action'] = 'showProfilePage';
+	routerRoutes[Const.URL.PROFILE+'/:action/'] = 'showProfilePage';
+	
+	//accounts
+	routerRoutes[Const.URL.ACCOUNT] = 'showAccountPage';
+	routerRoutes[Const.URL.ACCOUNT+'/'] = 'showAccountPage';
+	routerRoutes[Const.URL.ACCOUNT+'/:action'] = 'showAccountPage';
+	routerRoutes[Const.URL.ACCOUNT+'/:action/:id'] = 'showAccountPage';
 	
 	routerRoutes['*actions'] = 'defaultAction';
 
@@ -162,10 +174,24 @@ define([
 			this.currView.render();
 		});
     
-    app_router.on('route:showProductPage', function (action, id) {
+		app_router.on('route:showProductPage', function (action, id) {
 			this.closeView();
 			var productController = new ProductController();
 			this.currView = productController.setAction(action, id);
+			this.currView.render();
+		});
+		
+		app_router.on('route:showProfilePage', function (action) {
+			this.closeView();
+			var profileController = new ProfileController();
+			this.currView = profileController.setAction(action);
+			this.currView.render();
+		});
+		
+		app_router.on('route:showAccountPage', function (action, id) {
+			this.closeView();
+			var accountController = new AccountController();
+			this.currView = accountController.setAction(action, id);
 			this.currView.render();
 		});
 		

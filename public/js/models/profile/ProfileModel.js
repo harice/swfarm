@@ -4,17 +4,19 @@ define([
 	'constant',
 ], function(Backbone, Global, Const) {
 
-	var UserModel = Backbone.Model.extend({
-		urlRoot: '/apiv1/users',
+	var ProfileModel = Backbone.Model.extend({
+		urlRoot: '/apiv1/users/updateprofile',
+		
 		defaults: {
             firstname: '',
             lastname: '',
 			email:'',
             emp_no: '',
-			username: '',
-			roles: '',
         },
+		
 		runFetch: function () {
+			this.setFetchURL();
+			
 			var thisObj = this;
 			
 			this.fetch({
@@ -22,7 +24,7 @@ define([
 					//console.log('success: UserModel.fetch()');
 					if(typeof response.error != 'undefined') {
 						alert(response.message);
-						Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
+						Global.getGlobalVars().app_router.navigate(Const.URL.PROFILE, {trigger: true});
 					}
 					/*else {
 						console.log(model);
@@ -34,8 +36,20 @@ define([
 				headers: thisObj.getAuth(),
 			});
 		},
+		
+		getDefaultURL: function () {
+			return '/apiv1/users/updateprofile';
+		},
+		
+		setDefaultURL: function () {
+			this.urlRoot = this.getDefaultURL();
+		},
+		
+		setFetchURL: function () {
+			this.urlRoot = '/apiv1/users';
+		},
 	});
 
-	return UserModel;
+	return ProfileModel;
 
 });

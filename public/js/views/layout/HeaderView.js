@@ -2,7 +2,7 @@ define([
 	'backbone',
 	'text!templates/layout/headerTemplate.html',
 	'constant',
-	'models/session/SessionModel'
+	'models/session/SessionModel',
 ], function(Backbone, headerTemplate, Const, Session){
 
 	var HeaderView = Backbone.View.extend({
@@ -22,7 +22,7 @@ define([
 				'audittrail_url': '#/'+Const.URL.AUDITTRAIL,
 
 				'contacts_url'	: '#/',
-				'accounts_url'	: '#/',
+				'accounts_url'	: '#/'+Const.URL.ACCOUNT,
 				'purchases_url'	: '#/',
 				'sales_url'		: '#/',
 				'inventory_url'	: '#/',
@@ -31,7 +31,10 @@ define([
 
 				'logout_url'	: '#/'+Const.URL.LOGOUT,
 				'login_url'		: '#/'+Const.URL.LOGIN,
-
+				
+				'profile_view_url'	: '#/'+Const.URL.PROFILE,
+				'profile_edit_url'		: '#/'+Const.URL.PROFILE+'/'+Const.CRUD.EDIT,
+				
 				'menu'			: Const.MENU,
 				'token'			: Session.get('token'),
 				'permission'	: Session.get('permission'),

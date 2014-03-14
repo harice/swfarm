@@ -2,14 +2,14 @@ define([
 	'backbone',
 	'jqueryvalidate',
 	'text!templates/layout/contentTemplate.html',
-	'text!templates/user/userAddTemplate.html',
-	'models/user/UserModel',
-	'collections/role/RoleCollection',
+	'text!templates/profile/profileEditTemplate.html',
+	'models/profile/ProfileModel',
+	'models/session/SessionModel',
 	'global',
 	'constant',
-], function(Backbone, Validate, contentTemplate, userAddTemplate, UserModel, RoleCollection, Global, Const){
+], function(Backbone, Validate, contentTemplate, profileEditTemplate, ProfileModel, SessionModel, Global, Const){
 
-	var UserEditView = Backbone.View.extend({
+	var ProfileEditView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		options: {
@@ -21,30 +21,14 @@ define([
 			fileFileClone: null,
 		},
 		
-		initialize: function(option) {
+		initialize: function() {
 			var thisObj = this;
-			
-			this.model = new UserModel({id:option.id});
+			this.model = new ProfileModel({id:parseInt(SessionModel.get('su'))});
 			this.model.on("change", function() {
 				if(this.hasChanged('firstname') && this.hasChanged('lastname') && this.hasChanged('email') && this.hasChanged('username')) {
 					thisObj.displayUser();
 					this.off("change");
 				}
-			});
-			
-			this.collection = new RoleCollection();
-			this.collection.on('sync', function() {
-				//console.log('collection.on.sync')
-				thisObj.displayRoles();
-				this.off('sync');
-			});
-			
-			this.collection.on('error', function(collection, response, options) {
-				//console.log('collection.on.error')
-				//console.log(collection);
-				//console.log(response);
-				//console.log(options);
-				this.off('error');
 			});
 		},
 		
@@ -57,12 +41,12 @@ define([
 			
 			var innerTemplateVariables = {
 				user_id: this.model.get('id'),
-				'user_url' : '#/'+Const.URL.USER
+				'user_url' : '#/'+Const.URL.PROFILE
 			};
-			var innerTemplate = _.template(userAddTemplate, innerTemplateVariables);
+			var innerTemplate = _.template(profileEditTemplate, innerTemplateVariables);
 			
 			var variables = {
-				h1_title: "Edit User",
+				h1_title: "Profile Settings",
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
@@ -91,9 +75,6 @@ define([
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
 					
-					if(typeof data.roles != 'undefined' && typeof data.roles != 'string')
-						data.roles = data.roles.join(',');
-					
 					if(thisObj.options.imagename != '') {
 						data.imagetype = thisObj.options.imagetype;
 						data.imagesize = thisObj.options.imagesize; 
@@ -105,10 +86,10 @@ define([
 							data.imageremove = true;
 					}
 					
-					var userModel = new UserModel(data);
+					var userModel = new ProfileModel(data);
 					userModel.save(null, {success: function (model, response, options) {
 						//console.log('success: add user');
-						Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
+						Global.getGlobalVars().app_router.navigate(Const.URL.PROFILE, {trigger: true});
 					}, error: function (model, response, options) {
 						//console.log('error: add user');
 						if(response.responseJSON)
@@ -118,30 +99,20 @@ define([
 					},
 					headers: userModel.getAuth(),});
 				},
+				
+				rules: {
+					password_confirmation: {
+						equalTo: '#password',
+						required: '#password:filled',
+					},
+				},
+				messages: {
+					password_confirmation: {
+						equalTo: 'Password does not match',
+					},
+				},
 			});
 			
-			this.collection.getAllModels();
-		},
-		
-		displayRoles: function (userRoles){
-			var userRoles = this.model.get('roles');
-			var checkboxes = '';
-			_.each(this.collection.models, function (role) {
-				
-				var roleId = role.get('id');
-				var checked = '';
-				
-				for(var key in userRoles) {
-					if(typeof userRoles[key] !== 'function' && userRoles[key].id == roleId) {
-						checked = ' checked';
-						break;
-					}
-				}
-				
-				checkboxes += '<div class="checkbox"><label><input type="checkbox" name="roles" value="'+roleId+'"'+checked+'>'+role.get('name')+'</label></div>';
-			});
-			
-			$('.user-role-container').html(checkboxes);
 			$('.form-button-container').show();
 		},
 		
@@ -198,6 +169,6 @@ define([
 		},
 	});
 
-  return UserEditView;
+  return ProfileEditView;
   
 });

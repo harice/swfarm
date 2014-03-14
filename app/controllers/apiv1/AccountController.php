@@ -3,13 +3,17 @@
 namespace APIv1;
 
 use BaseController;
-use UsersRepositoryInterface;
+use AccountRepositoryInterface;
 use Input;
 use Config;
 
 
 class AccountController extends BaseController {
 
+	public function __construct(AccountRepositoryInterface $account)
+	{
+		$this->account = $account;
+	}
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -17,7 +21,7 @@ class AccountController extends BaseController {
 	 */
 	public function index()
 	{
-		//
+		echo "index";
 	}
 
 	/**
@@ -36,8 +40,8 @@ class AccountController extends BaseController {
 	 * @return Response
 	 */
 	public function store()
-	{
-		//
+	{ 
+		return $this->account->store( Input::all() );
 	}
 
 	/**
@@ -84,8 +88,8 @@ class AccountController extends BaseController {
 		//
 	}
 
-	public function getAccountTypes(){
-		return $this->account->getAccountTypes();
+	public function getAccountAndAddressTypes(){
+		return $this->account->getAccountAndAddressTypes();
 	}
 
 }

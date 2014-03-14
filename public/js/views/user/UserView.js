@@ -31,6 +31,7 @@ define([
 				user:userModel,
 				user_url:'#/'+Const.URL.USER,
 				user_edit_url:'#/'+Const.URL.USER+'/'+Const.CRUD.EDIT,
+				user_pic_default: Const.PLACEHOLDER.PROFILEPIC,
 			}
 			var innerTemplate = _.template(userViewTemplate, innerTemplateVariables);
 			
