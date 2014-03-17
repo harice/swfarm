@@ -25,8 +25,9 @@
 		<div class="col-sm-10">
 			<select class="form-control state" name="state">
 				<option value="">Select a state</option>
-				<option value="1">empire state of mind</option>
-				<option value="2">state chew dance</option>
+				<% _.each(address_states, function(state){ %>
+				<option value="<%= state.id %>"><%= state.state %></option>
+				<% }); %>
 			</select>
 		</div>
 	</div>
@@ -35,8 +36,6 @@
 		<div class="col-sm-10">
 			<select class="form-control city" name="city">
 				<option value="">Select a city</option>
-				<option value="1">city hunter</option>
-				<option value="2">city savings bank</option>
 			</select>
 		</div>
 	</div>

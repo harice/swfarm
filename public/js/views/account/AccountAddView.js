@@ -3,12 +3,13 @@ define([
 	'jqueryvalidate',
 	'models/account/AccountModel',
 	'models/account/AccountExtrasModel',
+	'collections/address/CityCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/account/accountAddTemplate.html',
 	'text!templates/account/accountAddressTemplate.html',
 	'global',
 	'constant',
-], function(Backbone, Validate, AccountModel, AccountExtrasModel, contentTemplate, accountAddTemplate, accountAddressTemplate, Global, Const){
+], function(Backbone, Validate, AccountModel, AccountExtrasModel, CityCollection, contentTemplate, accountAddTemplate, accountAddressTemplate, Global, Const){
 
 	var AccountAddView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -37,9 +38,10 @@ define([
 		
 		displayForm: function () {
 			var thisObj = this;
-			var test = this.model.get('accountTypes'); console.log(test);
+			
 			var varAccountAddressTemplate = {
 				'address_types': this.model.get('addressTypes'),
+				'address_states' : this.model.get('states'),
 			};
 			
 			var addressTemplate = _.template(accountAddressTemplate, varAccountAddressTemplate);
@@ -71,8 +73,7 @@ define([
 			var validate = $('#addAccountForm').validate({
 				submitHandler: function(form) {
 					var data = thisObj.formatFormField($(form).serializeObject());
-					console.log(data);
-					//thisObj.formatFormField(data);
+					//console.log(data);
 					
 					var accountModel = new AccountModel(data);
 					
@@ -96,6 +97,7 @@ define([
 		events: {
 			'click #add-address-field' : 'addAddressFields',
 			'click .remove-address-fields' : 'removeAddressFields',
+			'change .state' : 'fetchCityList',
 		},
 		
 		addAddressFields: function () {
@@ -161,6 +163,31 @@ define([
 			
 			return formData;
 		},
+		
+		fetchCityList: function (ev) {
+			var stateField = $(ev.target);
+			var cityField = stateField.closest('.address-fields-container').find('.city');
+			
+			if(stateField.val() != '') {
+				var cityCollection = new CityCollection();
+				cityCollection.on('sync', function() {
+					cityField.find('option:gt(0)').remove();
+					
+					_.each(this.models, function (city){
+						cityField.append($('<option></option>').attr('value', city.get('id')).text(city.get('city')));
+					});
+					
+					this.off('sync');
+				});
+				
+				cityCollection.on('error', function(collection, response, options) {
+					this.off('error');
+				});
+				cityCollection.getModels(stateField.val());
+			}
+			else
+				cityField.find('option:gt(0)').remove();
+		}
 		
 	});
 
