@@ -1,12 +1,13 @@
-<div class="address-fields-container">
-	<% if (typeof hide_remove_button == "undefined") { %>
-		<div><button type="button" class="pull-right btn btn-default remove-address-fields">Remove address</button></div>
-		<div class="clearfix"></div>
-	<% } %>
+<fieldset class="address-fields-container">
+	<legend>
+		Address
+		<button id="add-address-field" type="button" class="pull-right btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
+		<button type="button" class="pull-right btn btn-default btn-xs remove-address-fields"><span class="glyphicon glyphicon-minus"></span></button>
+	</legend>
 	<div class="form-group">
-		<label for="addresstype" class="col-sm-2 control-label">Address Type</label>
+		<label for="type" class="col-sm-2 control-label">Address Type</label>
 		<div class="col-sm-10">
-			<select class="form-control" id="addresstype" name="addresstype" <% if (typeof uneditable_type != "undefined") { %>disabled<% } %>>
+			<select class="form-control type" name="type">
 				<option value="Mailing">Mailing</option>
 				<option value="Billing">Billing</option>
 				<option value="Stack">Stack</option>
@@ -16,31 +17,39 @@
 	<div class="form-group">
 		<label for="street" class="col-sm-2 control-label">Street</label>
 		<div class="col-sm-10">
-			<input type="text" class="form-control" id="street" name="street" placeholder="" maxlength="250">
+			<input type="text" class="form-control street" name="street" placeholder="" maxlength="250" >
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="state" class="col-sm-2 control-label">State/Provonce</label>
+		<div class="col-sm-10">
+			<select class="form-control state" name="state">
+				<option value="">Select a state</option>
+				<option value="1">empire state of mind</option>
+				<option value="2">state chew dance</option>
+			</select>
 		</div>
 	</div>
 	<div class="form-group">
 		<label for="city" class="col-sm-2 control-label">City</label>
 		<div class="col-sm-10">
-			<input type="text" class="form-control" id="city" name="city" placeholder="" maxlength="250">
+			<select class="form-control city" name="city">
+				<option value="">Select a city</option>
+				<option value="1">city hunter</option>
+				<option value="2">city savings bank</option>
+			</select>
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="stateprovince" class="col-sm-2 control-label">State/Provonce</label>
+		<label for="zipcode" class="col-sm-2 control-label">Zip/Postal Code</label>
 		<div class="col-sm-10">
-			<input type="text" class="form-control" id="stateprovince" name="stateprovince" placeholder="" maxlength="250">
-		</div>
-	</div>
-	<div class="form-group">
-		<label for="zippostalcode" class="col-sm-2 control-label">Zip/Postal Code</label>
-		<div class="col-sm-10">
-			<input type="text" class="form-control" id="zippostalcode" name="zippostalcode" placeholder="" maxlength="250">
+			<input type="text" class="form-control zipcode" name="zipcode" placeholder="" maxlength="250" readonly>
 		</div>
 	</div>
 	<div class="form-group">
 		<label for="country" class="col-sm-2 control-label">Country</label>
 		<div class="col-sm-10">
-			<input type="text" class="form-control" id="country" name="country" placeholder="" maxlength="250">
+			<input type="text" class="form-control country" name="country" placeholder="" maxlength="250" value="United States" readonly>
 		</div>
 	</div>
-</div>
+</fieldset>
