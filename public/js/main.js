@@ -11,6 +11,7 @@ require.config({
 		underscore: 'libs/underscore/underscore-min',
 		backbone: 'libs/backbone/backbone-min',
 		base64: 'libs/base64/base64.min',
+    growl: 'libs/bootstrap-growl/jquery.bootstrap-growl.min',
 		templates: '../templates'
 	},
 	shim: {
@@ -19,23 +20,27 @@ require.config({
 			exports: 'Base64'
 		},
 		'backbone': {
-			deps: ['underscore', 'jquery'],
+			deps: ['underscore', 'jquery', 'bootstrap', 'growl'],
 			exports: 'Backbone'
 		},
 		'bootstrap': {
 			deps: ['jquery'],
 			exports: 'Bootstrap'
 		},
+    'growl': {
+			deps: ['jquery', 'bootstrap'],
+			exports: 'Growl'
+		},
 		'underscore': {
             exports: '_'
         },
 		'jqueryvalidate': {
-            deps: ['jquery'],
+      deps: ['jquery'],
 			exports: 'Validate',
         },
 		'jquery': {
-            exports: '$'
-        },
+      exports: '$'
+    },
 		
 	},
 });
