@@ -12,8 +12,9 @@ class CreateAddressStatesTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('address_states', function($table)
+		Schema::create('addressstates', function($table)
 		{
+			$table->engine = 'InnoDB';
             $table->increments('id');
 			$table->string('state', 22);
             $table->string('state_code', 2);
@@ -27,7 +28,7 @@ class CreateAddressStatesTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('address_states');
+		Schema::dropIfExists('addressstates');
 	}
 
 }
