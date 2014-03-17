@@ -5,7 +5,7 @@ class AddressCitiesTableSeeder extends Seeder {
 	public function run()
 	{
 		$cities = array(
-            array('city' => 'Aaronsburg','state' => 39),
+            /*array('city' => 'Aaronsburg','state' => 39),
             array('city' => 'Abbeville','state' => 2),
             array('city' => 'Abbeville','state' => 11),
             array('city' => 'Abbeville','state' => 19),
@@ -29727,18 +29727,18 @@ class AddressCitiesTableSeeder extends Seeder {
             array('city' => 'Zurich','state' => 27),
             array('city' => 'Zwingle','state' => 13),
             array('city' => 'Zwolle','state' => 19)
+			*/
 			
-			/*
 			array('city' => 'Adak','state' => 1),
 			array('city' => 'Akiachak','state' => 1),
 			array('city' => 'Abbeville','state' => 2),
 			array('city' => 'Abernant','state' => 2),
 			array('city' => 'Adona','state' => 3),
 			array('city' => 'Alexander','state' => 3),
-			*/
+			
 		);
 
-		DB::table('address_cities')->insert($cities);
+		DB::table('addresscities')->insert($cities);
 	}
 
 }

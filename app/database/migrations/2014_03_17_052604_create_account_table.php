@@ -14,6 +14,7 @@ class CreateAccountTable extends Migration {
 	{
 		Schema::create('account', function($table)
 		{
+			$table->engine = 'InnoDB';
 			$table->increments('id');
 			$table->string('name')->unique();
 			$table->string('website')->nullable();
@@ -25,6 +26,7 @@ class CreateAccountTable extends Migration {
 
 			$table->foreign('accounttype')->references('id')->on('accounttype');
 		});
+
 	}
 
 	/**

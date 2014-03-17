@@ -12,13 +12,14 @@ class CreateAddressCitiesTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('address_cities', function($table)
+		Schema::create('addresscities', function($table)
 		{
+			$table->engine = 'InnoDB';
             $table->increments('id');
 			$table->string('city', 50);
             $table->integer('state')->unsigned();
             
-            $table->foreign('state')->references('id')->on('address_states');
+            $table->foreign('state')->references('id')->on('addressstates');
 		});
 	}
 
@@ -29,7 +30,7 @@ class CreateAddressCitiesTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('address_cities');
+		Schema::dropIfExists('addresscities');
 	}
 
 }
