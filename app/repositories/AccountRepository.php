@@ -44,7 +44,7 @@ class AccountRepository implements AccountRepositoryInterface {
 
   public function store($data){
     $rules = array(
-      'name' => 'required|between:5,20|unique:account',
+      'name' => 'required|unique:account',
       'website' => 'url',
       'accounttype' => 'required',
     );
@@ -84,9 +84,9 @@ class AccountRepository implements AccountRepositoryInterface {
 
         $address = new Address;
         $address->street = $addressData['street'];
-        $address->city = $addressData['street'];
-        $address->state = $addressData['street'];
-        $address->country = $addressData['street'];
+        $address->city = $addressData['city'];
+        $address->state = $addressData['state'];
+        $address->country = $addressData['country'];
         $address->type = $addressData['type'];
         $address->account = $account->id;
 
