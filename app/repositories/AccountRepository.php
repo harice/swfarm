@@ -43,22 +43,68 @@ class AccountRepository implements AccountRepositoryInterface {
   }
 
   public function store($data){
-    
     $rules = array(
-      'name' => 'required|between:5,20|unique:roles'
+      'name' => 'required|between:5,20|unique:account',
+      'website' => 'url',
+      'accounttype' => 'required',
     );
+
 
     $this->validate($data, $rules);
 
-    $role = new Roles;
-    $role->name = $data['name'];
-    $role->description = $data['description'];
+    $account = new Account;
+    $account->name = $data['name'];
+    $account->website = isset($data['website']) ? $data['website'] : '';
+    $account->description = isset($data['description']) ? $data['description'] : '';
+    $account->phone = isset($data['phone']) ? $data['phone'] : '';
+    $account->accounttype = $data['accounttype'];
 
-    $role->save();
+    try{
+      $account->save();
+    } catch(Exception $e){
+      return Response::json(array(
+        'error' => true,
+        'message' => $e->errorInfo[2]),
+        200
+      );
+    }
+
+    if(isset($data['address'])){
+      $addressRules = array(
+        'street' => 'required_with:city,state,country,type',
+        'city' => 'required_with:street,state,country,type',
+        'state' => 'required_with:street,city,country,type',
+        'country' => 'required_with:street,city,state,type',
+        'type' => 'required_with:street,city,state,country'
+      );
+
+      foreach($data['address'] as $item){
+        $addressData = (array)json_decode($item);
+        $this->validate($addressData, $addressRules);
+
+        $address = new Address;
+        $address->street = $addressData['street'];
+        $address->city = $addressData['street'];
+        $address->state = $addressData['street'];
+        $address->country = $addressData['street'];
+        $address->type = $addressData['type'];
+        $address->account = $account->id;
+
+        try{
+            $address->save();
+          } catch(Exception $e){
+            return Response::json(array(
+              'error' => true,
+              'message' => $e->errorInfo[2]),
+              200
+            );
+          }
+      }
+    }
 
     return Response::json(array(
         'error' => false,
-        'role' => $role->toArray()),
+        'account' => $account->toArray()),
         200
     );
   }
