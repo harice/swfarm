@@ -3,7 +3,7 @@
 class AccountRepository implements AccountRepositoryInterface {
 
   public function findAll(){
-    $rolesList = Roles::orderby('name', 'ASC')->get();
+    $account = Account::find($id)->get();
 
     return Response::json(
         $rolesList->toArray(),
@@ -12,17 +12,17 @@ class AccountRepository implements AccountRepositoryInterface {
   }
 
   public function findById($id){
-    $role = Roles::find($id);
+    $account = Account::with('address')->find($id);
 
-    if($role){
+    if($account){
       $response = Response::json(
-        $role->toArray(),
+        $account->toArray(),
         200
       );
     } else {
       $response = Response::json(array(
         'error' => true,
-        'message' => "Role not found"),
+        'message' => "Account not found"),
         200
       );
     }
@@ -30,13 +30,19 @@ class AccountRepository implements AccountRepositoryInterface {
     return $response;
   }
 
-  public function paginate($perPage, $offset){
+  public function paginate($params){
+    $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST'); //default to 10 items, see app/config/constants
+    $page = isset($params['page']) ? $params['page'] : '1'; //default to page 1
+    $sortby = isset($params['sortby']) ? $params['sortby'] : 'name'; //default sort to account name
+    $orderby = isset($params['orderby']) ? $params['orderby'] : 'ASC'; //default order is Ascending
+    $offset = $page*$perPage-$perPage;
+
     //pulling of data
-    $count = Roles::count();
-    $rolesList = Roles::take($perPage)->offset($offset)->orderBy('name', 'ASC')->get();
+    $count = Account::count();
+    $accountList = Account::with('accounttype')->take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
 
     return Response::json(array(
-      'data'=>$rolesList->toArray(),
+      'data'=>$accountList->toArray(),
       'total'=>$count
     ));
 
@@ -113,35 +119,77 @@ class AccountRepository implements AccountRepositoryInterface {
 
   public function update($id, $data){
     $rules = array(
-      'name' => 'required|unique:roles,name,'.$id,
+      'name' => 'required|unique:account,name,'.$id,
+      'website' => 'url',
+      'accounttype' => 'required',
     );
 
 
-    $role = Roles::find($id); //get the role row
+    $this->validate($data, $rules);
 
-    if($role) {
-      $this->validate($data, $rules);
+    $account = Account::find($id);
+    $account->name = $data['name'];
+    $account->website = isset($data['website']) ? $data['website'] : '';
+    $account->description = isset($data['description']) ? $data['description'] : '';
+    $account->phone = isset($data['phone']) ? $data['phone'] : '';
+    $account->accounttype = $data['accounttype'];
 
-      $role->name = $data['name'];
-      $role->description = $data['description'];
-      
-
-      $role->save();
-
-      $response = Response::json(array(
-          'error' => false,
-          'role' => $role->toArray()),
-          200
-      );
-    } else {
-      $response = Response::json(array(
-          'error' => true,
-          'message' => "Role not found"),
-          200
+    try{
+      $account->save();
+    } catch(Exception $e){
+      return Response::json(array(
+        'error' => true,
+        'message' => $e->errorInfo[2]),
+        200
       );
     }
 
-    return $response;
+    if(isset($data['address'])){
+      $addressRules = array(
+        'street' => 'required_with:city,state,country,type,zipcode',
+        'city' => 'required_with:street,state,country,type,zipcode',
+        'state' => 'required_with:street,city,country,type,zipcode',
+        'country' => 'required_with:street,city,state,type,zipcode',
+        'zipcode' => 'required_with:street,city,state,type',
+        'type' => 'required_with:street,city,state,country'
+      );
+
+      foreach($data['address'] as $item){
+        $addressData = (array)json_decode($item);
+        $this->validate($addressData, $addressRules);
+
+        if(isset($addressData['id'])){
+          $address = Address::find($addressData['id']);  //when editing address
+        } else {
+          $address = new Address;  //when adding new address while updating the account
+        }
+        
+        $address->street = $addressData['street'];
+        $address->city = $addressData['city'];
+        $address->state = $addressData['state'];
+        $address->country = $addressData['country'];
+        $address->type = $addressData['type'];
+        $address->zipcode = $addressData['zipcode'];
+        $address->account = $account->id;
+
+        try{
+            $address->save();
+          } catch(Exception $e){
+            return Response::json(array(
+              'error' => true,
+              'message' => $e->errorInfo[2]),
+              200
+            );
+          }
+      }
+      
+    }
+
+    return Response::json(array(
+        'error' => false,
+        'account' => $account->toArray()),
+        200
+    );
   }
 
   public function destroy($id){

@@ -21,7 +21,7 @@ class AccountController extends BaseController {
 	 */
 	public function index()
 	{
-		echo "indexs";
+		return $this->account->paginate( Input::all() );
 	}
 
 	/**
@@ -52,7 +52,7 @@ class AccountController extends BaseController {
 	 */
 	public function show($id)
 	{
-		//
+		return $this->account->findById($id);
 	}
 
 	/**
@@ -74,7 +74,7 @@ class AccountController extends BaseController {
 	 */
 	public function update($id)
 	{
-		//
+		return $this->account->update($id, Input::all());
 	}
 
 	/**

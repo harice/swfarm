@@ -12,11 +12,11 @@ class Account extends Eloquent {
 	protected $table = 'account';
 
     public function accountType(){
-        return $this->hasMany('accountType', 'accounttype');
+        return $this->hasMany('accountType', 'id', 'accounttype');
     }
 
     public function address(){
-    	return $this->hasMany('address');
+    	return $this->hasMany('address', 'account');
     }
 
 }
