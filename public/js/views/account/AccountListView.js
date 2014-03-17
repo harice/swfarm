@@ -1,12 +1,11 @@
 define([
 	'backbone',
-	'models/user/UserModel',
-	'collections/user/UserCollection',
+	'collections/account/AccountCollection',
 	'text!templates/layout/contentTemplate.html',
-	'text!templates/user/userListTemplate.html',
-	'text!templates/user/userInnerListTemplate.html',
+	'text!templates/account/accountListTemplate.html',
+	'text!templates/account/accountInnerListTemplate.html',
 	'constant',
-], function(Backbone, UserModel, UserCollection, contentTemplate, userListTemplate, userInnerListTemplate, Const){
+], function(Backbone, AccountCollection, contentTemplate, accountListTemplate, accountInnerListTemplate, Const){
 
 	var AccountListView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -14,17 +13,12 @@ define([
 		initialize: function() {
 			var thisObj = this;
 			
-			this.collection = new UserCollection();
+			this.collection = new AccountCollection();
 			this.collection.on('sync', function() {
-				//console.log('collection.on.sync')
 				thisObj.displayList();
 			});
 			
 			this.collection.on('error', function(collection, response, options) {
-				//console.log('collection.on.error')
-				//console.log(collection);
-				//console.log(response);
-				//console.log(options);
 				this.off('error');
 			});
 		},
@@ -36,10 +30,10 @@ define([
 		},
 		
 		displayUser: function () {
-			var innerTemplate = _.template(userListTemplate, {'user_add_url' : '#/'+Const.URL.ACCOUNT+'/'+Const.CRUD.ADD});
+			var innerTemplate = _.template(accountListTemplate, {'account_add_url' : '#/'+Const.URL.ACCOUNT+'/'+Const.CRUD.ADD});
 			
 			var variables = {
-				h1_title: "Users",
+				h1_title: "Accounts",
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
@@ -47,18 +41,15 @@ define([
 		},
 		
 		displayList: function () {
-			//console.log('displayUser');
-			//console.log(this.collection);
-			
 			var data = {
-				user_url: '#/'+Const.URL.USER,
-				user_edit_url: '#/'+Const.URL.USER+'/'+Const.CRUD.EDIT,
-				users: this.collection.models,
+				account_url: '#/'+Const.URL.ACCOUNT,
+				account_edit_url: '#/'+Const.URL.ACCOUNT+'/'+Const.CRUD.EDIT,
+				accounts: this.collection.models,
 				_: _ 
 			};
 			
-			var innerListTemplate = _.template( userInnerListTemplate, data );
-			$("#user-list tbody").html(innerListTemplate);
+			var innerListTemplate = _.template(accountInnerListTemplate, data);
+			$("#account-list tbody").html(innerListTemplate);
 			
 			this.generatePagination(this.collection.options.maxItem, Const.MAXITEMPERPAGE);
 		},
@@ -92,10 +83,9 @@ define([
 			'click .first-page' : 'gotoFirstPage',
 			'click .last-page' : 'gotoLastPage',
 			'click .page-number' : 'gotoPage',
-			'click .sort-lastname' : 'sortLastname',
-			'click .sort-firstname' : 'sortFirstname',
-			'click .sort-email' : 'sortEmail',
-			'click .user-search' : 'searchUser',
+			'click .sort-name' : 'sortName',
+			'click .sort-type' : 'sortType',
+			//'click .account-search' : 'accountUser',
 		},
 		
 		gotoFirstPage: function () {
@@ -127,16 +117,12 @@ define([
 			return false;
 		},
 		
-		sortLastname: function () {
-			this.sortByField('lastname');
+		sortName: function () {
+			this.sortByField('name');
 		},
 		
-		sortFirstname: function () {
-			this.sortByField('firstname');
-		},
-		
-		sortEmail: function () {
-			this.sortByField('email');
+		sortType: function () {
+			this.sortByField('accounttype');
 		},
 		
 		sortByField: function (sortField) {
@@ -150,14 +136,14 @@ define([
 			return false;
 		},
 		
-		searchUser: function () {
+		/*accountUser: function () {
 			var keyword = $('#search-keyword').val();
 			
 			this.collection.options.search = keyword;
 			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
 			
 			return false;
-		},
+		},*/
 		
 	});
 
