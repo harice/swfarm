@@ -8,7 +8,7 @@ class AddressState extends Eloquent {
 	 *
 	 * @var string
 	 */
-	protected $table = 'addressstate';
+	protected $table = 'addressstates';
 
     public function address(){
         return $this->belongsTo('Address');
