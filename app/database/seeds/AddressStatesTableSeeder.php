@@ -57,6 +57,12 @@ class AddressStatesTableSeeder extends Seeder {
             array('state' => 'West Virginia','state_code' => 'WV'),
             array('state' => 'Wyoming','state_code' => 'WY'),
             array('state' => 'Puerto Rico','state_code' => 'PR')
+			
+			/*
+			array('state' => 'Alaska','state_code' => 'AK'),
+            array('state' => 'Alabama','state_code' => 'AL'),
+            array('state' => 'Arkansas','state_code' => 'AR'),
+			*/
 		);
 
 		DB::table('address_states')->insert($states);

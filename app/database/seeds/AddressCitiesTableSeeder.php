@@ -29727,6 +29727,15 @@ class AddressCitiesTableSeeder extends Seeder {
             array('city' => 'Zurich','state' => 27),
             array('city' => 'Zwingle','state' => 13),
             array('city' => 'Zwolle','state' => 19)
+			
+			/*
+			array('city' => 'Adak','state' => 1),
+			array('city' => 'Akiachak','state' => 1),
+			array('city' => 'Abbeville','state' => 2),
+			array('city' => 'Abernant','state' => 2),
+			array('city' => 'Adona','state' => 3),
+			array('city' => 'Alexander','state' => 3),
+			*/
 		);
 
 		DB::table('address_cities')->insert($cities);
