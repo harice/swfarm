@@ -150,7 +150,7 @@ define([
 							for(var i = 0; i < addressFieldClasses.length; i++)
 								arrayAddressFields[addressFieldClasses[i]] = data[addressFieldClasses[i]+this.options.addressFieldSeparator+index];
 								
-							formData.address.push(arrayAddressFields);
+							formData.address.push(JSON.stringify(arrayAddressFields));
 						}
 					}
 				}

@@ -88,8 +88,12 @@ class AccountController extends BaseController {
 		//
 	}
 
-	public function getAccountAndAddressTypes(){
-		return $this->account->getAccountAndAddressTypes();
+	public function getFormData(){
+		return $this->account->getFormData();
+	}
+
+	public function getCitiesByState($id){
+		return $this->account->getCitiesByState($id);
 	}
 
 }

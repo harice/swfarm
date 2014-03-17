@@ -71,10 +71,11 @@ class AccountRepository implements AccountRepositoryInterface {
 
     if(isset($data['address'])){
       $addressRules = array(
-        'street' => 'required_with:city,state,country,type',
-        'city' => 'required_with:street,state,country,type',
-        'state' => 'required_with:street,city,country,type',
-        'country' => 'required_with:street,city,state,type',
+        'street' => 'required_with:city,state,country,type,zipcode',
+        'city' => 'required_with:street,state,country,type,zipcode',
+        'state' => 'required_with:street,city,country,type,zipcode',
+        'country' => 'required_with:street,city,state,type,zipcode',
+        'zipcode' => 'required_with:street,city,state,type',
         'type' => 'required_with:street,city,state,country'
       );
 
@@ -88,6 +89,7 @@ class AccountRepository implements AccountRepositoryInterface {
         $address->state = $addressData['state'];
         $address->country = $addressData['country'];
         $address->type = $addressData['type'];
+        $address->zipcode = $addressData['zipcode'];
         $address->account = $account->id;
 
         try{
@@ -178,15 +180,26 @@ class AccountRepository implements AccountRepositoryInterface {
     return new Account($data);
   }
 
-  public function getAccountAndAddressTypes(){
+  public function getFormData(){
       $accountTypes = AccountType::orderby('name', 'asc')->get();
       $addressTypes = AddressType::orderby('name', 'asc')->get();
+      $states = AddressState::orderby('state', 'asc')->get();
 
       return Response::json(
           array(
           'accountTypes' => $accountTypes->toArray(),
-          'addressTypes' => $addressTypes->toArray()
+          'addressTypes' => $addressTypes->toArray(),
+          'states' => $states->toArray()
           ),
+          200
+      );
+  }
+
+  public function getCitiesByState($stateId){
+    $cities = AddressCity::where('state', '=', $stateId)->get();
+    
+      return Response::json(
+          $cities->toArray(),
           200
       );
   }
