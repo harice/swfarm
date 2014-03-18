@@ -16,7 +16,7 @@ define([
 			
 			this.model = new ContactModel({id:option.id});
 			this.model.on("change", function() {
-				if(this.hasChanged('name')) {
+				if(this.hasChanged('lastname')) {
 					thisObj.displayContact(this);
 					this.off("change");
 				}

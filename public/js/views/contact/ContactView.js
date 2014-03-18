@@ -16,8 +16,7 @@ define([
 			
 			this.model = new ContactModel({id:option.id});
 			this.model.on("change", function() {
-				console.log('onChange: ContactModel');
-				if(this.hasChanged('name')) {
+				if(this.hasChanged('lastname')) {
 					thisObj.displayContact(this);
 					this.off("change");
 				}
@@ -37,7 +36,7 @@ define([
 			var innerTemplate = _.template(contactViewTemplate, innerTemplateVariables);
 			
 			var variables = {
-				h1_title: contactModel.get('name'),
+				h1_title: contactModel.get('lastname')+', '+contactModel.get('firstname'),
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
