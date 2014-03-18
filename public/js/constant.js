@@ -11,6 +11,7 @@ define(function () {
 			'AUDITTRAIL': 'administration/audittrail',
 			'PROFILE' : 'profile',
 			'ACCOUNT' : 'account',
+            'CONTACT' : 'contact',
 			'PRODUCT': 'product',
 		},
 		'MENU': {

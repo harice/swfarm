@@ -21,7 +21,7 @@ define([
 				'permission_url': '#/'+Const.URL.PERMISSION,
 				'audittrail_url': '#/'+Const.URL.AUDITTRAIL,
 
-				'contacts_url'	: '#/',
+				'contact_url'	: '#/'+Const.URL.CONTACT,
 				'accounts_url'	: '#/'+Const.URL.ACCOUNT,
 				'purchases_url'	: '#/',
 				'sales_url'		: '#/',
