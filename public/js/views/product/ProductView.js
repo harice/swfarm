@@ -3,9 +3,10 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/product/productViewTemplate.html',
 	'models/product/ProductModel',
+    'views/notification/NotificationView',
 	'global',
 	'constant',
-], function(Backbone, contentTemplate, productViewTemplate, ProductModel, Global, Const){
+], function(Backbone, contentTemplate, productViewTemplate, ProductModel, NotificationView, Global, Const){
 
 	var ProductView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -56,6 +57,7 @@ define([
 					success: function (model, response, options) {
 						//console.log('success: UserModel.destroy');
 						//console.log(response);
+                        var message = new NotificationView({ type: 'success', text: 'Product deleted successfully' });
 						Global.getGlobalVars().app_router.navigate(Const.URL.PRODUCT, {trigger: true});
 					},
 					error: function (model, response, options) {

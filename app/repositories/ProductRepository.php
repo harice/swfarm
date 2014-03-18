@@ -139,18 +139,22 @@ class ProductRepository implements ProductRepositoryInterface {
         );
 
         $this->validate($data, $rules);
+        
+        try {
+            $product = new Product;
+            $product->name = $data['name'];
+            $product->description = $data['description'];
 
-        $role = new Product;
-        $role->name = $data['name'];
-        $role->description = $data['description'];
+            $product->save();
 
-        $role->save();
-
-        return Response::json(array(
-            'error' => false,
-            'role' => $role->toArray()),
-            200
-        );
+            return Response::json(array(
+                'error' => false,
+                'product' => $product->toArray()),
+                200
+            );
+        } catch (Exception $e) {
+            echo "Oops! " . $e->getMessage();
+        }
     }
 
     /**
@@ -164,25 +168,25 @@ class ProductRepository implements ProductRepositoryInterface {
             'name' => 'required|unique:products,name,'.$id,
         );
 
-        $role = Product::find($id); //get the role row
+        $product = Product::find($id); //get the product row
 
-        if($role) {
+        if($product) {
             $this->validate($data, $rules);
 
-            $role->name = $data['name'];
-            $role->description = $data['description'];
+            $product->name = $data['name'];
+            $product->description = $data['description'];
 
-            $role->save();
+            $product->save();
 
             $response = Response::json(array(
                 'error' => false,
-                'role' => $role->toArray()),
+                'product' => $product->toArray()),
                 200
             );
         } else {
             $response = Response::json(array(
                 'error' => true,
-                'message' => "Role not found"),
+                'message' => "Product not found"),
                 200
             );
         }
@@ -197,14 +201,14 @@ class ProductRepository implements ProductRepositoryInterface {
 	 * @return Response
 	 */
     public function destroy($id){
-        $role = Product::find($id);
+        $product = Product::find($id);
 
-        if($role){
-            $role->delete();
+        if($product){
+            $product->delete();
 
             $response = Response::json(array(
                 'error' => false,
-                'role' => $role->toArray()),
+                'product' => $product->toArray()),
                 200
             );
         } else {
