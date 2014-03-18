@@ -1,6 +1,6 @@
 <% _.each(contacts, function(contact){ %>
 	<tr>
-		<td><a href="<%= contact_url %>/<%= contact.get("id") %>"><%= contact.get("name") %></a></td>
+		<td><a href="<%= contact_url %>/<%= contact.get("id") %>"><%= contact.get("lastname") %>, <%= contact.get("firstname") %></a></td>
 		<td><%= contact.get("account") %></td>
     <td><%= contact.get("position") %></td>
     <td><%= contact.get("email") %></td>

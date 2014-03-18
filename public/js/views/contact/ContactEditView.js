@@ -41,8 +41,13 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
-			this.$el.find('#name').val(contactModel.get('name'));
-			this.$el.find('#description').val(contactModel.get('description'));
+			this.$el.find('#firstname').val(contactModel.get('firstname'));
+            this.$el.find('#lastname').val(contactModel.get('lastname'));
+			this.$el.find('#account').val(contactModel.get('account'));
+            this.$el.find('#position').val(contactModel.get('position'));
+            this.$el.find('#email').val(contactModel.get('email'));
+            this.$el.find('#phone').val(contactModel.get('phone'));
+            this.$el.find('#mobile').val(contactModel.get('mobile'));
 			
 			var validate = $('#addContactForm').validate({
 				submitHandler: function(form) {
