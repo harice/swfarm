@@ -60,7 +60,7 @@ define([
             var self = this;
             this.$el.addClass(this.cssClasses[type]);
             this.$el.text(text);
-            this.$el.prependTo(this.targetElement);
+            // this.$el.prependTo(this.targetElement);
 
             // Automatically close after set time. also closes on click
             if(this.automaticClose) {
