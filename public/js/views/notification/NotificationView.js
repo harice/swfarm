@@ -69,14 +69,14 @@ define([
                 }, 3000);
             }
             
-//            $.bootstrapGrowl(text, {
-//                ele: 'body',
-//                type: type,
-//                offset: {from: 'bottom'},
-//                align: 'right',
-//                width: 'auto',
-//                delay: 4000
-//            });
+            $.bootstrapGrowl(text, {
+                ele: '#message',
+                type: type,
+                offset: {from: 'bottom'},
+                align: 'right',
+                width: 'auto',
+                delay: 4000
+            });
         },
 
         closeNotification: function() {
