@@ -41,18 +41,18 @@ define([
                             function (model, response, options) {
                                 // Display message
                                 // thisObj.displayMessage('Added new product. ', 'success');
-                                var message = new NotificationView({ type: 'success', text: 'Product saved successfully' });
-
+                                var message = new NotificationView({ type: 'success', text: 'Product has been created.' });
                                 Global.getGlobalVars().app_router.navigate(Const.URL.PRODUCT, {trigger: true});
                             },
                         error:
                             function (model, response, options) {
+                                var message = new NotificationView({ type: 'error', text: 'Sorry! An error occurred in the process.' });
                                 if(typeof response.responseJSON.error == 'undefined')
                                     validate.showErrors(response.responseJSON);
                                 else
                                     // Display message
                                     // thisObj.displayMessage('Failed adding new product. ', 'error');
-                                    var message = new NotificationView({ type: 'danger' });
+                                    var message = new NotificationView({ type: 'error' });
                             },
                         headers: productModel.getAuth(),
                         }

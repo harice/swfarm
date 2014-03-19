@@ -4,9 +4,10 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/contact/contactAddTemplate.html',
 	'models/contact/ContactModel',
+    'views/notification/NotificationView',
 	'global',
 	'constant',
-], function(Backbone, Validate, contentTemplate, contactAddTemplate, ContactModel, Global, Const){
+], function(Backbone, Validate, contentTemplate, contactAddTemplate, ContactModel, NotificationView, Global, Const){
 
 	var ContactEditView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -54,8 +55,10 @@ define([
 					var data = $(form).serializeObject();
 					var contactModel = new ContactModel(data);
 					contactModel.save(null, {success: function (model, response, options) {
+                        var message = new NotificationView({ type: 'success', text: 'Contact has been updated.' });
 						Global.getGlobalVars().app_router.navigate(Const.URL.CONTACT, {trigger: true});
 					}, error: function (model, response, options) {
+                        var message = new NotificationView({ type: 'error', text: 'Sorry! An error occurred in the process.' });
 						if(response.responseJSON)
 							validate.showErrors(response.responseJSON);
 						else

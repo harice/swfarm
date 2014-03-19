@@ -15,6 +15,7 @@
 
 	<body>
 		<div id="header"></div>
+        <div id="message" class="container"></div>
 		<div id="content" class="container min-height-400"></div>
 
 		<div id="footer">
