@@ -6,7 +6,7 @@ define([
       
         targetElement: '#message',
         tagName: 'div',
-        className: 'notification',       
+        className: 'notification alert',       
 
         defaultMessages: {
             'success': 'Success!',
@@ -17,11 +17,11 @@ define([
         },
 
         cssClasses: {
-            'success': 'accepted',
-            'error': 'error',
-            'danger': 'danger',
-            'warning': 'warning',
-            'info': 'info'
+            'success': 'alert-success',
+            'error': 'alert-danger',
+            'danger': 'alert-danger',
+            'warning': 'alert-warning',
+            'info': 'alert-info'
         },
 
         events: {
@@ -57,26 +57,26 @@ define([
 
         render: function(type, text, target){
 
-//            var self = this;
-//            this.$el.addClass(this.cssClasses[type]);
-//            this.$el.text(text);
-//            this.$el.prependTo(this.targetElement);
+            var self = this;
+            this.$el.addClass(this.cssClasses[type]);
+            this.$el.text(text);
+            this.$el.prependTo(this.targetElement);
 
             // Automatically close after set time. also closes on click
-//            if(this.automaticClose) {
-//                setTimeout(function(){
-//                    self.closeNotification();
-//                }, 3000);
-//            }
+            if(this.automaticClose) {
+                setTimeout(function(){
+                    self.closeNotification();
+                }, 3000);
+            }
             
-            $.bootstrapGrowl(text, {
-                ele: 'body',
-                type: type,
-                offset: {from: 'bottom'},
-                align: 'right',
-                width: 'auto',
-                delay: 4000
-            });
+//            $.bootstrapGrowl(text, {
+//                ele: 'body',
+//                type: type,
+//                offset: {from: 'bottom'},
+//                align: 'right',
+//                width: 'auto',
+//                delay: 4000
+//            });
         },
 
         closeNotification: function() {

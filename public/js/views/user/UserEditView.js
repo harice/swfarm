@@ -5,9 +5,10 @@ define([
 	'text!templates/user/userAddTemplate.html',
 	'models/user/UserModel',
 	'collections/role/RoleCollection',
+    'views/notification/NotificationView',
 	'global',
 	'constant',
-], function(Backbone, Validate, contentTemplate, userAddTemplate, UserModel, RoleCollection, Global, Const){
+], function(Backbone, Validate, contentTemplate, userAddTemplate, UserModel, RoleCollection, NotificationView, Global, Const){
 
 	var UserEditView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -107,10 +108,10 @@ define([
 					
 					var userModel = new UserModel(data);
 					userModel.save(null, {success: function (model, response, options) {
-						//console.log('success: add user');
+						 var message = new NotificationView({ type: 'success', text: 'User has been updated.' });
 						Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
 					}, error: function (model, response, options) {
-						//console.log('error: add user');
+						var message = new NotificationView({ type: 'error', text: 'Sorry! An error occurred in the process.' });
 						if(response.responseJSON)
 							validate.showErrors(response.responseJSON);
 						else
