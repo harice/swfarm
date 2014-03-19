@@ -1,12 +1,16 @@
 <dl class="dl-horizontal">
 	<dt>Type</dt>
-	<dd></dd>
+	<dd><%= account.get("id") %></dd>
 	<dt>Website</dt>
-	<dd></dd>
+	<dd><%= account.get("website") %></dd>
 	<dt>Description</dt>
-	<dd></dd>
+	<dd><%= account.get("description") %></dd>
 	<dt>Phone</dt>
-	<dd></dd>
+	<dd><%= account.get("phone") %></dd>
+	<% _.each(account.get("address"), function (a){ %>
+		<dt><%= a.type %></dt>
+		<dd></dd>
+	<% }); %>
 	<dd>
 		<div class="clearfix"></div>
 		<br />

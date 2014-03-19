@@ -25,6 +25,7 @@ define([
 		},
 		
 		displayAccount: function () {
+			console.log(this.model);
 			var innerTemplateVariables = {
 				account:this.model,
 				account_url:'#/'+Const.URL.ACCOUNT,
