@@ -25,7 +25,7 @@ define([
 		},
 		
 		displayAccount: function () {
-			console.log(this.model);
+			//console.log(this.model);
 			var innerTemplateVariables = {
 				account:this.model,
 				account_url:'#/'+Const.URL.ACCOUNT,
@@ -58,7 +58,7 @@ define([
 					},
 					error: function (model, response, options) {
 						//console.log('error: UserModel.destroy');
-						console.log(response);
+						//console.log(response);
 					},
 					wait: true,
 					headers: thisObj.model.getAuth(),
