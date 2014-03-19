@@ -3,16 +3,16 @@
 class AccountRepository implements AccountRepositoryInterface {
 
   public function findAll(){
-    $account = Account::find($id)->get();
+    $account = Account::all();
 
     return Response::json(
-        $rolesList->toArray(),
+        $account->toArray(),
         200
       );
   }
 
   public function findById($id){
-    $account = Account::with('address')->find($id);
+    $account = Account::with('address', 'address.addressstates', 'address.addressCity')->find($id);          
 
     if($account){
       $response = Response::json(
@@ -192,21 +192,48 @@ class AccountRepository implements AccountRepositoryInterface {
     );
   }
 
-  public function destroy($id){
-    $role = Roles::find($id);
+  public function search($_search)
+  {
+    $perPage  = isset($_search['perpage']) ? $_search['perpage'] : Config::get('constants.USERS_PER_LIST');
+    $page     = isset($_search['page']) ? $_search['page'] : 1;
+    $sortby   = isset($_search['sortby']) ? $_search['sortby'] : 'name';
+    $orderby  = isset($_search['orderby']) ? $_search['orderby'] :'ASC';
+    $offset   = $page * $perPage - $perPage;
 
-    if($role){
-      $role->delete();
+    $_cnt = Account::with('accounttype')->where('name','like','%'.$_search['search'].'%')
+                    ->orWhere('website','like','%'.$_search['search'].'%')
+                    ->orWhere('description','like','%'.$_search['search'].'%')
+                    ->count();
+
+    $_account = Account::with('accounttype')->where('name','like','%'.$_search['search'].'%')
+                    ->orWhere('website','like','%'.$_search['search'].'%')
+                    ->orWhere('description','like','%'.$_search['search'].'%')
+                    ->take($perPage)
+                    ->offset($offset)
+                    ->orderBy($sortby, $orderby)
+                    ->get();
+
+    return Response::json(array(
+      'data' => $_account->toArray(), 
+      'total' => $_cnt),
+      200);
+  }
+
+  public function destroy($id){
+    $account = Account::find($id);
+
+    if($account){
+      $account->delete();
 
       $response = Response::json(array(
           'error' => false,
-          'role' => $role->toArray()),
+          'account' => $account->toArray()),
           200
       );
     } else {
       $response = Response::json(array(
           'error' => true,
-          'message' => "Role not found"),
+          'message' => "account not found"),
           200
       );
     }
@@ -250,6 +277,17 @@ class AccountRepository implements AccountRepositoryInterface {
           $cities->toArray(),
           200
       );
+  }
+
+  public function getAccountsByName($name){
+    if(isset($name)){
+      $account = Account::where('name','like','%'.$name.'%')
+                  ->orderBy('name', 'asc')
+                  ->get(array('id','name'));
+    } else {
+      $account = Account::orderBy('name', 'asc')->all()->get(array('id','name'));
+    }
+    return Response::json($account->toArray(), 200);
   }
 
 }

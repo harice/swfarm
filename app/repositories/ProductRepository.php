@@ -135,7 +135,7 @@ class ProductRepository implements ProductRepositoryInterface {
 	 */
     public function store($data){
         $rules = array(
-            'name' => 'required|between:5,20|unique:products'
+            'name' => 'required|between:2,50|unique:products'
         );
 
         $this->validate($data, $rules);

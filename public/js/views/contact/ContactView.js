@@ -50,18 +50,15 @@ define([
 		removeContact: function (){
 			var thisObj = this;
 			
-			var verifyDelete = confirm('Delete Contact?');
+			var verifyDelete = confirm('Are you sure you want to delete this contact?');
 			if(verifyDelete) {
 				this.model.destroy({
 					success: function (model, response, options) {
-						//console.log('success: UserModel.destroy');
-						//console.log(response);
-                        var message = new NotificationView({ type: 'success', text: 'Contact deleted successfully' });
+						var message = new NotificationView({ type: 'success', text: 'Contact has been deleted.' });
 						Global.getGlobalVars().app_router.navigate(Const.URL.CONTACT, {trigger: true});
 					},
 					error: function (model, response, options) {
-						//console.log('error: UserModel.destroy');
-						//console.log(response);
+						var message = new NotificationView({ type: 'error', text: 'Sorry! An error occurred in the process.' });
 					},
 					wait: true,
 					headers: thisObj.model.getAuth(),

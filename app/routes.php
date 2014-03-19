@@ -30,9 +30,13 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('product/search', 'APIv1\ProductController@search');
     Route::resource('product', 'APIv1\ProductController');
 
+    Route::get('account/search', 'APIv1\AccountController@search');
 	Route::get('account/getFormData', 'APIv1\AccountController@getFormData');
   	Route::get('account/getCitiesByState/{id}', 'APIv1\AccountController@getCitiesByState');
+  	Route::get('account/getAccountsByName', 'APIv1\AccountController@getAccountsByName');
 	Route::resource('account', 'APIv1\AccountController');
+
+	Route::resource('contact', 'APIv1\ContactController');
 });
 
 /* API ROUTES without HTTP Basic */

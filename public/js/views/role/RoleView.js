@@ -3,9 +3,10 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/role/roleViewTemplate.html',
 	'models/role/RoleModel',
+    'views/notification/NotificationView',
 	'global',
 	'constant',
-], function(Backbone, contentTemplate, roleViewTemplate, RoleModel, Global, Const){
+], function(Backbone, contentTemplate, roleViewTemplate, RoleModel, NotificationView, Global, Const){
 
 	var UserView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -50,17 +51,15 @@ define([
 		removeRole: function (){
 			var thisObj = this;
 			
-			var verifyDelete = confirm('Delete Role?');
+			var verifyDelete = confirm('Are you sure you want to delete this role?');
 			if(verifyDelete) {
 				this.model.destroy({
 					success: function (model, response, options) {
-						//console.log('success: UserModel.destroy');
-						//console.log(response);
+						var message = new NotificationView({ type: 'success', text: 'Role has been deleted.' });
 						Global.getGlobalVars().app_router.navigate(Const.URL.ROLE, {trigger: true});
 					},
 					error: function (model, response, options) {
-						//console.log('error: UserModel.destroy');
-						//console.log(response);
+						var message = new NotificationView({ type: 'error', text: 'Sorry! An error occurred in the process.' });
 					},
 					wait: true,
 					headers: thisObj.model.getAuth(),

@@ -27,10 +27,15 @@ class UsersRepository implements UsersRepositoryInterface {
   }
 
 
-  public function paginate($perPage, $offset, $sortby, $orderby){
+  public function paginate($data){
+    //return $this->users->findAll();
+    $perPage = isset($data['perpage']) ? $data['perpage'] : Config::get('constants.USERS_PER_LIST'); //default to 10 items, see app/config/constants
+    $page = isset($data['page']) ? $data['page'] : '1'; //default to page 1
+    $sortby = isset($data['sortby']) ? strtolower($data['sortby']) : 'lastname'; //default sort to lastname
+    $orderby = isset($data['orderby']) ? strtolower($data['orderby']) : 'asc'; //default order is Ascending
+    $offset = $page*$perPage-$perPage;
+
     $errorMsg = null;
-    $sortby = strtolower($sortby);
-    $orderby = strtolower($orderby);
     //check if input pass are valid
     if(!($sortby == 'firstname' || $sortby == 'lastname' || $sortby == 'email')){
       $errorMsg = 'Sort by category not found.';
