@@ -25,16 +25,6 @@ class AccountController extends BaseController {
 	}
 
 	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		//
-	}
-
-	/**
 	 * Store a newly created resource in storage.
 	 *
 	 * @return Response
@@ -56,17 +46,6 @@ class AccountController extends BaseController {
 	}
 
 	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
-
-	/**
 	 * Update the specified resource in storage.
 	 *
 	 * @param  int  $id
@@ -85,7 +64,7 @@ class AccountController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+		return $this->account->destroy($id);
 	}
 
 	public function getFormData(){

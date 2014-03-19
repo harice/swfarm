@@ -193,20 +193,20 @@ class AccountRepository implements AccountRepositoryInterface {
   }
 
   public function destroy($id){
-    $role = Roles::find($id);
+    $account = Account::find($id);
 
-    if($role){
-      $role->delete();
+    if($account){
+      $account->delete();
 
       $response = Response::json(array(
           'error' => false,
-          'role' => $role->toArray()),
+          'role' => $account->toArray()),
           200
       );
     } else {
       $response = Response::json(array(
           'error' => true,
-          'message' => "Role not found"),
+          'message' => "account not found"),
           200
       );
     }
