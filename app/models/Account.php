@@ -19,4 +19,8 @@ class Account extends Eloquent {
     	return $this->hasMany('address', 'account');
     }
 
+    public function contact(){
+        return $this->hasMany('contact', 'account');
+    }
+
 }

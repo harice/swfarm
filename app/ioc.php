@@ -15,4 +15,5 @@ App::bind('PermissionRepositoryInterface', 'PermissionRepository');
 App::bind('AuditRepositoryInterface', 'AuditRepository');
 App::bind('ProductRepositoryInterface', 'ProductRepository');
 App::bind('AccountRepositoryInterface', 'AccountRepository');
+App::bind('ContactRepositoryInterface', 'ContactRepository');
 

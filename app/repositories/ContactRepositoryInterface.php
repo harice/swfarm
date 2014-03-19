@@ -1,6 +1,6 @@
 <?php
  
-interface AccountRepositoryInterface {
+interface ContactRepositoryInterface {
 	public function findAll();
 	public function findById($id);
 	public function paginate($params);
@@ -10,6 +10,4 @@ interface AccountRepositoryInterface {
 	public function search($_search);
 	public function validate($data, $rules);
 	public function instance();
-	public function getCitiesByState($stateId);
-	public function getFormData();
 }

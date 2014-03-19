@@ -6,13 +6,13 @@ class AddressTypeTableSeeder extends Seeder {
 	{
 		$addresstype = array(
 			array(
-                'name' => 'Billing Address'
-            ),
-            array(
-                'name' => 'Residential Address'
-            ),
-            array(
                 'name' => 'Business Address'
+            ),
+            array(
+                'name' => 'Mailing Address'
+            ),
+            array(
+                'name' => 'Stack Address'
             )
 		);
 

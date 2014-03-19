@@ -19,11 +19,11 @@ class Address extends Eloquent {
     }
 
     public function addressCity(){
-        return $this->hasMany('AddressCity');
+        return $this->hasMany('AddressCity', 'id', 'city');
     }
 
-    public function addressState(){
-        return $this->hasMany('AddressState');
+    public function addressStates(){
+        return $this->hasMany('AddressStates', 'id','state');
     }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-class AddressState extends Eloquent {
+class AddressStates extends Eloquent {
     protected $fillable = [];
 
     /**
