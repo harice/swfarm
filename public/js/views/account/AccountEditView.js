@@ -11,21 +11,29 @@ define([
 	'constant',
 ], function(Backbone, Validate, AccountModel, AccountExtrasModel, CityCollection, contentTemplate, accountAddTemplate, accountAddressTemplate, Global, Const){
 
-	var AccountAddView = Backbone.View.extend({
+	var AccountEditView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		options: {
 			addressFieldClone: null,
 			addressFieldCounter: 0,
-			addressFieldClass: ['type', 'street', 'state', 'city', 'zipcode', 'country'],
+			addressFieldClass: ['type', 'street', 'state', 'city', 'zipcode', 'country', 'id'],
 			addressFieldClassRequired: ['street', 'state', 'city'],
 			addressFieldSeparator: '.',
 		},
 		
-		initialize: function() {
+		accountExtrasModel: null, 
+		
+		initialize: function(option) {
 			var thisObj = this;
 			
-			this.model = new AccountExtrasModel();
+			this.accountExtrasModel = new AccountExtrasModel();
+			this.accountExtrasModel.on("change", function() {
+				thisObj.model.runFetch();
+				this.off("change");
+			});
+			
+			this.model = new AccountModel({id:option.id});
 			this.model.on("change", function() {
 				thisObj.displayForm();
 				this.off("change");
@@ -33,15 +41,16 @@ define([
 		},
 		
 		render: function(){
-			this.model.runFetch();
+			this.accountExtrasModel.runFetch();
 		},
 		
 		displayForm: function () {
 			var thisObj = this;
 			
 			var varAccountAddressTemplate = {
-				'address_types': this.model.get('addressTypes'),
-				'address_states' : this.model.get('states'),
+				'address_types': this.accountExtrasModel.get('addressTypes'),
+				'address_states': this.accountExtrasModel.get('states'),
+				'show_id': true,
 			};
 			
 			var addressTemplate = _.template(accountAddressTemplate, varAccountAddressTemplate);
@@ -49,12 +58,13 @@ define([
 			var innerTemplateVariables = {
 				'account_url': '#/'+Const.URL.ACCOUNT,
 				'address_fields': addressTemplate,
-				'account_types': this.model.get('accountTypes'),
+				'account_types': this.accountExtrasModel.get('accountTypes'),
+				'account_id': this.model.get('id'),
 			};
 			var innerTemplate = _.template(accountAddTemplate, innerTemplateVariables);
 			
 			var variables = {
-				h1_title: "Add Account",
+				h1_title: "Edit Account",
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
@@ -73,7 +83,7 @@ define([
 			var validate = $('#addAccountForm').validate({
 				submitHandler: function(form) {
 					var data = thisObj.formatFormField($(form).serializeObject());
-					//console.log(data);
+					console.log(data);
 					
 					var accountModel = new AccountModel(data);
 					
@@ -92,12 +102,27 @@ define([
 				},
 			});
 			this.addValidationToAddressFields();
+			
+			this.supplyAccountData();
+		},
+		
+		addIndexToAddressFields: function (joAddressFields) {
+			var addressFieldClass = this.options.addressFieldClass;
+			for(var i=0; i < addressFieldClass.length; i++) {
+				var field = joAddressFields.find('.'+addressFieldClass[i]);
+				var name = field.attr('name');
+				//field.attr('name', name+'['+this.options.addressFieldCounter+']');
+				field.attr('name', name + this.options.addressFieldSeparator + this.options.addressFieldCounter);
+				//field.attr('name', name+'[]');
+			}
+			
+			this.options.addressFieldCounter++;
 		},
 		
 		events: {
 			'click #add-address-field' : 'addAddressFields',
 			'click .remove-address-fields' : 'removeAddressFields',
-			'change .state' : 'fetchCityList',
+			'change .state' : 'onChangeStateField',
 		},
 		
 		addAddressFields: function () {
@@ -111,29 +136,36 @@ define([
 			$(ev.target).closest('.address-fields-container').remove();
 		},
 		
-		fetchCityList: function (ev) {
+		onChangeStateField: function (ev) {
 			var stateField = $(ev.target);
+			var stateId = stateField.val();
 			var cityField = stateField.closest('.address-fields-container').find('.city');
 			
 			if(stateField.val() != '') {
-				var cityCollection = new CityCollection();
-				cityCollection.on('sync', function() {
-					cityField.find('option:gt(0)').remove();
-					
-					_.each(this.models, function (city){
-						cityField.append($('<option></option>').attr('value', city.get('id')).text(city.get('city')));
-					});
-					
-					this.off('sync');
-				});
-				
-				cityCollection.on('error', function(collection, response, options) {
-					this.off('error');
-				});
-				cityCollection.getModels(stateField.val());
+				this.fetchCityList(stateId, cityField);
 			}
 			else
 				cityField.find('option:gt(0)').remove();
+		},
+		
+		fetchCityList: function (stateId, cityField, selectedCityId) {
+			var cityCollection = new CityCollection();
+			cityCollection.on('sync', function() {
+				cityField.find('option:gt(0)').remove();
+				
+				_.each(this.models, function (city){
+					cityField.append($('<option></option>').attr('value', city.get('id')).text(city.get('city')));
+				});
+				
+				if(selectedCityId != null)
+					cityField.val(selectedCityId);
+				this.off('sync');
+			});
+			
+			cityCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
+			cityCollection.getModels(stateId);
 		},
 		
 		addValidationToAddressFields: function () {
@@ -174,8 +206,11 @@ define([
 							var index = arrayKey[1];
 							var arrayAddressFields = {};
 							
-							for(var i = 0; i < addressFieldClasses.length; i++)
-								arrayAddressFields[addressFieldClasses[i]] = data[addressFieldClasses[i]+this.options.addressFieldSeparator+index];
+							for(var i = 0; i < addressFieldClasses.length; i++) {
+								var fieldValue = data[addressFieldClasses[i]+this.options.addressFieldSeparator+index];
+								if(!(addressFieldClasses[i] == 'id' && fieldValue == ''))
+									arrayAddressFields[addressFieldClasses[i]] = fieldValue;
+							}
 								
 							formData.address.push(JSON.stringify(arrayAddressFields));
 						}
@@ -188,8 +223,35 @@ define([
 			
 			return formData;
 		},
+		
+		supplyAccountData: function () {
+			$('#name').val(this.model.get('name'));
+			$('#accounttype').val(this.model.get('accounttype'));
+			$('#website').val(this.model.get('website'));
+			$('#description').val(this.model.get('description'));
+			$('#phone').val(this.model.get('phone'));
+			
+			var addresses = this.model.get('address');
+			console.log(addresses);
+			
+			for(var i = 0; i < addresses.length; i++) {
+				if(i > 0)
+					this.addAddressFields();
+			
+				var fieldContainer = $('#account-adresses .address-fields-container:last-child');
+				fieldContainer.find('.id').val(addresses[i].id);
+				
+				if(i > 0)
+					fieldContainer.find('.type').val(addresses[i].type);
+				
+				fieldContainer.find('.street').val(addresses[i].street);
+				fieldContainer.find('.state').val(addresses[i].state);
+				this.fetchCityList(addresses[i].state, fieldContainer.find('.city'), addresses[i].city);
+				fieldContainer.find('.zipcode').val(addresses[i].zipcode);
+			}
+		},
 	});
 
-  return AccountAddView;
+  return AccountEditView;
   
 });
