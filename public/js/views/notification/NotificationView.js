@@ -28,7 +28,7 @@ define([
             "click" : "closeNotification",
         },
 
-        automaticClose: false,
+        automaticClose: true,
 
         initialize: function(options){
 
