@@ -50,7 +50,7 @@ define([
                                 else
                                     // Display message
                                     // thisObj.displayMessage('Failed adding new contact. ', 'error');
-                                    // var message = new NotificationView({ type: 'danger' });
+                                    var message = new NotificationView({ type: 'danger' });
                             },
                         headers: contactModel.getAuth(),
                         }
