@@ -258,7 +258,7 @@ class AccountRepository implements AccountRepositoryInterface {
   public function getFormData(){
       $accountTypes = AccountType::orderby('name', 'asc')->get();
       $addressTypes = AddressType::orderby('name', 'asc')->get();
-      $states = AddressState::orderby('state', 'asc')->get();
+      $states = AddressStates::orderby('state', 'asc')->get();
 
       return Response::json(
           array(
