@@ -30,7 +30,7 @@ class CreateAddressTable extends Migration {
 		Schema::table('address', function($table)
 		{
 			$table->engine = 'InnoDB';
-			$table->foreign('account')->references('id')->on('account');
+			$table->foreign('account')->references('id')->on('account')->onDelete('cascade');
 			$table->foreign('type')->references('id')->on('addresstype');
 			
 			$table->foreign('state')->references('id')->on('addressstates');
