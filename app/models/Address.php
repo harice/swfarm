@@ -11,7 +11,7 @@ class Address extends Eloquent {
 	protected $table = 'address';
 
     public function addressType(){
-        return $this->hasMany('AddressType', 'type');
+        return $this->hasMany('AddressType', 'id', 'type');
     }
 
     public function account(){

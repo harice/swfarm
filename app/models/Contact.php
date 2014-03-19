@@ -6,6 +6,6 @@ class Contact extends Eloquent {
     protected $table = 'contact';
 
     public function account(){
-    	return $this->belongsTo('account');
+    	return $this->belongsTo('account', 'account', 'id');
     }
 }

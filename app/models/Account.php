@@ -20,7 +20,7 @@ class Account extends Eloquent {
     }
 
     public function contact(){
-        return $this->hasMany('contact', 'account');
+        return $this->hasMany('contact', 'account', 'id', 'account');
     }
 
 }
