@@ -52,7 +52,7 @@ define([
                                 else
                                     // Display message
                                     // thisObj.displayMessage('Failed adding new product. ', 'error');
-                                    var message = new NotificationView({ type: 'error' });
+                                    // var message = new NotificationView({ type: 'error' });
                             },
                         headers: productModel.getAuth(),
                         }
