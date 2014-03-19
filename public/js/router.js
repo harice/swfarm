@@ -11,11 +11,12 @@ define([
 	'controllers/audittrail/AuditTrailController',
 	'controllers/profile/ProfileController',
 	'controllers/account/AccountController',
+    'controllers/contact/ContactController',
 	'controllers/product/ProductController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
-], function(Backbone, BaseRouter, HeaderView, AdminView, LoginController, UserController, RoleController, PermissionController, AuditTrailController, ProfileController, AccountController, ProductController, Global, Const, Session) {
+], function(Backbone, BaseRouter, HeaderView, AdminView, LoginController, UserController, RoleController, PermissionController, AuditTrailController, ProfileController, AccountController, ContactController, ProductController, Global, Const, Session) {
 	
 	var routerRoutes = {};
 	
@@ -71,6 +72,12 @@ define([
 	routerRoutes[Const.URL.ACCOUNT+'/'] = 'showAccountPage';
 	routerRoutes[Const.URL.ACCOUNT+'/:action'] = 'showAccountPage';
 	routerRoutes[Const.URL.ACCOUNT+'/:action/:id'] = 'showAccountPage';
+    
+    //contact
+	routerRoutes[Const.URL.CONTACT] = 'showContactPage';
+	routerRoutes[Const.URL.CONTACT+'/'] = 'showContactPage';
+	routerRoutes[Const.URL.CONTACT+'/:action'] = 'showContactPage';
+	routerRoutes[Const.URL.CONTACT+'/:action/:id'] = 'showContactPage';
 	
 	routerRoutes['*actions'] = 'defaultAction';
 
@@ -192,6 +199,13 @@ define([
 			this.closeView();
 			var accountController = new AccountController();
 			this.currView = accountController.setAction(action, id);
+			this.currView.render();
+		});
+        
+        app_router.on('route:showContactPage', function (action, id) {
+			this.closeView();
+			var contactController = new ContactController();
+			this.currView = contactController.setAction(action, id);
 			this.currView.render();
 		});
 		

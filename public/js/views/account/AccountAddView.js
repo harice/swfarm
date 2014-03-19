@@ -1,12 +1,15 @@
 define([
 	'backbone',
 	'jqueryvalidate',
+	'models/account/AccountModel',
+	'models/account/AccountExtrasModel',
+	'collections/address/CityCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/account/accountAddTemplate.html',
 	'text!templates/account/accountAddressTemplate.html',
 	'global',
 	'constant',
-], function(Backbone, Validate, contentTemplate, accountAddTemplate, accountAddressTemplate, Global, Const){
+], function(Backbone, Validate, AccountModel, AccountExtrasModel, CityCollection, contentTemplate, accountAddTemplate, accountAddressTemplate, Global, Const){
 
 	var AccountAddView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -20,13 +23,25 @@ define([
 		},
 		
 		initialize: function() {
+			var thisObj = this;
 			
+			this.model = new AccountExtrasModel();
+			this.model.on("change", function() {
+				thisObj.displayForm();
+				this.off("change");
+			});
 		},
 		
 		render: function(){
+			this.model.runFetch();
+		},
+		
+		displayForm: function () {
 			var thisObj = this;
 			
 			var varAccountAddressTemplate = {
+				'address_types': this.model.get('addressTypes'),
+				'address_states' : this.model.get('states'),
 			};
 			
 			var addressTemplate = _.template(accountAddressTemplate, varAccountAddressTemplate);
@@ -34,6 +49,7 @@ define([
 			var innerTemplateVariables = {
 				'account_url': '#/'+Const.URL.ACCOUNT,
 				'address_fields': addressTemplate,
+				'account_types': this.model.get('accountTypes'),
 			};
 			var innerTemplate = _.template(accountAddTemplate, innerTemplateVariables);
 			
@@ -56,30 +72,46 @@ define([
 			
 			var validate = $('#addAccountForm').validate({
 				submitHandler: function(form) {
-					var data = $(form).serializeObject();
-					thisObj.formatFormField(data);
+					var data = thisObj.formatFormField($(form).serializeObject());
+					//console.log(data);
+					
+					var accountModel = new AccountModel(data);
+					
+					accountModel.save(null, {success: function (model, response, options) {
+						//console.log('success: add user');
+						Global.getGlobalVars().app_router.navigate(Const.URL.ACCOUNT, {trigger: true});
+					}, error: function (model, response, options) {
+						//console.log('error: add user');
+						if(typeof response.responseJSON.error == 'undefined')
+							validate.showErrors(response.responseJSON);
+						else
+							alert(response.responseText);
+					},
+					headers: accountModel.getAuth(),
+					});
 				},
 			});
-			this.addValidationToToAddressFields();
+			this.addValidationToAddressFields();
 		},
 		
 		events: {
 			'click #add-address-field' : 'addAddressFields',
 			'click .remove-address-fields' : 'removeAddressFields',
+			'change .state' : 'fetchCityList',
 		},
 		
 		addAddressFields: function () {
 			var clone = this.options.addressFieldClone.clone();
 			this.addIndexToAddressFields(clone);
 			$('#account-adresses').append(clone);
-			this.addValidationToToAddressFields();
+			this.addValidationToAddressFields();
 		},
 		
 		removeAddressFields: function (ev) {
 			$(ev.target).closest('.address-fields-container').remove();
 		},
 		
-		addValidationToToAddressFields: function () {
+		addValidationToAddressFields: function () {
 			var addressFieldClassRequired = this.options.addressFieldClassRequired;
 			for(var i=0; i < addressFieldClassRequired.length; i++) {
 				$('.'+addressFieldClassRequired[i]).each(function() {
@@ -104,11 +136,12 @@ define([
 		formatFormField: function (data) {
 			var formData = {address:[]};
 			var addressFieldClasses = this.options.addressFieldClass;
+			//var addresses = [];
 			for(var key in data) {
 				if(typeof data[key] !== 'function'){
 					var value = data[key];
 					var arrayKey = key.split(this.options.addressFieldSeparator);
-					console.log(arrayKey);
+					
 					if(arrayKey.length < 2)
 						formData[key] = value;
 					else {
@@ -125,8 +158,36 @@ define([
 				}
 			}
 			
-			console.log(formData);
+			//formData.address = JSON.stringify(addresses)
+			//formData.address = addresses;
+			
+			return formData;
 		},
+		
+		fetchCityList: function (ev) {
+			var stateField = $(ev.target);
+			var cityField = stateField.closest('.address-fields-container').find('.city');
+			
+			if(stateField.val() != '') {
+				var cityCollection = new CityCollection();
+				cityCollection.on('sync', function() {
+					cityField.find('option:gt(0)').remove();
+					
+					_.each(this.models, function (city){
+						cityField.append($('<option></option>').attr('value', city.get('id')).text(city.get('city')));
+					});
+					
+					this.off('sync');
+				});
+				
+				cityCollection.on('error', function(collection, response, options) {
+					this.off('error');
+				});
+				cityCollection.getModels(stateField.val());
+			}
+			else
+				cityField.find('option:gt(0)').remove();
+		}
 		
 	});
 

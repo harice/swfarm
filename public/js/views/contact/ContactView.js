@@ -1,24 +1,23 @@
 define([
 	'backbone',
 	'text!templates/layout/contentTemplate.html',
-	'text!templates/product/productViewTemplate.html',
-	'models/product/ProductModel',
+	'text!templates/contact/contactViewTemplate.html',
+	'models/contact/ContactModel',
     'views/notification/NotificationView',
 	'global',
 	'constant',
-], function(Backbone, contentTemplate, productViewTemplate, ProductModel, NotificationView, Global, Const){
+], function(Backbone, contentTemplate, contactViewTemplate, ContactModel, NotificationView, Global, Const){
 
-	var ProductView = Backbone.View.extend({
+	var ContactView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
 			var thisObj = this;
 			
-			this.model = new ProductModel({id:option.id});
+			this.model = new ContactModel({id:option.id});
 			this.model.on("change", function() {
-				console.log('onChange: ProductModel');
-				if(this.hasChanged('name')) {
-					thisObj.displayProduct(this);
+				if(this.hasChanged('lastname')) {
+					thisObj.displayContact(this);
 					this.off("change");
 				}
 			});
@@ -28,16 +27,16 @@ define([
 			this.model.runFetch();
 		},
 		
-		displayProduct: function (productModel) {
+		displayContact: function (contactModel) {
 			var innerTemplateVariables = {
-				product:productModel,
-				product_url:'#/'+Const.URL.PRODUCT,
-				product_edit_url:'#/'+Const.URL.PRODUCT+'/'+Const.CRUD.EDIT,
+				contact:contactModel,
+				contact_url:'#/'+Const.URL.CONTACT,
+				contact_edit_url:'#/'+Const.URL.CONTACT+'/'+Const.CRUD.EDIT,
 			}
-			var innerTemplate = _.template(productViewTemplate, innerTemplateVariables);
+			var innerTemplate = _.template(contactViewTemplate, innerTemplateVariables);
 			
 			var variables = {
-				h1_title: productModel.get('name'),
+				h1_title: contactModel.get('lastname')+', '+contactModel.get('firstname'),
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
@@ -45,20 +44,20 @@ define([
 		},
 		
 		events: {
-			'click #delete' : 'removeProduct',
+			'click #delete' : 'removeContact',
 		},
 		
-		removeProduct: function (){
+		removeContact: function (){
 			var thisObj = this;
 			
-			var verifyDelete = confirm('Delete Product?');
+			var verifyDelete = confirm('Delete Contact?');
 			if(verifyDelete) {
 				this.model.destroy({
 					success: function (model, response, options) {
 						//console.log('success: UserModel.destroy');
 						//console.log(response);
-                        var message = new NotificationView({ type: 'success', text: 'Product deleted successfully' });
-						Global.getGlobalVars().app_router.navigate(Const.URL.PRODUCT, {trigger: true});
+                        var message = new NotificationView({ type: 'success', text: 'Contact deleted successfully' });
+						Global.getGlobalVars().app_router.navigate(Const.URL.CONTACT, {trigger: true});
 					},
 					error: function (model, response, options) {
 						//console.log('error: UserModel.destroy');
@@ -72,6 +71,6 @@ define([
 		
 	});
 
-  return ProductView;
+  return ContactView;
   
 });

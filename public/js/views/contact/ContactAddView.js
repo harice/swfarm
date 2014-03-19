@@ -2,48 +2,48 @@ define([
 	'backbone',
 	'jqueryvalidate',
 	'text!templates/layout/contentTemplate.html',
-	'text!templates/product/productAddTemplate.html',
-	'models/product/ProductModel',
+	'text!templates/contact/contactAddTemplate.html',
+	'models/contact/ContactModel',
     'views/notification/NotificationView',
 	'global',
 	'constant',
-], function(Backbone, Validate, contentTemplate, productAddTemplate, ProductModel, NotificationView, Global, Const){
+], function(Backbone, Validate, contentTemplate, contactAddTemplate, ContactModel, NotificationView, Global, Const){
 
-	var ProductAddView = Backbone.View.extend({
+	var ContactAddView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
-			//console.log('ProductAdd.js:init');
+			//console.log('ContactAdd.js:init');
 		},
 		
 		render: function(){
 			// var thisObj = this;
             var innerTemplateVariables = {
-				'product_url' : '#/'+Const.URL.PRODUCT
+				'contact_url' : '#/'+Const.URL.CONTACT
 			};
-			var innerTemplate = _.template(productAddTemplate, innerTemplateVariables);
+			var innerTemplate = _.template(contactAddTemplate, innerTemplateVariables);
 			
 			var variables = {
-				h1_title: "Add Product",
+				h1_title: "Add Contact",
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
-			var validate = $('#addProductForm').validate({
+			var validate = $('#addContactForm').validate({
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
-					var productModel = new ProductModel(data);
-					productModel.save(
+					var contactModel = new ContactModel(data);
+					contactModel.save(
                         null,
                         {
                         success:
                             function (model, response, options) {
                                 // Display message
-                                // thisObj.displayMessage('Added new product. ', 'success');
-                                var message = new NotificationView({ type: 'success', text: 'Product saved successfully' });
+                                // thisObj.displayMessage('Added new contact. ', 'success');
+                                var message = new NotificationView({ type: 'success', text: 'Contact saved successfully' });
 
-                                Global.getGlobalVars().app_router.navigate(Const.URL.PRODUCT, {trigger: true});
+                                Global.getGlobalVars().app_router.navigate(Const.URL.CONTACT, {trigger: true});
                             },
                         error:
                             function (model, response, options) {
@@ -51,10 +51,10 @@ define([
                                     validate.showErrors(response.responseJSON);
                                 else
                                     // Display message
-                                    // thisObj.displayMessage('Failed adding new product. ', 'error');
+                                    // thisObj.displayMessage('Failed adding new contact. ', 'error');
                                     var message = new NotificationView({ type: 'danger' });
                             },
-                        headers: productModel.getAuth(),
+                        headers: contactModel.getAuth(),
                         }
                     );
 				}
@@ -63,6 +63,6 @@ define([
 		
 	});
 
-  return ProductAddView;
+  return ContactAddView;
   
 });

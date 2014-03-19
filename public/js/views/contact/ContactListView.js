@@ -1,39 +1,45 @@
 define([
 	'backbone',
-	'collections/account/AccountCollection',
+	'models/contact/ContactModel',
+	'collections/contact/ContactCollection',
 	'text!templates/layout/contentTemplate.html',
-	'text!templates/account/accountListTemplate.html',
-	'text!templates/account/accountInnerListTemplate.html',
+	'text!templates/contact/contactListTemplate.html',
+	'text!templates/contact/contactInnerListTemplate.html',
 	'constant',
-], function(Backbone, AccountCollection, contentTemplate, accountListTemplate, accountInnerListTemplate, Const){
+], function(Backbone, ContactModel, ContactCollection, contentTemplate, contactListTemplate, contactInnerListTemplate, Const){
 
-	var AccountListView = Backbone.View.extend({
+	var ContactListView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
 			var thisObj = this;
 			
-			this.collection = new AccountCollection();
+			this.collection = new ContactCollection();
 			this.collection.on('sync', function() {
+				//console.log('collection.on.sync')
 				thisObj.displayList();
 			});
 			
 			this.collection.on('error', function(collection, response, options) {
+				//console.log('collection.on.error')
+				//console.log(collection);
+				//console.log(response);
+				//console.log(options);
 				this.off('error');
 			});
 		},
 		
 		render: function(){
-			this.displayUser();
+			this.displayContact();
 			this.collection.options.currentPage = 1;
 			this.collection.getModelsPerPage(this.collection.options.currentPage , Const.MAXITEMPERPAGE);
 		},
 		
-		displayUser: function () {
-			var innerTemplate = _.template(accountListTemplate, {'account_add_url' : '#/'+Const.URL.ACCOUNT+'/'+Const.CRUD.ADD});
+		displayContact: function () {
+			var innerTemplate = _.template(contactListTemplate, {'contact_add_url' : '#/'+Const.URL.CONTACT+'/'+Const.CRUD.ADD});
 			
 			var variables = {
-				h1_title: "Accounts",
+				h1_title: "Contacts",
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
@@ -42,14 +48,14 @@ define([
 		
 		displayList: function () {
 			var data = {
-				account_url: '#/'+Const.URL.ACCOUNT,
-				account_edit_url: '#/'+Const.URL.ACCOUNT+'/'+Const.CRUD.EDIT,
-				accounts: this.collection.models,
+				contact_url: '#/'+Const.URL.CONTACT,
+				contact_edit_url: '#/'+Const.URL.CONTACT+'/'+Const.CRUD.EDIT,
+				contacts: this.collection.models,
 				_: _ 
 			};
 			
-			var innerListTemplate = _.template(accountInnerListTemplate, data);
-			$("#account-list tbody").html(innerListTemplate);
+			var innerListTemplate = _.template( contactInnerListTemplate, data );
+			$("#contact-list tbody").html(innerListTemplate);
 			
 			this.generatePagination(this.collection.options.maxItem, Const.MAXITEMPERPAGE);
 		},
@@ -83,9 +89,8 @@ define([
 			'click .first-page' : 'gotoFirstPage',
 			'click .last-page' : 'gotoLastPage',
 			'click .page-number' : 'gotoPage',
-			'click .sort-name' : 'sortName',
-			'click .sort-type' : 'sortType',
-			//'click .account-search' : 'accountUser',
+      'click .sort-name' : 'sortName',
+			'click .contact-search' : 'searchContact',
 		},
 		
 		gotoFirstPage: function () {
@@ -116,13 +121,9 @@ define([
 			
 			return false;
 		},
-		
-		sortName: function () {
+            
+    sortName: function () {
 			this.sortByField('name');
-		},
-		
-		sortType: function () {
-			this.sortByField('accounttype');
 		},
 		
 		sortByField: function (sortField) {
@@ -135,18 +136,18 @@ define([
 			
 			return false;
 		},
-		
-		/*accountUser: function () {
+            
+    searchContact: function () {
 			var keyword = $('#search-keyword').val();
 			
 			this.collection.options.search = keyword;
 			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
 			
 			return false;
-		},*/
+		},
 		
 	});
 
-  return AccountListView;
+  return ContactListView;
   
 });
