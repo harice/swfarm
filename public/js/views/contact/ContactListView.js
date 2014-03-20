@@ -89,7 +89,8 @@ define([
 			'click .first-page' : 'gotoFirstPage',
 			'click .last-page' : 'gotoLastPage',
 			'click .page-number' : 'gotoPage',
-      'click .sort-name' : 'sortName',
+            'click .sort-name' : 'sortName',
+            'click .sort-account' : 'sortAccount',
 			'click .contact-search' : 'searchContact',
 		},
 		
@@ -122,8 +123,12 @@ define([
 			return false;
 		},
             
-    sortName: function () {
-			this.sortByField('name');
+        sortName: function () {
+			this.sortByField('lastname');
+		},
+                
+        sortAccount: function () {
+			this.sortByField('account');
 		},
 		
 		sortByField: function (sortField) {
