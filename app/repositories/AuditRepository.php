@@ -78,7 +78,13 @@ class AuditRepository implements AuditRepositoryInterface {
       
       // Convert JSON value to Array
       for ($i=0; $i<count($auditList); $i++) {
-        $oldValue = unserialize($auditList[$i]["value"])->toArray();
+          
+        $serValue = unserialize($auditList[$i]["value"]);
+        if (!is_object($serValue)) {
+            $oldValue = $serValue;
+        } else {
+            $oldValue = $serValue->toArray();
+        }
         
         // Remove unnecessary fields
         unset($oldValue['confirmcode']);
