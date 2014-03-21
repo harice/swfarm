@@ -38,8 +38,26 @@ class AccountRepository implements AccountRepositoryInterface {
     $offset = $page*$perPage-$perPage;
 
     //pulling of data
-    $count = Account::count();
-    $accountList = Account::with('accounttype')->take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
+    if(!isset($params['filter']) || $params['filter'] == ''){
+      $count = Account::count();
+      $accountList = Account::with('accounttype')
+                    ->take($perPage)->offset($offset)
+                    ->orderBy($sortby, $orderby)
+                    ->get();
+    } else {
+      $filter = $params['filter']; // accounttype id
+      $count = Account::where(function ($query) use ($filter){
+                        $query->where('accounttype', '=', $filter);
+                      })->count();
+      $accountList = Account::with('accounttype')
+                      ->where(function ($query) use ($filter){
+                        $query->where('accounttype', '=', $filter);
+                      })
+                      ->take($perPage)
+                      ->offset($offset)
+                      ->orderBy($sortby, $orderby)
+                      ->get();
+    }
 
     return Response::json(array(
       'data'=>$accountList->toArray(),
@@ -200,19 +218,38 @@ class AccountRepository implements AccountRepositoryInterface {
     $orderby  = isset($_search['orderby']) ? $_search['orderby'] :'ASC';
     $offset   = $page * $perPage - $perPage;
 
-    $_cnt = Account::with('accounttype')->where('name','like','%'.$_search['search'].'%')
-                    ->orWhere('website','like','%'.$_search['search'].'%')
-                    ->orWhere('description','like','%'.$_search['search'].'%')
-                    ->count();
+    
+      $searchWord = $_search['search'];
+      
 
-    $_account = Account::with('accounttype')->where('name','like','%'.$_search['search'].'%')
-                    ->orWhere('website','like','%'.$_search['search'].'%')
-                    ->orWhere('description','like','%'.$_search['search'].'%')
-                    ->take($perPage)
-                    ->offset($offset)
-                    ->orderBy($sortby, $orderby)
-                    ->get();
+      $_cnt = Account::with('accounttype')->where(function ($query) use ($searchWord){
+                        $query->orWhere('name','like','%'.$searchWord.'%')
+                              ->orWhere('website','like','%'.$searchWord.'%')
+                              ->orWhere('description','like','%'.$searchWord.'%');
+                      });
 
+      $_account = Account::with('accounttype')->where(function ($query) use ($searchWord){
+                        $query->orWhere('name','like','%'.$searchWord.'%')
+                              ->orWhere('website','like','%'.$searchWord.'%')
+                              ->orWhere('description','like','%'.$searchWord.'%');
+                      });
+
+      if(isset($_search['filter']) && $_search['filter'] != ''){
+        $searchFilter = $_search['filter']; //for filter
+        $_cnt = $_cnt->where(function ($query) use ($searchFilter){
+                          $query->where('accounttype', '=', $searchFilter);
+                        });
+        $_account = $_account->where(function ($query) use ($searchFilter){
+                          $query->where('accounttype', '=', $searchFilter);
+                        });
+      }
+
+      $_cnt = $_cnt->count();
+      $_account = $_account->take($perPage)
+                      ->offset($offset)
+                      ->orderBy($sortby, $orderby)
+                      ->get();
+    
     return Response::json(array(
       'data' => $_account->toArray(), 
       'total' => $_cnt),
