@@ -234,7 +234,7 @@ class AccountRepository implements AccountRepositoryInterface {
                               ->orWhere('description','like','%'.$searchWord.'%');
                       });
 
-      if(isset($_search['filter'])){
+      if(isset($_search['filter']) && $_search['filter'] != ''){
         $searchFilter = $_search['filter']; //for filter
         $_cnt = $_cnt->where(function ($query) use ($searchFilter){
                           $query->where('accounttype', '=', $searchFilter);
