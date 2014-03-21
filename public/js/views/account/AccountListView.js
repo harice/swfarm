@@ -1,17 +1,27 @@
 define([
 	'backbone',
+	'models/account/AccountExtrasModel',
 	'collections/account/AccountCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/account/accountListTemplate.html',
+	'text!templates/account/accountFilterTemplate.html',
 	'text!templates/account/accountInnerListTemplate.html',
 	'constant',
-], function(Backbone, AccountCollection, contentTemplate, accountListTemplate, accountInnerListTemplate, Const){
+], function(Backbone, AccountExtrasModel, AccountCollection, contentTemplate, accountListTemplate, accountFilterTemplate, accountInnerListTemplate, Const){
 
 	var AccountListView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
 			var thisObj = this;
+			
+			this.model = new AccountExtrasModel();
+			this.model.on("change", function() {
+				thisObj.displayAccount();
+				thisObj.collection.options.currentPage = 1;
+				thisObj.collection.getModelsPerPage(thisObj.collection.options.currentPage , Const.MAXITEMPERPAGE);
+				this.off("change");
+			});
 			
 			this.collection = new AccountCollection();
 			this.collection.on('sync', function() {
@@ -24,13 +34,12 @@ define([
 		},
 		
 		render: function(){
-			this.displayUser();
-			this.collection.options.currentPage = 1;
-			this.collection.getModelsPerPage(this.collection.options.currentPage , Const.MAXITEMPERPAGE);
+			this.model.runFetch();
 		},
 		
-		displayUser: function () {
-			var innerTemplate = _.template(accountListTemplate, {'account_add_url' : '#/'+Const.URL.ACCOUNT+'/'+Const.CRUD.ADD});
+		displayAccount: function () {
+			var filterTemplate = _.template(accountFilterTemplate, {'filters' : this.model.get('accountTypes')});
+			var innerTemplate = _.template(accountListTemplate, {type_filters: filterTemplate, 'account_add_url' : '#/'+Const.URL.ACCOUNT+'/'+Const.CRUD.ADD});
 			
 			var variables = {
 				h1_title: "Accounts",
@@ -85,7 +94,8 @@ define([
 			'click .page-number' : 'gotoPage',
 			'click .sort-name' : 'sortName',
 			'click .sort-type' : 'sortType',
-			//'click .account-search' : 'accountUser',
+			'click .account-search' : 'accountSearch',
+			'change .accounttypeFilter' : 'filterByType',
 		},
 		
 		gotoFirstPage: function () {
@@ -136,15 +146,18 @@ define([
 			return false;
 		},
 		
-		/*accountUser: function () {
+		accountSearch: function () {
 			var keyword = $('#search-keyword').val();
 			
 			this.collection.options.search = keyword;
 			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
 			
 			return false;
-		},*/
+		},
 		
+		filterByType: function (ev) {
+			console.log($(ev.target).val());
+		},
 	});
 
   return AccountListView;
