@@ -5,8 +5,7 @@ define([
 ], function(Backbone, Global, Const) {
 
 	var ContactModel = Backbone.Model.extend({
-        // urlRoot: '/apiv1/contact',
-        url: '/json/contact.json',
+        urlRoot: '/apiv1/contact',
 		defaults: {
             name: '',
             account: '',

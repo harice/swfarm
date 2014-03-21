@@ -39,7 +39,7 @@ class ContactRepository implements ContactRepositoryInterface {
 
     //pulling of data
     $count = Contact::count();
-    $contactList = Contact::with('account')->take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
+    $contactList = Contact::with('account', 'account.accounttype')->take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
 
     return Response::json(array(
       'data'=>$contactList->toArray(),
