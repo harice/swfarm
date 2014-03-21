@@ -2,10 +2,10 @@ define([
 	'backbone',
 	'views/account/AccountListView',
 	'views/account/AccountAddView',
-	'views/user/UserEditView',
-	'views/user/UserView',
+	'views/account/AccountEditView',
+	'views/account/AccountView',
 	'constant',
-], function(Backbone, AccountListView, Account, UserEditView, UserView, Const){
+], function(Backbone, AccountListView, Account, AccountEditView, AccountView, Const){
 	
 	function AccountController () {	
 		
@@ -33,7 +33,7 @@ define([
 		};
 		
 		this.edit = function (id) {
-			return new UserEditView({'id':id});
+			return new AccountEditView({'id':id});
 		};
 		
 		this.listView = function () {
@@ -41,7 +41,7 @@ define([
 		};
 		
 		this.view = function (id) {
-			return new UserView({'id':id});
+			return new AccountView({'id':id});
 		};
 		
 		this.IsInt = function (i) {

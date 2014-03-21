@@ -3,15 +3,14 @@ define([
 	'models/contact/ContactModel',
 ], function(Backbone, ContactModel){
 	var ContactCollection = Backbone.Collection.extend({
-        // url: '/apiv1/contact',
-        url: '/json/contacts.json',
+        url: '/apiv1/contact',
 		model: ContactModel,
 		options: {
 			currentPage: 1,
 			maxItem: 0,
-            currentSort: 'name',
+            currentSort: 'lastname',
         sort: {
-				name: true,
+				lastname: true,
 			},
 			search: '',
 		},
@@ -54,8 +53,7 @@ define([
 		},
 		
 		getDefaultURL: function () {
-			// return '/apiv1/contact';
-            return '/json/contacts.json';
+			return '/apiv1/contact';
 		},
 		
 		setDefaultURL: function () {

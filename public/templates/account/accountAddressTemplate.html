@@ -4,6 +4,9 @@
 		<button id="add-address-field" type="button" class="pull-right btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
 		<button type="button" class="pull-right btn btn-default btn-xs remove-address-fields"><span class="glyphicon glyphicon-minus"></span></button>
 	</legend>
+	<% if (typeof show_id !== "undefined") { %>
+		<input type="hidden" class="id" name="id" value="" />
+	<% } %>
 	<div class="form-group">
 		<label for="type" class="col-sm-2 control-label">Address Type</label>
 		<div class="col-sm-10">
