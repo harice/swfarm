@@ -38,9 +38,12 @@ class AccountRepository implements AccountRepositoryInterface {
     $offset = $page*$perPage-$perPage;
 
     //pulling of data
-    if(!isset($params['filter'])){
+    if(!isset($params['filter']) || $params['filter'] == ''){
       $count = Account::count();
-      $accountList = Account::with('accounttype')->take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
+      $accountList = Account::with('accounttype')
+                    ->take($perPage)->offset($offset)
+                    ->orderBy($sortby, $orderby)
+                    ->get();
     } else {
       $filter = $params['filter']; // accounttype id
       $count = Account::where(function ($query) use ($filter){
