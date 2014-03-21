@@ -142,21 +142,21 @@ define([
 			this.collection.options.currentSort = sortField;
 			this.collection.options.currentPage = 1;
 			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
-			
 			return false;
 		},
 		
 		accountSearch: function () {
 			var keyword = $('#search-keyword').val();
-			
 			this.collection.options.search = keyword;
 			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
-			
 			return false;
 		},
 		
 		filterByType: function (ev) {
-			console.log($(ev.target).val());
+			var filter = $(ev.target).val();
+			this.collection.options.filter = filter;
+			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
+			return false;
 		},
 	});
 

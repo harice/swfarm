@@ -14,6 +14,7 @@ define([
 				accounttype:true,
 			},
 			search: '',
+			filter: '',
 		},
 		initialize: function(){
 			
@@ -65,7 +66,15 @@ define([
 				searchURL = '/search';
 		
 			var orderBy = (this.options.sort[this.options.currentSort])? 'asc' : 'desc';
-			this.url = this.getDefaultURL() + searchURL + '?' + $.param({perpage: numPerPage, page: page, sortby:this.options.currentSort, orderby:orderBy, search:this.options.search});
+			var params = $.param({
+				perpage: numPerPage,
+				page: page,
+				sortby:this.options.currentSort,
+				orderby:orderBy,
+				search:this.options.search,
+				filter:this.options.filter,
+			});
+			this.url = this.getDefaultURL() + searchURL + '?' + params;
 		},
 	});
 
