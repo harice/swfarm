@@ -38,8 +38,23 @@ class AccountRepository implements AccountRepositoryInterface {
     $offset = $page*$perPage-$perPage;
 
     //pulling of data
-    $count = Account::count();
-    $accountList = Account::with('accounttype')->take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
+    if(!isset($params['filter'])){
+      $count = Account::count();
+      $accountList = Account::with('accounttype')->take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
+    } else {
+      $filter = $params['filter']; // accounttype id
+      $count = Account::where(function ($query) use ($filter){
+                        $query->where('accounttype', '=', $filter);
+                      })->count();
+      $accountList = Account::with('accounttype')
+                      ->where(function ($query) use ($filter){
+                        $query->where('accounttype', '=', $filter);
+                      })
+                      ->take($perPage)
+                      ->offset($offset)
+                      ->orderBy($sortby, $orderby)
+                      ->get();
+    }
 
     return Response::json(array(
       'data'=>$accountList->toArray(),
@@ -215,7 +230,7 @@ class AccountRepository implements AccountRepositoryInterface {
                               ->orWhere('website','like','%'.$searchWord.'%')
                               ->orWhere('description','like','%'.$searchWord.'%');
                       });
-      
+
       if(isset($_search['filter'])){
         $searchFilter = $_search['filter']; //for filter
         $_cnt = $_cnt->where(function ($query) use ($searchFilter){
