@@ -30,6 +30,10 @@ define([
 				headers: thisObj.getAuth(),
 			});
 		},
+        
+        label: function () {
+            return this.get("name");
+        }
 	});
 
 	return AccountModel;
