@@ -12,7 +12,7 @@ class AccountRepository implements AccountRepositoryInterface {
   }
 
   public function findById($id){
-    $account = Account::with('accountType')->with('address', 'address.addressStates', 'address.addressCity', 'address.addressType')->find($id);          
+    $account = Account::with('accounttype')->with('address', 'address.addressStates', 'address.addressCity', 'address.addressType')->find($id);          
 
     if($account){
       $response = Response::json(
