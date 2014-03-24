@@ -129,8 +129,7 @@ define([
 		closeView: function () {
 			if(this.currView) {
 				this.currView.close();
-				
-				this.currView.undelegateEvents();
+				//this.currView.undelegateEvents();
 			}
 		},
 	});
