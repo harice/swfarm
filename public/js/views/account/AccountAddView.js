@@ -9,10 +9,9 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/account/accountAddTemplate.html',
 	'text!templates/account/accountAddressTemplate.html',
-    'views/notification/NotificationView',
 	'global',
 	'constant',
-], function(Backbone, Validate, TextFormatter, PhoneNumber, AccountModel, AccountExtrasModel, CityCollection, contentTemplate, accountAddTemplate, accountAddressTemplate, NotificationView, Global, Const){
+], function(Backbone, Validate, TextFormatter, PhoneNumber, AccountModel, AccountExtrasModel, CityCollection, contentTemplate, accountAddTemplate, accountAddressTemplate, Global, Const){
 
 	var AccountAddView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -84,18 +83,22 @@ define([
 					
 					var accountModel = new AccountModel(data);
 					
-					accountModel.save(null, {success: function (model, response, options) {
-						var message = new NotificationView({ type: 'success', text: 'Account has been created.' });
-						Global.getGlobalVars().app_router.navigate(Const.URL.ACCOUNT, {trigger: true});
-					}, error: function (model, response, options) {
-						var message = new NotificationView({ type: 'error', text: 'Sorry! An error occurred in the process.' });
-						if(typeof response.responseJSON.error == 'undefined')
-							validate.showErrors(response.responseJSON);
-						else
-							alert(response.responseText);
-					},
-					headers: accountModel.getAuth(),
-					});
+					accountModel.save(
+						null, 
+						{
+							success: function (model, response, options) {
+								thisObj.displayMessage(response);
+								Global.getGlobalVars().app_router.navigate(Const.URL.ACCOUNT, {trigger: true});
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: accountModel.getAuth(),
+						}
+					);
 				},
 			});
 			this.addValidationToAddressFields();

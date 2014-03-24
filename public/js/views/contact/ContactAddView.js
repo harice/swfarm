@@ -7,11 +7,10 @@ define([
 	'text!templates/contact/contactAddTemplate.html',
 	'models/contact/ContactModel',
     'collections/account/AccountNameCollection',
-    'views/notification/NotificationView',
     'views/AutoCompleteView',
 	'global',
 	'constant',
-], function(Backbone, Validate, TextFormatter, PhoneNumber, contentTemplate, contactAddTemplate, ContactModel, AccountNameCollection, NotificationView, AutoCompleteView, Global, Const){
+], function(Backbone, Validate, TextFormatter, PhoneNumber, contentTemplate, contactAddTemplate, ContactModel, AccountNameCollection, AutoCompleteView, Global, Const){
 
 	var ContactAddView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -21,7 +20,8 @@ define([
 		},
 		
 		render: function(){
-			// var thisObj = this;
+			var thisObj = this;
+			
             var innerTemplateVariables = {
 				'contact_url' : '#/'+Const.URL.CONTACT
 			};
@@ -46,22 +46,17 @@ define([
 					contactModel.save(
                         null,
                         {
-                        success:
-                            function (model, response, options) {
-                                var message = new NotificationView({ type: 'success', text: 'Contact has been created.' });
-                                Global.getGlobalVars().app_router.navigate(Const.URL.CONTACT, {trigger: true});
-                            },
-                        error:
-                            function (model, response, options) {
-                                var message = new NotificationView({ type: 'error', text: 'Sorry! An error occurred in the process.' });
-                                if(typeof response.responseJSON.error == 'undefined')
-                                    validate.showErrors(response.responseJSON);
-                                else
-                                    // Display message
-                                    // thisObj.displayMessage('Failed adding new contact. ', 'error');
-                                    var message = new NotificationView({ type: 'danger' });
-                            },
-                        headers: contactModel.getAuth(),
+							success: function (model, response, options) {
+								thisObj.displayMessage(response);
+								Global.getGlobalVars().app_router.navigate(Const.URL.CONTACT, {trigger: true});
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: contactModel.getAuth(),
                         }
                     );
 				}

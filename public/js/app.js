@@ -13,21 +13,32 @@ define([
 			this.undelegateEvents();
 		};
 		
-		Backbone.View.prototype.displayMessage = function (message, error) {
-			
-			var type = (error == true)? 'error' : 'success';
-			
-			if(message == null || message == '')
-				message = type;
-			
+		Backbone.View.prototype.displayGrowl = function (message, type) {
 			$.bootstrapGrowl(message, {
-                ele: '#message',
-                type: type,
-                offset: {from: 'bottom'},
-                align: 'right',
-                width: 'auto',
-                delay: 4000
-            });
+						ele: '#message',
+						type: type,
+						offset: {from: 'bottom'},
+						align: 'right',
+						width: 'auto',
+						delay: 4000
+					});
+		};
+		
+		Backbone.View.prototype.displayMessage = function (data) {
+			if(data.error != 'undefined') {
+				var error = data.error;
+				var type = (error == false)? 'success' : 'error';
+				var message = type;
+				
+				if(typeof data.message != 'undefined')
+					message = data.message;
+				
+				if(typeof message == 'string') {
+					this.displayGrowl(message, type);
+				}
+				else 
+					alert(message);
+			}
 		};
 		
 		Backbone.Collection.prototype.getAuth = function () {

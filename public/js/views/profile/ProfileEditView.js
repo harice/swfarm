@@ -7,10 +7,9 @@ define([
 	'text!templates/profile/profileEditTemplate.html',
 	'models/profile/ProfileModel',
 	'models/session/SessionModel',
-    'views/notification/NotificationView',
 	'global',
 	'constant',
-], function(Backbone, Validate, TextFormatter, PhoneNumber, contentTemplate, profileEditTemplate, ProfileModel, SessionModel, NotificationView, Global, Const){
+], function(Backbone, Validate, TextFormatter, PhoneNumber, contentTemplate, profileEditTemplate, ProfileModel, SessionModel, Global, Const){
 
 	var ProfileEditView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -94,17 +93,22 @@ define([
 					}
 					
 					var userModel = new ProfileModel(data);
-					userModel.save(null, {success: function (model, response, options) {
-						var message = new NotificationView({ type: 'success', text: 'Profile has been updated.' });
-						Global.getGlobalVars().app_router.navigate(Const.URL.PROFILE, {trigger: true});
-					}, error: function (model, response, options) {
-						var message = new NotificationView({ type: 'error', text: 'Sorry! An error occurred in the process.' });
-						if(response.responseJSON)
-							validate.showErrors(response.responseJSON);
-						else
-							alert(response.responseText);
-					},
-					headers: userModel.getAuth(),});
+					userModel.save(
+						null,
+						{
+							success: function (model, response, options) {
+								thisObj.displayMessage(response);
+								Global.getGlobalVars().app_router.navigate(Const.URL.PROFILE, {trigger: true});
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: userModel.getAuth(),
+						}
+					);
 				},
 				
 				rules: {
