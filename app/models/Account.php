@@ -16,11 +16,11 @@ class Account extends Eloquent {
     }
 
     public function address(){
-    	return $this->hasMany('address', 'account');
+    	return $this->hasMany('Address', 'account');
     }
 
     public function contact(){
-        return $this->hasMany('contact', 'account', 'id', 'account');
+        return $this->hasMany('Contact', 'account', 'id', 'account');
     }
 
     // Laravel's equivalent to calling the constructor on a model
