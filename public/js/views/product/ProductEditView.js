@@ -1,13 +1,14 @@
 define([
 	'backbone',
 	'jqueryvalidate',
+	'jquerytextformatter',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/product/productAddTemplate.html',
 	'models/product/ProductModel',
     'views/notification/NotificationView',
 	'global',
 	'constant',
-], function(Backbone, Validate, contentTemplate, productAddTemplate, ProductModel, NotificationView, Global, Const){
+], function(Backbone, Validate, TextFormatter, contentTemplate, productAddTemplate, ProductModel, NotificationView, Global, Const){
 
 	var ProductEditView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -41,6 +42,8 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+			
+			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
 			
 			this.$el.find('#name').val(productModel.get('name'));
 			this.$el.find('#description').val(productModel.get('description'));

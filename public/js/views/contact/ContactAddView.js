@@ -1,13 +1,15 @@
 define([
 	'backbone',
 	'jqueryvalidate',
+	'jquerytextformatter',
+	'jqueryphonenumber',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/contact/contactAddTemplate.html',
 	'models/contact/ContactModel',
     'views/notification/NotificationView',
 	'global',
 	'constant',
-], function(Backbone, Validate, contentTemplate, contactAddTemplate, ContactModel, NotificationView, Global, Const){
+], function(Backbone, Validate, TextFormatter, PhoneNumber, contentTemplate, contactAddTemplate, ContactModel, NotificationView, Global, Const){
 
 	var ContactAddView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -29,6 +31,11 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+			
+			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
+			this.$el.find('.lowercase').textFormatter({type:'lowercase'});
+			this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
+			this.$el.find('.mobile-number').phoneNumber({'divider':'-', 'dividerPos': new Array(1,5,9)});
 			
 			var validate = $('#addContactForm').validate({
 				submitHandler: function(form) {

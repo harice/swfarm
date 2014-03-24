@@ -1,6 +1,8 @@
 define([
 	'backbone',
 	'jqueryvalidate',
+	'jquerytextformatter',
+	'jqueryphonenumber',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/user/userAddTemplate.html',
 	'models/user/UserModel',
@@ -8,7 +10,7 @@ define([
     'views/notification/NotificationView',
 	'global',
 	'constant',
-], function(Backbone, Validate, contentTemplate, userAddTemplate, UserModel, RoleCollection, NotificationView, Global, Const){
+], function(Backbone, Validate, TextFormatter, PhoneNumber, contentTemplate, userAddTemplate, UserModel, RoleCollection, NotificationView, Global, Const){
 
 	var UserEditView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -69,6 +71,10 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
+			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
+			this.$el.find('.lowercase').textFormatter({type:'lowercase'});
+			this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
+			this.$el.find('.mobile-number').phoneNumber({'divider':'-', 'dividerPos': new Array(1,5,9)});
 			this.fileFileClone = $("#profile-pic").clone(true);
 			
 			this.$el.find('#firstname').val(this.model.get('firstname'));

@@ -1,6 +1,8 @@
 define([
 	'backbone',
 	'jqueryvalidate',
+	'jquerytextformatter',
+	'jqueryphonenumber',
 	'models/account/AccountModel',
 	'models/account/AccountExtrasModel',
 	'collections/address/CityCollection',
@@ -10,7 +12,7 @@ define([
     'views/notification/NotificationView',
 	'global',
 	'constant',
-], function(Backbone, Validate, AccountModel, AccountExtrasModel, CityCollection, contentTemplate, accountAddTemplate, accountAddressTemplate, NotificationView, Global, Const){
+], function(Backbone, Validate, TextFormatter, PhoneNumber, AccountModel, AccountExtrasModel, CityCollection, contentTemplate, accountAddTemplate, accountAddressTemplate, NotificationView, Global, Const){
 
 	var AccountEditView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -70,6 +72,10 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+			
+			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
+			this.$el.find('.lowercase').textFormatter({type:'lowercase'});
+			this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
 			
 			this.options.addressFieldClone = this.$el.find('.address-fields-container').clone();
 			this.options.addressFieldClone.find('#add-address-field').remove();
