@@ -71,6 +71,7 @@ class AccountRepository implements AccountRepositoryInterface {
       'name' => 'required|unique:account',
       'website' => 'url',
       'accounttype' => 'required',
+      'phone' => 'between:1,12'
     );
 
 
@@ -140,6 +141,7 @@ class AccountRepository implements AccountRepositoryInterface {
       'name' => 'required|unique:account,name,'.$id,
       'website' => 'url',
       'accounttype' => 'required',
+      'phone' => 'between:1,12',
     );
 
 
