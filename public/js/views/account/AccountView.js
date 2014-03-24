@@ -3,9 +3,10 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/account/accountViewTemplate.html',
 	'models/account/AccountModel',
+    'views/notification/NotificationView',
 	'global',
 	'constant',
-], function(Backbone, contentTemplate, accountViewTemplate, AccountModel, Global, Const){
+], function(Backbone, contentTemplate, accountViewTemplate, AccountModel, NotificationView, Global, Const){
 
 	var AccountView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -48,17 +49,15 @@ define([
 		removeUser: function (){
 			var thisObj = this;
 			
-			var verifyDelete = confirm('Delete User?');
+			var verifyDelete = confirm('Are you sure you want to delete this account?');
 			if(verifyDelete) {
 				this.model.destroy({
 					success: function (model, response, options) {
-						//console.log('success: UserModel.destroy');
-						//console.log(response);
+						var message = new NotificationView({ type: 'success', text: 'Account has been deleted.' });
 						Global.getGlobalVars().app_router.navigate(Const.URL.ACCOUNT, {trigger: true});
 					},
 					error: function (model, response, options) {
-						//console.log('error: UserModel.destroy');
-						//console.log(response);
+						var message = new NotificationView({ type: 'error', text: 'Sorry! An error occurred in the process.' });
 					},
 					wait: true,
 					headers: thisObj.model.getAuth(),
