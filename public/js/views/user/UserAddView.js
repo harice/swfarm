@@ -62,7 +62,7 @@ define([
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
 			this.$el.find('.lowercase').textFormatter({type:'lowercase'});
 			this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
-			this.$el.find('.mobile-number').phoneNumber({'divider':'-', 'dividerPos': new Array(1,5,9)});
+			this.$el.find('.mobile-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
 			this.fileFileClone = $("#profile-pic").clone(true);
 			
 			var validate = $('#addUserForm').validate({

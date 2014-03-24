@@ -100,6 +100,19 @@ define([
 						}
 					);
 				},
+				
+				rules: {
+					website: {
+						complete_url:true,
+					},
+				},
+				
+				messages: {
+					website: {
+						complete_url: 'Please enter a valid URL.',
+					},
+				},
+				
 			});
 			this.addValidationToAddressFields();
 		},
