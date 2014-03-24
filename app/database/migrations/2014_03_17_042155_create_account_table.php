@@ -19,7 +19,7 @@ class CreateAccountTable extends Migration {
 			$table->string('name')->unique();
 			$table->string('website')->nullable();
 			$table->string('description')->nullable();
-			$table->string('phone')->nullable();
+			$table->string('phone',20)->nullable();
 			$table->integer('accounttype')->unsigned();
 			$table->timestamps();
 			$table->softDeletes();

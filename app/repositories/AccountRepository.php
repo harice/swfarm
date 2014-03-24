@@ -131,7 +131,7 @@ class AccountRepository implements AccountRepositoryInterface {
 
     return Response::json(array(
         'error' => false,
-        'account' => $account->toArray()),
+        'message' => 'Account successfully created.'),
         200
     );
   }
@@ -207,7 +207,7 @@ class AccountRepository implements AccountRepositoryInterface {
 
     return Response::json(array(
         'error' => false,
-        'account' => $account->toArray()),
+        'message' => 'Account successfully updated.'),
         200
     );
   }
@@ -266,13 +266,14 @@ class AccountRepository implements AccountRepositoryInterface {
 
       $response = Response::json(array(
           'error' => false,
+          'message' => 'Account successfully deleted.',
           'account' => $account->toArray()),
           200
       );
     } else {
       $response = Response::json(array(
           'error' => true,
-          'message' => "account not found"),
+          'message' => "Account not found"),
           200
       );
     }

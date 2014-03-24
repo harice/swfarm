@@ -57,7 +57,7 @@ class RolesRepository implements RolesRepositoryInterface {
 
     return Response::json(array(
         'error' => false,
-        'role' => $role->toArray()),
+        'message' => 'Role successfully created.'),
         200
     );
   }
@@ -81,7 +81,7 @@ class RolesRepository implements RolesRepositoryInterface {
 
       $response = Response::json(array(
           'error' => false,
-          'role' => $role->toArray()),
+          'message' => 'Role successfully updated.'),
           200
       );
     } else {
@@ -103,6 +103,7 @@ class RolesRepository implements RolesRepositoryInterface {
 
       $response = Response::json(array(
           'error' => false,
+          'message' => 'Role successfully deleted.',
           'role' => $role->toArray()),
           200
       );
