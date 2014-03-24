@@ -28,7 +28,6 @@ class UsersRepository implements UsersRepositoryInterface {
 
 
   public function paginate($data){
-    //return $this->users->findAll();
     $perPage = isset($data['perpage']) ? $data['perpage'] : Config::get('constants.USERS_PER_LIST'); //default to 10 items, see app/config/constants
     $page = isset($data['page']) ? $data['page'] : '1'; //default to page 1
     $sortby = isset($data['sortby']) ? strtolower($data['sortby']) : 'lastname'; //default sort to lastname
@@ -75,8 +74,8 @@ class UsersRepository implements UsersRepositoryInterface {
       'lastname' => 'required|between:2,50',
       'emp_no' => 'required|unique:users',
       'suffix' => 'between:2,6',
-      'phone' => 'between:6,13',
-      'mobile' => 'between:9,13',
+      'phone' => 'between:6,14',
+      'mobile' => 'between:9,14',
       'position' => 'between:2,50',
       'profileimg' => 'image|max:3000'
     );
@@ -88,13 +87,12 @@ class UsersRepository implements UsersRepositoryInterface {
   	$user->email = $data['email'];
   	$user->firstname = $data['firstname'];
   	$user->lastname = $data['lastname'];
-  	$user->suffix = $data['suffix'];
+  	$user->suffix = isset($data['suffix']) ? $data['suffix'] : null;
   	$user->emp_no = $data['emp_no'];
-  	$user->mobile = $data['mobile'];
-  	$user->phone = $data['phone'];
-  	$user->position = $data['position'];
+  	$user->mobile = isset($data['mobile']) ? $data['mobile'] : null;
+  	$user->phone = isset($data['phone']) ? $data['phone'] : null;
+  	$user->position = isset($data['position']) ? $data['position'] : null;
     $generatedPassword = Str::random(10); //replace with this if the system has already email to user features - Hash::make(Str::random(10));
-    // $generatedPassword = 'elementz123'; //replace with this if the system has already email to user features - Hash::make(Str::random(10));
     $user->confirmcode = Hash::make(Str::random(5)); //use for email verification
     $user->password = Hash::make($generatedPassword);
     
@@ -123,7 +121,7 @@ class UsersRepository implements UsersRepositoryInterface {
 
   	return Response::json(array(
   	    'error' => false,
-  	    'user' => $user->toArray(),
+        'message' => 'User successfully created.',
         'emailStatus' => $emailStatus
         ),
   	    200
@@ -140,8 +138,8 @@ class UsersRepository implements UsersRepositoryInterface {
       'lastname' => 'required|between:2,50',
       'emp_no' => 'required|unique:users,emp_no,'.$id,
       'suffix' => 'between:2,6',
-      'phone' => 'between:6,13',
-      'mobile' => 'between:9,13',
+      'phone' => 'between:6,14',
+      'mobile' => 'between:9,14',
       'position' => 'between:2,50'
     );
 
@@ -156,11 +154,11 @@ class UsersRepository implements UsersRepositoryInterface {
       $user->email = $data['email'];
       $user->firstname = $data['firstname'];
       $user->lastname = $data['lastname'];
-      $user->suffix = $data['suffix'];
+      $user->suffix = isset($data['suffix']) ? $data['suffix'] : null;
       $user->emp_no = $data['emp_no'];
-      $user->mobile = $data['mobile'];
-      $user->phone = $data['phone'];
-      $user->position = $data['position'];
+      $user->mobile = isset($data['mobile']) ? $data['mobile'] : null;
+      $user->phone = isset($data['phone']) ? $data['phone'] : null;
+      $user->position = isset($data['position']) ? $data['position'] : null;
 
       //saving profile image
       if(isset($data['imagedata'])) {
@@ -191,13 +189,13 @@ class UsersRepository implements UsersRepositoryInterface {
 
       $response = Response::json(array(
           'error' => false,
-          'user' => $user->toArray()),
+          'message' => 'User successfully updated.'),
           200
       );
     } else {
       $response = Response::json(array(
           'error' => true,
-          'message' => "User not found"),
+          'message' => "User not found."),
           200
       );
     }
@@ -213,7 +211,7 @@ class UsersRepository implements UsersRepositoryInterface {
 
       $response = Response::json(array(
           'error' => false,
-          'user' => $user->toArray()),
+          'message' => 'User successfully deleted.'),
           200
       );
     } else {
@@ -379,8 +377,8 @@ class UsersRepository implements UsersRepositoryInterface {
       'lastname' => 'required|between:2,50',
       'emp_no' => 'required|unique:users,emp_no,'.$id,
       'suffix' => 'between:2,6',
-      'phone' => 'between:6,13',
-      'mobile' => 'between:9,13',
+      'phone' => 'between:6,14',
+      'mobile' => 'between:9,14',
       'position' => 'between:2,50'
     );
 
@@ -400,11 +398,11 @@ class UsersRepository implements UsersRepositoryInterface {
       $user->email = $data['email'];
       $user->firstname = $data['firstname'];
       $user->lastname = $data['lastname'];
-      $user->suffix = $data['suffix'];
+      $user->suffix = isset($data['suffix']) ? $data['suffix'] : null;
       $user->emp_no = $data['emp_no'];
-      $user->mobile = $data['mobile'];
-      $user->phone = $data['phone'];
-      $user->position = $data['position'];
+      $user->mobile = isset($data['mobile']) ? $data['mobile'] : null;
+      $user->phone = isset($data['phone']) ? $data['phone'] : null;
+      $user->position = isset($data['position']) ? $data['position'] : null;
 
       //saving profile image
       if(isset($data['imagedata'])) {
@@ -426,7 +424,8 @@ class UsersRepository implements UsersRepositoryInterface {
 
       $response = Response::json(array(
           'error' => false,
-          'user' => $user->toArray()),
+          'message' => 'Profile successfully updated.'
+          ),
           200
       );
     } else {

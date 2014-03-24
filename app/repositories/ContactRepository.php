@@ -53,8 +53,8 @@ class ContactRepository implements ContactRepositoryInterface {
       'firstname' => 'required|between:1,50',
       'lastname' => 'required|between:1,50',
       'email' => 'required|email|unique:contact',
-      'phone' => 'required|between:6,13',
-      'mobile' => 'between:9,13'
+      'phone' => 'required|between:6,14',
+      'mobile' => 'between:9,14'
     );
 
     $this->validate($data, $rules);
@@ -89,7 +89,7 @@ class ContactRepository implements ContactRepositoryInterface {
 
     return Response::json(array(
         'error' => false,
-        'contact' => $contact->toArray()),
+        'message' => 'Contact successfully created.'),
         200
     );
   }
@@ -99,8 +99,8 @@ class ContactRepository implements ContactRepositoryInterface {
       'firstname' => 'required|between:1,50',
       'lastname' => 'required|between:1,50',
       'email' => 'required|email|unique:contact,email,'.$id,
-      'phone' => 'required|between:6,13',
-      'mobile' => 'between:9,13'
+      'phone' => 'required|between:6,14',
+      'mobile' => 'between:9,14'
     );
 
     $this->validate($data, $rules);
@@ -135,7 +135,7 @@ class ContactRepository implements ContactRepositoryInterface {
 
     return Response::json(array(
         'error' => false,
-        'contact' => $contact->toArray()),
+        'message' => 'Contact successfully updated'),
         200
     );
   }
@@ -186,13 +186,13 @@ class ContactRepository implements ContactRepositoryInterface {
 
       $response = Response::json(array(
           'error' => false,
-          'role' => $contact->toArray()),
+          'message' => 'Contact successfully deleted.'),
           200
       );
     } else {
       $response = Response::json(array(
           'error' => true,
-          'message' => "contact not found"),
+          'message' => "Contact not found"),
           200
       );
     }
