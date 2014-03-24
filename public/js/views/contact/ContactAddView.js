@@ -11,7 +11,7 @@ define([
     'views/AutoCompleteView',
 	'global',
 	'constant',
-], function(Backbone, Validate, TextFormatter, PhoneNumber, contentTemplate, contactAddTemplate, ContactModel, AccountCollection, NotificationView, AutoCompleteView, Global, Const){
+], function(Backbone, Validate, TextFormatter, PhoneNumber, contentTemplate, contactAddTemplate, ContactModel, AccountNameCollection, NotificationView, AutoCompleteView, Global, Const){
 
 	var ContactAddView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
