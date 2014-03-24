@@ -57,17 +57,25 @@ class ContactRepository implements ContactRepositoryInterface {
       'mobile' => 'between:9,14'
     );
 
-
     $this->validate($data, $rules);
-
+    
     $contact = new Contact;
+    
+    if (isset($data['account'])) {
+        $account_name = (string)$data['account'];
+        $account = Account::where('name', '=', $account_name)->first();
+        $account_id = $account->id;
+        $contact->account = $account_id;
+    } else {
+        $contact->account = null;
+    }
+
     $contact->firstname = $data['firstname'];
     $contact->lastname = $data['lastname'];
     $contact->position = isset($data['position']) ? $data['position'] : null;
     $contact->email = $data['email'];
     $contact->phone = $data['phone'];
     $contact->mobile = isset($data['mobile']) ? $data['mobile'] : null;
-    $contact->account = isset($data['account']) ? $data['account'] : null;
 
     try{
       $contact->save();
@@ -81,7 +89,7 @@ class ContactRepository implements ContactRepositoryInterface {
 
     return Response::json(array(
         'error' => false,
-        'contact' => $contact->toArray()),
+        'message' => 'Contact successfully created.'),
         200
     );
   }
@@ -98,13 +106,22 @@ class ContactRepository implements ContactRepositoryInterface {
     $this->validate($data, $rules);
 
     $contact = Contact::find($id);
+    
+    if (isset($data['account'])) {
+        $account_name = (string)$data['account'];
+        $account = Account::where('name', '=', $account_name)->first();
+        $account_id = $account->id;
+        $contact->account = $account_id;
+    } else {
+        $contact->account = null;
+    }
+    
     $contact->firstname = $data['firstname'];
     $contact->lastname = $data['lastname'];
     $contact->position = isset($data['position']) ? $data['position'] : null;
     $contact->email = $data['email'];
     $contact->phone = $data['phone'];
     $contact->mobile = isset($data['mobile']) ? $data['mobile'] : null;
-    $contact->account = isset($data['account']) ? $data['account'] : null;
 
     try{
       $contact->save();
@@ -118,7 +135,7 @@ class ContactRepository implements ContactRepositoryInterface {
 
     return Response::json(array(
         'error' => false,
-        'contact' => $contact->toArray()),
+        'message' => 'Contact successfully updated'),
         200
     );
   }
@@ -169,13 +186,13 @@ class ContactRepository implements ContactRepositoryInterface {
 
       $response = Response::json(array(
           'error' => false,
-          'role' => $contact->toArray()),
+          'message' => 'Contact successfully deleted.'),
           200
       );
     } else {
       $response = Response::json(array(
           'error' => true,
-          'message' => "contact not found"),
+          'message' => "Contact not found"),
           200
       );
     }

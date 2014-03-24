@@ -12,7 +12,7 @@ class AccountRepository implements AccountRepositoryInterface {
   }
 
   public function findById($id){
-    $account = Account::with('accountType')->with('address', 'address.addressStates', 'address.addressCity', 'address.addressType')->find($id);          
+    $account = Account::with('accounttype')->with('address', 'address.addressStates', 'address.addressCity', 'address.addressType')->find($id);          
 
     if($account){
       $response = Response::json(
@@ -131,7 +131,7 @@ class AccountRepository implements AccountRepositoryInterface {
 
     return Response::json(array(
         'error' => false,
-        'account' => $account->toArray()),
+        'message' => 'Account successfully created.'),
         200
     );
   }
@@ -207,7 +207,7 @@ class AccountRepository implements AccountRepositoryInterface {
 
     return Response::json(array(
         'error' => false,
-        'account' => $account->toArray()),
+        'message' => 'Account successfully updated.'),
         200
     );
   }
@@ -266,13 +266,14 @@ class AccountRepository implements AccountRepositoryInterface {
 
       $response = Response::json(array(
           'error' => false,
+          'message' => 'Account successfully deleted.',
           'account' => $account->toArray()),
           200
       );
     } else {
       $response = Response::json(array(
           'error' => true,
-          'message' => "account not found"),
+          'message' => "Account not found"),
           200
       );
     }
@@ -326,7 +327,7 @@ class AccountRepository implements AccountRepositoryInterface {
     } else {
       $account = Account::orderBy('name', 'asc')->all()->get(array('id','name'));
     }
-    return Response::json($account->toArray(), 200);
+    return Response::json($account);
   }
 
 }

@@ -8,6 +8,6 @@ class Contact extends Eloquent {
     protected $softDelete = true;
 
     public function account(){
-    	return $this->belongsTo('account', 'account', 'id');
+    	return $this->belongsTo('Account', 'account', 'id');
     }
 }

@@ -11,7 +11,7 @@ class AccountType extends Eloquent {
 	protected $table = 'accounttype';
 
     public function account(){
-        return $this->belongsTo('account');
+        return $this->belongsTo('Account');
     }
 
 }

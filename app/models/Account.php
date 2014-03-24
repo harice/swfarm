@@ -12,15 +12,15 @@ class Account extends Eloquent {
 	protected $table = 'account';
 
     public function accountType(){
-        return $this->hasMany('accountType', 'id', 'accounttype');
+        return $this->hasMany('AccountType', 'id', 'accounttype');
     }
 
     public function address(){
-    	return $this->hasMany('address', 'account');
+    	return $this->hasMany('Address', 'account');
     }
 
     public function contact(){
-        return $this->hasMany('contact', 'account', 'id', 'account');
+        return $this->hasMany('Contact', 'account', 'id', 'account');
     }
 
     // Laravel's equivalent to calling the constructor on a model

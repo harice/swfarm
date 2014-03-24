@@ -21,8 +21,8 @@ class CreateUsersTable extends Migration {
 			$table->string('lastname',50);
 			$table->string('suffix',6)->nullable();
 			$table->string('emp_no')->unique();
-			$table->string('mobile',13)->nullable();
-			$table->string('phone',13)->nullable();
+			$table->string('mobile',20)->nullable();
+			$table->string('phone',20)->nullable();
 			$table->string('position',50)->nullable();
 			$table->string('profileimg',50)->nullable();
 			$table->string('confirmcode');
