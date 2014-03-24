@@ -13,38 +13,22 @@ define([
 			this.undelegateEvents();
 		};
 		
-//        Backbone.View.prototype.displayMessage = function (msg, type) {
-//            switch(type)
-//            {
-//                case 'success':
-//                    $.bootstrapGrowl(msg, {
-//                        ele: 'body',
-//                        type: 'success',
-//                        offset: {from: 'bottom'},
-//                        align: 'right',
-//                        width: 'auto',
-//                        delay: 4000
-//                    });
-//                case 'error':
-//                    $.bootstrapGrowl(msg, {
-//                        ele: 'body',
-//                        type: 'error',
-//                        offset: {from: 'bottom'},
-//                        align: 'right',
-//                        width: 'auto',
-//                        delay: 4000
-//                    });
-//                default:
-//                    $.bootstrapGrowl(msg, {
-//                        ele: 'body',
-//                        type: 'info',
-//                        offset: {from: 'bottom'},
-//                        align: 'right',
-//                        width: 'auto',
-//                        delay: 4000
-//                    });
-//            }
-//		};
+		Backbone.View.prototype.displayMessage = function (message, error) {
+			
+			var type = (error == true)? 'error' : 'success';
+			
+			if(message == null || message == '')
+				message = type;
+			
+			$.bootstrapGrowl(message, {
+                ele: '#message',
+                type: type,
+                offset: {from: 'bottom'},
+                align: 'right',
+                width: 'auto',
+                delay: 4000
+            });
+		};
 		
 		Backbone.Collection.prototype.getAuth = function () {
 			return {'Authorization': 'Basic '+SessionModel.get('token')};
