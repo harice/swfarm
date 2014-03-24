@@ -1,8 +1,6 @@
 define([
 	'backbone',
 	'jqueryvalidate',
-	'jquerytextformatter',
-	'jqueryphonenumber',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/contact/contactAddTemplate.html',
 	'models/contact/ContactModel',
@@ -45,11 +43,6 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
-			
-			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
-			this.$el.find('.lowercase').textFormatter({type:'lowercase'});
-			this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
-			this.$el.find('.mobile-number').phoneNumber({'divider':'-', 'dividerPos': new Array(1,5,9)});
 			
 			this.$el.find('#firstname').val(contactModel.get('firstname'));
             this.$el.find('#lastname').val(contactModel.get('lastname'));
