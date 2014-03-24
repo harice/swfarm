@@ -12,8 +12,9 @@ require.config({
 		bootstrap: 'libs/bootstrap/bootstrap.min',
 		underscore: 'libs/underscore/underscore-min',
 		backbone: 'libs/backbone/backbone-min',
+        autocomplete: 'libs/fatiherikli/backbone-autocomplete/src/backbone.autocomplete.js',
 		base64: 'libs/base64/base64.min',
-    growl: 'libs/bootstrap-growl/jquery.bootstrap-growl.min',
+        growl: 'libs/bootstrap-growl/jquery.bootstrap-growl.min',
 		templates: '../templates'
 	},
 	shim: {
@@ -29,10 +30,14 @@ require.config({
 			deps: ['jquery'],
 			exports: 'Bootstrap'
 		},
-		'growl': {
+        'growl': {
 			deps: ['jquery', 'bootstrap'],
 			exports: 'Growl'
 		},
+        'autocomplete': {
+            deps: ['backbone'],
+            exports: 'AutoComplete'
+        },
 		'underscore': {
 			exports: '_'
 		},
