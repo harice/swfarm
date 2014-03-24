@@ -10,6 +10,7 @@ define([
 		Backbone.View.prototype.close = function () {
 			this.$el.empty();
 			this.unbind();
+			this.undelegateEvents();
 		};
 		
 //        Backbone.View.prototype.displayMessage = function (msg, type) {

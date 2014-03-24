@@ -26,7 +26,7 @@ class CreateContactTable extends Migration {
 			$table->timestamps();
 			$table->softDeletes();
 
-			$table->foreign('account')->references('id')->on('account');
+			$table->foreign('account')->references('id')->on('account')->onDelete('cascade');
 		});
 	}
 
