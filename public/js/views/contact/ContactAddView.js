@@ -6,12 +6,12 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/contact/contactAddTemplate.html',
 	'models/contact/ContactModel',
-    'collections/account/AccountCollection',
+    'collections/account/AccountNameCollection',
     'views/notification/NotificationView',
     'views/AutoCompleteView',
 	'global',
 	'constant',
-], function(Backbone, Validate, TextFormatter, PhoneNumber, contentTemplate, contactAddTemplate, ContactModel, AccountCollection, NotificationView, AutoCompleteView, Global, Const){
+], function(Backbone, Validate, TextFormatter, PhoneNumber, contentTemplate, contactAddTemplate, ContactModel, AccountNameCollection, NotificationView, AutoCompleteView, Global, Const){
 
 	var ContactAddView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -66,14 +66,20 @@ define([
                     );
 				}
 			});
-		},
+            
+            var Accounts = new AccountNameCollection();
+            
+            new AutoCompleteView({
+                input: $('#account'),
+                model: Accounts
+            }).render();
+            
+		}
+        
 	});
-
-    new AutoCompleteView({
-        input: $('#account'),
-        model: AccountCollection
-    }).render();
+    
+    
     
     return ContactAddView;
-  
 });
+

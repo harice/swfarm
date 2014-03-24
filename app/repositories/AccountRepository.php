@@ -327,7 +327,7 @@ class AccountRepository implements AccountRepositoryInterface {
     } else {
       $account = Account::orderBy('name', 'asc')->all()->get(array('id','name'));
     }
-    return Response::json($account->toArray(), 200);
+    return Response::json($account);
   }
 
 }
