@@ -127,44 +127,55 @@ class ContactRepository implements ContactRepositoryInterface {
   {
     $perPage  = isset($_search['perpage']) ? $_search['perpage'] : Config::get('constants.USERS_PER_LIST');
     $page     = isset($_search['page']) ? $_search['page'] : 1;
-    $sortby   = isset($_search['sortby']) ? $_search['sortby'] : 'name';
+    $sortby   = isset($_search['sortby']) ? $_search['sortby'] : 'lastname';
     $orderby  = isset($_search['orderby']) ? $_search['orderby'] :'ASC';
     $offset   = $page * $perPage - $perPage;
+    $searchWord = $_search['search'];
 
-    $_cnt = Account::with('accounttype')->where('name','like','%'.$_search['search'].'%')
-                    ->orWhere('website','like','%'.$_search['search'].'%')
-                    ->orWhere('description','like','%'.$_search['search'].'%')
+    $count = Contact::whereHas('account', function($query) use ($searchWord)
+                    {
+                        $query->where('name', 'like', '%'.$searchWord.'%');
+
+                    })
+                    ->orWhere('firstname','like','%'.$searchWord.'%')
+                    ->orWhere('lastname','like','%'.$searchWord.'%')
+                    //->orWhere('account.name','like','%'.$_search['search'].'%')
                     ->count();
 
-    $_account = Account::with('accounttype')->where('name','like','%'.$_search['search'].'%')
-                    ->orWhere('website','like','%'.$_search['search'].'%')
-                    ->orWhere('description','like','%'.$_search['search'].'%')
+    $contact = Contact::with('account')->whereHas('account', function($query) use ($searchWord)
+                    {
+                        $query->where('name', 'like', '%'.$searchWord.'%');
+
+                    })
+                    ->orWhere('firstname','like','%'.$_search['search'].'%')
+                    ->orWhere('lastname','like','%'.$_search['search'].'%')
+                    //->orWhere('account.name','like','%'.$_search['search'].'%')
                     ->take($perPage)
                     ->offset($offset)
                     ->orderBy($sortby, $orderby)
                     ->get();
 
     return Response::json(array(
-      'data' => $_account->toArray(), 
-      'total' => $_cnt),
+      'data' => $contact->toArray(), 
+      'total' => $count),
       200);
   }
 
   public function destroy($id){
-    $account = Account::find($id);
+    $contact = Contact::find($id);
 
-    if($account){
-      $account->delete();
+    if($contact){
+      $contact->delete();
 
       $response = Response::json(array(
           'error' => false,
-          'role' => $account->toArray()),
+          'role' => $contact->toArray()),
           200
       );
     } else {
       $response = Response::json(array(
           'error' => true,
-          'message' => "account not found"),
+          'message' => "contact not found"),
           200
       );
     }
