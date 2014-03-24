@@ -2,6 +2,10 @@ define(['backbone'], function(Backbone){
     var AutoCompleteItemView = Backbone.View.extend({
         tagName: "li",
         template: _.template('<a href="#"><%= label %></a>'),
+        
+        initialize: function(options) {
+            this.options = options;
+        },
 
         events: {
             "click": "select"
@@ -26,7 +30,7 @@ define(['backbone'], function(Backbone){
         className: "autocomplete",
         wait: 300,
 
-        queryParameter: "query",
+        queryParameter: "name",
         minKeywordLength: 2,
         currentText: "",
         itemView: AutoCompleteItemView,
@@ -79,7 +83,9 @@ define(['backbone'], function(Backbone){
                     success: function () {
                         this.loadResult(this.model.models, keyword);
                     }.bind(this),
-                    data: parameters
+                    data: parameters,
+                    
+                    headers: this.model.getAuth()
                 });
 
             } else {

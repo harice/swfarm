@@ -4,10 +4,12 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/contact/contactAddTemplate.html',
 	'models/contact/ContactModel',
+    'collections/account/AccountNameCollection',
     'views/notification/NotificationView',
+    'views/AutoCompleteView',
 	'global',
 	'constant',
-], function(Backbone, Validate, contentTemplate, contactAddTemplate, ContactModel, NotificationView, Global, Const){
+], function(Backbone, Validate, contentTemplate, contactAddTemplate, ContactModel, AccountNameCollection, NotificationView, AutoCompleteView, Global, Const){
 
 	var ContactEditView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -25,7 +27,7 @@ define([
 		},
 		
 		render: function(){
-			this.model.runFetch();
+            this.model.runFetch();
 		},
 		
 		displayContact: function(contactModel) {
@@ -44,7 +46,7 @@ define([
 			
 			this.$el.find('#firstname').val(contactModel.get('firstname'));
             this.$el.find('#lastname').val(contactModel.get('lastname'));
-			this.$el.find('#account').val(contactModel.get('account'));
+			this.$el.find('#account').val(contactModel.get('account').name);
             this.$el.find('#position').val(contactModel.get('position'));
             this.$el.find('#email').val(contactModel.get('email'));
             this.$el.find('#phone').val(contactModel.get('phone'));
@@ -67,6 +69,13 @@ define([
 					headers: contactModel.getAuth(),});
 				}
 			});
+            
+            var Accounts = new AccountNameCollection();
+            
+            new AutoCompleteView({
+                input: $('#account'),
+                model: Accounts
+            }).render();
 		},
 	});
 
