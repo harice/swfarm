@@ -40,7 +40,7 @@ class AccountRepository implements AccountRepositoryInterface {
     //pulling of data
     if(!isset($params['filter']) || $params['filter'] == ''){
       $count = Account::count();
-      $accountList = Account::with('accounttype')
+      $accountList = Account::with('AccountType')
                     ->take($perPage)->offset($offset)
                     ->orderBy($sortby, $orderby)
                     ->get();
