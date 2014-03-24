@@ -7,6 +7,8 @@ require.config({
 	paths: {
 		jquery: 'libs/jquery/jquery-min',
 		jqueryvalidate: 'libs/jquery/jquery.validate.min',
+		jquerytextformatter: 'libs/jquery/jquery.textformatter',
+		jqueryphonenumber: 'libs/jquery/jquery.phonenumber',
 		bootstrap: 'libs/bootstrap/bootstrap.min',
 		underscore: 'libs/underscore/underscore-min',
 		backbone: 'libs/backbone/backbone-min',
@@ -27,21 +29,28 @@ require.config({
 			deps: ['jquery'],
 			exports: 'Bootstrap'
 		},
-    'growl': {
+		'growl': {
 			deps: ['jquery', 'bootstrap'],
 			exports: 'Growl'
 		},
 		'underscore': {
-            exports: '_'
-        },
+			exports: '_'
+		},
 		'jqueryvalidate': {
-      deps: ['jquery'],
+			deps: ['jquery'],
 			exports: 'Validate',
-        },
+		},
+		'jquerytextformatter': {
+			deps: ['jquery'],
+			exports: 'TextFormatter',
+		},
+		'jqueryphonenumber': {
+			deps: ['jquery'],
+			exports: 'PhoneNumber',
+		},
 		'jquery': {
-      exports: '$'
-    },
-		
+			exports: '$'
+		},
 	},
 });
 
