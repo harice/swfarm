@@ -75,8 +75,8 @@ class UsersRepository implements UsersRepositoryInterface {
       'lastname' => 'required|between:2,50',
       'emp_no' => 'required|unique:users',
       'suffix' => 'between:2,6',
-      'phone' => 'between:6,13',
-      'mobile' => 'between:9,13',
+      'phone' => 'between:6,14',
+      'mobile' => 'between:9,14',
       'position' => 'between:2,50',
       'profileimg' => 'image|max:3000'
     );
@@ -88,11 +88,11 @@ class UsersRepository implements UsersRepositoryInterface {
   	$user->email = $data['email'];
   	$user->firstname = $data['firstname'];
   	$user->lastname = $data['lastname'];
-  	$user->suffix = $data['suffix'];
+  	$user->suffix = isset($data['suffix']) ? $data['suffix'] : null;
   	$user->emp_no = $data['emp_no'];
-  	$user->mobile = $data['mobile'];
-  	$user->phone = $data['phone'];
-  	$user->position = $data['position'];
+  	$user->mobile = isset($data['mobile']) ? $data['mobile'] : null;
+  	$user->phone = isset($data['phone']) ? $data['phone'] : null;
+  	$user->position = isset($data['position']) ? $data['position'] : null;
     $generatedPassword = Str::random(10); //replace with this if the system has already email to user features - Hash::make(Str::random(10));
     // $generatedPassword = 'elementz123'; //replace with this if the system has already email to user features - Hash::make(Str::random(10));
     $user->confirmcode = Hash::make(Str::random(5)); //use for email verification
@@ -140,8 +140,8 @@ class UsersRepository implements UsersRepositoryInterface {
       'lastname' => 'required|between:2,50',
       'emp_no' => 'required|unique:users,emp_no,'.$id,
       'suffix' => 'between:2,6',
-      'phone' => 'between:6,13',
-      'mobile' => 'between:9,13',
+      'phone' => 'between:6,14',
+      'mobile' => 'between:9,14',
       'position' => 'between:2,50'
     );
 
@@ -156,11 +156,11 @@ class UsersRepository implements UsersRepositoryInterface {
       $user->email = $data['email'];
       $user->firstname = $data['firstname'];
       $user->lastname = $data['lastname'];
-      $user->suffix = $data['suffix'];
+      $user->suffix = isset($data['suffix']) ? $data['suffix'] : null;
       $user->emp_no = $data['emp_no'];
-      $user->mobile = $data['mobile'];
-      $user->phone = $data['phone'];
-      $user->position = $data['position'];
+      $user->mobile = isset($data['mobile']) ? $data['mobile'] : null;
+      $user->phone = isset($data['phone']) ? $data['phone'] : null;
+      $user->position = isset($data['position']) ? $data['position'] : null;
 
       //saving profile image
       if(isset($data['imagedata'])) {
@@ -379,8 +379,8 @@ class UsersRepository implements UsersRepositoryInterface {
       'lastname' => 'required|between:2,50',
       'emp_no' => 'required|unique:users,emp_no,'.$id,
       'suffix' => 'between:2,6',
-      'phone' => 'between:6,13',
-      'mobile' => 'between:9,13',
+      'phone' => 'between:6,14',
+      'mobile' => 'between:9,14',
       'position' => 'between:2,50'
     );
 
@@ -400,11 +400,11 @@ class UsersRepository implements UsersRepositoryInterface {
       $user->email = $data['email'];
       $user->firstname = $data['firstname'];
       $user->lastname = $data['lastname'];
-      $user->suffix = $data['suffix'];
+      $user->suffix = isset($data['suffix']) ? $data['suffix'] : null;
       $user->emp_no = $data['emp_no'];
-      $user->mobile = $data['mobile'];
-      $user->phone = $data['phone'];
-      $user->position = $data['position'];
+      $user->mobile = isset($data['mobile']) ? $data['mobile'] : null;
+      $user->phone = isset($data['phone']) ? $data['phone'] : null;
+      $user->position = isset($data['position']) ? $data['position'] : null;
 
       //saving profile image
       if(isset($data['imagedata'])) {
