@@ -137,7 +137,7 @@ class ContactRepository implements ContactRepositoryInterface {
 
     $count = Contact::whereHas('account', function($query) use ($searchWord)
                     {
-                        $query->orWhere('name', 'like', '%'.$searchWord.'%');
+                        $query->where('name', 'like', '%'.$searchWord.'%');
 
                     })
                     ->orWhere(function ($query) use ($searchWord){
@@ -150,7 +150,7 @@ class ContactRepository implements ContactRepositoryInterface {
     $contact = Contact::with('account')
                     ->whereHas('account', function($query) use ($searchWord)
                     {
-                        $query->orWhere('name', 'like', '%'.$searchWord.'%');
+                        $query->where('name', 'like', '%'.$searchWord.'%');
 
                     })
                     ->orWhere(function ($query) use ($searchWord){
