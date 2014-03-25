@@ -97,7 +97,7 @@ Route::filter('basic', function()
 						'status' => true
 					)
 				);
-	if(!$auth) return App::abort(403,'Invalid API key',['WWW-Authenticate' => 'Basic']);
+	if(!$auth) return App::abort(403,'Invalid API key',array('WWW-Authenticate' => 'Basic'));
 });
 
 /*
