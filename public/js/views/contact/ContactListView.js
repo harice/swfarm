@@ -15,6 +15,7 @@ define([
 			var thisObj = this;
 			
 			this.collection = new ContactCollection();
+            this.collection.options.search = '';
 			this.collection.on('sync', function() {
 				//console.log('collection.on.sync')
 				thisObj.displayList();
