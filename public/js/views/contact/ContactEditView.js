@@ -7,7 +7,7 @@ define([
 	'text!templates/contact/contactAddTemplate.html',
 	'models/contact/ContactModel',
     'collections/account/AccountNameCollection',
-    'views/AutoCompleteView',
+    'views/autocomplete/AutoCompleteView',
 	'global',
 	'constant',
 ], function(Backbone, Validate, TextFormatter, PhoneNumber, contentTemplate, contactAddTemplate, ContactModel, AccountNameCollection, AutoCompleteView, Global, Const){
