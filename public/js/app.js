@@ -10,6 +10,24 @@ define([
 		Backbone.View.prototype.close = function () {
 			this.$el.empty();
 			this.unbind();
+			this.undelegateEvents();
+		};
+		
+		Backbone.View.prototype.displayMessage = function (message, error) {
+			
+			var type = (error == true)? 'error' : 'success';
+			
+			if(message == null || message == '')
+				message = type;
+			
+			$.bootstrapGrowl(message, {
+                ele: '#message',
+                type: type,
+                offset: {from: 'bottom'},
+                align: 'right',
+                width: 'auto',
+                delay: 4000
+            });
 		};
 		
 		Backbone.Collection.prototype.getAuth = function () {

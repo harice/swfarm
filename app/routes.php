@@ -14,8 +14,9 @@
 /* API ROUTES */
 Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 {
+	Route::get('users/search', 'APIv1\UsersController@search');
 	Route::get('users/auth', 'APIv1\UsersController@auth');
-	Route::get('verifyAccount', 'APIv1\UsersController@verifyAccount');
+	Route::put('users/updateprofile/{id}', 'APIv1\UsersController@updateProfile');
 	Route::resource('users', 'APIv1\UsersController');
 	
 	Route::get('roles/all', 'APIv1\RolesController@all');
@@ -25,6 +26,24 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 	Route::resource('permission', 'APIv1\PermissionController');
 
   	Route::resource('audit', 'APIv1\AuditController');
+
+    Route::get('product/search', 'APIv1\ProductController@search');
+    Route::resource('product', 'APIv1\ProductController');
+
+    Route::get('account/search', 'APIv1\AccountController@search');
+	Route::get('account/getFormData', 'APIv1\AccountController@getFormData');
+  	Route::get('account/getCitiesByState/{id}', 'APIv1\AccountController@getCitiesByState');
+  	Route::get('account/getAccountsByName', 'APIv1\AccountController@getAccountsByName');
+	Route::resource('account', 'APIv1\AccountController');
+
+	Route::get('contact/search', 'APIv1\ContactController@search');
+	Route::resource('contact', 'APIv1\ContactController');
+});
+
+/* API ROUTES without HTTP Basic */
+Route::group(array('prefix' => 'apiv1'), function()
+{
+	Route::get('verifyAccount', 'APIv1\UsersController@verifyAccount');
 });
 
 

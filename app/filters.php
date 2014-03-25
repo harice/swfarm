@@ -11,6 +11,8 @@
 |
 */
 
+Common::globalXssClean(); //for XSS cleaning of forms
+
 App::before(function($request)
 {
 	//

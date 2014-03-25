@@ -1,12 +1,14 @@
 define([
 	'backbone',
 	'jqueryvalidate',
+	'jquerytextformatter',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/role/roleAddTemplate.html',
 	'models/role/RoleModel',
+    'views/notification/NotificationView',
 	'global',
 	'constant',
-], function(Backbone, Validate, contentTemplate, roleAddTemplate, RoleModel, Global, Const){
+], function(Backbone, Validate, TextFormatter, contentTemplate, roleAddTemplate, RoleModel, NotificationView, Global, Const){
 
 	var RoleEditView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -41,6 +43,8 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
+			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
+			
 			this.$el.find('#name').val(roleModel.get('name'));
 			this.$el.find('#description').val(roleModel.get('description'));
 			
@@ -49,8 +53,10 @@ define([
 					var data = $(form).serializeObject();
 					var roleModel = new RoleModel(data);
 					roleModel.save(null, {success: function (model, response, options) {
+                        var message = new NotificationView({ type: 'success', text: 'Role has been updated.' });
 						Global.getGlobalVars().app_router.navigate(Const.URL.ROLE, {trigger: true});
 					}, error: function (model, response, options) {
+                        var message = new NotificationView({ type: 'error', text: 'Sorry! An error occurred in the process.' });
 						if(response.responseJSON)
 							validate.showErrors(response.responseJSON);
 						else

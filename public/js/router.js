@@ -9,17 +9,24 @@ define([
 	'controllers/role/RoleController',
 	'controllers/permission/PermissionController',
 	'controllers/audittrail/AuditTrailController',
+	'controllers/profile/ProfileController',
+	'controllers/account/AccountController',
+    'controllers/contact/ContactController',
+	'controllers/product/ProductController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
-], function(Backbone, BaseRouter, HeaderView, AdminView, LoginController, UserController, RoleController, PermissionController, AuditTrailController, Global, Const, Session) {
+], function(Backbone, BaseRouter, HeaderView, AdminView, LoginController, UserController, RoleController, PermissionController, AuditTrailController, ProfileController, AccountController, ContactController, ProductController, Global, Const, Session) {
 	
 	var routerRoutes = {};
-
+	
 	//login
 	routerRoutes[Const.URL.LOGIN] = 'showLoginPage';
 	routerRoutes[Const.URL.LOGIN+'/'] = 'showLoginPage';
-	routerRoutes[Const.URL.USER+'/:action'] = 'showLoginPage';
+	routerRoutes[Const.URL.LOGIN+'/:action'] = 'showLoginPage';
+
+	//logout
+	routerRoutes[Const.URL.LOGOUT] = 'processLogOut';
 	
 	//admin
 	routerRoutes[Const.URL.ADMIN] = 'showAdminPage';
@@ -47,7 +54,30 @@ define([
 	routerRoutes[Const.URL.AUDITTRAIL+'/'] = 'showAuditTrailPage';
 	routerRoutes[Const.URL.AUDITTRAIL+'/:table'] = 'showAuditTrailPage';
 	routerRoutes[Const.URL.AUDITTRAIL+'/:table/:id'] = 'showAuditTrailPage';
+  
+	//product
+	routerRoutes[Const.URL.PRODUCT] = 'showProductPage';
+	routerRoutes[Const.URL.PRODUCT+'/'] = 'showProductPage';
+	routerRoutes[Const.URL.PRODUCT+'/:action'] = 'showProductPage';
+	routerRoutes[Const.URL.PRODUCT+'/:action/:id'] = 'showProductPage';
 	
+	//profile
+	routerRoutes[Const.URL.PROFILE] = 'showProfilePage';
+	routerRoutes[Const.URL.PROFILE+'/'] = 'showProfilePage';
+	routerRoutes[Const.URL.PROFILE+'/:action'] = 'showProfilePage';
+	routerRoutes[Const.URL.PROFILE+'/:action/'] = 'showProfilePage';
+	
+	//accounts
+	routerRoutes[Const.URL.ACCOUNT] = 'showAccountPage';
+	routerRoutes[Const.URL.ACCOUNT+'/'] = 'showAccountPage';
+	routerRoutes[Const.URL.ACCOUNT+'/:action'] = 'showAccountPage';
+	routerRoutes[Const.URL.ACCOUNT+'/:action/:id'] = 'showAccountPage';
+    
+    //contact
+	routerRoutes[Const.URL.CONTACT] = 'showContactPage';
+	routerRoutes[Const.URL.CONTACT+'/'] = 'showContactPage';
+	routerRoutes[Const.URL.CONTACT+'/:action'] = 'showContactPage';
+	routerRoutes[Const.URL.CONTACT+'/:action/:id'] = 'showContactPage';
 	
 	routerRoutes['*actions'] = 'defaultAction';
 
@@ -64,8 +94,18 @@ define([
 			var needAuth = _.contains(this.requiresAuthExcept, path);
 			var cancelAccess = _.contains(this.preventAccessWhenAuth, path);
 
+			if(path === '#/'+Const.URL.LOGOUT && isAuth)
+			{
+				Session.clear();
+				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
+				var headerView = new HeaderView();
+        		headerView.render();
+			}
+
 			if(!needAuth && !isAuth){
-				Session.set('redirectFrom', path);
+				if(path != '#/'+Const.URL.LOGOUT)
+					Session.set('redirectFrom', path);
+
 				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
 			}else if(isAuth && cancelAccess){
 				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.DASHBOARD, { trigger : true });
@@ -89,17 +129,17 @@ define([
 		closeView: function () {
 			if(this.currView) {
 				this.currView.close();
-				
-				this.currView.undelegateEvents();
+				//this.currView.undelegateEvents();
 			}
 		},
 	});
 	
 	var initialize = function(){
 		var app_router = new AppRouter;
-
+		
 		app_router.on('route:showLoginPage',function (action) {
 			this.closeView();
+
 			var loginController = new LoginController();
 			this.currView = loginController.setAction(action);
 			this.currView.render();
@@ -107,6 +147,7 @@ define([
 		
 		app_router.on('route:showAdminPage', function () {
 			this.closeView();
+			// Global.getGlobalVars().app_router.navigate('#/'+Const.URL.DASHBOARD, { trigger : true });
 			this.currView = new AdminView();
 			this.currView.render();
 		});
@@ -138,10 +179,41 @@ define([
 			this.currView = auditTrailController.setAction(table, id);
 			this.currView.render();
 		});
+    
+		app_router.on('route:showProductPage', function (action, id) {
+			this.closeView();
+			var productController = new ProductController();
+			this.currView = productController.setAction(action, id);
+			this.currView.render();
+		});
+		
+		app_router.on('route:showProfilePage', function (action) {
+			this.closeView();
+			var profileController = new ProfileController();
+			this.currView = profileController.setAction(action);
+			this.currView.render();
+		});
+		
+		app_router.on('route:showAccountPage', function (action, id) {
+			this.closeView();
+			var accountController = new AccountController();
+			this.currView = accountController.setAction(action, id);
+			this.currView.render();
+		});
+        
+        app_router.on('route:showContactPage', function (action, id) {
+			this.closeView();
+			var contactController = new ContactController();
+			this.currView = contactController.setAction(action, id);
+			this.currView.render();
+		});
 		
 		app_router.on('route:defaultAction', function (actions) {
 			this.closeView();
 			console.log('default page');
+
+			var headerView = new HeaderView();
+        	headerView.render();
 		});
 		
 		Global.getGlobalVars().app_router = app_router;

@@ -2,61 +2,23 @@
  
 class PermissionRepository implements PermissionRepositoryInterface {
 
-  public function store($data){
-   $rules = array(
-      'role' => 'required',
-    );
-
-   $this->validate($data, $rules);
-
-    //client must pass value in comma separated format
-    $permissionIds = explode(',', $data['permission']);
-    
-    if($data['permission'] != ''){
-      //check if permission given exist in the database
-      foreach($permissionIds as $item){
-        if(count(PermissionCategoryType::find($item)) > 0) {
-          continue;
-        }
-        return Response::json(array(
-            'error' => true,
-            'message' => 'One of the permission given does not exist on the database.'),
-            200
-        );
-      }
-    }
-    
-    //deleting permissions that is uncheck in client side
-    if($data['permission'] == '' || $data['permission'] == null){
-      Permission::where('role', '=', $data['role'])->delete(); //deleting all permission to role if client send empty permission value
-    } else {
-      //deleting the permissions on db if it doesn't exist on the current given permission
-      Permission::where('role', '=', $data['role'])->whereNotIn('permissioncategorytype', $permissionIds)->delete(); 
-
-      //Adding the new permissions given
-      foreach($permissionIds as $permissionId){
-          if(Permission::where('role', '=', $data['role'])->where('permissioncategorytype', '=', $permissionId)->count() > 0){
-            continue; //skip adding permission already exist
-          }   
-          $permission = new Permission;
-          $permission->role = $data['role'];
-          $permission->permissioncategorytype = $permissionId;
-
-          $permission->save();
-      }
-    }
-
-    $response = Response::json(array(
-        'error' => false,
-        'message' => 'Updated user roles.'),
-        200
-    );
-
-    return $response;
-      
-  }
-
   public function update($id, $data){
+      
+      
+        // This needs to be moved
+        // Log on audit trail
+        $_data = Permission::find($data["id"]);
+        $event_data = array(
+                'type' => 'Permission',
+                'user' => Auth::user()->lastname . ', ' . Auth::user()->firstname,
+                'data_id' => $id,
+                'event' => 'Updated',
+                'value' => serialize($_data)
+            );
+
+        $audit = new Audit($event_data);
+        $audit->save();
+      
    $role = Roles::find($id);
     if($data['permission'] != ''){
       //client must pass value in comma separated format

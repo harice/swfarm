@@ -2,7 +2,7 @@ define([
 	'backbone',
 	'models/role/RoleModel',
 ], function(Backbone, RoleModel){
-	var UserCollection = Backbone.Collection.extend({
+	var RoleCollection = Backbone.Collection.extend({
 		url: '/apiv1/roles',
 		model: RoleModel,
 		options: {
@@ -80,5 +80,5 @@ define([
 		},
 	});
 
-	return UserCollection;
+	return RoleCollection;
 });
