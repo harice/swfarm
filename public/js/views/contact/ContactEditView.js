@@ -7,7 +7,7 @@ define([
 	'text!templates/contact/contactAddTemplate.html',
 	'models/contact/ContactModel',
     'collections/account/AccountNameCollection',
-    'views/AutoCompleteView',
+    'views/autocomplete/AutoCompleteView',
 	'global',
 	'constant',
 ], function(Backbone, Validate, TextFormatter, PhoneNumber, contentTemplate, contactAddTemplate, ContactModel, AccountNameCollection, AutoCompleteView, Global, Const){
@@ -59,6 +59,7 @@ define([
             this.$el.find('#email').val(contactModel.get('email'));
             this.$el.find('#phone').val(contactModel.get('phone'));
             this.$el.find('#mobile').val(contactModel.get('mobile'));
+            this.$el.find('#account_id').val(contactModel.get('account').id);
 			
 			var validate = $('#addContactForm').validate({
 				submitHandler: function(form) {
