@@ -121,6 +121,15 @@ define([
 					password_confirmation: {
 						equalTo: 'Password does not match',
 					},
+					phone: {
+                        minlength: 'Please enter a valid phone number.',
+						maxlength: 'Please enter a valid phone number.',
+					},
+                    
+                    mobile: {
+                        minlength: 'Please enter a valid mobile number.',
+						maxlength: 'Please enter a valid mobile number.',
+					},
 				},
 			});
 			

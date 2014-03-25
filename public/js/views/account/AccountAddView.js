@@ -114,6 +114,11 @@ define([
 					website: {
 						complete_url: 'Please enter a valid URL.',
 					},
+					
+					phone: {
+                        minlength: 'Please enter a valid phone number.',
+						maxlength: 'Please enter a valid phone number.',
+					},
 				},
 				
 			});
