@@ -6,28 +6,28 @@ class AccountTypeTableSeeder extends Seeder {
 	{
 		$accounttype = array(
 			array(
-                'name' => 'Producer'
-            ),
-            array(
-                'name' => 'Trucker'
+                'name' => 'Customer'
             ),
             array(
                 'name' => 'Hauler'
             ),
             array(
-                'name' => 'Operator'
-            ),
-            array(
                 'name' => 'Loader'
             ),
             array(
-                'name' => 'Driver'
+                'name' => 'Operator'
+            ),
+            array(
+                'name' => 'Producer'
+            ),
+            array(
+                'name' => 'Scale provider'
             ),
             array(
                 'name' => 'Trailer'
             ),
             array(
-                'name' => 'Scale Provider'
+                'name' => 'Trucker'
             )
 		);
 
