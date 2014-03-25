@@ -137,22 +137,27 @@ class ContactRepository implements ContactRepositoryInterface {
 
     $count = Contact::whereHas('account', function($query) use ($searchWord)
                     {
-                        $query->where('name', 'like', '%'.$searchWord.'%');
+                        $query->orWhere('name', 'like', '%'.$searchWord.'%');
 
                     })
-                    ->orWhere('firstname','like','%'.$searchWord.'%')
-                    ->orWhere('lastname','like','%'.$searchWord.'%')
-                    //->orWhere('account.name','like','%'.$_search['search'].'%')
+                    ->orWhere(function ($query) use ($searchWord){
+                        $query->orWhere('firstname','like','%'.$searchWord.'%')
+                              ->orWhere('lastname','like','%'.$searchWord.'%');
+                      })
+                    ->whereNull('deleted_at')
                     ->count();
 
-    $contact = Contact::with('account')->whereHas('account', function($query) use ($searchWord)
+    $contact = Contact::with('account')
+                    ->whereHas('account', function($query) use ($searchWord)
                     {
-                        $query->where('name', 'like', '%'.$searchWord.'%');
+                        $query->orWhere('name', 'like', '%'.$searchWord.'%');
 
                     })
-                    ->orWhere('firstname','like','%'.$_search['search'].'%')
-                    ->orWhere('lastname','like','%'.$_search['search'].'%')
-                    //->orWhere('account.name','like','%'.$_search['search'].'%')
+                    ->orWhere(function ($query) use ($searchWord){
+                        $query->orWhere('firstname','like','%'.$searchWord.'%')
+                              ->orWhere('lastname','like','%'.$searchWord.'%');
+                      })
+                    ->whereNull('deleted_at')
                     ->take($perPage)
                     ->offset($offset)
                     ->orderBy($sortby, $orderby)
