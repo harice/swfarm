@@ -59,6 +59,18 @@ define([
 							headers: contactModel.getAuth(),
                         }
                     );
+				},
+                
+                messages: {
+					phone: {
+                        minlength: 'Please enter a valid phone number.',
+						maxlength: 'Please enter a valid phone number.',
+					},
+                    
+                    mobile: {
+                        minlength: 'Please enter a valid phone number.',
+						maxlength: 'Please enter a valid phone number.',
+					},
 				}
 			});
             
