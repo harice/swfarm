@@ -1,19 +1,17 @@
 <?php
 
 class Roles extends Eloquent {
-  
-  protected $guarded = array();
 
-	public static $rules = array('name' => 'required');
-
+	/**
+	 * The database table used by the model.
+	 *
+	 * @var string
+	 */
+	protected $table = 'roles';
 
 	public function permission(){
 		return $this->hasMany('Permission', 'role', 'id');
 	}
-
-	// public function userRoles(){
-	// 	return $this->belongsTo('UserRoles', 'role', 'id');
-	// }
 
 	public function user(){
 		return $this->belongsToMany('User', 'userroles', 'user', 'role');

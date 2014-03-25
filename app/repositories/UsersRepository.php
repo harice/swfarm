@@ -101,7 +101,7 @@ class UsersRepository implements UsersRepositoryInterface {
     //saving user roles posted by client
     if(isset($data['roles']) && $data['roles'] != ''){
         $roleIds = explode(',', $data['roles']);
-        $user->roles()->sync($roleIds);
+        Event::fire('user.roles',$roleIds);
     }
 
   	return Response::json(array(
@@ -174,10 +174,13 @@ class UsersRepository implements UsersRepositoryInterface {
       if(isset($data['roles'])){
         if($data['roles'] != ''){
           $roleIds = explode(',', $data['roles']);
-          $user->roles()->sync($roleIds);
+          $sync = $user->roles()->sync($roleIds);
+          $sync['user'] = $user;
+          Event::fire('sync.roles',array($sync));
         } else {
           //remove all assign roles to user
-          $user->roles()->detach();
+          // $user->roles()->detach();
+          Event::fire('sync.roles',array($user->roles()->detach()));
         }
       }
 
