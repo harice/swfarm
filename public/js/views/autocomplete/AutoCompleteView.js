@@ -138,6 +138,8 @@ define(['backbone'], function(Backbone){
         },
 
         select: function (model) {
+    
+            $('#account_id').val(model.get('id'));
             var label = model.label();
             this.input.val(label);
             this.currentText = label;

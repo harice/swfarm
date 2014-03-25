@@ -59,6 +59,7 @@ define([
             this.$el.find('#email').val(contactModel.get('email'));
             this.$el.find('#phone').val(contactModel.get('phone'));
             this.$el.find('#mobile').val(contactModel.get('mobile'));
+            this.$el.find('#account_id').val(contactModel.get('account').id);
 			
 			var validate = $('#addContactForm').validate({
 				submitHandler: function(form) {
