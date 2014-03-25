@@ -1,7 +1,6 @@
 <?php
  
 interface PermissionRepositoryInterface {
-	public function store($data);
 	public function update($id, $data);
 	public function validate($data, $rules);
 	public function instance();

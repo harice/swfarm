@@ -1,0 +1,6 @@
+<% _.each(filters, function(filter){ %>
+<label class="radio-inline">
+	<input class="accounttypeFilter" type="radio" name="accounttypeFilter" value="<%= filter.id %>"> <%= filter.name %>
+</label>
+<% }); %>
+

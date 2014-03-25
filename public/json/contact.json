@@ -1,0 +1,13 @@
+{
+    "id": 1,
+    "firstname": "John",
+    "lastname": "Watson",
+    "account": "Hay Corp.",
+    "position": "CEO",
+    "email": "john.watson@haycorp.com",
+    "mobile": "+63 911 222 3333",
+    "phone": "+63 999 333 2222",
+    "created_at": "2014-03-18 05:20:32",
+    "updated_at": "2014-03-18 05:20:32",
+    "deleted_at": null
+}

@@ -16,6 +16,11 @@ class UsersController extends BaseController {
 		$this->users = $users;
 	}
 
+	public function search()
+	{
+		return $this->users->search( Input::all() );
+	}
+
 	public function auth()
 	{
 		return $this->users->auth();
@@ -27,15 +32,8 @@ class UsersController extends BaseController {
 	 * @return Response
 	 */
 	public function index()
-	{
-		//return $this->users->findAll();
-		$perPage = Input::get('perpage', Config::get('constants.USERS_PER_LIST')); //default to 10 items, see app/config/constants
-		$page = Input::get('page', '1'); //default to page 1
-		$sortby = Input::get('sortby', 'lastname'); //default sort to lastname
-		$orderby = Input::get('orderby', 'ASC'); //default order is Ascending
-		$offset = $page*$perPage-$perPage;
-		
-		return $this->users->paginate($perPage, $offset, $sortby, $orderby);
+	{		
+		return $this->users->paginate( Input::all() );
 		
 	}
 
@@ -83,7 +81,11 @@ class UsersController extends BaseController {
 	}
 
 	public function verifyAccount(){
-		return $this->users->verifyAccount(Input::all());
+		return $this->users->verifyAccount(Input::get('passkey'));
+	}
+
+	public function updateProfile($id){
+		return $this->users->updateProfile($id, Input::all() );
 	}
 
 

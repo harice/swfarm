@@ -7,10 +7,14 @@ require.config({
 	paths: {
 		jquery: 'libs/jquery/jquery-min',
 		jqueryvalidate: 'libs/jquery/jquery.validate.min',
+		jquerytextformatter: 'libs/jquery/jquery.textformatter',
+		jqueryphonenumber: 'libs/jquery/jquery.phonenumber',
 		bootstrap: 'libs/bootstrap/bootstrap.min',
 		underscore: 'libs/underscore/underscore-min',
 		backbone: 'libs/backbone/backbone-min',
+        autocomplete: 'libs/fatiherikli/backbone-autocomplete/src/backbone.autocomplete.js',
 		base64: 'libs/base64/base64.min',
+        growl: 'libs/bootstrap-growl/jquery.bootstrap-growl.min',
 		templates: '../templates'
 	},
 	shim: {
@@ -19,24 +23,39 @@ require.config({
 			exports: 'Base64'
 		},
 		'backbone': {
-			deps: ['underscore', 'jquery'],
+			deps: ['underscore', 'jquery', 'bootstrap', 'growl'],
 			exports: 'Backbone'
 		},
 		'bootstrap': {
 			deps: ['jquery'],
 			exports: 'Bootstrap'
 		},
+        'growl': {
+			deps: ['jquery', 'bootstrap'],
+			exports: 'Growl'
+		},
+        'autocomplete': {
+            deps: ['backbone'],
+            exports: 'AutoComplete'
+        },
 		'underscore': {
-            exports: '_'
-        },
+			exports: '_'
+		},
 		'jqueryvalidate': {
-            deps: ['jquery'],
+			deps: ['jquery'],
 			exports: 'Validate',
-        },
+		},
+		'jquerytextformatter': {
+			deps: ['jquery'],
+			exports: 'TextFormatter',
+		},
+		'jqueryphonenumber': {
+			deps: ['jquery'],
+			exports: 'PhoneNumber',
+		},
 		'jquery': {
-            exports: '$'
-        },
-		
+			exports: '$'
+		},
 	},
 });
 

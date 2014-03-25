@@ -93,6 +93,13 @@ return array(
 	|
 	*/
 
-	'attributes' => array(),
+	'attributes' => array(
+		'firstname' => 'first name',
+		'lastname' => 'last name',
+		'email' =>'e-mail',
+		'emp_no' => 'employee number',
+		'mobile' => 'mobile number',
+		'phone' =>'phone number'
+		),
 
 );

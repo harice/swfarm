@@ -15,7 +15,7 @@ return array(
 	|
 	*/
 
-	// 'driver' => 'smtp',
+	//'driver' => 'smtp',
 	'driver' => 'sendmail',
 
 	/*
@@ -29,8 +29,8 @@ return array(
 	|
 	*/
 
-	// 'host' => 'smtp.mailgun.org',
-	// 'host' => '',
+	//'host' => 'smtp.mailgun.org',
+	'host' => '',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -44,7 +44,6 @@ return array(
 	*/
 
 	'port' => 587,
-	// 'port' => 25,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -109,7 +108,6 @@ return array(
 	|
 	*/
 
-	// 'sendmail' => '/usr/sbin/sendmail -bs',
 	'sendmail' => '/usr/sbin/sendmail -t -i',
 
 	/*

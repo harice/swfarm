@@ -1,0 +1,11 @@
+{
+  "name": "fatiherikli/backbone-autocomplete",
+  "version": "1.0.0",
+  "description": "An autocomplete view for backbone.js",
+  "ignore": [
+  ],
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}

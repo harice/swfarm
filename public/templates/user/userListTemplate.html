@@ -1,13 +1,25 @@
-<div>
+<div class="clearfix">
 	<a href="<%= user_add_url %>">+ Add User</a>
+  <div class="pull-right">
+    <form class="form-inline" role="form">
+      <div class="form-group">
+        <label class="sr-only" for="search">Search</label>
+        <input type="text" class="search form-control" id="search-keyword" placeholder="">
+      </div>
+      <button type="button" class="btn btn-default user-search">Search</button>
+      <!--<button type="button" class="btn btn-link">Advance Search</button>-->
+    </form>
+  </div>
 </div>
-<div>
+
+<div class="clearfix">
 	<ul class="pagination" style="display:none;">
 		<li><a class="first-page" href="#">&laquo;</a></li>
 		<li><a class="last-page" href="#">&raquo;</a></li>
 	</ul>
 </div>
-<div class="table-responsive">
+
+<div class="content-inner table-responsive">
 	<table id="user-list" class="table table-bordered">
 		<thead>
 			<tr>
@@ -24,7 +36,8 @@
 		<tbody></tbody>
 	</table>
 </div>
-<div>
+
+<div class="clearfix">
 	<ul class="pagination" style="display:none;">
 		<li><a class="first-page" href="#">&laquo;</a></li>
 		<li><a class="last-page" href="#">&raquo;</a></li>

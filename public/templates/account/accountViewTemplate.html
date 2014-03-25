@@ -1,0 +1,25 @@
+<dl class="dl-horizontal">
+	<dt>Type</dt>
+	<dd><%= account.get("account_type")[0].name %></dd>
+	<dt>Website</dt>
+	<dd><%= account.get("website") %>&nbsp</dd>
+	<dt>Description</dt>
+	<dd><%= account.get("description") %>&nbsp</dd>
+	<dt>Phone</dt>
+	<dd><%= account.get("phone") %>&nbsp</dd>
+	<% _.each(account.get("address"), function (a){ %>
+		<dt><%= a.address_type[0].name %></dt>
+		<dd>
+			<%= a.street %><br />
+			<%= a.address_city[0].city + " " + a.address_states[0].state_code  + " " + a.zipcode %><br />
+			USA
+		</dd>
+	<% }); %>
+	<dd>
+		<div class="clearfix"></div>
+		<br />
+		<a href="<%= account_url %>" class="btn btn-default">Back</a> 
+		<a href="<%= account_edit_url %>/<%= account.get("id") %>" class="btn btn-default">Edit</a>
+		<button id="delete" type="button" class="btn btn-default" value="Delete">Delete</button>
+	</dd>
+</dl>

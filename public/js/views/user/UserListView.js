@@ -60,8 +60,13 @@ define([
 			var innerListTemplate = _.template( userInnerListTemplate, data );
 			$("#user-list tbody").html(innerListTemplate);
 			
+			this.generatePagination(this.collection.options.maxItem, Const.MAXITEMPERPAGE);
+		},
+		
+		generatePagination: function (maxItem, maxItemPerPage) {
 			$('.page-number').remove();
-			var lastPage = Math.ceil(this.collection.options.maxItem / Const.MAXITEMPERPAGE);
+			
+			var lastPage = Math.ceil(maxItem / maxItemPerPage);
 			
 			if(lastPage > 1) {
 				$('.pagination').show();
@@ -90,6 +95,7 @@ define([
 			'click .sort-lastname' : 'sortLastname',
 			'click .sort-firstname' : 'sortFirstname',
 			'click .sort-email' : 'sortEmail',
+			'click .user-search' : 'searchUser',
 		},
 		
 		gotoFirstPage: function () {
@@ -139,8 +145,20 @@ define([
 			
 			this.collection.options.currentSort = sortField;
 			this.collection.options.currentPage = 1;
-			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE, this.displayList);
+			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
+			
+			return false;
 		},
+		
+		searchUser: function () {
+			var keyword = $('#search-keyword').val();
+			
+			this.collection.options.search = keyword;
+			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
+			
+			return false;
+		},
+		
 	});
 
   return UserListView;
