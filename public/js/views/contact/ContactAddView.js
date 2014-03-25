@@ -68,8 +68,8 @@ define([
 					},
                     
                     mobile: {
-                        minlength: 'Please enter a valid phone number.',
-						maxlength: 'Please enter a valid phone number.',
+                        minlength: 'Please enter a valid mobile number.',
+						maxlength: 'Please enter a valid mobile number.',
 					},
 				}
 			});
