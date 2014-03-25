@@ -64,6 +64,7 @@ define(function () {
 		'PLACEHOLDER': {
 			'PROFILEPIC': '/images/default_profile.jpg',
 		},
+		'MULTIPLEADDRESS': ['Producer', 'Customer'],
 	};
 	
 	return constant;
