@@ -52,6 +52,7 @@ class ContactRepository implements ContactRepositoryInterface {
     $rules = array(
       'firstname' => 'required|between:1,50',
       'lastname' => 'required|between:1,50',
+      'account' => 'required|exists:account,name',
       'email' => 'required|email|unique:contact',
       'phone' => 'required|between:6,12',
       'mobile' => 'between:9,12'
@@ -61,15 +62,8 @@ class ContactRepository implements ContactRepositoryInterface {
     
     $contact = new Contact;
     
-    if (isset($data['account'])) {
-        $account_name = (string)$data['account'];
-        $account = Account::where('name', '=', $account_name)->first();
-        $account_id = $account->id;
-        $contact->account = $account_id;
-    } else {
-        $contact->account = null;
-    }
-
+    $account = Account::where('name', '=', (string)$data['account'])->first();
+    $contact->account = $account->id;
     $contact->firstname = $data['firstname'];
     $contact->lastname = $data['lastname'];
     $contact->position = isset($data['position']) ? $data['position'] : null;
@@ -98,6 +92,7 @@ class ContactRepository implements ContactRepositoryInterface {
     $rules = array(
       'firstname' => 'required|between:1,50',
       'lastname' => 'required|between:1,50',
+        'account' => 'required|exists:account,name',
       'email' => 'required|email|unique:contact,email,'.$id,
       'phone' => 'required|between:6,12',
       'mobile' => 'between:9,12'
@@ -107,15 +102,8 @@ class ContactRepository implements ContactRepositoryInterface {
 
     $contact = Contact::find($id);
     
-    if (isset($data['account'])) {
-        $account_name = (string)$data['account'];
-        $account = Account::where('name', '=', $account_name)->first();
-        $account_id = $account->id;
-        $contact->account = $account_id;
-    } else {
-        $contact->account = null;
-    }
-    
+    $account = Account::where('name', '=', (string)$data['account'])->first();
+    $contact->account = $account->id;
     $contact->firstname = $data['firstname'];
     $contact->lastname = $data['lastname'];
     $contact->position = isset($data['position']) ? $data['position'] : null;

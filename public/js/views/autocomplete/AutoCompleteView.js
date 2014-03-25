@@ -31,7 +31,7 @@ define(['backbone'], function(Backbone){
         wait: 300,
 
         queryParameter: "name",
-        minKeywordLength: 2,
+        minKeywordLength: 1,
         currentText: "",
         itemView: AutoCompleteItemView,
 

@@ -7,7 +7,7 @@ define([
 	'text!templates/contact/contactAddTemplate.html',
 	'models/contact/ContactModel',
     'collections/account/AccountNameCollection',
-    'views/AutoCompleteView',
+    'views/autocomplete/AutoCompleteView',
 	'global',
 	'constant',
 ], function(Backbone, Validate, TextFormatter, PhoneNumber, contentTemplate, contactAddTemplate, ContactModel, AccountNameCollection, AutoCompleteView, Global, Const){
@@ -59,6 +59,18 @@ define([
 							headers: contactModel.getAuth(),
                         }
                     );
+				},
+                
+                messages: {
+					phone: {
+                        minlength: 'Please enter a valid phone number.',
+						maxlength: 'Please enter a valid phone number.',
+					},
+                    
+                    mobile: {
+                        minlength: 'Please enter a valid phone number.',
+						maxlength: 'Please enter a valid phone number.',
+					},
 				}
 			});
             
