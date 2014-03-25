@@ -1,11 +1,16 @@
-<% _.each(accounts, function(account){ %>
-	<tr>
-		<td><%= account.get("name") %></td>
-		<td><%= account.get("accounttype")[0].name %></td>
-		<td><%= account.get("website") %></td>
-		<td><%= account.get("description") %></td>
-		<td><%= account.get("phone") %></td>
-		<td><a href="<%= account_url %>/<%= account.get("id") %>">view</a> <a href="<%= account_edit_url %>/<%= account.get("id") %>">edit</a></td>
-	</tr>
-<% }); %>
-
+<% if (!_.isEmpty(accounts)) { %>
+  <% _.each(accounts, function(account){ %>
+    <tr>
+      <td><%= account.get("name") %></td>
+      <td><%= account.get("accounttype")[0].name %></td>
+      <td><%= account.get("website") %></td>
+      <td><%= account.get("description") %></td>
+      <td><%= account.get("phone") %></td>
+      <td><a href="<%= account_url %>/<%= account.get("id") %>">view</a> <a href="<%= account_edit_url %>/<%= account.get("id") %>">edit</a></td>
+    </tr>
+  <% }); %>
+<% } else { %>
+  <tr>
+    <td colspan="6">No result found.</td>
+  </tr>
+<% } %>
