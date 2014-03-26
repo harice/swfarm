@@ -1,8 +1,13 @@
-<% _.each(roles, function(role){ %>
+<% if (!_.isEmpty(roles)) { %>
+  <% _.each(roles, function(role){ %>
+    <tr>
+      <td><%= role.get("name") %></td>
+      <td><%= role.get("description") %></td>
+      <td><a href="<%= role_url %>/<%= role.get("id") %>">view</a> <a href="<%= role_edit_url %>/<%= role.get("id") %>">edit</a> <a href="<%= permission_edit_url %>/<%= role.get("id") %>">permission</a></td>
+    </tr>
+  <% }); %>
+<% } else { %>
 	<tr>
-		<td><%= role.get("name") %></td>
-		<td><%= role.get("description") %></td>
-		<td><a href="<%= role_url %>/<%= role.get("id") %>">view</a> <a href="<%= role_edit_url %>/<%= role.get("id") %>">edit</a> <a href="<%= permission_edit_url %>/<%= role.get("id") %>">permission</a></td>
+		<td colspan="3">No result found.</td>
 	</tr>
-<% }); %>
-
+<% } %>

@@ -52,6 +52,7 @@ class ContactRepository implements ContactRepositoryInterface {
     $rules = array(
       'firstname' => 'required|between:1,50',
       'lastname' => 'required|between:1,50',
+      'account' => 'required|exists:account,id',
       'email' => 'required|email|unique:contact',
       'phone' => 'required|between:6,12',
       'mobile' => 'between:9,12'
@@ -61,15 +62,7 @@ class ContactRepository implements ContactRepositoryInterface {
     
     $contact = new Contact;
     
-    if (isset($data['account'])) {
-        $account_name = (string)$data['account'];
-        $account = Account::where('name', '=', $account_name)->first();
-        $account_id = $account->id;
-        $contact->account = $account_id;
-    } else {
-        $contact->account = null;
-    }
-
+    $contact->account = $data['account'];
     $contact->firstname = $data['firstname'];
     $contact->lastname = $data['lastname'];
     $contact->position = isset($data['position']) ? $data['position'] : null;
@@ -98,6 +91,7 @@ class ContactRepository implements ContactRepositoryInterface {
     $rules = array(
       'firstname' => 'required|between:1,50',
       'lastname' => 'required|between:1,50',
+        'account' => 'required|exists:account,id',
       'email' => 'required|email|unique:contact,email,'.$id,
       'phone' => 'required|between:6,12',
       'mobile' => 'between:9,12'
@@ -107,15 +101,7 @@ class ContactRepository implements ContactRepositoryInterface {
 
     $contact = Contact::find($id);
     
-    if (isset($data['account'])) {
-        $account_name = (string)$data['account'];
-        $account = Account::where('name', '=', $account_name)->first();
-        $account_id = $account->id;
-        $contact->account = $account_id;
-    } else {
-        $contact->account = null;
-    }
-    
+    $contact->account = $data['account'];
     $contact->firstname = $data['firstname'];
     $contact->lastname = $data['lastname'];
     $contact->position = isset($data['position']) ? $data['position'] : null;
@@ -154,19 +140,24 @@ class ContactRepository implements ContactRepositoryInterface {
                         $query->where('name', 'like', '%'.$searchWord.'%');
 
                     })
-                    ->orWhere('firstname','like','%'.$searchWord.'%')
-                    ->orWhere('lastname','like','%'.$searchWord.'%')
-                    //->orWhere('account.name','like','%'.$_search['search'].'%')
+                    ->orWhere(function ($query) use ($searchWord){
+                        $query->orWhere('firstname','like','%'.$searchWord.'%')
+                              ->orWhere('lastname','like','%'.$searchWord.'%');
+                      })
+                    ->whereNull('deleted_at')
                     ->count();
 
-    $contact = Contact::with('account')->whereHas('account', function($query) use ($searchWord)
+    $contact = Contact::with('account')
+                    ->whereHas('account', function($query) use ($searchWord)
                     {
                         $query->where('name', 'like', '%'.$searchWord.'%');
 
                     })
-                    ->orWhere('firstname','like','%'.$_search['search'].'%')
-                    ->orWhere('lastname','like','%'.$_search['search'].'%')
-                    //->orWhere('account.name','like','%'.$_search['search'].'%')
+                    ->orWhere(function ($query) use ($searchWord){
+                        $query->orWhere('firstname','like','%'.$searchWord.'%')
+                              ->orWhere('lastname','like','%'.$searchWord.'%');
+                      })
+                    ->whereNull('deleted_at')
                     ->take($perPage)
                     ->offset($offset)
                     ->orderBy($sortby, $orderby)

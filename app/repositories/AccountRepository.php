@@ -69,7 +69,6 @@ class AccountRepository implements AccountRepositoryInterface {
   public function store($data){
     $rules = array(
       'name' => 'required|unique:account',
-      'website' => 'url',
       'accounttype' => 'required',
       'phone' => 'between:1,12'
     );

@@ -144,3 +144,31 @@ code {
 	border-color:#EBCCD1;
 	color:#A94442;
 }
+
+/* Autocomplete */
+ul.autocomplete {
+  position: absolute;
+  z-index: 10;
+  display: none;
+  background: #fff;
+  padding: 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  list-style-type: none;
+  
+  li {
+    border-bottom: 1px solid #ddd;
+
+    a {
+      display: block;
+      padding: 6px 12px;
+      color: #555555;
+      text-decoration: none;
+
+      &:hover,
+      &:focus {
+        background: #ccc;
+      }
+    }
+  }
+}

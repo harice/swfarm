@@ -9,10 +9,10 @@ define([
 			currentPage: 1,
 			maxItem: 0,
             currentSort: 'lastname',
-        sort: {
+            search: '',
+            sort: {
 				lastname: true,
 			},
-			search: '',
 		},
 		initialize: function(){
 			

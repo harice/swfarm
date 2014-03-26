@@ -20,7 +20,7 @@ define([
 			addressFieldClone: null,
 			addressFieldCounter: 0,
 			addressFieldClass: ['type', 'street', 'state', 'city', 'zipcode', 'country'],
-			addressFieldClassRequired: ['street', 'state', 'city'],
+			addressFieldClassRequired: ['street', 'state', 'city', 'zipcode'],
 			addressFieldSeparator: '.',
 		},
 		
@@ -69,17 +69,20 @@ define([
 			this.options.addressFieldClone = this.$el.find('.address-fields-container').clone();
 			this.options.addressFieldClone.find('#add-address-field').remove();
 			
+			var addressTypeField = this.$el.find('.type');
+			addressTypeField.attr('disabled', true);
+			addressTypeField.after('<input class="type" type="hidden" name="'+addressTypeField.attr('name')+'" value="'+addressTypeField.val()+'" />');
+			
 			this.addIndexToAddressFields(this.$el.find('.address-fields-container'));
 			
 			this.$el.find('.remove-address-fields').remove();
-			this.$el.find('.type').attr('readonly', true);
 			
 			$('.form-button-container').show();
 			
 			var validate = $('#addAccountForm').validate({
 				submitHandler: function(form) {
 					var data = thisObj.formatFormField($(form).serializeObject());
-					//console.log(data);
+					console.log(data);
 					
 					var accountModel = new AccountModel(data);
 					
@@ -111,6 +114,11 @@ define([
 					website: {
 						complete_url: 'Please enter a valid URL.',
 					},
+					
+					phone: {
+                        minlength: 'Please enter a valid phone number.',
+						maxlength: 'Please enter a valid phone number.',
+					},
 				},
 				
 			});
@@ -121,13 +129,19 @@ define([
 			'click #add-address-field' : 'addAddressFields',
 			'click .remove-address-fields' : 'removeAddressFields',
 			'change .state' : 'fetchCityList',
+			'change #accounttype': 'onChangeAccountType',
 		},
 		
 		addAddressFields: function () {
-			var clone = this.options.addressFieldClone.clone();
-			this.addIndexToAddressFields(clone);
-			$('#account-adresses').append(clone);
-			this.addValidationToAddressFields();
+			var multipleAddress = Const.MULTIPLEADDRESS;
+			var accountTypeText = $('#accounttype').find('option:selected').text();
+		
+			if(multipleAddress.indexOf(accountTypeText) > -1) {
+				var clone = this.options.addressFieldClone.clone();
+				this.addIndexToAddressFields(clone);
+				$('#account-adresses').append(clone);
+				this.addValidationToAddressFields();
+			}
 		},
 		
 		removeAddressFields: function (ev) {
@@ -184,7 +198,7 @@ define([
 		formatFormField: function (data) {
 			var formData = {address:[]};
 			var addressFieldClasses = this.options.addressFieldClass;
-			//var addresses = [];
+			
 			for(var key in data) {
 				if(typeof data[key] !== 'function'){
 					var value = data[key];
@@ -206,10 +220,16 @@ define([
 				}
 			}
 			
-			//formData.address = JSON.stringify(addresses)
-			//formData.address = addresses;
-			
 			return formData;
+		},
+		
+		onChangeAccountType: function (ev) {
+			var multipleAddress = Const.MULTIPLEADDRESS;
+			var accountTypeText = $(ev.target).find('option:selected').text();
+			
+			if(multipleAddress.indexOf(accountTypeText) < 0) {
+				$('#account-adresses').find('.address-fields-container:gt(0)').remove();
+			}
 		},
 	});
 
