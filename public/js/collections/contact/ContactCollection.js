@@ -15,7 +15,7 @@ define([
 			},
 		},
 		initialize: function(){
-			
+			this.options.search = '';
 		},
 		
 		getModelsPerPage: function(page, numPerPage) {
