@@ -320,9 +320,10 @@ class AccountRepository implements AccountRepositoryInterface {
 
   public function getAccountsByName($name){
     if(isset($name)){
-      $account = Account::where('name','like','%'.$name.'%')
+      $account = Account::with('accounttype')
+                  ->where('name','like','%'.$name.'%')
                   ->orderBy('name', 'asc')
-                  ->get(array('id','name'));
+                  ->get();
     } else {
       $account = Account::orderBy('name', 'asc')->all()->get(array('id','name'));
     }
