@@ -260,7 +260,6 @@ define([
 		},
 		
 		supplyAccountData: function () {
-			console.log(this.model);
 			$('#name').val(this.model.get('name'));
 			$('#accounttype').val(this.model.get('accounttype')[0].id);
 			$('#website').val(this.model.get('website'));
