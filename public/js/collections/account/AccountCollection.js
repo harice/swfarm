@@ -17,7 +17,8 @@ define([
 			filter: '',
 		},
 		initialize: function(){
-			
+			this.options.search = '';
+			this.options.filter = '';
 		},
 		
 		getModelsPerPage: function(page, numPerPage) {
