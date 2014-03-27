@@ -16,13 +16,13 @@ class CreateAddressZipTable extends Migration {
 		{
 			$table->engine = 'InnoDB';
             $table->increments('id');
-			$table->integer('zip', false);
+			$table->integer('zip');
             $table->integer('city')->unsigned();
             
             $table->foreign('city')->references('id')->on('addresscities');
 		});
         
-        DB::update('ALTER TABLE addresszip CHANGE zip zip INTEGER(5) UNSIGNED ZEROFILL');
+        //DB::update('ALTER TABLE addresszip CHANGE zip zip INTEGER(5) UNSIGNED ZEROFILL');
 	}
 
 	/**

@@ -18,4 +18,8 @@ class AddressCity extends Eloquent {
         return $this->belongsTo('AddressState');
     }
 
+    public function addressZip(){
+        return $this->hasMany('AddressZip', 'city', 'id');
+    }
+
 }
