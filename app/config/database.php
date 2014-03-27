@@ -55,8 +55,8 @@ return array(
 		'mysql' => array(
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
-			'database'  => 'swfarm_db',
-			'username'  => 'swfarm_db',
+			'database'  => 'swfarmdb',
+			'username'  => 'swfarmdb',
 			'password'  => 'SsL7hKvvYaUUSWuB',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
