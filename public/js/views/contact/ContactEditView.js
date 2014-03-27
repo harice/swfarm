@@ -54,7 +54,8 @@ define([
 			
 			this.$el.find('#firstname').val(contactModel.get('firstname'));
             this.$el.find('#lastname').val(contactModel.get('lastname'));
-			this.$el.find('#account').val(contactModel.get('account').name);
+			// this.$el.find('#account').val(contactModel.get('account').name + ' (' + contactModel.get('account').accounttype + ')');
+            this.$el.find('#account').val(contactModel.get('account').name + ' ([Account Type])');
             this.$el.find('#position').val(contactModel.get('position'));
             this.$el.find('#email').val(contactModel.get('email'));
             this.$el.find('#phone').val(contactModel.get('phone'));
@@ -85,6 +86,7 @@ define([
 			});
             
             var Accounts = new AccountNameCollection();
+            console.log(Accounts);
             
             new AutoCompleteView({
                 input: $('#account'),
