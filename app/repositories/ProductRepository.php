@@ -51,10 +51,13 @@ class ProductRepository implements ProductRepositoryInterface {
             //pulling of data
             $count = Product::count();
             $productList = Product::take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
+            
+            $data = $productList->toArray();
+            // Log::debug($data->get("description"));
 
             $response = Response::json(
                 array(
-                  'data'=>$productList->toArray(),
+                  'data'=>$data,
                   'total'=>$count
                 )
             );
