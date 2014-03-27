@@ -22,6 +22,8 @@ class AuditRepository implements AuditRepositoryInterface {
   }
   
   public function paginate($input) {
+      
+      // $removefields = array('confirmcode', 'validated', 'status', 'deleted', 'deleted_at');
     
     $perPage = array_key_exists('perpage', $input) ? $input['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
     $page = array_key_exists('page', $input) ? $input['page'] : 1;
@@ -76,7 +78,17 @@ class AuditRepository implements AuditRepositoryInterface {
       
       // Convert JSON value to Array
       for ($i=0; $i<count($auditList); $i++) {
-        $oldValue = unserialize($auditList[$i]["value"])->toArray();
+          
+        $serValue = unserialize($auditList[$i]["value"]);
+        if (!is_object($serValue)) {
+            $oldValue = $serValue;
+        } else {
+            $oldValue = $serValue->toArray();
+        }
+        
+        // Remove unnecessary fields
+        unset($oldValue['confirmcode']);
+        
         $auditList[$i]["value"] = $oldValue;
       }
 

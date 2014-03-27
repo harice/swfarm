@@ -11,8 +11,8 @@ define([
             lastname: '',
 			email:'',
             emp_no: '',
-			username:'',
-			roles:'',
+			username: '',
+			roles: '',
         },
 		runFetch: function () {
 			var thisObj = this;

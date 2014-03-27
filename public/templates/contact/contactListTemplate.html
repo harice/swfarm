@@ -1,0 +1,43 @@
+<div class="clearfix">
+	<a href="<%= contact_add_url %>">+ Add Contact</a>
+  <div id="searchbox" class="pull-right">
+		<form class="form-inline" role="form">
+			<div class="form-group">
+				<label class="sr-only" for="search">Search</label>
+				<input type="text" class="search form-control" id="search-keyword" placeholder="">
+			</div>
+			<button type="button" class="btn btn-default contact-search">Search</button>
+		</form>
+	</div>
+</div>
+
+<div class="clearfix">
+	<ul class="pagination" style="display:none;">
+		<li><a class="first-page" href="#">&laquo;</a></li>
+		<li><a class="last-page" href="#">&raquo;</a></li>
+	</ul>
+</div>
+
+<div class="content-inner table-responsive">
+	<table id="contact-list" class="table table-bordered">
+		<thead>
+			<tr>
+        <th class="sortable sort-name">Full Name <span class="glyphicon glyphicon-sort"></span></th>
+        <th class="sortable sort-account">Account Name <span class="glyphicon glyphicon-sort"></span></th>
+        <th>Position</th>
+        <th>Email Address</th>
+        <th>Mobile No.</th>
+        <th>Phone No.</th>
+				<th>Operation</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+</div>
+
+<!--<div class="clearfix">
+	<ul class="pagination" style="display:none;">
+		<li><a class="first-page" href="#">&laquo;</a></li>
+		<li><a class="last-page" href="#">&raquo;</a></li>
+	</ul>
+</div>-->

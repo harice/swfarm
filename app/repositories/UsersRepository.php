@@ -27,10 +27,14 @@ class UsersRepository implements UsersRepositoryInterface {
   }
 
 
-  public function paginate($perPage, $offset, $sortby, $orderby){
+  public function paginate($data){
+    $perPage = isset($data['perpage']) ? $data['perpage'] : Config::get('constants.USERS_PER_LIST'); //default to 10 items, see app/config/constants
+    $page = isset($data['page']) ? $data['page'] : '1'; //default to page 1
+    $sortby = isset($data['sortby']) ? strtolower($data['sortby']) : 'lastname'; //default sort to lastname
+    $orderby = isset($data['orderby']) ? strtolower($data['orderby']) : 'asc'; //default order is Ascending
+    $offset = $page*$perPage-$perPage;
+
     $errorMsg = null;
-    $sortby = strtolower($sortby);
-    $orderby = strtolower($orderby);
     //check if input pass are valid
     if(!($sortby == 'firstname' || $sortby == 'lastname' || $sortby == 'email')){
       $errorMsg = 'Sort by category not found.';
@@ -70,11 +74,11 @@ class UsersRepository implements UsersRepositoryInterface {
       'lastname' => 'required|between:2,50',
       'emp_no' => 'required|unique:users',
       'suffix' => 'between:2,6',
-      'phone' => 'between:6,13',
-      'mobile' => 'between:9,13',
-      'position' => 'between:2,50'
+      'phone' => 'between:6,12',
+      'mobile' => 'between:9,12',
+      'position' => 'between:2,50',
+      'profileimg' => 'image|max:3000'
     );
-
 
   	$this->validate($data, $rules);
    
@@ -83,15 +87,26 @@ class UsersRepository implements UsersRepositoryInterface {
   	$user->email = $data['email'];
   	$user->firstname = $data['firstname'];
   	$user->lastname = $data['lastname'];
-  	$user->suffix = $data['suffix'];
+  	$user->suffix = isset($data['suffix']) ? $data['suffix'] : null;
   	$user->emp_no = $data['emp_no'];
-  	$user->mobile = $data['mobile'];
-  	$user->phone = $data['phone'];
-  	$user->position = $data['position'];
-    // $generatedPassword = Str::random(10); //replace with this if the system has already email to user features - Hash::make(Str::random(10));
-    $generatedPassword = 'elementz123'; //replace with this if the system has already email to user features - Hash::make(Str::random(10));
+  	$user->mobile = isset($data['mobile']) ? $data['mobile'] : null;
+  	$user->phone = isset($data['phone']) ? $data['phone'] : null;
+  	$user->position = isset($data['position']) ? $data['position'] : null;
+    $generatedPassword = Str::random(10); //replace with this if the system has already email to user features - Hash::make(Str::random(10));
     $user->confirmcode = Hash::make(Str::random(5)); //use for email verification
     $user->password = Hash::make($generatedPassword);
+    
+    //saving profile image
+    $isImgSave = $this->saveImage($data);
+
+    if(is_array($isImgSave)) {
+      return Response::json(
+          $isImgSave,
+          200
+      );
+    } else { //save successfully
+        $user->profileimg = $isImgSave;
+    }
 
     $user->save();
 
@@ -106,7 +121,7 @@ class UsersRepository implements UsersRepositoryInterface {
 
   	return Response::json(array(
   	    'error' => false,
-  	    'user' => $user->toArray(),
+        'message' => 'User successfully created.',
         'emailStatus' => $emailStatus
         ),
   	    200
@@ -123,8 +138,8 @@ class UsersRepository implements UsersRepositoryInterface {
       'lastname' => 'required|between:2,50',
       'emp_no' => 'required|unique:users,emp_no,'.$id,
       'suffix' => 'between:2,6',
-      'phone' => 'between:6,13',
-      'mobile' => 'between:9,13',
+      'phone' => 'between:6,12',
+      'mobile' => 'between:9,12',
       'position' => 'between:2,50'
     );
 
@@ -139,38 +154,29 @@ class UsersRepository implements UsersRepositoryInterface {
       $user->email = $data['email'];
       $user->firstname = $data['firstname'];
       $user->lastname = $data['lastname'];
-      $user->suffix = $data['suffix'];
+      $user->suffix = isset($data['suffix']) ? $data['suffix'] : null;
       $user->emp_no = $data['emp_no'];
-      $user->mobile = $data['mobile'];
-      $user->phone = $data['phone'];
-      $user->position = $data['position'];
+      $user->mobile = isset($data['mobile']) ? $data['mobile'] : null;
+      $user->phone = isset($data['phone']) ? $data['phone'] : null;
+      $user->position = isset($data['position']) ? $data['position'] : null;
 
-      $user->save();
-/*
-      //saving user roles posted by client
-      if(isset($data['roles'])){
-        //client must pass value in comma separated format
-        $rolesIds = explode(',', $data['roles']); 
-        //deleting role that is uncheck in client side
-        if($data['roles'] == '' || $data['roles'] == null){
-          // UserRoles::where('user', '=', $id)->delete(); //deleting all roles if client send empty role value
-          User::role()-
-        } else {
-          UserRoles::where('user', '=', $id)->whereNotIn('role', $rolesIds)->delete(); 
+      //saving profile image
+      if(isset($data['imagedata'])) {
+        $isImgSave = $this->saveImage($data);
 
-          foreach($rolesIds as $role){
-              if(UserRoles::where('user', '=', $id)->where('role', '=', $role)->count() > 0){
-                continue; //skip if role already exist
-              }   
-              $userRole = new UserRoles;
-              $userRole->user = $user->id;
-              $userRole->role = $role;
-
-              $userRole->save();
-          }
+        if(is_array($isImgSave)) {
+          return Response::json(
+              $isImgSave,
+              200
+          );
+        } else { //save successfully
+            $user->profileimg = $isImgSave;
         }
+      } else if(isset($data['imageremove'])){
+        $user->profileimg = '';
       }
-*/
+      $user->save();
+
       if(isset($data['roles'])){
         if($data['roles'] != ''){
           $roleIds = explode(',', $data['roles']);
@@ -186,20 +192,18 @@ class UsersRepository implements UsersRepositoryInterface {
 
       $response = Response::json(array(
           'error' => false,
-          'user' => $user->toArray()),
+          'message' => 'User successfully updated.'),
           200
       );
     } else {
       $response = Response::json(array(
           'error' => true,
-          'message' => "User not found"),
+          'message' => "User not found."),
           200
       );
     }
 
-    return $response;
-    
-
+    return $response;    
   }
 
   public function destroy($id){
@@ -210,7 +214,7 @@ class UsersRepository implements UsersRepositoryInterface {
 
       $response = Response::json(array(
           'error' => false,
-          'user' => $user->toArray()),
+          'message' => 'User successfully deleted.'),
           200
       );
     } else {
@@ -292,22 +296,6 @@ class UsersRepository implements UsersRepositoryInterface {
     return Response::json(array('data' => $_user->toArray(), 'total' => $_cnt),200);
   }
 
-  public function sendEmailVerification2($userObj, $password){
-    $data = array();
-
-    $data['email'] = $userObj->email;
-    $data['password'] = $password;
-    $data['confirmcodeHashed'] = urlencode(Hash::make($userObj->confirmcode));
-    //Mail::pretend();
-    Mail::send('emails.emailVerification', $data, function($message) use ($data)
-    {
-        $message->from('donotreply@swfarm.com', 'SouthWest Farm');
-
-        $message->to($data['email'])->cc('avelino.ceriola@elementzinteractive.com');
-
-    });
-  }
-
   public function sendEmailVerification($userObj, $password){
     // I'm creating an array with user's info but most likely you can use $user->email or pass $user object to closure later
     $user = array(
@@ -321,7 +309,7 @@ class UsersRepository implements UsersRepositoryInterface {
         'password' => $password,
         'verifyUrl' => url('apiv1/verifyAccount?passkey='.urlencode($userObj->confirmcode))
     );
-    Mail::pretend();
+    //Mail::pretend();
     // use Mail::send function to send email passing the data and using the $user variable in the closure
     return Mail::send('emails.emailVerification', $data, function($message) use ($user)
     {
@@ -352,7 +340,106 @@ class UsersRepository implements UsersRepositoryInterface {
     }
 
     return View::make('verifyAccount', $data);
-  
+    
+  }
+
+  public function saveImage($data){
+    if(isset($data['imagedata'])) {
+      if(!(strstr($data['imagetype'], 'image/jpg') || strstr($data['imagetype'], 'image/jpeg') || strstr($data['imagetype'], 'image/gif') || strstr($data['imagetype'], 'image/png'))){
+        return  array(
+          'error' => true,
+          'message' => 'image extension must be in jpg, gif or png'
+          );
+      } else if(intval($data['imagesize']) > 3145728) { //3mb max file size
+        return array(
+          'error' => true,
+          'message' => 'image file size exceeded.'
+          );
+      }
+      
+      // $user->profileimg = $this->saveImage($data['imagedata'], $data['imagetype'], $data['username']);
+      define('UPLOAD_DIR', 'images/profile/');
+      $base64img = str_replace('data:'.$data['imagetype'].';base64,', '', $data['imagedata']);
+      $filedecode = base64_decode($base64img);
+      $file = UPLOAD_DIR . $data['username'] . '.jpg';
+      file_put_contents($file, $filedecode);
+
+      return $file;
+      
+    }
+    
+  }
+
+
+  public function updateProfile($id, $data){
+    $rules = array(
+      //'username' => 'required|unique:users,username,'.$id,
+      'password' => 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|between:8,15|confirmed',
+      'email' => 'required|email|unique:users,email,'.$id,
+      'firstname' => 'required|between:2,50',
+      'lastname' => 'required|between:2,50',
+      'emp_no' => 'required|unique:users,emp_no,'.$id,
+      'suffix' => 'between:2,6',
+      'phone' => 'between:6,12',
+      'mobile' => 'between:9,12',
+      'position' => 'between:2,50'
+    );
+
+    // $errorMessages = array(
+    //   'password.regex'    => 'The :attribute format is invalid, it must contain one numeric and one capital letters.'
+    // );
+
+    $user = User::find($id); //get the user row
+
+    if($user) {
+      $this->validate($data, $rules);
+
+      //$user->username = $data['username'];
+      if(isset($data['password']) && $data['password'] != ''){
+        $user->password = Hash::make($data['password']);
+      }
+      $user->email = $data['email'];
+      $user->firstname = $data['firstname'];
+      $user->lastname = $data['lastname'];
+      $user->suffix = isset($data['suffix']) ? $data['suffix'] : null;
+      $user->emp_no = $data['emp_no'];
+      $user->mobile = isset($data['mobile']) ? $data['mobile'] : null;
+      $user->phone = isset($data['phone']) ? $data['phone'] : null;
+      $user->position = isset($data['position']) ? $data['position'] : null;
+
+      //saving profile image
+      if(isset($data['imagedata'])) {
+        $data['username'] = $user->username;
+        $isImgSave = $this->saveImage($data);
+
+        if(is_array($isImgSave)) {
+          return Response::json(
+              $isImgSave,
+              200
+          );
+        } else { //save successfully
+            $user->profileimg = $isImgSave;
+        }
+      } else if(isset($data['imageremove'])){
+        $user->profileimg = '';
+      }
+      $user->save();
+
+      $response = Response::json(array(
+          'error' => false,
+          'message' => 'Profile successfully updated.'
+          ),
+          200
+      );
+    } else {
+      $response = Response::json(array(
+          'error' => true,
+          'message' => "User not found"),
+          200
+      );
+    }
+
+    return $response;    
   }
 
 }

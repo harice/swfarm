@@ -1,0 +1,17 @@
+<dl class="dl-horizontal">
+	<dt>Description</dt>
+	<dd>
+		<% if (product.get("description") != "") { %>
+			<%= product.get("description") %>
+		<% } else { %>
+			&nbsp;
+		<% } %>
+	</dd>
+	<dt></dt>
+	<dd>
+		<div class="clearfix"></div>
+		<a href="<%= product_url %>" class="btn btn-default">Back</a> 
+		<a href="<%= product_edit_url %>/<%= product.get("id") %>" class="btn btn-default">Edit</a>
+		<button id="delete" type="button" class="btn btn-default" value="Delete">Delete</button>
+	</dd>
+</dl>

@@ -6,6 +6,6 @@ class PermissionType extends Eloquent {
     protected $table = 'permissiontype';
 
     public function permissionCategoryType(){
-    	return $this->belongsTo('permissionCategoryType');
+    	return $this->belongsTo('PermissionCategoryType');
     }
 }

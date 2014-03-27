@@ -9,6 +9,10 @@ define(function () {
 			'ROLE': 'administration/role',
 			'PERMISSION': 'administration/permission',
 			'AUDITTRAIL': 'administration/audittrail',
+			'PROFILE' : 'profile',
+			'ACCOUNT' : 'account',
+            'CONTACT' : 'contact',
+			'PRODUCT': 'product',
 		},
 		'MENU': {
 			'PURCHASE': {
@@ -57,6 +61,10 @@ define(function () {
 			'MAIN':'content',
 		},
 		'MAXITEMPERPAGE': 10,
+		'PLACEHOLDER': {
+			'PROFILEPIC': '/images/default_profile.jpg',
+		},
+		'MULTIPLEADDRESS': ['Producer', 'Customer'],
 	};
 	
 	return constant;

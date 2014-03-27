@@ -1,0 +1,31 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "firstname": "John",
+            "lastname": "Watson",
+            "account": "Hay Corp.",
+            "position": "CEO",
+            "email": "john.watson@haycorp.com",
+            "mobile": "+63 911 222 3333",
+            "phone": "+63 999 333 2222",
+            "created_at": "2014-03-18 05:20:32",
+            "updated_at": "2014-03-18 05:20:32",
+            "deleted_at": null
+        },
+        {
+            "id": 2,
+            "firstname": "Sher",
+            "lastname": "Lyn",
+            "account": "Hay Farm",
+            "position": "Farmer",
+            "email": "sher.lyn@haycorp.com",
+            "mobile": "+63 911 222 3333",
+            "phone": "+63 999 333 2222",
+            "created_at": "2014-03-18 05:18:51",
+            "updated_at": "2014-03-18 05:18:51",
+            "deleted_at": null
+        }
+    ],
+    "total": 2
+}
