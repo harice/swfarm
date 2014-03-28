@@ -54,10 +54,10 @@ class ProductRepository implements ProductRepositoryInterface {
             
             $data = $productList->toArray();
             
-            $desc_len = strlen($data[0]["description"]);
-            if ($desc_len > 200) {
-                $data[0]["description"] = substr($data[0]["description"], 0, 200) . '...';
-            }
+//            $desc_len = strlen($data[0]["description"]);
+//            if ($desc_len > 200) {
+//                $data[0]["description"] = substr($data[0]["description"], 0, 200) . '...';
+//            }
 
             $response = Response::json(
                 array(
@@ -150,13 +150,13 @@ class ProductRepository implements ProductRepositoryInterface {
         try {
             $product = new Product;
             $product->name = $data['name'];
-            $product->description = $data['description'];
+            $product->description = isset($data['description']) ? $data['description'] : null;
 
             $product->save();
 
             return Response::json(array(
                 'error' => false,
-                'product' => $product->toArray()),
+                'message' => "Product successfully added."),
                 200
             );
         } catch (Exception $e) {
@@ -181,7 +181,7 @@ class ProductRepository implements ProductRepositoryInterface {
             $this->validate($data, $rules);
 
             $product->name = $data['name'];
-            $product->description = $data['description'];
+            $product->description = isset($data['description']) ? $data['description'] : null;
 
             $product->save();
 
