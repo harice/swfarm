@@ -330,4 +330,14 @@ class AccountRepository implements AccountRepositoryInterface {
     return Response::json($account);
   }
 
+  public function getZipcodeUsingCity($city){
+    $zips = AddressZip::where('city','=', $city)
+                  ->orderBy('zip', 'asc')
+                  ->get(array('zip'));
+    return Response::json(
+          $zips->toArray(),
+          200
+      );
+  }
+
 }

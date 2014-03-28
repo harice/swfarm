@@ -89,4 +89,8 @@ class AccountController extends BaseController {
 		return $this->account->getAccountsByName( $name );
 	}	
 
+	public function getZipcodeUsingCity($city){
+		return $this->account->getZipcodeUsingCity($city);
+	}
+
 }
