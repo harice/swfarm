@@ -14,6 +14,7 @@ define([
     'controllers/contact/ContactController',
 	'controllers/product/ProductController',
 	'controllers/bid/BidController',
+	'controllers/purchaseorder/PurchaseOrderController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
@@ -31,6 +32,7 @@ define([
 			ContactController,
 			ProductController,
 			BidController,
+			PurchaseOrderController,
 			Global,
 			Const,
 			Session) {
@@ -101,6 +103,12 @@ define([
 	routerRoutes[Const.URL.BID+'/'] = 'showBidPage';
 	routerRoutes[Const.URL.BID+'/:action'] = 'showBidPage';
 	routerRoutes[Const.URL.BID+'/:action/:id'] = 'showBidPage';
+	
+	//po
+	routerRoutes[Const.URL.PO] = 'showPOPage';
+	routerRoutes[Const.URL.PO+'/'] = 'showPOPage';
+	routerRoutes[Const.URL.PO+'/:action'] = 'showPOPage';
+	routerRoutes[Const.URL.PO+'/:action/:id'] = 'showPOPage';
 	
 	routerRoutes['*actions'] = 'defaultAction';
 
@@ -235,6 +243,13 @@ define([
 			this.closeView();
 			var bidController = new BidController();
 			this.currView = bidController.setAction(action, id);
+			this.currView.render();
+		});
+		
+		app_router.on('route:showPOPage', function (action, id) {
+			this.closeView();
+			var purchaseOrderController = new PurchaseOrderController();
+			this.currView = purchaseOrderController.setAction(action, id);
 			this.currView.render();
 		});
 		

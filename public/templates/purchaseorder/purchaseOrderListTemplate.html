@@ -1,5 +1,5 @@
 <div class="clearfix">
-	<a href="<%= bid_add_url %>">+ Add Bid</a>
+	<a href="<%= po_add_url %>">+ Add Purchase Order</a>
   <div class="pull-right">
     <form class="form-inline" role="form">
       <div class="form-group">
@@ -21,12 +21,17 @@
 </div>
 
 <div class="content-inner table-responsive">
-	<table id="bid-list" class="table table-bordered">
+	<table id="po-list" class="table table-bordered">
 		<thead>
 			<tr>
-				<th>Bid No.</th>
-				<th>Date of Bid</th>
 				<th>PO No.</th>
+				<th>Date of Purchase</th>
+				<th>Start</th>
+				<th>End</th>
+				<th>Producer</th>
+				<th>Status</th>
+				<th>Destination</th>
+				<th>Total Amount</th>
 			</tr>
 		</thead>
 		<tbody></tbody>

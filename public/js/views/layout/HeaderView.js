@@ -26,7 +26,7 @@ define([
 				'purchases_url'	: '#/',
 				
 				'bid_url'       : '#/'+Const.URL.BID,
-				'purchase_order_url': '#/',
+				'purchase_order_url': '#/'+Const.URL.PO,
 				
 				'sales_url'		: '#/',
 				'inventory_url'	: '#/',
