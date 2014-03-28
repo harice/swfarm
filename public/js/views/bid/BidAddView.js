@@ -6,10 +6,22 @@ define([
 	'collections/bid/BidDestinationCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/bid/bidAddTemplate.html',
+	'text!templates/bid/bidDestinationTemplate.html',
 	'text!templates/bid/bidProductItemTemplate.html',
 	'global',
 	'constant',
-], function(Backbone, Validate, TextFormatter, PhoneNumber, BidDestinationCollection, contentTemplate, bidAddTemplate, bidProductItemTemplate, Global, Const){
+], function(Backbone,
+			Validate,
+			TextFormatter,
+			PhoneNumber,
+			BidDestinationCollection,
+			contentTemplate,
+			bidAddTemplate,
+			bidDestinationTemplate,
+			bidProductItemTemplate,
+			Global,
+			Const
+){
 
 	var BidAddView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -19,6 +31,7 @@ define([
 			
 			this.bidDestinationCollection = new BidDestinationCollection();
 			this.bidDestinationCollection.on('sync', function() {
+				thisObj.generateDestination(this.models);
 				this.off('sync');
 			});
 			this.bidDestinationCollection.on('error', function(collection, response, options) {
@@ -64,6 +77,12 @@ define([
 		events: {
 			'click #add-bid-product': 'addBidProduct',
 			'click .remove-bid-product': 'removeBidProduct',
+		},
+		
+		generateDestination: function (destinationModels) {
+			var destinationTemplate = _.template(bidDestinationTemplate, {'destinations': destinationModels});
+			this.$el.find('#bid-destination').html(destinationTemplate);
+			this.$el.find('#bid-destination .radio-inline:first-child input[type="radio"]').attr('checked', true);
 		},
 		
 		addBidProduct: function () {

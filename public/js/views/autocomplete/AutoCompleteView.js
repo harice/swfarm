@@ -38,6 +38,8 @@ define(['backbone'], function(Backbone){
         initialize: function (options) {
             _.extend(this, options);
             this.filter = _.debounce(this.filter, this.wait);
+			//console.log(this.el);
+			//console.log(this.$el);
         },
 
         render: function () {
