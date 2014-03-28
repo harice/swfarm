@@ -13,6 +13,7 @@ define(function () {
 			'ACCOUNT' : 'account',
             'CONTACT' : 'contact',
 			'PRODUCT': 'product',
+			'BID': 'purchases/bid',
 		},
 		'MENU': {
 			'PURCHASE': {

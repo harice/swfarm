@@ -41763,23 +41763,23 @@ class AddressZipTableSeeder extends Seeder {
             array('city_name' => 'Sacramento','zip' => '95811')
             */
             
-            array('city' => '1','zip' => '99546'),
-            array('city' => '2','zip' => '99551'),
-            array('city' => '3','zip' => '29620'),
-            array('city' => '3','zip' => '31001'),
-            array('city' => '3','zip' => '36310'),
-            array('city' => '3','zip' => '38601'),
-            array('city' => '3','zip' => '70510'),
-            array('city' => '3','zip' => '70511'),
-            array('city' => '4','zip' => '35440'),
-            array('city' => '5','zip' => '72001'),
-            array('city' => '6','zip' => '14005'),
-            array('city' => '6','zip' => '28701'),
-            array('city' => '6','zip' => '50420'),
-            array('city' => '6','zip' => '58831'),
-            array('city' => '6','zip' => '62601'),
-            array('city' => '6','zip' => '67513'),
-            array('city' => '6','zip' => '72002')
+            array('city' => '78','zip' => '99546'),
+            array('city' => '193','zip' => '99551'),
+            array('city' => '2','zip' => '29620'),
+            array('city' => '2','zip' => '31001'),
+            array('city' => '2','zip' => '36310'),
+            array('city' => '2','zip' => '38601'),
+            array('city' => '2','zip' => '70510'),
+            array('city' => '2','zip' => '70511'),
+            array('city' => '23','zip' => '35440'),
+            array('city' => '130','zip' => '72001'),
+            array('city' => '304','zip' => '14005'),
+            array('city' => '304','zip' => '28701'),
+            array('city' => '304','zip' => '50420'),
+            array('city' => '304','zip' => '58831'),
+            array('city' => '304','zip' => '62601'),
+            array('city' => '304','zip' => '67513'),
+            array('city' => '304','zip' => '72002')
 			
 		);
 

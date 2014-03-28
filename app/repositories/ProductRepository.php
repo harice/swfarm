@@ -53,7 +53,11 @@ class ProductRepository implements ProductRepositoryInterface {
             $productList = Product::take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
             
             $data = $productList->toArray();
-            // Log::debug($data->get("description"));
+            
+//            $desc_len = strlen($data[0]["description"]);
+//            if ($desc_len > 200) {
+//                $data[0]["description"] = substr($data[0]["description"], 0, 200) . '...';
+//            }
 
             $response = Response::json(
                 array(
