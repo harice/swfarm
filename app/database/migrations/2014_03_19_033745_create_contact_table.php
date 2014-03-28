@@ -18,6 +18,7 @@ class CreateContactTable extends Migration {
 			$table->increments('id');
 			$table->string('firstname',50);
 			$table->string('lastname',50);
+            $table->string('suffix',6)->nullable();
 			$table->string('position',50)->nullable();
 			$table->string('email')->unique();
 			$table->string('phone',20)->nullable();
