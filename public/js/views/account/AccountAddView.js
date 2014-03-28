@@ -6,12 +6,26 @@ define([
 	'models/account/AccountModel',
 	'models/account/AccountExtrasModel',
 	'collections/address/CityCollection',
+	'collections/address/ZipCodeCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/account/accountAddTemplate.html',
 	'text!templates/account/accountAddressTemplate.html',
 	'global',
 	'constant',
-], function(Backbone, Validate, TextFormatter, PhoneNumber, AccountModel, AccountExtrasModel, CityCollection, contentTemplate, accountAddTemplate, accountAddressTemplate, Global, Const){
+], function(Backbone,
+			Validate,
+			TextFormatter,
+			PhoneNumber,
+			AccountModel,
+			AccountExtrasModel,
+			CityCollection,
+			ZipCodeCollection,
+			contentTemplate,
+			accountAddTemplate,
+			accountAddressTemplate,
+			Global,
+			Const
+){
 
 	var AccountAddView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -82,7 +96,6 @@ define([
 			var validate = $('#addAccountForm').validate({
 				submitHandler: function(form) {
 					var data = thisObj.formatFormField($(form).serializeObject());
-					console.log(data);
 					
 					var accountModel = new AccountModel(data);
 					
@@ -129,6 +142,7 @@ define([
 			'click #add-address-field' : 'addAddressFields',
 			'click .remove-address-fields' : 'removeAddressFields',
 			'change .state' : 'fetchCityList',
+			'change .city' : 'fetchZipCodeList',
 			'change #accounttype': 'onChangeAccountType',
 		},
 		
@@ -149,16 +163,17 @@ define([
 		},
 		
 		fetchCityList: function (ev) {
+			var thisObj = this;
 			var stateField = $(ev.target);
 			var cityField = stateField.closest('.address-fields-container').find('.city');
 			
 			if(stateField.val() != '') {
 				var cityCollection = new CityCollection();
 				cityCollection.on('sync', function() {
-					cityField.find('option:gt(0)').remove();
+					thisObj.resetCityField(cityField);
 					
-					_.each(this.models, function (city){
-						cityField.append($('<option></option>').attr('value', city.get('id')).text(city.get('city')));
+					_.each(this.models, function (cityModel){
+						cityField.append($('<option></option>').attr('value', cityModel.get('id')).text(cityModel.get('city')));
 					});
 					
 					this.off('sync');
@@ -170,15 +185,70 @@ define([
 				cityCollection.getModels(stateField.val());
 			}
 			else
-				cityField.find('option:gt(0)').remove();
+				this.resetCityField(cityField);
+		},
+		
+		fetchZipCodeList: function (ev) {
+			var thisObj = this;
+			var cityField = $(ev.target);
+			
+			if(cityField.val() != '') {
+				var zipCodeCollection = new ZipCodeCollection();
+				zipCodeCollection.on('sync', function() {
+					
+					var zipcodes = [];
+					_.each(this.models, function (zipCodeModel){
+						zipcodes.push(zipCodeModel.get('zip'));
+					});
+					cityField.attr('data-zipcodes', zipcodes.join());
+					
+					//console.log(zipcodes);
+					this.off('sync');
+				});
+				
+				zipCodeCollection.on('error', function(collection, response, options) {
+					this.off('error');
+				});
+				zipCodeCollection.getModels(cityField.val());
+			}
+			else {
+				cityField.attr('data-zipcodes', '');
+			}
+			
+			this.emptyZipCodeField(cityField);
+		},
+		
+		resetCityField: function (cityField) {
+			cityField.find('option:gt(0)').remove();
+			cityField.attr('data-zipcodes', '');
+			this.emptyZipCodeField(cityField);
+		},
+		
+		emptyZipCodeField: function (element) {
+			var zipCodeField = element.closest('.address-fields-container').find('.zipcode');
+			zipCodeField.val('');
 		},
 		
 		addValidationToAddressFields: function () {
+			var thisObj = this;
 			var addressFieldClassRequired = this.options.addressFieldClassRequired;
 			for(var i=0; i < addressFieldClassRequired.length; i++) {
-				$('.'+addressFieldClassRequired[i]).each(function() {
-					$(this).rules('add', {required: true});
-				});
+				if(addressFieldClassRequired[i] != 'zipcode') {
+					$('.'+addressFieldClassRequired[i]).each(function() {
+						$(this).rules('add', {required: true});
+					});
+				}
+				else {
+					$('.'+addressFieldClassRequired[i]).each(function() {
+						$(this).rules('add', {
+							required: true,
+							valid_zipcode: true,
+							messages: {
+								number: 'Please enter a valid zip code.'
+							},
+						});
+					});
+				}
 			}
 		},
 		
