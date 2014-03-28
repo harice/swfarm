@@ -54,10 +54,10 @@ class ProductRepository implements ProductRepositoryInterface {
             
             $data = $productList->toArray();
             
-            $desc_len = strlen($data[0]["description"]);
-            if ($desc_len > 200) {
-                $data[0]["description"] = substr($data[0]["description"], 0, 200) . '...';
-            }
+//            $desc_len = strlen($data[0]["description"]);
+//            if ($desc_len > 200) {
+//                $data[0]["description"] = substr($data[0]["description"], 0, 200) . '...';
+//            }
 
             $response = Response::json(
                 array(
