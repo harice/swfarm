@@ -106,18 +106,6 @@ define([
 			return this.listView.search;
 		},
 		
-		addDefaultURL: function (defaultURL) {
-			this.defaultURL = defaultURL;
-		},
-		
-		getDefaultURL: function () {
-			return this.defaultURL;
-		},
-		
-		setDefaultURL: function () {
-			this.url = this.getDefaultURL();
-		},
-		
 		setPaginationURL: function (page, numPerPage) {
 			var searchURL = '';
 			var orderBy = (this.listView.sort[this.listView.currentSort])? 'asc' : 'desc';

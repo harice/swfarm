@@ -9,7 +9,7 @@ define([
 		
 		initialize: function(){
 			this.runInit();
-			this.addDefaultURL('/apiv1/account');
+			this.setDefaultURL('/apiv1/account');
 			this.setSortOptions(
 				{
 					currentSort: 'name',

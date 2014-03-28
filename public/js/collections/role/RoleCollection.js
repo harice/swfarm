@@ -12,7 +12,7 @@ define([
 		},
 		initialize: function(){
 			this.runInit();
-			this.addDefaultURL('/apiv1/roles');
+			this.setDefaultURL('/apiv1/roles');
 		},
 		
 		getAllModels: function () {

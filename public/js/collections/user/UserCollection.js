@@ -10,7 +10,7 @@ define([
 
 		initialize: function(){
 			this.runInit();
-			this.addDefaultURL('/apiv1/users');
+			this.setDefaultURL('/apiv1/users');
 			this.setSortOptions(
 				{
 					currentSort: 'lastname',

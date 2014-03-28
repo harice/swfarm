@@ -3,12 +3,13 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
+	'collections/bid/BidDestinationCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/bid/bidAddTemplate.html',
 	'text!templates/bid/bidProductItemTemplate.html',
 	'global',
 	'constant',
-], function(Backbone, Validate, TextFormatter, PhoneNumber, contentTemplate, bidAddTemplate, bidProductItemTemplate, Global, Const){
+], function(Backbone, Validate, TextFormatter, PhoneNumber, BidDestinationCollection, contentTemplate, bidAddTemplate, bidProductItemTemplate, Global, Const){
 
 	var BidAddView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -16,6 +17,13 @@ define([
 		initialize: function() {
 			var thisObj = this;
 			
+			this.bidDestinationCollection = new BidDestinationCollection();
+			this.bidDestinationCollection.on('sync', function() {
+				this.off('sync');
+			});
+			this.bidDestinationCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 			/*this.collection = new RoleCollection();
 			this.collection.on('sync', function() {
 				//console.log('collection.on.sync')
@@ -36,6 +44,8 @@ define([
 		},
 		
 		render: function(){
+			this.bidDestinationCollection.getModels();
+			
 			var thisObj = this;
 			
 			var innerTemplateVariables = {

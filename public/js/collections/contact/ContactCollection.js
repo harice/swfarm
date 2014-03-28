@@ -9,7 +9,7 @@ define([
 		
 		initialize: function(){
 			this.runInit();
-			this.addDefaultURL('/apiv1/contact');
+			this.setDefaultURL('/apiv1/contact');
 			this.setSortOptions(
 				{
 					currentSort: 'lastname',
