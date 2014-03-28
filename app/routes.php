@@ -39,6 +39,11 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 
 	Route::get('contact/search', 'APIv1\ContactController@search');
 	Route::resource('contact', 'APIv1\ContactController');
+
+	Route::get('bid/getProducerAddress', 'APIv1\BidController@getProducerAddress');
+	Route::get('bid/getProducerAccount', 'APIv1\BidController@getProducerAccount');
+	Route::get('bid/getDestination', 'APIv1\BidController@getDestination');
+	Route::resource('bid', 'APIv1\BidController');
 });
 
 /* API ROUTES without HTTP Basic */

@@ -146,13 +146,13 @@ class ProductRepository implements ProductRepositoryInterface {
         try {
             $product = new Product;
             $product->name = $data['name'];
-            $product->description = $data['description'];
+            $product->description = isset($data['description']) ? $data['description'] : null;
 
             $product->save();
 
             return Response::json(array(
                 'error' => false,
-                'product' => $product->toArray()),
+                'message' => "Product successfully added."),
                 200
             );
         } catch (Exception $e) {
@@ -177,7 +177,7 @@ class ProductRepository implements ProductRepositoryInterface {
             $this->validate($data, $rules);
 
             $product->name = $data['name'];
-            $product->description = $data['description'];
+            $product->description = isset($data['description']) ? $data['description'] : null;
 
             $product->save();
 

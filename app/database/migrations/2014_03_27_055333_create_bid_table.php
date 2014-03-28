@@ -16,12 +16,12 @@ class CreateBidTable extends Migration {
 		{
 			$table->engine = 'InnoDB';
 			$table->increments('id');
-			$table->integer('bidnumber');
+			$table->integer('bidnumber')->nullable();
 			$table->integer('destination_id')->unsigned();
-			$table->string('lastname',50);
 			$table->integer('producer_id')->unsigned();
 			$table->integer('address_id')->unsigned();
 			$table->integer('user_id')->unsigned();
+			$table->string('status', 10);
 			$table->text('notes');
 			$table->timestamps();
 			$table->softDeletes();

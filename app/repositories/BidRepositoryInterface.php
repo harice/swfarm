@@ -1,6 +1,6 @@
 <?php
  
-interface AccountRepositoryInterface {
+interface BidRepositoryInterface {
 	public function findAll();
 	public function findById($id);
 	public function paginate($params);
@@ -10,8 +10,5 @@ interface AccountRepositoryInterface {
 	public function search($_search);
 	public function validate($data, $rules);
 	public function instance();
-	public function getCitiesByState($stateId);
-	public function getFormData();
-	public function getZipcodeUsingCity($city);
-	public function getAccountsByName($name);
+	
 }
