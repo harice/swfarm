@@ -14,4 +14,8 @@ class AddressType extends Eloquent {
         return $this->belongsTo('Address');
     }
 
+    public function account(){
+        return $this->belongsToMany('Account', 'address', 'account', 'type');
+    }
+
 }

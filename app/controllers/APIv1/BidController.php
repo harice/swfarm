@@ -66,7 +66,7 @@ class BidController extends BaseController {
 	 */
 	public function update($id)
 	{
-		//
+		return $this->bid->update($id, Input::all());
 	}
 
 	/**

@@ -76,59 +76,51 @@ class BidRepository implements BidRepositoryInterface {
 
     $this->validate($data, $rules);
 
-    $bid = new Bid;
-    //$bid->bidnumber = null;
-    $bid->destination_id = isset($data['destination']) ? $data['destination'] : null;
-    $bid->producer_id = isset($data['producer']) ? $data['producer'] : null;
-    $bid->address_id = isset($data['address']) ? $data['address'] : null;
-    $bid->user_id = Auth::user()->id; //user that is currently log in
-    $bid->status = 'Open';
-    $bid->notes = isset($data['notes']) ? $data['notes'] : null;
-
     try{
-      $bid->save();
-    } catch(Exception $e){
-      return Response::json(array(
-        'error' => true,
-        'message' => $e->errorInfo[2]),
-        200
-      );
-    }
+        DB::transaction(function() use ($data){
+          $bid = new Bid;
+          //$bid->bidnumber = null;
+          $bid->destination_id = isset($data['destination']) ? $data['destination'] : null;
+          $bid->producer_id = isset($data['producer']) ? $data['producer'] : null;
+          $bid->address_id = isset($data['address']) ? $data['address'] : null;
+          $bid->user_id = Auth::user()->id; //user that is currently log in
+          $bid->status = 'Open';
+          $bid->notes = isset($data['notes']) ? $data['notes'] : null;
 
-    if(isset($data['products'])){
-      $bidProductRules = array(
-        'product' => 'required',
-        'stacknumber' => 'required',
-        'bidprice' => 'required',
-        'tons' => 'required',
-        'bales' => 'required',
-        'unitprice' => 'required'
-      );
+          $bid->save();
 
-      foreach($data['products'] as $item){
-        $bidProductData = (array)json_decode($item);
-        $this->validate($bidProductData, $bidProductRules);
-
-        $bidproduct = new BidProduct;
-        $bidproduct->product_id = $bidProductData['product'];
-        $bidproduct->stacknumber = $bidProductData['stacknumber'];
-        $bidproduct->bidprice = $bidProductData['bidprice'];
-        $bidproduct->bales = $bidProductData['bales'];
-        $bidproduct->tons = $bidProductData['tons'];
-        $bidproduct->unitprice = $bidProductData['unitprice'];
-        $bidproduct->ishold = isset($bidProductData['ishold']) ? $bidProductData['ishold']: false;
-        $bidproduct->bid_id = $bid->id;
-
-        try{
-            $bidproduct->save();
-          } catch(Exception $e){
-            return Response::json(array(
-              'error' => true,
-              'message' => $e->errorInfo[2]),
-              200
+          if(isset($data['products'])){
+            $bidProductRules = array(
+              'product' => 'required',
+              'stacknumber' => 'required',
+              'bidprice' => 'required',
+              'tons' => 'required',
+              'bales' => 'required',
+              'unitprice' => 'required'
             );
+
+            foreach($data['products'] as $item){
+              $bidProductData = (array)json_decode($item);
+              $this->validate($bidProductData, $bidProductRules);
+
+              $bid->product()->attach($bidProductData['product'], array(
+                  'stacknumber' => $bidProductData['stacknumber'],
+                  'bidprice' => $bidProductData['bidprice'],
+                  'bales' => $bidProductData['bales'],
+                  'tons' =>  $bidProductData['tons'],
+                  'unitprice' => $bidProductData['unitprice'],
+                  'ishold' => isset($bidProductData['ishold']) ? $bidProductData['ishold']: false,
+                ));
+            }
           }
-      }
+        });
+
+    } catch(Exception $e){
+        return Response::json(array(
+                'error' => true,
+                'message' => $e->errorInfo[2]),
+                200
+              );
     }
 
     return Response::json(array(
@@ -139,80 +131,71 @@ class BidRepository implements BidRepositoryInterface {
   }
 
   public function update($id, $data){
-    // $rules = array(
-    //   'name' => 'required|unique:account,name,'.$id,
-    //   'website' => 'url',
-    //   'accounttype' => 'required',
-    //   'phone' => 'between:1,12',
-    // );
+    $rules = array(
+      'producer' => 'required',
+      'address' => 'required',
+      'destination' => 'required'
+    );
 
+    $this->validate($data, $rules);
 
-    // $this->validate($data, $rules);
+    try{
+        DB::transaction(function() use ($id, $data){
+          $bid = Bid::find($id);
+          $bid->destination_id = isset($data['destination']) ? $data['destination'] : null;
+          $bid->producer_id = isset($data['producer']) ? $data['producer'] : null;
+          $bid->address_id = isset($data['address']) ? $data['address'] : null;
+          $bid->user_id = Auth::user()->id; //user that is currently log in
+          $bid->status = 'Open';
+          $bid->notes = isset($data['notes']) ? $data['notes'] : null;
 
-    // $account = Account::find($id);
-    // $account->name = $data['name'];
-    // $account->website = isset($data['website']) ? $data['website'] : '';
-    // $account->description = isset($data['description']) ? $data['description'] : '';
-    // $account->phone = isset($data['phone']) ? $data['phone'] : '';
-    // $account->accounttype = $data['accounttype'];
+          $bid->save();
 
-    // try{
-    //   $account->save();
-    // } catch(Exception $e){
-    //   return Response::json(array(
-    //     'error' => true,
-    //     'message' => $e->errorInfo[2]),
-    //     200
-    //   );
-    // }
+          $bidProductList = array();
 
-    // if(isset($data['address'])){
-    //   $addressRules = array(
-    //     'street' => 'required_with:city,state,country,type,zipcode',
-    //     'city' => 'required_with:street,state,country,type,zipcode',
-    //     'state' => 'required_with:street,city,country,type,zipcode',
-    //     'country' => 'required_with:street,city,state,type,zipcode',
-    //     'zipcode' => 'required_with:street,city,state,type',
-    //     'type' => 'required_with:street,city,state,country'
-    //   );
+          if(isset($data['products'])){
+            $bidProductRules = array(
+              'product' => 'required',
+              'stacknumber' => 'required',
+              'bidprice' => 'required',
+              'tons' => 'required',
+              'bales' => 'required',
+              'unitprice' => 'required'
+            );
 
-    //   foreach($data['address'] as $item){
-    //     $addressData = (array)json_decode($item);
-    //     $this->validate($addressData, $addressRules);
+            foreach($data['products'] as $item){
+              $bidProductData = (array)json_decode($item);
+              $this->validate($bidProductData, $bidProductRules);
 
-    //     if(isset($addressData['id'])){
-    //       $address = Address::find($addressData['id']);  //when editing address
-    //     } else {
-    //       $address = new Address;  //when adding new address while updating the account
-    //     }
-        
-    //     $address->street = $addressData['street'];
-    //     $address->city = $addressData['city'];
-    //     $address->state = $addressData['state'];
-    //     $address->country = $addressData['country'];
-    //     $address->type = $addressData['type'];
-    //     $address->zipcode = $addressData['zipcode'];
-    //     $address->account = $account->id;
+              $bidProductList[$bidProductData['bidproductId']] = array(
+                  'product_id' => $bidProductData['product'],
+                  'stacknumber' => $bidProductData['stacknumber'],
+                  'bidprice' => $bidProductData['bidprice'],
+                  'bales' => $bidProductData['bales'],
+                  'tons' =>  $bidProductData['tons'],
+                  'unitprice' => $bidProductData['unitprice'],
+                  'ishold' => isset($bidProductData['ishold']) ? $bidProductData['ishold']: false,
+                );
+            }
+          }
+          $bid->product()->sync($bidProductList);
+        });
 
-    //     try{
-    //         $address->save();
-    //       } catch(Exception $e){
-    //         return Response::json(array(
-    //           'error' => true,
-    //           'message' => $e->errorInfo[2]),
-    //           200
-    //         );
-    //       }
-    //   }
-      
-    // }
+    } catch(Exception $e){
+        return Response::json(array(
+                'error' => true,
+                'message' => $e),
+                200
+              );
+    }
 
-    // return Response::json(array(
-    //     'error' => false,
-    //     'message' => 'Account successfully updated.'),
-    //     200
-    // );
+    return Response::json(array(
+        'error' => false,
+        'message' => 'Bid successfully updated.'),
+        200
+    );
   }
+
 
   public function search($_search)
   {
