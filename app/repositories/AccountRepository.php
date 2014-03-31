@@ -138,7 +138,6 @@ class AccountRepository implements AccountRepositoryInterface {
   public function update($id, $data){
     $rules = array(
       'name' => 'required|unique:account,name,'.$id,
-      'website' => 'url',
       'accounttype' => 'required',
       'phone' => 'between:1,12',
     );
