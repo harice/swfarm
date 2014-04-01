@@ -20,7 +20,7 @@ class Account extends Eloquent {
     }
 
     public function addressType(){
-        return $this->belongsToMany('AddressType', 'address', 'account', 'type');
+        return $this->belongsToMany('AddressType', 'address', 'account', 'type')->withTimestamps();
     }
 
     public function contact(){

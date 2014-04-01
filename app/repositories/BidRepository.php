@@ -76,7 +76,7 @@ class BidRepository implements BidRepositoryInterface {
 
     $this->validate($data, $rules);
 
-    try{
+    // try{
         DB::transaction(function() use ($data){
           $bid = new Bid;
           //$bid->bidnumber = null;
@@ -95,8 +95,7 @@ class BidRepository implements BidRepositoryInterface {
               'stacknumber' => 'required',
               'bidprice' => 'required',
               'tons' => 'required',
-              'bales' => 'required',
-              'unitprice' => 'required'
+              'bales' => 'required'
             );
 
             foreach($data['products'] as $item){
@@ -108,20 +107,19 @@ class BidRepository implements BidRepositoryInterface {
                   'bidprice' => $bidProductData['bidprice'],
                   'bales' => $bidProductData['bales'],
                   'tons' =>  $bidProductData['tons'],
-                  'unitprice' => $bidProductData['unitprice'],
                   'ishold' => isset($bidProductData['ishold']) ? $bidProductData['ishold']: false,
                 ));
             }
           }
         });
 
-    } catch(Exception $e){
-        return Response::json(array(
-                'error' => true,
-                'message' => $e),
-                200
-              );
-    }
+    // } catch(Exception $e){
+    //     return Response::json(array(
+    //             'error' => true,
+    //             'message' => $e),
+    //             200
+    //           );
+    // }
 
     return Response::json(array(
         'error' => false,
