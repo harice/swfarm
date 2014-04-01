@@ -39,7 +39,7 @@ class Product extends Eloquent {
     protected $table = 'products';
 
     public function bid(){
-    	return $this->belongsToMany('Bid', 'bidproduct', 'bid_id', 'product_id');
+    	return $this->belongsToMany('Bid', 'bidproduct', 'product_id', 'bid_id');
     }
 
 }

@@ -139,9 +139,7 @@ class AccountRepository implements AccountRepositoryInterface {
       'phone' => 'between:1,12',
     );
 
-
     $this->validate($data, $rules);
-
 
     try{
       DB::transaction(function() use ($id, $data){
@@ -169,16 +167,9 @@ class AccountRepository implements AccountRepositoryInterface {
           foreach($data['address'] as $item){
             $addressData = (array)json_decode($item);
             $this->validate($addressData, $addressRules);
-  /*          if(isset($addressData['id'])){
-              $addressesList[$addressData['id']] = array(
-                  'account' => $account->id,
-                  'street' => $addressData['street'],
-                  'city' => $addressData['city'],
-                  'state' => $addressData['state'],
-                  'country' => $addressData['country'],
-                  'type' =>  $addressData['type'],
-                  'zipcode' => $addressData['zipcode']
-                );
+
+            if(isset($addressData['id'])){
+              $addressId = $addressData['id'];
             } else {
               $address = new Address;
               $address->street = $addressData['street'];
@@ -191,28 +182,23 @@ class AccountRepository implements AccountRepositoryInterface {
 
               $address->save();
 
+              $addressId = $address->id;
             }
-*/
-            if(isset($addressData['id'])){
-              $address = Address::find($addressData['id']);  //when editing address
-            } else {
-              $address = new Address;  //when adding new address while updating the account
-            }
-            
-            $address->street = $addressData['street'];
-            $address->city = $addressData['city'];
-            $address->state = $addressData['state'];
-            $address->country = $addressData['country'];
-            $address->type = $addressData['type'];
-            $address->zipcode = $addressData['zipcode'];
-            $address->account = $account->id;
 
-            $address->save();
+            $addressesList[$addressId] = array(
+                'account' => $account->id,
+                'street' => $addressData['street'],
+                'city' => $addressData['city'],
+                'state' => $addressData['state'],
+                'country' => $addressData['country'],
+                'type' =>  $addressData['type'],
+                'zipcode' => $addressData['zipcode']
+              );
 
-          }
-          // $account->addressType()->sync($addressesList);
-          
+          } 
         }
+        // var_dump($addressesList);
+        $account->addressType()->sync($addressesList);
 
       });
     } catch(Exception $e){
