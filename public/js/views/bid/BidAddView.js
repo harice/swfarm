@@ -9,6 +9,7 @@ define([
 	'collections/account/AccountProducerCollection',
 	'collections/address/AddressCollection',
 	'collections/product/ProductCollection',
+	'models/bid/BidModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/bid/bidAddTemplate.html',
 	'text!templates/bid/bidDestinationTemplate.html',
@@ -25,6 +26,7 @@ define([
 			AccountProducerCollection,
 			AddressCollection,
 			ProductCollection,
+			BidModel,
 			contentTemplate,
 			bidAddTemplate,
 			bidDestinationTemplate,
@@ -35,17 +37,17 @@ define([
 
 	var BidAddView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
-		options: {
-			bidProductFieldClone: null,
-			bidProductFieldCounter: 0,
-			bidProductFieldClass: ['product', 'productname', 'stacknumber', 'bidprice', 'tons', 'bales', 'ishold'],
-			bidProductFieldClassRequired: ['productname', 'stacknumber', 'bidprice', 'tons', 'bales'],
-			bidProductFieldExempt: ['productname'],
-			bidProductFieldSeparator: '.',
-		},
 		
 		initialize: function() {
 			this.producerAutoCompleteResult = [];
+			this.options = {
+				bidProductFieldClone: null,
+				bidProductFieldCounter: 0,
+				bidProductFieldClass: ['product', 'productname', 'stacknumber', 'bidprice', 'tons', 'bales', 'ishold'],
+				bidProductFieldClassRequired: ['productname', 'stacknumber', 'bidprice', 'tons', 'bales'],
+				bidProductFieldExempt: ['productname'],
+				bidProductFieldSeparator: '.',
+			};
 			
 			var thisObj = this;
 			
@@ -117,6 +119,25 @@ define([
 					//var data = $(form).serializeObject();
 					var data = thisObj.formatFormField($(form).serializeObject());
 					console.log(data);
+					
+					var bidModel = new BidModel(data);
+					
+					bidModel.save(
+						null, 
+						{
+							success: function (model, response, options) {
+								thisObj.displayMessage(response);
+								Global.getGlobalVars().app_router.navigate(Const.URL.BID, {trigger: true});
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: bidModel.getAuth(),
+						}
+					);
 				},
 			});
 			
@@ -183,11 +204,12 @@ define([
 		
 		addBidProduct: function () {
 			if(this.productSynced) {
+				
+				if(!this.hasProduct())
+					this.$el.find('#bid-product-list tbody').empty();
+				
 				if(this.options.bidProductFieldClone == null) {
 					var bidProductTemplate = _.template(bidProductItemTemplate, {});
-				
-					if(!this.hasProduct())
-						this.$el.find('#bid-product-list tbody').empty();
 					
 					this.$el.find('#bid-product-list tbody').append(bidProductTemplate);
 					var bidProductItem = this.$el.find('#bid-product-list tbody').find('.product-item:first-child');
@@ -319,7 +341,7 @@ define([
 		},
 		
 		formatFormField: function (data) {
-			var formData = {product:[]};
+			var formData = {products:[]};
 			var bidProductFieldClass = this.options.bidProductFieldClass;
 			
 			for(var key in data) {
@@ -337,7 +359,7 @@ define([
 							for(var i = 0; i < bidProductFieldClass.length; i++)
 								arrayBidProductFields[bidProductFieldClass[i]] = data[bidProductFieldClass[i]+this.options.bidProductFieldSeparator+index];
 								
-							formData.product.push(arrayBidProductFields);
+							formData.products.push(arrayBidProductFields);
 						}
 					}
 				}
