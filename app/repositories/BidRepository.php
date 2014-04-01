@@ -118,7 +118,7 @@ class BidRepository implements BidRepositoryInterface {
     } catch(Exception $e){
         return Response::json(array(
                 'error' => true,
-                'message' => $e->errorInfo[2]),
+                'message' => $e),
                 200
               );
     }
@@ -150,7 +150,7 @@ class BidRepository implements BidRepositoryInterface {
           $bid->notes = isset($data['notes']) ? $data['notes'] : null;
 
           $bid->save();
-
+          // $temp = array();
           $bidProductList = array();
 
           if(isset($data['products'])){
@@ -166,7 +166,7 @@ class BidRepository implements BidRepositoryInterface {
             foreach($data['products'] as $item){
               $bidProductData = (array)json_decode($item);
               $this->validate($bidProductData, $bidProductRules);
-
+              
               $bidProductList[$bidProductData['bidproductId']] = array(
                   'product_id' => $bidProductData['product'],
                   'stacknumber' => $bidProductData['stacknumber'],
@@ -176,8 +176,12 @@ class BidRepository implements BidRepositoryInterface {
                   'unitprice' => $bidProductData['unitprice'],
                   'ishold' => isset($bidProductData['ishold']) ? $bidProductData['ishold']: false,
                 );
+
+              // array_push($temp, $bidProductList[$bidProductData['bidproductId']]);
+              // $temp[$bidProductData['bidproductId']] = 
             }
           }
+          var_dump($bidProductList);
           $bid->product()->sync($bidProductList);
         });
 

@@ -22,7 +22,7 @@ class CreateBidTable extends Migration {
 			$table->integer('address_id')->unsigned();
 			$table->integer('user_id')->unsigned();
 			$table->string('status', 10);
-			$table->text('notes');
+			$table->text('notes')->nullable();
 			$table->timestamps();
 			$table->softDeletes();
 
