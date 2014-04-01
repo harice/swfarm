@@ -173,16 +173,20 @@ define([
 			var models = this.productCollection.models;
 			var products = [];
 			_.each(models, function (productModels) {
-				products.push({label:productModels.get('name'), value:productModels.get('id')});
+				products.push({
+					label:productModels.get('name'),
+					value:productModels.get('name'),
+					id:productModels.get('id'),
+					desc:productModels.get('description'),
+				});
 			});
 			console.log(products);
 			bidProductItem.find('.productname').autocomplete({
 				source:products,
 				select: function (ev, ui) {
-					var productModel = thisObj.productCollection.get(ui.item.value);
 					var productField = $(ev.target);
-					productField.closest('.product-item').find('.product-description').val(productModel.get('description'));
-					productField.siblings('.product_id').val(ui.item.value);
+					productField.closest('.product-item').find('.product-description').val(ui.item.desc);
+					productField.siblings('.product_id').val(ui.item.id);
 					productField.val(ui.item.label);
 					return false;
 				},
