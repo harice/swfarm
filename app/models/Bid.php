@@ -21,4 +21,8 @@ class Bid extends Eloquent {
         return $this->hasOne('Address', 'address_id', 'id');
     }
 
+    public function product(){
+        return $this->belongsToMany('Product','bidproduct','bid_id','product_id');
+    }
+
 }

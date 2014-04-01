@@ -16,7 +16,11 @@ class Account extends Eloquent {
     }
 
     public function address(){
-    	return $this->hasMany('Address', 'account');
+    	return $this->hasMany('Address', 'account', 'id');
+    }
+
+    public function addressType(){
+        return $this->belongsToMany('AddressType', 'address', 'account', 'type');
     }
 
     public function contact(){
