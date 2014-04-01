@@ -85,11 +85,12 @@ define([
 				}
 			});
             
-            var Accounts = new AccountNameCollection();
+            var accountNameCollection = new AccountNameCollection();
             
             new AutoCompleteView({
                 input: $('#account'),
-                model: Accounts
+				hidden: $('#account_id'),
+                collection: accountNameCollection
             }).render();
 		},
 	});

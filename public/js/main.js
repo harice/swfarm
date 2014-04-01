@@ -6,6 +6,7 @@
 require.config({
 	paths: {
 		jquery: 'libs/jquery/jquery-min',
+		jqueryui: 'libs/jquery/jquery-ui.custom.min',
 		jqueryvalidate: 'libs/jquery/jquery.validate.min',
 		jquerytextformatter: 'libs/jquery/jquery.textformatter',
 		jqueryphonenumber: 'libs/jquery/jquery.phonenumber',
@@ -40,6 +41,10 @@ require.config({
         },
 		'underscore': {
 			exports: '_'
+		},
+		'jqueryui': {
+			deps: ['jquery'],
+			exports: 'JqueryUI',
 		},
 		'jqueryvalidate': {
 			deps: ['jquery'],

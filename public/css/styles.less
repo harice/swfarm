@@ -161,30 +161,36 @@ code {
 
 /* Autocomplete */
 ul.autocomplete {
-  position: absolute;
-  z-index: 10;
-  display: none;
-  background: #fff;
-  padding: 0;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  list-style-type: none;
-  
-  li {
-    border-bottom: 1px solid #ddd;
+	position: absolute;
+	z-index: 10;
+	display: none;
+	background: #fff;
+	padding: 0;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	list-style-type: none;
 
-    a {
-      display: block;
-      padding: 6px 12px;
-      color: #555555;
-      text-decoration: none;
+	li {
+		border-bottom: 1px solid #ddd;
 
-      &:hover,
-      &:focus {
-        background: #ccc;
-      }
-    }
-  }
+		a {
+			display: block;
+			padding: 6px 12px;
+			color: #555555;
+			text-decoration: none;
+
+			&:hover,
+			&:focus {
+				background: #ccc;
+			}
+		}
+		
+		&.active {
+			a {
+				background: #ccc;
+			}
+		}
+	}
 }
 
 /* add bid */

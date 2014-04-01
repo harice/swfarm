@@ -1,31 +1,9 @@
-define(['backbone'], function(Backbone){
-    var AutoCompleteItemView = Backbone.View.extend({
-        tagName: "li",
-        template: _.template('<a href="#"><%= label %></a>'),
-        
-        initialize: function(options) {
-            this.options = options;
-        },
-
-        events: {
-            "click": "select"
-        },
-
-        render: function () {
-            this.$el.html(this.template({
-                "label": this.model.label()
-            }));
-            return this;
-        },
-
-        select: function () {
-            this.options.parent.hide().select(this.model);
-            return false;
-        }
-
-    });
-
-    var AutoCompleteView = Backbone.View.extend({
+define([
+	'backbone',
+	'views/autocomplete/AutoCompleteItemView'
+], function(Backbone, AutoCompleteItemView){
+    
+	var AutoCompleteView = Backbone.View.extend({
         tagName: "ul",
         className: "autocomplete",
         wait: 300,
@@ -76,22 +54,22 @@ define(['backbone'], function(Backbone){
 
         filter: function (keyword) {
             var keyword = keyword.toLowerCase();
-            if (this.model.url) {
+            if (this.collection.url) {
 
                 var parameters = {};
                 parameters[this.queryParameter] = keyword;
 
-                this.model.fetch({
+                this.collection.fetch({
                     success: function () {
-                        this.loadResult(this.model.models, keyword);
+                        this.loadResult(this.collection.models, keyword);
                     }.bind(this),
                     data: parameters,
                     
-                    headers: this.model.getAuth()
+                    headers: this.collection.getAuth()
                 });
 
             } else {
-                this.loadResult(this.model.filter(function (model) {
+                this.loadResult(this.collection.filter(function (model) {
                     return model.label().toLowerCase().indexOf(keyword) !== -1
                 }), keyword);
             }
@@ -140,8 +118,8 @@ define(['backbone'], function(Backbone){
         },
 
         select: function (model) {
-    
-            $('#account_id').val(model.get('id'));
+			this.hidden.val(model.get('id'));
+            //$('#account_id').val(model.get('id'));
             var label = model.label();
             this.input.val(label);
             this.currentText = label;

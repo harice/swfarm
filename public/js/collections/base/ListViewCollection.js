@@ -28,7 +28,11 @@ define([
 				success: function (data, textStatus, jqXHR) {
 					
 					if(textStatus == 'success') {
-						var items = data.data;
+						
+						if(data.data != null)
+							var items = data.data;
+						else
+							var items = data;
 						
 						thisObj.reset();
 						
@@ -36,7 +40,8 @@ define([
 							thisObj.add(new thisObj.model(item));
 						});
 						
-						thisObj.setMaxItem(data.total);
+						if(data.total != null)
+							thisObj.setMaxItem(data.total);
 						
 						thisObj.trigger('sync');
 					}

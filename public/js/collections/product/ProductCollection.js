@@ -19,6 +19,11 @@ define([
 				}
 			);
 		},
+		
+		getAllModel: function () {
+			this.resetURL();
+			this.getModels();
+		},
 	});
 
 	return ProductCollection;

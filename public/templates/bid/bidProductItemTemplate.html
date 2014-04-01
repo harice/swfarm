@@ -1,12 +1,15 @@
 <tr class="product-item">
-	<td><input class="form-control" type="text" /></td>
-	<td><textarea class="form-control"></textarea></td>
-	<td><input class="form-control" type="text" /></td>
-	<td><input class="form-control" type="text" /></td>
-	<td><input class="form-control" type="text" /></td>
-	<td><input class="form-control" type="text" /></td>
 	<td>
-		<select class="form-control">
+		<input class="form-control productname" type="text" name="productname"/>
+		<input type="hidden" class="form-control product_id product" name="product" value="">
+	</td>
+	<td><textarea class="form-control product-description"></textarea></td>
+	<td><input class="form-control stacknumber" type="text" name="stacknumber" required></td>
+	<td><input class="form-control bidprice" type="text" name="bidprice" required></td>
+	<td><input class="form-control tons" type="text" name="tons" required></td>
+	<td><input class="form-control bales" type="text" name="bales" required></td>
+	<td>
+		<select class="form-control ishold" name="ishold">
 			<option value="0">No</option>
 			<option value="1">Yes</option>
 		</select>
