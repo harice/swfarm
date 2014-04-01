@@ -99,7 +99,8 @@ class BidRepository implements BidRepositoryInterface {
             );
 
             foreach($data['products'] as $item){
-              $bidProductData = (array)json_decode($item);
+              // $bidProductData = (array)json_decode($item);
+              $bidProductData = $item;
               $this->validate($bidProductData, $bidProductRules);
 
               $bid->product()->attach($bidProductData['product'], array(
