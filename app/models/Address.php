@@ -10,12 +10,14 @@ class Address extends Eloquent {
 	 */
 	protected $table = 'address';
 
+    protected $softDelete = true;
+
     public function addressType(){
         return $this->hasMany('AddressType', 'id', 'type');
     }
 
     public function account(){
-    	return $this->belongsTo('Account');
+    	return $this->belongsTo('Account', 'account', 'id');
     }
 
     public function addressCity(){

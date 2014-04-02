@@ -75,55 +75,47 @@ class AccountRepository implements AccountRepositoryInterface {
 
     $this->validate($data, $rules);
 
-    try{
-      DB::transaction(function() use ($data){
+    DB::transaction(function() use ($data){
 
-        $account = new Account;
-        $account->name = $data['name'];
-        $account->website = isset($data['website']) ? $data['website'] : '';
-        $account->description = isset($data['description']) ? $data['description'] : '';
-        $account->phone = isset($data['phone']) ? $data['phone'] : '';
-        $account->accounttype = $data['accounttype'];
+      $account = new Account;
+      $account->name = $data['name'];
+      $account->website = isset($data['website']) ? $data['website'] : '';
+      $account->description = isset($data['description']) ? $data['description'] : '';
+      $account->phone = isset($data['phone']) ? $data['phone'] : '';
+      $account->accounttype = $data['accounttype'];
 
-        $account->save();
+      $account->save();
 
-        if(isset($data['address'])){
-          $addressRules = array(
-            'street' => 'required_with:city,state,country,type,zipcode',
-            'city' => 'required_with:street,state,country,type,zipcode',
-            'state' => 'required_with:street,city,country,type,zipcode',
-            'country' => 'required_with:street,city,state,type,zipcode',
-            'zipcode' => 'required_with:street,city,state,type',
-            'type' => 'required_with:street,city,state,country'
-          );
+      if(isset($data['address'])){
+        $addressRules = array(
+          'street' => 'required_with:city,state,country,type,zipcode',
+          'city' => 'required_with:street,state,country,type,zipcode',
+          'state' => 'required_with:street,city,country,type,zipcode',
+          'country' => 'required_with:street,city,state,type,zipcode',
+          'zipcode' => 'required_with:street,city,state,type',
+          'type' => 'required_with:street,city,state,country'
+        );
 
-          foreach($data['address'] as $item){
-            $addressData = (array)json_decode($item);
+        foreach($data['address'] as $item){
+          $addressData = (array)json_decode($item);
 
-            $this->validate($addressData, $addressRules);
+          $this->validate($addressData, $addressRules);
 
-            $address = new Address;
-            $address->street = $addressData['street'];
-            $address->city = $addressData['city'];
-            $address->state = $addressData['state'];
-            $address->country = $addressData['country'];
-            $address->type = $addressData['type'];
-            $address->zipcode = $addressData['zipcode'];
-            $address->account = $account->id;
+          $address = new Address;
+          $address->street = $addressData['street'];
+          $address->city = $addressData['city'];
+          $address->state = $addressData['state'];
+          $address->country = $addressData['country'];
+          $address->type = $addressData['type'];
+          $address->zipcode = $addressData['zipcode'];
+          $address->account = $account->id;
 
-            $address->save();
+          $address->save();
 
-          }
         }
+      }
 
-      });
-    } catch(Exception $e){
-        return Response::json(array(
-                'error' => true,
-                'message' => $e->errorInfo[2]),
-                200
-              );
-    }
+    });
 
     return Response::json(array(
         'error' => false,
@@ -141,79 +133,94 @@ class AccountRepository implements AccountRepositoryInterface {
 
     $this->validate($data, $rules);
 
-    try{
-      DB::transaction(function() use ($id, $data){
-        $account = Account::find($id);
-        $account->name = $data['name'];
-        $account->website = isset($data['website']) ? $data['website'] : '';
-        $account->description = isset($data['description']) ? $data['description'] : '';
-        $account->phone = isset($data['phone']) ? $data['phone'] : '';
-        $account->accounttype = $data['accounttype'];
+    DB::transaction(function() use ($id, $data){
+      $account = Account::find($id);
+      $account->name = $data['name'];
+      $account->website = isset($data['website']) ? $data['website'] : '';
+      $account->description = isset($data['description']) ? $data['description'] : '';
+      $account->phone = isset($data['phone']) ? $data['phone'] : '';
+      $account->accounttype = $data['accounttype'];
 
-        $account->save();
+      $account->save();
 
-        $addressesList = array();
+      $addressesList = array();
+      
 
-        if(isset($data['address'])){
-          $addressRules = array(
-            'street' => 'required_with:city,state,country,type,zipcode',
-            'city' => 'required_with:street,state,country,type,zipcode',
-            'state' => 'required_with:street,city,country,type,zipcode',
-            'country' => 'required_with:street,city,state,type,zipcode',
-            'zipcode' => 'required_with:street,city,state,type',
-            'type' => 'required_with:street,city,state,country'
-          );
+      if(isset($data['address'])){
+        $addressRules = array(
+          'street' => 'required_with:city,state,country,type,zipcode',
+          'city' => 'required_with:street,state,country,type,zipcode',
+          'state' => 'required_with:street,city,country,type,zipcode',
+          'country' => 'required_with:street,city,state,type,zipcode',
+          'zipcode' => 'required_with:street,city,state,type',
+          'type' => 'required_with:street,city,state,country'
+        );
 
-          foreach($data['address'] as $item){
-            $addressData = (array)json_decode($item);
-            $this->validate($addressData, $addressRules);
+        //deleting addresses
+        $existingAddressId = array();
 
-            if(isset($addressData['id'])){
-              $addressId = $addressData['id'];
-            } else {
-              $address = new Address;
-              $address->street = $addressData['street'];
-              $address->city = $addressData['city'];
-              $address->state = $addressData['state'];
-              $address->country = $addressData['country'];
-              $address->type = $addressData['type'];
-              $address->zipcode = $addressData['zipcode'];
-              $address->account = $account->id;
-
-              $address->save();
-
-              $addressId = $address->id;
-            }
-
-            $addressesList[$addressId] = array(
-                'account' => $account->id,
-                'street' => $addressData['street'],
-                'city' => $addressData['city'],
-                'state' => $addressData['state'],
-                'country' => $addressData['country'],
-                'type' =>  $addressData['type'],
-                'zipcode' => $addressData['zipcode']
-              );
-
-          } 
+        foreach($data['address'] as $item){
+          $addressData = (array)json_decode($item);
+          if(isset($addressData['id'])){
+            $existingAddressId[] = $addressData['id'];
+          }
         }
-        // var_dump($addressesList);
-        $account->addressType()->sync($addressesList);
+        
+        $this->deleteAddresses($account->id, $existingAddressId);
 
-      });
-    } catch(Exception $e){
-        return Response::json(array(
-                'error' => true,
-                'message' => $e),
-                200
-              );
-    }
+        foreach($data['address'] as $item){
+          $addressData = (array)json_decode($item);
+          $this->validate($addressData, $addressRules);
+          
+          if(isset($addressData['id'])){
+            $address = Address::find($addressData['id']);
+          } else {
+            $address = new Address;
+          }
+          
+          $address->street = $addressData['street'];
+          $address->city = $addressData['city'];
+          $address->state = $addressData['state'];
+          $address->country = $addressData['country'];
+          $address->type = $addressData['type'];
+          $address->zipcode = $addressData['zipcode'];
+          $address->account = $account->id;
+
+          $address->save();
+        } 
+      } else{
+        $this->deleteAddresses($account->id); //no address data pass, so delete all addresses
+      }
+
+    });
 
     return Response::json(array(
         'error' => false,
         'message' => 'Account successfully updated.'),
         200
     );
+  }
+
+  private function deleteAddresses($account, $addressIdList = null){
+    if($addressIdList == null){
+      $address = Address::with('account')
+                ->whereHas('account', function($query) use ($account)
+                {
+                    $query->where('id', '=', $account);
+
+                })
+                ->delete();
+    } else {
+      $address = Address::with('account')
+                ->whereHas('account', function($query) use ($account)
+                {
+                    $query->where('id', '=', $account);
+
+                })
+                ->whereNotIn('id',$addressIdList)
+                ->delete();
+    }
+    return $address;
   }
 
   public function search($_search)
