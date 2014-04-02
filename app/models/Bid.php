@@ -6,7 +6,7 @@ class Bid extends Eloquent {
     protected $table = 'bid';
 
     public function account(){
-    	return $this->hasOne('Account', 'account_id', 'id');
+    	return $this->hasOne('Account', 'id', 'producer_id');
     }
 
     public function users(){
