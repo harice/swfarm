@@ -35,10 +35,10 @@ define([
 			Const
 ){
 
-	var BidAddView = Backbone.View.extend({
+	var BidEditView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
-		initialize: function() {
+		initialize: function(option) {
 			this.producerAutoCompleteResult = [];
 			this.productAutoCompletePool = [];
 			this.options = {
@@ -54,7 +54,7 @@ define([
 			
 			this.bidDestinationCollection = new BidDestinationCollection();
 			this.bidDestinationCollection.on('sync', function() {
-				thisObj.generateDestination(this.models);
+				thisObj.model.runFetch();
 				this.off('sync');
 			});
 			this.bidDestinationCollection.on('error', function(collection, response, options) {
@@ -85,10 +85,20 @@ define([
 			this.productCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
+			
+			this.model = new BidModel({id:option.id});
+			this.model.on("change", function() {
+				console.log(this);
+				thisObj.displayForm();
+				this.off("change");
+			});
 		},
 		
 		render: function(){
 			this.bidDestinationCollection.getModels();
+		},
+		
+		displayForm: function () {
 			this.productCollection.getAllModel();
 			
 			var thisObj = this;
@@ -99,11 +109,13 @@ define([
 			var innerTemplate = _.template(bidAddTemplate, innerTemplateVariables);
 			
 			var variables = {
-				h1_title: "Add Bid",
+				h1_title: "Edit Bid",
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+			
+			this.generateDestination(this.bidDestinationCollection.models);
 			
 			this.validate = $('#bidUserForm').validate({
 				submitHandler: function(form) {
@@ -132,6 +144,12 @@ define([
 			});
 			
 			this.initProducerAutocomplete();
+			
+			this.supplyAccountData();
+		},
+		
+		supplyAccountData: function () {
+			//this.$el.find('#producer').val(this.model.get(''));
 		},
 		
 		initProducerAutocomplete: function () {
@@ -458,6 +476,6 @@ define([
 		},
 	});
 
-  return BidAddView;
+  return BidEditView;
   
 });

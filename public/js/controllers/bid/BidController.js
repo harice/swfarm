@@ -2,10 +2,10 @@ define([
 	'backbone',
 	'views/bid/BidListView',
 	'views/bid/BidAddView',
-	'views/user/UserEditView',
+	'views/bid/BidEditView',
 	'views/user/UserView',
 	'constant',
-], function(Backbone, BidListView, BidAddView, UserEditView, UserView, Const){
+], function(Backbone, BidListView, BidAddView, BidEditView, UserView, Const){
 	
 	function UserController () {	
 		
@@ -33,7 +33,7 @@ define([
 		};
 		
 		this.edit = function (id) {
-			return new UserEditView({'id':id});
+			return new BidEditView({'id':id});
 		};
 		
 		this.listView = function () {
