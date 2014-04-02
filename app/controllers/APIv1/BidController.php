@@ -23,7 +23,7 @@ class BidController extends BaseController {
 	 */
 	public function index()
 	{
-		//
+		return $this->bid->paginate( Input::all() );
 	}
 
 	/**
@@ -44,7 +44,7 @@ class BidController extends BaseController {
 	 */
 	public function show($id)
 	{
-		//
+		return $this->bid->findById($id);
 	}
 
 	/**

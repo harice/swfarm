@@ -22,7 +22,6 @@ class CreateBidproductTable extends Migration {
 			$table->float('bidprice');
 			$table->float('tons');
 			$table->integer('bales');
-			$table->float('unitprice');
 			$table->boolean('ishold');
 
 			$table->foreign('bid_id')->references('id')->on('bid')->onDelete('cascade');

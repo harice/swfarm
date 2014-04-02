@@ -166,7 +166,7 @@ class AccountRepository implements AccountRepositoryInterface {
           }
         }
         
-        $this->deleteAddresses($account->id, $existingAddressId);
+        $this->deleteAddresses($account->id, $existingAddressId); //delete addresses that is not pass excluding the new addresses
 
         foreach($data['address'] as $item){
           $addressData = (array)json_decode($item);
