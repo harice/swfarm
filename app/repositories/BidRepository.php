@@ -13,6 +13,7 @@ class BidRepository implements BidRepositoryInterface {
 
   public function findById($id){
     $bid = Bid::with('bidproduct')
+              ->with('account')
               ->with('bidproduct.product')
               ->with('destination')
               ->with('address')
@@ -50,7 +51,7 @@ class BidRepository implements BidRepositoryInterface {
     if(!isset($params['filter']) || $params['filter'] == ''){ //filter: bid no., date of bid, status, producer, destination
       $count = Bid::where('created_at', 'like', $date.'%')
                     ->count();
-                    
+
       $bidList = Bid::with('bidproduct')
                     ->with('bidproduct.product')
                     ->with('destination')
@@ -65,15 +66,7 @@ class BidRepository implements BidRepositoryInterface {
                     ->get();
     } else {
       $filter = $params['filter']; // accounttype id
-      $count = Account::orWhere(function ($query) use ($filter){
-                        $query->where('status', '=', $filter);
-                      })
-                      ->orWhereHas('destination', function($query) use ($filter)
-                      {
-                          $query->where('destination', '=', $filter);
-
-                      })
-                      ->where('created_at', 'like', $date.'%')
+      $count = Account::where('created_at', 'like', $date.'%')
                       ->count();
 
       $accountList = Account::with('bidproduct')
@@ -84,18 +77,18 @@ class BidRepository implements BidRepositoryInterface {
                       ->with('address.addressstates')
                       ->with('address.addressType')
                       ->with('address.account')
-                      ->orWhere(function ($query) use ($filter){
-                        $query->where('status', '=', $filter);
-                      })
-                      ->orWhereHas('destination', function($query) use ($filter)
-                      {
-                          $query->where('destination', '=', $filter);
+                      // ->orWhere(function ($query) use ($filter){
+                      //   $query->where('status', '=', $filter);
+                      // })
+                      // ->orWhereHas('destination', function($query) use ($filter)
+                      // {
+                      //     $query->where('destination', '=', $filter);
 
-                      })
+                      // })
                       ->where('created_at', 'like', $date.'%')
                       ->take($perPage)
                       ->offset($offset)
-                      ->orderBy($sortby, $orderby)
+                      ->orderBy('destination.destination', $orderby)
                       ->get();
     }
 
