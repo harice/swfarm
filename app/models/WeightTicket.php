@@ -1,6 +1,6 @@
 <?php
 
-class WeightTicket extends Eloquent {
+class WeightTicket extends BaseModel {
     
     protected $fillable = array('bidproduct', 'weighttickettype', 'bales', 'gross', 'tare');
 
