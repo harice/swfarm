@@ -6,11 +6,11 @@ class BidProduct extends Eloquent {
     protected $table = 'bidproduct';
 
     public function bid(){
-    	return $this->hasOne('Bid', 'bid_id', 'id');
+    	return $this->hasOne('Bid', 'id', 'bid_id');
     }
 
-    public function products(){
-        return $this->hasMany('Products', 'product_id', 'id');
+    public function product(){
+        return $this->hasMany('Product', 'id', 'product_id');
     }
 
 }

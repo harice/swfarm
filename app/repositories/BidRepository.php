@@ -12,57 +12,97 @@ class BidRepository implements BidRepositoryInterface {
   }
 
   public function findById($id){
-    // $account = Account::with('accounttype')->with('address', 'address.addressStates', 'address.addressCity', 'address.addressType')->find($id);          
+    $bid = Bid::with('bidproduct')
+              ->with('bidproduct.product')
+              ->with('destination')
+              ->with('address')
+              ->with('address.addresscity')
+              ->with('address.addressstates')
+              ->with('address.addressType')
+              ->with('address.account')
+              ->find($id);          
 
-    // if($account){
-    //   $response = Response::json(
-    //     $account->toArray(),
-    //     200
-    //   );
-    // } else {
-    //   $response = Response::json(array(
-    //     'error' => true,
-    //     'message' => "Account not found"),
-    //     200
-    //   );
-    // }
+    if($bid){
+      $response = Response::json(
+        $bid->toArray(),
+        200
+      );
+    } else {
+      $response = Response::json(array(
+        'error' => true,
+        'message' => "Bid not found"),
+        200
+      );
+    }
 
-    // return $response;
+    return $response;
   }
 
   public function paginate($params){
-    // $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST'); //default to 10 items, see app/config/constants
-    // $page = isset($params['page']) ? $params['page'] : '1'; //default to page 1
-    // $sortby = isset($params['sortby']) ? $params['sortby'] : 'name'; //default sort to account name
-    // $orderby = isset($params['orderby']) ? $params['orderby'] : 'ASC'; //default order is Ascending
-    // $offset = $page*$perPage-$perPage;
+    $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST'); //default to 10 items, see app/config/constants
+    $page = isset($params['page']) ? $params['page'] : '1'; //default to page 1
+    $sortby = isset($params['sortby']) ? $params['sortby'] : 'created_at'; //default sort to account name
+    $orderby = isset($params['orderby']) ? $params['orderby'] : 'DESC'; //default order is Ascending
+    $date = isset($params['date']) ? $params['date'] : date('Y-m-d'); //default date is the present date
+    $offset = $page*$perPage-$perPage;
 
-    // //pulling of data
-    // if(!isset($params['filter']) || $params['filter'] == ''){
-    //   $count = Account::count();
-    //   $accountList = Account::with('accounttype')
-    //                 ->take($perPage)->offset($offset)
-    //                 ->orderBy($sortby, $orderby)
-    //                 ->get();
-    // } else {
-    //   $filter = $params['filter']; // accounttype id
-    //   $count = Account::where(function ($query) use ($filter){
-    //                     $query->where('accounttype', '=', $filter);
-    //                   })->count();
-    //   $accountList = Account::with('accounttype')
-    //                   ->where(function ($query) use ($filter){
-    //                     $query->where('accounttype', '=', $filter);
-    //                   })
-    //                   ->take($perPage)
-    //                   ->offset($offset)
-    //                   ->orderBy($sortby, $orderby)
-    //                   ->get();
-    // }
+    //pulling of data
+    if(!isset($params['filter']) || $params['filter'] == ''){ //filter: bid no., date of bid, status, producer, destination
+      $count = Bid::where('created_at', 'like', $date.'%')
+                    ->count();
+                    
+      $bidList = Bid::with('bidproduct')
+                    ->with('bidproduct.product')
+                    ->with('destination')
+                    ->with('address')
+                    ->with('address.addresscity')
+                    ->with('address.addressstates')
+                    ->with('address.addressType')
+                    ->with('address.account')
+                    ->where('created_at', 'like', $date.'%')
+                    ->take($perPage)->offset($offset)
+                    ->orderBy($sortby, $orderby)
+                    ->get();
+    } else {
+      $filter = $params['filter']; // accounttype id
+      $count = Account::orWhere(function ($query) use ($filter){
+                        $query->where('status', '=', $filter);
+                      })
+                      ->orWhereHas('destination', function($query) use ($filter)
+                      {
+                          $query->where('destination', '=', $filter);
 
-    // return Response::json(array(
-    //   'data'=>$accountList->toArray(),
-    //   'total'=>$count
-    // ));
+                      })
+                      ->where('created_at', 'like', $date.'%')
+                      ->count();
+
+      $accountList = Account::with('bidproduct')
+                      ->with('bidproduct.product')
+                      ->with('destination')
+                      ->with('address')
+                      ->with('address.addresscity')
+                      ->with('address.addressstates')
+                      ->with('address.addressType')
+                      ->with('address.account')
+                      ->orWhere(function ($query) use ($filter){
+                        $query->where('status', '=', $filter);
+                      })
+                      ->orWhereHas('destination', function($query) use ($filter)
+                      {
+                          $query->where('destination', '=', $filter);
+
+                      })
+                      ->where('created_at', 'like', $date.'%')
+                      ->take($perPage)
+                      ->offset($offset)
+                      ->orderBy($sortby, $orderby)
+                      ->get();
+    }
+
+    return Response::json(array(
+      'data'=>$bidList->toArray(),
+      'total'=>$count
+    ));
 
   }
 
@@ -76,51 +116,42 @@ class BidRepository implements BidRepositoryInterface {
 
     $this->validate($data, $rules);
 
-    // try{
-        DB::transaction(function() use ($data){
-          $bid = new Bid;
-          //$bid->bidnumber = null;
-          $bid->destination_id = isset($data['destination']) ? $data['destination'] : null;
-          $bid->producer_id = isset($data['producer']) ? $data['producer'] : null;
-          $bid->address_id = isset($data['address']) ? $data['address'] : null;
-          $bid->user_id = Auth::user()->id; //user that is currently log in
-          $bid->status = 'Open';
-          $bid->notes = isset($data['notes']) ? $data['notes'] : null;
+    DB::transaction(function() use ($data){
+      $bid = new Bid;
+      //$bid->bidnumber = null;
+      $bid->destination_id = isset($data['destination']) ? $data['destination'] : null;
+      $bid->producer_id = isset($data['producer']) ? $data['producer'] : null;
+      $bid->address_id = isset($data['address']) ? $data['address'] : null;
+      $bid->user_id = Auth::user()->id; //user that is currently log in
+      $bid->status = 'Open';
+      $bid->notes = isset($data['notes']) ? $data['notes'] : null;
 
-          $bid->save();
+      $bid->save();
 
-          if(isset($data['products'])){
-            $bidProductRules = array(
-              'product' => 'required',
-              'stacknumber' => 'required',
-              'bidprice' => 'required',
-              'tons' => 'required',
-              'bales' => 'required'
-            );
+      if(isset($data['products'])){
+        $bidProductRules = array(
+          'product' => 'required',
+          'stacknumber' => 'required',
+          'bidprice' => 'required',
+          'tons' => 'required',
+          'bales' => 'required'
+        );
 
-            foreach($data['products'] as $item){
-              // $bidProductData = (array)json_decode($item);
-              $bidProductData = $item;
-              $this->validate($bidProductData, $bidProductRules);
+        foreach($data['products'] as $item){
+          // $bidProductData = (array)json_decode($item);
+          $bidProductData = $item;
+          $this->validate($bidProductData, $bidProductRules);
 
-              $bid->product()->attach($bidProductData['product'], array(
-                  'stacknumber' => $bidProductData['stacknumber'],
-                  'bidprice' => $bidProductData['bidprice'],
-                  'bales' => $bidProductData['bales'],
-                  'tons' =>  $bidProductData['tons'],
-                  'ishold' => isset($bidProductData['ishold']) ? $bidProductData['ishold']: false,
-                ));
-            }
-          }
-        });
-
-    // } catch(Exception $e){
-    //     return Response::json(array(
-    //             'error' => true,
-    //             'message' => $e),
-    //             200
-    //           );
-    // }
+          $bid->product()->attach($bidProductData['product'], array(
+              'stacknumber' => $bidProductData['stacknumber'],
+              'bidprice' => $bidProductData['bidprice'],
+              'bales' => $bidProductData['bales'],
+              'tons' =>  $bidProductData['tons'],
+              'ishold' => isset($bidProductData['ishold']) ? $bidProductData['ishold']: false,
+            ));
+        }
+      }
+    });
 
     return Response::json(array(
         'error' => false,
@@ -138,65 +169,90 @@ class BidRepository implements BidRepositoryInterface {
 
     $this->validate($data, $rules);
 
-    try{
-        DB::transaction(function() use ($id, $data){
-          $bid = Bid::find($id);
-          $bid->destination_id = isset($data['destination']) ? $data['destination'] : null;
-          $bid->producer_id = isset($data['producer']) ? $data['producer'] : null;
-          $bid->address_id = isset($data['address']) ? $data['address'] : null;
-          $bid->user_id = Auth::user()->id; //user that is currently log in
-          $bid->status = 'Open';
-          $bid->notes = isset($data['notes']) ? $data['notes'] : null;
 
-          $bid->save();
-          // $temp = array();
-          $bidProductList = array();
+    DB::transaction(function() use ($id, $data){
+      $bid = Bid::find($id);
+      $bid->destination_id = isset($data['destination']) ? $data['destination'] : null;
+      $bid->producer_id = isset($data['producer']) ? $data['producer'] : null;
+      $bid->address_id = isset($data['address']) ? $data['address'] : null;
+      $bid->user_id = Auth::user()->id; //user that is currently log in
+      $bid->status = 'Open';
+      $bid->notes = isset($data['notes']) ? $data['notes'] : null;
 
-          if(isset($data['products'])){
-            $bidProductRules = array(
-              'product' => 'required',
-              'stacknumber' => 'required',
-              'bidprice' => 'required',
-              'tons' => 'required',
-              'bales' => 'required',
-              'unitprice' => 'required'
-            );
+      $bid->save();
+      // $temp = array();
+      $bidProductList = array();
 
-            foreach($data['products'] as $item){
-              $bidProductData = (array)json_decode($item);
-              $this->validate($bidProductData, $bidProductRules);
-              
-              $bidProductList[$bidProductData['bidproductId']] = array(
-                  'product_id' => $bidProductData['product'],
-                  'stacknumber' => $bidProductData['stacknumber'],
-                  'bidprice' => $bidProductData['bidprice'],
-                  'bales' => $bidProductData['bales'],
-                  'tons' =>  $bidProductData['tons'],
-                  'unitprice' => $bidProductData['unitprice'],
-                  'ishold' => isset($bidProductData['ishold']) ? $bidProductData['ishold']: false,
-                );
+      if(isset($data['products'])){
+        $bidProductRules = array(
+          'product' => 'required',
+          'stacknumber' => 'required',
+          'bidprice' => 'required',
+          'tons' => 'required',
+          'bales' => 'required'
+        );
 
-              // array_push($temp, $bidProductList[$bidProductData['bidproductId']]);
-              // $temp[$bidProductData['bidproductId']] = 
-            }
+        //deleting bidproduct
+        $existingBidProductId = array();
+
+        foreach($data['products'] as $item){
+          $bidProductData = $item;
+          if(isset($bidProductData['id'])){
+            $existingBidProductId[] = $bidProductData['id'];
           }
-          var_dump($bidProductList);
-          $bid->product()->sync($bidProductList);
-        });
+        }
+    
+        $this->deleteBidProduct($bid->id, $existingBidProductId); //delete addresses that is not pass excluding the new addresses
 
-    } catch(Exception $e){
-        return Response::json(array(
-                'error' => true,
-                'message' => $e),
-                200
-              );
-    }
+        foreach($data['products'] as $item){
+          $bidProductData = $item;
+          $this->validate($bidProductData, $bidProductRules);
+          
+          if(isset($bidProductData['id'])){
+            $bidproduct = BidProduct::find($bidProductData['id']);
+          } else {
+            $bidproduct = new BidProduct;
+          }
+          $bidproduct->bid_id = $bid->id;
+          $bidproduct->product_id = $bidProductData['product'];
+          $bidproduct->stacknumber = $bidProductData['stacknumber'];
+          $bidproduct->bidprice = $bidProductData['bidprice'];
+          $bidproduct->bales = $bidProductData['bales'];
+          $bidproduct->tons = $bidProductData['tons'];
+          $bidproduct->ishold = isset($bidProductData['ishold']) ? $bidProductData['ishold']: false;
+
+          $bidproduct->save();
+        }
+      }
+    });
 
     return Response::json(array(
         'error' => false,
         'message' => 'Bid successfully updated.'),
         200
     );
+  }
+
+  private function deleteBidProduct($bid, $bidIdList = null){
+    if($bidIdList == null){
+      $bidproduct = BidProduct::with('bid')
+                ->whereHas('bid', function($query) use ($bid)
+                {
+                    $query->where('id', '=', $bid);
+
+                })
+                ->delete();
+    } else {
+      $bidproduct = BidProduct::with('bid')
+                ->whereHas('bid', function($query) use ($bid)
+                {
+                    $query->where('id', '=', $bid);
+
+                })
+                ->whereNotIn('id',$bidIdList)
+                ->delete();
+    }
+    return $bidproduct;
   }
 
 

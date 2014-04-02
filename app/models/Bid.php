@@ -14,11 +14,15 @@ class Bid extends Eloquent {
     }
 
     public function bidproduct(){
-    	return $this->hasMany('BidProduct', 'id', 'bid_id');
+    	return $this->hasMany('BidProduct', 'bid_id', 'id');
+    }
+
+    public function destination(){
+        return $this->hasOne('Destination', 'id', 'destination_id');
     }
 
     public function address(){
-        return $this->hasOne('Address', 'address_id', 'id');
+        return $this->hasOne('Address', 'id', 'address_id');
     }
 
     public function product(){

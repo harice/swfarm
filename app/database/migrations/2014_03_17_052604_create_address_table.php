@@ -24,6 +24,7 @@ class CreateAddressTable extends Migration {
 			$table->string('country');
 			$table->integer('type')->unsigned();
 			$table->timestamps();
+			$table->softDeletes();
 
 		});
 
