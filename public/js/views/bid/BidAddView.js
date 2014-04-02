@@ -40,6 +40,7 @@ define([
 		
 		initialize: function() {
 			this.producerAutoCompleteResult = [];
+			this.productAutoCompletePool = [];
 			this.options = {
 				bidProductFieldClone: null,
 				bidProductFieldCounter: 0,
@@ -70,30 +71,20 @@ define([
 			this.productSynced = false;
 			this.productCollection = new ProductCollection();
 			this.productCollection.on('sync', function() {
+				_.each(this.models, function (productModels) {
+					thisObj.productAutoCompletePool.push({
+						label:productModels.get('name'),
+						value:productModels.get('name'),
+						id:productModels.get('id'),
+						desc:productModels.get('description'),
+					});
+				});
 				thisObj.productSynced = true;
 				this.off('sync');
 			});
 			this.productCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
-			
-			/*this.collection = new RoleCollection();
-			this.collection.on('sync', function() {
-				//console.log('collection.on.sync')
-				thisObj.displayRoles();
-				this.off('sync');
-			});
-			
-			this.collection.on('error', function(collection, response, options) {
-				//console.log('collection.on.error')
-				//console.log(collection);
-				//console.log(response);
-				//console.log(options);
-				this.off('error');
-			});
-			
-			this.events = _.extend({}, Backbone.View.prototype.inputFormattingEvents, this.events);
-			this.delegateEvents();*/
 		},
 		
 		render: function(){
@@ -170,16 +161,16 @@ define([
 		
 		initProductAutocomplete: function (bidProductItem) {
 			var thisObj = this;
-			var models = this.productCollection.models;
-			var products = [];
-			_.each(models, function (productModels) {
+			//var models = this.productCollection.models;
+			var products = this.productAutoCompletePool;
+			/*_.each(models, function (productModels) {
 				products.push({
 					label:productModels.get('name'),
 					value:productModels.get('name'),
 					id:productModels.get('id'),
 					desc:productModels.get('description'),
 				});
-			});
+			});*/
 			console.log(products);
 			bidProductItem.find('.productname').autocomplete({
 				source:products,
@@ -196,8 +187,13 @@ define([
 		events: {
 			'click #add-bid-product': 'addBidProduct',
 			'click .remove-bid-product': 'removeBidProduct',
-			'blur #producer': 'selectFirstProducerItem',
+			//'blur #producer': 'selectFirstProducerItem',
+			'blur #producer': 'validateProducer',
+			'blur .productname': 'validateProduct',
 			'change #address': 'displaySelectedAddress',
+			'blur .bidprice': 'onBlurBidPrice',
+			'keyup .bidprice': 'onKeyUpBidPrice',
+			'keyup .tons': 'onKeyUpTons',
 		},
 		
 		generateDestination: function (destinationModels) {
@@ -267,7 +263,7 @@ define([
 			var labelField = $(ev.target);
 			var idField = labelField.siblings('#producer-id');
 		
-			if(!this.producerAutoCompleteView.$el.is(':hover') && !this.producerIsInFromFetchedData(idField.val(), labelField.val())) {
+			if(!this.producerAutoCompleteView.$el.is(':hover') && !this.producerIsInFetchedData(idField.val(), labelField.val())) {
 				var resultList = labelField.siblings('.autocomplete');
 				var li = resultList.find('li');
 				if(li.length > 0) {
@@ -285,14 +281,78 @@ define([
 			}
 		},
 		
-		producerIsInFromFetchedData: function (id, name) {
-			for(var i = 0; i < this.producerAutoCompleteResult.length; i++) {
-				if(parseInt(this.producerAutoCompleteResult[i].id) == parseInt(id) &&
-					this.producerAutoCompleteResult[i].name.toLowerCase() == name.toLowerCase()) {
+		validateProducer: function (ev) {
+			var labelField = $(ev.target);
+			var idField = labelField.siblings('#producer-id');
+			var producer = this.producerIsInFetchedData(labelField.val(), idField.val());
+			
+			if(!this.producerAutoCompleteView.$el.is(':hover')) {
+				if(producer !== false) {
+					if(producer.id != null) {
+						labelField.val(producer.name);
+						idField.val(producer.id);
+						this.resetProducerAddress();
+						this.getProducerAddress(producer.id);
+					}
+					else
+						labelField.val(producer.name);
+				}
+				else {
+					labelField.val('');
+					idField.val('');
+					this.resetProducerAddress();
+				}
+				labelField.siblings('.autocomplete').hide();
+			}
+		},
+		
+		producerIsInFetchedData: function (name, id) {
+			if(name != null) {
+				for(var i = 0; i < this.producerAutoCompleteResult.length; i++) {
+					if(this.producerAutoCompleteResult[i].name.toLowerCase() == name.toLowerCase()) {
+						
+						if(id != null && id != '' && parseInt(id) == parseInt(this.producerAutoCompleteResult[i].id))
+							return {name:this.producerAutoCompleteResult[i].name};
+						
+						return {name:this.producerAutoCompleteResult[i].name, id:this.producerAutoCompleteResult[i].id};
+					}
+				}
+			}
+			return false;
+		},
+		
+		validateProduct: function (ev) {
+			var field = $(ev.target);
+			var name = field.val();
+			var id = field.siblings('.product_id').val();
+			var product = this.isInProductAutoCompletePool(name);
+			
+			if(product === false) {
+				field.val('');
+				field.siblings('.product_id').val('');
+			}
+			else {
+				field.val(product.name);
+				field.siblings('.product_id').val(product.id);
+			}
+		},
+		
+		productIsInFetchedData: function (id, name) {
+			for(var i = 0; i < this.productAutoCompletePool.length; i++) {
+				if(parseInt(this.productAutoCompletePool[i].id) == parseInt(id) &&
+					this.productAutoCompletePool[i].value.toLowerCase() == name.toLowerCase()) {
 					return true;
 				}
 			}
-			
+			return false;
+		},
+		
+		isInProductAutoCompletePool: function (value) {
+			for(var i = 0; i < this.productAutoCompletePool.length; i++) {
+				if(this.productAutoCompletePool[i].value.toLowerCase() == value.toLowerCase()) {
+					return {id:this.productAutoCompletePool[i].id, name:this.productAutoCompletePool[i].value};
+				}
+			}
 			return false;
 		},
 		
@@ -371,6 +431,67 @@ define([
 			
 			return formData;
 		},
+		
+		onBlurBidPrice: function (ev) {
+			var field = $(ev.target);
+			var bidPrice = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
+			var tonsField = field.closest('.product-item').find('.tons');
+			var tons = (!isNaN(parseFloat(tonsField.val())))? parseFloat(tonsField.val()) : 0;
+			
+			field.val(bidPrice.toFixed(2));
+			this.computeUnitePrice(bidPrice, tons, field.closest('.product-item').find('.unit-price'));
+		},
+		
+		onKeyUpBidPrice: function (ev) {
+			var field = $(ev.target);
+			var bidPrice = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
+			var tonsField = field.closest('.product-item').find('.tons');
+			var tons = (!isNaN(parseFloat(tonsField.val())))? parseFloat(tonsField.val()) : 0;
+			
+			this.computeUnitePrice(bidPrice, tons, field.closest('.product-item').find('.unit-price'));
+		},
+		
+		onKeyUpTons: function (ev) {
+			var field = $(ev.target);
+			var tons = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
+			var bidPriceField = field.closest('.product-item').find('.bidprice');
+			var bidPrice = (!isNaN(parseFloat(bidPriceField.val())))? parseFloat(bidPriceField.val()) : 0;
+			
+			this.computeUnitePrice(bidPrice, tons, field.closest('.product-item').find('.unit-price'));
+		},
+		
+		computeUnitePrice: function (bidPrice, tons, unitePriceField) {
+			var unitPrice = 0;
+			unitPrice = tons * bidPrice;
+			unitePriceField.val(unitPrice.toFixed(2));
+		},
+		
+		/*computeUnitePrice: function (bidPrice, tons, unitPrice) {
+			//console.log('computeUnitePrice');
+			
+			var field = $(ev.target);
+			var bidPrice = 0;
+			var tons = 0;
+			var unitPrice = 0;
+			
+			if(field.hasClass('bidprice')) {
+				bidPrice = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
+				var tonsField = field.closest('.product-item').find('.tons');
+				tons = (!isNaN(parseFloat(tonsField.val())))? parseFloat(tonsField.val()) : 0;
+			}
+			else {
+				tons = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
+				var bidPriceField = field.closest('.product-item').find('.bidprice');
+				bidPrice = (!isNaN(parseFloat(bidPriceField.val())))? parseFloat(bidPriceField.val()) : 0;
+			}
+			
+			//console.log(bidPrice, tons, unitPrice);
+			
+			unitPrice = tons * bidPrice;
+			
+			var unitPriceField = field.closest('.product-item').find('.unit-price');
+			unitPriceField.val(unitPrice.toFixed(2));
+		},*/
 	});
 
   return BidAddView;
