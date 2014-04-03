@@ -20,7 +20,6 @@ class BidRepository implements BidRepositoryInterface {
               ->with('address.addresscity')
               ->with('address.addressstates')
               ->with('address.addressType')
-              ->with('address.account')
               ->find($id);          
 
     if($bid){
@@ -47,51 +46,24 @@ class BidRepository implements BidRepositoryInterface {
     $date = isset($params['date']) ? $params['date'] : date('Y-m-d'); //default date is the present date
     $offset = $page*$perPage-$perPage;
 
-    //pulling of data
-    if(!isset($params['filter']) || $params['filter'] == ''){ //filter: bid no., date of bid, status, producer, destination
-      $count = Bid::where('created_at', 'like', $date.'%')
-                    ->count();
 
-      $bidList = Bid::with('bidproduct')
-                    ->with('bidproduct.product')
-                    ->with('destination')
-                    ->with('address')
-                    ->with('address.addresscity')
-                    ->with('address.addressstates')
-                    ->with('address.addressType')
-                    ->with('address.account')
-                    ->where('created_at', 'like', $date.'%')
-                    ->take($perPage)->offset($offset)
-                    ->orderBy($sortby, $orderby)
-                    ->get();
-    } else {
-      $filter = $params['filter']; // accounttype id
-      $count = Account::where('created_at', 'like', $date.'%')
-                      ->count();
+    $count = Bid::where('created_at', 'like', $date.'%')
+                  ->count();
 
-      $accountList = Account::with('bidproduct')
-                      ->with('bidproduct.product')
-                      ->with('destination')
-                      ->with('address')
-                      ->with('address.addresscity')
-                      ->with('address.addressstates')
-                      ->with('address.addressType')
-                      ->with('address.account')
-                      // ->orWhere(function ($query) use ($filter){
-                      //   $query->where('status', '=', $filter);
-                      // })
-                      // ->orWhereHas('destination', function($query) use ($filter)
-                      // {
-                      //     $query->where('destination', '=', $filter);
-
-                      // })
-                      ->where('created_at', 'like', $date.'%')
-                      ->take($perPage)
-                      ->offset($offset)
-                      ->orderBy('destination.destination', $orderby)
-                      ->get();
-    }
-
+    $bidList = Bid::with('bidproduct')
+                  ->with('account')
+                  ->with('bidproduct.product')
+                  ->with('destination')
+                  ->with('address')
+                  ->with('address.addresscity')
+                  ->with('address.addressstates')
+                  ->with('address.addressType')
+                  ->with('address.account')
+                  ->where('created_at', 'like', $date.'%')
+                  ->take($perPage)->offset($offset)
+                  ->orderBy($sortby, $orderby)
+                  ->get();
+   
     return Response::json(array(
       'data'=>$bidList->toArray(),
       'total'=>$count
@@ -178,7 +150,7 @@ class BidRepository implements BidRepositoryInterface {
 
       if(isset($data['products'])){
         $bidProductRules = array(
-          'product' => 'required',
+          'products' => 'required',
           'stacknumber' => 'required',
           'bidprice' => 'required',
           'tons' => 'required',
