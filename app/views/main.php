@@ -10,6 +10,7 @@
 	    <title>South West Farm</title>
 		<link rel="stylesheet" href="css/ui-lightness/jquery-ui-1.10.4.custom.min.css">
 	    <link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/datepicker.min.css">
 	    <link rel="stylesheet" href="css/styles.min.css">
 	</head>
 

@@ -1,12 +1,13 @@
 define([
 	'backbone',
+	'bootstrapdatepicker',
 	'views/base/ListView',
 	'collections/bid/BidCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/bid/bidListTemplate.html',
 	'text!templates/bid/bidInnerListTemplate.html',
 	'constant',
-], function(Backbone, ListView, BidCollection, contentTemplate, bidListTemplate, bidInnerListTemplate, Const){
+], function(Backbone, DatePicker, ListView, BidCollection, contentTemplate, bidListTemplate, bidInnerListTemplate, Const){
 
 	var BidListView = ListView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -40,6 +41,13 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+			
+			this.$el.find('#filter-date .input-group.date').datepicker({
+				orientation: "top left",
+				autoclose: true,
+				clearBtn: true,
+				todayHighlight: true,
+			});
 		},
 		
 		displayList: function () {
@@ -55,6 +63,34 @@ define([
 			$("#bid-list tbody").html(innerListTemplate);
 			
 			this.generatePagination();
+		},
+		
+		events: {
+			'click .sort-bidnumber' : 'sortBidNumber',
+			'click .sort-date' : 'sortDate',
+			'click .sort-status' : 'sortStatus',
+			'click .sort-producer' : 'sortProducer',
+			'click .sort-destination' : 'sortDestination',
+		},
+		
+		sortBidNumber: function () {
+			this.sortByField('bidnumber');
+		},
+		
+		sortDate: function () {
+			this.sortByField('created_at');
+		},
+		
+		sortStatus: function () {
+			this.sortByField('status');
+		},
+		
+		sortProducer: function () {
+			this.sortByField('producer');
+		},
+		
+		sortDestination: function () {
+			this.sortByField('destination');
 		},
 	});
 

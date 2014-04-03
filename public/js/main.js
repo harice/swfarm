@@ -11,6 +11,7 @@ require.config({
 		jquerytextformatter: 'libs/jquery/jquery.textformatter',
 		jqueryphonenumber: 'libs/jquery/jquery.phonenumber',
 		bootstrap: 'libs/bootstrap/bootstrap.min',
+		bootstrapdatepicker: 'libs/bootstrap/bootstrap-datepicker',
 		underscore: 'libs/underscore/underscore-min',
 		backbone: 'libs/backbone/backbone-min',
         autocomplete: 'libs/fatiherikli/backbone-autocomplete/src/backbone.autocomplete.js',
@@ -26,6 +27,10 @@ require.config({
 		'backbone': {
 			deps: ['underscore', 'jquery', 'bootstrap', 'growl'],
 			exports: 'Backbone'
+		},
+		'bootstrapdatepicker': {
+			deps: ['jquery'],
+			exports: 'DatePicker',
 		},
 		'bootstrap': {
 			deps: ['jquery'],

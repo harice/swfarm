@@ -120,6 +120,7 @@ define([
 			
 			var validate = $('#bidUserForm').validate({
 				submitHandler: function(form) {
+					console.log($(form).serializeObject());
 					var data = thisObj.formatFormField($(form).serializeObject());
 					console.log(data);
 					
@@ -169,6 +170,7 @@ define([
 				
 				bidProductFields.find('.id').val(bidProduct.id);
 				bidProductFields.find('.productname').val(bidProduct.product[0].name);
+				bidProductFields.find('.product_id').val(bidProduct.product[0].id);
 				bidProductFields.find('.product-description').val(thisObj.getDescFromProductAutoCompletePool(bidProduct.product[0].id));
 				bidProductFields.find('.stacknumber').val(bidProduct.stacknumber);
 				bidProductFields.find('.bidprice').val(bidProduct.bidprice);

@@ -1,16 +1,25 @@
 <div class="clearfix">
-	<a href="<%= bid_add_url %>">+ Add Bid</a>
-  <div class="pull-right">
-    <form class="form-inline" role="form">
-      <div class="form-group">
-        <label class="sr-only" for="search">Search</label>
-        <input type="text" class="search form-control" id="search-keyword" placeholder="">
-      </div>
-	  <button type="button" class="btn btn-default search-local">Search</button>
-      <!--<button type="button" class="btn btn-default user-search">Search</button>-->
-      <!--<button type="button" class="btn btn-link">Advance Search</button>-->
-    </form>
-  </div>
+	<div>
+		<a href="<%= bid_add_url %>">+ Add Bid</a>
+	</div>
+	<div class="search-filter-cont clearfix">
+		<div id="filter-date" class="pull-left">
+			<div class="input-group date">
+				<input type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+			</div>
+		</div>
+		<div class="pull-right">
+			<form class="form-inline" role="form">
+				<div class="form-group">
+					<label class="sr-only" for="search">Search</label>
+					<input type="text" class="search form-control" id="search-keyword" placeholder="">
+				</div>
+				<button type="button" class="btn btn-default search-local">Search</button>
+				<!--<button type="button" class="btn btn-default user-search">Search</button>-->
+				<!--<button type="button" class="btn btn-link">Advance Search</button>-->
+			</form>
+		</div>
+	</div>	
 </div>
 
 <div class="clearfix">
@@ -24,12 +33,12 @@
 	<table id="bid-list" class="table table-bordered">
 		<thead>
 			<tr>
-				<th>Bid No.</th>
-				<th>Date of Bid</th>
+				<th class="sortable sort-bidnumber">Bid No. <span class="glyphicon glyphicon-sort"></span></th>
+				<th class="sortable sort-date">Date of Bid <span class="glyphicon glyphicon-sort"></span></th>
 				<th>PO No.</th>
-				<th>Status</th>
-				<th>Producer</th>
-				<th>Destination</th>
+				<th class="sortable sort-status">Status <span class="glyphicon glyphicon-sort"></span></th>
+				<th class="sortable sort-producer">Producer <span class="glyphicon glyphicon-sort"></span></th>
+				<th class="sortable sort-destination">Destination <span class="glyphicon glyphicon-sort"></span></th>
 				<th>Operation</th>
 			</tr>
 		</thead>
