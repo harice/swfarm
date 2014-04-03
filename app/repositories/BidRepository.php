@@ -49,7 +49,7 @@ class BidRepository implements BidRepositoryInterface {
 
     // $count = Bid::where('created_at', 'like', $date.'%')
     //               ->count();
-     $count = Bid::count();
+    $count = Bid::count();
 
     $bidList = Bid::with('bidproduct')
                   ->with('account')
@@ -151,7 +151,7 @@ class BidRepository implements BidRepositoryInterface {
 
       if(isset($data['products'])){
         $bidProductRules = array(
-          'products' => 'required',
+          'product' => 'required',
           'stacknumber' => 'required',
           'bidprice' => 'required',
           'tons' => 'required',
