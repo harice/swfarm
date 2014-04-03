@@ -23,6 +23,7 @@ class CreateBidproductTable extends Migration {
 			$table->float('tons');
 			$table->integer('bales');
 			$table->boolean('ishold');
+			$table->timestamps();
 
 			$table->foreign('bid_id')->references('id')->on('bid')->onDelete('cascade');
 			$table->foreign('product_id')->references('id')->on('products');
