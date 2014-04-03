@@ -1,11 +1,12 @@
 define([
 	'backbone',
 	'views/base/ListView',
+	'collections/bid/BidCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/bid/bidListTemplate.html',
 	'text!templates/bid/bidInnerListTemplate.html',
 	'constant',
-], function(Backbone, ListView, contentTemplate, bidListTemplate, bidInnerListTemplate, Const){
+], function(Backbone, ListView, BidCollection, contentTemplate, bidListTemplate, bidInnerListTemplate, Const){
 
 	var BidListView = ListView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -13,21 +14,21 @@ define([
 		initialize: function() {
 			this.extendListEvents();
 			
-			/*var thisObj = this;
+			var thisObj = this;
 			
-			this.collection = new UserCollection();
+			this.collection = new BidCollection();
 			this.collection.on('sync', function() {
 				thisObj.displayList();
 			});
 			
 			this.collection.on('error', function(collection, response, options) {
 				this.off('error');
-			});*/
+			});
 		},
 		
 		render: function(){
 			this.displayBid();
-			//this.renderList(1);
+			this.renderList(1);
 		},
 		
 		displayBid: function () {
@@ -41,20 +42,20 @@ define([
 			this.$el.html(compiledTemplate);
 		},
 		
-		/*displayList: function () {
+		displayList: function () {
 			
 			var data = {
-				user_url: '#/'+Const.URL.USER,
-				user_edit_url: '#/'+Const.URL.USER+'/'+Const.CRUD.EDIT,
-				users: this.collection.models,
+				bid_url: '#/'+Const.URL.BID,
+				bid_edit_url: '#/'+Const.URL.BID+'/'+Const.CRUD.EDIT,
+				bids: this.collection.models,
 				_: _ 
 			};
 			
-			var innerListTemplate = _.template( userInnerListTemplate, data );
-			$("#user-list tbody").html(innerListTemplate);
+			var innerListTemplate = _.template(bidInnerListTemplate, data);
+			$("#bid-list tbody").html(innerListTemplate);
 			
 			this.generatePagination();
-		},*/
+		},
 	});
 
   return BidListView;
