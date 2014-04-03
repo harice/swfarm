@@ -1,6 +1,6 @@
 <form id="bidUserForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
 	<% if (typeof bid_id !== "undefined") { %>
-		<input type="hidden" id="id" name="id" value="<%= bid_id %>" />
+		<input type="hidden" name="id" value="<%= bid_id %>" />
 	<% } %>
 	<fieldset>
 		<legend>Details</legend>
@@ -55,7 +55,7 @@
 				<div class="form-group">
 					<label for="date" class="col-sm-2 control-label">Date</label>
 					<div class="col-sm-10">
-						<input type="text" class="form-control date" name="date" placeholder="" maxlength="250" value="" readonly>
+						<input type="text" class="form-control date" placeholder="" maxlength="250" value="" readonly>
 					</div>
 				</div>
 				<% } %>

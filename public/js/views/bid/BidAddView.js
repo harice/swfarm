@@ -105,7 +105,7 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
-			this.validate = $('#bidUserForm').validate({
+			var validate = $('#bidUserForm').validate({
 				submitHandler: function(form) {
 					var data = thisObj.formatFormField($(form).serializeObject());
 					console.log(data);
@@ -319,8 +319,9 @@ define([
 			var product = this.isInProductAutoCompletePool(name);
 			
 			if(product === false) {
-				field.val('');
-				field.siblings('.product_id').val('');
+				//field.val('');
+				//field.siblings('.product_id').val('');
+				this.emptyProductFields(field);
 			}
 			else {
 				field.val(product.name);
@@ -389,6 +390,12 @@ define([
 				$('#city').val(selectedAddress.get('address_city')[0].city);
 				$('#zipcode').val(selectedAddress.get('zipcode'));
 			}
+		},
+		
+		emptyProductFields: function (field) {
+			field.val('');
+			field.siblings('.product_id').val('');
+			field.closest('.product-item').find('.product-description').val('');
 		},
 		
 		hasProduct: function () {

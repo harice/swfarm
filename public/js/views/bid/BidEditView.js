@@ -44,7 +44,7 @@ define([
 			this.options = {
 				bidProductFieldClone: null,
 				bidProductFieldCounter: 0,
-				bidProductFieldClass: ['product', 'productname', 'stacknumber', 'bidprice', 'tons', 'bales', 'ishold'],
+				bidProductFieldClass: ['product', 'id', 'productname', 'stacknumber', 'bidprice', 'tons', 'bales', 'ishold'],
 				bidProductFieldClassRequired: ['productname', 'stacknumber', 'bidprice', 'tons', 'bales'],
 				bidProductFieldExempt: ['productname'],
 				bidProductFieldSeparator: '.',
@@ -54,13 +54,14 @@ define([
 			
 			this.bidDestinationCollection = new BidDestinationCollection();
 			this.bidDestinationCollection.on('sync', function() {
-				thisObj.model.runFetch();
+				thisObj.productCollection.getAllModel();
 				this.off('sync');
 			});
 			this.bidDestinationCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
 			
+			this.selectedAddress = null;
 			this.addressCollection = new AddressCollection();
 			this.addressCollection.on('sync', function() {
 				thisObj.generateProducerAddressType(this.models);
@@ -80,6 +81,7 @@ define([
 					});
 				});
 				thisObj.productSynced = true;
+				thisObj.model.runFetch();
 				this.off('sync');
 			});
 			this.productCollection.on('error', function(collection, response, options) {
@@ -99,12 +101,11 @@ define([
 		},
 		
 		displayForm: function () {
-			this.productCollection.getAllModel();
-			
 			var thisObj = this;
 			
 			var innerTemplateVariables = {
 				'bid_url' : '#/'+Const.URL.BID,
+				'bid_id' : this.model.get('id'),
 			};
 			var innerTemplate = _.template(bidAddTemplate, innerTemplateVariables);
 			
@@ -117,7 +118,7 @@ define([
 			
 			this.generateDestination(this.bidDestinationCollection.models);
 			
-			this.validate = $('#bidUserForm').validate({
+			var validate = $('#bidUserForm').validate({
 				submitHandler: function(form) {
 					var data = thisObj.formatFormField($(form).serializeObject());
 					console.log(data);
@@ -134,6 +135,7 @@ define([
 							error: function (model, response, options) {
 								if(typeof response.responseJSON.error == 'undefined')
 									validate.showErrors(response.responseJSON);
+									//validate.showErrors({asdasdasd:'hello world'});
 								else
 									thisObj.displayMessage(response);
 							},
@@ -143,13 +145,40 @@ define([
 				},
 			});
 			
-			this.initProducerAutocomplete();
-			
 			this.supplyAccountData();
 		},
 		
 		supplyAccountData: function () {
-			//this.$el.find('#producer').val(this.model.get(''));
+			var thisObj = this;
+			var producer = this.model.get('account');
+			var address = this.model.get('address');
+			var bidProducts = this.model.get('bidproduct');
+			var date = this.model.get('created_at').split(' ')[0];
+			
+			this.producerAutoCompleteResult.push({id:producer.id, name:producer.name});
+			this.$el.find('.date').val(date);
+			this.$el.find('[name="destination"][value="'+this.model.get('destination').id+'"]').attr('checked', true); 
+			this.$el.find('#producer').val(producer.name);
+			this.$el.find('#producer-id').val(producer.id);
+			this.selectedAddress = address.id;
+			this.getProducerAddress(producer.id);
+			this.initProducerAutocomplete();
+			
+			_.each(bidProducts, function (bidProduct) {
+				var bidProductFields = thisObj.addBidProduct();
+				
+				bidProductFields.find('.id').val(bidProduct.id);
+				bidProductFields.find('.productname').val(bidProduct.product[0].name);
+				bidProductFields.find('.product-description').val(thisObj.getDescFromProductAutoCompletePool(bidProduct.product[0].id));
+				bidProductFields.find('.stacknumber').val(bidProduct.stacknumber);
+				bidProductFields.find('.bidprice').val(bidProduct.bidprice);
+				bidProductFields.find('.tons').val(bidProduct.tons);
+				bidProductFields.find('.bidprice').blur();
+				bidProductFields.find('.bales').val(bidProduct.bales);
+				bidProductFields.find('.ishold').val(bidProduct.ishold);
+			});
+			
+			this.$el.find('.notes').val(this.model.get('notes'));
 		},
 		
 		initProducerAutocomplete: function () {
@@ -213,27 +242,31 @@ define([
 		
 		addBidProduct: function () {
 			if(this.productSynced) {
+				var clone = null;
 				
 				if(!this.hasProduct())
 					this.$el.find('#bid-product-list tbody').empty();
 				
 				if(this.options.bidProductFieldClone == null) {
-					var bidProductTemplate = _.template(bidProductItemTemplate, {});
+					var bidProductTemplate = _.template(bidProductItemTemplate, {'show_id': true});
 					
 					this.$el.find('#bid-product-list tbody').append(bidProductTemplate);
 					var bidProductItem = this.$el.find('#bid-product-list tbody').find('.product-item:first-child');
 					this.options.bidProductFieldClone = bidProductItem.clone();
 					this.initProductAutocomplete(bidProductItem);
 					this.addIndexToBidProductFields(bidProductItem);
+					clone = bidProductItem;
 				}
 				else {
-					var clone = this.options.bidProductFieldClone.clone();
+					clone = this.options.bidProductFieldClone.clone();
 					this.initProductAutocomplete(clone);
 					this.addIndexToBidProductFields(clone);
 					this.$el.find('#bid-product-list tbody').append(clone);
 				}
 					
 				this.addValidationToBidProduct();
+				
+				return clone;
 			}
 			else {
 				this.displayGrowl('Fetching product data. Retry in a while.');
@@ -337,8 +370,9 @@ define([
 			var product = this.isInProductAutoCompletePool(name);
 			
 			if(product === false) {
-				field.val('');
-				field.siblings('.product_id').val('');
+				//field.val('');
+				//field.siblings('.product_id').val('');
+				this.emptyProductFields(field);
 			}
 			else {
 				field.val(product.name);
@@ -359,8 +393,19 @@ define([
 		isInProductAutoCompletePool: function (value) {
 			for(var i = 0; i < this.productAutoCompletePool.length; i++) {
 				if(this.productAutoCompletePool[i].value.toLowerCase() == value.toLowerCase()) {
-					return {id:this.productAutoCompletePool[i].id, name:this.productAutoCompletePool[i].value};
+					return {
+						id:this.productAutoCompletePool[i].id,
+						name:this.productAutoCompletePool[i].value,
+					};
 				}
+			}
+			return false;
+		},
+		
+		getDescFromProductAutoCompletePool: function(id) {
+			for(var i = 0; i < this.productAutoCompletePool.length; i++) {
+				if(parseInt(this.productAutoCompletePool[i].id) == parseInt(id))
+					return this.productAutoCompletePool[i].desc;
 			}
 			return false;
 		},
@@ -395,6 +440,11 @@ define([
 					.attr('value', addressType.get('id'))
 					.text(addressType.get('address_type')[0].name));
 			});
+			
+			if(this.selectedAddress != null) {
+				addressTypeField.val(this.selectedAddress).change();
+				this.selectedAddress = null;
+			}
 		},
 		
 		displaySelectedAddress: function (ev) {
@@ -407,6 +457,12 @@ define([
 				$('#city').val(selectedAddress.get('address_city')[0].city);
 				$('#zipcode').val(selectedAddress.get('zipcode'));
 			}
+		},
+		
+		emptyProductFields: function (field) {
+			field.val('');
+			field.siblings('.product_id').val('');
+			field.closest('.product-item').find('.product-description').val('');
 		},
 		
 		hasProduct: function () {
@@ -429,8 +485,13 @@ define([
 							var index = arrayKey[1];
 							var arrayBidProductFields = {};
 							
-							for(var i = 0; i < bidProductFieldClass.length; i++)
-								arrayBidProductFields[bidProductFieldClass[i]] = data[bidProductFieldClass[i]+this.options.bidProductFieldSeparator+index];
+							for(var i = 0; i < bidProductFieldClass.length; i++) {
+								//arrayBidProductFields[bidProductFieldClass[i]] = data[bidProductFieldClass[i]+this.options.bidProductFieldSeparator+index];
+								
+								var fieldValue = data[bidProductFieldClass[i]+this.options.bidProductFieldSeparator+index];
+								if(!(bidProductFieldClass[i] == 'id' && fieldValue == ''))
+									arrayBidProductFields[bidProductFieldClass[i]] = fieldValue;
+							}
 								
 							formData.products.push(arrayBidProductFields);
 						}
