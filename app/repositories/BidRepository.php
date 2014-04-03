@@ -43,12 +43,13 @@ class BidRepository implements BidRepositoryInterface {
     $page = isset($params['page']) ? $params['page'] : '1'; //default to page 1
     $sortby = isset($params['sortby']) ? $params['sortby'] : 'created_at'; //default sort to account name
     $orderby = isset($params['orderby']) ? $params['orderby'] : 'DESC'; //default order is Ascending
-    $date = isset($params['date']) ? $params['date'] : date('Y-m-d'); //default date is the present date
+    //$date = isset($params['date']) ? $params['date'] : date('Y-m-d'); //default date is the present date
     $offset = $page*$perPage-$perPage;
 
 
-    $count = Bid::where('created_at', 'like', $date.'%')
-                  ->count();
+    // $count = Bid::where('created_at', 'like', $date.'%')
+    //               ->count();
+     $count = Bid::count();
 
     $bidList = Bid::with('bidproduct')
                   ->with('account')
@@ -59,7 +60,7 @@ class BidRepository implements BidRepositoryInterface {
                   ->with('address.addressstates')
                   ->with('address.addressType')
                   ->with('address.account')
-                  ->where('created_at', 'like', $date.'%')
+                  //->where('created_at', 'like', $date.'%')
                   ->take($perPage)->offset($offset)
                   ->orderBy($sortby, $orderby)
                   ->get();
