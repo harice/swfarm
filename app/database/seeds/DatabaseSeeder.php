@@ -24,6 +24,8 @@ class DatabaseSeeder extends Seeder {
         $this->call('AddressZipTableSeeder');
 
         $this->call('DestinationTableSeeder');
+        
+        $this->call('WeightTicketTypeTableSeeder');
 
 	}
 

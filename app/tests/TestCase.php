@@ -2,6 +2,11 @@
 
 class TestCase extends Illuminate\Foundation\Testing\TestCase {
 
+    public function tearDown()
+    {
+        Mockery::close();
+    }
+    
 	/**
 	 * Creates the application.
 	 *
@@ -15,5 +20,34 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase {
 
 		return require __DIR__.'/../../bootstrap/start.php';
 	}
+    
+    public function assertRequestOk()
+    {
+        $this->assertTrue($this->client->getResponse()->isOk());
+    }
+    
+    public function assertViewReceives($prop, $val = null)
+    {
+        $response = $this->client->getResponse();
+        $prop = $response->getOriginalContent()->$prop;
+        
+        if ($val)
+        {
+            return $this->assertEquals($val, $prop);
+        }
+        
+        $this->assertTrue(!! $prop);
+    }
+    
+    public function assertRedirectedTo($uri, $with = array())
+    {
+        parent::assertRedirectedTo($uri, $with);
+        
+        $response = $this->client->getResponse();
+        $redirectedTo = $response->headers->get('Location');
+        
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertEquals("http://localhost/$uri", $redirectedTo);
+    }
 
 }
