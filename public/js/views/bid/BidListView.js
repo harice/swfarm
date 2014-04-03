@@ -71,6 +71,7 @@ define([
 			'click .sort-status' : 'sortStatus',
 			'click .sort-producer' : 'sortProducer',
 			'click .sort-destination' : 'sortDestination',
+			'click .cancel-bid' : 'cancelBid'
 		},
 		
 		sortBidNumber: function () {
@@ -91,6 +92,10 @@ define([
 		
 		sortDestination: function () {
 			this.sortByField('destination');
+		},
+		
+		cancelBid: function () {
+			return false;
 		},
 	});
 

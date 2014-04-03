@@ -90,7 +90,7 @@ define([
 			
 			this.model = new BidModel({id:option.id});
 			this.model.on("change", function() {
-				console.log(this);
+				//console.log(this);
 				thisObj.displayForm();
 				this.off("change");
 			});
@@ -120,9 +120,9 @@ define([
 			
 			var validate = $('#bidUserForm').validate({
 				submitHandler: function(form) {
-					console.log($(form).serializeObject());
+					//console.log($(form).serializeObject());
 					var data = thisObj.formatFormField($(form).serializeObject());
-					console.log(data);
+					//console.log(data);
 					
 					var bidModel = new BidModel(data);
 					
@@ -234,6 +234,7 @@ define([
 			'blur .bidprice': 'onBlurBidPrice',
 			'keyup .bidprice': 'onKeyUpBidPrice',
 			'keyup .tons': 'onKeyUpTons',
+			'click #create-po': 'createPO',
 		},
 		
 		generateDestination: function (destinationModels) {
@@ -536,6 +537,10 @@ define([
 			var unitPrice = 0;
 			unitPrice = tons * bidPrice;
 			unitePriceField.val(unitPrice.toFixed(2));
+		},
+		
+		createPO: function () {
+			console.log('create PO');
 		},
 	});
 

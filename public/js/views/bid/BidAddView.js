@@ -39,6 +39,7 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
+			this.isCreatePO = false;
 			this.producerAutoCompleteResult = [];
 			this.productAutoCompletePool = [];
 			this.options = {
@@ -129,6 +130,9 @@ define([
 						}
 					);
 				},
+				invalidHandler: function (event, validator) {
+					thisObj.isCreatePO = false;
+				},
 			});
 			
 			this.initProducerAutocomplete();
@@ -185,6 +189,7 @@ define([
 			'blur .bidprice': 'onBlurBidPrice',
 			'keyup .bidprice': 'onKeyUpBidPrice',
 			'keyup .tons': 'onKeyUpTons',
+			'click #create-po': 'createPO',
 		},
 		
 		generateDestination: function (destinationModels) {
@@ -462,6 +467,11 @@ define([
 			var unitPrice = 0;
 			unitPrice = tons * bidPrice;
 			unitePriceField.val(unitPrice.toFixed(2));
+		},
+		
+		createPO: function () {
+			this.isCreatePO = true;
+			$('#bidUserForm').submit();
 		},
 	});
 
