@@ -157,6 +157,7 @@ define([
 			var date = this.model.get('created_at').split(' ')[0];
 			
 			this.producerAutoCompleteResult.push({id:producer.id, name:producer.name});
+			this.$el.find('#bidnumber').val(this.model.get('bidnumber'));
 			this.$el.find('.date').val(date);
 			this.$el.find('[name="destination"][value="'+this.model.get('destination').id+'"]').attr('checked', true); 
 			this.$el.find('#producer').val(producer.name);
