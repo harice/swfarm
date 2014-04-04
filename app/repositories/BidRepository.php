@@ -89,7 +89,7 @@ class BidRepository implements BidRepositoryInterface {
 
     $this->validate($data, $rules);
 
-    DB::transaction(function() use ($data){
+    $bid = DB::transaction(function() use ($data){
       $bid = new Bid;
       $bid->destination_id = isset($data['destination']) ? $data['destination'] : null;
       $bid->producer_id = isset($data['producer']) ? $data['producer'] : null;
@@ -109,10 +109,9 @@ class BidRepository implements BidRepositoryInterface {
         $bidProductRules = array(
           'product' => 'required',
           'stacknumber' => 'required',
-          'bidprice' => 'required'
-          // ,
-          // 'tons' => 'required',
-          // 'bales' => 'required'
+          'bidprice' => 'required',
+          'tons' => 'required_without:bales',
+          'bales' => 'required_without:tons'
         );
 
         foreach($data['products'] as $item){
@@ -129,11 +128,14 @@ class BidRepository implements BidRepositoryInterface {
             ));
         }
       }
+
+      return $bid->id;
     });
 
     return Response::json(array(
         'error' => false,
-        'message' => 'Bid successfully created.'),
+        'message' => 'Bid successfully created.',
+        'bidId' => $bid),
         200
     );
   }
@@ -191,10 +193,9 @@ class BidRepository implements BidRepositoryInterface {
           $bidProductRules = array(
             'product' => 'required',
             'stacknumber' => 'required',
-            'bidprice' => 'required'
-            // ,
-            // 'tons' => 'required',
-            // 'bales' => 'required'
+            'bidprice' => 'required',
+            'tons' => 'required_without:bales',
+            'bales' => 'required_without:tons'
           );
 
           //deleting bidproduct
