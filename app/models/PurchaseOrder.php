@@ -8,7 +8,7 @@ class PurchaseOrder extends Eloquent {
     protected $softDelete = true;
 
     public function bid(){
-    	return $this->hasOne('Bid', 'bid_id', 'id');
+    	return $this->hasOne('Bid', 'id', 'bid_id');
     }
 
 }
