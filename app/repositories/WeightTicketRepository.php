@@ -138,5 +138,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         if($validator->fails()) { 
             throw new ValidationException($validator); 
         }
+        
+        return true;
     }
 }
