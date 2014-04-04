@@ -5,6 +5,8 @@ class Bid extends Eloquent {
 
     protected $table = 'bid';
 
+    protected $softDelete = true;
+
     public function account(){
     	return $this->hasOne('Account', 'id', 'producer_id');
     }
