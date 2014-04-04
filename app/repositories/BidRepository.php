@@ -57,7 +57,6 @@ class BidRepository implements BidRepositoryInterface {
                     'address.addressstates', 
                     'address.addressType', 
                     'address.account')
-                  // ->join('destination', 'bid.destination_id', '=', 'destination.id')
                   ->take($perPage)
                   ->offset($offset)
                   ->orderBy('created_at', $orderby);
@@ -110,9 +109,10 @@ class BidRepository implements BidRepositoryInterface {
         $bidProductRules = array(
           'product' => 'required',
           'stacknumber' => 'required',
-          'bidprice' => 'required',
-          'tons' => 'required',
-          'bales' => 'required'
+          'bidprice' => 'required'
+          // ,
+          // 'tons' => 'required',
+          // 'bales' => 'required'
         );
 
         foreach($data['products'] as $item){
@@ -191,9 +191,10 @@ class BidRepository implements BidRepositoryInterface {
           $bidProductRules = array(
             'product' => 'required',
             'stacknumber' => 'required',
-            'bidprice' => 'required',
-            'tons' => 'required',
-            'bales' => 'required'
+            'bidprice' => 'required'
+            // ,
+            // 'tons' => 'required',
+            // 'bales' => 'required'
           );
 
           //deleting bidproduct
