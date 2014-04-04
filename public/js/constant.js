@@ -14,6 +14,7 @@ define(function () {
             'CONTACT' : 'contact',
 			'PRODUCT': 'product',
 			'BID': 'purchases/bid',
+			'PO': 'purchases/po',
 		},
 		'MENU': {
 			'PURCHASE': {

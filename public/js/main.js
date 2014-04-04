@@ -6,10 +6,12 @@
 require.config({
 	paths: {
 		jquery: 'libs/jquery/jquery-min',
+		jqueryui: 'libs/jquery/jquery-ui.custom.min',
 		jqueryvalidate: 'libs/jquery/jquery.validate.min',
 		jquerytextformatter: 'libs/jquery/jquery.textformatter',
 		jqueryphonenumber: 'libs/jquery/jquery.phonenumber',
 		bootstrap: 'libs/bootstrap/bootstrap.min',
+		bootstrapdatepicker: 'libs/bootstrap/bootstrap-datepicker',
 		underscore: 'libs/underscore/underscore-min',
 		backbone: 'libs/backbone/backbone-min',
         autocomplete: 'libs/fatiherikli/backbone-autocomplete/src/backbone.autocomplete.js',
@@ -26,6 +28,10 @@ require.config({
 			deps: ['underscore', 'jquery', 'bootstrap', 'growl'],
 			exports: 'Backbone'
 		},
+		'bootstrapdatepicker': {
+			deps: ['jquery'],
+			exports: 'DatePicker',
+		},
 		'bootstrap': {
 			deps: ['jquery'],
 			exports: 'Bootstrap'
@@ -40,6 +46,10 @@ require.config({
         },
 		'underscore': {
 			exports: '_'
+		},
+		'jqueryui': {
+			deps: ['jquery'],
+			exports: 'JqueryUI',
 		},
 		'jqueryvalidate': {
 			deps: ['jquery'],

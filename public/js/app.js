@@ -14,6 +14,9 @@ define([
 		};
 		
 		Backbone.View.prototype.displayGrowl = function (message, type) {
+			if(type == null)
+				type = 'info';
+				
 			$.bootstrapGrowl(message, {
 						ele: '#message',
 						type: type,

@@ -9,7 +9,7 @@ define([
 		
 		initialize: function(){
 			this.runInit();
-			this.addDefaultURL('/apiv1/product');
+			this.setDefaultURL('/apiv1/product');
 			this.setSortOptions(
 				{
 					currentSort: 'name',
@@ -18,6 +18,11 @@ define([
 					},
 				}
 			);
+		},
+		
+		getAllModel: function () {
+			this.resetURL();
+			this.getModels();
 		},
 	});
 

@@ -32,7 +32,7 @@ define([
 		},
         
         label: function () {
-            return this.get("name");
+            return this.get('name');
         }
 	});
 

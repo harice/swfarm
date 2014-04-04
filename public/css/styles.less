@@ -42,6 +42,10 @@ code {
   font-size: 80%;
 }
 
+.text-right-align {
+	text-align:right
+}
+
 /* Content */
 .content-inner {
   padding-top: 10px;
@@ -55,6 +59,15 @@ code {
 /* form */
 .form-horizontal fieldset{
 	margin-bottom:20px;
+}
+
+.label-text {
+	font-weight:bold;
+	text-align:right;
+}
+
+.value-text {
+	
 }
 
 /* Pagination */
@@ -112,7 +125,12 @@ code {
   font-size: 80%;
 }
 
-/** user management **/
+/* list view */
+.search-filter-cont {
+	margin:10px 0;
+}
+
+/* user management */
 #profile-pic {
 	display:inline;
 }
@@ -152,30 +170,36 @@ code {
 
 /* Autocomplete */
 ul.autocomplete {
-  position: absolute;
-  z-index: 10;
-  display: none;
-  background: #fff;
-  padding: 0;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  list-style-type: none;
-  
-  li {
-    border-bottom: 1px solid #ddd;
+	position: absolute;
+	z-index: 10;
+	display: none;
+	background: #fff;
+	padding: 0;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	list-style-type: none;
 
-    a {
-      display: block;
-      padding: 6px 12px;
-      color: #555555;
-      text-decoration: none;
+	li {
+		border-bottom: 1px solid #ddd;
 
-      &:hover,
-      &:focus {
-        background: #ccc;
-      }
-    }
-  }
+		a {
+			display: block;
+			padding: 6px 12px;
+			color: #555555;
+			text-decoration: none;
+
+			&:hover,
+			&:focus {
+				background: #ccc;
+			}
+		}
+		
+		&.active {
+			a {
+				background: #ccc;
+			}
+		}
+	}
 }
 
 /* add bid */

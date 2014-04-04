@@ -30,15 +30,15 @@ define([
 	var AccountAddView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
-		options: {
-			addressFieldClone: null,
-			addressFieldCounter: 0,
-			addressFieldClass: ['type', 'street', 'state', 'city', 'zipcode', 'country'],
-			addressFieldClassRequired: ['street', 'state', 'city', 'zipcode'],
-			addressFieldSeparator: '.',
-		},
-		
 		initialize: function() {
+			this.options = {
+				addressFieldClone: null,
+				addressFieldCounter: 0,
+				addressFieldClass: ['type', 'street', 'state', 'city', 'zipcode', 'country'],
+				addressFieldClassRequired: ['street', 'state', 'city', 'zipcode'],
+				addressFieldSeparator: '.',
+			};
+			
 			var thisObj = this;
 			
 			this.model = new AccountExtrasModel();

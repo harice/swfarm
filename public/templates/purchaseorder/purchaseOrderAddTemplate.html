@@ -1,0 +1,112 @@
+<form id="bidUserForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+	<% if (typeof po_id !== "undefined") { %>
+		<input type="hidden" id="id" name="id" value="<%= bid_id %>" />
+	<% } %>
+	<fieldset>
+		<legend>Details</legend>
+		<div class="row">
+			<div class="col-md-8">
+				<div class="form-group">
+					<div class="col-sm-2 label-text">PO Number</div>
+					<div class="col-sm-10 value-text"><span class="po-number">P00001</span></div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 label-text">Status</div>
+					<div class="col-sm-10 value-text"><span class="po-status">Open</span></div>
+				</div>
+				<div class="form-group">
+					<label for="firstname" class="col-sm-2 control-label">Destination</label>
+					<div class="col-sm-10">
+						<label class="radio-inline">
+							<input type="radio" name="destination" value="" checked> Deliver to SWF
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="destination" value=""> Store to Farm
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="destination" value=""> Dropship
+						</label>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="producer" class="col-sm-2 control-label">Producer *</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control capitalize" id="producer" name="producer" required>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="type" class="col-sm-2 control-label">Address Type</label>
+					<div class="col-sm-10">
+						<select class="form-control type" name="type">
+							<option class="">Select an address type</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="street" class="col-sm-2 control-label">Street</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control street" name="street" placeholder="" maxlength="250" readonly>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="state" class="col-sm-2 control-label">State/Province</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control state" name="state" placeholder="" maxlength="250" readonly>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="city" class="col-sm-2 control-label">City</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control city" name="city" placeholder="" maxlength="250" readonly>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="zipcode" class="col-sm-2 control-label">Zip/Postal Code</label>
+					<div class="col-sm-10">
+						<input type="number" class="form-control zipcode" name="zipcode" placeholder="" maxlength="250" readonly>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-group">
+					<label for="date" class="col-sm-2 control-label">Date</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control date" name="date" placeholder="" maxlength="250" readonly>
+					</div>
+				</div>
+			</div>
+		</div>
+	</fieldset>
+	<fieldset>
+		<legend>
+			Products
+			<button title="Add Product" id="add-bid-product" type="button" class="pull-right btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
+		</legend>
+		<div class="table-responsive">
+			<table id="bid-product-list" class="table table-bordered">
+				<thead>
+					<tr>
+						<th>Product</th>
+						<th>Description</th>
+						<th>Stack No.</th>
+						<th>Bid Price</th>
+						<th>Est Tons</th>
+						<th>Bales</th>
+						<th>Hold for Testing</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr><td colspan="8">No products added.</td></tr>
+				</tbody>
+			</table>
+		</div>
+	</fieldset>
+	<div class="form-group form-button-container">
+		<label for="" class="col-sm-2 control-label"></label>
+		<div class="col-sm-10">
+			 <button id="save" type="submit" class="save btn btn-default">Save</button>
+			 <a id="cancel-user-save" class="btn btn-default" href="<%= po_url %>">Cancel</a>
+		</div>
+	</div>
+</form>
