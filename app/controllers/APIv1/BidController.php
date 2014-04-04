@@ -77,7 +77,12 @@ class BidController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+		return $this->bid->destroy($id);
+	}
+
+	public function search()
+	{
+		return $this->bid->search( Input::all() );
 	}
 
 	public function getProducerAccount(){

@@ -16,7 +16,7 @@ class CreateBidTable extends Migration {
 		{
 			$table->engine = 'InnoDB';
 			$table->increments('id');
-			$table->integer('bidnumber')->nullable();
+			$table->string('bidnumber', 10)->unique();
 			$table->integer('destination_id')->unsigned();
 			$table->integer('producer_id')->unsigned();
 			$table->integer('address_id')->unsigned();
