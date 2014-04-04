@@ -39,6 +39,7 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
+			this.isCreatePO = false;
 			this.producerAutoCompleteResult = [];
 			this.productAutoCompletePool = [];
 			this.options = {
@@ -124,6 +125,9 @@ define([
 					var data = thisObj.formatFormField($(form).serializeObject());
 					//console.log(data);
 					
+					if(thisObj.isCreatePO)
+						data['purchaseorder'] = true;
+					
 					var bidModel = new BidModel(data);
 					
 					bidModel.save(
@@ -131,9 +135,15 @@ define([
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								Global.getGlobalVars().app_router.navigate(Const.URL.BID, {trigger: true});
+								if(thisObj.isCreatePO) {
+									Global.getGlobalVars().app_router.navigate(Const.URL.PO+'/'+Const.CRUD.EDIT+'/'+model.get('id'), {trigger: true});
+								}
+								else
+									Global.getGlobalVars().app_router.navigate(Const.URL.BID, {trigger: true});
+								thisObj.isCreatePO = false;
 							},
 							error: function (model, response, options) {
+								thisObj.isCreatePO = false;
 								if(typeof response.responseJSON.error == 'undefined')
 									validate.showErrors(response.responseJSON);
 									//validate.showErrors({asdasdasd:'hello world'});
@@ -143,6 +153,9 @@ define([
 							headers: bidModel.getAuth(),
 						}
 					);
+				},
+				invalidHandler: function (event, validator) {
+					thisObj.isCreatePO = false;
 				},
 			});
 			
@@ -569,7 +582,8 @@ define([
 		},
 		
 		createPO: function () {
-			console.log('create PO');
+			this.isCreatePO = true;
+			$('#bidForm').submit();
 		},
 	});
 
