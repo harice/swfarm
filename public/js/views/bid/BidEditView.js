@@ -46,7 +46,7 @@ define([
 				bidProductFieldClone: null,
 				bidProductFieldCounter: 0,
 				bidProductFieldClass: ['product', 'id', 'productname', 'stacknumber', 'bidprice', 'tons', 'bales', 'ishold'],
-				bidProductFieldClassRequired: ['productname', 'stacknumber', 'bidprice', 'tons', 'bales'],
+				bidProductFieldClassRequired: ['productname', 'stacknumber', 'bidprice'],
 				bidProductFieldExempt: ['productname'],
 				bidProductFieldSeparator: '.',
 			};
