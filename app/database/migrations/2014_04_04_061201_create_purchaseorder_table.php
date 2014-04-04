@@ -19,6 +19,7 @@ class CreatePurchaseorderTable extends Migration {
 			$table->integer('bid_id')->unsigned();
 			$table->timestamp('pickupstart');
 			$table->timestamp('pickupend');
+			$table->string('status', 10);
 			$table->timestamps();
 			$table->softDeletes();
 

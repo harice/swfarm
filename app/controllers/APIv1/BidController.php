@@ -100,4 +100,8 @@ class BidController extends BaseController {
 	public function createPurchaseOrder(){
 		return $this->bid->createPurchaseOrder(Input::all());
 	}
+
+	public function cancelPurchaseOrder($id){
+		return $this->bid->cancelPurchaseOrder($id);
+	}
 }

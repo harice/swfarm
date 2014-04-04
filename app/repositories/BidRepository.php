@@ -20,6 +20,7 @@ class BidRepository implements BidRepositoryInterface {
               ->with('address.addresscity')
               ->with('address.addressstates')
               ->with('address.addressType')
+              ->with('purchaseorder')
               ->find($id);          
 
     if($bid){
@@ -439,6 +440,7 @@ class BidRepository implements BidRepositoryInterface {
       $purchaseOrder->bid_id = $data['bidId'];
       $purchaseOrder->pickupstart = $data['pickupstart'];
       $purchaseOrder->pickupend = $data['pickupend'];
+      $purchaseOrder->pickupend = "Open";
       $purchaseOrder->save();
 
       $bid = Bid::find($data['bidId']);
@@ -458,6 +460,12 @@ class BidRepository implements BidRepositoryInterface {
           200
       );
 
+  }
+
+  public function cancelPurchaseOrder($id){
+    $purchaseOrder = PurchaseOrder::find($id);
+    $purchaseOrder->status = "Cancelled";
+    $purchaseOrder->save();
   }
 
 

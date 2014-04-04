@@ -13,4 +13,8 @@ class BidProduct extends Eloquent {
         return $this->hasMany('Product', 'id', 'product_id');
     }
 
+    public function purchaseOrder(){
+    	return $this->hasOne('PurchaseOrder', 'id', 'bid_id');
+    }
+
 }
