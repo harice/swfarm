@@ -2,11 +2,18 @@
 
 class WeightTicketRepository implements WeightTicketRepositoryInterface {
     
+    protected $weightticket;
+    
+    public function __construct(WeightTicketInterface $weightticket)
+    {
+        $this->weightticket = $weightticket;
+    }
+    
     public function findAll()
     {
         try
         {
-            $weighttickets = WeightTicket::all();
+            $weighttickets = $this->weightticket->all();
             return Response::json($weighttickets);
         }
         catch (Exception $e)
@@ -19,10 +26,10 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     {
         try
         {
-            $user = WeightTicket::find($id);
+            $weightticket = $this->weightticket->find($id);
             
-            if ($user) {
-                return Response::json($user);
+            if ($weightticket) {
+                return Response::json($weightticket);
             }
             else
             {
@@ -50,18 +57,16 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         
         try
         {
-            $weightticket = new WeightTicket;
-            
-            // $weightticket->bidproduct_id = $data['bidproduct'];
-            $weightticket->weighttickettype_id = $data['weighttickettype'];
-            $weightticket->bales = $data['bales'];
-            $weightticket->gross = $data['gross'];
-            $weightticket->tare = $data['tare'];
-            $weightticket->net = $data['bales'] - $data['bales'];
+            // $this->weightticket->bidproduct_id = $data['bidproduct'];
+            $this->weightticket->weighttickettype_id = $data['weighttickettype'];
+            $this->weightticket->bales = $data['bales'];
+            $this->weightticket->gross = $data['gross'];
+            $this->weightticket->tare = $data['tare'];
+            $this->weightticket->net = $data['bales'] - $data['bales'];
 
-            $weightticket->save();
+            $this->weightticket->save();
 
-            $message = 'Weight Ticket ' .$weightticket->id .' has been created.';
+            $message = 'Weight Ticket ' .$this->weightticket->id .' has been created.';
             return Response::make($message)->setStatusCode(201, $message);
         }
         catch (Exception $e)
@@ -74,7 +79,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     {
         try
         {
-            $weightticket = WeightTicket::find($id);
+            $weightticket = $this->weightticket->find($id);
             
             if ($weightticket) {
                 // $weightticket->bidproduct_id = $data['bidproduct'];
@@ -105,7 +110,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     {
         try
         {
-            $weightticket = WeightTicket::find($id);
+            $weightticket = $this->weightticket->find($id);
             
             if($weightticket) {
                 $message = 'Weight Ticket ' .$weightticket->id .' has been deleted.';

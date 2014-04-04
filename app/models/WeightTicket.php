@@ -1,6 +1,6 @@
 <?php
 
-class WeightTicket extends BaseModel {
+class WeightTicket extends BaseModel implements WeightTicketInterface {
     
     protected $fillable = array('bidproduct', 'weighttickettype', 'bales', 'gross', 'tare');
 
@@ -11,7 +11,8 @@ class WeightTicket extends BaseModel {
 	 */
 	protected $table = 'weightticket';
 
-    public function weightTicketType(){
+    public function weightTicketType()
+    {
         return $this->hasOne('WeightTicketType', 'id', 'weighttickettype_id');
     }
 
