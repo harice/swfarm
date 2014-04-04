@@ -426,6 +426,37 @@ class BidRepository implements BidRepositoryInterface {
   }
 
   public function createPurchaseOrder($data){
+    $rules = array(
+      'bidId' => 'required',
+      'pickupstart' => 'required|date',
+      'pickupend' => 'required|date'
+    );
+
+    $this->validate($data, $rules);
+
+    DB::transaction(function() use ($data){
+      $purchaseOrder = new PurchaseOrder;
+      $purchaseOrder->bid_id = $data['bidId'];
+      $purchaseOrder->pickupstart = $data['pickupstart'];
+      $purchaseOrder->pickupend = $data['pickupend'];
+      $purchaseOrder->save();
+
+      $bid = Bid::find($data['bidId']);
+      $bid->notes =  isset($data['notes']) ? $data['notes'] : '';
+      $bid->save();
+
+      foreach($data['products'] as $bidProductData){
+        $bidproduct = BidProduct::find($bidProductData['id']);
+        $bidproduct->unitprice = isset($bidProductData['unitprice']) ? $bidProductData['unitprice'] : null;
+        $bidproduct->save();
+      }
+    });
+
+    return Response::json(array(
+          'error' => false,
+          'message' => 'Purchase order successfully created.'),
+          200
+      );
 
   }
 

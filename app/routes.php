@@ -40,6 +40,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 	Route::get('contact/search', 'APIv1\ContactController@search');
 	Route::resource('contact', 'APIv1\ContactController');
 
+	Route::post('bid/createPurchaseOrder', 'APIv1\BidController@createPurchaseOrder');
 	Route::get('bid/search', 'APIv1\BidController@search');
 	Route::get('bid/getProducerAddress', 'APIv1\BidController@getProducerAddress');
 	Route::get('bid/getProducerAccount', 'APIv1\BidController@getProducerAccount');
