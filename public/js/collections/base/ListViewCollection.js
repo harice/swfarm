@@ -13,6 +13,7 @@ define([
 				currentSort: '',
 				sort: {},
 				filter: '',
+				date: '',
 			};
 		},
 		
@@ -111,6 +112,14 @@ define([
 			return this.listView.search;
 		},
 		
+		setDate: function (date) {
+			this.listView.date = date;
+		},
+		
+		getDate: function () {
+			return this.listView.date;
+		},
+		
 		setPaginationURL: function (page, numPerPage) {
 			var searchURL = '';
 			var orderBy = (this.listView.sort[this.listView.currentSort])? 'asc' : 'desc';
@@ -129,6 +138,9 @@ define([
 			
 			if(this.listView.filter != '')
 				params = _.extend(params, {filter:this.listView.filter});
+			
+			if(this.listView.date != '')
+				params = _.extend(params, {date:this.listView.date});
 			
 			this.url = this.getDefaultURL() + searchURL + '?' + $.param(params);
 		},

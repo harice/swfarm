@@ -33,6 +33,7 @@ define([
 		},
 		
 		displayBid: function () {
+			var thisObj = this;
 			var innerTemplate = _.template(bidListTemplate, {'bid_add_url' : '#/'+Const.URL.BID+'/'+Const.CRUD.ADD});
 			
 			var variables = {
@@ -47,11 +48,17 @@ define([
 				autoclose: true,
 				clearBtn: true,
 				todayHighlight: true,
+				format: 'yyyy-mm-dd',
+			}).on('changeDate', function (ev) {
+				console.log(ev);
+				console.log($('#filter-date .input-group.date input').val());
+				thisObj.collection.setDate($('#filter-date .input-group.date input').val());
+				thisObj.renderList();
 			});
 		},
 		
 		displayList: function () {
-			
+			console.log('displayList');
 			var data = {
 				bid_url: '#/'+Const.URL.BID,
 				bid_edit_url: '#/'+Const.URL.BID+'/'+Const.CRUD.EDIT,

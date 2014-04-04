@@ -44,7 +44,7 @@ define([
 			var innerTemplate = _.template(purchaseOrderAddTemplate, innerTemplateVariables);
 			
 			var variables = {
-				h1_title: "Add Purchase Order",
+				h1_title: "Edit Purchase Order",
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
