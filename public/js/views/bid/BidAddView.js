@@ -189,6 +189,7 @@ define([
 			'blur .bidprice': 'onBlurBidPrice',
 			'keyup .bidprice': 'onKeyUpBidPrice',
 			'keyup .tons': 'onKeyUpTons',
+			'keyup .bales': 'onKeyUpBales',
 			'click #create-po': 'createPO',
 		},
 		
@@ -440,9 +441,15 @@ define([
 			var bidPrice = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
 			var tonsField = field.closest('.product-item').find('.tons');
 			var tons = (!isNaN(parseFloat(tonsField.val())))? parseFloat(tonsField.val()) : 0;
+			var balesField = field.closest('.product-item').find('.bales');
+			var bales = (!isNaN(parseFloat(balesField.val())))? parseFloat(balesField.val()) : 0;
 			
 			field.val(bidPrice.toFixed(2));
-			this.computeUnitePrice(bidPrice, tons, field.closest('.product-item').find('.unit-price'));
+			if((tons != 0 && bales == 0) || (tons == 0 && bales != 0)) {
+				var tonsOrBales = (tons != 0)? tons : bales;
+				
+				this.computeUnitePrice(bidPrice, tonsOrBales, field.closest('.product-item').find('.unit-price'));
+			}
 		},
 		
 		onKeyUpBidPrice: function (ev) {
@@ -450,12 +457,21 @@ define([
 			var bidPrice = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
 			var tonsField = field.closest('.product-item').find('.tons');
 			var tons = (!isNaN(parseFloat(tonsField.val())))? parseFloat(tonsField.val()) : 0;
+			var balesField = field.closest('.product-item').find('.bales');
+			var bales = (!isNaN(parseFloat(balesField.val())))? parseFloat(balesField.val()) : 0;
 			
-			this.computeUnitePrice(bidPrice, tons, field.closest('.product-item').find('.unit-price'));
+			if((tons != 0 && bales == 0) || (tons == 0 && bales != 0)) {
+				var tonsOrBales = (tons != 0)? tons : bales;
+				
+				this.computeUnitePrice(bidPrice, tonsOrBales, field.closest('.product-item').find('.unit-price'));
+			}
 		},
 		
 		onKeyUpTons: function (ev) {
 			var field = $(ev.target);
+			
+			field.closest('.product-item').find('.bales').val('');
+			
 			var tons = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
 			var bidPriceField = field.closest('.product-item').find('.bidprice');
 			var bidPrice = (!isNaN(parseFloat(bidPriceField.val())))? parseFloat(bidPriceField.val()) : 0;
@@ -463,9 +479,21 @@ define([
 			this.computeUnitePrice(bidPrice, tons, field.closest('.product-item').find('.unit-price'));
 		},
 		
-		computeUnitePrice: function (bidPrice, tons, unitePriceField) {
+		onKeyUpBales: function (ev) {
+			var field = $(ev.target);
+			
+			field.closest('.product-item').find('.tons').val('');
+			
+			var bales = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
+			var bidPriceField = field.closest('.product-item').find('.bidprice');
+			var bidPrice = (!isNaN(parseFloat(bidPriceField.val())))? parseFloat(bidPriceField.val()) : 0;
+			
+			this.computeUnitePrice(bidPrice, bales, field.closest('.product-item').find('.unit-price'));
+		},
+		
+		computeUnitePrice: function (bidPrice, tonsOrBales, unitePriceField) {
 			var unitPrice = 0;
-			unitPrice = tons * bidPrice;
+			unitPrice = tonsOrBales * bidPrice;
 			unitePriceField.val(unitPrice.toFixed(2));
 		},
 		
