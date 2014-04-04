@@ -85,6 +85,7 @@ class BidRepository implements BidRepositoryInterface {
       'destination' => 'required'
     );
 
+    $data['isPO'] = isset($data['purchaseorder']) ? true : false;
 
     $this->validate($data, $rules);
 
@@ -96,11 +97,13 @@ class BidRepository implements BidRepositoryInterface {
       $bid->user_id = Auth::user()->id; //user that is currently log in
       $bid->status = 'Open';
       $bid->notes = isset($data['notes']) ? $data['notes'] : null;
+      $bid->bidnumber = $this->generateBidNumber(); //creating bid number
+      if($data['isPO']){
+        $bid->ponumber = $this->generatePurchaseOrderNumber(); //creating bid number  
+        $bid->status = 'Closed';
+      }
+      $bid->save();
 
-      $bid->save();
-      
-      $bid->bidnumber = $this->generateBidId(); //creating bid number
-      $bid->save();
 
       if(isset($data['products'])){
         $bidProductRules = array(
@@ -134,11 +137,18 @@ class BidRepository implements BidRepositoryInterface {
     );
   }
 
-  private function generateBidId(){
+  private function generateBidNumber(){
     $dateToday = date('Y-m-d');
-    $count = Bid::where('created_at', 'like', $dateToday.'%')->count();
+    $count = Bid::where('created_at', 'like', $dateToday.'%')->count()+1;
     
     return 'B'.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
+  }
+
+  private function generatePurchaseOrderNumber(){
+    $dateToday = date('Y-m-d');
+    $count = Bid::whereNotNull('ponumber')->where('created_at', 'like', $dateToday.'%')->count()+1;
+    
+    return 'P'.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
   }
 
   public function update($id, $data){
@@ -148,68 +158,84 @@ class BidRepository implements BidRepositoryInterface {
       'destination' => 'required'
     );
 
+    $data['isPO'] = isset($data['purchaseorder']) ? true : false;
+
     $this->validate($data, $rules);
 
 
-    DB::transaction(function() use ($id, $data){
-      $bid = Bid::find($id);
-      $bid->destination_id = isset($data['destination']) ? $data['destination'] : null;
-      $bid->producer_id = isset($data['producer']) ? $data['producer'] : null;
-      $bid->address_id = isset($data['address']) ? $data['address'] : null;
-      $bid->user_id = Auth::user()->id; //user that is currently log in
-      $bid->status = 'Open';
-      $bid->notes = isset($data['notes']) ? $data['notes'] : null;
+    $result = DB::transaction(function() use ($id, $data){
+        $bid = Bid::find($id);
 
-      $bid->save();
+        if(strcmp($bid->status, 'Closed') == 0 || strcmp($bid->status, 'Cancelled') == 0){
+          return array(
+            'error' => true,
+            'message' => 'Bid cannot be updated because the status is already cancelled/closed.');
+        }
+
+        $bid->destination_id = isset($data['destination']) ? $data['destination'] : null;
+        $bid->producer_id = isset($data['producer']) ? $data['producer'] : null;
+        $bid->address_id = isset($data['address']) ? $data['address'] : null;
+        $bid->user_id = Auth::user()->id; //user that is currently log in
+        $bid->status = 'Open';
+        $bid->notes = isset($data['notes']) ? $data['notes'] : null;
+        if($data['isPO']){
+          $bid->ponumber = $this->generatePurchaseOrderNumber(); //creating bid number  
+          $bid->status = 'Closed';
+        }
+        $bid->save();
+        
+        $bidProductList = array();
+
+        if(isset($data['products'])){
+          $bidProductRules = array(
+            'product' => 'required',
+            'stacknumber' => 'required',
+            'bidprice' => 'required',
+            'tons' => 'required',
+            'bales' => 'required'
+          );
+
+          //deleting bidproduct
+          $existingBidProductId = array();
+
+          foreach($data['products'] as $item){
+            $bidProductData = $item;
+            if(isset($bidProductData['id'])){
+              $existingBidProductId[] = $bidProductData['id'];
+            }
+          }
       
-      $bidProductList = array();
+          $this->deleteBidProduct($bid->id, $existingBidProductId); //delete addresses that is not pass excluding the new addresses
 
-      if(isset($data['products'])){
-        $bidProductRules = array(
-          'product' => 'required',
-          'stacknumber' => 'required',
-          'bidprice' => 'required',
-          'tons' => 'required',
-          'bales' => 'required'
-        );
+          foreach($data['products'] as $item){
+            $bidProductData = $item;
+            $this->validate($bidProductData, $bidProductRules);
+            
+            if(isset($bidProductData['id'])){
+              $bidproduct = BidProduct::find($bidProductData['id']);
+            } else {
+              $bidproduct = new BidProduct;
+            }
+            $bidproduct->bid_id = $bid->id;
+            $bidproduct->product_id = $bidProductData['product'];
+            $bidproduct->stacknumber = $bidProductData['stacknumber'];
+            $bidproduct->bidprice = $bidProductData['bidprice'];
+            $bidproduct->bales = $bidProductData['bales'];
+            $bidproduct->tons = $bidProductData['tons'];
+            $bidproduct->ishold = isset($bidProductData['ishold']) ? $bidProductData['ishold']: false;
 
-        //deleting bidproduct
-        $existingBidProductId = array();
-
-        foreach($data['products'] as $item){
-          $bidProductData = $item;
-          if(isset($bidProductData['id'])){
-            $existingBidProductId[] = $bidProductData['id'];
+            $bidproduct->save();
           }
         }
-    
-        $this->deleteBidProduct($bid->id, $existingBidProductId); //delete addresses that is not pass excluding the new addresses
 
-        foreach($data['products'] as $item){
-          $bidProductData = $item;
-          $this->validate($bidProductData, $bidProductRules);
-          
-          if(isset($bidProductData['id'])){
-            $bidproduct = BidProduct::find($bidProductData['id']);
-          } else {
-            $bidproduct = new BidProduct;
-          }
-          $bidproduct->bid_id = $bid->id;
-          $bidproduct->product_id = $bidProductData['product'];
-          $bidproduct->stacknumber = $bidProductData['stacknumber'];
-          $bidproduct->bidprice = $bidProductData['bidprice'];
-          $bidproduct->bales = $bidProductData['bales'];
-          $bidproduct->tons = $bidProductData['tons'];
-          $bidproduct->ishold = isset($bidProductData['ishold']) ? $bidProductData['ishold']: false;
-
-          $bidproduct->save();
-        }
-      }
+        return array(
+            'error' => false,
+            'message' => 'Bid successfully updated.');
     });
 
     return Response::json(array(
-        'error' => false,
-        'message' => 'Bid successfully updated.'),
+        'error' => $result['error'],
+        'message' => $result['message']),
         200
     );
   }
@@ -397,6 +423,10 @@ class BidRepository implements BidRepositoryInterface {
           $destination->toArray(),
           200
       );
+  }
+
+  public function createPurchaseOrder($data){
+
   }
 
 

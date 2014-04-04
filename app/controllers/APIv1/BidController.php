@@ -96,4 +96,8 @@ class BidController extends BaseController {
 	public function getDestination(){
 		return $this->bid->getDestination();
 	}
+
+	public function createPurchaseOrder(){
+		return $this->bid->createPurchaseOrder(Input::all());
+	}
 }
