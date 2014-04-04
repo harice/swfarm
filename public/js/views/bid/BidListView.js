@@ -50,8 +50,6 @@ define([
 				todayHighlight: true,
 				format: 'yyyy-mm-dd',
 			}).on('changeDate', function (ev) {
-				console.log(ev);
-				console.log($('#filter-date .input-group.date input').val());
 				thisObj.collection.setDate($('#filter-date .input-group.date input').val());
 				thisObj.renderList();
 			});

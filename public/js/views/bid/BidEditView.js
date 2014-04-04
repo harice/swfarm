@@ -118,7 +118,7 @@ define([
 			
 			this.generateDestination(this.bidDestinationCollection.models);
 			
-			var validate = $('#bidUserForm').validate({
+			var validate = $('#bidForm').validate({
 				submitHandler: function(form) {
 					//console.log($(form).serializeObject());
 					var data = thisObj.formatFormField($(form).serializeObject());

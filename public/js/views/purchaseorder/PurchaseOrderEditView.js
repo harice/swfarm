@@ -3,12 +3,24 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
+	'views/purchaseorder/AddScheduleView',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderProductItemTemplate.html',
 	'global',
 	'constant',
-], function(Backbone, Validate, TextFormatter, PhoneNumber, contentTemplate, purchaseOrderAddTemplate, purchaseOrderProductItemTemplate, Global, Const){
+], function(
+			Backbone,
+			Validate,
+			TextFormatter,
+			PhoneNumber,
+			AddScheduleView,
+			contentTemplate,
+			purchaseOrderAddTemplate,
+			purchaseOrderProductItemTemplate,
+			Global,
+			Const
+){
 
 	var PurchaseOrderAddView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -49,6 +61,30 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+			console.log(this.$el);
+			
+			this.initPickUpPeriodCalendar();
+			
+			var addScheduleView = new AddScheduleView();
+			addScheduleView.render();
+		},
+		
+		initPickUpPeriodCalendar: function () {
+			this.$el.find('#start-date .input-group.date').datepicker({
+				orientation: "top left",
+				autoclose: true,
+				clearBtn: true,
+				todayHighlight: true,
+				format: 'yyyy-mm-dd',
+			});
+			
+			this.$el.find('#end-date .input-group.date').datepicker({
+				orientation: "top left",
+				autoclose: true,
+				clearBtn: true,
+				todayHighlight: true,
+				format: 'yyyy-mm-dd',
+			});
 		},
 		
 		events: {

@@ -106,7 +106,7 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
-			var validate = $('#bidUserForm').validate({
+			var validate = $('#bidForm').validate({
 				submitHandler: function(form) {
 					var data = thisObj.formatFormField($(form).serializeObject());
 					console.log(data);
@@ -499,7 +499,7 @@ define([
 		
 		createPO: function () {
 			this.isCreatePO = true;
-			$('#bidUserForm').submit();
+			$('#bidForm').submit();
 		},
 	});
 
