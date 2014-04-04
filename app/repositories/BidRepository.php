@@ -43,28 +43,33 @@ class BidRepository implements BidRepositoryInterface {
     $page = isset($params['page']) ? $params['page'] : '1'; //default to page 1
     $sortby = isset($params['sortby']) ? $params['sortby'] : 'created_at'; //default sort to account name
     $orderby = isset($params['orderby']) ? $params['orderby'] : 'DESC'; //default order is Ascending
-    //$date = isset($params['date']) ? $params['date'] : date('Y-m-d'); //default date is the present date
+    $date = isset($params['date']) ? $params['date'] : null; //default date is the present date
     $offset = $page*$perPage-$perPage;
 
+    $bidList = Bid::with(
+                    'bidproduct', 
+                    'account', 
+                    'bidproduct.product', 
+                    'destination', 
+                    'address', 
+                    'address.addresscity', 
+                    'address.addressstates', 
+                    'address.addressType', 
+                    'address.account')
+                  // ->join('destination', 'bid.destination_id', '=', 'destination.id')
+                  ->take($perPage)
+                  ->offset($offset)
+                  ->orderBy('created_at', $orderby);
 
-    // $count = Bid::where('created_at', 'like', $date.'%')
-    //               ->count();
-    $count = Bid::count();
+    if($date != null){
+      $bidList = $bidList->where('created_at', 'like', $date.'%'); 
+      $count = Bid::where('created_at', 'like', $date.'%')->count();
+    } else {
+      $count = Bid::count();
+    }
 
-    $bidList = Bid::with('bidproduct')
-                  ->with('account')
-                  ->with('bidproduct.product')
-                  ->with('destination')
-                  ->with('address')
-                  ->with('address.addresscity')
-                  ->with('address.addressstates')
-                  ->with('address.addressType')
-                  ->with('address.account')
-                  //->where('created_at', 'like', $date.'%')
-                  ->take($perPage)->offset($offset)
-                  ->orderBy($sortby, $orderby)
-                  ->get();
-   
+    $bidList = $bidList->get();             
+
     return Response::json(array(
       'data'=>$bidList->toArray(),
       'total'=>$count
