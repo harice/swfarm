@@ -121,9 +121,9 @@ define([
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								if(thisObj.isCreatePO) {
-									Global.getGlobalVars().app_router.navigate(Const.URL.PO+'/'+Const.CRUD.EDIT+'/'+model.get('id'), {trigger: true});
-								}
+								if(thisObj.isCreatePO)
+									console.log(model);
+									//Global.getGlobalVars().app_router.navigate(Const.URL.PO+'/'+Const.CRUD.EDIT+'/'+model.get('id'), {trigger: true});
 								else
 									Global.getGlobalVars().app_router.navigate(Const.URL.BID, {trigger: true});
 									
