@@ -45,26 +45,13 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
     public function store($data)
     {
-        $rules = array(
-            'bidproduct' => 'required',
-            'weighttickettype' => 'required',
-            'bales' => 'required',
-            'gross' => 'required',
-            'tare' => 'required'
-        );
-
-        $this->validate($data, $rules);
+        $this->validate($data);
         
         try
         {
-            // $this->weightticket->bidproduct_id = $data['bidproduct'];
-            $this->weightticket->weighttickettype_id = $data['weighttickettype'];
-            $this->weightticket->bales = $data['bales'];
-            $this->weightticket->gross = $data['gross'];
-            $this->weightticket->tare = $data['tare'];
-            $this->weightticket->net = $data['bales'] - $data['bales'];
-
-            $this->weightticket->save();
+            $data['net'] = (float)$data['gross'] - (float)$data['tare'];
+            
+            WeightTicket::create($data);
 
             $message = 'Weight Ticket ' .$this->weightticket->id .' has been created.';
             return Response::make($message)->setStatusCode(201, $message);
@@ -131,12 +118,14 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         }
     }
 
-    public function validate($data, $rules)
+    public function validate($data)
     {
-        $validator = Validator::make($data, $rules);
+        $validator = Validator::make($data, WeightTicket::$rules);
 
         if($validator->fails()) { 
             throw new ValidationException($validator); 
         }
+        
+        return true;
     }
 }
