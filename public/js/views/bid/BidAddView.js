@@ -45,7 +45,7 @@ define([
 			this.options = {
 				bidProductFieldClone: null,
 				bidProductFieldCounter: 0,
-				bidProductFieldClass: ['product', 'productname', 'stacknumber', 'bidprice', 'tons', 'bales', 'ishold'],
+				bidProductFieldClass: ['product', 'description', 'productname', 'stacknumber', 'bidprice', 'tons', 'bales', 'ishold'],
 				bidProductFieldClassRequired: ['productname', 'stacknumber', 'bidprice'],
 				bidProductFieldExempt: ['productname'],
 				bidProductFieldSeparator: '.',
@@ -55,7 +55,8 @@ define([
 			
 			this.bidDestinationCollection = new BidDestinationCollection();
 			this.bidDestinationCollection.on('sync', function() {
-				thisObj.generateDestination(this.models);
+				//thisObj.generateDestination(this.models);
+				thisObj.productCollection.getAllModel();
 				this.off('sync');
 			});
 			this.bidDestinationCollection.on('error', function(collection, response, options) {
@@ -69,7 +70,6 @@ define([
 			this.addressCollection.on('error', function(collection, response, options) {
 			});
 			
-			this.productSynced = false;
 			this.productCollection = new ProductCollection();
 			this.productCollection.on('sync', function() {
 				_.each(this.models, function (productModels) {
@@ -80,7 +80,7 @@ define([
 						desc:productModels.get('description'),
 					});
 				});
-				thisObj.productSynced = true;
+				thisObj.displayForm();
 				this.off('sync');
 			});
 			this.productCollection.on('error', function(collection, response, options) {
@@ -90,8 +90,9 @@ define([
 		
 		render: function(){
 			this.bidDestinationCollection.getModels();
-			this.productCollection.getAllModel();
-			
+		},
+		
+		displayForm: function () {
 			var thisObj = this;
 			
 			var innerTemplateVariables = {
@@ -145,6 +146,8 @@ define([
 				},
 			});
 			
+			this.addBidProduct();
+			thisObj.generateDestination(this.bidDestinationCollection.models);
 			this.initProducerAutocomplete();
 		},
 		
@@ -181,7 +184,7 @@ define([
 				source:products,
 				select: function (ev, ui) {
 					var productField = $(ev.target);
-					productField.closest('.product-item').find('.product-description').val(ui.item.desc);
+					//productField.closest('.product-item').find('.product-description').val(ui.item.desc);
 					productField.siblings('.product_id').val(ui.item.id);
 					productField.val(ui.item.label);
 					return false;
@@ -199,7 +202,7 @@ define([
 			'blur .bidprice': 'onBlurBidPrice',
 			'keyup .bidprice': 'onKeyUpBidPrice',
 			'keyup .tons': 'onKeyUpTons',
-			'keyup .bales': 'onKeyUpBales',
+			//'keyup .bales': 'onKeyUpBales',
 			'click #create-po': 'createPO',
 		},
 		
@@ -210,39 +213,34 @@ define([
 		},
 		
 		addBidProduct: function () {
-			if(this.productSynced) {
+			if(!this.hasProduct())
+				this.$el.find('#bid-product-list tbody').empty();
+			
+			if(this.options.bidProductFieldClone == null) {
+				var bidProductTemplate = _.template(bidProductItemTemplate, {});
 				
-				if(!this.hasProduct())
-					this.$el.find('#bid-product-list tbody').empty();
-				
-				if(this.options.bidProductFieldClone == null) {
-					var bidProductTemplate = _.template(bidProductItemTemplate, {});
-					
-					this.$el.find('#bid-product-list tbody').append(bidProductTemplate);
-					var bidProductItem = this.$el.find('#bid-product-list tbody').find('.product-item:first-child');
-					this.options.bidProductFieldClone = bidProductItem.clone();
-					this.initProductAutocomplete(bidProductItem);
-					this.addIndexToBidProductFields(bidProductItem);
-				}
-				else {
-					var clone = this.options.bidProductFieldClone.clone();
-					this.initProductAutocomplete(clone);
-					this.addIndexToBidProductFields(clone);
-					this.$el.find('#bid-product-list tbody').append(clone);
-				}
-					
-				this.addValidationToBidProduct();
+				this.$el.find('#bid-product-list tbody').append(bidProductTemplate);
+				var bidProductItem = this.$el.find('#bid-product-list tbody').find('.product-item:first-child');
+				this.options.bidProductFieldClone = bidProductItem.clone();
+				this.initProductAutocomplete(bidProductItem);
+				this.addIndexToBidProductFields(bidProductItem);
 			}
 			else {
-				this.displayGrowl('Fetching product data. Retry in a while.');
+				var clone = this.options.bidProductFieldClone.clone();
+				this.initProductAutocomplete(clone);
+				this.addIndexToBidProductFields(clone);
+				this.$el.find('#bid-product-list tbody').append(clone);
 			}
+				
+			this.addValidationToBidProduct();
 		},
 		
 		removeBidProduct: function (ev) {
 			$(ev.target).closest('tr').remove();
 			
 			if(!this.hasProduct())
-				this.$el.find('#bid-product-list tbody').append('<tr><td colspan="8">No products added.</td></tr>');
+				//this.$el.find('#bid-product-list tbody').append('<tr><td colspan="8">No products added.</td></tr>');
+				this.addBidProduct();
 		},
 		
 		addValidationToBidProduct: function () {
@@ -411,7 +409,7 @@ define([
 		emptyProductFields: function (field) {
 			field.val('');
 			field.siblings('.product_id').val('');
-			field.closest('.product-item').find('.product-description').val('');
+			//field.closest('.product-item').find('.product-description').val('');
 		},
 		
 		hasProduct: function () {
@@ -447,6 +445,35 @@ define([
 		},
 		
 		onBlurBidPrice: function (ev) {
+			var field = $(ev.target);
+			var bidPrice = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
+			var tonsField = field.closest('.product-item').find('.tons');
+			var tons = (!isNaN(parseFloat(tonsField.val())))? parseFloat(tonsField.val()) : 0;
+			
+			field.val(bidPrice.toFixed(2));
+			this.computeUnitePrice(bidPrice, tons, field.closest('.product-item').find('.unit-price'));
+		},
+		
+		onKeyUpBidPrice: function (ev) {
+			var field = $(ev.target);
+			var bidPrice = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
+			var tonsField = field.closest('.product-item').find('.tons');
+			var tons = (!isNaN(parseFloat(tonsField.val())))? parseFloat(tonsField.val()) : 0;
+			
+			this.computeUnitePrice(bidPrice, tons, field.closest('.product-item').find('.unit-price'));
+		},
+		
+		onKeyUpTons: function (ev) {
+			var field = $(ev.target);
+			
+			var tons = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
+			var bidPriceField = field.closest('.product-item').find('.bidprice');
+			var bidPrice = (!isNaN(parseFloat(bidPriceField.val())))? parseFloat(bidPriceField.val()) : 0;
+			
+			this.computeUnitePrice(bidPrice, tons, field.closest('.product-item').find('.unit-price'));
+		},
+		
+		/*onBlurBidPrice: function (ev) {
 			var field = $(ev.target);
 			var bidPrice = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
 			var tonsField = field.closest('.product-item').find('.tons');
@@ -499,7 +526,7 @@ define([
 			var bidPrice = (!isNaN(parseFloat(bidPriceField.val())))? parseFloat(bidPriceField.val()) : 0;
 			
 			this.computeUnitePrice(bidPrice, bales, field.closest('.product-item').find('.unit-price'));
-		},
+		},*/
 		
 		computeUnitePrice: function (bidPrice, tonsOrBales, unitePriceField) {
 			var unitPrice = 0;

@@ -3,11 +3,13 @@ define([
 	'bootstrapdatepicker',
 	'views/base/ListView',
 	'collections/bid/BidCollection',
+	'collections/bid/BidDestinationCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/bid/bidListTemplate.html',
+	'text!templates/bid/bidDestinationTemplate.html',
 	'text!templates/bid/bidInnerListTemplate.html',
 	'constant',
-], function(Backbone, DatePicker, ListView, BidCollection, contentTemplate, bidListTemplate, bidInnerListTemplate, Const){
+], function(Backbone, DatePicker, ListView, BidCollection, BidDestinationCollection, contentTemplate, bidListTemplate, bidDestinationTemplate, bidInnerListTemplate, Const){
 
 	var BidListView = ListView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -21,20 +23,34 @@ define([
 			this.collection.on('sync', function() {
 				thisObj.displayList();
 			});
-			
 			this.collection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
+			
+			this.bidDestinationCollection = new BidDestinationCollection();
+			this.bidDestinationCollection.on('sync', function() {
+				thisObj.displayBid();
+				thisObj.renderList(1);
+				this.off('sync');
+			});
+			this.bidDestinationCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
 		},
 		
 		render: function(){
-			this.displayBid();
-			this.renderList(1);
+			this.bidDestinationCollection.getModels();
 		},
 		
 		displayBid: function () {
+			var destinationTemplate = _.template(bidDestinationTemplate, {'destinations': this.bidDestinationCollection.models});
+			
 			var thisObj = this;
-			var innerTemplate = _.template(bidListTemplate, {'bid_add_url' : '#/'+Const.URL.BID+'/'+Const.CRUD.ADD});
+			var innerTemplateVar = {
+										'bid_add_url' : '#/'+Const.URL.BID+'/'+Const.CRUD.ADD,
+										'destination_filters' : destinationTemplate,
+									};
+			var innerTemplate = _.template(bidListTemplate, innerTemplateVar);
 			
 			var variables = {
 				h1_title: "Bids",
@@ -73,10 +89,10 @@ define([
 		events: {
 			'click .sort-bidnumber' : 'sortBidNumber',
 			'click .sort-date' : 'sortDate',
-			'click .sort-status' : 'sortStatus',
 			'click .sort-producer' : 'sortProducer',
-			'click .sort-destination' : 'sortDestination',
-			'click .cancel-bid' : 'cancelBid'
+			'click .cancel-bid' : 'cancelBid',
+			'change .bidDestination' : 'filterByDestination',
+			'change .statusFilter' : 'filterByStatus',
 		},
 		
 		sortBidNumber: function () {
@@ -87,19 +103,25 @@ define([
 			this.sortByField('created_at');
 		},
 		
-		sortStatus: function () {
-			this.sortByField('status');
-		},
-		
 		sortProducer: function () {
 			this.sortByField('producer');
 		},
 		
-		sortDestination: function () {
-			this.sortByField('destination');
+		cancelBid: function () {
+			return false;
 		},
 		
-		cancelBid: function () {
+		filterByDestination: function (ev) {
+			var filter = $(ev.target).val(); console.log(filter);
+			/*this.collection.setFilter(filter);
+			this.renderList(1);*/
+			return false;
+		},
+		
+		filterByStatus: function (ev) {
+			var filter = $(ev.target).val(); console.log(filter);
+			/*this.collection.setFilter(filter);
+			this.renderList(1);*/
 			return false;
 		},
 	});
