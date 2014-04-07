@@ -2,7 +2,7 @@
 
 class WeightTicket extends BaseModel implements WeightTicketInterface {
     
-    protected $fillable = array('bidproduct', 'weighttickettype', 'bales', 'gross', 'tare');
+    protected $fillable = array('weighttickettype_id', 'bales', 'gross', 'tare', 'net');
 
     /**
 	 * The database table used by the model.
@@ -10,6 +10,13 @@ class WeightTicket extends BaseModel implements WeightTicketInterface {
 	 * @var string
 	 */
 	protected $table = 'weightticket';
+    
+    public static $rules = array(
+        'weighttickettype_id' => 'required',
+        'bales' => 'sometimes|required',
+        'gross' => 'required',
+        'tare' => 'required'
+    );
 
     public function weightTicketType()
     {

@@ -24,14 +24,13 @@ class WeightTicketRepositoryTest extends TestCase {
     public function testValidatePasses()
     {
         $data = array(
-            'name' => 'John Doe'
+            'bidproduct' => 1,
+            'weighttickettype' => 1,
+            'gross' => 12,
+            'tare' => 13
         );
         
-        $rules = array(
-            'name' => 'required'
-        );
-        
-        $reply = $this->repo->validate($data, $rules);
+        $reply = $this->repo->validate($data);
         
         $this->assertTrue($reply);
     }
