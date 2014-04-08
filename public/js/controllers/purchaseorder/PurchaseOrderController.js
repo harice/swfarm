@@ -2,9 +2,9 @@ define([
 	'backbone',
 	'views/purchaseorder/PurchaseOrderListView',
 	'views/purchaseorder/PurchaseOrderEditView',
-	'views/user/UserView',
+	'views/purchaseorder/PurchaseOrderView',
 	'constant',
-], function(Backbone, PurchaseOrderListView, PurchaseOrderEditView, UserView, Const){
+], function(Backbone, PurchaseOrderListView, PurchaseOrderEditView, PurchaseOrderView, Const){
 	
 	function PurchaseOrderController () {	
 		
@@ -32,7 +32,7 @@ define([
 		};
 		
 		this.view = function (id) {
-			return new UserView({'id':id});
+			return new PurchaseOrderView({'id':id});
 		};
 		
 		this.IsInt = function (i) {

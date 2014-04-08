@@ -3,9 +3,9 @@ define([
 	'views/bid/BidListView',
 	'views/bid/BidAddView',
 	'views/bid/BidEditView',
-	'views/user/UserView',
+	'views/bid/BidView',
 	'constant',
-], function(Backbone, BidListView, BidAddView, BidEditView, UserView, Const){
+], function(Backbone, BidListView, BidAddView, BidEditView, BidView, Const){
 	
 	function UserController () {	
 		
@@ -41,7 +41,7 @@ define([
 		};
 		
 		this.view = function (id) {
-			return new UserView({'id':id});
+			return new BidView({'id':id});
 		};
 		
 		this.IsInt = function (i) {

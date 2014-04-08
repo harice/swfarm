@@ -1,7 +1,7 @@
 <% if (!_.isEmpty(bids)) { %>
 	<% _.each(bids, function(bid){ %>
 		<tr>
-			<td><%= bid.get("bidnumber") %></td>
+			<td><a href="<%= bid_url %>/<%= bid.get("id") %>"><%= bid.get("bidnumber") %></a></td>
 			<td><%= bid.get("created_at").split(" ")[0] %></td>
 			<td><%= bid.get("ponumber") %></td>
 			<td><%= bid.get("status") %></td>

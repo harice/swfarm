@@ -95,7 +95,7 @@ define([
 			var bidProducts = this.model.get('bidproduct');
 			
 			this.$el.find('#po-number').text(this.model.get('ponumber'));
-			this.$el.find('#po-status').text('');
+			this.$el.find('#po-status').text(this.model.get('po_status'));
 			this.$el.find('#po-destination').text(this.model.get('destination').destination);
 			this.$el.find('#po-producer').text(this.model.get('account').name);
 			this.$el.find('#po-address-type').text(address.address_type[0].name);
@@ -103,7 +103,7 @@ define([
 			this.$el.find('#po-address-state').text(address.addressstates[0].state);
 			this.$el.find('#po-address-city').text(address.addresscity[0].city);
 			this.$el.find('#po-address-zip-code').text(address.zipcode);
-			//this.$el.find('').text(this.model.get(''));
+			this.$el.find('#po-date').text(this.model.get('po_date').split(' ')[0]);
 			
 			_.each(bidProducts, function (bidProduct) {
 				var bidProductFields = thisObj.addBidProduct();

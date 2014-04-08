@@ -1,7 +1,7 @@
 <% if (!_.isEmpty(pos)) { %>
   <% _.each(pos, function(po){ %>
     <tr>
-      <td><%= po.get("ponumber") %></td>
+      <td><a href="<%= po_url %>/<%= po.get("id") %>"><%= po.get("ponumber") %></a></td>
 	  <td></td>
 	  <td></td>
 	  <td></td>

@@ -159,10 +159,10 @@ define([
 				},
 			});
 			
-			this.supplyAccountData();
+			this.supplyBidData();
 		},
 		
-		supplyAccountData: function () {
+		supplyBidData: function () {
 			var thisObj = this;
 			var producer = this.model.get('account');
 			var address = this.model.get('address');
