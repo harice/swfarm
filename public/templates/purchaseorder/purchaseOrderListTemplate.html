@@ -1,14 +1,44 @@
 <div class="clearfix">
-	<div class="pull-right">
-		<form class="form-inline" role="form">
-			<div class="form-group">
-				<label class="sr-only" for="search">Search</label>
-				<input type="text" class="search form-control" id="search-keyword" placeholder="">
+	<div class="search-filter-cont clearfix">
+		<div class="pull-left">
+			<div class="sub-cont">
+				<label>Date of Purchase</label>
+				<div id="filter-date-of-purchase" class="search-filter-field">
+					<div class="input-group date">
+						<input type="text" class="form-control" value="">
+						<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+					</div>
+				</div>
 			</div>
-			<button type="button" class="btn btn-default search-local">Search</button>
-			<!--<button type="button" class="btn btn-default user-search">Search</button>-->
-			<!--<button type="button" class="btn btn-link">Advance Search</button>-->
-		</form>
+			<div class="sub-cont">
+				<label>Pick-up Period: </label>
+				<label>Start</label>
+				<div id="filter-pickup-start" class="search-filter-field">
+					<div class="input-group date">
+						<input type="text" class="form-control" value="">
+						<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+					</div>
+				</div>
+				<label>End</label>
+				<div id="filter-pickup-end" class="search-filter-field">
+					<div class="input-group date">
+						<input type="text" class="form-control" value="">
+						<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="pull-right">
+			<form class="form-inline" role="form">
+				<div class="form-group">
+					<label class="sr-only" for="search">Search</label>
+					<input type="text" class="search form-control" id="search-keyword" placeholder="">
+				</div>
+				<button type="button" class="btn btn-default search-local">Search</button>
+				<!--<button type="button" class="btn btn-default user-search">Search</button>-->
+				<!--<button type="button" class="btn btn-link">Advance Search</button>-->
+			</form>
+		</div>
 	</div>
 </div>
 

@@ -113,15 +113,15 @@ define([
 		
 		filterByDestination: function (ev) {
 			var filter = $(ev.target).val(); console.log(filter);
-			/*this.collection.setFilter(filter);
-			this.renderList(1);*/
+			this.collection.setFilter('destination', filter)
+			this.renderList(1);
 			return false;
 		},
 		
 		filterByStatus: function (ev) {
 			var filter = $(ev.target).val(); console.log(filter);
-			/*this.collection.setFilter(filter);
-			this.renderList(1);*/
+			this.collection.setFilter('status', filter)
+			this.renderList(1);
 			return false;
 		},
 	});

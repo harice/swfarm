@@ -53,7 +53,34 @@ define([
 			var innerListTemplate = _.template(purchaseOrderInnerListTemplate, data);
 			$("#po-list tbody").html(innerListTemplate);
 			
+			this.initCalendars();
 			this.generatePagination();
+		},
+		
+		initCalendars: function () {
+			this.$el.find('#filter-date-of-purchase .input-group.date').datepicker({
+				orientation: "top left",
+				autoclose: true,
+				clearBtn: true,
+				todayHighlight: true,
+				format: 'yyyy-mm-dd',
+			});
+			
+			this.$el.find('#filter-pickup-start .input-group.date').datepicker({
+				orientation: "top left",
+				autoclose: true,
+				clearBtn: true,
+				todayHighlight: true,
+				format: 'yyyy-mm-dd',
+			});
+			
+			this.$el.find('#filter-pickup-end .input-group.date').datepicker({
+				orientation: "top left",
+				autoclose: true,
+				clearBtn: true,
+				todayHighlight: true,
+				format: 'yyyy-mm-dd',
+			});
 		},
 	});
 

@@ -2,7 +2,7 @@
 	<% _.each(bids, function(bid){ %>
 		<tr>
 			<td><%= bid.get("bidnumber") %></td>
-			<td><%= bid.get("created_at") %></td>
+			<td><%= bid.get("created_at").split(" ")[0] %></td>
 			<td><%= bid.get("ponumber") %></td>
 			<td><%= bid.get("status") %></td>
 			<td><%= bid.get("account").name %></td>
