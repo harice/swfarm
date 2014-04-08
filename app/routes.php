@@ -54,7 +54,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 	Route::get('bid/getDestination', 'APIv1\BidController@getDestination');
 	Route::resource('bid', 'APIv1\BidController');
     
-    // Route::resource('weightticket', 'APIv1\WeightTicketController');
+    Route::resource('weightinfo', 'APIv1\WeightInfoController');
 });
 
 /* API ROUTES without HTTP Basic */
