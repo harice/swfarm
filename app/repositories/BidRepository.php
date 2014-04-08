@@ -176,6 +176,7 @@ class BidRepository implements BidRepositoryInterface {
               'bidprice' => $bidProductData['bidprice'],
               'bales' => $bidProductData['bales'],
               'tons' =>  $bidProductData['tons'],
+              'description' => isset($bidProductData['description']) ? $bidProductData['description']: '',
               'ishold' => isset($bidProductData['ishold']) ? $bidProductData['ishold']: false,
             ));
         }
@@ -412,6 +413,101 @@ class BidRepository implements BidRepositoryInterface {
       200);
   }
 
+  public function searchPurchaseOrder($_search)
+  { 
+    $perPage  = isset($_search['perpage']) ? $_search['perpage'] : Config::get('constants.USERS_PER_LIST');
+    $page     = isset($_search['page']) ? $_search['page'] : 1;
+    $sortby   = isset($_search['sortby']) ? $_search['sortby'] : 'po_date';
+    $orderby  = isset($_search['orderby']) ? $_search['orderby'] :'ASC';
+    $poStatus = isset($_search['poStatus']) ? $_search['poStatus'] : null;
+    $date = isset($_search['date']) ? $_search['date'] : null;
+    $destination = isset($_search['destination']) ? $_search['destination'] : null;
+    $offset   = $page * $perPage - $perPage;
+
+    $searchWord = isset($_search['search']) ? $_search['search'] : '';
+
+    $count = Bid::where(function($query) use ($searchWord){
+                     $query->orWhereHas('account', function($query) use ($searchWord){
+                          $query->where('name', 'like', '%'.$searchWord.'%');
+
+                      })
+                      ->orWhereHas('destination', function($query) use ($searchWord){
+                          $query->where('destination', 'like', '%'.$searchWord.'%');
+
+                      })
+                      ->orWhere(function ($query) use ($searchWord){
+                          $query->orWhere('ponumber','like','%'.$searchWord.'%');
+                      });
+                  })
+                  ->whereNull('deleted_at')
+                  ->whereNotNull('ponumber');
+
+    $purchaseOrder = Bid::with('bidproduct', 
+                      'account', 
+                      'bidproduct.product', 
+                      'destination', 
+                      'address', 
+                      'address.addresscity', 
+                      'address.addressstates', 
+                      'address.addressType', 
+                      'address.account',
+                      'purchaseorder')
+                  ->where(function($query) use ($searchWord){
+                     $query->orWhereHas('account', function($query) use ($searchWord){
+                          $query->where('name', 'like', '%'.$searchWord.'%');
+
+                      })
+                      ->orWhereHas('destination', function($query) use ($searchWord){
+                          $query->where('destination', 'like', '%'.$searchWord.'%');
+
+                      })
+                      ->orWhere(function ($query) use ($searchWord){
+                          $query->orWhere('ponumber','like','%'.$searchWord.'%');
+                      });
+                  })
+                  ->whereNull('deleted_at')
+                  ->whereNotNull('ponumber');
+
+      if($poStatus !=  null){ //postatus can only be "Open", "Cancelled" or "Closed"
+        $count = $count->where(function ($query) use ($poStatus){
+                          $query->where('po_status', '=', $poStatus);
+                        });
+        $purchaseOrder = $purchaseOrder->where(function ($query) use ($poStatus){
+                          $query->where('po_status', '=', $poStatus);
+                        });
+      }
+
+      if($destination !=  null){ //value pass must be id of destination, check the lookup table for destination
+        $count = $count->where(function ($query) use ($destination){
+                          $query->where('destination_id', '=', $destination);
+                        });
+        $purchaseOrder = $purchaseOrder->where(function ($query) use ($destination){
+                          $query->where('destination_id', '=', $destination);
+                        });
+      }
+
+      if($date !=  null){
+        $count = $count->where(function ($query) use ($date){
+                          $query->where('po_date', 'like', $date.'%');
+                        });
+        $purchaseOrder = $purchaseOrder->where(function ($query) use ($date){
+                          $query->where('po_date', 'like', $date.'%');
+                        });
+      }
+
+      $count = $count->count();
+      $purchaseOrder = $purchaseOrder->take($perPage)
+                      ->offset($offset)
+                      ->orderBy($sortby, $orderby)
+                      ->get();
+    
+    return Response::json(array(
+      'total' => $count,
+      'data' => $purchaseOrder->toArray()
+      ),
+      200);
+  }
+
   public function destroy($id){
     $bid = Bid::find($id);
 
@@ -581,6 +677,18 @@ class BidRepository implements BidRepositoryInterface {
     return Response::json(array(
           'error' => false,
           'message' => 'Purchase order cancelled.'),
+          200
+      );
+  }
+
+  public function closePurchaseOrder($bidId){
+    $bid = Bid::find($bidId);
+    $bid->po_status = "Closed";
+    $bid->save();
+
+    return Response::json(array(
+          'error' => false,
+          'message' => 'Purchase order closed.'),
           200
       );
   }
