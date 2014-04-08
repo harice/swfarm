@@ -107,9 +107,14 @@ define([
 		},
 		
 		events: {
+			'click .sort-date-of-po' : 'sortPODate',
 			'click .cancel-po' : 'cancelPO',
 			'change .bidDestination' : 'filterByDestination',
 			'change .statusFilter' : 'filterByStatus',
+		},
+		
+		sortPODate: function () {
+			this.sortByField('po_date');
 		},
 		
 		cancelPO: function (ev) {
