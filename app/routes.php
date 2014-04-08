@@ -44,6 +44,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 	Route::post('bid/addUnitPriceToBidProduct/{bidId}', 'APIv1\BidController@addUnitPriceToBidProduct');
 	Route::post('bid/addPickupDateToPurchaseOrder/{bidId}', 'APIv1\BidController@addPickupDateToPurchaseOrder');
 	Route::post('bid/createPurchaseOrder', 'APIv1\BidController@createPurchaseOrder');
+	Route::post('bid/cancelBid/{id}', 'APIv1\BidController@cancelBid');
 	Route::post('bid/cancelPurchaseOrder/{id}', 'APIv1\BidController@cancelPurchaseOrder');
 	Route::get('bid/search', 'APIv1\BidController@search');
 	Route::get('bid/getProducerAddress', 'APIv1\BidController@getProducerAddress');
