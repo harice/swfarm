@@ -40,6 +40,9 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 	Route::get('contact/search', 'APIv1\ContactController@search');
 	Route::resource('contact', 'APIv1\ContactController');
 
+	Route::get('bid/getPurchaseOrder', 'APIv1\BidController@getPurchaseOrder');
+	Route::post('bid/addUnitPriceToBidProduct/{bidId}', 'APIv1\BidController@addUnitPriceToBidProduct');
+	Route::post('bid/addPickupDateToPurchaseOrder/{bidId}', 'APIv1\BidController@addPickupDateToPurchaseOrder');
 	Route::post('bid/createPurchaseOrder', 'APIv1\BidController@createPurchaseOrder');
 	Route::post('bid/cancelPurchaseOrder/{id}', 'APIv1\BidController@cancelPurchaseOrder');
 	Route::get('bid/search', 'APIv1\BidController@search');

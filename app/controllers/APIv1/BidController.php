@@ -104,4 +104,16 @@ class BidController extends BaseController {
 	public function cancelPurchaseOrder($id){
 		return $this->bid->cancelPurchaseOrder($id);
 	}
+
+	public function getPurchaseOrder(){
+		return $this->bid->getPurchaseOrder(Input::all());
+	}
+
+	public function addPickupDateToPurchaseOrder($bidId){
+		return $this->bid->addPickupDateToPurchaseOrder($bidId, Input::all());
+	}
+
+	public function addUnitPriceToBidProduct($bidId){
+		return $this->bid->addUnitPriceToBidProduct($bidId, Input::all());
+	}
 }
