@@ -40,14 +40,15 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 	Route::get('contact/search', 'APIv1\ContactController@search');
 	Route::resource('contact', 'APIv1\ContactController');
 
-	Route::get('bid/getPurchaseOrder', 'APIv1\BidController@getPurchaseOrder');
-	Route::put('bid/addUnitPriceToBidProduct/{bidId}', 'APIv1\BidController@addUnitPriceToBidProduct');
-	Route::put('bid/addPickupDateToPurchaseOrder/{bidId}', 'APIv1\BidController@addPickupDateToPurchaseOrder');
-	Route::post('bid/createPurchaseOrder', 'APIv1\BidController@createPurchaseOrder');
+	Route::get('po', 'APIv1\BidController@getPurchaseOrder');
+	Route::put('po/addUnitPriceToBidProduct/{bidId}', 'APIv1\BidController@addUnitPriceToBidProduct');
+	Route::put('po/addPickupDateToPurchaseOrder/{bidId}', 'APIv1\BidController@addPickupDateToPurchaseOrder');
+	Route::post('po/createPurchaseOrder', 'APIv1\BidController@createPurchaseOrder');
+	Route::put('po/cancelPurchaseOrder/{id}', 'APIv1\BidController@cancelPurchaseOrder');
+	Route::put('po/closePurchaseOrder/{id}', 'APIv1\BidController@closePurchaseOrder');
+	Route::get('po/search', 'APIv1\BidController@searchPurchaseOrder');
+	
 	Route::put('bid/cancelBid/{id}', 'APIv1\BidController@cancelBid');
-	Route::put('bid/cancelPurchaseOrder/{id}', 'APIv1\BidController@cancelPurchaseOrder');
-	Route::put('bid/closePurchaseOrder/{id}', 'APIv1\BidController@closePurchaseOrder');
-	Route::get('bid/searchPurchaseOrder', 'APIv1\BidController@searchPurchaseOrder');
 	Route::get('bid/search', 'APIv1\BidController@search');
 	Route::get('bid/getProducerAddress', 'APIv1\BidController@getProducerAddress');
 	Route::get('bid/getProducerAccount', 'APIv1\BidController@getProducerAccount');
