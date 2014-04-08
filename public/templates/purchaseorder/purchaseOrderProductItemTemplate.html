@@ -1,17 +1,9 @@
 <tr class="product-item">
-	<td><input class="form-control" type="text" /></td>
-	<td><textarea class="form-control"></textarea></td>
-	<td><input class="form-control" type="text" /></td>
-	<td><input class="form-control" type="text" /></td>
-	<td><input class="form-control" type="text" /></td>
-	<td><input class="form-control" type="text" /></td>
-	<td>
-		<select class="form-control">
-			<option value="0">No</option>
-			<option value="1">Yes</option>
-		</select>
-	</td>
-	<td>
-		<button title="Remove Product" type="button" class="pull-right btn btn-default btn-xs remove-bid-product"><span class="glyphicon glyphicon-remove"></span></button>
-	</td>
+	<td><span class="po-product"></span><input class="product_id product" type="hidden" name="product" value="" /></td>
+	<td><span class="po-product-desc"></span></td>
+	<td class="text-right-align"><span class="po-product-stacknumber"></span></td>
+	<td class="text-right-align"><span class="po-product-tons"></span></td>
+	<td class="text-right-align"><span class="po-product-bales"></span></td>
+	<td><input class="form-control unitprice text-right-align" name="unitprice" type="text" value="" required/></td>
+	<td class="text-right-align"><span class="po-product-amount"></span></td>
 </tr>

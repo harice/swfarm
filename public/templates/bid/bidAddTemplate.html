@@ -1,4 +1,4 @@
-<form id="bidUserForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+<form id="bidForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
 	<% if (typeof bid_id !== "undefined") { %>
 		<input type="hidden" name="id" value="<%= bid_id %>" />
 	<% } %>
@@ -112,8 +112,9 @@
 	<div class="form-group form-button-container">
 		<div class="pull-right">
 		<button id="create-po" type="button" class="save btn btn-default">Create PO</button>
+		<a id="cancel-po" class="btn btn-default" href="#">Cancel Bid</a>
 		<button id="save" type="submit" class="save btn btn-default">Save</button>
-		<a id="cancel-user-save" class="btn btn-default" href="<%= bid_url %>">Back</a>
+		<a id="cancel-save" class="btn btn-default" href="<%= bid_url %>">Back</a>
 		</div>
 	</div>
 </form>

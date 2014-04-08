@@ -16,9 +16,7 @@ define([
 					sort: {
 						bidnumber: true,
 						created_at: false,
-						status: true,
 						producer: true,
-						destination: true,
 					},
 				}
 			);

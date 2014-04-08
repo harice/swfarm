@@ -39,13 +39,14 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
+			this.isCreatePO = false;
 			this.producerAutoCompleteResult = [];
 			this.productAutoCompletePool = [];
 			this.options = {
 				bidProductFieldClone: null,
 				bidProductFieldCounter: 0,
-				bidProductFieldClass: ['product', 'id', 'productname', 'stacknumber', 'bidprice', 'tons', 'bales', 'ishold'],
-				bidProductFieldClassRequired: ['productname', 'stacknumber', 'bidprice', 'tons', 'bales'],
+				bidProductFieldClass: ['product', 'description', 'id', 'productname', 'stacknumber', 'bidprice', 'tons', 'bales', 'ishold'],
+				bidProductFieldClassRequired: ['productname', 'stacknumber', 'bidprice'],
 				bidProductFieldExempt: ['productname'],
 				bidProductFieldSeparator: '.',
 			};
@@ -118,11 +119,14 @@ define([
 			
 			this.generateDestination(this.bidDestinationCollection.models);
 			
-			var validate = $('#bidUserForm').validate({
+			var validate = $('#bidForm').validate({
 				submitHandler: function(form) {
 					//console.log($(form).serializeObject());
 					var data = thisObj.formatFormField($(form).serializeObject());
 					//console.log(data);
+					
+					if(thisObj.isCreatePO)
+						data['purchaseorder'] = true;
 					
 					var bidModel = new BidModel(data);
 					
@@ -131,9 +135,15 @@ define([
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								Global.getGlobalVars().app_router.navigate(Const.URL.BID, {trigger: true});
+								if(thisObj.isCreatePO) {
+									Global.getGlobalVars().app_router.navigate(Const.URL.PO+'/'+Const.CRUD.EDIT+'/'+model.get('id'), {trigger: true});
+								}
+								else
+									Global.getGlobalVars().app_router.navigate(Const.URL.BID, {trigger: true});
+								thisObj.isCreatePO = false;
 							},
 							error: function (model, response, options) {
+								thisObj.isCreatePO = false;
 								if(typeof response.responseJSON.error == 'undefined')
 									validate.showErrors(response.responseJSON);
 									//validate.showErrors({asdasdasd:'hello world'});
@@ -143,6 +153,9 @@ define([
 							headers: bidModel.getAuth(),
 						}
 					);
+				},
+				invalidHandler: function (event, validator) {
+					thisObj.isCreatePO = false;
 				},
 			});
 			
@@ -172,7 +185,7 @@ define([
 				bidProductFields.find('.id').val(bidProduct.id);
 				bidProductFields.find('.productname').val(bidProduct.product[0].name);
 				bidProductFields.find('.product_id').val(bidProduct.product[0].id);
-				bidProductFields.find('.product-description').val(thisObj.getDescFromProductAutoCompletePool(bidProduct.product[0].id));
+				//bidProductFields.find('.product-description').val(thisObj.getDescFromProductAutoCompletePool(bidProduct.product[0].id));
 				bidProductFields.find('.stacknumber').val(bidProduct.stacknumber);
 				bidProductFields.find('.bidprice').val(bidProduct.bidprice);
 				bidProductFields.find('.tons').val(bidProduct.tons);
@@ -217,7 +230,7 @@ define([
 				source:products,
 				select: function (ev, ui) {
 					var productField = $(ev.target);
-					productField.closest('.product-item').find('.product-description').val(ui.item.desc);
+					//productField.closest('.product-item').find('.product-description').val(ui.item.desc);
 					productField.siblings('.product_id').val(ui.item.id);
 					productField.val(ui.item.label);
 					return false;
@@ -235,8 +248,9 @@ define([
 			'blur .bidprice': 'onBlurBidPrice',
 			'keyup .bidprice': 'onKeyUpBidPrice',
 			'keyup .tons': 'onKeyUpTons',
-			'keyup .bales': 'onKeyUpBales',
+			//'keyup .bales': 'onKeyUpBales',
 			'click #create-po': 'createPO',
+			'click #cancel-po': 'cancelPO',
 		},
 		
 		generateDestination: function (destinationModels) {
@@ -282,7 +296,8 @@ define([
 			$(ev.target).closest('tr').remove();
 			
 			if(!this.hasProduct())
-				this.$el.find('#bid-product-list tbody').append('<tr><td colspan="8">No products added.</td></tr>');
+				//this.$el.find('#bid-product-list tbody').append('<tr><td colspan="8">No products added.</td></tr>');
+				this.addBidProduct();
 		},
 		
 		addValidationToBidProduct: function () {
@@ -467,7 +482,7 @@ define([
 		emptyProductFields: function (field) {
 			field.val('');
 			field.siblings('.product_id').val('');
-			field.closest('.product-item').find('.product-description').val('');
+			//field.closest('.product-item').find('.product-description').val('');
 		},
 		
 		hasProduct: function () {
@@ -508,6 +523,35 @@ define([
 		},
 		
 		onBlurBidPrice: function (ev) {
+			var field = $(ev.target);
+			var bidPrice = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
+			var tonsField = field.closest('.product-item').find('.tons');
+			var tons = (!isNaN(parseFloat(tonsField.val())))? parseFloat(tonsField.val()) : 0;
+			
+			field.val(bidPrice.toFixed(2));
+			this.computeUnitePrice(bidPrice, tons, field.closest('.product-item').find('.unit-price'));
+		},
+		
+		onKeyUpBidPrice: function (ev) {
+			var field = $(ev.target);
+			var bidPrice = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
+			var tonsField = field.closest('.product-item').find('.tons');
+			var tons = (!isNaN(parseFloat(tonsField.val())))? parseFloat(tonsField.val()) : 0;
+			
+			this.computeUnitePrice(bidPrice, tons, field.closest('.product-item').find('.unit-price'));
+		},
+		
+		onKeyUpTons: function (ev) {
+			var field = $(ev.target);
+			
+			var tons = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
+			var bidPriceField = field.closest('.product-item').find('.bidprice');
+			var bidPrice = (!isNaN(parseFloat(bidPriceField.val())))? parseFloat(bidPriceField.val()) : 0;
+			
+			this.computeUnitePrice(bidPrice, tons, field.closest('.product-item').find('.unit-price'));
+		},
+		
+		/*onBlurBidPrice: function (ev) {
 			var field = $(ev.target);
 			var bidPrice = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
 			var tonsField = field.closest('.product-item').find('.tons');
@@ -560,7 +604,7 @@ define([
 			var bidPrice = (!isNaN(parseFloat(bidPriceField.val())))? parseFloat(bidPriceField.val()) : 0;
 			
 			this.computeUnitePrice(bidPrice, bales, field.closest('.product-item').find('.unit-price'));
-		},
+		},*/
 		
 		computeUnitePrice: function (bidPrice, tonsOrBales, unitePriceField) {
 			var unitPrice = 0;
@@ -569,7 +613,13 @@ define([
 		},
 		
 		createPO: function () {
-			console.log('create PO');
+			this.isCreatePO = true;
+			$('#bidForm').submit();
+		},
+		
+		cancelPO: function () {
+			console.log('cancelPO');
+			return false;
 		},
 	});
 
