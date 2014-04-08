@@ -116,4 +116,8 @@ class BidController extends BaseController {
 	public function addUnitPriceToBidProduct($bidId){
 		return $this->bid->addUnitPriceToBidProduct($bidId, Input::all());
 	}
+
+	public function cancelBid($bidId){
+		return $this->bid->cancelBid($bidId);
+	}
 }

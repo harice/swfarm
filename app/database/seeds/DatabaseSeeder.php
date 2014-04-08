@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder {
 
         $this->call('DestinationTableSeeder');
         
-        $this->call('WeightTicketTypeTableSeeder');
+        // $this->call('WeightTicketTypeTableSeeder');
 
 	}
 
