@@ -48,9 +48,9 @@ define([
 			
 			var thisObj = this;
 			var innerTemplateVar = {
-										'bid_add_url' : '#/'+Const.URL.BID+'/'+Const.CRUD.ADD,
-										'destination_filters' : destinationTemplate,
-									};
+				'bid_add_url' : '#/'+Const.URL.BID+'/'+Const.CRUD.ADD,
+				'destination_filters' : destinationTemplate,
+			};
 			var innerTemplate = _.template(bidListTemplate, innerTemplateVar);
 			
 			var variables = {
