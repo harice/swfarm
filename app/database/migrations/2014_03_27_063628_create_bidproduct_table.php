@@ -25,7 +25,6 @@ class CreateBidproductTable extends Migration {
 			$table->integer('bales');
 			$table->boolean('ishold');
 			$table->float('unitprice')->nullable();
-			$table->timestamps();
 
 			$table->foreign('bid_id')->references('id')->on('bid')->onDelete('cascade');
 			$table->foreign('product_id')->references('id')->on('products');
