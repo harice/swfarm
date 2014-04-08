@@ -327,7 +327,7 @@ class BidRepository implements BidRepositoryInterface {
     $page     = isset($_search['page']) ? $_search['page'] : 1;
     $sortby   = isset($_search['sortby']) ? $_search['sortby'] : 'created_at';
     $orderby  = isset($_search['orderby']) ? $_search['orderby'] :'ASC';
-    $bidStatus = isset($_search['bidStatus']) ? $_search['bidStatus'] : null;
+    $bidStatus = isset($_search['bidstatus']) ? $_search['bidstatus'] : null;
     $date = isset($_search['date']) ? $_search['date'] : null;
     $destination = isset($_search['destination']) ? $_search['destination'] : null;
     $offset   = $page * $perPage - $perPage;
@@ -419,7 +419,7 @@ class BidRepository implements BidRepositoryInterface {
     $page     = isset($_search['page']) ? $_search['page'] : 1;
     $sortby   = isset($_search['sortby']) ? $_search['sortby'] : 'po_date';
     $orderby  = isset($_search['orderby']) ? $_search['orderby'] :'ASC';
-    $poStatus = isset($_search['poStatus']) ? $_search['poStatus'] : null;
+    $poStatus = isset($_search['postatus']) ? $_search['postatus'] : null;
     $date = isset($_search['date']) ? $_search['date'] : null;
     $destination = isset($_search['destination']) ? $_search['destination'] : null;
     $offset   = $page * $perPage - $perPage;
