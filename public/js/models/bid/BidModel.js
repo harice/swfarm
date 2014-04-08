@@ -22,6 +22,9 @@ define([
 				headers: thisObj.getAuth(),
 			});
 		},
+		setCancelURL: function () {
+			this.urlRoot = '/apiv1/bid/cancelBid';
+		},
 	});
 	return BidModel;
 });

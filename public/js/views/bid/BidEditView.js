@@ -618,7 +618,24 @@ define([
 		},
 		
 		cancelPO: function () {
-			console.log('cancelPO');
+			var bidModel = new BidModel({id:this.model.get('id')});
+			bidModel.setCancelURL();		
+			bidModel.save(
+				null, 
+				{
+					success: function (model, response, options) {
+						thisObj.displayMessage(response);
+						Global.getGlobalVars().app_router.navigate(Const.URL.BID, {trigger: true});
+					},
+					error: function (model, response, options) {
+						if(typeof response.responseJSON.error == 'undefined')
+							validate.showErrors(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: bidModel.getAuth(),
+				}
+			);
 			return false;
 		},
 	});
