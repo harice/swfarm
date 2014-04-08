@@ -202,7 +202,7 @@ class BidRepository implements BidRepositoryInterface {
 
   private function generatePurchaseOrderNumber(){
     $dateToday = date('Y-m-d');
-    $count = Bid::whereNotNull('ponumber')->where('created_at', 'like', $dateToday.'%')->count()+1;
+    $count = Bid::whereNotNull('ponumber')->where('po_date', 'like', $dateToday.'%')->count()+1;
     
     return 'P'.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
   }
@@ -280,6 +280,7 @@ class BidRepository implements BidRepositoryInterface {
             $bidproduct->bidprice = $bidProductData['bidprice'];
             $bidproduct->bales = $bidProductData['bales'];
             $bidproduct->tons = $bidProductData['tons'];
+            $bidproduct->description = isset($bidProductData['description']) ? $bidProductData['description']: '';          
             $bidproduct->ishold = isset($bidProductData['ishold']) ? $bidProductData['ishold']: false;
 
             $bidproduct->save();
