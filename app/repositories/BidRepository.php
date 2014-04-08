@@ -422,12 +422,14 @@ class BidRepository implements BidRepositoryInterface {
     $orderby  = isset($_search['orderby']) ? $_search['orderby'] :'ASC';
     $poStatus = isset($_search['postatus']) ? $_search['postatus'] : null;
     $date = isset($_search['date']) ? $_search['date'] : null;
+    $pickupstart = isset($_search['pickupstart']) ? $_search['pickupstart'] : null;
+    $pickupend = isset($_search['pickupend']) ? $_search['pickupend'] : null;
     $destination = isset($_search['destination']) ? $_search['destination'] : null;
     $offset   = $page * $perPage - $perPage;
 
     $searchWord = isset($_search['search']) ? $_search['search'] : '';
 
-    $count = Bid::where(function($query) use ($searchWord){
+    $count = Bid::where(function($query) use ($searchWord, $pickupstart, $pickupend){
                      $query->orWhereHas('account', function($query) use ($searchWord){
                           $query->where('name', 'like', '%'.$searchWord.'%');
 
@@ -438,7 +440,7 @@ class BidRepository implements BidRepositoryInterface {
                       })
                       ->orWhere(function ($query) use ($searchWord){
                           $query->orWhere('ponumber','like','%'.$searchWord.'%');
-                      });
+                      });     
                   })
                   ->whereNull('deleted_at')
                   ->whereNotNull('ponumber');
@@ -453,7 +455,7 @@ class BidRepository implements BidRepositoryInterface {
                       'address.addressType', 
                       'address.account',
                       'purchaseorder')
-                  ->where(function($query) use ($searchWord){
+                  ->where(function($query) use ($searchWord, $pickupstart, $pickupend){
                      $query->orWhereHas('account', function($query) use ($searchWord){
                           $query->where('name', 'like', '%'.$searchWord.'%');
 
@@ -468,6 +470,17 @@ class BidRepository implements BidRepositoryInterface {
                   })
                   ->whereNull('deleted_at')
                   ->whereNotNull('ponumber');
+
+      if($pickupstart != null && $pickupend != null){
+        $count = $count->whereHas('purchaseorder', function ($query) use ($pickupstart, $pickupend){
+                    $query->where('pickupstart','like', $pickupstart.'%')
+                          ->where('pickupend','like', $pickupend.'%');
+                  });
+        $purchaseOrder = $purchaseOrder->whereHas('purchaseorder', function ($query) use ($pickupstart, $pickupend){
+                          $query->where('pickupstart','like', $pickupstart.'%')
+                                ->where('pickupend','like', $pickupend.'%');
+                        });
+      }
 
       if($poStatus !=  null){ //postatus can only be "Open", "Cancelled" or "Closed"
         $count = $count->where(function ($query) use ($poStatus){
