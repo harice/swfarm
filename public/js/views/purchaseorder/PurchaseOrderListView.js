@@ -56,6 +56,8 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+			
+			this.initCalendars();
 		},
 		
 		displayList: function () {
@@ -70,17 +72,21 @@ define([
 			var innerListTemplate = _.template(purchaseOrderInnerListTemplate, data);
 			$("#po-list tbody").html(innerListTemplate);
 			
-			this.initCalendars();
 			this.generatePagination();
 		},
 		
 		initCalendars: function () {
+			var thisObj = this;
+			
 			this.$el.find('#filter-date-of-purchase .input-group.date').datepicker({
 				orientation: "top left",
 				autoclose: true,
 				clearBtn: true,
 				todayHighlight: true,
 				format: 'yyyy-mm-dd',
+			}).on('changeDate', function (ev) {
+				thisObj.collection.setDate($('#filter-date-of-purchase .input-group.date input').val());
+				thisObj.renderList();
 			});
 			
 			this.$el.find('#filter-pickup-start .input-group.date').datepicker({
@@ -102,6 +108,8 @@ define([
 		
 		events: {
 			'click .cancel-po' : 'cancelPO',
+			'change .bidDestination' : 'filterByDestination',
+			'change .statusFilter' : 'filterByStatus',
 		},
 		
 		cancelPO: function (ev) {
@@ -131,6 +139,20 @@ define([
 				);
 			}
 			
+			return false;
+		},
+		
+		filterByDestination: function (ev) {
+			var filter = $(ev.target).val(); console.log(filter);
+			this.collection.setFilter('destination', filter)
+			this.renderList(1);
+			return false;
+		},
+		
+		filterByStatus: function (ev) {
+			var filter = $(ev.target).val(); console.log(filter);
+			this.collection.setFilter('postatus', filter)
+			this.renderList(1);
 			return false;
 		},
 	});

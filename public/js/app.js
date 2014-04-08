@@ -44,7 +44,7 @@ define([
 			}
 		};
 		
-		Backbone.View.prototype.lnToBr = function (str) {
+		Backbone.View.prototype.nlToBr = function (str) {
 			var replaced = str.replace(/\n/g, '<br />');
 			//replaced = replaced.replace(/\r/g, '<br />');
 			return replaced;

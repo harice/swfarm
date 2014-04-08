@@ -5,7 +5,7 @@ define([
 	'collections/bid/BidCollection',
 ], function(Backbone, ListViewCollection, POModel, BidCollection){
 	var POCollection = BidCollection.extend({
-		url: '/apiv1/bid/getPurchaseOrder',
+		url: '/apiv1/po',
 		model: POModel,
 		initialize: function(){
 			this.runInit();
@@ -22,7 +22,7 @@ define([
 			);
 			
 			this.listView.filters.destination = '';
-			this.listView.filters.status = '';
+			this.listView.filters.postatus = '';
 		},
 	});
 
