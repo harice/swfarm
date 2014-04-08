@@ -540,14 +540,22 @@ class BidRepository implements BidRepositoryInterface {
   }
 
   public function addUnitPriceToBidProduct($bidId, $data){
+    try{
       foreach($data['products'] as $bidProductData){
         // $bidproduct = BidProduct::find($bidProductData['id']);
         $bidproduct = BidProduct::where('id', '=', $bidProductData['id'])
-                                //->where('bid_id', '=', $bidId)
+                                ->where('bid_id', '=', $bidId)
                                 ->first();
         $bidproduct->unitprice = isset($bidProductData['unitprice']) ? $bidProductData['unitprice'] : null;
         $bidproduct->save();
       }
+    } catch(Exception $e){
+      return Response::json(array(
+        'error' => true,
+        'message' => "Please check the parameters."),
+        200
+      );
+    }
       return Response::json(array(
           'error' => false,
           'message' => 'Products unit price successfully updated.'),
@@ -563,6 +571,18 @@ class BidRepository implements BidRepositoryInterface {
     return Response::json(array(
           'error' => false,
           'message' => 'Purchase order cancelled.'),
+          200
+      );
+  }
+
+  public function cancelBid($bidId){
+    $bid = Bid::find($bidId);
+    $bid->status = "Cancelled";
+    $bid->save();
+
+    return Response::json(array(
+          'error' => false,
+          'message' => 'Bid cancelled.'),
           200
       );
   }
