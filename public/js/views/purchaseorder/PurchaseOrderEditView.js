@@ -54,7 +54,8 @@ define([
 			var thisObj = this;
 			
 			var innerTemplateVariables = {
-				'po_url' : '#/'+Const.URL.PO
+				'po_url' : '#/'+Const.URL.PO,
+				'po_id' : this.model.get('id'),
 			};
 			var innerTemplate = _.template(purchaseOrderAddTemplate, innerTemplateVariables);
 			
@@ -68,16 +69,29 @@ define([
 			var validate = $('#POPropertiesForm').validate({
 				submitHandler: function(form) {
 					//console.log($(form).serializeObject());
-					var data = thisObj.formatFormField($(form).serializeObject());
-					//console.log(data);
+					var data = $(form).serializeObject();
+					console.log(data);
+					
+					/*var poModel = new POModel(data);
+					
+					poModel.save(
+						null, 
+						{
+							success: function (model, response, options) {
+								thisObj.displayMessage(response);
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: poModel.getAuth(),
+						}
+					);*/
 				},
-			});
-			
-			var validate = $('#POProductForm').validate({
-				submitHandler: function(form) {
-					//console.log($(form).serializeObject());
-					var data = thisObj.formatFormField($(form).serializeObject());
-					//console.log(data);
+				errorPlacement: function(error, element) {
+					element.closest('.calendar-cont').siblings('.error-msg-cont').html(error);
 				},
 			});
 			
