@@ -62,7 +62,7 @@
 					</div>
 					<label for="date" class="col-sm-1 control-label">End</label>
 					<div class="col-sm-4">
-						<div id="start-date" class="calendar-cont">
+						<div id="end-date" class="calendar-cont">
 							<div class="input-group date">
 								<input type="text" class="form-control" name="pickupend" value="" required>
 								<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
@@ -95,7 +95,7 @@
 </ul>
 <div id="add-po-tab-content" class="tab-content">
 	<div class="tab-pane active" id="po-product-details">
-		<!--<form id="POProductForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+		<form id="POProductForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
 			<fieldset>
 				<legend>
 					Products
@@ -113,9 +113,7 @@
 								<th>Amount</th>
 							</tr>
 						</thead>
-						<tbody>
-							<tr><td colspan="7">No products added.</td></tr>
-						</tbody>
+						<tbody></tbody>
 						<tfoot>
 							<tr>
 								<td colspan="6" class="text-right-align">Total</td>
@@ -130,7 +128,7 @@
 					<button id="save" type="submit" class="save btn btn-default">Save</button>
 				</div>
 			</div>
-		</form>-->
+		</form>
 	</div>
 	<div class="tab-pane" id="po-schedule">
 		

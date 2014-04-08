@@ -5,7 +5,10 @@ define([
 
 	var POModel = BidModel.extend({
 		setEditPOURL: function () {
-			this.urlRoot = '/apiv1/bid/cancelPurchaseOrder';
+			this.urlRoot = '/apiv1/bid/addPickupDateToPurchaseOrder';
+		},
+		setEditPOProductURL: function () {
+			this.urlRoot = '/apiv1/bid/addUnitPriceToBidProduct';
 		},
 	});
 	return POModel;
