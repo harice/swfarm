@@ -36,8 +36,14 @@ class WeightInfoRepository implements WeightInfoRepositoryInterface {
         try
         {
             $weightinfo = $this->instance();
+            $weightinfo->bales = $data['bales'];
             $weightinfo->gross = $data['gross'];
             $weightinfo->tare = $data['tare'];
+            $weightinfo->net = $data['net'];
+            $weightinfo->po_id = $data['po_id'];
+            $weightinfo->product = $data['product'];
+            $weightinfo->scale = $data['scale'];
+            $weightinfo->scale_fee = $data['scale_fee'];
 
             $weightinfo->save();
 
@@ -68,9 +74,11 @@ class WeightInfoRepository implements WeightInfoRepositoryInterface {
     public function destroy($id)
     {
         $role = $this->findById($id);
+        $deleted_role = $role;
+        
         $role->delete();
         
-        return true;
+        return $deleted_role;
     }
     
     public function validate($data)
