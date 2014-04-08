@@ -188,6 +188,7 @@ define([
 		events: {
 			'blur .unitprice': 'onBlurUnitPrice',
 			'keyup .unitprice': 'onKeyUpUnitPrice',
+			'click #cancel-po': 'cancelPO',
 		},
 		
 		hasProduct: function () {
@@ -300,6 +301,35 @@ define([
 			
 			return formData;
 		},
+		
+		cancelPO: function () {
+			var thisObj = this;
+			
+			var verifyCancel = confirm('Are you sure you want to cancel this PO?');
+			
+			if(verifyCancel) {
+				var poModel = new POModel({id:this.model.get('id')});
+				poModel.setCancelURL();		
+				poModel.save(
+					null, 
+					{
+						success: function (model, response, options) {
+							thisObj.displayMessage(response);
+							Global.getGlobalVars().app_router.navigate(Const.URL.PO, {trigger: true});
+						},
+						error: function (model, response, options) {
+							if(typeof response.responseJSON.error == 'undefined')
+								validate.showErrors(response.responseJSON);
+							else
+								thisObj.displayMessage(response);
+						},
+						headers: poModel.getAuth(),
+					}
+				);
+			}
+			
+			return false;
+		}
 	});
 
   return PurchaseOrderAddView;

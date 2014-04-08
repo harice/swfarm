@@ -22,7 +22,7 @@ define([
 			);
 			
 			this.listView.filters.destination = '';
-			this.listView.filters.status = '';
+			this.listView.filters.bidstatus = '';
 		},
 	});
 

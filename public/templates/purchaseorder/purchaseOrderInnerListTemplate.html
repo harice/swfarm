@@ -22,7 +22,12 @@
 		<td><%= po.get("po_status") %></td>
 		<td><%= po.get("destination").destination %></td>
 		<td class="text-right-align"><%= parseFloat(po.get("totalPrice")).toFixed(2) %></td>
-		<td><a href="<%= po_edit_url %>/<%= po.get("id") %>">edit</a></td>
+		<td>
+			<% if (po.get("po_status").toLowerCase() == "open") { %>
+				<a href="<%= po_edit_url %>/<%= po.get("id") %>">edit</a>
+				<a class="cancel-po" href="#" data-id="<%= po.get("id") %>">cancel po</a>
+			<% } %>
+		</td>
 	</tr>
 	<% }); %>
 <% } else { %>

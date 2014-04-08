@@ -112,7 +112,7 @@ define([
 			var thisObj = this;
 			var field = $(ev.target);
 			
-			var verifyCancel = confirm('Are you sure you want to delete this role?');
+			var verifyCancel = confirm('Are you sure you want to cancel this Bid?');
 			
 			if(verifyCancel) {
 				var bidModel = new BidModel({id:field.attr('data-id')});
@@ -147,7 +147,7 @@ define([
 		
 		filterByStatus: function (ev) {
 			var filter = $(ev.target).val(); console.log(filter);
-			this.collection.setFilter('status', filter)
+			this.collection.setFilter('bidstatus', filter)
 			this.renderList(1);
 			return false;
 		},

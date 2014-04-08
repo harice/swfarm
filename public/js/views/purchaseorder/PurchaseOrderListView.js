@@ -1,12 +1,13 @@
 define([
 	'backbone',
 	'views/base/ListView',
+	'models/purchaseorder/POModel',
 	'collections/purchaseorder/POCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderListTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderInnerListTemplate.html',
 	'constant',
-], function(Backbone, ListView, POCollection, contentTemplate, purchaseOrderListTemplate, purchaseOrderInnerListTemplate, Const){
+], function(Backbone, ListView, POModel, POCollection, contentTemplate, purchaseOrderListTemplate, purchaseOrderInnerListTemplate, Const){
 
 	var PurchaseOrderListView = ListView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -81,6 +82,40 @@ define([
 				todayHighlight: true,
 				format: 'yyyy-mm-dd',
 			});
+		},
+		
+		events: {
+			'click .cancel-po' : 'cancelPO',
+		},
+		
+		cancelPO: function (ev) {
+			var thisObj = this;
+			var field = $(ev.target);
+			
+			var verifyCancel = confirm('Are you sure you want to cancel this PO?');
+			
+			if(verifyCancel) {
+				var poModel = new POModel({id:field.attr('data-id')});
+				poModel.setCancelURL();		
+				poModel.save(
+					null, 
+					{
+						success: function (model, response, options) {
+							thisObj.displayMessage(response);
+							thisObj.renderList(thisObj.collection.getCurrentPage());
+						},
+						error: function (model, response, options) {
+							if(typeof response.responseJSON.error == 'undefined')
+								validate.showErrors(response.responseJSON);
+							else
+								thisObj.displayMessage(response);
+						},
+						headers: poModel.getAuth(),
+					}
+				);
+			}
+			
+			return false;
 		},
 	});
 

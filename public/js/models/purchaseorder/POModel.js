@@ -10,6 +10,9 @@ define([
 		setEditPOProductURL: function () {
 			this.urlRoot = '/apiv1/bid/addUnitPriceToBidProduct';
 		},
+		setCancelURL: function () {
+			this.urlRoot = '/apiv1/bid/cancelPurchaseOrder';
+		},
 	});
 	return POModel;
 });

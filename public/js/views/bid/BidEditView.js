@@ -620,7 +620,7 @@ define([
 		cancelPO: function () {
 			var thisObj = this;
 			
-			var verifyCancel = confirm('Are you sure you want to delete this role?');
+			var verifyCancel = confirm('Are you sure you want to cancel this Bid?');
 			
 			if(verifyCancel) {
 				var bidModel = new BidModel({id:this.model.get('id')});
