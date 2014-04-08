@@ -16,9 +16,16 @@ class CreateWeightinfoTable extends Migration {
 		{
 			$table->engine = 'InnoDB';
 			$table->increments('id');
+            $table->integer('bales')->nullable();
 			$table->float('gross');
 			$table->float('tare');
+            $table->float('net');
 			$table->timestamps();
+            
+            $table->integer('po_id');
+            $table->string('product');
+            $table->string('scale');
+            $table->float('scale_fee');
 		});
 	}
 

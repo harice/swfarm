@@ -29,8 +29,14 @@ class WeightInfoRepositoryTest extends TestCase {
     public function testStoreReturnsModel()
     {
         $data = array(
-            'gross' => 99.99,
-            'tare' => 88.88
+            'bales' => 5,
+            'gross' => 19.99,
+            'tare' => 18.88,
+            'net' => 1.11,
+            'po_id' => 10001,
+            'product' => 'Alfalfa',
+            'scale' => 'Scale Services',
+            'scale_fee' => 10.00
         );
 
         $response = $this->repo->store($data);
@@ -55,7 +61,7 @@ class WeightInfoRepositoryTest extends TestCase {
     public function testDestroySaves()
     {
         $reply = $this->repo->destroy(1);
-        $this->assertTrue($reply);
+        $this->assertTrue($reply instanceof Model);
 
         try {
             $this->repo->findById(1);
