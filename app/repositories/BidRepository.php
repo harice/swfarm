@@ -112,6 +112,16 @@ class BidRepository implements BidRepositoryInterface {
 
     $poList = $poList->get();             
 
+    //get the total price of products on PO
+    foreach($poList as $po){
+      $po['totalPrice'] = 0.00;
+      foreach($po['bidproduct'] as $bidproduct){
+        if($bidproduct['unitprice'] != null){
+          $po['totalPrice'] += $bidproduct['unitprice'] * $bidproduct['tons'];
+        }
+      }
+    }
+
     return Response::json(array(
       'total'=>$count,
       'data'=>$poList->toArray()
