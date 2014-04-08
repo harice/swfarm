@@ -8,10 +8,10 @@
 			<td><%= bid.get("account").name %></td>
 			<td><%= bid.get("destination").destination %></td>
 			<td>
-				<% if (bid.get("status").toLowerCase() != "closed") { %>
+				<% if (bid.get("status").toLowerCase() == "open") { %>
 					<a href="<%= bid_edit_url %>/<%= bid.get("id") %>">edit</a> 
+					<a class="cancel-bid" href="#" data-id="<%= bid.get("id") %>">cancel bid</a>
 				<% } %>
-				<a class="cancel-bid" href="#">cancel bid</a>
 			</td>
 		</tr>
 	<% }); %>

@@ -2,6 +2,7 @@ define([
 	'backbone',
 	'bootstrapdatepicker',
 	'views/base/ListView',
+	'models/bid/BidModel',
 	'collections/bid/BidCollection',
 	'collections/bid/BidDestinationCollection',
 	'text!templates/layout/contentTemplate.html',
@@ -9,7 +10,7 @@ define([
 	'text!templates/bid/bidDestinationTemplate.html',
 	'text!templates/bid/bidInnerListTemplate.html',
 	'constant',
-], function(Backbone, DatePicker, ListView, BidCollection, BidDestinationCollection, contentTemplate, bidListTemplate, bidDestinationTemplate, bidInnerListTemplate, Const){
+], function(Backbone, DatePicker, ListView, BidModel, BidCollection, BidDestinationCollection, contentTemplate, bidListTemplate, bidDestinationTemplate, bidInnerListTemplate, Const){
 
 	var BidListView = ListView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -107,7 +108,33 @@ define([
 			this.sortByField('producer');
 		},
 		
-		cancelBid: function () {
+		cancelBid: function (ev) {
+			var thisObj = this;
+			var field = $(ev.target);
+			
+			var verifyCancel = confirm('Are you sure you want to delete this role?');
+			
+			if(verifyCancel) {
+				var bidModel = new BidModel({id:field.attr('data-id')});
+				bidModel.setCancelURL();		
+				bidModel.save(
+					null, 
+					{
+						success: function (model, response, options) {
+							thisObj.displayMessage(response);
+							thisObj.renderList(thisObj.collection.getCurrentPage());
+						},
+						error: function (model, response, options) {
+							if(typeof response.responseJSON.error == 'undefined')
+								validate.showErrors(response.responseJSON);
+							else
+								thisObj.displayMessage(response);
+						},
+						headers: bidModel.getAuth(),
+					}
+				);
+			}
+			
 			return false;
 		},
 		
