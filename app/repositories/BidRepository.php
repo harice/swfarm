@@ -59,7 +59,7 @@ class BidRepository implements BidRepositoryInterface {
                     'address.account')
                   ->take($perPage)
                   ->offset($offset)
-                  ->orderBy('created_at', $orderby);
+                  ->orderBy($sortby, $orderby);
 
     if($date != null){
       $bidList = $bidList->where('created_at', 'like', $date.'%'); 
@@ -76,6 +76,46 @@ class BidRepository implements BidRepositoryInterface {
       
     ));
 
+  }
+
+  public function getPurchaseOrder($params){
+    $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST'); //default to 10 items, see app/config/constants
+    $page = isset($params['page']) ? $params['page'] : '1'; //default to page 1
+    $sortby = isset($params['sortby']) ? $params['sortby'] : 'po_date'; //default sort to account name
+    $orderby = isset($params['orderby']) ? $params['orderby'] : 'DESC'; //default order is Ascending
+    $date = isset($params['date']) ? $params['date'] : null; //default date is the present date
+    $offset = $page*$perPage-$perPage;
+
+    $poList = Bid::with(
+                    'bidproduct', 
+                    'account', 
+                    'bidproduct.product', 
+                    'destination', 
+                    'address', 
+                    'address.addresscity', 
+                    'address.addressstates', 
+                    'address.addressType', 
+                    'address.account',
+                    'purchaseorder');
+
+    $poList = $poList->whereNotNull('ponumber')
+                  ->take($perPage)
+                  ->offset($offset)
+                  ->orderBy($sortby, $orderby);
+
+    if($date != null){
+      $poList = $poList->where('po_date', 'like', $date.'%'); 
+      $count = Bid::whereNotNull('ponumber')->where('po_date', 'like', $date.'%')->count();
+    } else {
+      $count = Bid::whereNotNull('ponumber')->count();
+    }
+
+    $poList = $poList->get();             
+
+    return Response::json(array(
+      'total'=>$count,
+      'data'=>$poList->toArray()
+    ));
   }
 
   public function store($data){
@@ -463,6 +503,54 @@ class BidRepository implements BidRepositoryInterface {
     return Response::json(array(
           'error' => false,
           'message' => 'Purchase order successfully created.'),
+          200
+      );
+  }
+
+  public function addPickupDateToPurchaseOrder($bidId, $data){
+     $rules = array(
+      'pickupstart' => 'required|date',
+      'pickupend' => 'required|date'
+    );
+
+    $this->validate($data, $rules);
+
+    DB::transaction(function() use ($bidId, $data){
+      $purchaseOrder = PurchaseOrder::where('bid_id', '=', $bidId)->first();
+
+      if($purchaseOrder == null){
+        $purchaseOrder = new PurchaseOrder;
+        $purchaseOrder->bid_id = $bidId;
+      }
+      
+      $purchaseOrder->pickupstart = $data['pickupstart'];
+      $purchaseOrder->pickupend = $data['pickupend'];
+      $purchaseOrder->save();
+
+      $bid = Bid::find($bidId);
+      $bid->notes =  isset($data['notes']) ? $data['notes'] : '';
+      $bid->save();
+    });
+
+    return Response::json(array(
+          'error' => false,
+          'message' => 'Pick up date added successfully.'),
+          200
+      );
+  }
+
+  public function addUnitPriceToBidProduct($bidId, $data){
+      foreach($data['products'] as $bidProductData){
+        // $bidproduct = BidProduct::find($bidProductData['id']);
+        $bidproduct = BidProduct::where('id', '=', $bidProductData['id'])
+                                //->where('bid_id', '=', $bidId)
+                                ->first();
+        $bidproduct->unitprice = isset($bidProductData['unitprice']) ? $bidProductData['unitprice'] : null;
+        $bidproduct->save();
+      }
+      return Response::json(array(
+          'error' => false,
+          'message' => 'Products unit price successfully updated.'),
           200
       );
   }
