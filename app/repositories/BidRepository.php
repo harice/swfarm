@@ -101,6 +101,8 @@ class BidRepository implements BidRepositoryInterface {
       if($data['isPO']){
         $bid->ponumber = $this->generatePurchaseOrderNumber(); //creating bid number  
         $bid->status = 'Closed';
+        $bid->po_status = 'Open';
+        $bid->po_date = date('Y-m-d H:i:s');
       }
       $bid->save();
 
@@ -184,6 +186,8 @@ class BidRepository implements BidRepositoryInterface {
         if($data['isPO']){
           $bid->ponumber = $this->generatePurchaseOrderNumber(); //creating bid number  
           $bid->status = 'Closed';
+          $bid->po_status = 'Open';
+          $bid->po_date = date('Y-m-d H:i:s');
         }
         $bid->save();
         
@@ -277,7 +281,7 @@ class BidRepository implements BidRepositoryInterface {
     $destination = isset($_search['destination']) ? $_search['destination'] : null;
     $offset   = $page * $perPage - $perPage;
 
-    $searchWord = $_search['search'];
+    $searchWord = isset($_search['search']) ? $_search['search'] : '';
 
     $count = Bid::where(function($query) use ($searchWord){
                      $query->orWhereHas('account', function($query) use ($searchWord){
@@ -442,10 +446,10 @@ class BidRepository implements BidRepositoryInterface {
       $purchaseOrder->bid_id = $data['bidId'];
       $purchaseOrder->pickupstart = $data['pickupstart'];
       $purchaseOrder->pickupend = $data['pickupend'];
-      $purchaseOrder->pickupend = "Open";
       $purchaseOrder->save();
 
       $bid = Bid::find($data['bidId']);
+      $bid->po_status = "Open";
       $bid->notes =  isset($data['notes']) ? $data['notes'] : '';
       $bid->save();
 
@@ -461,13 +465,18 @@ class BidRepository implements BidRepositoryInterface {
           'message' => 'Purchase order successfully created.'),
           200
       );
-
   }
 
-  public function cancelPurchaseOrder($id){
-    $purchaseOrder = PurchaseOrder::find($id);
-    $purchaseOrder->status = "Cancelled";
-    $purchaseOrder->save();
+  public function cancelPurchaseOrder($bidId){
+    $bid = Bid::find($bidId);
+    $bid->po_status = "Cancelled";
+    $bid->save();
+
+    return Response::json(array(
+          'error' => false,
+          'message' => 'Purchase order cancelled.'),
+          200
+      );
   }
 
 
