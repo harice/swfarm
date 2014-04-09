@@ -130,30 +130,31 @@ define([
 			'click #show-weight-info': 'showWeightTicket',
 		},
 		
-		/*validateTrucker: function (ev) {
+		validateTrucker: function (ev) {
 			var labelField = $(ev.target);
-			var fieldId = $(ev.target).attr('id');
-			var idField = labelField.siblings('#producer-id');
-			var producer = this.producerIsInFetchedData(labelField.val(), idField.val());
+			var labelFieldId = $(ev.target).attr('id');
+			var idField = '';
+			var account = '';
 			
-			switch(fieldId) {
+			switch(labelFieldId) {
 				case 'trucker':
-					
+					idField = labelField.siblings('#producer-id');
+					account = this.producerIsInFetchedData(labelField.val(), idField.val());
 					break;
 				default:
 					break;
 			}
 			
 			if(!this.producerAutoCompleteView.$el.is(':hover')) {
-				if(producer !== false) {
-					if(producer.id != null) {
-						labelField.val(producer.name);
-						idField.val(producer.id);
+				if(account !== false) {
+					if(account.id != null) {
+						labelField.val(account.name);
+						idField.val(account.id);
 						this.resetProducerAddress();
-						this.getProducerAddress(producer.id);
+						this.getProducerAddress(account.id);
 					}
 					else
-						labelField.val(producer.name);
+						labelField.val(account.name);
 				}
 				else {
 					labelField.val('');
@@ -162,7 +163,7 @@ define([
 				}
 				labelField.siblings('.autocomplete').hide();
 			}
-		},*/
+		},
 		
 		showAddSchedule: function () {
 			this.resetAddFields();
@@ -171,15 +172,20 @@ define([
 		},
 		
 		cancelAddSchedule: function () {
-			$('#po-schedule-form-cont').empty();
+			this.clearFormContainer();
 			console.log('cancelAddSchedule');
 			return false;
 		},
 		
 		showWeightTicket: function () {
 			console.log('showWeightTicket');
+			this.clearFormContainer();
 			
 			return false;
+		},
+		
+		clearFormContainer: function () {
+			$('#po-schedule-form-cont').empty();
 		},
 	});
 	
