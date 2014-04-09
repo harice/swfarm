@@ -14,6 +14,9 @@ class BidTableSeeder extends Seeder {
     
     public function run()
 	{
+        $now = new DateTime('NOW');
+        $date = $now->format('Y-m-d H:i:s');
+        
 		$bids = array(
 			array(
                 'bidnumber' => 'B20140409-0001',
@@ -24,8 +27,10 @@ class BidTableSeeder extends Seeder {
                 'status' => 'Closed',
                 'notes' => 'Notes: Lorem ipsum set amet.',
                 'ponumber' => 'P20140409-0001',
-                'po_date' => '2014-04-09 01:39:25',
-                'po_status' => 'Open'
+                'po_date' => $date,
+                'po_status' => 'Open',
+                'created_at' => $date,
+                'updated_at' => $date
             )
 		);
 
