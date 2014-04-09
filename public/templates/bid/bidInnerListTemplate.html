@@ -3,7 +3,11 @@
 		<tr>
 			<td><a href="<%= bid_url %>/<%= bid.get("id") %>"><%= bid.get("bidnumber") %></a></td>
 			<td><%= bid.get("created_at").split(" ")[0] %></td>
-			<td><%= bid.get("ponumber") %></td>
+			<td>
+				<% if (bid.get("ponumber")) { %>
+					<a href="<%= po_url %>/<%= bid.get("id") %>"><%= bid.get("ponumber") %></a>
+				<% } %>
+			</td>
 			<td><%= bid.get("status") %></td>
 			<td><%= bid.get("account").name %></td>
 			<td><%= bid.get("destination").destination %></td>

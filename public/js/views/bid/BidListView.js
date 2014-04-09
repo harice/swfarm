@@ -75,6 +75,7 @@ define([
 		displayList: function () {
 			console.log('displayList');
 			var data = {
+				po_url: '#/'+Const.URL.PO,
 				bid_url: '#/'+Const.URL.BID,
 				bid_edit_url: '#/'+Const.URL.BID+'/'+Const.CRUD.EDIT,
 				bids: this.collection.models,

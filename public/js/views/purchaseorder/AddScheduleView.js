@@ -5,7 +5,9 @@ define([
 	'jquerytextformatter',
 	'jqueryphonenumber',
 	'views/autocomplete/AccountTruckerAutoCompleteView',
+	'views/autocomplete/AccountLoaderAutoCompleteView',
 	'collections/account/AccountTruckerCollection',
+	'collections/account/AccountLoaderCollection',
 	'text!templates/purchaseorder/purchaseOrderScheduleTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddScheduleTemplate.html',
 ], function(Backbone,
@@ -14,7 +16,9 @@ define([
 			TextFormatter,
 			PhoneNumber,
 			AccountTruckerAutoCompleteView,
+			AccountLoaderAutoCompleteView,
 			AccountTruckerCollection,
+			AccountLoaderCollection,
 			purchaseOrderScheduleTemplate,
 			purchaseOrderAddScheduleTemplate
 ){
@@ -26,6 +30,8 @@ define([
 		initialize: function () {
 			this.addFieldsClone = null;
 			this.truckerAutoCompleteResult = [];
+			this.loaderOriginAutoCompleteResult = [];
+			this.loaderDestinationAutoCompleteResult = [];
 		},
 		
 		render: function () {
@@ -51,7 +57,7 @@ define([
 				
 			this.initCalendar();
 			this.initFormProperties();
-			this.initTruckerAutocomplete();
+			this.initAutocomplete();
 		},
 		
 		populateTimeOPtions: function () {
@@ -99,9 +105,10 @@ define([
 			});
 		},
 		
-		initTruckerAutocomplete: function () {
+		initAutocomplete: function () {
 			var thisObj = this;
 			
+			//producer
 			var accountTruckerCollection = new AccountTruckerCollection();
 			this.accountTruckerAutoCompleteView = new AccountTruckerAutoCompleteView({
                 input: $('#trucker'),
@@ -116,15 +123,47 @@ define([
 				});
 			});
 			
-			this.accountTruckerAutoCompleteView.onSelect = function (model) {
-				//thisObj.getProducerAddress(model.get('id'));
-			};
-			
 			this.accountTruckerAutoCompleteView.render();
+			
+			//Loader Origin
+			var accountLoaderOriginCollection = new AccountLoaderCollection();
+			this.accountLoaderOriginAutoCompleteView = new AccountLoaderAutoCompleteView({
+                input: $('#originloader'),
+				hidden: $('#originloader-id'),
+                collection: accountLoaderOriginCollection,
+            });
+			
+			this.accountLoaderOriginAutoCompleteView.on('loadResult', function () {
+				thisObj.loaderOriginAutoCompleteResult = [];
+				_.each(accountLoaderOriginCollection.models, function (model) {
+					thisObj.loaderOriginAutoCompleteResult.push({id:model.get('id'), name:model.get('name')});
+				});
+			});
+			
+			this.accountLoaderOriginAutoCompleteView.render();
+			
+			//Loader Destination
+			var accountLoaderDestinationCollection = new AccountLoaderCollection();
+			this.accountLoaderDestinationAutoCompleteView = new AccountLoaderAutoCompleteView({
+                input: $('#destinationloader'),
+				hidden: $('#destinationloader-id'),
+                collection: accountLoaderDestinationCollection,
+            });
+			
+			this.accountLoaderDestinationAutoCompleteView.on('loadResult', function () {
+				thisObj.loaderDestinationAutoCompleteResult = [];
+				_.each(accountLoaderDestinationCollection.models, function (model) {
+					thisObj.loaderDestinationAutoCompleteResult.push({id:model.get('id'), name:model.get('name')});
+				});
+			});
+			
+			this.accountLoaderDestinationAutoCompleteView.render();
 		},
 		
 		events: {
-			//'blur #trucker': 'validateTrucker',
+			'blur #trucker': 'validateTrucker',
+			'blur #originloader': 'validateTrucker',
+			'blur #destinationloader': 'validateTrucker',
 			'click #add-schedule': 'showAddSchedule',
 			'click #cancel-add-weight-info': 'cancelAddSchedule',
 			'click #show-weight-info': 'showWeightTicket',
@@ -135,23 +174,32 @@ define([
 			var labelFieldId = $(ev.target).attr('id');
 			var idField = '';
 			var account = '';
+			var autoCompleteView = null;
 			
 			switch(labelFieldId) {
 				case 'trucker':
-					idField = labelField.siblings('#producer-id');
-					account = this.producerIsInFetchedData(labelField.val(), idField.val());
+					idField = labelField.siblings('#trucker-id');
+					autoCompleteView = this.accountTruckerAutoCompleteView;
+					break;
+				case 'originloader':
+					idField = labelField.siblings('#originloader-id');
+					autoCompleteView = this.accountLoaderOriginAutoCompleteView;
+					break;
+				case 'destinationloader':
+					idField = labelField.siblings('#destinationloader-id');
+					autoCompleteView = this.accountLoaderDestinationAutoCompleteView;
 					break;
 				default:
 					break;
 			}
 			
-			if(!this.producerAutoCompleteView.$el.is(':hover')) {
+			account = this.accountIsInFetchedData(labelField.val(), idField.val(), labelFieldId);
+			
+			if(!autoCompleteView.$el.is(':hover')) {
 				if(account !== false) {
 					if(account.id != null) {
 						labelField.val(account.name);
 						idField.val(account.id);
-						this.resetProducerAddress();
-						this.getProducerAddress(account.id);
 					}
 					else
 						labelField.val(account.name);
@@ -159,10 +207,41 @@ define([
 				else {
 					labelField.val('');
 					idField.val('');
-					this.resetProducerAddress();
 				}
 				labelField.siblings('.autocomplete').hide();
 			}
+		},
+		
+		accountIsInFetchedData: function(name, id, type) {
+			
+			var autoCompleteResult = null;
+			
+			switch(type) {
+				case 'trucker':
+					autoCompleteResult = this.truckerAutoCompleteResult;
+					break;
+				case 'originloader':
+					autoCompleteResult = this.loaderOriginAutoCompleteResult;
+					break;
+				case 'destinationloader':
+					autoCompleteResult = this.loaderDestinationAutoCompleteResult;
+					break;
+				default:
+					break;
+			}
+			
+			if(name != null) {
+				for(var i = 0; i < autoCompleteResult.length; i++) {
+					if(autoCompleteResult[i].name.toLowerCase() == name.toLowerCase()) {
+						
+						if(id != null && id != '' && parseInt(id) == parseInt(autoCompleteResult[i].id))
+							return {name:autoCompleteResult[i].name};
+						
+						return {name:autoCompleteResult[i].name, id:autoCompleteResult[i].id};
+					}
+				}
+			}
+			return false;
 		},
 		
 		showAddSchedule: function () {

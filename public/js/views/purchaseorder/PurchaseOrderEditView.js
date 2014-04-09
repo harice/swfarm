@@ -151,7 +151,7 @@ define([
 				
 				bidProductFields.find('.product_id').val(bidProduct.id);
 				bidProductFields.find('.po-product').text(bidProduct.product[0].name);
-				bidProductFields.find('.po-product-desc').html(thisObj.nlToBr(bidProduct.product[0].description));
+				bidProductFields.find('.po-product-desc').html(thisObj.nlToBr(bidProduct.description));
 				bidProductFields.find('.po-product-stacknumber').text(bidProduct.stacknumber);
 				bidProductFields.find('.po-product-tons').text(bidProduct.tons);
 				bidProductFields.find('.po-product-bales').text(bidProduct.bales);

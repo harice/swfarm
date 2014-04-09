@@ -73,7 +73,8 @@ define([
 			
 			var totalAmount = parseFloat(0);
 			_.each(bidProducts, function (bidProduct) {
-				var amount = parseFloat(bidProduct.tons * bidProduct.unitprice);
+				var up = (bidProduct.unitprice)? bidProduct.unitprice.toFixed(2) : 0.00;
+				var amount = parseFloat(bidProduct.tons * up);
 				totalAmount += amount;
 				var poProductTemplateVar = {
 					'product': bidProduct.product[0].name,
@@ -81,7 +82,7 @@ define([
 					'stacknumber': bidProduct.stacknumber,
 					'tons': bidProduct.tons,
 					'bales': bidProduct.bales,
-					'unitprice': bidProduct.unitprice.toFixed(2),
+					'unitprice': up,
 					'amount': amount.toFixed(2),
 				};
 				var poProductTemplate = _.template(purchaseOrderViewProductItemTemplate, poProductTemplateVar);
