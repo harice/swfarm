@@ -471,6 +471,7 @@ class BidRepository implements BidRepositoryInterface {
                   ->whereNull('deleted_at')
                   ->whereNotNull('ponumber');
 
+      //with pick up date filter
       if($pickupstart != null && $pickupend != null){
         $count = $count->whereHas('purchaseorder', function ($query) use ($pickupstart, $pickupend){
                     $query->where('pickupstart','like', $pickupstart.'%')
@@ -481,7 +482,7 @@ class BidRepository implements BidRepositoryInterface {
                                 ->where('pickupend','like', $pickupend.'%');
                         });
       }
-
+      //with PO status filter
       if($poStatus !=  null){ //postatus can only be "Open", "Cancelled" or "Closed"
         $count = $count->where(function ($query) use ($poStatus){
                           $query->where('po_status', '=', $poStatus);
@@ -490,7 +491,7 @@ class BidRepository implements BidRepositoryInterface {
                           $query->where('po_status', '=', $poStatus);
                         });
       }
-
+      //with destination filter
       if($destination !=  null){ //value pass must be id of destination, check the lookup table for destination
         $count = $count->where(function ($query) use ($destination){
                           $query->where('destination_id', '=', $destination);
@@ -514,6 +515,16 @@ class BidRepository implements BidRepositoryInterface {
                       ->offset($offset)
                       ->orderBy($sortby, $orderby)
                       ->get();
+
+        //get the total price of products on PO
+      foreach($purchaseOrder as $po){
+        $po['totalPrice'] = 0.00;
+        foreach($po['bidproduct'] as $bidproduct){
+          if($bidproduct['unitprice'] != null){
+            $po['totalPrice'] += $bidproduct['unitprice'] * $bidproduct['tons'];
+          }
+        }
+      }
     
     return Response::json(array(
       'total' => $count,
@@ -685,38 +696,62 @@ class BidRepository implements BidRepositoryInterface {
 
   public function cancelPurchaseOrder($bidId){
     $bid = Bid::find($bidId);
-    $bid->po_status = "Cancelled";
-    $bid->save();
+    if(strcmp($bid->po_status, "Open") == 0){
+      $bid->po_status = "Cancelled";
+      $bid->save();
 
-    return Response::json(array(
+      return Response::json(array(
           'error' => false,
           'message' => 'Purchase order cancelled.'),
           200
       );
+    } else {
+      return Response::json(array(
+          'error' => false,
+          'message' => 'Purchase order cannot be canceled if the status is not open.'),
+          200
+      );
+    }
   }
 
   public function closePurchaseOrder($bidId){
     $bid = Bid::find($bidId);
-    $bid->po_status = "Closed";
-    $bid->save();
+    if(strcmp($bid->po_status, "Open") == 0){
+      $bid->po_status = "Closed";
+      $bid->save();
 
-    return Response::json(array(
+     return Response::json(array(
+        'error' => false,
+        'message' => 'Purchase order closed.'),
+        200
+      );
+    } else {
+      return Response::json(array(
           'error' => false,
-          'message' => 'Purchase order closed.'),
+          'message' => 'Purchase order cannot be close if the status is not open.'),
           200
       );
+    }
   }
 
   public function cancelBid($bidId){
     $bid = Bid::find($bidId);
-    $bid->status = "Cancelled";
-    $bid->save();
+    if(strcmp($bid->status, "Open") == 0){
+      $bid->status = "Cancelled";
+      $bid->save();
 
-    return Response::json(array(
+      return Response::json(array(
           'error' => false,
           'message' => 'Bid cancelled.'),
           200
       );
+    } else {
+      return Response::json(array(
+          'error' => false,
+          'message' => 'Bid cannot be cancel if the status is not open.'),
+          200
+      );
+    }    
   }
 
 
