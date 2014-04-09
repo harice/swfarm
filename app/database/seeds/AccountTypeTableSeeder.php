@@ -28,6 +28,9 @@ class AccountTypeTableSeeder extends Seeder {
             ),
             array(
                 'name' => 'Trucker'
+            ),
+            array(
+                'name' => 'SWF Trucker'
             )
 		);
 
