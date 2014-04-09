@@ -3,7 +3,7 @@ define([
 	'models/purchaseorder/POModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderViewTemplate.html',
-	'text!templates/purchaseorder/purchaseOrderProductItemTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderViewProductItemTemplate.html',
 	'global',
 	'constant',
 ], function(
@@ -11,7 +11,7 @@ define([
 			POModel,
 			contentTemplate,
 			purchaseOrderViewTemplate,
-			purchaseOrderProductItemTemplate,
+			purchaseOrderViewProductItemTemplate,
 			Global,
 			Const
 ){
@@ -66,25 +66,29 @@ define([
 			this.$el.find('#po-address-city').text(address.addresscity[0].city);
 			this.$el.find('#po-address-zip-code').text(address.zipcode);
 			this.$el.find('#po-date').text(this.model.get('po_date').split(' ')[0]);
+			if(this.model.get('purchaseorder')) {
+				this.$el.find('#po-pickup-start').text(this.model.get('purchaseorder').pickupstart.split(' ')[0]);
+				this.$el.find('#po-pickup-end').text(this.model.get('purchaseorder').pickupend.split(' ')[0]);
+			}
 			
-			/*_.each(bidProducts, function (bidProduct) {
-				var bidProductFields = thisObj.addBidProduct();
-				
-				bidProductFields.find('.id').val(bidProduct.id);
-				bidProductFields.find('.po-product').text(bidProduct.product[0].name);
-				//bidProductFields.find('.po-product-desc').text(bidProduct.description);
-				bidProductFields.find('.po-product-stacknumber').text(bidProduct.stacknumber);
-				bidProductFields.find('.po-product-tons').text(bidProduct.tons);
-				bidProductFields.find('.po-product-bales').text(bidProduct.bales);
-				bidProductFields.find('.unitprice').val('0.00');
-				bidProductFields.find('.po-product-amount').text('0.00');
-				
-				if(bidProduct.unitprice != null) {
-					bidProductFields.find('.unitprice').val(bidProduct.unitprice);
-					thisObj.computeAmount(bidProduct.unitprice, bidProduct.tons, bidProductFields.find('.po-product-amount'));
-				}
-			});*/
+			var totalAmount = parseFloat(0);
+			_.each(bidProducts, function (bidProduct) {
+				var amount = parseFloat(bidProduct.tons * bidProduct.unitprice);
+				totalAmount += amount;
+				var poProductTemplateVar = {
+					'product': bidProduct.product[0].name,
+					'desc': thisObj.nlToBr(bidProduct.description),
+					'stacknumber': bidProduct.stacknumber,
+					'tons': bidProduct.tons,
+					'bales': bidProduct.bales,
+					'unitprice': bidProduct.unitprice.toFixed(2),
+					'amount': amount.toFixed(2),
+				};
+				var poProductTemplate = _.template(purchaseOrderViewProductItemTemplate, poProductTemplateVar);
+				thisObj.$el.find('#bid-product-list tbody').append(poProductTemplate);
+			});
 			
+			this.$el.find('.amounttotal').text(totalAmount.toFixed(2));
 			this.$el.find('.notes').val(this.model.get('notes'));
 		},
 	});

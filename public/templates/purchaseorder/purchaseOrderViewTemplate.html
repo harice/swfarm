@@ -50,29 +50,19 @@
 				</div>
 				<div class="form-group"><label for="date" class="col-sm-3 control-label">Pick-up Period:</label></div>
 				<div class="form-group">
-					<label for="date" class="col-sm-3 control-label">Start</label>
+					<div class="col-sm-3 label-text">Start</div>
 					<div class="col-sm-4">
-						<div id="start-date" class="calendar-cont">
-							<div class="input-group date">
-								<input type="text" class="form-control" value="">
-								<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-							</div>
-						</div>
+						<span id="po-pickup-start"></span>
 					</div>
-					<label for="date" class="col-sm-1 control-label">End</label>
+					<div class="col-sm-1 label-text">End</div>
 					<div class="col-sm-4">
-						<div id="start-date" class="calendar-cont">
-							<div class="input-group date">
-								<input type="text" class="form-control" value="">
-								<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-							</div>
-						</div>
+						<span id="po-pickup-end"></span>
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="notes" class="col-sm-3 control-label">Notes</label>
 					<div id="bid-destination" class="col-sm-9">
-						<textarea class="form-control notes" id="notes" name="notes"></textarea>
+						<textarea class="form-control notes" id="notes" readonly></textarea>
 					</div>
 				</div>
 			</div>
@@ -93,9 +83,7 @@
 						<th>Amount</th>
 					</tr>
 				</thead>
-				<tbody>
-					<tr><td colspan="7">No products added.</td></tr>
-				</tbody>
+				<tbody></tbody>
 				<tfoot>
 					<tr>
 						<td colspan="6" class="text-right-align">Total</td>
