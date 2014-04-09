@@ -178,16 +178,23 @@ class BidRepository implements BidRepositoryInterface {
               'tons' =>  $bidProductData['tons'],
               'description' => isset($bidProductData['description']) ? $bidProductData['description']: '',
               'ishold' => isset($bidProductData['ishold']) ? $bidProductData['ishold']: false,
+              'created_at' => date('Y-m-d H:i:s'),
+              'updated_at' => date('Y-m-d H:i:s')
             ));
         }
       }
 
       return $bid->id;
     });
-
+    if($data['isPO']){
+      $message = 'Purchase Order successfully created.';
+    } else {
+      $message = 'Bid successfully created.';
+    }
+    
     return Response::json(array(
         'error' => false,
-        'message' => 'Bid successfully created.',
+        'message' => $message,
         'bidId' => $bid),
         200
     );

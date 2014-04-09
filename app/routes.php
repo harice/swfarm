@@ -47,7 +47,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 	Route::put('po/cancelPurchaseOrder/{id}', 'APIv1\BidController@cancelPurchaseOrder');
 	Route::put('po/closePurchaseOrder/{id}', 'APIv1\BidController@closePurchaseOrder');
 	Route::get('po/search', 'APIv1\BidController@searchPurchaseOrder');
-	
+
 	Route::put('bid/cancelBid/{id}', 'APIv1\BidController@cancelBid');
 	Route::get('bid/search', 'APIv1\BidController@search');
 	Route::get('bid/getProducerAddress', 'APIv1\BidController@getProducerAddress');
@@ -56,6 +56,10 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 	Route::resource('bid', 'APIv1\BidController');
     
     Route::resource('weightinfo', 'APIv1\WeightInfoController');
+
+    Route::get('pickupschedule/getLoaderAccount', 'APIv1\PickupScheduleController@getLoaderAccount');
+    Route::get('pickupschedule/getTruckerAccount', 'APIv1\PickupScheduleController@getTruckerAccount');
+    Route::resource('pickupschedule', 'APIv1\PickupScheduleController');
 });
 
 /* API ROUTES without HTTP Basic */

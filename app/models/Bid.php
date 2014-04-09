@@ -35,4 +35,8 @@ class Bid extends Eloquent {
         return $this->hasOne('PurchaseOrder', 'bid_id', 'id');
     }
 
+    public function pickupschedule(){
+        return $this->hasMany('PickupSchedule', 'bid_id', 'id');
+    }
+
 }
