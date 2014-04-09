@@ -14,6 +14,9 @@ class BidProductTableSeeder extends Seeder {
     
     public function run()
 	{
+        $now = new DateTime('NOW');
+        $date = $now->format('Y-m-d H:i:s');
+        
 		$bidproduct = array(
 			array(
                 'id' => '1',
@@ -23,7 +26,9 @@ class BidProductTableSeeder extends Seeder {
                 'bidprice' => '10.00',
                 'tons' => '50.00',
                 'bales' => '45',
-                'ishold' => '0'
+                'ishold' => '0',
+                'created_at' => $date,
+                'updated_at' => $date
             )
 		);
 

@@ -1,13 +1,13 @@
 <?php
 
-class WeightInfo extends BaseModel {
+class WeightTicket extends BaseModel {
     
     /**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table = 'weightinfo';
+	protected $table = 'weightticket';
 
 	public static $rules = array(
         'gross' => 'required',
