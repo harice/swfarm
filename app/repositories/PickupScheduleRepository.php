@@ -163,9 +163,8 @@ class PickupScheduleRepository implements PickupScheduleRepositoryInterface {
                     $query->whereIn('id', $accountIds);
                   })->where('name', 'like', '%'.$search.'%')->get(array('id', 'name'));
       
-      return Response::json(array(
-        'data' => $truckers->toArray()
-        ),
+      return Response::json(
+        $truckers->toArray(),
         200);
       }
   }
@@ -183,9 +182,8 @@ class PickupScheduleRepository implements PickupScheduleRepositoryInterface {
                     $query->whereIn('id', $accountIds);
                   })->where('name', 'like', '%'.$search.'%')->get(array('id', 'name'));
       
-      return Response::json(array(
-        'data' => $loader->toArray()
-        ),
+      return Response::json(
+        $loader->toArray(),
         200);
       }
   }
