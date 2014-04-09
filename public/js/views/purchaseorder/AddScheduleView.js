@@ -123,6 +123,11 @@ define([
 				});
 			});
 			
+			this.accountTruckerAutoCompleteView.onSelect = function (model) {
+				console.log(model)
+				//thisObj.getProducerAddress(model.get('id'));
+			};
+			
 			this.accountTruckerAutoCompleteView.render();
 			
 			//Loader Origin
