@@ -29,7 +29,7 @@ class WeightTicketRepositoryTest extends TestCase {
     public function testStoreReturnsModel()
     {
         $data = array(
-            'po_id' => 10001,
+            'purchaseorder_id' => 10001,
             'product' => 'Alfalfa'
         );
 
@@ -42,7 +42,7 @@ class WeightTicketRepositoryTest extends TestCase {
     public function testUpdateSaves()
     {
         $data = array(
-            'po_id' => 1,
+            'purchaseorder_id' => 1,
             'product' => 'Alfalfa'
         );
         
@@ -71,7 +71,7 @@ class WeightTicketRepositoryTest extends TestCase {
     public function testValidatePasses()
     {
         $data = array(
-            'po_id' => 1,
+            'purchaseorder_id' => 1,
             'product' => 'Alfalfa'
         );
         
@@ -98,7 +98,7 @@ class WeightTicketRepositoryTest extends TestCase {
     {
         try {
             $this->repo->validate(array(
-                'po_id' => 1
+                'purchaseorder_id' => 1
             ));
         }
         catch(ValidationException $expected)
@@ -118,7 +118,7 @@ class WeightTicketRepositoryTest extends TestCase {
     public function testInstanceReturnsModelWithData()
     {
         $data = array(
-            'po_id' => 1,
+            'purchaseorder_id' => 1,
             'product' => 'Alfalfa'
         );
 

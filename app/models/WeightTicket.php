@@ -10,7 +10,7 @@ class WeightTicket extends BaseModel {
 	protected $table = 'weightticket';
 
 	public static $rules = array(
-        'po_id' => 'required',
+        'purchaseorder_id' => 'required',
         'product' => 'required'
     );
     
