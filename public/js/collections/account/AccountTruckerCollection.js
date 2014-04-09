@@ -5,7 +5,7 @@ define([
 ], function(Backbone, AccountModel, AppCollection){
     
 	var AccountTruckerCollection = AppCollection.extend({
-		url: '/apiv1/bid/getProducerAccount',
+		url: '/apiv1/pickupschedule/getTruckerAccount',
 		model: AccountModel,
 		initialize: function() {
 			this.setDefaultURL(this.url);
