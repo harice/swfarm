@@ -12,6 +12,7 @@ define([
 				search: '',
 				currentSort: '',
 				sort: {},
+				filters: {},
 				filter: '',
 				date: '',
 			};
@@ -120,6 +121,14 @@ define([
 			return this.listView.date;
 		},
 		
+		setFilter: function (type, value) {
+			this.listView.filters[type] = value;
+		},
+		
+		getFilter: function (type) {
+			return this.listView.filters[type];
+		},
+		
 		setPaginationURL: function (page, numPerPage) {
 			var searchURL = '';
 			var orderBy = (this.listView.sort[this.listView.currentSort])? 'asc' : 'desc';
@@ -131,9 +140,11 @@ define([
 			if(this.listView.currentSort != '')
 				params = _.extend(params, {sortby:this.listView.currentSort, orderby:orderBy,});
 			
+			var isSearch = false;
 			if(this.listView.search != '') {
 				searchURL = '/search';
 				params = _.extend(params, {search:this.listView.search});
+				isSearch = true;
 			}
 			
 			if(this.listView.filter != '')
@@ -141,6 +152,22 @@ define([
 			
 			if(this.listView.date != '')
 				params = _.extend(params, {date:this.listView.date});
+			
+			var isFilter = false;
+			for(var filterName in this.listView.filters) {
+				if(this.listView.filters[filterName] != '' && this.listView.filters[filterName] != null) {
+					var filter = {};
+					filter[filterName] = this.listView.filters[filterName];
+					params = _.extend(params, filter);
+					isFilter = true;
+				}	
+			}
+				
+			if(isFilter && !isSearch) {
+				searchURL = '/search';
+				params = _.extend(params, {search:this.listView.search});
+			}
+			
 			
 			this.url = this.getDefaultURL() + searchURL + '?' + $.param(params);
 		},

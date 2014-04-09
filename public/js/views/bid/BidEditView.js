@@ -159,10 +159,10 @@ define([
 				},
 			});
 			
-			this.supplyAccountData();
+			this.supplyBidData();
 		},
 		
-		supplyAccountData: function () {
+		supplyBidData: function () {
 			var thisObj = this;
 			var producer = this.model.get('account');
 			var address = this.model.get('address');
@@ -185,7 +185,7 @@ define([
 				bidProductFields.find('.id').val(bidProduct.id);
 				bidProductFields.find('.productname').val(bidProduct.product[0].name);
 				bidProductFields.find('.product_id').val(bidProduct.product[0].id);
-				//bidProductFields.find('.product-description').val(thisObj.getDescFromProductAutoCompletePool(bidProduct.product[0].id));
+				bidProductFields.find('.description').val(bidProduct.product[0].description);
 				bidProductFields.find('.stacknumber').val(bidProduct.stacknumber);
 				bidProductFields.find('.bidprice').val(bidProduct.bidprice);
 				bidProductFields.find('.tons').val(bidProduct.tons);
@@ -618,7 +618,30 @@ define([
 		},
 		
 		cancelPO: function () {
-			console.log('cancelPO');
+			var thisObj = this;
+			
+			var verifyCancel = confirm('Are you sure you want to cancel this Bid?');
+			
+			if(verifyCancel) {
+				var bidModel = new BidModel({id:this.model.get('id')});
+				bidModel.setCancelURL();		
+				bidModel.save(
+					null, 
+					{
+						success: function (model, response, options) {
+							thisObj.displayMessage(response);
+							Global.getGlobalVars().app_router.navigate(Const.URL.BID, {trigger: true});
+						},
+						error: function (model, response, options) {
+							if(typeof response.responseJSON.error == 'undefined')
+								validate.showErrors(response.responseJSON);
+							else
+								thisObj.displayMessage(response);
+						},
+						headers: bidModel.getAuth(),
+					}
+				);
+			}
 			return false;
 		},
 	});

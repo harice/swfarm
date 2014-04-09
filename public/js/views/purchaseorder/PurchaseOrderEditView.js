@@ -31,16 +31,16 @@ define([
 			var thisObj = this;
 			
 			this.options = {
-				bidProductFieldClone: null,
-				bidProductFieldCounter: 0,
-				bidProductFieldClass: ['product', 'unitprice'],
-				bidProductFieldClassRequired: ['unitprice'],
-				bidProductFieldSeparator: '.',
+				poProductFieldClone: null,
+				poProductFieldCounter: 0,
+				poProductFieldClass: ['id', 'unitprice'],
+				poProductFieldClassRequired: ['unitprice'],
+				poProductFieldExempt: [],
+				poProductFieldSeparator: '.',
 			};
 			
 			this.model = new POModel({id:option.id});
 			this.model.on("change", function() {
-				console.log(this);
 				thisObj.displayForm();
 				this.off("change");
 			});
@@ -54,7 +54,8 @@ define([
 			var thisObj = this;
 			
 			var innerTemplateVariables = {
-				'po_url' : '#/'+Const.URL.PO
+				'po_url' : '#/'+Const.URL.PO,
+				'po_id' : this.model.get('id'),
 			};
 			var innerTemplate = _.template(purchaseOrderAddTemplate, innerTemplateVariables);
 			
@@ -67,17 +68,53 @@ define([
 			
 			var validate = $('#POPropertiesForm').validate({
 				submitHandler: function(form) {
-					//console.log($(form).serializeObject());
-					var data = thisObj.formatFormField($(form).serializeObject());
-					//console.log(data);
+					var data = $(form).serializeObject();
+					
+					var poModel = new POModel(data);
+					poModel.setEditPOURL();
+					poModel.save(
+						null, 
+						{
+							success: function (model, response, options) {
+								thisObj.displayMessage(response);
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: poModel.getAuth(),
+						}
+					);
+				},
+				errorPlacement: function(error, element) {
+					element.closest('.calendar-cont').siblings('.error-msg-cont').html(error);
 				},
 			});
 			
 			var validate = $('#POProductForm').validate({
 				submitHandler: function(form) {
-					//console.log($(form).serializeObject());
 					var data = thisObj.formatFormField($(form).serializeObject());
-					//console.log(data);
+					data.id = thisObj.model.get('id');
+					
+					var poModel = new POModel(data);
+					poModel.setEditPOProductURL();
+					poModel.save(
+						null, 
+						{
+							success: function (model, response, options) {
+								thisObj.displayMessage(response);
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: poModel.getAuth(),
+						}
+					);
 				},
 			});
 			
@@ -95,7 +132,7 @@ define([
 			var bidProducts = this.model.get('bidproduct');
 			
 			this.$el.find('#po-number').text(this.model.get('ponumber'));
-			this.$el.find('#po-status').text('');
+			this.$el.find('#po-status').text(this.model.get('po_status'));
 			this.$el.find('#po-destination').text(this.model.get('destination').destination);
 			this.$el.find('#po-producer').text(this.model.get('account').name);
 			this.$el.find('#po-address-type').text(address.address_type[0].name);
@@ -103,14 +140,18 @@ define([
 			this.$el.find('#po-address-state').text(address.addressstates[0].state);
 			this.$el.find('#po-address-city').text(address.addresscity[0].city);
 			this.$el.find('#po-address-zip-code').text(address.zipcode);
-			//this.$el.find('').text(this.model.get(''));
+			this.$el.find('#po-date').text(this.model.get('po_date').split(' ')[0]);
+			if(this.model.get('purchaseorder')) {
+				this.$el.find('#start-date input').val(this.model.get('purchaseorder').pickupstart.split(' ')[0]);
+				this.$el.find('#end-date input').val(this.model.get('purchaseorder').pickupend.split(' ')[0]);
+			}
 			
 			_.each(bidProducts, function (bidProduct) {
 				var bidProductFields = thisObj.addBidProduct();
 				
-				bidProductFields.find('.id').val(bidProduct.id);
+				bidProductFields.find('.product_id').val(bidProduct.id);
 				bidProductFields.find('.po-product').text(bidProduct.product[0].name);
-				//bidProductFields.find('.po-product-desc').text(bidProduct.description);
+				bidProductFields.find('.po-product-desc').html(thisObj.nlToBr(bidProduct.product[0].description));
 				bidProductFields.find('.po-product-stacknumber').text(bidProduct.stacknumber);
 				bidProductFields.find('.po-product-tons').text(bidProduct.tons);
 				bidProductFields.find('.po-product-bales').text(bidProduct.bales);
@@ -118,13 +159,9 @@ define([
 				bidProductFields.find('.po-product-amount').text('0.00');
 				
 				if(bidProduct.unitprice != null) {
-					bidProductFields.find('.unitprice').val(bidProduct.unitprice);
+					bidProductFields.find('.unitprice').val(bidProduct.unitprice.toFixed(2));
 					thisObj.computeAmount(bidProduct.unitprice, bidProduct.tons, bidProductFields.find('.po-product-amount'));
 				}
-				
-				
-				
-				
 			});
 			
 			this.$el.find('.notes').val(this.model.get('notes'));
@@ -151,6 +188,7 @@ define([
 		events: {
 			'blur .unitprice': 'onBlurUnitPrice',
 			'keyup .unitprice': 'onKeyUpUnitPrice',
+			'click #cancel-po': 'cancelPO',
 		},
 		
 		hasProduct: function () {
@@ -163,17 +201,17 @@ define([
 			if(!this.hasProduct())
 				this.$el.find('#bid-product-list tbody').empty();
 			
-			if(this.options.bidProductFieldClone == null) {
+			if(this.options.poProductFieldClone == null) {
 				var bidProductTemplate = _.template(purchaseOrderProductItemTemplate, {});
 				
 				this.$el.find('#bid-product-list tbody').append(bidProductTemplate);
 				var bidProductItem = this.$el.find('#bid-product-list tbody').find('.product-item:first-child');
-				this.options.bidProductFieldClone = bidProductItem.clone();
+				this.options.poProductFieldClone = bidProductItem.clone();
 				this.addIndexToBidProductFields(bidProductItem);
 				clone = bidProductItem;
 			}
 			else {
-				clone = this.options.bidProductFieldClone.clone();
+				clone = this.options.poProductFieldClone.clone();
 				this.addIndexToBidProductFields(clone);
 				this.$el.find('#bid-product-list tbody').append(clone);
 			}
@@ -185,23 +223,23 @@ define([
 		
 		addValidationToBidProduct: function () {
 			var thisObj = this;
-			var bidProductFieldClassRequired = this.options.bidProductFieldClassRequired;
-			for(var i=0; i < bidProductFieldClassRequired.length; i++) {
-				$('.'+bidProductFieldClassRequired[i]).each(function() {
+			var poProductFieldClassRequired = this.options.poProductFieldClassRequired;
+			for(var i=0; i < poProductFieldClassRequired.length; i++) {
+				$('.'+poProductFieldClassRequired[i]).each(function() {
 					$(this).rules('add', {required: true});
 				});
 			}
 		},
 		
 		addIndexToBidProductFields: function (bidProductItem) {
-			var bidProductFieldClass = this.options.bidProductFieldClass;
-			for(var i=0; i < bidProductFieldClass.length; i++) {
-				var field = bidProductItem.find('.'+bidProductFieldClass[i]);
+			var poProductFieldClass = this.options.poProductFieldClass;
+			for(var i=0; i < poProductFieldClass.length; i++) {
+				var field = bidProductItem.find('.'+poProductFieldClass[i]);
 				var name = field.attr('name');
-				field.attr('name', name + this.options.bidProductFieldSeparator + this.options.bidProductFieldCounter);
+				field.attr('name', name + this.options.poProductFieldSeparator + this.options.poProductFieldCounter);
 			}
 			
-			this.options.bidProductFieldCounter++;
+			this.options.poProductFieldCounter++;
 		},
 		
 		onBlurUnitPrice: function (ev) {
@@ -235,6 +273,63 @@ define([
 			
 			this.$el.find('.amounttotal').text(amountotal.toFixed(2));
 		},
+		
+		formatFormField: function (data) {
+			var formData = {products:[]};
+			var poProductFieldClass = this.options.poProductFieldClass;
+			
+			for(var key in data) {
+				if(typeof data[key] !== 'function'){
+					var value = data[key];
+					var arrayKey = key.split(this.options.poProductFieldSeparator);
+					
+					if(arrayKey.length < 2)
+						formData[key] = value;
+					else {
+						if(arrayKey[0] == poProductFieldClass[0] && this.options.poProductFieldExempt.indexOf(arrayKey[0]) < 0) {
+							var index = arrayKey[1];
+							var arrayBidProductFields = {};
+							
+							for(var i = 0; i < poProductFieldClass.length; i++)
+								arrayBidProductFields[poProductFieldClass[i]] = data[poProductFieldClass[i]+this.options.poProductFieldSeparator+index];
+								
+							formData.products.push(arrayBidProductFields);
+						}
+					}
+				}
+			}
+			
+			return formData;
+		},
+		
+		cancelPO: function () {
+			var thisObj = this;
+			
+			var verifyCancel = confirm('Are you sure you want to cancel this PO?');
+			
+			if(verifyCancel) {
+				var poModel = new POModel({id:this.model.get('id')});
+				poModel.setCancelURL();		
+				poModel.save(
+					null, 
+					{
+						success: function (model, response, options) {
+							thisObj.displayMessage(response);
+							Global.getGlobalVars().app_router.navigate(Const.URL.PO, {trigger: true});
+						},
+						error: function (model, response, options) {
+							if(typeof response.responseJSON.error == 'undefined')
+								validate.showErrors(response.responseJSON);
+							else
+								thisObj.displayMessage(response);
+						},
+						headers: poModel.getAuth(),
+					}
+				);
+			}
+			
+			return false;
+		}
 	});
 
   return PurchaseOrderAddView;

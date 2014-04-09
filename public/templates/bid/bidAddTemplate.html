@@ -112,7 +112,9 @@
 	<div class="form-group form-button-container">
 		<div class="pull-right">
 		<button id="create-po" type="button" class="save btn btn-default">Create PO</button>
-		<a id="cancel-po" class="btn btn-default" href="#">Cancel Bid</a>
+		<% if (typeof bid_id !== "undefined") { %>
+			<a id="cancel-po" class="btn btn-default" href="#">Cancel Bid</a>
+		<% } %>
 		<button id="save" type="submit" class="save btn btn-default">Save</button>
 		<a id="cancel-save" class="btn btn-default" href="<%= bid_url %>">Back</a>
 		</div>
