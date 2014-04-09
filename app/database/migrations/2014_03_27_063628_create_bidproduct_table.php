@@ -18,6 +18,7 @@ class CreateBidproductTable extends Migration {
 			$table->increments('id');
 			$table->integer('bid_id')->unsigned();
 			$table->integer('product_id')->unsigned();
+			$table->text('description')->nullable();
 			$table->string('stacknumber',20);
 			$table->float('bidprice');
 			$table->float('tons');

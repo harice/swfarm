@@ -1,17 +1,35 @@
 <% if (!_.isEmpty(pos)) { %>
-  <% _.each(pos, function(po){ %>
-    <tr>
-      <td><%= po.get("ponumber") %></td>
-	  <td></td>
-	  <td></td>
-	  <td></td>
-	  <td><%= po.get("account").name %></td>
-	  <td></td>
-	  <td><%= po.get("destination").destination %></td>
-	  <td></td>
-      <td><a href="<%= po_edit_url %>/<%= po.get("id") %>">edit</a></td>
-    </tr>
-  <% }); %>
+	<% _.each(pos, function(po){ %>
+	<tr>
+		<td><a href="<%= po_url %>/<%= po.get("id") %>"><%= po.get("ponumber") %></a></td>
+		<td>
+			<% if (po.get("po_date")) { %>
+				<%= po.get("po_date").split(" ")[0] %>
+			<% } %>
+			
+		</td>
+		<td>
+			<% if (po.get("purchaseorder")) { %>
+				<%= po.get("purchaseorder").pickupstart.split(" ")[0] %>
+			<% } %>
+		</td>
+		<td>
+			<% if (po.get("purchaseorder")) { %>
+				<%= po.get("purchaseorder").pickupend.split(" ")[0] %>
+			<% } %>
+		</td>
+		<td><%= po.get("account").name %></td>
+		<td><%= po.get("po_status") %></td>
+		<td><%= po.get("destination").destination %></td>
+		<td class="text-right-align"><%= parseFloat(po.get("totalPrice")).toFixed(2) %></td>
+		<td>
+			<% if (po.get("po_status").toLowerCase() == "open") { %>
+				<a href="<%= po_edit_url %>/<%= po.get("id") %>">edit</a>
+				<a class="cancel-po" href="#" data-id="<%= po.get("id") %>">cancel po</a>
+			<% } %>
+		</td>
+	</tr>
+	<% }); %>
 <% } else { %>
 	<tr>
 		<td colspan="8">No result found.</td>

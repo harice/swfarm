@@ -2,6 +2,7 @@ define([
 	'backbone',
 	'bootstrapdatepicker',
 	'views/base/ListView',
+	'models/bid/BidModel',
 	'collections/bid/BidCollection',
 	'collections/bid/BidDestinationCollection',
 	'text!templates/layout/contentTemplate.html',
@@ -9,7 +10,7 @@ define([
 	'text!templates/bid/bidDestinationTemplate.html',
 	'text!templates/bid/bidInnerListTemplate.html',
 	'constant',
-], function(Backbone, DatePicker, ListView, BidCollection, BidDestinationCollection, contentTemplate, bidListTemplate, bidDestinationTemplate, bidInnerListTemplate, Const){
+], function(Backbone, DatePicker, ListView, BidModel, BidCollection, BidDestinationCollection, contentTemplate, bidListTemplate, bidDestinationTemplate, bidInnerListTemplate, Const){
 
 	var BidListView = ListView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -47,9 +48,9 @@ define([
 			
 			var thisObj = this;
 			var innerTemplateVar = {
-										'bid_add_url' : '#/'+Const.URL.BID+'/'+Const.CRUD.ADD,
-										'destination_filters' : destinationTemplate,
-									};
+				'bid_add_url' : '#/'+Const.URL.BID+'/'+Const.CRUD.ADD,
+				'destination_filters' : destinationTemplate,
+			};
 			var innerTemplate = _.template(bidListTemplate, innerTemplateVar);
 			
 			var variables = {
@@ -107,21 +108,47 @@ define([
 			this.sortByField('producer');
 		},
 		
-		cancelBid: function () {
+		cancelBid: function (ev) {
+			var thisObj = this;
+			var field = $(ev.target);
+			
+			var verifyCancel = confirm('Are you sure you want to cancel this Bid?');
+			
+			if(verifyCancel) {
+				var bidModel = new BidModel({id:field.attr('data-id')});
+				bidModel.setCancelURL();		
+				bidModel.save(
+					null, 
+					{
+						success: function (model, response, options) {
+							thisObj.displayMessage(response);
+							thisObj.renderList(thisObj.collection.getCurrentPage());
+						},
+						error: function (model, response, options) {
+							if(typeof response.responseJSON.error == 'undefined')
+								validate.showErrors(response.responseJSON);
+							else
+								thisObj.displayMessage(response);
+						},
+						headers: bidModel.getAuth(),
+					}
+				);
+			}
+			
 			return false;
 		},
 		
 		filterByDestination: function (ev) {
 			var filter = $(ev.target).val(); console.log(filter);
-			/*this.collection.setFilter(filter);
-			this.renderList(1);*/
+			this.collection.setFilter('destination', filter)
+			this.renderList(1);
 			return false;
 		},
 		
 		filterByStatus: function (ev) {
 			var filter = $(ev.target).val(); console.log(filter);
-			/*this.collection.setFilter(filter);
-			this.renderList(1);*/
+			this.collection.setFilter('bidstatus', filter)
+			this.renderList(1);
 			return false;
 		},
 	});

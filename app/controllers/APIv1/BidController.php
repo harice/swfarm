@@ -105,6 +105,10 @@ class BidController extends BaseController {
 		return $this->bid->cancelPurchaseOrder($id);
 	}
 
+	public function closePurchaseOrder($id){
+		return $this->bid->closePurchaseOrder($id);
+	}
+
 	public function getPurchaseOrder(){
 		return $this->bid->getPurchaseOrder(Input::all());
 	}
@@ -115,5 +119,13 @@ class BidController extends BaseController {
 
 	public function addUnitPriceToBidProduct($bidId){
 		return $this->bid->addUnitPriceToBidProduct($bidId, Input::all());
+	}
+
+	public function cancelBid($bidId){
+		return $this->bid->cancelBid($bidId);
+	}
+
+	public function searchPurchaseOrder(){
+		return $this->bid->searchPurchaseOrder( Input::all() );
 	}
 }
