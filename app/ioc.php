@@ -19,4 +19,5 @@ App::bind('ContactRepositoryInterface', 'ContactRepository');
 App::bind('BidRepositoryInterface', 'BidRepository');
 App::bind('WeightInfoRepositoryInterface', 'WeightInfoRepository');
 App::bind('PickupScheduleRepositoryInterface', 'PickupScheduleRepository');
-// App::bind('WeightTicketInterface', 'WeightTicket');
+App::bind('WeightTicketRepositoryInterface', 'WeightTicketRepository');
+

@@ -60,6 +60,7 @@ define([
 			var date = this.model.get('created_at').split(' ')[0];
 			
 			this.$el.find('#bidnumber').text(this.model.get('bidnumber'));
+			this.$el.find('#status').text(this.model.get('status'));
 			this.$el.find('#destination').text(this.model.get('destination').destination);
 			this.$el.find('#producername').text(producer.name);
 			this.$el.find('#addresstype').text(address.address_type[0].name);
@@ -75,10 +76,10 @@ define([
 					'product': product.product[0].name,
 					'desc': product.description,
 					'stacknumber': product.stacknumber,
-					'bidprice': product.bidprice,
+					'bidprice': product.bidprice.toFixed(2),
 					'tons': product.tons,
 					'bales': product.bales,
-					'unitprice': product.unitprice,
+					'unitprice': (product.bidprice * product.tons).toFixed(2),
 					'holdfortesting': (product.ishold == 0)? 'No' : 'Yes',
 				};
 				var bidProductTemplate = _.template(bidViewProductItemTemplate, bidProductTemplateVar);

@@ -56,10 +56,12 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 	Route::resource('bid', 'APIv1\BidController');
     
     Route::resource('weightinfo', 'APIv1\WeightInfoController');
+    Route::resource('weightticket', 'APIv1\WeightTicketController');
 
     Route::get('pickupschedule/getLoaderAccount', 'APIv1\PickupScheduleController@getLoaderAccount');
     Route::get('pickupschedule/getTruckerAccount', 'APIv1\PickupScheduleController@getTruckerAccount');
     Route::resource('pickupschedule', 'APIv1\PickupScheduleController');
+    
 });
 
 /* API ROUTES without HTTP Basic */

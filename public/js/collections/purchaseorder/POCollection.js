@@ -23,6 +23,8 @@ define([
 			
 			this.listView.filters.destination = '';
 			this.listView.filters.postatus = '';
+			this.listView.filters.pickupstart = '';
+			this.listView.filters.pickupend = '';
 		},
 	});
 

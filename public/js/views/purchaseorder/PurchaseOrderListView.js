@@ -95,6 +95,9 @@ define([
 				clearBtn: true,
 				todayHighlight: true,
 				format: 'yyyy-mm-dd',
+			}).on('changeDate', function (ev) {
+				thisObj.collection.setFilter('pickupstart', $('#filter-pickup-start .input-group.date input').val());
+				thisObj.renderList();
 			});
 			
 			this.$el.find('#filter-pickup-end .input-group.date').datepicker({
@@ -103,6 +106,9 @@ define([
 				clearBtn: true,
 				todayHighlight: true,
 				format: 'yyyy-mm-dd',
+			}).on('changeDate', function (ev) {
+				thisObj.collection.setFilter('pickupend', $('#filter-pickup-end .input-group.date input').val());
+				thisObj.renderList();
 			});
 		},
 		
