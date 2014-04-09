@@ -25,6 +25,7 @@ class CreatePickupscheduleTable extends Migration {
 			$table->float('originloadersfee');
 			$table->integer('destinationloader_id')->unsigned();
 			$table->float('destinationloadersfee');
+			$table->float('truckingrate');
 			$table->timestamps();
 
 			$table->foreign('bid_id')->references('id')->on('bid');
