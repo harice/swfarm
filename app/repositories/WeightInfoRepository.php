@@ -1,12 +1,22 @@
 <?php
 
-class WeightTicketRepository implements WeightTicketRepositoryInterface {
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of WeightInfoRepository
+ *
+ * @author Das
+ */
+class WeightInfoRepository implements WeightInfoRepositoryInterface {
     
     public function findAll()
     {
         try
         {
-            return WeightTicket::all();
+            return WeightInfo::all();
         }
         catch (Exception $e)
         {
@@ -18,7 +28,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     {
         try
         {
-            $weightticket = WeightTicket::find($id);
+            $weightticket = WeightInfo::find($id);
 
             if(!$weightticket) throw new NotFoundException('Weight Info Not Found');
             return $weightticket;
@@ -36,8 +46,12 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         try
         {
             $weightticket = $this->instance();
-            $weightticket->po_id = $data['po_id'];
-            $weightticket->product = $data['product'];
+            $weightticket->bales = $data['bales'];
+            $weightticket->gross = $data['gross'];
+            $weightticket->tare = $data['tare'];
+            $weightticket->net = $data['net'];
+            $weightticket->scale = $data['scale'];
+            $weightticket->scale_fee = $data['scale_fee'];
 
             $weightticket->save();
 
@@ -55,10 +69,14 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         
         try
         {
-            $weightticket = WeightTicket::find($id);
+            $weightticket = WeightInfo::find($id);
             
-            $weightticket->po_id = $data['po_id'];
-            $weightticket->product = $data['product'];
+            $weightticket->bales = $data['bales'];
+            $weightticket->gross = $data['gross'];
+            $weightticket->tare = $data['tare'];
+            $weightticket->net = $data['net'];
+            $weightticket->scale = $data['scale'];
+            $weightticket->scale_fee = $data['scale_fee'];
             
             $weightticket->save();
             
@@ -72,17 +90,17 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     
     public function destroy($id)
     {
-        $role = $this->findById($id);
-        $deleted_role = $role;
+        $weightinfo = $this->findById($id);
+        $deleted_weightinfo = $weightinfo;
         
-        $role->delete();
+        $weightinfo->delete();
         
-        return $deleted_role;
+        return $deleted_weightinfo;
     }
     
     public function validate($data)
     {
-        $validator = Validator::make($data, WeightTicket::$rules);
+        $validator = Validator::make($data, WeightInfo::$rules);
         
         if($validator->fails()) { 
             throw new ValidationException($validator); 
@@ -93,7 +111,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     
     public function instance($data = array())
     {
-        return new WeightTicket($data);
+        return new WeightInfo($data);
     }
     
 }
