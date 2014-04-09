@@ -89,6 +89,7 @@ class PickupScheduleRepository implements PickupScheduleRepositoryInterface {
     $pickupschedule->originloadersfee = $data['originLoaderFee'];
     $pickupschedule->destinationloader_id = $data['destinationLoader'];
     $pickupschedule->destinationloadersfee = $data['destinationLoaderFee'];
+    $pickupschedule->truckingrate = $data['truckingrate'];
    
     try{
       $pickupschedule->save();

@@ -6,6 +6,7 @@ use BaseController;
 use PickupScheduleRepositoryInterface;
 use Input;
 use Config;
+use Response;
 
 
 class PickupScheduleController extends BaseController {
@@ -74,6 +75,12 @@ class PickupScheduleController extends BaseController {
 
 	public function getLoaderAccount(){
 		return $this->pickupSchedule->getLoaderAccount(Input::get('search'));
+	}
+
+	public function getTruckingRate(){
+		return Response::json(
+	        Config::get('constants.TRUCKING_RATE'),
+	        200);
 	}
 
 }
