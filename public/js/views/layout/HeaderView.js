@@ -27,6 +27,7 @@ define([
 				
 				'bid_url'       : '#/'+Const.URL.BID,
 				'purchase_order_url': '#/'+Const.URL.PO,
+                'weightinfo_url': '#/'+Const.URL.WEIGHTINFO,
 				
 				'sales_url'		: '#/',
 				'inventory_url'	: '#/',

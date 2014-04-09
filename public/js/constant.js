@@ -15,6 +15,7 @@ define(function () {
 			'PRODUCT': 'product',
 			'BID': 'purchases/bid',
 			'PO': 'purchases/po',
+            'WEIGHTINFO': 'purchases/weightinfo'
 		},
 		'MENU': {
 			'PURCHASE': {

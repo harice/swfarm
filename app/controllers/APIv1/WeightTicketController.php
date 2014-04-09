@@ -4,13 +4,13 @@ namespace APIv1;
 
 use BaseController;
 use Illuminate\Support\Facades\Response;
-use WeightInfoRepositoryInterface;
+use WeightTicketRepositoryInterface;
 use Input;
 
-class WeightInfoController extends BaseController {
+class WeightTicketController extends BaseController {
 
-    public function __construct(WeightInfoRepositoryInterface $weightinfo) {
-        $this->weightinfo = $weightinfo;
+    public function __construct(WeightTicketRepositoryInterface $weightticket) {
+        $this->weightticket = $weightticket;
     }
     
 	/**
@@ -20,7 +20,7 @@ class WeightInfoController extends BaseController {
 	 */
 	public function index()
 	{
-		$collection = $this->weightinfo->findAll();
+		$collection = $this->weightticket->findAll();
         return Response::json($collection);
 	}
 
@@ -31,7 +31,7 @@ class WeightInfoController extends BaseController {
 	 */
 	public function store()
 	{
-		$this->weightinfo->store(Input::all());
+		$this->weightticket->store(Input::all());
 	}
 
 	/**
@@ -42,7 +42,7 @@ class WeightInfoController extends BaseController {
 	 */
 	public function show($id)
 	{
-		$model = $this->weightinfo->findById($id);
+		$model = $this->weightticket->findById($id);
         return Response::json($model);
 	}
 
@@ -54,7 +54,7 @@ class WeightInfoController extends BaseController {
 	 */
 	public function update($id)
 	{
-		return $this->weightinfo->update($id, Input::all());
+		return $this->weightticket->update($id, Input::all());
 	}
 
 	/**
@@ -65,7 +65,7 @@ class WeightInfoController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		$this->weightinfo->destroy($id);
+		$this->weightticket->destroy($id);
 	}
 
 }
