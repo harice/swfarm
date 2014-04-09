@@ -127,7 +127,6 @@ define([
 			//'blur #trucker': 'validateTrucker',
 			'click #add-schedule': 'showAddSchedule',
 			'click #cancel-add-weight-info': 'cancelAddSchedule',
-			'click #add-weight-info': 'showAddWeightTicket',
 			'click #show-weight-info': 'showWeightTicket',
 		},
 		
@@ -174,12 +173,6 @@ define([
 		cancelAddSchedule: function () {
 			$('#po-schedule-form-cont').empty();
 			console.log('cancelAddSchedule');
-			return false;
-		},
-		
-		showAddWeightTicket: function () {
-			console.log('showAddWeightTicket');
-			
 			return false;
 		},
 		
