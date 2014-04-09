@@ -15,7 +15,6 @@ class DatabaseSeeder extends Seeder {
 		$this->call('PermissioncategoryTableSeeder');
 		$this->call('PermissiontypeTableSeeder');
 		$this->call('PermissioncategorytypeTableSeeder');
-        // $this->call('ProductsTableSeeder');
 		$this->call('AccountTypeTableSeeder');
 		$this->call('AddressTypeTableSeeder');
         
@@ -26,6 +25,13 @@ class DatabaseSeeder extends Seeder {
         $this->call('DestinationTableSeeder');
         
         $this->call('WeightInfoTableSeeder');
+        
+        // Testing
+        $this->call('ProductsTableSeeder');
+        $this->call('AccountTableSeeder');
+        $this->call('AddressTableSeeder');
+        $this->call('BidTableSeeder');
+        $this->call('BidProductTableSeeder');
 
 	}
 
