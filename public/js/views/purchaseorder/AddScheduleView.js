@@ -17,7 +17,7 @@ define([
 			
 			var compiledTemplate = _.template(purchaseOrderScheduleTemplate, {});
 			this.$el.html(compiledTemplate);
-			this.resetAddFields();
+			//this.resetAddFields();
 		},
 		
 		resetAddFields: function () {
@@ -32,6 +32,9 @@ define([
 			}
 			else
 				addFieldsContainer.html(this.addFieldsClone.clone());
+				
+			this.initCalendar();
+			this.initFormProperties();
 		},
 		
 		populateTimeOPtions: function () {
@@ -50,6 +53,50 @@ define([
 				minutesOptions += '<option value="'+i+'">'+minute+'</option>';
 			}
 			this.$el.find('.minutes').html(minutesOptions);
+		},
+		
+		initCalendar: function () {
+			this.$el.find('#po-sched-start-date .input-group.date').datepicker({
+				orientation: "top left",
+				autoclose: true,
+				clearBtn: true,
+				todayHighlight: true,
+				format: 'yyyy-mm-dd',
+			});
+		},
+		
+		initFormProperties: function () {
+			var validate = $('#POScheduleForm').validate({
+				submitHandler: function(form) {
+					var data = $(form).serializeObject();
+					console.log(data);
+				},
+				errorPlacement: function(error, element) {
+					if(element.attr('name') == 'date') {
+						element.closest('.calendar-cont').siblings('.error-msg-cont').html(error);
+					}
+					else {
+						error.insertAfter(element);
+					}
+				},
+			});
+		},
+		
+		events: {
+			'click #add-schedule': 'showAddSchedule',
+			'click #cancel-add-weight-info': 'cancelAddSchedule',
+		},
+		
+		showAddSchedule: function () {
+			this.resetAddFields();
+			console.log('showAddSchedule');
+			return false;
+		},
+		
+		cancelAddSchedule: function () {
+			$('#po-schedule-form-cont').empty();
+			console.log('cancelAddSchedule');
+			return false;
 		},
 	});
 	
