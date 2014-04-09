@@ -14,6 +14,9 @@ class AddressTableSeeder extends Seeder {
     
     public function run()
 	{
+        $now = new DateTime('NOW');
+        $date = $now->format('Y-m-d H:i:s');
+        
 		$address = array(
 			array(
                 'account' => '1',
@@ -22,7 +25,9 @@ class AddressTableSeeder extends Seeder {
                 'state' => '2',
                 'zipcode' => '29620',
                 'country' => '1',
-                'type' => '1'
+                'type' => '1',
+                'created_at' => $date,
+                'updated_at' => $date
             )
 		);
 

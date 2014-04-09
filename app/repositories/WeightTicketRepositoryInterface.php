@@ -1,6 +1,6 @@
 <?php
 
-interface WeightInfoRepositoryInterface {
+interface WeightTicketRepositoryInterface {
 	public function findAll();
     public function findById($id);
     public function store($data);

@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder {
 
         $this->call('DestinationTableSeeder');
         
-        $this->call('WeightInfoTableSeeder');
+        $this->call('WeightTicketTableSeeder');
         
         // Testing
         $this->call('ProductsTableSeeder');

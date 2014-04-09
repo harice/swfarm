@@ -3,12 +3,12 @@
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 
-class WeightInfoRepositoryTest extends TestCase {
+class WeightTicketRepositoryTest extends TestCase {
     
     public function setUp()
     {
         parent::setUp();
-        $this->repo = App::make('WeightInfoRepository');
+        $this->repo = App::make('WeightTicketRepository');
         
         Artisan::call('migrate');
         $this->seed();
@@ -48,8 +48,14 @@ class WeightInfoRepositoryTest extends TestCase {
     public function testUpdateSaves()
     {
         $data = array(
+            'bales' => 5,
             'gross' => 9999.99,
-            'tare' => 8888.88
+            'tare' => 8888.88,
+            'net' => 1111.11,
+            'po_id' => 1,
+            'product' => 'Alfalfa',
+            'scale' => 'Scale Inc.',
+            'scale_fee' => 10.00
         );
         
         $response = $this->repo->update(1, $data);
