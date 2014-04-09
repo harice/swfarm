@@ -1,8 +1,23 @@
 define([
 	'backbone',
+	'bootstrapdatepicker',
+	'jqueryvalidate',
+	'jquerytextformatter',
+	'jqueryphonenumber',
+	'views/autocomplete/AccountTruckerAutoCompleteView',
+	'collections/account/AccountTruckerCollection',
 	'text!templates/purchaseorder/purchaseOrderScheduleTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddScheduleTemplate.html',
-], function(Backbone, purchaseOrderScheduleTemplate, purchaseOrderAddScheduleTemplate){
+], function(Backbone,
+			DatePicker,
+			Validate,
+			TextFormatter,
+			PhoneNumber,
+			AccountTruckerAutoCompleteView,
+			AccountTruckerCollection,
+			purchaseOrderScheduleTemplate,
+			purchaseOrderAddScheduleTemplate
+){
 	
 	var AddScheduleView = Backbone.View.extend({
 		//el: $("#po-schedule"),
@@ -10,6 +25,7 @@ define([
 		
 		initialize: function () {
 			this.addFieldsClone = null;
+			this.truckerAutoCompleteResult = [];
 		},
 		
 		render: function () {
@@ -35,6 +51,7 @@ define([
 				
 			this.initCalendar();
 			this.initFormProperties();
+			this.initTruckerAutocomplete();
 		},
 		
 		populateTimeOPtions: function () {
@@ -82,10 +99,71 @@ define([
 			});
 		},
 		
+		initTruckerAutocomplete: function () {
+			var thisObj = this;
+			
+			var accountTruckerCollection = new AccountTruckerCollection();
+			this.accountTruckerAutoCompleteView = new AccountTruckerAutoCompleteView({
+                input: $('#trucker'),
+				hidden: $('#trucker-id'),
+                collection: accountTruckerCollection,
+            });
+			
+			this.accountTruckerAutoCompleteView.on('loadResult', function () {
+				thisObj.truckerAutoCompleteResult = [];
+				_.each(accountTruckerCollection.models, function (model) {
+					thisObj.truckerAutoCompleteResult.push({id:model.get('id'), name:model.get('name')});
+				});
+			});
+			
+			this.accountTruckerAutoCompleteView.onSelect = function (model) {
+				//thisObj.getProducerAddress(model.get('id'));
+			};
+			
+			this.accountTruckerAutoCompleteView.render();
+		},
+		
 		events: {
+			//'blur #trucker': 'validateTrucker',
 			'click #add-schedule': 'showAddSchedule',
 			'click #cancel-add-weight-info': 'cancelAddSchedule',
+			'click #add-weight-info': 'showAddWeightTicket',
+			'click #show-weight-info': 'showWeightTicket',
 		},
+		
+		/*validateTrucker: function (ev) {
+			var labelField = $(ev.target);
+			var fieldId = $(ev.target).attr('id');
+			var idField = labelField.siblings('#producer-id');
+			var producer = this.producerIsInFetchedData(labelField.val(), idField.val());
+			
+			switch(fieldId) {
+				case 'trucker':
+					
+					break;
+				default:
+					break;
+			}
+			
+			if(!this.producerAutoCompleteView.$el.is(':hover')) {
+				if(producer !== false) {
+					if(producer.id != null) {
+						labelField.val(producer.name);
+						idField.val(producer.id);
+						this.resetProducerAddress();
+						this.getProducerAddress(producer.id);
+					}
+					else
+						labelField.val(producer.name);
+				}
+				else {
+					labelField.val('');
+					idField.val('');
+					this.resetProducerAddress();
+				}
+				labelField.siblings('.autocomplete').hide();
+			}
+		},*/
 		
 		showAddSchedule: function () {
 			this.resetAddFields();
@@ -96,6 +174,18 @@ define([
 		cancelAddSchedule: function () {
 			$('#po-schedule-form-cont').empty();
 			console.log('cancelAddSchedule');
+			return false;
+		},
+		
+		showAddWeightTicket: function () {
+			console.log('showAddWeightTicket');
+			
+			return false;
+		},
+		
+		showWeightTicket: function () {
+			console.log('showWeightTicket');
+			
 			return false;
 		},
 	});

@@ -4,7 +4,7 @@ define([
 	'collections/base/AppCollection',
 ], function(Backbone, AccountModel, AppCollection){
     
-	var AccountProducerCollection = AppCollection.extend({
+	var AccountTruckerCollection = AppCollection.extend({
 		url: '/apiv1/bid/getProducerAccount',
 		model: AccountModel,
 		initialize: function() {
@@ -15,5 +15,5 @@ define([
 		},
 	});
 
-	return AccountProducerCollection;
+	return AccountTruckerCollection;
 });
