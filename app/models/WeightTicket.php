@@ -13,6 +13,14 @@ class WeightTicket extends BaseModel {
         'po_id' => 'required',
         'product' => 'required'
     );
+    
+    /**
+     * Define the relationship with the weightinfo table
+     * @return Collection collection of WeightInfo Models
+     */
+    public function weightinfo()
+    {
+        return $this->hasMany('WeightInfo');
+    }
 
 }
-

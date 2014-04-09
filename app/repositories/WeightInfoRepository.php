@@ -28,10 +28,10 @@ class WeightInfoRepository implements WeightInfoRepositoryInterface {
     {
         try
         {
-            $weightticket = WeightInfo::find($id);
+            $weightinfo = WeightInfo::find($id);
 
-            if(!$weightticket) throw new NotFoundException('Weight Info Not Found');
-            return $weightticket;
+            if(!$weightinfo) throw new NotFoundException('Weight Info Not Found');
+            return $weightinfo;
         }
         catch (Exception $e)
         {
@@ -45,17 +45,19 @@ class WeightInfoRepository implements WeightInfoRepositoryInterface {
         
         try
         {
-            $weightticket = $this->instance();
-            $weightticket->bales = $data['bales'];
-            $weightticket->gross = $data['gross'];
-            $weightticket->tare = $data['tare'];
-            $weightticket->net = $data['net'];
-            $weightticket->scale = $data['scale'];
-            $weightticket->scale_fee = $data['scale_fee'];
+            $weightinfo = $this->instance();
+            
+            $weightinfo->weightinfo_type = $data['weightinfo_type'];
+            $weightinfo->bales = $data['bales'];
+            $weightinfo->gross = $data['gross'];
+            $weightinfo->tare = $data['tare'];
+            $weightinfo->net = $data['net'];
+            $weightinfo->scale = $data['scale'];
+            $weightinfo->scale_fee = $data['scale_fee'];
 
-            $weightticket->save();
+            $weightinfo->save();
 
-            return $weightticket;
+            return $weightinfo;
         }
         catch (Exception $e)
         {
@@ -69,18 +71,19 @@ class WeightInfoRepository implements WeightInfoRepositoryInterface {
         
         try
         {
-            $weightticket = WeightInfo::find($id);
+            $weightinfo = WeightInfo::find($id);
             
-            $weightticket->bales = $data['bales'];
-            $weightticket->gross = $data['gross'];
-            $weightticket->tare = $data['tare'];
-            $weightticket->net = $data['net'];
-            $weightticket->scale = $data['scale'];
-            $weightticket->scale_fee = $data['scale_fee'];
+            $weightinfo->weightinfo_type = $data['weightinfo_type'];
+            $weightinfo->bales = $data['bales'];
+            $weightinfo->gross = $data['gross'];
+            $weightinfo->tare = $data['tare'];
+            $weightinfo->net = $data['net'];
+            $weightinfo->scale = $data['scale'];
+            $weightinfo->scale_fee = $data['scale_fee'];
             
-            $weightticket->save();
+            $weightinfo->save();
             
-            return $weightticket;
+            return $weightinfo;
         }
         catch (Exception $e)
         {

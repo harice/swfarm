@@ -9,6 +9,7 @@ class WeightInfoTableSeeder extends Seeder {
         
 		$weightinfo = array(
 			array(
+                'weightinfo_type' => 'Origin',
                 'bales' => 5,
                 'gross' => 19.99,
                 'tare' => 18.88,
@@ -20,6 +21,7 @@ class WeightInfoTableSeeder extends Seeder {
             ),
 			
 			array(
+                'weightinfo_type' => 'Destination',
                 'bales' => 5,
                 'gross' => 19.99,
                 'tare' => 18.88,
@@ -31,6 +33,7 @@ class WeightInfoTableSeeder extends Seeder {
             ),
 			
 			array(
+                'weightinfo_type' => 'Origin',
                 'bales' => 5,
                 'gross' => 19.99,
                 'tare' => 18.88,

@@ -39,6 +39,7 @@ class WeightInfoRepositoryTest extends TestCase {
     public function testStoreReturnsModel()
     {
         $data = array(
+            'weightinfo_type' => 'Origin',
             'bales' => 5,
             'gross' => 19.99,
             'tare' => 18.88,
@@ -56,6 +57,7 @@ class WeightInfoRepositoryTest extends TestCase {
     public function testUpdateSaves()
     {
         $data = array(
+            'weightinfo_type' => 'Origin',
             'bales' => 5,
             'gross' => 9999.99,
             'tare' => 8888.88,
@@ -89,6 +91,7 @@ class WeightInfoRepositoryTest extends TestCase {
     public function testValidatePasses()
     {
         $data = array(
+            'weightinfo_type' => 'Origin',
             'bales' => 5,
             'gross' => 9999.99,
             'tare' => 8888.88,
@@ -105,7 +108,12 @@ class WeightInfoRepositoryTest extends TestCase {
     {
         try {
             $this->repo->validate(array(
-                'tare' => 8888.88
+                'weightinfo_type' => 'Origin',
+                'bales' => 5,
+                'tare' => 8888.88,
+                'net' => 1111.11,
+                'scale' => 'Scale Inc.',
+                'scale_fee' => 10.00
             ));
         }
         catch(ValidationException $expected)
@@ -120,7 +128,12 @@ class WeightInfoRepositoryTest extends TestCase {
     {
         try {
             $this->repo->validate(array(
-                'gross' => 9999.99
+                'weightinfo_type' => 'Origin',
+                'bales' => 5,
+                'gross' => 9999.99,
+                'net' => 1111.11,
+                'scale' => 'Scale Inc.',
+                'scale_fee' => 10.00
             ));
         }
         catch(ValidationException $expected)
@@ -140,8 +153,13 @@ class WeightInfoRepositoryTest extends TestCase {
     public function testInstanceReturnsModelWithData()
     {
         $data = array(
+            'weightinfo_type' => 'Origin',
+            'bales' => 5,
             'gross' => 9999.99,
-            'tare' => 8888.88
+            'tare' => 8888.88,
+            'net' => 1111.11,
+            'scale' => 'Scale Inc.',
+            'scale_fee' => 10.00
         );
 
         $response = $this->repo->instance($data);
