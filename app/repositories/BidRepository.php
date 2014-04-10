@@ -672,7 +672,7 @@ class BidRepository implements BidRepositoryInterface {
 
     return Response::json(array(
           'error' => false,
-          'message' => 'Pick up date added successfully.'),
+          'message' => 'Purchae order saved.'),
           200
       );
   }
