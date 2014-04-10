@@ -10,9 +10,17 @@ class WeightTicket extends BaseModel {
 	protected $table = 'weightticket';
 
 	public static $rules = array(
-        'gross' => 'required',
-        'tare' => 'required'
+        'purchaseorder_id' => 'required',
+        'product' => 'required'
     );
+    
+    /**
+     * Define the relationship with the weightinfo table
+     * @return Collection collection of WeightInfo Models
+     */
+    public function weightinfo()
+    {
+        return $this->hasMany('WeightInfo');
+    }
 
 }
-
