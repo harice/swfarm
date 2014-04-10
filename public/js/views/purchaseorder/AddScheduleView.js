@@ -15,6 +15,7 @@ define([
 	'text!templates/purchaseorder/purchaseOrderScheduleTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddScheduleTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderScheduleInnerListTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderViewScheduleTemplate.html',
 	'constant',
 	'views/weightticket/WeightTicketView',
 ], function(Backbone,
@@ -33,6 +34,7 @@ define([
 			purchaseOrderScheduleTemplate,
 			purchaseOrderAddScheduleTemplate,
 			purchaseOrderScheduleInnerListTemplate,
+			purchaseOrderViewScheduleTemplate,
 			Const,
             WeightTicketView
 ){
@@ -45,12 +47,15 @@ define([
 			var thisObj = this;
 			this.bidId = option.id;
 			this.addFieldsClone = null;
+			this.viewFieldsClone = null;
 			this.truckerAutoCompleteResult = [];
 			this.loaderOriginAutoCompleteResult = [];
 			this.loaderDestinationAutoCompleteResult = [];
 			this.truckingRateEditable = false;
 			this.truckingRatePerMile = null;
 			this.formContainer = null;
+			this.schedTableElement = null;
+			this.activeModel = null;
 			
 			this.truckingRateModel = new TruckingRateModel();
 			this.truckingRateModel.on('change', function() {
@@ -79,6 +84,7 @@ define([
 			var compiledTemplate = _.template(purchaseOrderScheduleTemplate, {});
 			this.$el.html(compiledTemplate);
 			this.formContainer = $('#po-schedule-form-cont');
+			this.schedTableElement = $('#po-schedule-list');
 		},
 		
 		displayList: function () {
@@ -89,12 +95,34 @@ define([
 			};
 			
 			var innerListTemplate = _.template(purchaseOrderScheduleInnerListTemplate, data);
-			$("#po-schedule-list tbody").html(innerListTemplate);
+			this.schedTableElement.find('tbody').html(innerListTemplate);
 			
 			//this.generatePagination();
 		},
 		
+		resetViewFields: function () {
+			var clone = null;
+			
+			var viewFieldsContainer = this.formContainer;
+			viewFieldsContainer.empty();
+			
+			if(this.viewFieldsClone == null) {
+				var viewTemplate = _.template(purchaseOrderViewScheduleTemplate, {});
+				viewFieldsContainer.html(viewTemplate);
+				clone = viewFieldsContainer.find('> form:first-child');
+				this.viewFieldsClone = clone.clone();
+			}
+			else {
+				clone = this.viewFieldsClone;
+				viewFieldsContainer.html(clone);
+			}
+			
+			return clone;
+		},
+		
 		resetAddFields: function () {
+			var clone = null;
+			
 			if(this.truckingRatePerMile != null) {
 				var addFieldsContainer = this.formContainer;
 				addFieldsContainer.empty();
@@ -103,10 +131,13 @@ define([
 					var addTemplate = _.template(purchaseOrderAddScheduleTemplate, {});
 					addFieldsContainer.html(addTemplate);
 					this.populateTimeOPtions();
-					this.addFieldsClone = addFieldsContainer.find('> form:first-child').clone();
+					clone = addFieldsContainer.find('> form:first-child');
+					this.addFieldsClone = clone.clone();
 				}
-				else
-					addFieldsContainer.html(this.addFieldsClone.clone());
+				else {
+					clone = this.addFieldsClone.clone();
+					addFieldsContainer.html(clone);
+				}
 					
 				this.initCalendar();
 				this.initFormProperties();
@@ -115,6 +146,8 @@ define([
 			else {
 				this.displayGrowl('Fetching data please retry again after a few seconds.', 'info');
 			}
+			
+			return clone;
 		},
 		
 		populateTimeOPtions: function () {
@@ -122,7 +155,7 @@ define([
 			for(var i=1; i<=12; i++) {
 				var hour = i+'';
 				hour = (hour.length > 1)? i : '0'+i;
-				hourOptions += '<option value="'+i+'">'+hour+'</option>';
+				hourOptions += '<option value="'+hour+'">'+hour+'</option>';
 			}
 			this.$el.find('.hours').html(hourOptions);
 			
@@ -130,7 +163,7 @@ define([
 			for(var i=0; i< 60; i++) {
 				var minute = i+'';
 				minute = (minute.length > 1)? i : '0'+i;
-				minutesOptions += '<option value="'+i+'">'+minute+'</option>';
+				minutesOptions += '<option value="'+minute+'">'+minute+'</option>';
 			}
 			this.$el.find('.minutes').html(minutesOptions);
 		},
@@ -148,11 +181,13 @@ define([
 		initFormProperties: function () {
 			var thisObj = this;
 			$('#bid_id').val(this.bidId);
+			this.truckerAutoCompleteResult = [];
+			this.loaderOriginAutoCompleteResult = [];
+			this.loaderDestinationAutoCompleteResult = [];
 			
 			var validate = $('#POScheduleForm').validate({
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
-					console.log(data);
 					
 					var poScheduleModel = new POScheduleModel(data);
 					
@@ -162,6 +197,7 @@ define([
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
 								thisObj.clearFormContainer();
+								thisObj.renderList(1);
 							},
 							error: function (model, response, options) {
 								if(typeof response.responseJSON.error == 'undefined')
@@ -244,6 +280,57 @@ define([
 			this.accountLoaderDestinationAutoCompleteView.render();
 		},
 		
+		populateScheduleData: function (schedId, form, type) {
+			this.activeModel = this.collection.get(schedId);
+			
+			if(type == 'edit') {
+				form.find('#bid_id').before('<input id="schedId" type="hidden" name="id" value="'+this.activeModel.get('id')+'" />');
+				form.find('#po-sched-start-date input').val(this.activeModel.get('scheduledate'));
+				
+				this.truckerAutoCompleteResult = [{name:this.activeModel.get('trucker')[0].name, id:this.activeModel.get('trucker')[0].id}];
+				this.toggleTruckingRate(this.activeModel.get('trucker')[0].accounttype[0].name);
+				this.loaderOriginAutoCompleteResult = [{name:this.activeModel.get('origin_loader')[0].name,id:this.activeModel.get('origin_loader')[0].id}];
+				this.loaderDestinationAutoCompleteResult = [{name:this.activeModel.get('destination_loader')[0].name,id:this.activeModel.get('destination_loader')[0].id}];
+				
+				form.find('#trucker').val(this.activeModel.get('trucker')[0].name);
+				form.find('#trucker-id').val(this.activeModel.get('trucker')[0].id);
+				
+				form.find('#originloader').val(this.activeModel.get('origin_loader')[0].name);
+				form.find('#originloader-id').val(this.activeModel.get('origin_loader')[0].id);
+				
+				form.find('#destinationloader').val(this.activeModel.get('destination_loader')[0].name);
+				form.find('#destinationloader-id').val(this.activeModel.get('destination_loader')[0].id);
+			}
+			else {
+				form.find('#schedId').val(this.activeModel.get('id'));
+				form.find('#po-sched-start-date').val(this.activeModel.get('scheduledate'));
+				form.find('#truckerview').val(this.activeModel.get('trucker')[0].name);
+				form.find('#originloaderview').val(this.activeModel.get('origin_loader')[0].name);
+				form.find('#destinationloaderview').val(this.activeModel.get('destination_loader')[0].name);
+			}
+			
+			form.find('.hours').val(this.activeModel.get('scheduletimeHour'));
+			form.find('.minutes').val(this.activeModel.get('scheduletimeMin'));
+			form.find('.ampm').val(this.activeModel.get('scheduletimeAmPm'));
+			form.find('#distance').val(this.activeModel.get('distance'));
+			form.find('#fuelcharge').val(this.activeModel.get('fuelcharge')).blur();
+			form.find('#truckingrate').val(this.activeModel.get('truckingrate')).blur();
+			form.find('#originloadersfee').val(this.activeModel.get('originloadersfee')).blur();
+			form.find('#destinationloadersfee').val(this.activeModel.get('destinationloadersfee')).blur();
+			form.find('#show-weight-info').show();
+		},
+		
+		showViewForm: function (schedId) {
+			console.log('showViewForm');
+			var form = this.resetViewFields();
+			this.populateScheduleData(schedId, form, 'view');
+		},
+		
+		showEditForm: function (schedId) {
+			var form = this.resetAddFields();
+			this.populateScheduleData(schedId, form, 'edit');
+		},
+		
 		toggleTruckingRate: function (accountType) {
 			if(Const.PO.SCHEDULE.EDITABLERATE.ACCOUNTTYPE.indexOf(accountType) >= 0) {
 				this.truckingRateEditable = true;
@@ -268,12 +355,16 @@ define([
 			'blur #originloader': 'validateTrucker',
 			'blur #destinationloader': 'validateTrucker',
 			'click #add-schedule': 'showAddSchedule',
-			'click #cancel-add-weight-info': 'cancelAddSchedule',
+			'click #edit-schedule': 'showEditSchedule',
+			'click #delete-schedule': 'deleteSchedule',
+			'click #cancel-add-schedule': 'cancelAddSchedule',
+			'click #back-to-view': 'backToViewSchedule',
 			'click #show-weight-info': 'showWeightTicket',
 			'blur #truckingrate': 'onBlurTruckingRate',
 			'blur #distance': 'onBlurDistance',
 			'blur #fuelcharge': 'onBlurFuelCharge',
 			'blur .loader': 'onBlurLoader',
+			'click #po-schedule-list tbody tr': 'selectSchedule',
 		},
 		
 		validateTrucker: function (ev) {
@@ -352,14 +443,36 @@ define([
 		},
 		
 		showAddSchedule: function () {
+			this.removeListActive();
 			this.resetAddFields();
-			console.log('showAddSchedule');
+			return false;
+		},
+		
+		deleteSchedule: function () {
+			var thisObj = this;
+			
+			var verifyDelete = confirm('Are you sure you want to delete this schedule?');
+			if(verifyDelete) {
+				this.activeModel.destroy({
+					success: function (model, response, options) {
+						thisObj.displayMessage(response);
+						thisObj.renderList(1);
+						this.activeModel = null;
+					},
+					error: function (model, response, options) {
+						thisObj.displayMessage(response);
+					},
+					wait: true,
+					headers: this.activeModel.getAuth(),
+				});
+			}
+			
 			return false;
 		},
 		
 		cancelAddSchedule: function () {
 			this.clearFormContainer();
-			console.log('cancelAddSchedule');
+			this.removeListActive();
 			return false;
 		},
 		
@@ -381,7 +494,8 @@ define([
 		},
 		
 		onBlurDistance: function () {
-			this.computeTruckingRate();
+			if(!this.truckingRateEditable)
+				this.computeTruckingRate();
 		},
 		
 		onBlurFuelCharge: function (ev) {
@@ -395,7 +509,30 @@ define([
 		toFixedValue: function (field, decimal) {
 			var value = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()).toFixed(decimal) : '';
 			field.val(value);
-		}
+		},
+		
+		selectSchedule: function (ev) {
+			$(ev.target).closest('tr').addClass('active').siblings('tr').removeClass('active');
+			var schedId = $(ev.target).closest('tr').find('.schedId').val();
+			this.showViewForm(schedId);
+		},
+		
+		showEditSchedule: function (ev) {
+			var schedId = $(ev.target).closest('form').find('#schedId').val();
+			this.showEditForm(schedId);
+			return false;
+		},
+		
+		backToViewSchedule: function (ev) {
+			var schedId = $(ev.target).closest('form').find('#schedId').val();
+			this.showViewForm(schedId);
+			return false;
+		},
+		
+		removeListActive: function () {
+			this.schedTableElement.find('tbody tr.active').removeClass('active');
+			this.activeModel = null;
+		},
 	});
 	
 	return AddScheduleView;

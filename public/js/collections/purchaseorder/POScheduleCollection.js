@@ -14,7 +14,7 @@ define([
 				{
 					currentSort: 'pickupdate',
 					sort: {
-						pickupdate: true,
+						pickupdate: false,
 					},
 				}
 			);

@@ -1,0 +1,81 @@
+<form id="POScheduleForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+	<fieldset>
+		<legend>Schedule</legend>
+		<input type="hidden" id="schedId" value="" />
+		<div class="col-sm-4">
+			<div class="form-group">
+				<label for="" class="col-sm-4 control-label small">Date</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control calendar-cont" id="po-sched-start-date" value="" readonly>
+				</div>				
+			</div>
+			<div class="form-group">
+				<label for="" class="col-sm-4 control-label small">Time</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control hours text-align-right" value="" readonly>:
+					<input type="text" class="form-control minutes" value="" readonly>
+					<input type="text" class="form-control ampm" value="" readonly>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="trucker" class="col-sm-4 control-label small">Trucker</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" id="truckerview" value="" readonly>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="distance" class="col-sm-4 control-label small">Distance</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control text-align-right" id="distance" readonly>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="fuelcharge" class="col-sm-4 control-label small">Fuel Charges</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control text-align-right" id="fuelcharge" readonly>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="truckingrate" class="col-sm-4 control-label small">Trucking/Hauling Rate</label>
+				<div class="col-sm-8 value-text"><input type="text" class="form-control text-align-right" id="truckingrate" value="" readonly></div>
+			</div>
+		</div>
+		<div class="col-sm-4">
+			<h4>Origin</h4>
+			<div class="form-group">
+				<label for="originloader" class="col-sm-4 control-label small">Loader</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control capitalize" id="originloaderview" readonly>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="originloadersfee" class="col-sm-4 control-label small">Loader's Fee</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control text-align-right loader" id="originloadersfee" readonly>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-4">
+			<h4>Destination</h4>
+			<div class="form-group">
+				<label for="destinationloader" class="col-sm-4 control-label small">Loader</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control capitalize" id="destinationloaderview" readonly>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="destinationloadersfee" class="col-sm-4 control-label small">Loader's Fee</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control text-align-right loader" id="destinationloadersfee" readonly>
+				</div>
+			</div>
+		</div>
+	</fieldset>
+	<div class="form-group form-button-container">
+		<div class="pull-right">
+			<a id="show-weight-info" class="btn btn-default" href="#" style="display:none;">Show Weight Info</a>
+			<a id="edit-schedule" class="btn btn-default" href="#">Edit</a>
+			<a id="cancel-add-schedule" class="btn btn-default" href="#">Close</a>
+		</div>
+	</div>
+</form>
