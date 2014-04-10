@@ -131,7 +131,7 @@ define([
 				if(this.addFieldsClone == null) {
 					var addTemplate = _.template(purchaseOrderAddScheduleTemplate, {});
 					addFieldsContainer.html(addTemplate);
-					this.populateTimeOPtions();
+					this.populateTimeOptions();
 					clone = addFieldsContainer.find('> form:first-child');
 					this.addFieldsClone = clone.clone();
 				}
@@ -151,7 +151,7 @@ define([
 			return clone;
 		},
 		
-		populateTimeOPtions: function () {
+		populateTimeOptions: function () {
 			var hourOptions = '';
 			for(var i=1; i<=12; i++) {
 				var hour = i+'';

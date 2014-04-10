@@ -28,6 +28,7 @@ define([
 			this.schedId = option.schedId;
 			this.scaleOriginAutoCompleteResult = [];
 			this.scaleDestinationAutoCompleteResult = [];
+			this.editExisting = false;
 			
 			this.bidProductcollection = new BidProductCollection();
 			this.bidProductcollection.on('sync', function() {
@@ -39,10 +40,11 @@ define([
 			
 			this.model = new WeightTicketModel();
 			this.model.setURLForGetByScheduleId(this.schedId);
-			this.model.on('change', function() {
-				console.log(this);
-				thisObj.bidProductcollection.fetchBidProducts(this.bidId);
-				this.off('change');
+			this.model.on('sync', function() {
+				if(this.get('id'))
+					thisObj.editExisting = true;
+				thisObj.bidProductcollection.fetchBidProducts(thisObj.bidId);
+				this.off('sync');
 			});
 		},
 		
@@ -52,7 +54,12 @@ define([
 		
 		displayWeightTicket: function () {
 			var thisObj = this;
-			var compiledTemplate = _.template(purchaseOrderAddWeightTicketTemplate, {});
+			var variables = {};
+			
+			if(this.editExisting)
+				variables['weight_ticket_id'] = this.model.get('id');
+			
+			var compiledTemplate = _.template(purchaseOrderAddWeightTicketTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
 			var validate = $('#WeightTicketForm').validate({
@@ -83,6 +90,7 @@ define([
 			
 			this.supplyProductOptions();
 			this.initAutocomplete();
+			this.populateWeightTicketData();
 		},
 		
 		supplyProductOptions: function () {
@@ -128,6 +136,12 @@ define([
 			});
 			
 			this.accountScaleDestinationAutoCompleteView.render();
+		},
+		
+		populateWeightTicketData: function () {
+			if(this.editExisting) {
+				this.$el.find('#bidproduct_id').val(this.model.get('bidproduct_id'));
+			}
 		},
 		
 		events: {
