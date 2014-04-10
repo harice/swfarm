@@ -29,6 +29,7 @@ class WeightTicketRepositoryTest extends TestCase {
     public function testStoreReturnsModel()
     {
         $data = array(
+            'wtn' => 'WTN20140404-00002',
             'purchaseorder_id' => 1,
             'pickupschedule_id' => 1,
             'bidproduct_id' => 1,
@@ -57,6 +58,7 @@ class WeightTicketRepositoryTest extends TestCase {
     public function testUpdateSaves()
     {
         $data = array(
+            'wtn' => 'WTN20140404-00002',
             'purchaseorder_id' => 1,
             'pickupschedule_id' => 1,
             'bidproduct_id' => 1,
