@@ -29,27 +29,29 @@ class WeightTicketRepositoryTest extends TestCase {
     public function testStoreReturnsModel()
     {
         $data = array(
-            'purchaseorder_id' => 10001,
-            'product' => 'Alfalfa'
+            'purchaseorder_id' => 1,
+            'pickupschedule_id' => 1,
+            'bidproduct_id' => 1
         );
 
         $response = $this->repo->store($data);
 
         $this->assertTrue($response instanceof Model);
-        $this->assertTrue($response->product === $data['product']);
+        $this->assertTrue($response->bidproduct_id === $data['bidproduct_id']);
     }
     
     public function testUpdateSaves()
     {
         $data = array(
             'purchaseorder_id' => 1,
-            'product' => 'Alfalfa'
+            'pickupschedule_id' => 1,
+            'bidproduct_id' => 1
         );
         
         $response = $this->repo->update(1, $data);
         
         $this->assertTrue($response instanceof Model);
-        $this->assertTrue($response->product === $data['product']);
+        $this->assertTrue($response->bidproduct_id === $data['bidproduct_id']);
     }
     
     public function testDestroySaves()
@@ -72,18 +74,20 @@ class WeightTicketRepositoryTest extends TestCase {
     {
         $data = array(
             'purchaseorder_id' => 1,
-            'product' => 'Alfalfa'
+            'pickupschedule_id' => 1,
+            'bidproduct_id' => 1
         );
         
         $result = $this->repo->validate($data);
         $this->assertTrue($result);
     }
     
-    public function testValidateFailsWithoutPoId()
+    public function testValidateFailsWithoutPurchaseOrderId()
     {
         try {
             $this->repo->validate(array(
-                'product' => 'Alfalfa'
+                'pickupschedule_id' => 1,
+                'bidproduct_id' => 1
             ));
         }
         catch(ValidationException $expected)
@@ -94,11 +98,28 @@ class WeightTicketRepositoryTest extends TestCase {
         $this->fail('ValidationException was not raised');
     }
     
-    public function testValidateFailsWithoutProduct()
+    public function testValidateFailsWithoutBidProductId()
     {
         try {
             $this->repo->validate(array(
-                'purchaseorder_id' => 1
+                'purchaseorder_id' => 1,
+                'pickupschedule_id' => 1
+            ));
+        }
+        catch(ValidationException $expected)
+        {
+            return;
+        }
+
+        $this->fail('ValidationException was not raised');
+    }
+    
+    public function testValidateFailsWithoutPickupScheduleId()
+    {
+        try {
+            $this->repo->validate(array(
+                'purchaseorder_id' => 1,
+                'bidproduct_id' => 1
             ));
         }
         catch(ValidationException $expected)

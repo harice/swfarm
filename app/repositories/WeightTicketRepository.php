@@ -36,8 +36,10 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         try
         {
             $weightticket = $this->instance();
+            
             $weightticket->purchaseorder_id = $data['purchaseorder_id'];
-            $weightticket->product = $data['product'];
+            $weightticket->pickupschedule_id = $data['pickupschedule_id'];
+            $weightticket->bidproduct_id = $data['bidproduct_id'];
 
             $weightticket->save();
 
@@ -58,7 +60,8 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             $weightticket = WeightTicket::find($id);
             
             $weightticket->purchaseorder_id = $data['purchaseorder_id'];
-            $weightticket->product = $data['product'];
+            $weightticket->pickupschedule_id = $data['pickupschedule_id'];
+            $weightticket->bidproduct_id = $data['bidproduct_id'];
             
             $weightticket->save();
             

@@ -17,7 +17,8 @@ class CreateWeightticketTable extends Migration {
 			$table->engine = 'InnoDB';
 			$table->increments('id');
             $table->integer('purchaseorder_id');
-            $table->string('product');
+            $table->integer('pickupschedule_id');
+            $table->integer('bidproduct_id');
 			$table->timestamps();
 		});
 	}

@@ -9,22 +9,25 @@ class WeightTicketTableSeeder extends Seeder {
         
 		$weightticket = array(
 			array(
-                'purchaseorder_id' => 10001,
-                'product' => 'Alfalfa',
+                'purchaseorder_id' => 1,
+                'pickupschedule_id' => 1,
+                'bidproduct_id' => 1,
                 'created_at' => $date,
                 'updated_at' => $date
             ),
 			
 			array(
-                'purchaseorder_id' => 10001,
-                'product' => 'Alfalfa',
+                'purchaseorder_id' => 1,
+                'pickupschedule_id' => 1,
+                'bidproduct_id' => 1,
                 'created_at' => $date,
                 'updated_at' => $date
             ),
 			
 			array(
-                'purchaseorder_id' => 10001,
-                'product' => 'Alfalfa',
+                'purchaseorder_id' => 1,
+                'pickupschedule_id' => 1,
+                'bidproduct_id' => 1,
                 'created_at' => $date,
                 'updated_at' => $date
             )
