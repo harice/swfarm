@@ -78,8 +78,8 @@ class PickupScheduleController extends BaseController {
 	}
 
 	public function getTruckingRate(){
-		return Response::json(
-	        Config::get('constants.TRUCKING_RATE'),
+		return Response::json(array(
+			'truckingrate' => Config::get('constants.TRUCKING_RATE')),
 	        200);
 	}
 
