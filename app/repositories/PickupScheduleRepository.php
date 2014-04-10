@@ -39,6 +39,7 @@ class PickupScheduleRepository implements PickupScheduleRepositoryInterface {
     $pickupSchedules = PickupSchedule::with('trucker')
                     ->with('originLoader')
                     ->with('destinationLoader')
+                    ->with('trucker.accounttype')
                     ->where('bid_id', '=', $bidId)
                     ->take($perPage)
                     ->offset($offset)
