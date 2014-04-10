@@ -15,6 +15,7 @@ define([
 				filters: {},
 				filter: '',
 				date: '',
+				lookUpIds: {},
 			};
 		},
 		
@@ -168,6 +169,13 @@ define([
 				params = _.extend(params, {search:this.listView.search});
 			}
 			
+			for(var lookUpIdName in this.listView.lookUpIds) {
+				if(this.listView.lookUpIds[lookUpIdName] != '' && this.listView.lookUpIds[lookUpIdName] != null) {
+					var lookUpId = {};
+					lookUpId[lookUpIdName] = this.listView.lookUpIds[lookUpIdName];
+					params = _.extend(params, lookUpId);
+				}	
+			}
 			
 			this.url = this.getDefaultURL() + searchURL + '?' + $.param(params);
 		},

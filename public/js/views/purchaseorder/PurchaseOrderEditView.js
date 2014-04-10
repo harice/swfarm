@@ -122,7 +122,7 @@ define([
 			
 			this.initPickUpPeriodCalendar();
 			
-			var addScheduleView = new AddScheduleView();
+			var addScheduleView = new AddScheduleView({id:this.model.get('id')});
 			addScheduleView.render();
 		},
 		

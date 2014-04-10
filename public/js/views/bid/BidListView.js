@@ -68,7 +68,7 @@ define([
 				format: 'yyyy-mm-dd',
 			}).on('changeDate', function (ev) {
 				thisObj.collection.setDate($('#filter-date .input-group.date input').val());
-				thisObj.renderList();
+				thisObj.renderList(1);
 			});
 		},
 		

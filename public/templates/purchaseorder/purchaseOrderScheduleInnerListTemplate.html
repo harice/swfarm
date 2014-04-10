@@ -1,0 +1,17 @@
+<% if (!_.isEmpty(schedules)) { %>
+	<% _.each(schedules, function(schedule){ %>
+	<tr>
+		<td><%= schedule.get("pickupdate").split(" ")[0] %></td>
+		<td><%= schedule.get("pickupdate").split(" ")[1] %></td>
+		<td><%= schedule.get("trucker")[0].name %></td>
+		<td><%= schedule.get("trucker")[0].name %></td>
+		<td><%= schedule.get("origin_loader")[0].name %></td>
+		<td><%= schedule.get("destination_loader")[0].name %></td>
+		<td><%= schedule.get("distance") %> miles</td>
+	</tr>
+	<% }); %>
+<% } else { %>
+	<tr>
+		<td colspan="7">No result found.</td>
+	</tr>
+<% } %>

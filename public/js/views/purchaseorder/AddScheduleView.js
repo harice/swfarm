@@ -4,73 +4,115 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
+	'views/base/ListView',
 	'views/autocomplete/AccountTruckerAutoCompleteView',
 	'views/autocomplete/AccountLoaderAutoCompleteView',
 	'collections/account/AccountTruckerCollection',
 	'collections/account/AccountLoaderCollection',
-	'models/purchaseorder/TruckingRateModel'
+	'collections/purchaseorder/POScheduleCollection',
+	'models/purchaseorder/TruckingRateModel',
+	'models/purchaseorder/POScheduleModel',
 	'text!templates/purchaseorder/purchaseOrderScheduleTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddScheduleTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderScheduleInnerListTemplate.html',
 	'constant',
 ], function(Backbone,
 			DatePicker,
 			Validate,
 			TextFormatter,
 			PhoneNumber,
+			ListView,
 			AccountTruckerAutoCompleteView,
 			AccountLoaderAutoCompleteView,
 			AccountTruckerCollection,
 			AccountLoaderCollection,
+			POScheduleCollection,
 			TruckingRateModel,
+			POScheduleModel,
 			purchaseOrderScheduleTemplate,
 			purchaseOrderAddScheduleTemplate,
+			purchaseOrderScheduleInnerListTemplate,
 			Const
 ){
 	
-	var AddScheduleView = Backbone.View.extend({
-		//el: $("#po-schedule"),
+	var AddScheduleView = ListView.extend({
 		el: "#po-schedule",
 		
-		initialize: function () {
+		initialize: function (option) {
+			this.extendListEvents();
+			var thisObj = this;
+			this.bidId = option.id;
 			this.addFieldsClone = null;
 			this.truckerAutoCompleteResult = [];
 			this.loaderOriginAutoCompleteResult = [];
 			this.loaderDestinationAutoCompleteResult = [];
 			this.truckingRateEditable = false;
-			this.truckingRatePerMile = 2;
+			this.truckingRatePerMile = null;
+			this.formContainer = null;
 			
-			this.TruckingRateModel = new BidModel();
-			this.TruckingRateModel.on('change', function() {
-				console.log(this);
+			this.truckingRateModel = new TruckingRateModel();
+			this.truckingRateModel.on('change', function() {
+				thisObj.truckingRatePerMile = this.get('truckingrate');
 				this.off('change');
 			});
-			this.TruckingRateModel.runFetch();
+			this.truckingRateModel.runFetch();
+			
+			this.collection = new POScheduleCollection({id:option.id});
+			this.collection.on('sync', function() {
+				thisObj.displaySchedule();
+				thisObj.displayList();
+			});
+			this.collection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 		},
 		
 		render: function () {
+			this.renderList(1);
+		},
+		
+		displaySchedule: function () {
 			var thisObj = this;
 			
 			var compiledTemplate = _.template(purchaseOrderScheduleTemplate, {});
 			this.$el.html(compiledTemplate);
-			//this.resetAddFields();
+			this.formContainer = $('#po-schedule-form-cont');
+		},
+		
+		displayList: function () {
+			
+			var data = {
+				schedules: this.collection.models,
+				_: _ 
+			};
+			
+			var innerListTemplate = _.template(purchaseOrderScheduleInnerListTemplate, data);
+			$("#po-schedule-list tbody").html(innerListTemplate);
+			
+			//this.generatePagination();
 		},
 		
 		resetAddFields: function () {
-			var addFieldsContainer = $('#po-schedule-form-cont');
-			addFieldsContainer.empty();
-			
-			if(this.addFieldsClone == null) {
-				var addTemplate = _.template(purchaseOrderAddScheduleTemplate, {});
-				addFieldsContainer.html(addTemplate);
-				this.populateTimeOPtions();
-				this.addFieldsClone = addFieldsContainer.find('> form:first-child').clone();
-			}
-			else
-				addFieldsContainer.html(this.addFieldsClone.clone());
+			if(this.truckingRatePerMile != null) {
+				var addFieldsContainer = this.formContainer;
+				addFieldsContainer.empty();
 				
-			this.initCalendar();
-			this.initFormProperties();
-			this.initAutocomplete();
+				if(this.addFieldsClone == null) {
+					var addTemplate = _.template(purchaseOrderAddScheduleTemplate, {});
+					addFieldsContainer.html(addTemplate);
+					this.populateTimeOPtions();
+					this.addFieldsClone = addFieldsContainer.find('> form:first-child').clone();
+				}
+				else
+					addFieldsContainer.html(this.addFieldsClone.clone());
+					
+				this.initCalendar();
+				this.initFormProperties();
+				this.initAutocomplete();
+			}
+			else {
+				this.displayGrowl('Fetching data please retry again after a few seconds.', 'info');
+			}
 		},
 		
 		populateTimeOPtions: function () {
@@ -102,13 +144,35 @@ define([
 		},
 		
 		initFormProperties: function () {
+			var thisObj = this;
+			$('#bid_id').val(this.bidId);
+			
 			var validate = $('#POScheduleForm').validate({
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
 					console.log(data);
+					
+					var poScheduleModel = new POScheduleModel(data);
+					
+					poScheduleModel.save(
+						null, 
+						{
+							success: function (model, response, options) {
+								thisObj.displayMessage(response);
+								thisObj.clearFormContainer();
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: poScheduleModel.getAuth(),
+						}
+					);
 				},
 				errorPlacement: function(error, element) {
-					if(element.attr('name') == 'date') {
+					if(element.attr('name') == 'scheduledate') {
 						element.closest('.calendar-cont').siblings('.error-msg-cont').html(error);
 					}
 					else {
@@ -206,6 +270,8 @@ define([
 			'click #show-weight-info': 'showWeightTicket',
 			'blur #truckingrate': 'onBlurTruckingRate',
 			'blur #distance': 'onBlurDistance',
+			'blur #fuelcharge': 'onBlurFuelCharge',
+			'blur .loader': 'onBlurLoader',
 		},
 		
 		validateTrucker: function (ev) {
@@ -303,17 +369,29 @@ define([
 		},
 		
 		clearFormContainer: function () {
-			$('#po-schedule-form-cont').empty();
+			this.formContainer.empty();
 		},
 		
-		onBlurTruckingRate: function () {
-			var truckingRate = $('#truckingrate').val();
-			$('#truckingrate').val(parseFloat(truckingRate).toFixed(2));
+		onBlurTruckingRate: function (ev) {
+			this.toFixedValue($(ev.target), 2);
 		},
 		
 		onBlurDistance: function () {
 			this.computeTruckingRate();
 		},
+		
+		onBlurFuelCharge: function (ev) {
+			this.toFixedValue($(ev.target), 2);
+		},
+		
+		onBlurLoader: function (ev) {
+			this.toFixedValue($(ev.target), 2);
+		},
+		
+		toFixedValue: function (field, decimal) {
+			var value = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()).toFixed(decimal) : '';
+			field.val(value);
+		}
 	});
 	
 	return AddScheduleView;

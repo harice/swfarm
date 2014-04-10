@@ -8,7 +8,10 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		renderList: function (page) {
-			this.collection.setCurrentPage(page);
+			if(page)
+				this.collection.setCurrentPage(page);
+			else
+				page = this.collection.getCurrentPage();
 			this.collection.getModelsPerPage(page, Const.MAXITEMPERPAGE);
 		},
 		

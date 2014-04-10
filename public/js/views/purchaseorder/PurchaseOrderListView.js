@@ -86,7 +86,7 @@ define([
 				format: 'yyyy-mm-dd',
 			}).on('changeDate', function (ev) {
 				thisObj.collection.setDate($('#filter-date-of-purchase .input-group.date input').val());
-				thisObj.renderList();
+				thisObj.renderList(1);
 			});
 			
 			this.$el.find('#filter-pickup-start .input-group.date').datepicker({
@@ -97,7 +97,7 @@ define([
 				format: 'yyyy-mm-dd',
 			}).on('changeDate', function (ev) {
 				thisObj.collection.setFilter('pickupstart', $('#filter-pickup-start .input-group.date input').val());
-				thisObj.renderList();
+				thisObj.renderList(1);
 			});
 			
 			this.$el.find('#filter-pickup-end .input-group.date').datepicker({
@@ -108,7 +108,7 @@ define([
 				format: 'yyyy-mm-dd',
 			}).on('changeDate', function (ev) {
 				thisObj.collection.setFilter('pickupend', $('#filter-pickup-end .input-group.date input').val());
-				thisObj.renderList();
+				thisObj.renderList(1);
 			});
 		},
 		
