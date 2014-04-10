@@ -27,6 +27,6 @@ class PickupSchedule extends Eloquent {
     }
 
     public function weightticket(){
-        return $this->hasMany('WeightTicket', 'pickupschedule_id', 'id');
+        return $this->hasOne('WeightTicket', 'pickupschedule_id', 'id');
     }
 }
