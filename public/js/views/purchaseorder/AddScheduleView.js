@@ -8,6 +8,7 @@ define([
 	'collections/account/AccountTruckerCollection',
 	'text!templates/purchaseorder/purchaseOrderScheduleTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddScheduleTemplate.html',
+    'views/weightticket/WeightTicketView',
 ], function(Backbone,
 			DatePicker,
 			Validate,
@@ -16,7 +17,8 @@ define([
 			AccountTruckerAutoCompleteView,
 			AccountTruckerCollection,
 			purchaseOrderScheduleTemplate,
-			purchaseOrderAddScheduleTemplate
+			purchaseOrderAddScheduleTemplate,
+            WeightTicketView
 ){
 	
 	var AddScheduleView = Backbone.View.extend({
@@ -181,6 +183,8 @@ define([
 			console.log('showWeightTicket');
 			this.clearFormContainer();
 			
+            new WeightTicketView({id:1}).render();
+            
 			return false;
 		},
 		
