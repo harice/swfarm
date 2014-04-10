@@ -480,7 +480,7 @@ define([
 		
 		showWeightTicket: function () {
 			this.clearFormContainer();
-            this.weightTicketView = new WeightTicketView().render();
+            this.weightTicketView = new WeightTicketView({id:this.bidId}).render();
 			return false;
 		},
 		

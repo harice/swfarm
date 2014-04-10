@@ -4,94 +4,92 @@
 		<% if (typeof schedule_id !== "undefined") { %>
 			<input type="hidden" id="id" name="id" value="<%= schedule_id %>" />
 		<% } %>
-    <div class="row">
-      <div class="col-sm-12">
-        <div class="form-group">
-          <label for="wtn" class="col-sm-2 control-label small">Weight Ticket No.</label>
-          <div class="col-sm-10">
-            WTN-1001
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="product" class="col-sm-2 control-label small">Product</label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control capitalize" id="product" required>
-            <input type="hidden" class="form-control" id="product-id" name="product" value="" required>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-12">
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Type</th>
-              <th>Bales</th>
-              <th>Gross</th>
-              <th>Tare</th>
-              <th>Net</th>
-              <th>Scale</th>
-              <th>Scale Fee</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Origin</td>
-              <td>
-                <input type="text" class="form-control" id="origin_bales" name="origin_bales">
-              </td>
-              <td>
-                <input type="text" class="form-control" id="origin_gross" name="origin_gross" required>
-              </td>
-              <td>
-                <input type="text" class="form-control" id="origin_tare" name="origin_tare" required>
-              </td>
-              <td>
-                <input type="text" class="form-control" id="origin_net" name="origin_net" required>
-              </td>
-              <td>
-                <input type="text" class="form-control" id="origin_scale" name="origin_scale" required>
-              </td>
-              <td>
-                <input type="text" class="form-control" id="origin_scale_fee" name="origin_scale_fee" disabled>
-              </td>
-            </tr>
-            <tr>
-              <td>Destination</td>
-              <td>
-                <input type="text" class="form-control" id="destination_bales" name="destination_bales">
-              </td>
-              <td>
-                <input type="text" class="form-control" id="destination_gross" name="destination_gross" required>
-              </td>
-              <td>
-                <input type="text" class="form-control" id="destination_tare" name="destination_tare" required>
-              </td>
-              <td>
-                <input type="text" class="form-control" id="destination_net" name="destination_net" required>
-              </td>
-              <td>
-                <input type="text" class="form-control" id="destination_scale" name="destination_scale" required>
-              </td>
-              <td>
-                <input type="text" class="form-control" id="destination_scale_fee" name="destination_scale_fee" disabled>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="form-group">
+					<label for="wtn" class="col-sm-2 control-label small">Weight Ticket No</label>
+					<div class="col-sm-10"><input type="text" class="form-control" readonly></div>
+				</div>
+				<div class="form-group">
+					<label for="bidproduct_id" class="col-sm-2 control-label small">Product</label>
+					<div class="col-sm-10">
+						<select class="form-control" name="bidproduct_id" id="bidproduct_id"></select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12">
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Type</th>
+							<th>Bales</th>
+							<th>Gross</th>
+							<th>Tare</th>
+							<th>Net</th>
+							<th>Scale</th>
+							<th>Scale Fee</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Origin</td>
+							<td>
+								<input type="text" class="form-control" id="origin_bales" name="origin_bales">
+							</td>
+							<td>
+								<input type="text" class="form-control" id="origin_gross" name="origin_gross" required>
+							</td>
+							<td>
+								<input type="text" class="form-control" id="origin_tare" name="origin_tare" required>
+							</td>
+							<td>
+								<input type="text" class="form-control" id="origin_net" name="origin_net" required>
+							</td>
+							<td>
+								<input type="text" class="form-control" id="originscale" required>
+								<input type="hidden" class="form-control" id="originscale-id" name="originscale" required>
+							</td>
+							<td>
+								<input type="text" class="form-control" id="origin_scale_fee" name="origin_scale_fee" disabled>
+							</td>
+						</tr>
+						<tr>
+							<td>Destination</td>
+							<td>
+								<input type="text" class="form-control" id="destination_bales" name="destination_bales">
+							</td>
+							<td>
+								<input type="text" class="form-control" id="destination_gross" name="destination_gross" required>
+							</td>
+							<td>
+								<input type="text" class="form-control" id="destination_tare" name="destination_tare" required>
+							</td>
+							<td>
+								<input type="text" class="form-control" id="destination_net" name="destination_net" required>
+							</td>
+							<td>
+								<input type="text" class="form-control" id="destinationscale" required>
+								<input type="hidden" class="form-control" id="destinationscale-id" name="destination" required>
+							</td>
+							<td>
+								<input type="text" class="form-control" id="destination_scale_fee" name="destination_scale_fee" disabled>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</fieldset>
-  <div class="row">
-    <div class="col-sm-12">
-      <div class="form-group form-button-container">
-        <div class="pull-right">
-          <a id="show-weight-info" class="btn btn-default" href="#">Show Weight Info</a>
-          <button id="save" type="submit" class="save btn btn-default">Save</button>
-          <a id="cancel-add-weight-info" class="btn btn-default" href="#">Cancel</a>
-        </div>
-      </div>
-    </div>
-  </div>
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="form-group form-button-container">
+				<div class="pull-right">
+					<button id="save" type="submit" class="save btn btn-default">Save</button>
+					<a id="back-to-schedule" class="btn btn-default" href="#">Back</a>
+				</div>
+			</div>
+		</div>
+	</div>
 </form>
