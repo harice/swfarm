@@ -122,5 +122,22 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     {
         return new WeightTicket($data);
     }
+
+    public function getAllBidProductOnBid($bidId){
+        $bidProductOnBid = BidProduct::with('product')
+                            ->where('bid_id', '=', $bidId)
+                            ->get();
+                         
+        return $bidProductOnBid->toArray();                
+    }
+
+    public function getAllScaleProviderAccount(){
+      $accountIds = array(6); //scale provider account type id
+      $loader = Account::whereHas('accounttype', function ($query) use ($accountIds){
+                    $query->whereIn('id', $accountIds);
+                  })->get(array('id', 'name'));
+      
+      return $loader->toArray();
+    }
     
 }

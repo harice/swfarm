@@ -55,6 +55,8 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 	Route::get('bid/getDestination', 'APIv1\BidController@getDestination');
 	Route::resource('bid', 'APIv1\BidController');
     
+    Route::get('weightticket/getAllBidProductOnBid', 'APIv1\WeightTicketController@getAllBidProductOnBid');
+    Route::get('weightticket/getAllScaleProviderAccount', 'APIv1\WeightTicketController@getAllScaleProviderAccount');
     Route::resource('weightinfo', 'APIv1\WeightInfoController');
     Route::resource('weightticket', 'APIv1\WeightTicketController');
 
