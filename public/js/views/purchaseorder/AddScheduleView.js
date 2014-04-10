@@ -8,8 +8,10 @@ define([
 	'views/autocomplete/AccountLoaderAutoCompleteView',
 	'collections/account/AccountTruckerCollection',
 	'collections/account/AccountLoaderCollection',
+	'models/purchaseorder/TruckingRateModel'
 	'text!templates/purchaseorder/purchaseOrderScheduleTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddScheduleTemplate.html',
+	'constant',
 ], function(Backbone,
 			DatePicker,
 			Validate,
@@ -19,8 +21,10 @@ define([
 			AccountLoaderAutoCompleteView,
 			AccountTruckerCollection,
 			AccountLoaderCollection,
+			TruckingRateModel,
 			purchaseOrderScheduleTemplate,
-			purchaseOrderAddScheduleTemplate
+			purchaseOrderAddScheduleTemplate,
+			Const
 ){
 	
 	var AddScheduleView = Backbone.View.extend({
@@ -32,6 +36,15 @@ define([
 			this.truckerAutoCompleteResult = [];
 			this.loaderOriginAutoCompleteResult = [];
 			this.loaderDestinationAutoCompleteResult = [];
+			this.truckingRateEditable = false;
+			this.truckingRatePerMile = 2;
+			
+			this.TruckingRateModel = new BidModel();
+			this.TruckingRateModel.on('change', function() {
+				console.log(this);
+				this.off('change');
+			});
+			this.TruckingRateModel.runFetch();
 		},
 		
 		render: function () {
@@ -124,8 +137,8 @@ define([
 			});
 			
 			this.accountTruckerAutoCompleteView.onSelect = function (model) {
-				console.log(model)
-				//thisObj.getProducerAddress(model.get('id'));
+				var accountType = model.get('accounttype')[0].name;
+				thisObj.toggleTruckingRate(accountType);
 			};
 			
 			this.accountTruckerAutoCompleteView.render();
@@ -165,6 +178,25 @@ define([
 			this.accountLoaderDestinationAutoCompleteView.render();
 		},
 		
+		toggleTruckingRate: function (accountType) {
+			if(Const.PO.SCHEDULE.EDITABLERATE.ACCOUNTTYPE.indexOf(accountType) >= 0) {
+				this.truckingRateEditable = true;
+				$('#truckingrate').attr('readonly', false);
+				$('#truckingrate').val('');
+			}
+			else {
+				this.truckingRateEditable = false;
+				$('#truckingrate').attr('readonly', true);
+				this.computeTruckingRate();
+			}
+		},
+		
+		computeTruckingRate: function () {
+			var distanceField = $('#distance');
+			var distanceValue = (!isNaN(parseFloat(distanceField.val())))? parseFloat(distanceField.val()) : 0;
+			$('#truckingrate').val(parseFloat(distanceValue * this.truckingRatePerMile).toFixed(2));
+		},
+		
 		events: {
 			'blur #trucker': 'validateTrucker',
 			'blur #originloader': 'validateTrucker',
@@ -172,6 +204,8 @@ define([
 			'click #add-schedule': 'showAddSchedule',
 			'click #cancel-add-weight-info': 'cancelAddSchedule',
 			'click #show-weight-info': 'showWeightTicket',
+			'blur #truckingrate': 'onBlurTruckingRate',
+			'blur #distance': 'onBlurDistance',
 		},
 		
 		validateTrucker: function (ev) {
@@ -270,6 +304,15 @@ define([
 		
 		clearFormContainer: function () {
 			$('#po-schedule-form-cont').empty();
+		},
+		
+		onBlurTruckingRate: function () {
+			var truckingRate = $('#truckingrate').val();
+			$('#truckingrate').val(parseFloat(truckingRate).toFixed(2));
+		},
+		
+		onBlurDistance: function () {
+			this.computeTruckingRate();
 		},
 	});
 	

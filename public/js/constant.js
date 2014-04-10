@@ -68,6 +68,13 @@ define(function () {
 			'PROFILEPIC': '/images/default_profile.jpg',
 		},
 		'MULTIPLEADDRESS': ['Producer', 'Customer'],
+		'PO': {
+			'SCHEDULE': {
+				'EDITABLERATE': {
+					'ACCOUNTTYPE': ['Hauler'],
+				},
+			},
+		},
 	};
 	
 	return constant;
