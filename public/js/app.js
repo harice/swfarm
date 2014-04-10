@@ -45,8 +45,11 @@ define([
 		};
 		
 		Backbone.View.prototype.nlToBr = function (str) {
-			var replaced = str.replace(/\n/g, '<br />');
-			//replaced = replaced.replace(/\r/g, '<br />');
+			var replaced = '';
+			if(str != null && str != '') {
+				replaced = str.replace(/\n/g, '<br />');
+				//replaced = replaced.replace(/\r/g, '<br />');
+			}
 			return replaced;
 		};
 		

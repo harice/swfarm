@@ -140,7 +140,26 @@ define([
 		
 		populateWeightTicketData: function () {
 			if(this.editExisting) {
+				this.scaleOriginAutoCompleteResult = [{name:this.model.get('origin_scaler_account').name, id:this.model.get('origin_scaler_account').id}];
+				this.scaleDestinationAutoCompleteResult = [{name:this.model.get('destination_scaler_account').name, id:this.model.get('destination_scaler_account').id}];
+				
 				this.$el.find('#bidproduct_id').val(this.model.get('bidproduct_id'));
+				
+				this.$el.find('#origin_bales').val(this.model.get('origin_bales'));
+				this.$el.find('#origin_gross').val(this.model.get('origin_gross'));
+				this.$el.find('#origin_tare').val(this.model.get('origin_tare'));
+				this.$el.find('#origin_net').val(this.model.get('origin_net'));
+				this.$el.find('#originscale').val(this.model.get('origin_scaler_account').name);
+				this.$el.find('#originscale-id').val(this.model.get('origin_scaler_account').id);
+				this.$el.find('#origin_scale_fee').val(parseFloat(this.model.get('origin_scale_fee')).toFixed(2));
+				
+				this.$el.find('#destination_bales').val(this.model.get('destination_bales'));
+				this.$el.find('#destination_gross').val(this.model.get('destination_gross'));
+				this.$el.find('#destination_tare').val(this.model.get('destination_tare'));
+				this.$el.find('#destination_net').val(this.model.get('destination_net'));
+				this.$el.find('#destinationscale').val(this.model.get('destination_scaler_account').name);
+				this.$el.find('#destinationscale-id').val(this.model.get('destination_scaler_account').id);
+				this.$el.find('#destination_scale_fee').val(parseFloat(this.model.get('origin_scale_fee')).toFixed(2));
 			}
 		},
 		
@@ -148,6 +167,30 @@ define([
 			'blur #originscale': 'validateAccount',
 			'blur #destinationscale': 'validateAccount',
 			'click #back-to-schedule': 'backToSchedule',
+			'blur .gross': 'onBlurGross',
+			'blur .tare': 'onBlurTare',
+		},
+		
+		onBlurGross: function (ev) {
+			var grossField = $(ev.target);
+			var grossValue = (!isNaN(grossField.val()))? grossField.val() : 0;
+			
+			var tareField = grossField.closest('tr').find('.tare');
+			var tareValue = (!isNaN(tareField.val()))? tareField.val() : 0;
+			
+			var netField = grossField.closest('tr').find('.net');
+			netField.val(grossValue - tareValue);
+		},
+		
+		onBlurTare: function (ev) {
+			var tareField = $(ev.target);
+			var tareValue = (!isNaN(tareField.val()))? tareField.val() : 0;
+		
+			var grossField = tareField.closest('tr').find('.gross');
+			var grossValue = (!isNaN(grossField.val()))? grossField.val() : 0;
+			
+			var netField = grossField.closest('tr').find('.net');
+			netField.val(grossValue - tareValue);
 		},
 		
 		validateAccount: function (ev) {
