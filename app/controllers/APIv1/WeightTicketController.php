@@ -70,4 +70,14 @@ class WeightTicketController extends BaseController {
 		$this->weightticket->destroy($id);
 	}
 
+	public function getAllScaleProviderAccount(){
+		$result = $this->weightticket->getAllScaleProviderAccount();
+		return Response::json($result);
+	}
+
+	public function getAllBidProductOnBid(){
+		$result = $this->weightticket->getAllBidProductOnBid(Input::get('bidId'));
+		return Response::json($result);
+	}
+
 }

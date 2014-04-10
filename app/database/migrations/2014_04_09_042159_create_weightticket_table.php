@@ -25,7 +25,7 @@ class CreateWeightticketTable extends Migration {
 			$table->float('origin_gross');
 			$table->float('origin_tare');
             $table->float('origin_net');
-            $table->string('origin_scale');
+            $table->integer('origin_account_id')->unsigned();
             $table->float('origin_scale_fee');
             
             $table->string('destination_weightinfo_type', 60)->default('Destination');
@@ -33,14 +33,16 @@ class CreateWeightticketTable extends Migration {
 			$table->float('destination_gross');
 			$table->float('destination_tare');
             $table->float('destination_net');
-            $table->string('destination_scale');
+            $table->integer('destination_account_id')->unsigned();
             $table->float('destination_scale_fee');
             
 			$table->timestamps();
             
             $table->foreign('purchaseorder_id')->references('id')->on('purchaseorder');
-            // $table->foreign('pickupschedule_id')->references('id')->on('pickupschedule');
+            $table->foreign('pickupschedule_id')->references('id')->on('pickupschedule');
             $table->foreign('bidproduct_id')->references('id')->on('bidproduct');
+            $table->foreign('origin_account_id')->references('id')->on('account');
+            $table->foreign('destination_account_id')->references('id')->on('account');
 		});
 	}
 

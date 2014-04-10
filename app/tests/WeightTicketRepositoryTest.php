@@ -37,14 +37,14 @@ class WeightTicketRepositoryTest extends TestCase {
             'origin_gross' => 19.99,
             'origin_tare' => 18.88,
             'origin_net' => 1.11,
-            'origin_scale' => 'Scale Services',
+            'origin_account_id' => 1,
             'origin_scale_fee' => 10.00,
 
             'destination_bales' => 5,
             'destination_gross' => 19.99,
             'destination_tare' => 18.88,
             'destination_net' => 1.11,
-            'destination_scale' => 'Scale Services',
+            'destination_account_id' => 1,
             'destination_scale_fee' => 10.00
         );
 
@@ -65,14 +65,14 @@ class WeightTicketRepositoryTest extends TestCase {
             'origin_gross' => 19.99,
             'origin_tare' => 18.88,
             'origin_net' => 1.11,
-            'origin_scale' => 'Scale Services',
+            'origin_account_id' => 1,
             'origin_scale_fee' => 10.00,
 
             'destination_bales' => 5,
             'destination_gross' => 19.99,
             'destination_tare' => 18.88,
             'destination_net' => 1.11,
-            'destination_scale' => 'Scale Services',
+            'destination_account_id' => 1,
             'destination_scale_fee' => 10.00
         );
         
