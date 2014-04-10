@@ -104,11 +104,8 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     public function destroy($id)
     {
         $role = $this->findById($id);
-        $deleted_role = $role;
         
-        $role->delete();
-        
-        return $deleted_role;
+        return $role->delete();
     }
     
     public function validate($data)

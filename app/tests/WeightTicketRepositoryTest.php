@@ -85,17 +85,10 @@ class WeightTicketRepositoryTest extends TestCase {
     public function testDestroySaves()
     {
         $reply = $this->repo->destroy(1);
-        $this->assertTrue($reply instanceof Model);
-
-        try {
-            $this->repo->findById(1);
-        }
-        catch(NotFoundException $e)
-        {
-            return;
-        }
-
-        // $this->fail('NotFoundException was not raised');
+        $this->assertTrue($reply);
+        
+        $nothing = $this->repo->findById(1);
+        $this->assertEquals('Weight Info Not Found', $nothing);
     }
     
     public function testValidatePasses()

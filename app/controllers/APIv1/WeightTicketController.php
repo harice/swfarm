@@ -31,7 +31,8 @@ class WeightTicketController extends BaseController {
 	 */
 	public function store()
 	{
-		$this->weightticket->store(Input::all());
+		$model = $this->weightticket->store(Input::all());
+        return Response::json($model);
 	}
 
 	/**
