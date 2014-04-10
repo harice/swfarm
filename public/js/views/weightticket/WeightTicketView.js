@@ -24,7 +24,8 @@ define([
 		
 		initialize: function(option) {
 			var thisObj = this;
-			this.bidId = option.id;
+			this.bidId = option.bidId;
+			this.schedId = option.schedId;
 			this.scaleOriginAutoCompleteResult = [];
 			this.scaleDestinationAutoCompleteResult = [];
 			
@@ -42,10 +43,45 @@ define([
 		},
 		
 		displayWeightTicket: function () {
+			var thisObj = this;
 			var compiledTemplate = _.template(purchaseOrderAddWeightTicketTemplate, {});
 			this.$el.html(compiledTemplate);
 			
+			var validate = $('#WeightTicketForm').validate({
+				submitHandler: function(form) {
+					var data = $(form).serializeObject();
+					data['pickupschedule_id'] = thisObj.schedId;
+					data['purchaseorder_id'] = thisObj.bidId;
+					console.log(data);
+					var weightTicketModel = new WeightTicketModel(data);
+					
+					weightTicketModel.save(
+						null, 
+						{
+							success: function (model, response, options) {
+								thisObj.displayMessage(response);
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: weightTicketModel.getAuth(),
+						}
+					);
+				},
+			});
+			
+			this.supplyProductOptions();
 			this.initAutocomplete();
+		},
+		
+		supplyProductOptions: function () {
+			var thisObj = this;
+			_.each(this.bidProductcollection.models, function (model) {
+				thisObj.$el.find('#bidproduct_id').append($('<option></option>').attr('value', model.get('id')).text(model.get('stacknumber')+' - '+model.get('product_id_name')[0].name));
+			});
 		},
 		
 		initAutocomplete: function () {

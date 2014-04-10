@@ -41,7 +41,7 @@ define([
 	
 	var AddScheduleView = ListView.extend({
 		el: "#po-schedule",
-		
+		weightTicketView: null,
 		initialize: function (option) {
 			this.extendListEvents();
 			var thisObj = this;
@@ -56,7 +56,7 @@ define([
 			this.formContainer = null;
 			this.schedTableElement = null;
 			this.activeModel = null;
-			this.weightTicketView = null;
+			//this.weightTicketView = null;
 			
 			this.truckingRateModel = new TruckingRateModel();
 			this.truckingRateModel.on('change', function() {
@@ -478,9 +478,12 @@ define([
 			return false;
 		},
 		
-		showWeightTicket: function () {
+		showWeightTicket: function (ev) {
 			this.clearFormContainer();
-            this.weightTicketView = new WeightTicketView({id:this.bidId}).render();
+			var schedId = $(ev.target).closest('form').find('#schedId').val();
+            if(this.weightTicketView != null)
+				this.weightTicketView.close();
+			this.weightTicketView = new WeightTicketView({bidId:this.bidId, schedId:schedId}).render();
 			return false;
 		},
 		

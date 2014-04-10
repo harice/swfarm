@@ -36,45 +36,45 @@
 						<tr>
 							<td>Origin</td>
 							<td>
-								<input type="text" class="form-control" id="origin_bales" name="origin_bales">
+								<input type="text" class="form-control text-align-right number" id="origin_bales" name="origin_bales" required>
 							</td>
 							<td>
-								<input type="text" class="form-control" id="origin_gross" name="origin_gross" required>
+								<input type="text" class="form-control text-align-right number" id="origin_gross" name="origin_gross" required>
 							</td>
 							<td>
-								<input type="text" class="form-control" id="origin_tare" name="origin_tare" required>
+								<input type="text" class="form-control text-align-right number" id="origin_tare" name="origin_tare" required>
 							</td>
 							<td>
-								<input type="text" class="form-control" id="origin_net" name="origin_net" required>
+								<input type="text" class="form-control text-align-right number" id="origin_net" name="origin_net" required>
 							</td>
 							<td>
-								<input type="text" class="form-control" id="originscale" required>
-								<input type="hidden" class="form-control" id="originscale-id" name="originscale" required>
+								<input type="text" class="form-control" id="originscale" name="originscale-name" required>
+								<input type="hidden" class="form-control" id="originscale-id" name="origin_account_id" required>
 							</td>
 							<td>
-								<input type="text" class="form-control" id="origin_scale_fee" name="origin_scale_fee" disabled>
+								<input type="text" class="form-control text-align-right" id="origin_scale_fee" name="origin_scale_fee" value="0.00" readonly>
 							</td>
 						</tr>
 						<tr>
 							<td>Destination</td>
 							<td>
-								<input type="text" class="form-control" id="destination_bales" name="destination_bales">
+								<input type="text" class="form-control text-align-right number" id="destination_bales text-align-right" name="destination_bales" required>
 							</td>
 							<td>
-								<input type="text" class="form-control" id="destination_gross" name="destination_gross" required>
+								<input type="text" class="form-control text-align-right number" id="destination_gross text-align-right" name="destination_gross" required>
 							</td>
 							<td>
-								<input type="text" class="form-control" id="destination_tare" name="destination_tare" required>
+								<input type="text" class="form-control text-align-right number" id="destination_tare text-align-right" name="destination_tare" required>
 							</td>
 							<td>
-								<input type="text" class="form-control" id="destination_net" name="destination_net" required>
+								<input type="text" class="form-control text-align-right number" id="destination_net text-align-right" name="destination_net" required>
 							</td>
 							<td>
-								<input type="text" class="form-control" id="destinationscale" required>
-								<input type="hidden" class="form-control" id="destinationscale-id" name="destination" required>
+								<input type="text" class="form-control" id="destinationscale" name="destinationscale-name" required>
+								<input type="hidden" class="form-control" id="destinationscale-id" name="destination_account_id" required>
 							</td>
 							<td>
-								<input type="text" class="form-control" id="destination_scale_fee" name="destination_scale_fee" disabled>
+								<input type="text" class="form-control text-align-right" id="destination_scale_fee" name="destination_scale_fee" value="0.00" readonly>
 							</td>
 						</tr>
 					</tbody>
