@@ -124,9 +124,9 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     }
 
     public function getAllBidProductOnBid($bidId){
-        $bidProductOnBid = BidProduct::with('product')
+        $bidProductOnBid = BidProduct::with('product_id_name')
                             ->where('bid_id', '=', $bidId)
-                            ->get();
+                            ->get(array('id','stacknumber','product_id'));
                          
         return $bidProductOnBid->toArray();                
     }
