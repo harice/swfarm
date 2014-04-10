@@ -45,14 +45,14 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             $weightticket->origin_gross = $data['origin_gross'];
             $weightticket->origin_tare = $data['origin_tare'];
             $weightticket->origin_net = $data['origin_net'];
-            $weightticket->origin_scale = $data['origin_scale'];
+            $weightticket->origin_account_id = $data['origin_account_id'];
             $weightticket->origin_scale_fee = $data['origin_scale_fee'];
             
             $weightticket->destination_bales = $data['destination_bales'];
             $weightticket->destination_gross = $data['destination_gross'];
             $weightticket->destination_tare = $data['destination_tare'];
             $weightticket->destination_net = $data['destination_net'];
-            $weightticket->destination_scale = $data['destination_scale'];
+            $weightticket->destination_account_id = $data['destination_account_id'];
             $weightticket->destination_scale_fee = $data['destination_scale_fee'];
 
             $weightticket->save();
@@ -81,14 +81,14 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             $weightticket->origin_gross = $data['origin_gross'];
             $weightticket->origin_tare = $data['origin_tare'];
             $weightticket->origin_net = $data['origin_net'];
-            $weightticket->origin_scale = $data['origin_scale'];
+            $weightticket->origin_account_id = $data['origin_account_id'];
             $weightticket->origin_scale_fee = $data['origin_scale_fee'];
             
             $weightticket->destination_bales = $data['destination_bales'];
             $weightticket->destination_gross = $data['destination_gross'];
             $weightticket->destination_tare = $data['destination_tare'];
             $weightticket->destination_net = $data['destination_net'];
-            $weightticket->destination_scale = $data['destination_scale'];
+            $weightticket->destination_account_id = $data['destination_account_id'];
             $weightticket->destination_scale_fee = $data['destination_scale_fee'];
             
             $weightticket->save();
