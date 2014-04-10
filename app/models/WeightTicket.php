@@ -11,7 +11,8 @@ class WeightTicket extends BaseModel {
 
 	public static $rules = array(
         'purchaseorder_id' => 'required',
-        'product' => 'required'
+        'pickupschedule_id' => 'required',
+        'bidproduct_id' => 'required'
     );
     
     /**

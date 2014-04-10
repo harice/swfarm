@@ -36,8 +36,24 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         try
         {
             $weightticket = $this->instance();
+            
             $weightticket->purchaseorder_id = $data['purchaseorder_id'];
-            $weightticket->product = $data['product'];
+            $weightticket->pickupschedule_id = $data['pickupschedule_id'];
+            $weightticket->bidproduct_id = $data['bidproduct_id'];
+            
+            $weightticket->origin_bales = $data['origin_bales'];
+            $weightticket->origin_gross = $data['origin_gross'];
+            $weightticket->origin_tare = $data['origin_tare'];
+            $weightticket->origin_net = $data['origin_net'];
+            $weightticket->origin_scale = $data['origin_scale'];
+            $weightticket->origin_scale_fee = $data['origin_scale_fee'];
+            
+            $weightticket->destination_bales = $data['destination_bales'];
+            $weightticket->destination_gross = $data['destination_gross'];
+            $weightticket->destination_tare = $data['destination_tare'];
+            $weightticket->destination_net = $data['destination_net'];
+            $weightticket->destination_scale = $data['destination_scale'];
+            $weightticket->destination_scale_fee = $data['destination_scale_fee'];
 
             $weightticket->save();
 
@@ -58,7 +74,22 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             $weightticket = WeightTicket::find($id);
             
             $weightticket->purchaseorder_id = $data['purchaseorder_id'];
-            $weightticket->product = $data['product'];
+            $weightticket->pickupschedule_id = $data['pickupschedule_id'];
+            $weightticket->bidproduct_id = $data['bidproduct_id'];
+            
+            $weightticket->origin_bales = $data['origin_bales'];
+            $weightticket->origin_gross = $data['origin_gross'];
+            $weightticket->origin_tare = $data['origin_tare'];
+            $weightticket->origin_net = $data['origin_net'];
+            $weightticket->origin_scale = $data['origin_scale'];
+            $weightticket->origin_scale_fee = $data['origin_scale_fee'];
+            
+            $weightticket->destination_bales = $data['destination_bales'];
+            $weightticket->destination_gross = $data['destination_gross'];
+            $weightticket->destination_tare = $data['destination_tare'];
+            $weightticket->destination_net = $data['destination_net'];
+            $weightticket->destination_scale = $data['destination_scale'];
+            $weightticket->destination_scale_fee = $data['destination_scale_fee'];
             
             $weightticket->save();
             
@@ -73,11 +104,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     public function destroy($id)
     {
         $role = $this->findById($id);
-        $deleted_role = $role;
-        
-        $role->delete();
-        
-        return $deleted_role;
+        return $role->delete();
     }
     
     public function validate($data)

@@ -39,6 +39,7 @@ class WeightInfoRepositoryTest extends TestCase {
     public function testStoreReturnsModel()
     {
         $data = array(
+            'weightticket_id' => 1,
             'weightinfo_type' => 'Origin',
             'bales' => 5,
             'gross' => 19.99,
@@ -57,6 +58,7 @@ class WeightInfoRepositoryTest extends TestCase {
     public function testUpdateSaves()
     {
         $data = array(
+            'weightticket_id' => 1,
             'weightinfo_type' => 'Origin',
             'bales' => 5,
             'gross' => 9999.99,
@@ -91,6 +93,7 @@ class WeightInfoRepositoryTest extends TestCase {
     public function testValidatePasses()
     {
         $data = array(
+            'weightticket_id' => 1,
             'weightinfo_type' => 'Origin',
             'bales' => 5,
             'gross' => 9999.99,
