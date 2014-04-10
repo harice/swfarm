@@ -300,6 +300,7 @@ define([
 				
 				form.find('#destinationloader').val(this.activeModel.get('destination_loader')[0].name);
 				form.find('#destinationloader-id').val(this.activeModel.get('destination_loader')[0].id);
+				form.find('#delete-schedule').show();
 			}
 			else {
 				form.find('#schedId').val(this.activeModel.get('id'));
