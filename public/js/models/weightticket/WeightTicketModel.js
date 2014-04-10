@@ -18,6 +18,9 @@ define([
 				headers: thisObj.getAuth(),
 			});
 		},
+		setURLForGetByScheduleId: function (id) {
+			this.urlRoot = '/apiv1/weightticket/getWeightTicketOfSchedule?scheduleId='+id;
+		},
 	});
 
 	return WeightTicketModel;

@@ -479,11 +479,17 @@ define([
 		},
 		
 		showWeightTicket: function (ev) {
+			var thisObj = this;
 			this.clearFormContainer();
 			var schedId = $(ev.target).closest('form').find('#schedId').val();
             if(this.weightTicketView != null)
 				this.weightTicketView.close();
-			this.weightTicketView = new WeightTicketView({bidId:this.bidId, schedId:schedId}).render();
+			this.weightTicketView = new WeightTicketView({bidId:this.bidId, schedId:schedId});
+			this.weightTicketView.backToScheduleCallBack = function () {
+				thisObj.showViewForm(schedId);
+				return false;
+			};
+			this.weightTicketView.render();
 			return false;
 		},
 		

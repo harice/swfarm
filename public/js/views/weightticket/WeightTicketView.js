@@ -36,10 +36,18 @@ define([
 			this.bidProductcollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
+			
+			this.model = new WeightTicketModel();
+			this.model.setURLForGetByScheduleId(this.schedId);
+			this.model.on('change', function() {
+				console.log(this);
+				thisObj.bidProductcollection.fetchBidProducts(this.bidId);
+				this.off('change');
+			});
 		},
 		
 		render: function(){
-			this.bidProductcollection.fetchBidProducts(this.bidId);
+			this.model.runFetch();
 		},
 		
 		displayWeightTicket: function () {
@@ -125,6 +133,7 @@ define([
 		events: {
 			'blur #originscale': 'validateAccount',
 			'blur #destinationscale': 'validateAccount',
+			'click #back-to-schedule': 'backToSchedule',
 		},
 		
 		validateAccount: function (ev) {
@@ -194,6 +203,13 @@ define([
 			}
 			return false;
 		},
+		
+		backToSchedule: function () {
+			this.backToScheduleCallBack();
+			return false;
+		},
+		
+		backToScheduleCallBack: function () {},
 	});
 
   return WeightTicketView;
