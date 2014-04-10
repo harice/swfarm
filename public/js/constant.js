@@ -69,7 +69,7 @@ define(function () {
 		},
 		'MULTIPLEADDRESS': ['Producer', 'Customer'],
 		'PO': {
-			'SCHEDULE': {
+			'PICKUPSCHEDULE': {
 				'EDITABLERATE': {
 					'ACCOUNTTYPE': ['Hauler'],
 				},
