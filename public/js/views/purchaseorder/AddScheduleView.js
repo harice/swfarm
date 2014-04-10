@@ -353,9 +353,9 @@ define([
 		},
 		
 		events: {
-			'blur #trucker': 'validateTrucker',
-			'blur #originloader': 'validateTrucker',
-			'blur #destinationloader': 'validateTrucker',
+			'blur #trucker': 'validateAccount',
+			'blur #originloader': 'validateAccount',
+			'blur #destinationloader': 'validateAccount',
 			'click #add-schedule': 'showAddSchedule',
 			'click #edit-schedule': 'showEditSchedule',
 			'click #delete-schedule': 'deleteSchedule',
@@ -369,7 +369,7 @@ define([
 			'click #po-schedule-list tbody tr': 'selectSchedule',
 		},
 		
-		validateTrucker: function (ev) {
+		validateAccount: function (ev) {
 			var labelField = $(ev.target);
 			var labelFieldId = $(ev.target).attr('id');
 			var idField = '';
