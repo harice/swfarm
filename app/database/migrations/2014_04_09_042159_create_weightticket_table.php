@@ -16,9 +16,9 @@ class CreateWeightticketTable extends Migration {
 		{
 			$table->engine = 'InnoDB';
 			$table->increments('id');
-            $table->integer('purchaseorder_id');
-            $table->integer('pickupschedule_id');
-            $table->integer('bidproduct_id');
+            $table->integer('purchaseorder_id')->unsigned();
+            $table->integer('pickupschedule_id')->unsigned();
+            $table->integer('bidproduct_id')->unsigned();
             
             $table->string('origin_weightinfo_type', 60)->default('Origin');
             $table->integer('origin_bales')->nullable();
@@ -37,6 +37,10 @@ class CreateWeightticketTable extends Migration {
             $table->float('destination_scale_fee');
             
 			$table->timestamps();
+            
+            // $table->foreign('purchaseorder_id')->references('id')->on('purchaseorder');
+            // $table->foreign('pickupschedule_id')->references('id')->on('pickupschedule');
+            $table->foreign('bidproduct_id')->references('id')->on('bidproduct');
 		});
 	}
 
