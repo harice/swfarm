@@ -23,7 +23,7 @@ class CreateWeightinfoTable extends Migration {
             $table->float('net');
             $table->string('scale');
             $table->float('scale_fee');
-            $table->integer('weightticket_id');
+            $table->integer('weightticket_id')->unsigned();
             $table->timestamps();
 		});
 	}

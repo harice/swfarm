@@ -31,7 +31,21 @@ class WeightTicketRepositoryTest extends TestCase {
         $data = array(
             'purchaseorder_id' => 1,
             'pickupschedule_id' => 1,
-            'bidproduct_id' => 1
+            'bidproduct_id' => 1,
+            
+            'origin_bales' => 5,
+            'origin_gross' => 19.99,
+            'origin_tare' => 18.88,
+            'origin_net' => 1.11,
+            'origin_scale' => 'Scale Services',
+            'origin_scale_fee' => 10.00,
+
+            'destination_bales' => 5,
+            'destination_gross' => 19.99,
+            'destination_tare' => 18.88,
+            'destination_net' => 1.11,
+            'destination_scale' => 'Scale Services',
+            'destination_scale_fee' => 10.00
         );
 
         $response = $this->repo->store($data);
@@ -45,7 +59,21 @@ class WeightTicketRepositoryTest extends TestCase {
         $data = array(
             'purchaseorder_id' => 1,
             'pickupschedule_id' => 1,
-            'bidproduct_id' => 1
+            'bidproduct_id' => 1,
+            
+            'origin_bales' => 5,
+            'origin_gross' => 19.99,
+            'origin_tare' => 18.88,
+            'origin_net' => 1.11,
+            'origin_scale' => 'Scale Services',
+            'origin_scale_fee' => 10.00,
+
+            'destination_bales' => 5,
+            'destination_gross' => 19.99,
+            'destination_tare' => 18.88,
+            'destination_net' => 1.11,
+            'destination_scale' => 'Scale Services',
+            'destination_scale_fee' => 10.00
         );
         
         $response = $this->repo->update(1, $data);
@@ -140,13 +168,14 @@ class WeightTicketRepositoryTest extends TestCase {
     {
         $data = array(
             'purchaseorder_id' => 1,
-            'product' => 'Alfalfa'
+            'pickupschedule_id' => 1,
+            'bidproduct_id' => 1
         );
 
         $response = $this->repo->instance($data);
         
         $this->assertTrue($response instanceof Model);
-        $this->assertTrue($response->product === $data['product']);
+        $this->assertTrue($response->bidproduct_id === $data['bidproduct_id']);
     }
     
 }
