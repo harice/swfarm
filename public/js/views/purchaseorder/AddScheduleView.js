@@ -56,6 +56,7 @@ define([
 			this.formContainer = null;
 			this.schedTableElement = null;
 			this.activeModel = null;
+			this.weightTicketView = null;
 			
 			this.truckingRateModel = new TruckingRateModel();
 			this.truckingRateModel.on('change', function() {
@@ -300,6 +301,7 @@ define([
 				
 				form.find('#destinationloader').val(this.activeModel.get('destination_loader')[0].name);
 				form.find('#destinationloader-id').val(this.activeModel.get('destination_loader')[0].id);
+				form.find('#delete-schedule').show();
 			}
 			else {
 				form.find('#schedId').val(this.activeModel.get('id'));
@@ -332,7 +334,7 @@ define([
 		},
 		
 		toggleTruckingRate: function (accountType) {
-			if(Const.PO.SCHEDULE.EDITABLERATE.ACCOUNTTYPE.indexOf(accountType) >= 0) {
+			if(Const.PO.PICKUPSCHEDULE.EDITABLERATE.ACCOUNTTYPE.indexOf(accountType) >= 0) {
 				this.truckingRateEditable = true;
 				$('#truckingrate').attr('readonly', false);
 				$('#truckingrate').val('');
@@ -477,11 +479,8 @@ define([
 		},
 		
 		showWeightTicket: function () {
-			console.log('showWeightTicket');
 			this.clearFormContainer();
-			
-            new WeightTicketView({id:1}).render();
-            
+            this.weightTicketView = new WeightTicketView().render();
 			return false;
 		},
 		
