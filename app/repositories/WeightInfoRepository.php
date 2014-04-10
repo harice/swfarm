@@ -47,6 +47,7 @@ class WeightInfoRepository implements WeightInfoRepositoryInterface {
         {
             $weightinfo = $this->instance();
             
+            $weightinfo->weightticket_id = $data['weightticket_id'];
             $weightinfo->weightinfo_type = $data['weightinfo_type'];
             $weightinfo->bales = $data['bales'];
             $weightinfo->gross = $data['gross'];
@@ -73,6 +74,7 @@ class WeightInfoRepository implements WeightInfoRepositoryInterface {
         {
             $weightinfo = WeightInfo::find($id);
             
+            $weightinfo->weightticket_id = $data['weightticket_id'];
             $weightinfo->weightinfo_type = $data['weightinfo_type'];
             $weightinfo->bales = $data['bales'];
             $weightinfo->gross = $data['gross'];

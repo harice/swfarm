@@ -10,6 +10,7 @@ class WeightInfo extends BaseModel {
 	protected $table = 'weightinfo';
 
 	public static $rules = array(
+        'weightticket_id' => 'required',
         'weightinfo_type' => 'required',
         'gross' => 'required',
         'tare' => 'required',
