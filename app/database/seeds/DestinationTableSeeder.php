@@ -6,7 +6,7 @@ class DestinationTableSeeder extends Seeder {
 	{
 		$destination = array(
 			array(
-                'destination' => 'Deliver to SWF'
+                'destination' => 'Deliver to Southwest Farms'
             ),
             array(
                 'destination' => 'Store to Farm'

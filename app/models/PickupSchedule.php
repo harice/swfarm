@@ -25,4 +25,8 @@ class PickupSchedule extends Eloquent {
     public function destinationLoader(){
         return $this->hasMany('Account', 'id', 'destinationloader_id');
     }
+
+    public function weightticket(){
+        return $this->hasMany('WeightTicket', 'pickupschedule_id', 'id');
+    }
 }
