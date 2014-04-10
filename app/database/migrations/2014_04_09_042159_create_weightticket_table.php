@@ -38,7 +38,7 @@ class CreateWeightticketTable extends Migration {
             
 			$table->timestamps();
             
-            $table->foreign('purchaseorder_id')->references('id')->on('purchaseorder');
+            $table->foreign('purchaseorder_id')->references('id')->on('bid');
             $table->foreign('pickupschedule_id')->references('id')->on('pickupschedule');
             $table->foreign('bidproduct_id')->references('id')->on('bidproduct');
             $table->foreign('origin_account_id')->references('id')->on('account');
