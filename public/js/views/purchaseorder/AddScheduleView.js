@@ -16,6 +16,7 @@ define([
 	'text!templates/purchaseorder/purchaseOrderAddScheduleTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderScheduleInnerListTemplate.html',
 	'constant',
+	'views/weightticket/WeightTicketView',
 ], function(Backbone,
 			DatePicker,
 			Validate,
@@ -32,7 +33,8 @@ define([
 			purchaseOrderScheduleTemplate,
 			purchaseOrderAddScheduleTemplate,
 			purchaseOrderScheduleInnerListTemplate,
-			Const
+			Const,
+            WeightTicketView
 ){
 	
 	var AddScheduleView = ListView.extend({
@@ -365,6 +367,8 @@ define([
 			console.log('showWeightTicket');
 			this.clearFormContainer();
 			
+            new WeightTicketView({id:1}).render();
+            
 			return false;
 		},
 		

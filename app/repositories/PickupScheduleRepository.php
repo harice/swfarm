@@ -39,6 +39,7 @@ class PickupScheduleRepository implements PickupScheduleRepositoryInterface {
     $pickupSchedules = PickupSchedule::with('trucker')
                     ->with('originLoader')
                     ->with('destinationLoader')
+                    ->with('trucker.accounttype')
                     ->where('bid_id', '=', $bidId)
                     ->take($perPage)
                     ->offset($offset)
@@ -79,6 +80,7 @@ class PickupScheduleRepository implements PickupScheduleRepositoryInterface {
     else
       $pickupschedule = PickupSchedule::find($pickupScheduleId);
     //convert pass date parameters to timestamp
+    $data['scheduletimeMin'] = str_pad($data['scheduletimeMin'], 2, '0', STR_PAD_LEFT); //adding leading zero
     $pickupdate = Date('Y-m-d H:i:s', strtotime($data['scheduledate'].' '.$data['scheduletimeHour'].':'.$data['scheduletimeMin'].' '.$data['scheduletimeAmPm']));
     $pickupschedule->bid_id = $data['bid_id'];
     $pickupschedule->pickupdate = $pickupdate;

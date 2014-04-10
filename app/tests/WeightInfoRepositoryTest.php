@@ -1,14 +1,24 @@
 <?php
 
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 
-class WeightTicketRepositoryTest extends TestCase {
+/**
+ * Description of WeightInfoRepositoryTest
+ *
+ * @author Das
+ */
+class WeightInfoRepositoryTest extends TestCase {
     
     public function setUp()
     {
         parent::setUp();
-        $this->repo = App::make('WeightTicketRepository');
+        $this->repo = App::make('WeightInfoRepository');
         
         Artisan::call('migrate');
         $this->seed();
@@ -29,27 +39,37 @@ class WeightTicketRepositoryTest extends TestCase {
     public function testStoreReturnsModel()
     {
         $data = array(
-            'purchaseorder_id' => 10001,
-            'product' => 'Alfalfa'
+            'weightinfo_type' => 'Origin',
+            'bales' => 5,
+            'gross' => 19.99,
+            'tare' => 18.88,
+            'net' => 1.11,
+            'scale' => 'Scale Services',
+            'scale_fee' => 10.00
         );
 
         $response = $this->repo->store($data);
 
         $this->assertTrue($response instanceof Model);
-        $this->assertTrue($response->product === $data['product']);
+        $this->assertTrue($response->gross === $data['gross']);
     }
     
     public function testUpdateSaves()
     {
         $data = array(
-            'purchaseorder_id' => 1,
-            'product' => 'Alfalfa'
+            'weightinfo_type' => 'Origin',
+            'bales' => 5,
+            'gross' => 9999.99,
+            'tare' => 8888.88,
+            'net' => 1111.11,
+            'scale' => 'Scale Inc.',
+            'scale_fee' => 10.00
         );
         
         $response = $this->repo->update(1, $data);
         
         $this->assertTrue($response instanceof Model);
-        $this->assertTrue($response->product === $data['product']);
+        $this->assertTrue($response->gross === $data['gross']);
     }
     
     public function testDestroySaves()
@@ -71,19 +91,29 @@ class WeightTicketRepositoryTest extends TestCase {
     public function testValidatePasses()
     {
         $data = array(
-            'purchaseorder_id' => 1,
-            'product' => 'Alfalfa'
+            'weightinfo_type' => 'Origin',
+            'bales' => 5,
+            'gross' => 9999.99,
+            'tare' => 8888.88,
+            'net' => 1111.11,
+            'scale' => 'Scale Inc.',
+            'scale_fee' => 10.00
         );
         
         $result = $this->repo->validate($data);
         $this->assertTrue($result);
     }
     
-    public function testValidateFailsWithoutPoId()
+    public function testValidateFailsWithoutGross()
     {
         try {
             $this->repo->validate(array(
-                'product' => 'Alfalfa'
+                'weightinfo_type' => 'Origin',
+                'bales' => 5,
+                'tare' => 8888.88,
+                'net' => 1111.11,
+                'scale' => 'Scale Inc.',
+                'scale_fee' => 10.00
             ));
         }
         catch(ValidationException $expected)
@@ -94,11 +124,16 @@ class WeightTicketRepositoryTest extends TestCase {
         $this->fail('ValidationException was not raised');
     }
     
-    public function testValidateFailsWithoutProduct()
+    public function testValidateFailsWithoutTare()
     {
         try {
             $this->repo->validate(array(
-                'purchaseorder_id' => 1
+                'weightinfo_type' => 'Origin',
+                'bales' => 5,
+                'gross' => 9999.99,
+                'net' => 1111.11,
+                'scale' => 'Scale Inc.',
+                'scale_fee' => 10.00
             ));
         }
         catch(ValidationException $expected)
@@ -118,14 +153,19 @@ class WeightTicketRepositoryTest extends TestCase {
     public function testInstanceReturnsModelWithData()
     {
         $data = array(
-            'purchaseorder_id' => 1,
-            'product' => 'Alfalfa'
+            'weightinfo_type' => 'Origin',
+            'bales' => 5,
+            'gross' => 9999.99,
+            'tare' => 8888.88,
+            'net' => 1111.11,
+            'scale' => 'Scale Inc.',
+            'scale_fee' => 10.00
         );
 
         $response = $this->repo->instance($data);
         
         $this->assertTrue($response instanceof Model);
-        $this->assertTrue($response->product === $data['product']);
+        $this->assertTrue($response->gross === $data['gross']);
     }
     
 }

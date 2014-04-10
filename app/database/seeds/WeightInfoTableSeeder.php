@@ -9,12 +9,11 @@ class WeightInfoTableSeeder extends Seeder {
         
 		$weightinfo = array(
 			array(
+                'weightinfo_type' => 'Origin',
                 'bales' => 5,
                 'gross' => 19.99,
                 'tare' => 18.88,
                 'net' => 1.11,
-                'po_id' => 10001,
-                'product' => 'Alfalfa',
                 'scale' => 'Scale Services',
                 'scale_fee' => 10.00,
                 'created_at' => $date,
@@ -22,12 +21,11 @@ class WeightInfoTableSeeder extends Seeder {
             ),
 			
 			array(
+                'weightinfo_type' => 'Destination',
                 'bales' => 5,
                 'gross' => 19.99,
                 'tare' => 18.88,
                 'net' => 1.11,
-                'po_id' => 10001,
-                'product' => 'Alfalfa',
                 'scale' => 'Scale Services',
                 'scale_fee' => 10.00,
                 'created_at' => $date,
@@ -35,12 +33,11 @@ class WeightInfoTableSeeder extends Seeder {
             ),
 			
 			array(
+                'weightinfo_type' => 'Origin',
                 'bales' => 5,
                 'gross' => 19.99,
                 'tare' => 18.88,
                 'net' => 1.11,
-                'po_id' => 10001,
-                'product' => 'Alfalfa',
                 'scale' => 'Scale Services',
                 'scale_fee' => 10.00,
                 'created_at' => $date,
