@@ -23,17 +23,17 @@ class CreateWeightticketTable extends Migration {
             
             $table->string('origin_weightinfo_type', 60)->default('Origin');
             $table->integer('origin_bales')->nullable();
-			$table->decimal('origin_gross', 5, 4);
-			$table->decimal('origin_tare', 5, 4);
-            $table->decimal('origin_net', 5, 4);
+			$table->decimal('origin_gross', 8, 4);
+			$table->decimal('origin_tare', 8, 4);
+            $table->decimal('origin_net', 8, 4);
             $table->integer('origin_account_id')->unsigned();
             $table->float('origin_scale_fee');
             
             $table->string('destination_weightinfo_type', 60)->default('Destination');
             $table->integer('destination_bales')->nullable();
-			$table->decimal('destination_gross', 5, 4);
-			$table->decimal('destination_tare', 5, 4);
-            $table->decimal('destination_net', 5, 4);
+			$table->decimal('destination_gross', 8, 4);
+			$table->decimal('destination_tare', 8, 4);
+            $table->decimal('destination_net', 8, 4);
             $table->integer('destination_account_id')->unsigned();
             $table->float('destination_scale_fee');
             
