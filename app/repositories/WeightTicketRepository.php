@@ -141,7 +141,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     }
 
       public function getWeightTicketOfSchedule($schedId){
-        $weightTicket = Weightticket::with('originScalerAccount', 'destinationScalerAccount') 
+        $weightTicket = WeightTicket::with('originScalerAccount', 'destinationScalerAccount') 
                         ->where('pickupschedule_id', '=', $schedId)
                         ->first(array('weightticket.*', 'origin_account_id', 'destination_account_id'));
 
