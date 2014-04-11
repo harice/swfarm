@@ -37,6 +37,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         {
             $weightticket = $this->instance();
             
+            $weightticket->wtn = $this->generateWeightTicketNumber();
             $weightticket->purchaseorder_id = $data['purchaseorder_id'];
             $weightticket->pickupschedule_id = $data['pickupschedule_id'];
             $weightticket->bidproduct_id = $data['bidproduct_id'];
@@ -147,5 +148,12 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
         return $weightTicket;
       }
+    
+    private function generateWeightTicketNumber(){
+        $dateToday = date('Y-m-d');
+        $count = Bid::where('created_at', 'like', $dateToday.'%')->count()+1;
+
+        return 'WTN'.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
+    }
     
 }
