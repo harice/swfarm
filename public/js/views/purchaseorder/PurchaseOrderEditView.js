@@ -26,7 +26,7 @@ define([
 
 	var PurchaseOrderAddView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
-		
+		addScheduleView: null,
 		initialize: function(option) {
 			var thisObj = this;
 			
@@ -122,8 +122,10 @@ define([
 			
 			this.initPickUpPeriodCalendar();
 			
-			var addScheduleView = new AddScheduleView({id:this.model.get('id')});
-			addScheduleView.render();
+			if(this.addScheduleView != null)
+				this.addScheduleView.close();
+			this.addScheduleView = new AddScheduleView({id:this.model.get('id')});
+			this.addScheduleView.render();
 		},
 		
 		supplyPOData: function () {

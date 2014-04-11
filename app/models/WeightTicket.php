@@ -24,4 +24,16 @@ class WeightTicket extends BaseModel {
         return $this->hasMany('WeightInfo');
     }
 
+    public function pickupschedule(){
+        return $this->belongsTo('pickupschedule', 'id', 'pickupschedule_id');
+    }
+
+    public function originScalerAccount(){
+        return $this->hasOne('Account', 'id', 'origin_account_id')->select(array('id', 'name'));
+    }
+
+    public function destinationScalerAccount(){
+        return $this->hasOne('Account', 'id', 'destination_account_id')->select(array('id', 'name'));
+    }
+
 }

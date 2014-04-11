@@ -191,6 +191,7 @@ class PickupScheduleRepository implements PickupScheduleRepositoryInterface {
       }
   }
 
+
   private function displayLastQuery(){
     $queries = DB::getQueryLog();
     $last_query = end($queries);

@@ -80,4 +80,9 @@ class WeightTicketController extends BaseController {
 		return Response::json($result);
 	}
 
+	public function getWeightTicketOfSchedule(){
+		$result = $this->weightticket->getWeightTicketOfSchedule(Input::get('scheduleId'));
+		return Response::json($result);
+	}
+
 }
