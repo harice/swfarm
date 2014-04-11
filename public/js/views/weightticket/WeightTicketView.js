@@ -74,7 +74,8 @@ define([
 						null, 
 						{
 							success: function (model, response, options) {
-								thisObj.displayMessage(response);
+								// thisObj.displayMessage(response);
+                                thisObj.displayGrowl('Weight Ticket successfully saved.', 'success');
 							},
 							error: function (model, response, options) {
 								if(typeof response.responseJSON.error == 'undefined')
