@@ -145,6 +145,7 @@ define([
 				
 				this.$el.find('#bidproduct_id').val(this.model.get('bidproduct_id'));
 				
+                this.$el.find('#wtn').val(this.model.get('wtn'));
 				this.$el.find('#origin_bales').val(this.model.get('origin_bales'));
 				this.$el.find('#origin_gross').val(this.model.get('origin_gross'));
 				this.$el.find('#origin_tare').val(this.model.get('origin_tare'));

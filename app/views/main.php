@@ -7,7 +7,7 @@
 	    <meta name="description" content="">
 	    <meta name="author" content="">
 
-	    <title>South West Farm</title>
+	    <title>Southwest Farms</title>
 		<link rel="stylesheet" href="css/smoothness/jquery-ui-1.10.4.custom.min.css">
 	    <link rel="stylesheet" href="css/bootstrap.min.css">
 		<link rel="stylesheet" href="css/datepicker.min.css">
