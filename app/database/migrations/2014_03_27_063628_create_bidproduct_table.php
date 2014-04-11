@@ -20,11 +20,11 @@ class CreateBidproductTable extends Migration {
 			$table->integer('product_id')->unsigned();
 			$table->text('description')->nullable();
 			$table->string('stacknumber',20);
-			$table->float('bidprice');
-			$table->float('tons');
+			$table->decimal('bidprice', 8, 4);
+			$table->decimal('tons', 8, 4);
 			$table->integer('bales');
 			$table->boolean('ishold');
-			$table->float('unitprice')->nullable();
+			$table->decimal('unitprice', 8, 4)->nullable();
 			$table->timestamps();
 
 			$table->foreign('bid_id')->references('id')->on('bid')->onDelete('cascade');

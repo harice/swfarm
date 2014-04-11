@@ -18,11 +18,11 @@ class CreateWeightinfoTable extends Migration {
 			$table->increments('id');
             $table->string('weightinfo_type', 60);
             $table->integer('bales')->nullable();
-			$table->float('gross');
-			$table->float('tare');
-            $table->float('net');
+			$table->decimal('gross', 8, 2);
+			$table->decimal('tare', 8, 2);
+            $table->decimal('net', 8, 2);
             $table->string('scale');
-            $table->float('scale_fee');
+            $table->decimal('scale_fee', 8, 2);
             $table->integer('weightticket_id')->unsigned();
             $table->timestamps();
 		});
