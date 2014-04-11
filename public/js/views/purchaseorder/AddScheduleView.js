@@ -519,10 +519,10 @@ define([
 			this.toFixedValue($(ev.target), 2);
 		},
 		
-		toFixedValue: function (field, decimal) {
+		/*toFixedValue: function (field, decimal) {
 			var value = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()).toFixed(decimal) : '';
 			field.val(value);
-		},
+		},*/
 		
 		selectSchedule: function (ev) {
 			$(ev.target).closest('tr').addClass('active').siblings('tr').removeClass('active');

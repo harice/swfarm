@@ -86,6 +86,14 @@ define([
 						}
 					);
 				},
+				errorPlacement: function(error, element) {
+					if(element.hasClass('scale-fee')) {
+						element.closest('.input-group').siblings('.error-msg-cont').html(error);
+					}
+					else {
+						error.insertAfter(element);
+					}
+				},
 			});
 			
 			this.supplyProductOptions();
@@ -168,11 +176,12 @@ define([
 			'blur #originscale': 'validateAccount',
 			'blur #destinationscale': 'validateAccount',
 			'click #back-to-schedule': 'backToSchedule',
-			'blur .gross': 'onBlurGross',
-			'blur .tare': 'onBlurTare',
+			'keyup .gross': 'keyUpGross',
+			'keyup .tare': 'keyUpTare',
+			'blur .scale-fee': 'onBlurScaleFee',
 		},
 		
-		onBlurGross: function (ev) {
+		keyUpGross: function (ev) {
 			var grossField = $(ev.target);
 			var grossValue = (!isNaN(grossField.val()))? grossField.val() : 0;
 			
@@ -181,9 +190,26 @@ define([
 			
 			var netField = grossField.closest('tr').find('.net');
 			netField.val(grossValue - tareValue);
+			
+			var subtrahend = 0;
+			var minuend = 0;
+			if(grossField.hasClass('origin')) {
+				subtrahend = grossValue;
+				var minuendField = grossField.closest('tbody').find('.gross.destination');
+				minuend = (!isNaN(minuendField.val()))? minuendField.val() : 0;
+			}
+			else {
+				minuend = grossValue;
+				var subtrahendField = grossField.closest('tbody').find('.gross.origin');
+				subtrahend = (!isNaN(subtrahendField.val()))? subtrahendField.val() : 0;
+			}
+			
+			grossField.closest('table').find('#gross-diff').val(subtrahend - minuend);
+			
+			this.onChangeNet(grossField.closest('tbody').find('.net'));
 		},
 		
-		onBlurTare: function (ev) {
+		keyUpTare: function (ev) {
 			var tareField = $(ev.target);
 			var tareValue = (!isNaN(tareField.val()))? tareField.val() : 0;
 		
@@ -192,6 +218,42 @@ define([
 			
 			var netField = grossField.closest('tr').find('.net');
 			netField.val(grossValue - tareValue);
+			
+			var subtrahend = 0;
+			var minuend = 0;
+			if(tareField.hasClass('origin')) {
+				subtrahend = tareValue;
+				var minuendField = tareField.closest('tbody').find('.tare.destination');
+				minuend = (!isNaN(minuendField.val()))? minuendField.val() : 0;
+			}
+			else {
+				minuend = tareValue;
+				var subtrahendField = tareField.closest('tbody').find('.tare.origin');
+				subtrahend = (!isNaN(subtrahendField.val()))? subtrahendField.val() : 0;
+			}
+			
+			tareField.closest('table').find('#tare-diff').val(subtrahend - minuend);
+			
+			this.onChangeNet(tareField.closest('tbody').find('.net'));
+		},
+		
+		onChangeNet: function (netField) {
+			var netValue = (!isNaN(netField.val()))? netField.val() : 0;
+			
+			var subtrahend = 0;
+			var minuend = 0;
+			if(netField.hasClass('origin')) {
+				subtrahend = netValue;
+				var minuendField = netField.closest('tbody').find('.net.destination');
+				minuend = (!isNaN(minuendField.val()))? minuendField.val() : 0;
+			}
+			else {
+				minuend = netValue;
+				var subtrahendField = netField.closest('tbody').find('.net.origin');
+				subtrahend = (!isNaN(subtrahendField.val()))? subtrahendField.val() : 0;
+			}
+			
+			netField.closest('table').find('#net-diff').val(subtrahend - minuend);
 		},
 		
 		validateAccount: function (ev) {
@@ -265,6 +327,10 @@ define([
 		backToSchedule: function () {
 			this.backToScheduleCallBack();
 			return false;
+		},
+		
+		onBlurScaleFee: function (ev) {
+			this.toFixedValue($(ev.target), 2);
 		},
 		
 		backToScheduleCallBack: function () {},
