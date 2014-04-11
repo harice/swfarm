@@ -30,7 +30,7 @@ class AccountTypeTableSeeder extends Seeder {
                 'name' => 'Trucker'
             ),
             array(
-                'name' => 'SWF Trucker'
+                'name' => 'Southwest Farms Trucker'
             )
 		);
 
