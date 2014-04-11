@@ -144,6 +144,14 @@ define([
 				invalidHandler: function (event, validator) {
 					thisObj.isCreatePO = false;
 				},
+				errorPlacement: function(error, element) {
+					if(element.hasClass('bidprice')) {
+						element.closest('tr').find('.error-msg-cont').html(error);
+					}
+					else {
+						error.insertAfter(element);
+					}
+				},
 			});
 			
 			this.addBidProduct();

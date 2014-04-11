@@ -161,7 +161,7 @@ define([
 				bidProductFields.find('.po-product-amount').text('0.00');
 				
 				if(bidProduct.unitprice != null) {
-					bidProductFields.find('.unitprice').val(bidProduct.unitprice.toFixed(2));
+					bidProductFields.find('.unitprice').val(parseFloat(bidProduct.unitprice).toFixed(2));
 					thisObj.computeAmount(bidProduct.unitprice, bidProduct.tons, bidProductFields.find('.po-product-amount'));
 				}
 			});
