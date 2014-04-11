@@ -13,10 +13,29 @@ define([
 	'controllers/account/AccountController',
     'controllers/contact/ContactController',
 	'controllers/product/ProductController',
+	'controllers/bid/BidController',
+	'controllers/purchaseorder/PurchaseOrderController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
-], function(Backbone, BaseRouter, HeaderView, AdminView, LoginController, UserController, RoleController, PermissionController, AuditTrailController, ProfileController, AccountController, ContactController, ProductController, Global, Const, Session) {
+], function(Backbone,
+			BaseRouter,
+			HeaderView,
+			AdminView,
+			LoginController,
+			UserController,
+			RoleController,
+			PermissionController,
+			AuditTrailController,
+			ProfileController,
+			AccountController,
+			ContactController,
+			ProductController,
+			BidController,
+			PurchaseOrderController,
+			Global,
+			Const,
+			Session) {
 	
 	var routerRoutes = {};
 	
@@ -78,6 +97,18 @@ define([
 	routerRoutes[Const.URL.CONTACT+'/'] = 'showContactPage';
 	routerRoutes[Const.URL.CONTACT+'/:action'] = 'showContactPage';
 	routerRoutes[Const.URL.CONTACT+'/:action/:id'] = 'showContactPage';
+	
+	//bid
+	routerRoutes[Const.URL.BID] = 'showBidPage';
+	routerRoutes[Const.URL.BID+'/'] = 'showBidPage';
+	routerRoutes[Const.URL.BID+'/:action'] = 'showBidPage';
+	routerRoutes[Const.URL.BID+'/:action/:id'] = 'showBidPage';
+	
+	//po
+	routerRoutes[Const.URL.PO] = 'showPOPage';
+	routerRoutes[Const.URL.PO+'/'] = 'showPOPage';
+	routerRoutes[Const.URL.PO+'/:action'] = 'showPOPage';
+	routerRoutes[Const.URL.PO+'/:action/:id'] = 'showPOPage';
 	
 	routerRoutes['*actions'] = 'defaultAction';
 
@@ -205,6 +236,20 @@ define([
 			this.closeView();
 			var contactController = new ContactController();
 			this.currView = contactController.setAction(action, id);
+			this.currView.render();
+		});
+		
+		app_router.on('route:showBidPage', function (action, id) {
+			this.closeView();
+			var bidController = new BidController();
+			this.currView = bidController.setAction(action, id);
+			this.currView.render();
+		});
+		
+		app_router.on('route:showPOPage', function (action, id) {
+			this.closeView();
+			var purchaseOrderController = new PurchaseOrderController();
+			this.currView = purchaseOrderController.setAction(action, id);
 			this.currView.render();
 		});
 		

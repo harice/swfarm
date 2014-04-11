@@ -13,6 +13,9 @@ define(function () {
 			'ACCOUNT' : 'account',
             'CONTACT' : 'contact',
 			'PRODUCT': 'product',
+			'BID': 'purchases/bid',
+			'PO': 'purchases/po',
+            'WEIGHTINFO': 'purchases/weightinfo'
 		},
 		'MENU': {
 			'PURCHASE': {
@@ -65,6 +68,13 @@ define(function () {
 			'PROFILEPIC': '/images/default_profile.jpg',
 		},
 		'MULTIPLEADDRESS': ['Producer', 'Customer'],
+		'PO': {
+			'PICKUPSCHEDULE': {
+				'EDITABLERATE': {
+					'ACCOUNTTYPE': ['Hauler'],
+				},
+			},
+		},
 	};
 	
 	return constant;

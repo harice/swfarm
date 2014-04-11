@@ -14,6 +14,9 @@ define([
 		};
 		
 		Backbone.View.prototype.displayGrowl = function (message, type) {
+			if(type == null)
+				type = 'info';
+				
 			$.bootstrapGrowl(message, {
 						ele: '#message',
 						type: type,
@@ -39,6 +42,15 @@ define([
 				else 
 					alert(message);
 			}
+		};
+		
+		Backbone.View.prototype.nlToBr = function (str) {
+			var replaced = '';
+			if(str != null && str != '') {
+				replaced = str.replace(/\n/g, '<br />');
+				//replaced = replaced.replace(/\r/g, '<br />');
+			}
+			return replaced;
 		};
 		
 		Backbone.Collection.prototype.getAuth = function () {
@@ -79,6 +91,13 @@ define([
 			// contributed by Scott Gonzalez: http://projects.scottsplayground.com/iri/
 			return /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&amp;'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&amp;'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&amp;'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&amp;'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&amp;'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(val);
 		});
+		
+		$.validator.addMethod('valid_zipcode', function(val, elem) {
+			var cityField = $(elem).closest('.address-fields-container').find('.city');
+			var strZipCodes = cityField.attr('data-zipcodes');
+			var arrZipCodes = strZipCodes.split(',');
+			return (arrZipCodes.indexOf(val) > -1)? true : false;
+		}, $.validator.format("Invalid zip code for the selected city"));
 		
 		// Pass in our Router module and call it's initialize function
 		Router.initialize();

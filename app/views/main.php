@@ -8,8 +8,9 @@
 	    <meta name="author" content="">
 
 	    <title>South West Farm</title>
-
+		<link rel="stylesheet" href="css/smoothness/jquery-ui-1.10.4.custom.min.css">
 	    <link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/datepicker.min.css">
 	    <link rel="stylesheet" href="css/styles.min.css">
 	</head>
 
@@ -20,7 +21,7 @@
 
 		<div id="footer">
 		  <div class="container">
-		    <p class="text-muted">South West Farm</p>
+		    <p class="text-muted">Southwest Farms</p>
 		  </div>
 		</div>
 

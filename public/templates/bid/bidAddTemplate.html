@@ -1,0 +1,122 @@
+<form id="bidForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+	<% if (typeof bid_id !== "undefined") { %>
+		<input type="hidden" name="id" value="<%= bid_id %>" />
+	<% } %>
+	<fieldset>
+		<legend>Details</legend>
+		<div class="row">
+			<div class="col-md-8">
+				<% if (typeof bid_id !== "undefined") { %>
+					<div class="form-group">
+						<label for="bidnumber" class="col-sm-2 control-label">Bid Number</label>
+						<div class="col-sm-10">
+							<input id="bidnumber" type="text" class="form-control bidnumber" placeholder="" maxlength="250" readonly>
+						</div>
+					</div>
+				<% } %>
+				<div class="form-group">
+					<label for="destination" class="col-sm-2 control-label">Destination</label>
+					<div id="bid-destination" class="col-sm-10"></div>
+				</div>
+				<div class="form-group">
+					<label for="producer" class="col-sm-2 control-label">Producer *</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control capitalize" id="producer" name="producername" required>
+						<input type="hidden" class="form-control" id="producer-id" name="producer" value="" required>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="address" class="col-sm-2 control-label">Address Type</label>
+					<div class="col-sm-10">
+						<select id="address" class="form-control address" name="address" required>
+							<option value="">Select an address type</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="street" class="col-sm-2 control-label">Street</label>
+					<div class="col-sm-10">
+						<input id="street" type="text" class="form-control street" placeholder="" maxlength="250" readonly>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="state" class="col-sm-2 control-label">State/Province</label>
+					<div class="col-sm-10">
+						<input id="state" type="text" class="form-control state" placeholder="" maxlength="250" readonly>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="city" class="col-sm-2 control-label">City</label>
+					<div class="col-sm-10">
+						<input id="city" type="text" class="form-control city" placeholder="" maxlength="250" readonly>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="zipcode" class="col-sm-2 control-label">Zip/Postal Code</label>
+					<div class="col-sm-10">
+						<input id="zipcode" type="number" class="form-control zipcode" placeholder="" maxlength="250" readonly>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<% if (typeof bid_id !== "undefined") { %>
+				<div class="form-group">
+					<label for="date" class="col-sm-2 control-label">Date</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control date" placeholder="" maxlength="250" value="" readonly>
+					</div>
+				</div>
+				<% } %>
+			</div>
+		</div>
+	</fieldset>
+	<fieldset>
+		<legend>
+			Products
+			<button title="Add Product" id="add-bid-product" type="button" class="pull-right btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
+		</legend>
+		<div class="table-responsive">
+			<table id="bid-product-list" class="table table-bordered">
+				<thead>
+					<tr>
+						<th>Product</th>
+						<th>Description</th>
+						<th>Stack No.</th>
+						<th>Bid Unit Price</th>
+						<th>Est Tons</th>
+						<th>Bales</th>
+						<th>Bid Total Price</th>
+						<th>Hold for Testing</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr><td colspan="8">No products added.</td></tr>
+				</tbody>
+			</table>
+		</div>
+	</fieldset>
+	<fieldset>
+		<legend>Notes</legend>
+		<div class="row">
+			<div class="col-md-8">
+				<div class="form-group">
+					<label for="notes" class="col-sm-2 control-label">Notes</label>
+					<div id="bid-destination" class="col-sm-10">
+						<textarea class="form-control notes" id="notes" name="notes"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+	</fieldset>
+	<div class="form-group form-button-container">
+		<div class="pull-right">
+		<button id="create-po" type="button" class="save btn btn-default">Create PO</button>
+		<% if (typeof bid_id !== "undefined") { %>
+			<a id="cancel-po" class="btn btn-default" href="#">Cancel Bid</a>
+		<% } %>
+		<button id="save" type="submit" class="save btn btn-default">Save</button>
+		<a id="cancel-save" class="btn btn-default" href="<%= bid_url %>">Back</a>
+		</div>
+	</div>
+</form>

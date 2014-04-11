@@ -6,12 +6,26 @@ define([
 	'models/account/AccountModel',
 	'models/account/AccountExtrasModel',
 	'collections/address/CityCollection',
+	'collections/address/ZipCodeCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/account/accountAddTemplate.html',
 	'text!templates/account/accountAddressTemplate.html',
 	'global',
 	'constant',
-], function(Backbone, Validate, TextFormatter, PhoneNumber, AccountModel, AccountExtrasModel, CityCollection, contentTemplate, accountAddTemplate, accountAddressTemplate, Global, Const){
+], function(Backbone,
+			Validate,
+			TextFormatter,
+			PhoneNumber,
+			AccountModel,
+			AccountExtrasModel,
+			CityCollection,
+			ZipCodeCollection,
+			contentTemplate,
+			accountAddTemplate,
+			accountAddressTemplate,
+			Global, 
+			Const
+){
 
 	var AccountEditView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -154,6 +168,7 @@ define([
 			'click #add-address-field' : 'addAddressFields',
 			'click .remove-address-fields' : 'removeAddressFields',
 			'change .state' : 'onChangeStateField',
+			'change .city' : 'onChangeCityField',
 			'change #accounttype': 'onChangeAccountType',
 		},
 		
@@ -182,13 +197,14 @@ define([
 				this.fetchCityList(stateId, cityField);
 			}
 			else
-				cityField.find('option:gt(0)').remove();
+				this.resetCityField(cityField);
 		},
 		
-		fetchCityList: function (stateId, cityField, selectedCityId) {
+		fetchCityList: function (stateId, cityField, selectedCityId, zipCode) {
+			var thisObj = this;
 			var cityCollection = new CityCollection();
 			cityCollection.on('sync', function() {
-				cityField.find('option:gt(0)').remove();
+				thisObj.resetCityField(cityField);
 				
 				_.each(this.models, function (city){
 					cityField.append($('<option></option>').attr('value', city.get('id')).text(city.get('city')));
@@ -196,6 +212,10 @@ define([
 				
 				if(selectedCityId != null)
 					cityField.val(selectedCityId);
+					
+				if(zipCode != null)
+					thisObj.fetchZipCodeList(cityField, zipCode);
+					
 				this.off('sync');
 			});
 			
@@ -205,15 +225,74 @@ define([
 			cityCollection.getModels(stateId);
 		},
 		
+		onChangeCityField: function (ev) {
+			var cityField = $(ev.target);
+			this.fetchZipCodeList($(ev.target));
+		},
+		
+		fetchZipCodeList: function (cityField, zipCode) {
+			var thisObj = this;
+			
+			if(cityField.val() != '') {
+				var zipCodeCollection = new ZipCodeCollection();
+				zipCodeCollection.on('sync', function() {
+					
+					var zipcodes = [];
+					_.each(this.models, function (zipCodeModel){
+						zipcodes.push(zipCodeModel.get('zip'));
+					});
+					cityField.attr('data-zipcodes', zipcodes.join());
+					
+					if(zipCode != null) {
+						cityField.closest('.address-fields-container').find('.zipcode').val(zipCode);
+					}
+					
+					this.off('sync');
+				});
+				
+				zipCodeCollection.on('error', function(collection, response, options) {
+					this.off('error');
+				});
+				zipCodeCollection.getModels(cityField.val());
+			}
+			else {
+				cityField.attr('data-zipcodes', '');
+			}
+			
+			this.emptyZipCodeField(cityField);
+		},
+		
+		resetCityField: function (cityField) {
+			cityField.find('option:gt(0)').remove();
+			cityField.attr('data-zipcodes', '');
+			this.emptyZipCodeField(cityField);
+		},
+		
+		emptyZipCodeField: function (element) {
+			var zipCodeField = element.closest('.address-fields-container').find('.zipcode');
+			zipCodeField.val('');
+		},
+		
 		addValidationToAddressFields: function () {
+			var thisObj = this;
 			var addressFieldClassRequired = this.options.addressFieldClassRequired;
 			for(var i=0; i < addressFieldClassRequired.length; i++) {
-				$('.'+addressFieldClassRequired[i]).each(function() {
-					$(this).rules('add', {required: true});
-					//if(addressFieldClassRequired[i] == 'zipcode')
-						//$(this).rules('add', {number: 'Please enter a valid zip code.'});
-						//$(this).messages.number = 'Please enter a valid zip code.';
-				});
+				if(addressFieldClassRequired[i] != 'zipcode') {
+					$('.'+addressFieldClassRequired[i]).each(function() {
+						$(this).rules('add', {required: true});
+					});
+				}
+				else {
+					$('.'+addressFieldClassRequired[i]).each(function() {
+						$(this).rules('add', {
+							required: true,
+							valid_zipcode: true,
+							messages: {
+								number: 'Please enter a valid zip code.'
+							},
+						});
+					});
+				}
 			}
 		},
 		
@@ -285,8 +364,8 @@ define([
 				
 				fieldContainer.find('.street').val(addresses[i].street);
 				fieldContainer.find('.state').val(addresses[i].state);
-				this.fetchCityList(addresses[i].state, fieldContainer.find('.city'), addresses[i].city);
-				fieldContainer.find('.zipcode').val(addresses[i].zipcode);
+				this.fetchCityList(addresses[i].state, fieldContainer.find('.city'), addresses[i].city, addresses[i].zipcode);
+				//fieldContainer.find('.zipcode').val(addresses[i].zipcode);
 			}
 		},
 		

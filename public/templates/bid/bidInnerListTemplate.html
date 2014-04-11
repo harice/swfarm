@@ -1,0 +1,26 @@
+<% if (!_.isEmpty(bids)) { %>
+	<% _.each(bids, function(bid){ %>
+		<tr>
+			<td><a href="<%= bid_url %>/<%= bid.get("id") %>"><%= bid.get("bidnumber") %></a></td>
+			<td><%= bid.get("created_at").split(" ")[0] %></td>
+			<td>
+				<% if (bid.get("ponumber")) { %>
+					<a href="<%= po_url %>/<%= bid.get("id") %>"><%= bid.get("ponumber") %></a>
+				<% } %>
+			</td>
+			<td><%= bid.get("status") %></td>
+			<td><%= bid.get("account").name %></td>
+			<td><%= bid.get("destination").destination %></td>
+			<td>
+				<% if (bid.get("status").toLowerCase() == "open") { %>
+					<a href="<%= bid_edit_url %>/<%= bid.get("id") %>">edit</a> 
+					<a class="cancel-bid" href="#" data-id="<%= bid.get("id") %>">cancel bid</a>
+				<% } %>
+			</td>
+		</tr>
+	<% }); %>
+<% } else { %>
+	<tr>
+		<td colspan="8">No result found.</td>
+	</tr>
+<% } %>

@@ -42,6 +42,10 @@ code {
   font-size: 80%;
 }
 
+.text-align-right {
+	text-align:right
+}
+
 /* Content */
 .content-inner {
   padding-top: 10px;
@@ -50,6 +54,29 @@ code {
 /* Table */
 .table {
   margin-bottom: 0;
+  tbody {
+    td {
+		vertical-align:middle !important;
+	}
+  }
+}
+
+.table-responsive {
+	padding-bottom:10px;
+}
+
+/* form */
+.form-horizontal fieldset{
+	margin-bottom:20px;
+}
+
+.label-text {
+	font-weight:bold;
+	text-align:right;
+}
+
+.value-text {
+	
 }
 
 /* Pagination */
@@ -59,9 +86,9 @@ code {
 
 /* Message */
 #message {
+  bottom: 70px;
   margin: 0;
   position: fixed;
-  bottom: 70px;
   right: 20px;
   z-index: 9999;
 }
@@ -107,7 +134,33 @@ code {
   font-size: 80%;
 }
 
-/** user management **/
+/* list view */
+.search-filter-cont {
+	margin:10px 0;
+	
+	.sub-cont {
+		margin-bottom:10px;
+	}
+	
+	label {
+		display:inline-block;
+		vertical-align:middle;
+		padding-right:10px;
+		margin:0;
+	}
+	
+	.search-filter-field {
+		display:inline-block;
+		vertical-align:middle;
+		padding-right:10px;
+	}
+}
+
+.calendar-cont {
+	width:150px;
+}
+
+/* user management */
 #profile-pic {
 	display:inline;
 }
@@ -147,28 +200,68 @@ code {
 
 /* Autocomplete */
 ul.autocomplete {
-  position: absolute;
-  z-index: 10;
-  display: none;
-  background: #fff;
-  padding: 0;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  list-style-type: none;
-  
-  li {
-    border-bottom: 1px solid #ddd;
+	position: absolute;
+	z-index: 10;
+	display: none;
+	background: #fff;
+	padding: 0;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	list-style-type: none;
 
-    a {
-      display: block;
-      padding: 6px 12px;
-      color: #555555;
-      text-decoration: none;
+	li {
+		border-bottom: 1px solid #ddd;
 
-      &:hover,
-      &:focus {
-        background: #ccc;
-      }
-    }
-  }
+		a {
+			display: block;
+			padding: 6px 12px;
+			color: #555555;
+			text-decoration: none;
+
+			&:hover,
+			&:focus {
+				background: #ccc;
+			}
+		}
+		
+		&.active {
+			a {
+				background: #ccc;
+			}
+		}
+	}
+}
+
+/* add bid */
+#bid-product-list {
+	thead {
+		th {
+			text-align:center;
+			vertical-align:middle;
+		}
+	}
+}
+
+/* Table */
+#t-product-name {
+  min-width: 200px;
+  max-width: 200px;
+}
+
+/* edit po */
+#add-po-tab-content {
+	padding:30px 20px;
+}
+
+.hours,
+.minutes,
+.ampm {
+	display:inline-block;
+	width:58px;
+	padding:6px;
+}
+
+/* po schedule */
+#po-schedule-list tbody tr td{
+	cursor:pointer;
 }

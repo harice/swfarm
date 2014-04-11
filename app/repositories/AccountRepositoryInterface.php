@@ -12,4 +12,6 @@ interface AccountRepositoryInterface {
 	public function instance();
 	public function getCitiesByState($stateId);
 	public function getFormData();
+	public function getZipcodeUsingCity($city);
+	public function getAccountsByName($name);
 }

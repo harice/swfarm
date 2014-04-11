@@ -34,10 +34,39 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 	Route::get('account/getFormData', 'APIv1\AccountController@getFormData');
   	Route::get('account/getCitiesByState/{id}', 'APIv1\AccountController@getCitiesByState');
   	Route::get('account/getAccountsByName', 'APIv1\AccountController@getAccountsByName');
+  	Route::get('account/getZipcodeUsingCity/{id}', 'APIv1\AccountController@getZipcodeUsingCity');
 	Route::resource('account', 'APIv1\AccountController');
 
 	Route::get('contact/search', 'APIv1\ContactController@search');
 	Route::resource('contact', 'APIv1\ContactController');
+
+	Route::get('po', 'APIv1\BidController@getPurchaseOrder');
+	Route::put('po/addUnitPriceToBidProduct/{bidId}', 'APIv1\BidController@addUnitPriceToBidProduct');
+	Route::put('po/addPickupDateToPurchaseOrder/{bidId}', 'APIv1\BidController@addPickupDateToPurchaseOrder');
+	Route::post('po/createPurchaseOrder', 'APIv1\BidController@createPurchaseOrder');
+	Route::put('po/cancelPurchaseOrder/{id}', 'APIv1\BidController@cancelPurchaseOrder');
+	Route::put('po/closePurchaseOrder/{id}', 'APIv1\BidController@closePurchaseOrder');
+	Route::get('po/search', 'APIv1\BidController@searchPurchaseOrder');
+
+	Route::put('bid/cancelBid/{id}', 'APIv1\BidController@cancelBid');
+	Route::get('bid/search', 'APIv1\BidController@search');
+	Route::get('bid/getProducerAddress', 'APIv1\BidController@getProducerAddress');
+	Route::get('bid/getProducerAccount', 'APIv1\BidController@getProducerAccount');
+	Route::get('bid/getDestination', 'APIv1\BidController@getDestination');
+	Route::resource('bid', 'APIv1\BidController');
+    
+    Route::get('weightticket/getWeightTicketOfSchedule', 'APIv1\WeightTicketController@getWeightTicketOfSchedule');
+    Route::get('weightticket/getAllBidProductOnBid', 'APIv1\WeightTicketController@getAllBidProductOnBid');
+    Route::get('weightticket/getAllScaleProviderAccount', 'APIv1\WeightTicketController@getAllScaleProviderAccount');
+    Route::resource('weightinfo', 'APIv1\WeightInfoController');
+    Route::resource('weightticket', 'APIv1\WeightTicketController');
+
+
+    Route::get('pickupschedule/getTruckingRate', 'APIv1\PickupScheduleController@getTruckingRate');
+    Route::get('pickupschedule/getLoaderAccount', 'APIv1\PickupScheduleController@getLoaderAccount');
+    Route::get('pickupschedule/getTruckerAccount', 'APIv1\PickupScheduleController@getTruckerAccount');
+    Route::resource('pickupschedule', 'APIv1\PickupScheduleController');
+    
 });
 
 /* API ROUTES without HTTP Basic */

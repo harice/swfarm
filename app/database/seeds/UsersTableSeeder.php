@@ -4,6 +4,9 @@ class UsersTableSeeder extends Seeder {
 
 	public function run()
 	{
+        $now = new DateTime('NOW');
+        $date = $now->format('Y-m-d H:i:s');
+        
 		$users = array(
 			array(
                 'username' => 'admin',
@@ -13,9 +16,12 @@ class UsersTableSeeder extends Seeder {
                 'lastname' => 'SuperAdmin',
                 'suffix' => '',
                 'emp_no' => 'SU-123',
+                'confirmcode' => 'CONFIRMCODE',
                 'validated' => true,
                 'status' => true,
-                'deleted' => false
+                'deleted' => false,
+                'created_at' => $date,
+                'updated_at' => $date,
             ),
 			
 			array(
@@ -26,9 +32,12 @@ class UsersTableSeeder extends Seeder {
                 'lastname' => 'Der Woman',
                 'suffix' => '',
                 'emp_no' => 'SU-111',
+                'confirmcode' => 'CONFIRMCODE',
                 'validated' => true,
                 'status' => true,
-                'deleted' => false
+                'deleted' => false,
+                'created_at' => $date,
+                'updated_at' => $date,
             ),
 			
 			array(
@@ -39,9 +48,12 @@ class UsersTableSeeder extends Seeder {
                 'lastname' => 'test',
                 'suffix' => '',
                 'emp_no' => 'test',
+                'confirmcode' => 'CONFIRMCODE',
                 'validated' => true,
                 'status' => true,
-                'deleted' => false
+                'deleted' => false,
+                'created_at' => $date,
+                'updated_at' => $date,
             )
 		);
 

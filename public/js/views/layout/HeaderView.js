@@ -24,6 +24,11 @@ define([
 				'contact_url'	: '#/'+Const.URL.CONTACT,
 				'accounts_url'	: '#/'+Const.URL.ACCOUNT,
 				'purchases_url'	: '#/',
+				
+				'bid_url'       : '#/'+Const.URL.BID,
+				'purchase_order_url': '#/'+Const.URL.PO,
+                'weightinfo_url': '#/'+Const.URL.WEIGHTINFO,
+				
 				'sales_url'		: '#/',
 				'inventory_url'	: '#/',
 				'product_url'	: '#/'+Const.URL.PRODUCT,

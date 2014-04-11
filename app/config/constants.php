@@ -12,4 +12,6 @@ return array(
     'AUDIT_UPDATED' => 'Updated',
     'AUDIT_DELETED' => 'Deleted',
 
+    'TRUCKING_RATE' => 2.00
+
 );

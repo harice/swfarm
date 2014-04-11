@@ -13,6 +13,9 @@ class AddressTypeTableSeeder extends Seeder {
             ),
             array(
                 'name' => 'Stack Address'
+            ),
+            array(
+                'name' => 'Delivery Address'
             )
 		);
 
