@@ -25,7 +25,7 @@ class CreateWeightticketTable extends Migration {
             $table->integer('origin_bales')->nullable();
 			$table->double('origin_gross', 5, 4);
 			$table->double('origin_tare', 5, 4);
-            $table->double('origin_net', 5, 5);
+            $table->double('origin_net', 5, 4);
             $table->integer('origin_account_id')->unsigned();
             $table->float('origin_scale_fee');
             
