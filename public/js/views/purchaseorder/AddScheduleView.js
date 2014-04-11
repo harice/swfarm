@@ -214,6 +214,9 @@ define([
 					if(element.attr('name') == 'scheduledate') {
 						element.closest('.calendar-cont').siblings('.error-msg-cont').html(error);
 					}
+					else if(element.hasClass('monetary-value')) {
+						element.closest('.input-group').siblings('.error-msg-cont').html(error);
+					}
 					else {
 						error.insertAfter(element);
 					}
