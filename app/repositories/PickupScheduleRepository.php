@@ -161,7 +161,7 @@ class PickupScheduleRepository implements PickupScheduleRepositoryInterface {
           200
       );
     } else{
-      $accountIds = array(2, 4, 9); //operator, hauler and SWF trucker accounts ids
+      $accountIds = array(2, 4, 9); //operator, hauler and Southwest Farms trucker accounts ids
       $truckers = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($search, $accountIds){
                     $query->whereIn('id', $accountIds);
                   })->where('name', 'like', '%'.$search.'%')->get(array('id', 'name', 'accounttype'));
