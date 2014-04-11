@@ -7,8 +7,8 @@ define([
 	var ProductModel = Backbone.Model.extend({
 		urlRoot: '/apiv1/product',
 		defaults: {
-      name: '',
-      description: '',
+		name: '',
+		description: '',
     },
 		runFetch: function () {
 			var thisObj = this;

@@ -9,6 +9,7 @@ class WeightTicketTableSeeder extends Seeder {
         
 		$weightticket = array(
 			array(
+                'wtn' => 'WTN20140404-00001',
                 'purchaseorder_id' => 1,
                 'pickupschedule_id' => 1,
                 'bidproduct_id' => 1,
@@ -32,6 +33,7 @@ class WeightTicketTableSeeder extends Seeder {
             ),
 			
 			array(
+                'wtn' => 'WTN20140404-00002',
                 'purchaseorder_id' => 1,
                 'pickupschedule_id' => 1,
                 'bidproduct_id' => 1,
@@ -55,6 +57,7 @@ class WeightTicketTableSeeder extends Seeder {
             ),
 			
 			array(
+                'wtn' => 'WTN20140404-00003',
                 'purchaseorder_id' => 1,
                 'pickupschedule_id' => 1,
                 'bidproduct_id' => 1,

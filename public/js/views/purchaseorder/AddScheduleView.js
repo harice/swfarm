@@ -41,7 +41,7 @@ define([
 	
 	var AddScheduleView = ListView.extend({
 		el: "#po-schedule",
-		
+		weightTicketView: null,
 		initialize: function (option) {
 			this.extendListEvents();
 			var thisObj = this;
@@ -56,7 +56,7 @@ define([
 			this.formContainer = null;
 			this.schedTableElement = null;
 			this.activeModel = null;
-			this.weightTicketView = null;
+			//this.weightTicketView = null;
 			
 			this.truckingRateModel = new TruckingRateModel();
 			this.truckingRateModel.on('change', function() {
@@ -131,7 +131,7 @@ define([
 				if(this.addFieldsClone == null) {
 					var addTemplate = _.template(purchaseOrderAddScheduleTemplate, {});
 					addFieldsContainer.html(addTemplate);
-					this.populateTimeOPtions();
+					this.populateTimeOptions();
 					clone = addFieldsContainer.find('> form:first-child');
 					this.addFieldsClone = clone.clone();
 				}
@@ -151,7 +151,7 @@ define([
 			return clone;
 		},
 		
-		populateTimeOPtions: function () {
+		populateTimeOptions: function () {
 			var hourOptions = '';
 			for(var i=1; i<=12; i++) {
 				var hour = i+'';
@@ -302,6 +302,8 @@ define([
 				form.find('#destinationloader').val(this.activeModel.get('destination_loader')[0].name);
 				form.find('#destinationloader-id').val(this.activeModel.get('destination_loader')[0].id);
 				form.find('#delete-schedule').show();
+				form.find('#cancel-add-schedule').hide();
+				form.find('#back-to-view').show();
 			}
 			else {
 				form.find('#schedId').val(this.activeModel.get('id'));
@@ -353,9 +355,9 @@ define([
 		},
 		
 		events: {
-			'blur #trucker': 'validateTrucker',
-			'blur #originloader': 'validateTrucker',
-			'blur #destinationloader': 'validateTrucker',
+			'blur #trucker': 'validateAccount',
+			'blur #originloader': 'validateAccount',
+			'blur #destinationloader': 'validateAccount',
 			'click #add-schedule': 'showAddSchedule',
 			'click #edit-schedule': 'showEditSchedule',
 			'click #delete-schedule': 'deleteSchedule',
@@ -369,7 +371,7 @@ define([
 			'click #po-schedule-list tbody tr': 'selectSchedule',
 		},
 		
-		validateTrucker: function (ev) {
+		validateAccount: function (ev) {
 			var labelField = $(ev.target);
 			var labelFieldId = $(ev.target).attr('id');
 			var idField = '';
@@ -478,9 +480,18 @@ define([
 			return false;
 		},
 		
-		showWeightTicket: function () {
+		showWeightTicket: function (ev) {
+			var thisObj = this;
 			this.clearFormContainer();
-            this.weightTicketView = new WeightTicketView().render();
+			var schedId = $(ev.target).closest('form').find('#schedId').val();
+            if(this.weightTicketView != null)
+				this.weightTicketView.close();
+			this.weightTicketView = new WeightTicketView({bidId:this.bidId, schedId:schedId});
+			this.weightTicketView.backToScheduleCallBack = function () {
+				thisObj.showViewForm(schedId);
+				return false;
+			};
+			this.weightTicketView.render();
 			return false;
 		},
 		
