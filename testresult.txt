@@ -1,9 +1,0 @@
-PHPUnit 4.0.13 by Sebastian Bergmann.
-
-Configuration read from E:\xampp\htdocs\swfarm\phpunit.xml
-
-...............
-
-Time: 4.26 seconds, Memory: 19.25Mb
-
-OK (15 tests, 16 assertions)

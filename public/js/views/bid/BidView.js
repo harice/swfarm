@@ -76,10 +76,10 @@ define([
 					'product': product.product[0].name,
 					'desc': product.description,
 					'stacknumber': product.stacknumber,
-					'bidprice': '$ '+parseFloat(product.bidprice).toFixed(2),
+					'bidprice': parseFloat(product.bidprice).toFixed(2),
 					'tons': product.tons,
 					'bales': product.bales,
-					'unitprice': '$ '+parseFloat(product.bidprice * product.tons).toFixed(2),
+					'unitprice': parseFloat(product.bidprice * product.tons).toFixed(2),
 					'holdfortesting': (product.ishold == 0)? 'No' : 'Yes',
 				};
 				var bidProductTemplate = _.template(bidViewProductItemTemplate, bidProductTemplateVar);

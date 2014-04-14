@@ -37,6 +37,11 @@ class Product extends Eloquent {
 	 * @var string
 	 */
     protected $table = 'products';
+    
+    public static $rules = array(
+        'name' => 'required|unique:products',
+        'description' => 'max:250'
+    );
 
     public function bid(){
     	return $this->belongsToMany('Bid', 'bidproduct', 'product_id', 'bid_id');

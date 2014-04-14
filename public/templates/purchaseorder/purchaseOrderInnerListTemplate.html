@@ -21,7 +21,7 @@
 		<td><%= po.get("account").name %></td>
 		<td><%= po.get("po_status") %></td>
 		<td><%= po.get("destination").destination %></td>
-		<td class="text-align-right"><%= parseFloat(po.get("totalPrice")).toFixed(2) %></td>
+		<td class="text-align-right"><span>$ </span><%= parseFloat(po.get("totalPrice")).toFixed(2) %></td>
 		<td>
 			<% if (po.get("po_status").toLowerCase() == "open") { %>
 				<a href="<%= po_edit_url %>/<%= po.get("id") %>">edit</a>

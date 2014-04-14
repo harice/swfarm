@@ -1,5 +1,5 @@
 <% _.each(destinations, function(destination){ %>
-<label class="radio-inline">
+<li>
 	<input class="bidDestination" type="radio" name="destination" value="<%= destination.get("id") %>"> <%= destination.get("destination") %>
-</label>
+</li>
 <% }); %>

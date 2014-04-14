@@ -53,6 +53,11 @@ define([
 			return replaced;
 		};
 		
+		Backbone.View.prototype.toFixedValue = function (field, decimal) {
+			var value = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()).toFixed(decimal) : '';
+			field.val(value);
+		};
+		
 		Backbone.Collection.prototype.getAuth = function () {
 			return {'Authorization': 'Basic '+SessionModel.get('token')};
 		};

@@ -7,7 +7,7 @@
 	    <meta name="description" content="">
 	    <meta name="author" content="">
 
-	    <title>South West Farm</title>
+	    <title>Southwest Farms</title>
 		<link rel="stylesheet" href="css/smoothness/jquery-ui-1.10.4.custom.min.css">
 	    <link rel="stylesheet" href="css/bootstrap.min.css">
 		<link rel="stylesheet" href="css/datepicker.min.css">
@@ -15,13 +15,27 @@
 	</head>
 
 	<body>
-		<div id="header"></div>
+		<div class="topheader bg-primary">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6">
+						<a href="/"><img src="images/southwest-farm-logo.png"></a>
+					</div>
+					<div class="col-md-6"></div>
+				</div>
+			</div>
+			<div id="header"></div>
+		</div>
+		
         <div id="message" class="container"></div>
 		<div id="content" class="container min-height-400"></div>
 
 		<div id="footer">
 		  <div class="container">
-		    <p class="text-muted">Southwest Farms</p>
+		  	<div class="row">
+	  			<div class="col-md-6"><p class="text-muted">&copy; <?php echo date('Y');?> | Southwest Farm Service</p></div>
+	  			<div class="col-md-6"><p class="text-muted pull-right">REL <small>v</small><em><?php echo $version; ?></em></p></div>
+		  	</div>
 		  </div>
 		</div>
 
