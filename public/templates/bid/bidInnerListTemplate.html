@@ -12,7 +12,7 @@
 			<td>
 				<% if (bid.get("status").toLowerCase() == "open") { %>
 					<span class="label label-success"><%= bid.get("status") %></span>
-				<% } elseif (bid.get("status").toLowerCase() == "closed") { %>
+				<% } else if (bid.get("status").toLowerCase() == "closed") { %>
 					<span class="label label-default"><%= bid.get("status") %></span>
 				<% } else { %>
 					<span class="label label-danger"><%= bid.get("status") %></span>
