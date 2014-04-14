@@ -32,6 +32,7 @@ define([
 			
 			if(lastPage > 1) {
 				$('.pagination').show();
+				$('.display-items').show();
 				
 				for(var i=1; i <= lastPage; i++) {
 					var active = '';
@@ -41,17 +42,36 @@ define([
 						active = ' class="active"';
 						activeValue = ' <span class="sr-only">(current)</span>';
 					}
+
+					if(this.collection.getCurrentPage() == lastPage) {
+						$('.pagination .next-page').addClass('disabled');
+						$('.pagination .last-page').addClass('disabled');
+					} else {
+						$('.pagination .next-page').removeClass('disabled');
+						$('.pagination .last-page').removeClass('disabled');
+					}
+
+					if(this.collection.getCurrentPage() == 1) {
+						$('.pagination .prev-page').addClass('disabled');
+						$('.pagination .first-page').addClass('disabled');
+					} else {
+						$('.pagination .prev-page').removeClass('disabled');
+						$('.pagination .first-page').removeClass('disabled');
+					}
 						
-					$('.pagination .last-page').parent().before('<li'+active+'><a class="page-number" href="#" data-pagenum="'+i+'">'+i+activeValue+'</a></li>');
+					$('.pagination .next-page').parent().before('<li'+active+'><a class="page-number" href="#" data-pagenum="'+i+'">'+i+activeValue+'</a></li>');
 				}
 			}
 			else {
 				$('.pagination').hide();
+				$('.display-items').hide();
 			}
 		},
 		
 		eventsList: {
 			'click .first-page' : 'gotoFirstPage',
+			'click .prev-page' : 'gotoPrevPage',
+			'click .next-page' : 'gotoNextPage',
 			'click .last-page' : 'gotoLastPage',
 			'click .page-number' : 'gotoPage',
 			'click .search-local' : 'searchLocal',
@@ -61,6 +81,29 @@ define([
 			if(this.collection.getCurrentPage() != 1) {
 				this.collection.setCurrentPage(1);
 				this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
+			}
+			
+			return false;
+		},
+
+		gotoPrevPage:function () {
+			var currentPage = this.collection.getCurrentPage();
+			if(currentPage != 1 && currentPage > 1) {
+				var calPage = parseInt(currentPage) - parseInt(1);
+				this.collection.setCurrentPage(calPage);
+				this.collection.getModelsPerPage(calPage , Const.MAXITEMPERPAGE);
+			}
+			
+			return false;
+		},
+
+		gotoNextPage:function () {
+			var lastPage = Math.ceil(this.collection.getMaxItem() / Const.MAXITEMPERPAGE);
+			var currentPage = this.collection.getCurrentPage();
+			if(currentPage < lastPage) {
+				var calPage = parseInt(currentPage) + parseInt(1);
+				this.collection.setCurrentPage(calPage);
+				this.collection.getModelsPerPage(calPage , Const.MAXITEMPERPAGE);
 			}
 			
 			return false;

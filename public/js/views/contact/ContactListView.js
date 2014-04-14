@@ -37,6 +37,7 @@ define([
 			
 			var variables = {
 				h1_title: "Contacts",
+				h1_small: "list",
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
@@ -60,6 +61,15 @@ define([
 		events: {
             'click .sort-name' : 'sortName',
             'click .sort-account' : 'sortAccount',
+            'change .checkall' : 'checkAll'
+		},
+
+		checkAll: function () {
+			if($('.checkall').is(':checked')) {
+				$('.contactids').prop('checked',true);
+			} else {
+				$('.contactids').prop('checked',false);
+			}
 		},
             
         sortName: function () {
