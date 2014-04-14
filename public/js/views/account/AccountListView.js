@@ -45,6 +45,7 @@ define([
 			
 			var variables = {
 				h1_title: "Accounts",
+				h1_small: "list",
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
@@ -69,6 +70,15 @@ define([
 			'click .sort-name' : 'sortName',
 			'click .sort-type' : 'sortType',
 			'change .accounttypeFilter' : 'filterByType',
+			'change .checkall' : 'checkAll'
+		},
+
+		checkAll: function () {
+			if($('.checkall').is(':checked')) {
+				$('.accountids').prop('checked',true);
+			} else {
+				$('.accountids').prop('checked',false);
+			}
 		},
 		
 		sortName: function () {
@@ -81,7 +91,7 @@ define([
 		
 		filterByType: function (ev) {
 			var filter = $(ev.target).val();
-			this.collection.setFilter(filter);
+			this.collection.setFilter('filter',filter);
 			this.renderList(1);
 			return false;
 		},

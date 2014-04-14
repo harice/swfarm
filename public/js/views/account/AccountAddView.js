@@ -70,7 +70,8 @@ define([
 			var innerTemplate = _.template(accountAddTemplate, innerTemplateVariables);
 			
 			var variables = {
-				h1_title: "Add Account",
+				h1_title: "Accounts",
+				h1_small: "add",
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);

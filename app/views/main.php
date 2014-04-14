@@ -15,7 +15,7 @@
 	</head>
 
 	<body>
-		<div class="topheader">
+		<div class="topheader bg-primary">
 			<div class="container">
 				<div class="row">
 					<div class="col-md-6">
@@ -32,7 +32,10 @@
 
 		<div id="footer">
 		  <div class="container">
-		    <p class="text-muted">&copy; <?php echo date('Y');?> | Southwest Farm Service</p>
+		  	<div class="row">
+	  			<div class="col-md-6"><p class="text-muted">&copy; <?php echo date('Y');?> | Southwest Farm Service</p></div>
+	  			<div class="col-md-6"><p class="text-muted pull-right">REL <small>v</small><em><?php echo $version; ?></em></p></div>
+		  	</div>
 		  </div>
 		</div>
 

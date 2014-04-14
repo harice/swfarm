@@ -1,6 +1,7 @@
 <% if (!_.isEmpty(bids)) { %>
 	<% _.each(bids, function(bid){ %>
 		<tr>
+			<td class="align-center"><input type="checkbox" name="bidids[]" class="bidids" value="<%= bid.get("id") %>"></td>
 			<td><a href="<%= bid_url %>/<%= bid.get("id") %>"><%= bid.get("bidnumber") %></a></td>
 			<td><%= bid.get("created_at").split(" ")[0] %></td>
 			<td>
@@ -8,7 +9,15 @@
 					<a href="<%= po_url %>/<%= bid.get("id") %>"><%= bid.get("ponumber") %></a>
 				<% } %>
 			</td>
-			<td><%= bid.get("status") %></td>
+			<td>
+				<% if (bid.get("status").toLowerCase() == "open") { %>
+					<span class="label label-success"><%= bid.get("status") %></span>
+				<% } elseif (bid.get("status").toLowerCase() == "closed") { %>
+					<span class="label label-default"><%= bid.get("status") %></span>
+				<% } else { %>
+					<span class="label label-danger"><%= bid.get("status") %></span>
+				<% } %>
+			</td>
 			<td><%= bid.get("account").name %></td>
 			<td><%= bid.get("destination").destination %></td>
 			<td>
@@ -21,6 +30,6 @@
 	<% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="8">No result found.</td>
+		<td colspan="9">No result found.</td>
 	</tr>
 <% } %>

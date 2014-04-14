@@ -55,6 +55,7 @@ define([
 			
 			var variables = {
 				h1_title: "Bids",
+				h1_small: "list",
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
@@ -95,6 +96,15 @@ define([
 			'click .cancel-bid' : 'cancelBid',
 			'change .bidDestination' : 'filterByDestination',
 			'change .statusFilter' : 'filterByStatus',
+			'change .checkall' : 'checkAll'
+		},
+
+		checkAll: function () {
+			if($('.checkall').is(':checked')) {
+				$('.bidids').prop('checked',true);
+			} else {
+				$('.bidids').prop('checked',false);
+			}
 		},
 		
 		sortBidNumber: function () {

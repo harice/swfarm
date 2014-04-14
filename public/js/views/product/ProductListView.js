@@ -37,6 +37,7 @@ define([
 			
 			var variables = {
 				h1_title: "Products",
+				h1_small: "list",
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
@@ -59,8 +60,17 @@ define([
 		
 		events: {
 			'click .sort-name' : 'sortName',
+			'change .checkall' : 'checkAll'
 		},
-            
+        
+        checkAll: function () {
+			if($('.checkall').is(':checked')) {
+				$('.productids').prop('checked',true);
+			} else {
+				$('.productids').prop('checked',false);
+			}
+		},
+
 		sortName: function () {
 			this.sortByField('name');
 		},
