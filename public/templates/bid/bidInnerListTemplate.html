@@ -27,7 +27,7 @@
 			        </a>
 
 			        <a href="#" data-id="<%= bid.get("id") %>" class="btn btn-danger btn-xs cancel-bid">
-			          <span class="glyphicon glyphicon-copyright-mark"></span>
+			          <span class="glyphicon glyphicon-off"></span>
 			        </a>
 				<% } else { %>
 					<a href="<%= bid_edit_url %>/<%= bid.get("id") %>" class="btn btn-info btn-xs disabled">
@@ -35,7 +35,7 @@
 			        </a>
 
 			        <a href="#" data-id="<%= bid.get("id") %>" class="btn btn-danger btn-xs cancel-bid disabled">
-			          <span class="glyphicon glyphicon-copyright-mark"></span>
+			          <span class="glyphicon glyphicon-off"></span>
 			        </a>
 				<% } %>
 			</td>
