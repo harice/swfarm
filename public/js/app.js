@@ -4,13 +4,19 @@ define([
 	'bootstrap',
 	'router',
 	'models/session/SessionModel',
-], function(Backbone, Bootstrap, Router, SessionModel){
+	'views/layout/HeaderView',
+], function(Backbone, Bootstrap, Router, SessionModel, HeaderView){
 	var initialize = function(){
 		
 		Backbone.View.prototype.close = function () {
 			this.$el.empty();
 			this.unbind();
 			this.undelegateEvents();
+		};
+
+		Backbone.View.prototype.refreshHeader = function () {
+			var headerView = new HeaderView();
+			headerView.render();
 		};
 		
 		Backbone.View.prototype.displayGrowl = function (message, type) {
