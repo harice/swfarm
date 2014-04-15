@@ -672,18 +672,21 @@ class BidRepository implements BidRepositoryInterface {
 
     return Response::json(array(
           'error' => false,
-          'message' => 'Purchae order saved.'),
+          'message' => 'PO has been sucessfully updated.'),
           200
       );
   }
 
   public function addUnitPriceToBidProduct($bidId, $data){
     try{
-      foreach($data['products'] as $bidProductData){
-        // $bidproduct = BidProduct::find($bidProductData['id']);
+      $hasChanges =  false;
+      foreach($data['products'] as $bidProductData){        
         $bidproduct = BidProduct::where('id', '=', $bidProductData['id'])
                                 ->where('bid_id', '=', $bidId)
                                 ->first();
+        if($bidproduct->unitprice != null && (float)$bidproduct->unitprice != (float)$bidProductData['unitprice']){
+          $hasChanges = true;
+        }
         $bidproduct->unitprice = isset($bidProductData['unitprice']) ? $bidProductData['unitprice'] : null;
         $bidproduct->save();
       }
@@ -694,11 +697,17 @@ class BidRepository implements BidRepositoryInterface {
         200
       );
     }
-      return Response::json(array(
-          'error' => false,
-          'message' => 'Products unit price successfully updated.'),
-          200
-      );
+    
+    if($hasChanges)
+      $messages = 'Product info successfully updated.';
+    else 
+      $messages = 'No changes found.';
+
+    return Response::json(array(
+        'error' => false,
+        'message' => $messages),
+        200
+    );
   }
 
   public function cancelPurchaseOrder($bidId){

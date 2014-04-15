@@ -19,13 +19,13 @@ class CreatePickupscheduleTable extends Migration {
 			$table->integer('bid_id')->unsigned();
 			$table->timestamp('pickupdate');
 			$table->integer('trucker_id')->unsigned();
-			$table->float('distance');
-			$table->float('fuelcharge');
+			$table->decimal('distance', 8, 4);
+			$table->float('fuelcharge', 8, 4);
 			$table->integer('originloader_id')->unsigned();
-			$table->float('originloadersfee');
+			$table->decimal('originloadersfee', 8, 4);
 			$table->integer('destinationloader_id')->unsigned();
-			$table->float('destinationloadersfee');
-			$table->float('truckingrate');
+			$table->decimal('destinationloadersfee', 8, 4);
+			$table->decimal('truckingrate', 8, 4);
 			$table->timestamps();
 
 			$table->foreign('bid_id')->references('id')->on('bid');

@@ -193,7 +193,7 @@ define([
 				bidProductFields.find('.id').val(bidProduct.id);
 				bidProductFields.find('.productname').val(bidProduct.product[0].name);
 				bidProductFields.find('.product_id').val(bidProduct.product[0].id);
-				bidProductFields.find('.description').val(bidProduct.product[0].description);
+				bidProductFields.find('.description').val(bidProduct.description);
 				bidProductFields.find('.stacknumber').val(bidProduct.stacknumber);
 				bidProductFields.find('.bidprice').val(bidProduct.bidprice);
 				bidProductFields.find('.tons').val(bidProduct.tons);
