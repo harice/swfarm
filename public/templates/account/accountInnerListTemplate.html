@@ -1,16 +1,25 @@
 <% if (!_.isEmpty(accounts)) { %>
   <% _.each(accounts, function(account){ %>
     <tr>
-      <td><%= account.get("name") %></td>
+      <td class="align-center"><input type="checkbox" name="accountids[]" class="accountids" value="<%= account.get("id") %>"></td>
+      <td><a href="<%= account_url %>/<%= account.get("id") %>"><%= account.get("name") %></a></td>
       <td><%= account.get("accounttype")[0].name %></td>
       <td><%= account.get("website") %></td>
       <td><%= account.get("description") %></td>
       <td><%= account.get("phone") %></td>
-      <td><a href="<%= account_url %>/<%= account.get("id") %>">view</a> <a href="<%= account_edit_url %>/<%= account.get("id") %>">edit</a></td>
+      <td>
+        <a href="<%= account_edit_url %>/<%= account.get("id") %>" class="btn btn-info btn-xs">
+          <span class="glyphicon glyphicon-pencil"></span>
+        </a>
+
+        <a href="<%= account_edit_url %>/<%= account.get("id") %>" class="btn btn-danger btn-xs">
+          <span class="glyphicon glyphicon-remove"></span>
+        </a>
+      </td>
     </tr>
   <% }); %>
 <% } else { %>
   <tr>
-    <td colspan="6">No result found.</td>
+    <td colspan="7">No result found.</td>
   </tr>
 <% } %>

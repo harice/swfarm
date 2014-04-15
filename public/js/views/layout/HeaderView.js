@@ -61,8 +61,10 @@ define([
 		},
 
 		navMainHandler: function(e) {
-			$("ul.navbar-nav li").removeClass('active');
-			$(e.currentTarget).addClass('active');
+			if(!$(e.currentTarget).hasClass('dropdown')) {
+				$("ul.navbar-nav li").removeClass('active');
+				$(e.currentTarget).addClass('active');
+			}
 			$("ul.navbar-nav li a").blur();
 		},
 

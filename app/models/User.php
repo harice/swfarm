@@ -5,9 +5,11 @@ use Illuminate\Auth\Reminders\RemindableInterface;
 
 class User extends Eloquent implements UserInterface, RemindableInterface {
 
-  protected $softDelete = true;
+  	protected $softDelete = true;
 
-  	
+  	protected $touches = array('roles','userRoles');
+
+  	protected $observables = array('userRoles');
   
 	/**
 	 * The database table used by the model.
@@ -23,9 +25,9 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 */
 	protected $hidden = array('password');
 
-	// public function userRoles(){
- //  		return $this->belongsTo('UserRoles');
- //  	}
+	public function userRoles(){
+  		return $this->hasMany('UserRoles','user','id');
+  	}
 
   	public function roles(){
   		return $this->belongsToMany('Roles', 'userroles', 'user', 'role');

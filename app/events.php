@@ -1,5 +1,12 @@
 <?php
 
+// Event::listen('*', function($param) {
+//     var_dump(Event::firing());
+//     if(Event::firing() == 'sync.roles') {
+//       var_dump(Auth::user()->firstname);
+//     }
+// });
+
 foreach(Config::get('constants.AUDIT') as $class) {
     $class::created(function($_data){
         
@@ -68,7 +75,3 @@ foreach(Config::get('constants.AUDIT') as $class) {
     });
   
 }
-
-// Event::listen('eloquent.saving: Pivot', function($pivot){
-//   var_dump($pivot); return false;
-// });

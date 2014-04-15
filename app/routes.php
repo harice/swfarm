@@ -76,6 +76,6 @@ Route::group(array('prefix' => 'apiv1'), function()
 
 
 Route::get('/', function(){
-	return View::make('main');
+	return View::make('main')->withVersion(Config::get('Constants.VERSION',"1.0"));
 });
 

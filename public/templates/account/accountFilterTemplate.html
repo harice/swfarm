@@ -1,6 +1,13 @@
-<% _.each(filters, function(filter){ %>
-<label class="radio-inline">
-	<input class="accounttypeFilter" type="radio" name="accounttypeFilter" value="<%= filter.id %>"> <%= filter.name %>
-</label>
-<% }); %>
+<ul class="dropdown-menu pull-right filters" role="menu">
+	<li class="dropdown-header">Filter By Type</li>
+	<li>
+		<input class="accounttypeFilter" type="radio" name="accounttypeFilter" value="" checked> All
+	</li>
 
+	<% _.each(filters, function(filter){ %>
+	<li>
+		<input class="accounttypeFilter" type="radio" name="accounttypeFilter" value="<%= filter.id %>"> <%= filter.name %>
+	</li>
+	<% }); %>
+
+</ul>

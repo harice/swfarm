@@ -140,12 +140,9 @@ class ProductRepository implements ProductRepositoryInterface {
 	 * @param  int  $id
 	 * @return Response
 	 */
-    public function store($data){
-        $rules = array(
-            'name' => 'required|between:2,50|unique:products'
-        );
-
-        $this->validate($data, $rules);
+    public function store($data)
+    {
+        $this->validate($data);
         
         try {
             $product = new Product;
@@ -170,15 +167,12 @@ class ProductRepository implements ProductRepositoryInterface {
 	 * @param  int  $id
 	 * @return Response
 	 */
-    public function update($id, $data){
-        $rules = array(
-            'name' => 'required|unique:products,name,'.$id,
-        );
-
+    public function update($id, $data)
+    {
         $product = Product::find($id); //get the product row
 
         if($product) {
-            $this->validate($data, $rules);
+            $this->validate($data);
 
             $product->name = $data['name'];
             $product->description = isset($data['description']) ? $data['description'] : null;
@@ -235,12 +229,15 @@ class ProductRepository implements ProductRepositoryInterface {
 	 * @param  int  $id
 	 * @return Response
 	 */
-    public function validate($data, $rules){
-        $validator = Validator::make($data, $rules);
-
+    public function validate($data)
+    {
+        $validator = Validator::make($data, Product::$rules);
+        
         if($validator->fails()) { 
             throw new ValidationException($validator); 
         }
+        
+        return true;
     }
 
     /**
