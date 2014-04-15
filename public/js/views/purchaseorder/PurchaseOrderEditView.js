@@ -1,5 +1,6 @@
 define([
 	'backbone',
+	'views/base/AppView',
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
@@ -12,6 +13,7 @@ define([
 	'constant',
 ], function(
 			Backbone,
+			AppView,
 			Validate,
 			TextFormatter,
 			PhoneNumber,
@@ -24,7 +26,7 @@ define([
 			Const
 ){
 
-	var PurchaseOrderAddView = Backbone.View.extend({
+	var PurchaseOrderAddView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		addScheduleView: null,
 		initialize: function(option) {

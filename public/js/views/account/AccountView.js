@@ -1,14 +1,15 @@
 define([
 	'backbone',
+	'views/base/AppView',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/account/accountViewTemplate.html',
 	'models/account/AccountModel',
     'views/notification/NotificationView',
 	'global',
 	'constant',
-], function(Backbone, contentTemplate, accountViewTemplate, AccountModel, NotificationView, Global, Const){
+], function(Backbone, AppView, contentTemplate, accountViewTemplate, AccountModel, NotificationView, Global, Const){
 
-	var AccountView = Backbone.View.extend({
+	var AccountView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {

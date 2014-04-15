@@ -1,5 +1,6 @@
 define([
 	'backbone',
+	'views/base/AppView',
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
@@ -13,6 +14,7 @@ define([
 	'global',
 	'constant',
 ], function(Backbone,
+			AppView,
 			Validate,
 			TextFormatter,
 			PhoneNumber,
@@ -27,7 +29,7 @@ define([
 			Const
 ){
 
-	var AccountEditView = Backbone.View.extend({
+	var AccountEditView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		options: {
@@ -92,6 +94,7 @@ define([
 			
 			this.options.addressFieldClone = this.$el.find('.address-fields-container').clone();
 			this.options.addressFieldClone.find('#add-address-field').remove();
+			this.options.addressFieldClone.find('.type option:first-child').remove();
 			
 			var addressTypeField = this.$el.find('.type');
 			addressTypeField.attr('disabled', true);
