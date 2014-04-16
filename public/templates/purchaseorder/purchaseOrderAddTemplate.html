@@ -89,51 +89,41 @@
 	</div>
 </form>	
 	
-<ul id="add-po-nav-tabs" class="nav nav-tabs">
-	<li class="active"><a class="nav-tabs-a" href="#po-product-details" data-toggle="tab">Product Details</a></li>
-	<li><a class="nav-tabs-a" href="#po-schedule" data-toggle="tab">Schedule</a></li>
-</ul>
-<div id="add-po-tab-content" class="tab-content">
-	<div class="tab-pane active" id="po-product-details">
-		<form id="POProductForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-			<fieldset>
-				<legend>
-					Products
-				</legend>
-				<div class="table-responsive">
-					<table id="bid-product-list" class="table table-bordered">
-						<thead>
-							<tr>
-								<th>Product</th>
-								<th>Description</th>
-								<th>Stack No.</th>
-								<th>Est Tons</th>
-								<th>Bales</th>
-								<th>Unit Price</th>
-								<th>Amount</th>
-							</tr>
-						</thead>
-						<tbody></tbody>
-						<tfoot>
-							<tr>
-								<td colspan="6" class="text-align-right">Total</td>
-								<td class="text-align-right"><span>$ </span><span class="amounttotal">0.00</span></td>
-							</tr>
-						</tfoot>
-					</table>
-				</div>
-			</fieldset>
-			<div class="form-group form-button-container">
-				<div class="pull-right">
-					<button id="save" type="submit" class="save btn btn-default">Save</button>
-				</div>
+<div>
+	<form id="POProductForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+		<fieldset>
+			<legend>
+				Products
+			</legend>
+			<div class="table-responsive">
+				<table id="bid-product-list" class="table table-bordered">
+					<thead>
+						<tr>
+							<th style="width:12%">Product</th>
+							<th style="width:34%">Description</th>
+							<th style="width:7%">Stack No.</th>
+							<th style="width:7%">Est Tons</th>
+							<th style="width:7%">Bales</th>
+							<th style="width:15%">Unit Price</th>
+							<th style="width:10%">Amount</th>
+							<th style="width:8%">Hold for Testing</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+					<tfoot>
+						<tr>
+							<td colspan="6" class="text-align-right">Total</td>
+							<td class="text-align-right"><span>$ </span><span class="amounttotal">0.00</span></td>
+							<td></td>
+						</tr>
+					</tfoot>
+				</table>
 			</div>
-		</form>
-	</div>
-	<div class="tab-pane" id="po-schedule">
-		
-	</div>
+		</fieldset>
+		<div class="form-group form-button-container">
+			<div class="pull-right">
+				<button id="save" type="submit" class="save btn btn-default">Save</button>
+			</div>
+		</div>
+	</form>
 </div>
-	
-	
-	

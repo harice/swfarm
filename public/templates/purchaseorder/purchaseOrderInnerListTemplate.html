@@ -24,8 +24,9 @@
 		<td class="text-align-right"><span>$ </span><%= parseFloat(po.get("totalPrice")).toFixed(2) %></td>
 		<td>
 			<% if (po.get("po_status").toLowerCase() == "open") { %>
-				<a href="<%= po_edit_url %>/<%= po.get("id") %>">edit</a>
-				<a class="cancel-po" href="#" data-id="<%= po.get("id") %>">cancel po</a>
+				<a href="<%= po_edit_url %>/<%= po.get("id") %>">edit</a> 
+				<a class="cancel-po" href="#" data-id="<%= po.get("id") %>">cancel po</a> 
+				<a href="<%= po_sched_url %>/<%= po.get("id") %>">pick up schedule</a>
 			<% } %>
 		</td>
 	</tr>

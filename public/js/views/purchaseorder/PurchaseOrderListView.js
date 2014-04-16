@@ -65,6 +65,7 @@ define([
 			var data = {
 				po_url: '#/'+Const.URL.PO,
 				po_edit_url: '#/'+Const.URL.PO+'/'+Const.CRUD.EDIT,
+				po_sched_url: '#/'+Const.URL.PICKUPSCHEDULE,
 				pos: this.collection.models,
 				_: _ 
 			};

@@ -4,7 +4,7 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
-	'views/purchaseorder/AddScheduleView',
+	//'views/purchaseorder/AddScheduleView',
 	'models/purchaseorder/POModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddTemplate.html',
@@ -17,7 +17,7 @@ define([
 			Validate,
 			TextFormatter,
 			PhoneNumber,
-			AddScheduleView,
+			//AddScheduleView,
 			POModel,
 			contentTemplate,
 			purchaseOrderAddTemplate,
@@ -124,10 +124,11 @@ define([
 			
 			this.initPickUpPeriodCalendar();
 			
+			/*
 			if(this.addScheduleView != null)
 				this.addScheduleView.close();
 			this.addScheduleView = new AddScheduleView({id:this.model.get('id')});
-			this.addScheduleView.render();
+			this.addScheduleView.render();*/
 		},
 		
 		supplyPOData: function () {
@@ -166,6 +167,9 @@ define([
 					bidProductFields.find('.unitprice').val(parseFloat(bidProduct.unitprice).toFixed(2));
 					thisObj.computeAmount(bidProduct.unitprice, bidProduct.tons, bidProductFields.find('.po-product-amount'));
 				}
+				
+				if(parseInt(bidProduct.ishold) == 1)
+					bidProductFields.find('.ishold').val(bidProduct.ishold).attr('disabled', false);
 			});
 			
 			this.$el.find('.notes').val(this.model.get('notes'));
