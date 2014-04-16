@@ -26,9 +26,6 @@ class BidTableSeeder extends Seeder {
                 'user_id' => '1',
                 'status' => 'Closed',
                 'notes' => 'Notes: Lorem ipsum set amet.',
-                'ponumber' => 'P20140409-0001',
-                'po_date' => $date,
-                'po_status' => 'Open',
                 'created_at' => $date,
                 'updated_at' => $date
             )

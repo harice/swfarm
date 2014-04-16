@@ -1,17 +1,17 @@
 <?php
 
-class PickupScheduleTableSeeder extends Seeder {
+class TransportScheduleTableSeeder extends Seeder {
 
 	public function run()
 	{
         $now = new DateTime('NOW');
         $date = $now->format('Y-m-d H:i:s');
         
-		$pickupschedules = array(
+		$transportschedules = array(
 			array(
                 'id' => '1',
                 'bid_id' => '1',
-                'pickupdate' => $date,
+                'date' => $date,
                 'trucker_id' => '1',
                 'distance' => '10.00',
                 'fuelcharge' => '10.00',
@@ -25,7 +25,7 @@ class PickupScheduleTableSeeder extends Seeder {
             )
 		);
 
-		DB::table('pickupschedule')->insert($pickupschedules);
+		DB::table('transportschedule')->insert($transportschedules);
 	}
 
 }

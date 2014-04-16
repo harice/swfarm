@@ -1,27 +1,28 @@
 <?php
  
-class PickupScheduleRepository implements PickupScheduleRepositoryInterface {
+class TransportScheduleRepository implements TransportScheduleRepositoryInterface {
 
-  public function findById($id){
-    $pickupSchedule = PickupSchedule::with('trucker')
+  public function getSchedule($id, $scheduleType = 1){ //default sked is pickup
+    $transportSchedule = TransportSchedule::with('trucker')
                       ->with('originLoader')
                       ->with('destinationLoader')
-                      ->find($id);
-    if($pickupSchedule){
-      $pickupSchedule = $pickupSchedule->toArray();
-      $pickupSchedule['scheduledate'] = date('Y-m-d', strtotime($pickupSchedule['pickupdate']));
-      $pickupSchedule['scheduletimeHour'] = date('h', strtotime($pickupSchedule['pickupdate']));
-      $pickupSchedule['scheduletimeMin'] = date('i', strtotime($pickupSchedule['pickupdate']));
-      $pickupSchedule['scheduletimeAmPm'] = date('A', strtotime($pickupSchedule['pickupdate']));
+                      ->where('id', '=', $id)
+                      ->where('type', '=', $scheduleType)->first();
+    if($transportSchedule){
+      $transportSchedule = $transportSchedule->toArray();
+      $transportSchedule['scheduledate'] = date('Y-m-d', strtotime($transportSchedule['date']));
+      $transportSchedule['scheduletimeHour'] = date('h', strtotime($transportSchedule['date']));
+      $transportSchedule['scheduletimeMin'] = date('i', strtotime($transportSchedule['date']));
+      $transportSchedule['scheduletimeAmPm'] = date('A', strtotime($transportSchedule['date']));
 
       return Response::json(
-          $pickupSchedule,
+          $transportSchedule,
           200
         );
     } else {
       return Response::json(array(
         'error' => true,
-        'message' => "Pickup date not found."),
+        'message' => "Schedule not found."),
         200
     );
     }
@@ -30,35 +31,37 @@ class PickupScheduleRepository implements PickupScheduleRepositoryInterface {
   public function paginate($params){
     $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST'); //default to 10 items, see app/config/constants
     $page = isset($params['page']) ? $params['page'] : '1'; //default to page 1
-    $sortby = isset($params['sortby']) ? $params['sortby'] : 'pickupdate'; //default sort to pickupdate
+    $sortby = isset($params['sortby']) ? $params['sortby'] : 'date'; //default sort to date
+    $type = isset($params['type']) ? $params['type'] : 1; //default schedule type to pull is pickup
     $orderby = isset($params['orderby']) ? $params['orderby'] : 'DESC'; //default order is Ascending
     $offset = $page*$perPage-$perPage;
     $bidId = $params['bidId'];
     //pulling of data
-    $count = PickupSchedule::where('bid_id', '=', $bidId)->count();
-    $pickupSchedules = PickupSchedule::with('trucker')
+    $count = TransportSchedule::where('bid_id', '=', $bidId)->where('type', '=', $type)->count();
+    $transportSchedules = TransportSchedule::with('trucker')
                     ->with('originLoader')
                     ->with('destinationLoader')
                     ->with('trucker.accounttype')
                     ->where('bid_id', '=', $bidId)
+                    ->where('type', '=', $type)
                     ->take($perPage)
                     ->offset($offset)
                     ->orderBy($sortby, $orderby)
                     ->get();
-    foreach($pickupSchedules as $item){
-      $item['scheduledate'] = date('Y-m-d', strtotime($item['pickupdate']));
-      $item['scheduletimeHour'] = date('h', strtotime($item['pickupdate']));
-      $item['scheduletimeMin'] = date('i', strtotime($item['pickupdate']));
-      $item['scheduletimeAmPm'] = date('A', strtotime($item['pickupdate']));
+    foreach($transportSchedules as $item){
+      $item['scheduledate'] = date('Y-m-d', strtotime($item['date']));
+      $item['scheduletimeHour'] = date('h', strtotime($item['date']));
+      $item['scheduletimeMin'] = date('i', strtotime($item['date']));
+      $item['scheduletimeAmPm'] = date('A', strtotime($item['date']));
     }
     return Response::json(array(
       'total'=>$count,
-      'data'=>$pickupSchedules->toArray()
+      'data'=>$transportSchedules->toArray()
     ));
 
   }
 
-  public function addOrUpdatePickupSchedule($data, $pickupScheduleId = null){
+  public function addOrUpdateTransportSchedule($data, $transportScheduleId = null){
     $rules = array(
       'bid_id' => 'required',
       'scheduledate' => 'required|date',
@@ -75,26 +78,29 @@ class PickupScheduleRepository implements PickupScheduleRepositoryInterface {
     );
 
     $this->validate($data, $rules);
-    if($pickupScheduleId == null)
-      $pickupschedule = new PickupSchedule;
+    if($transportScheduleId == null)
+      $transportschedule = new TransportSchedule;
     else
-      $pickupschedule = PickupSchedule::find($pickupScheduleId);
+      $transportschedule = TransportSchedule::find($transportScheduleId);
     //convert pass date parameters to timestamp
     $data['scheduletimeMin'] = str_pad($data['scheduletimeMin'], 2, '0', STR_PAD_LEFT); //adding leading zero
-    $pickupdate = Date('Y-m-d H:i:s', strtotime($data['scheduledate'].' '.$data['scheduletimeHour'].':'.$data['scheduletimeMin'].' '.$data['scheduletimeAmPm']));
-    $pickupschedule->bid_id = $data['bid_id'];
-    $pickupschedule->pickupdate = $pickupdate;
-    $pickupschedule->trucker_id = $data['trucker'];
-    $pickupschedule->distance = $data['distance'];
-    $pickupschedule->fuelcharge = $data['fuelcharge'];
-    $pickupschedule->originloader_id = $data['originLoader'];
-    $pickupschedule->originloadersfee = $data['originLoaderFee'];
-    $pickupschedule->destinationloader_id = $data['destinationLoader'];
-    $pickupschedule->destinationloadersfee = $data['destinationLoaderFee'];
-    $pickupschedule->truckingrate = $data['truckingrate'];
+    $transportdate = Date('Y-m-d H:i:s', strtotime($data['scheduledate'].' '.$data['scheduletimeHour'].':'.$data['scheduletimeMin'].' '.$data['scheduletimeAmPm']));
+    $transportschedule->bid_id = $data['bid_id'];
+    $transportschedule->date = $transportdate;
+    $transportschedule->trucker_id = $data['trucker'];
+    $transportschedule->distance = $data['distance'];
+    $transportschedule->fuelcharge = $data['fuelcharge'];
+    $transportschedule->originloader_id = $data['originLoader'];
+    $transportschedule->originloadersfee = $data['originLoaderFee'];
+    $transportschedule->destinationloader_id = $data['destinationLoader'];
+    $transportschedule->destinationloadersfee = $data['destinationLoaderFee'];
+    $transportschedule->truckingrate = isset($data['truckingrate']) ? $data['truckingrate'] : Config::get('constants.GLOBAL_PER_LIST');
+
+    if($transportScheduleId == null) //set only type when creating new schedule
+      $transportschedule->type = isset($data['type']) ? $data['type'] : 1;
    
     try{
-      $pickupschedule->save();
+      $transportschedule->save();
     } catch(Exception $e){
       return Response::json(array(
         'error' => true,
@@ -103,10 +109,10 @@ class PickupScheduleRepository implements PickupScheduleRepositoryInterface {
       );
     }
 
-    if($pickupScheduleId == null){
-      $message = 'Pickup Schedule successfully created.';
+    if($transportScheduleId == null){
+      $message = 'Schedule successfully created.';
     } else {
-      $message = 'Pickup Schedule successfully updated.';
+      $message = 'Schedule successfully updated.';
     }
 
     return Response::json(array(
@@ -117,21 +123,21 @@ class PickupScheduleRepository implements PickupScheduleRepositoryInterface {
   }
 
 
-  public function deletePickupSchedule($id){
-    $pickupschedule = PickupSchedule::find($id);
+  public function deleteTransportSchedule($id){
+    $transportschedule = TransportSchedule::find($id);
 
-    if($pickupschedule){
-      $pickupschedule->delete();
+    if($transportschedule){
+      $transportschedule->delete();
 
       $response = Response::json(array(
           'error' => false,
-          'message' => 'Pickup schedule successfully deleted.'),
+          'message' => 'Schedule successfully deleted.'),
           200
       );
     } else {
       $response = Response::json(array(
           'error' => true,
-          'message' => "Pickup schedule not found"),
+          'message' => "Schedule not found"),
           200
       );
     }
@@ -150,7 +156,7 @@ class PickupScheduleRepository implements PickupScheduleRepositoryInterface {
 
   public function instance($data = array())
   {
-    return new PickupSchedule($data);
+    return new TransportSchedule($data);
   }
 
   public function getTruckerAccount($search){

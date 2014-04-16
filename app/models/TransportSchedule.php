@@ -1,6 +1,6 @@
 <?php
 
-class PickupSchedule extends Eloquent {
+class TransportSchedule extends Eloquent {
     protected $fillable = [];
 
     /**
@@ -8,7 +8,7 @@ class PickupSchedule extends Eloquent {
      *
      * @var string
      */
-    protected $table = 'pickupschedule';
+    protected $table = 'transportschedule';
 
     public function bid(){
         return $this->belongsTo('bid');

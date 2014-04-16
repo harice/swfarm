@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder {
         $this->call('BidTableSeeder');
         $this->call('BidProductTableSeeder');
         $this->call('PurchaseOrderTableSeeder');
-        $this->call('PickupScheduleTableSeeder');
+        $this->call('TransportScheduleTableSeeder');
         $this->call('WeightTicketTableSeeder');
 
 	}
