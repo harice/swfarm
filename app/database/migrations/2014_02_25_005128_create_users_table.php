@@ -26,6 +26,7 @@ class CreateUsersTable extends Migration {
 			$table->string('position',50)->nullable();
 			$table->string('profileimg',50)->nullable();
 			$table->string('confirmcode');
+			$table->string('remember_token')->nullable();
 			$table->boolean('validated')->default(false)->index();
 			$table->boolean('status')->default(true)->index();
 			$table->boolean('deleted')->default(false)->index();
