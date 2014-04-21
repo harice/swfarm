@@ -11,7 +11,7 @@ class WeightTicket extends BaseModel {
 
 	public static $rules = array(
         'purchaseorder_id' => 'required',
-        'pickupschedule_id' => 'required',
+        'transportschedule_id' => 'required',
         'bidproduct_id' => 'required'
     );
     
@@ -24,8 +24,8 @@ class WeightTicket extends BaseModel {
         return $this->hasMany('WeightInfo');
     }
 
-    public function pickupschedule(){
-        return $this->belongsTo('pickupschedule', 'id', 'pickupschedule_id');
+    public function transportschedule(){
+        return $this->belongsTo('transportschedule', 'id', 'transportschedule_id');
     }
 
     public function originScalerAccount(){

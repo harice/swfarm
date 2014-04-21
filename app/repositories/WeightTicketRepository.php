@@ -39,7 +39,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             
             $weightticket->wtn = $this->generateWeightTicketNumber();
             $weightticket->purchaseorder_id = $data['purchaseorder_id'];
-            $weightticket->pickupschedule_id = $data['pickupschedule_id'];
+            $weightticket->transportschedule_id = $data['transportschedule_id'];
             $weightticket->bidproduct_id = $data['bidproduct_id'];
             
             $weightticket->origin_bales = $data['origin_bales'];
@@ -75,7 +75,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             $weightticket = WeightTicket::find($id);
             
             $weightticket->purchaseorder_id = $data['purchaseorder_id'];
-            $weightticket->pickupschedule_id = $data['pickupschedule_id'];
+            $weightticket->transportschedule_id = $data['transportschedule_id'];
             $weightticket->bidproduct_id = $data['bidproduct_id'];
             
             $weightticket->origin_bales = $data['origin_bales'];
@@ -143,7 +143,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
       public function getWeightTicketOfSchedule($schedId){
         $weightTicket = WeightTicket::with('originScalerAccount', 'destinationScalerAccount') 
-                        ->where('pickupschedule_id', '=', $schedId)
+                        ->where('transportschedule_id', '=', $schedId)
                         ->first(array('weightticket.*', 'origin_account_id', 'destination_account_id'));
 
         return $weightTicket;

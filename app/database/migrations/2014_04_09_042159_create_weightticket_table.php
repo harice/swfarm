@@ -18,7 +18,7 @@ class CreateWeightticketTable extends Migration {
 			$table->increments('id');
             $table->string('wtn', 20)->unique();
             $table->integer('purchaseorder_id')->unsigned();
-            $table->integer('pickupschedule_id')->unsigned();
+            $table->integer('transportschedule_id')->unsigned();
             $table->integer('bidproduct_id')->unsigned();
             
             $table->string('origin_weightinfo_type', 60)->default('Origin');
@@ -40,7 +40,7 @@ class CreateWeightticketTable extends Migration {
 			$table->timestamps();
             
             $table->foreign('purchaseorder_id')->references('id')->on('bid');
-            $table->foreign('pickupschedule_id')->references('id')->on('pickupschedule');
+            $table->foreign('transportschedule_id')->references('id')->on('transportschedule')->onDelete('cascade');
             $table->foreign('bidproduct_id')->references('id')->on('bidproduct');
             $table->foreign('origin_account_id')->references('id')->on('account');
             $table->foreign('destination_account_id')->references('id')->on('account');
