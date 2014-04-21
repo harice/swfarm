@@ -17,6 +17,7 @@ define(function () {
 			'PO': 'purchases/po',
 			'PICKUPSCHEDULE': 'purchases/pickupschedule',
             'WEIGHTINFO': 'purchases/weightinfo',
+			'SO': 'sales/so',
 		},
 		'MENU': {
 			'PURCHASE': {

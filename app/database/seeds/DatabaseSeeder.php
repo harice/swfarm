@@ -29,16 +29,16 @@ class DatabaseSeeder extends Seeder {
         $this->call('AccountTableSeeder');
         $this->call('ContactTableSeeder');
         $this->call('AddressTableSeeder');
-        $this->call('BidTableSeeder');
-        $this->call('BidProductTableSeeder');
-        $this->call('PurchaseOrderTableSeeder');
-        $this->call('TransportScheduleTableSeeder');
-        $this->call('WeightTicketTableSeeder');
+        //$this->call('BidTableSeeder');
+        //$this->call('BidProductTableSeeder');
+        //$this->call('PurchaseOrderTableSeeder');
+        //$this->call('TransportScheduleTableSeeder');
+        //$this->call('WeightTicketTableSeeder');
         
-        $this->call('OriginTableSeeder');
-        $this->call('NatureOfSaleTableSeeder');
+        //$this->call('OriginTableSeeder');
+        //$this->call('NatureOfSaleTableSeeder');
         
-        $this->call('SalesOrderTableSeeder');
+        //$this->call('SalesOrderTableSeeder');
 
 	}
 

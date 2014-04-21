@@ -29,7 +29,7 @@ define([
 				'purchase_order_url': '#/'+Const.URL.PO,
                 'weightinfo_url': '#/'+Const.URL.WEIGHTINFO,
 				
-				'sales_url'		: '#/',
+				'sales_url'		: '#/'+Const.URL.SO,
 				'inventory_url'	: '#/',
 				'product_url'	: '#/'+Const.URL.PRODUCT,
 				'reports_url'	: '#/',

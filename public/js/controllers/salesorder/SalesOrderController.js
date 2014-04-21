@@ -1,13 +1,13 @@
 define([
 	'backbone',
-	'views/bid/BidListView',
-	'views/bid/BidAddView',
+	'views/salesorder/SalesOrderListView',
+	'views/salesorder/SalesOrderAddView',
 	'views/bid/BidEditView',
 	'views/bid/BidView',
 	'constant',
-], function(Backbone, BidListView, BidAddView, BidEditView, BidView, Const){
+], function(Backbone, SalesOrderListView, SalesOrderAddView, BidEditView, BidView, Const){
 	
-	function BidController () {	
+	function SalesOrderController () {	
 		
 		this.setAction = function (action, id) {
 			
@@ -29,7 +29,7 @@ define([
 		};
 		
 		this.add = function () {
-			return new BidAddView();
+			return new SalesOrderAddView();
 		};
 		
 		this.edit = function (id) {
@@ -37,7 +37,7 @@ define([
 		};
 		
 		this.listView = function () {
-			return new BidListView();
+			return new SalesOrderListView();
 		};
 		
 		this.view = function (id) {
@@ -50,5 +50,5 @@ define([
 		};
 	};
 
-	return BidController;
+	return SalesOrderController;
 });
