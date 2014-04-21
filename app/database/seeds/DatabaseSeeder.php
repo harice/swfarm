@@ -35,11 +35,7 @@ class DatabaseSeeder extends Seeder {
         //$this->call('TransportScheduleTableSeeder');
         //$this->call('WeightTicketTableSeeder');
         
-        //$this->call('OriginTableSeeder');
-        //$this->call('NatureOfSaleTableSeeder');
-        
-        //$this->call('SalesOrderTableSeeder');
-
+        $this->call('OriginTableSeeder');
+        $this->call('NatureOfSaleTableSeeder');
 	}
-
 }

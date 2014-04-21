@@ -69,5 +69,15 @@ class SalesOrderController extends BaseController {
 	{
 		$this->repo->destroy($id);
 	}
+    
+    public function getOrigin()
+    {
+        return $this->repo->getOrigin();
+    }
+    
+    public function getNatureOfSale()
+    {
+        return $this->repo->getNatureOfSale();
+    }
 
 }

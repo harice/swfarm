@@ -35,6 +35,8 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
   	Route::get('account/getCitiesByState/{id}', 'APIv1\AccountController@getCitiesByState');
   	Route::get('account/getAccountsByName', 'APIv1\AccountController@getAccountsByName');
   	Route::get('account/getZipcodeUsingCity/{id}', 'APIv1\AccountController@getZipcodeUsingCity');
+    Route::get('account/getAddress', 'APIv1\AccountController@getAddress');
+	Route::get('account/getCustomerAccount', 'APIv1\AccountController@getCustomerAccount');
 	Route::resource('account', 'APIv1\AccountController');
 
 	Route::get('contact/search', 'APIv1\ContactController@search');
@@ -65,6 +67,8 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('transportschedule/getTruckerAccount', 'APIv1\TransportScheduleController@getTruckerAccount');
     Route::resource('transportschedule', 'APIv1\TransportScheduleController');
     
+    Route::get('salesorder/getOrigin', 'APIv1\SalesOrderController@getOrigin');
+    Route::get('salesorder/getNatureOfSale', 'APIv1\SalesOrderController@getNatureOfSale');
     Route::resource('salesorder', 'APIv1\SalesOrderController');
     
 });
