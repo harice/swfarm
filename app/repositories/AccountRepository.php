@@ -353,7 +353,10 @@ class AccountRepository implements AccountRepositoryInterface {
   }
   
   public function getCustomerAccount($search){
-    $producers = Account::where('accounttype', '=', 1)
+    $producers = Account::with('address')
+	              ->with('address.addressCity')
+                  ->with('address.addressStates')
+				  ->where('accounttype', '=', 1)
                   ->where('name','like', '%'.$search.'%')
                   ->orderBy('name', 'asc')
                   ->get();

@@ -5,70 +5,85 @@
 	<fieldset>
 		<legend>Details</legend>
 		<div class="row">
-			<div class="col-md-8">
+			<div class="col-md-6">
 				<% if (typeof so_id !== "undefined") { %>
 					<div class="form-group">
-						<label for="sonumber" class="col-sm-2 control-label">so Number</label>
+						<label for="sonumber" class="col-sm-3 control-label">so Number</label>
 						<div class="col-sm-10">
 							<input id="sonumber" type="text" class="form-control sonumber" placeholder="" maxlength="250" readonly>
 						</div>
 					</div>
 				<% } %>
 				<div class="form-group">
-					<label for="origin" class="col-sm-2 control-label">Origin</label>
-					<div id="so-origin" class="col-sm-10"></div>
+					<label for="origin" class="col-sm-3 control-label">Origin</label>
+					<div id="so-origin" class="col-sm-9"></div>
 				</div>
 				<div class="form-group">
-					<label for="nos" class="col-sm-2 control-label">Nature of Sales</label>
-					<div id="so-nos" class="col-sm-10"></div>
+					<label for="nos" class="col-sm-3 control-label">Nature of Sales</label>
+					<div id="so-nos" class="col-sm-9"></div>
 				</div>
 				<div class="form-group">
-					<label for="customer" class="col-sm-2 control-label">Customer *</label>
-					<div class="col-sm-10">
+					<label for="customer" class="col-sm-3 control-label">Customer *</label>
+					<div class="col-sm-9">
 						<input type="text" class="form-control capitalize" id="customer" name="customername" maxlength="50" required>
-						<input type="hidden" class="form-control" id="customer-id" name="customer" value="" required>
+						<input type="hidden" class="form-control" id="customer-id" name="customer_id" value="" required>
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="street" class="col-sm-2 control-label">Street</label>
-					<div class="col-sm-10">
+					<label for="street" class="col-sm-3 control-label">Street</label>
+					<div class="col-sm-9">
 						<input id="street" type="text" class="form-control street" placeholder="" maxlength="250" readonly>
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="state" class="col-sm-2 control-label">State/Province</label>
-					<div class="col-sm-10">
+					<label for="state" class="col-sm-3 control-label">State/Province</label>
+					<div class="col-sm-9">
 						<input id="state" type="text" class="form-control state" placeholder="" maxlength="250" readonly>
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="city" class="col-sm-2 control-label">City</label>
-					<div class="col-sm-10">
+					<label for="city" class="col-sm-3 control-label">City</label>
+					<div class="col-sm-9">
 						<input id="city" type="text" class="form-control city" placeholder="" maxlength="250" readonly>
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="zipcode" class="col-sm-2 control-label">Zip/Postal Code</label>
-					<div class="col-sm-10">
+					<label for="zipcode" class="col-sm-3 control-label">Zip/Postal Code</label>
+					<div class="col-sm-9">
 						<input id="zipcode" type="number" class="form-control zipcode" placeholder="" maxlength="250" readonly>
 					</div>
 				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group"><label for="date" class="col-sm-3 control-label">Delivery Period:</label></div>
 				<div class="form-group">
-					<label for="notes" class="col-sm-2 control-label">Notes</label>
-					<div id="so-origin" class="col-sm-10">
+					<label for="date" class="col-sm-3 control-label">Start</label>
+					<div class="col-sm-4">
+						<div id="start-date" class="calendar-cont">
+							<div class="input-group date">
+								<input type="text" class="form-control form-date" name="delivery_date_start" value="" required>
+								<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+							</div>
+						</div>
+						<div class="error-msg-cont"></div>
+					</div>
+					<label for="date" class="col-sm-1 control-label">End</label>
+					<div class="col-sm-4">
+						<div id="end-date" class="calendar-cont">
+							<div class="input-group date">
+								<input type="text" class="form-control form-date" name="delivery_date_end" value="" required>
+								<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+							</div>
+						</div>
+						<div class="error-msg-cont"></div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="notes" class="col-sm-3 control-label">Notes</label>
+					<div id="bid-destination" class="col-sm-9">
 						<textarea class="form-control notes" id="notes" name="notes"></textarea>
 					</div>
 				</div>
-			</div>
-			<div class="col-md-4">
-				<% if (typeof so_id !== "undefined") { %>
-				<div class="form-group">
-					<label for="date" class="col-sm-2 control-label">Date</label>
-					<div class="col-sm-10">
-						<input type="text" class="form-control date" placeholder="" maxlength="250" value="" readonly>
-					</div>
-				</div>
-				<% } %>
 			</div>
 		</div>
 	</fieldset>

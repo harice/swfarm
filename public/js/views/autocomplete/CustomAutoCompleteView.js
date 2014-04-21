@@ -88,6 +88,7 @@ define([
 					else {
 						labelField.val('');
 						idField.val('');
+						thisObj.typeInEmptyCallback();
 					}
 					
 					labelField.siblings('.autocomplete').hide();
@@ -126,7 +127,7 @@ define([
 		},
 		
 		typeInCallback: function () {},
-		
+		typeInEmptyCallback: function () {},
         // callback definitions
         onSelect: function () {}
     });
