@@ -1,0 +1,27 @@
+<?php
+
+class ProductOrder extends Eloquent {
+    
+    /**
+	 * The database table used by the model.
+	 *
+	 * @var string
+	 */
+    protected $table = 'productorder';
+    
+    public static $rules = array(
+        'salesorder_id' => 'required',
+        'product_id' => 'required',
+        'description' => 'max:250',
+        'stacknumber' => 'required',
+        'tons' => 'required',
+        'bales' => 'required',
+        'unitprice' => 'required'
+    );
+    
+    public function salesOrder()
+    {
+        return $this->belongsTo('SalesOrder', 'salesorder_id');
+    }
+
+}

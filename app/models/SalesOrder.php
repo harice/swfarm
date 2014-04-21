@@ -43,5 +43,10 @@ class SalesOrder extends BaseModel {
         'delivery_date_start' => 'required',
         'delivery_date_end' => 'required'
     );
+    
+    public function products()
+    {
+        return $this->hasMany('ProductOrder', 'salesorder_id');
+    }
 
 }

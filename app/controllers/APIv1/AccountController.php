@@ -93,12 +93,12 @@ class AccountController extends BaseController {
 		return $this->account->getZipcodeUsingCity($city);
 	}
     
-    public function getProducerAccount(){
-		return $this->account->getProducerAccount(Input::get('search'));
+    public function getCustomerAccount(){
+		return $this->account->getCustomerAccount(Input::get('search'));
 	}
 
-	public function getProducerAddress(){
-		return $this->account->getProducerAddress(Input::get('producerId'));
+	public function getAddress(){
+		return $this->account->getAddress(Input::get('accountId'));
 	}
 
 }

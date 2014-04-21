@@ -129,6 +129,7 @@ class BidRepository implements BidRepositoryInterface {
   }
 
   public function store($data){
+      Log::debug($data);
     $rules = array(
       'producer' => 'required',
       'address' => 'required',

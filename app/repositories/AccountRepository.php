@@ -352,8 +352,8 @@ class AccountRepository implements AccountRepositoryInterface {
       );
   }
   
-  public function getProducerAccount($search){
-    $producers = Account::where('accounttype', '=', 5)
+  public function getCustomerAccount($search){
+    $producers = Account::where('accounttype', '=', 1)
                   ->where('name','like', '%'.$search.'%')
                   ->orderBy('name', 'asc')
                   ->get();
@@ -364,11 +364,11 @@ class AccountRepository implements AccountRepositoryInterface {
       );
   }
 
-  public function getProducerAddress($producerId){
+  public function getAddress($accountId){
     $addresses = Address::with('addressType')
                   ->with('addressCity')
                   ->with('addressStates')
-                  ->where('account', '=', $producerId)
+                  ->where('account', '=', $accountId)
                   ->get();
 
     return Response::json(

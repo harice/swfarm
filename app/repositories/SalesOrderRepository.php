@@ -6,7 +6,7 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
     {
         try
         {
-            return SalesOrder::all();
+            return SalesOrder::with('products')->get();
         }
         catch (Exception $e)
         {
@@ -18,7 +18,7 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
     {
         try
         {
-            $salesorder = SalesOrder::find($id);
+            $salesorder = SalesOrder::with('products')->find($id);
 
             if(!$salesorder) throw new NotFoundException('Sales Order Not Found');
             return $salesorder;
