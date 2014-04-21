@@ -111,12 +111,14 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
     
     public function getOrigin()
     {
-        return DB::table('origin')->get();
+        $data = DB::table('origin')->get();
+        return Response::json($data);
     }
     
     public function getNatureOfSale()
     {
-        return DB::table('nature_of_sale')->get();
+        $data = DB::table('nature_of_sale')->get();
+        return Response::json($data);
     }
     
 }
