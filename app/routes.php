@@ -65,6 +65,8 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('transportschedule/getTruckerAccount', 'APIv1\TransportScheduleController@getTruckerAccount');
     Route::resource('transportschedule', 'APIv1\TransportScheduleController');
     
+    Route::resource('salesorder', 'APIv1\SalesOrderController');
+    
 });
 
 /* API ROUTES without HTTP Basic */
