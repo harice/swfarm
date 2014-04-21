@@ -5,9 +5,15 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
+	'views/autocomplete/CustomAutoCompleteView',
+	'collections/account/AccountCustomerCollection',
+	'collections/salesorder/OriginCollection',
+	'collections/salesorder/NatureOfSaleCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/salesorder/salesOrderAddTemplate.html',
 	'text!templates/salesorder/salesOrderProductItemTemplate.html',
+	'text!templates/salesorder/salesOrderOriginTemplate.html',
+	'text!templates/salesorder/salesOrderNatureOfSaleTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -16,9 +22,15 @@ define([
 			Validate,
 			TextFormatter,
 			PhoneNumber,
+			CustomAutoCompleteView,
+			AccountCustomerCollection,
+			OriginCollection,
+			NatureOfSaleCollection,
 			contentTemplate,
 			salesOrderAddTemplate,
 			productItemTemplate,
+			salesOrderOriginTemplate,
+			salesOrderNatureOfSaleTemplate,
 			Global,
 			Const
 ){
@@ -27,15 +39,34 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		options: {
-			ProductFieldClone: null,
+			productFieldClone: null,
+			customerAutoCompleteView: null,
 		},
 		
 		initialize: function() {
+			var thisObj = this;
+		
+			this.originCollection = new OriginCollection();
+			this.originCollection.on('sync', function() {	
+				thisObj.natureOfSaleCollection.getModels();
+				this.off('sync');
+			});
+			this.originCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 			
+			this.natureOfSaleCollection = new NatureOfSaleCollection();
+			this.natureOfSaleCollection.on('sync', function() {
+				thisObj.displayForm();
+				this.off('sync');
+			});
+			this.natureOfSaleCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 		},
 		
 		render: function(){
-			this.displayForm();
+			this.originCollection.getModels();
 		},
 		
 		displayForm: function () {
@@ -55,21 +86,50 @@ define([
 			this.$el.html(compiledTemplate);
 			
 			this.addProduct();
+			this.generateOrigin();
+			this.generateNatureOfSale();
+			this.initCustomerAutocomplete();
+		},
+		
+		generateOrigin: function () {
+			var originTemplate = _.template(salesOrderOriginTemplate, {'origins': this.originCollection.models});
+			this.$el.find('#so-origin').html(originTemplate);
+			this.$el.find('#so-origin .radio-inline:first-child input[type="radio"]').attr('checked', true);
+		},
+		
+		generateNatureOfSale: function () {
+			var NOSTemplate = _.template(salesOrderNatureOfSaleTemplate, {'natureOfSales': this.natureOfSaleCollection.models});
+			this.$el.find('#so-nos').html(NOSTemplate);
+			this.$el.find('#so-nos .radio-inline:first-child input[type="radio"]').attr('checked', true);
+		},
+		
+		initCustomerAutocomplete: function () {
+			if(this.customerAutoCompleteView != null)
+				this.customerAutoCompleteView.deAlloc();
+			
+			var accountCustomerCollection = new AccountCustomerCollection();
+			this.customerAutoCompleteView = new CustomAutoCompleteView({
+                input: $('#customer'),
+				hidden: $('#customer-id'),
+                collection: accountCustomerCollection,
+            });
+			
+			this.customerAutoCompleteView.render();
 		},
 		
 		addProduct: function () {
 			
-			if(this.options.ProductFieldClone == null) {
+			if(this.options.productFieldClone == null) {
 				var ProductTemplate = _.template(productItemTemplate, {});
 				
 				this.$el.find('#product-list tbody').append(ProductTemplate);
 				var ProductItem = this.$el.find('#product-list tbody').find('.product-item:first-child');
-				this.options.ProductFieldClone = ProductItem.clone();
+				this.options.productFieldClone = ProductItem.clone();
 				//this.initProductAutocomplete(ProductItem);
 				//this.addIndexToProductFields(ProductItem);
 			}
 			else {
-				var clone = this.options.ProductFieldClone.clone();
+				var clone = this.options.productFieldClone.clone();
 				//this.initProductAutocomplete(clone);
 				//this.addIndexToProductFields(clone);
 				this.$el.find('#product-list tbody').append(clone);
