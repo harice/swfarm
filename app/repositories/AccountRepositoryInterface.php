@@ -14,4 +14,6 @@ interface AccountRepositoryInterface {
 	public function getFormData();
 	public function getZipcodeUsingCity($city);
 	public function getAccountsByName($name);
+    public function getProducerAccount($search);
+    public function getProducerAddress($producerId);
 }
