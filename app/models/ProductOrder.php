@@ -9,6 +9,21 @@ class ProductOrder extends Eloquent {
 	 */
     protected $table = 'productorder';
     
+    /**
+     * Define fillable attributes in a model.
+     * 
+     * @var array
+     */
+    protected $fillable = array(
+        'salesorder_id',
+        'product_id',
+        'description',
+        'stacknumber',
+        'tons',
+        'bales',
+        'unitprice'
+    );
+    
     public static $rules = array(
         'salesorder_id' => 'required',
         'product_id' => 'required',

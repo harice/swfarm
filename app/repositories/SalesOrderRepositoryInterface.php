@@ -6,5 +6,7 @@ interface SalesOrderRepositoryInterface {
     public function store($data);
     public function update($id, $data);
     public function destroy($id);
-    public function validate($data);
+    public function validate($data, $entity);
+    public function getOrigin();
+    public function getNatureOfSale();
 }
