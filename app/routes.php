@@ -36,7 +36,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
   	Route::get('account/getAccountsByName', 'APIv1\AccountController@getAccountsByName');
   	Route::get('account/getZipcodeUsingCity/{id}', 'APIv1\AccountController@getZipcodeUsingCity');
     Route::get('account/getAddress', 'APIv1\AccountController@getAddress');
-	Route::get('account/getCustomerAccount', 'APIv1\AccountController@getProducerAccount');
+	Route::get('account/getCustomerAccount', 'APIv1\AccountController@getCustomerAccount');
 	Route::resource('account', 'APIv1\AccountController');
 
 	Route::get('contact/search', 'APIv1\ContactController@search');
