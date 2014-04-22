@@ -1,27 +1,15 @@
-<% if (!_.isEmpty(pos)) { %>
-	<% _.each(pos, function(po){ %>
+<% if (!_.isEmpty(sos)) { %>
+	<% _.each(sos, function(so){ %>
 	<tr>
-		<td><a href="<%= po_url %>/<%= po.get("id") %>"><%= po.get("ponumber") %></a></td>
-		<td>
-			<% if (po.get("po_date")) { %>
-				<%= po.get("po_date").split(" ")[0] %>
-			<% } %>
-			
-		</td>
-		<td>
-			<% if (po.get("purchaseorder")) { %>
-				<%= po.get("purchaseorder").pickupstart.split(" ")[0] %>
-			<% } %>
-		</td>
-		<td>
-			<% if (po.get("purchaseorder")) { %>
-				<%= po.get("purchaseorder").pickupend.split(" ")[0] %>
-			<% } %>
-		</td>
-		<td><%= po.get("account").name %></td>
-		<td><%= po.get("po_status") %></td>
-		<td><%= po.get("destination").destination %></td>
-		<td class="text-align-right"><span>$ </span><%= parseFloat(po.get("totalPrice")).toFixed(2) %></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
 		<td>
 			<% if (po.get("po_status").toLowerCase() == "open") { %>
 				<a href="<%= po_edit_url %>/<%= po.get("id") %>">edit</a> 
@@ -33,6 +21,6 @@
 	<% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="8">No result found.</td>
+		<td colspan="10">No result found.</td>
 	</tr>
 <% } %>

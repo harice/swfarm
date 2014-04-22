@@ -1,6 +1,7 @@
 define([
 	'backbone',
 	'views/base/ListView',
+	'collections/salesorder/POScheduleCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/salesorder/salesOrderListTemplate.html',
 	'text!templates/salesorder/salesOrderInnerListTemplate.html',
@@ -19,17 +20,25 @@ define([
 		initialize: function() {
 			this.extendListEvents();
 			var thisObj = this;
+			
+			this.collection = new POScheduleCollection({id:option.id});
+			this.collection.on('sync', function() {
+				thisObj.displayList();
+			});
+			this.collection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 		},
 		
 		render: function(){
-			this.displaySO();
+			thisObj.renderList(1);
 		},
 		
 		displaySO: function () {
 			//var destinationTemplate = _.template(bidDestinationTemplate, {'destinations': this.bidDestinationCollection.models});
 			var innerTemplateVar = {
 				'so_add_url' : '#/'+Const.URL.SO+'/'+Const.CRUD.ADD,
-				'destination_filters' : '',
+				'origin_filters' : '',
 			};
 			var innerTemplate = _.template(salesOrderListTemplate, innerTemplateVar);
 			
