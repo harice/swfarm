@@ -47,5 +47,25 @@ class SalesOrder extends BaseModel {
     {
         return $this->hasMany('ProductOrder', 'salesorder_id');
     }
+    
+    public function customer()
+    {
+        return $this->belongsTo('Account', 'customer_id');
+    }
+    
+    public function address()
+    {
+        return $this->belongsTo('Address');
+    }
+    
+    public function origin()
+    {
+        return $this->belongsTo('Origin');
+    }
+    
+    public function natureOfSale()
+    {
+        return $this->belongsTo('NatureOfSale');
+    }
 
 }
