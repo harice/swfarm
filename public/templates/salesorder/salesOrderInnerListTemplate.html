@@ -1,20 +1,36 @@
 <% if (!_.isEmpty(sos)) { %>
 	<% _.each(sos, function(so){ %>
 	<tr>
+		<td><%= so.get("so_number") %></td>
+		<td><%= so.get("date_of_sale").split(" ")[0] %></td>
+		<td><%= so.get("delivery_date_start").split(" ")[0] %></td>
+		<td><%= so.get("delivery_date_end").split(" ")[0] %></td>
 		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
+		<td><%= so.get("status") %></td>
 		<td></td>
 		<td></td>
 		<td></td>
 		<td>
-			<% if (po.get("po_status").toLowerCase() == "open") { %>
-				<a href="<%= po_edit_url %>/<%= po.get("id") %>">edit</a> 
-				<a class="cancel-po" href="#" data-id="<%= po.get("id") %>">cancel po</a> 
-				<a href="<%= po_sched_url %>/<%= po.get("id") %>">pick up schedule</a>
+			<% if (so.get("status").toLowerCase() == "open") { %>
+				<a href="<%= so_edit_url %>/<%= so.get("id") %>" class="btn btn-info btn-xs" title="edit">
+				  <span class="glyphicon glyphicon-pencil"></span>
+				</a>
+				<a href="#" data-id="<%= so.get("id") %>" class="btn btn-danger btn-xs cancel-so">
+				  <span class="glyphicon glyphicon-off"></span>
+				</a>
+				<a href="<%= so_sched_url %>" class="btn btn-info btn-xs" title="schedule">
+				  <span class="glyphicon glyphicon-time"></span>
+				</a>
+			<% } else {%>
+				<a href="#" class="btn btn-info btn-xs" title="edit" disabled>
+				  <span class="glyphicon glyphicon-pencil"></span>
+				</a>
+				<a href="#" class="btn btn-danger btn-xs" disabled>
+				  <span class="glyphicon glyphicon-off"></span>
+				</a>
+				<a href="#" class="btn btn-info btn-xs" title="schedule" disabled>
+				  <span class="glyphicon glyphicon-time"></span>
+				</a>
 			<% } %>
 		</td>
 	</tr>

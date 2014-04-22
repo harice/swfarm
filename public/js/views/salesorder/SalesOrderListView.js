@@ -1,16 +1,25 @@
 define([
 	'backbone',
 	'views/base/ListView',
-	'collections/salesorder/POScheduleCollection',
+	'collections/salesorder/SalesOrderCollection',
+	'collections/salesorder/OriginCollection',
+	'collections/salesorder/NatureOfSaleCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/salesorder/salesOrderListTemplate.html',
 	'text!templates/salesorder/salesOrderInnerListTemplate.html',
+	'text!templates/salesorder/salesOrderOriginTemplate.html',
+	'text!templates/salesorder/salesOrderNatureOfSaleTemplate.html',
 	'constant',
 ], function(Backbone,
 			ListView,
+			SalesOrderCollection,
+			OriginCollection,
+			NatureOfSaleCollection,
 			contentTemplate,
 			salesOrderListTemplate,
 			salesOrderInnerListTemplate,
+			salesOrderOriginTemplate,
+			salesOrderNatureOfSaleTemplate,
 			Const
 ){
 
@@ -21,24 +30,45 @@ define([
 			this.extendListEvents();
 			var thisObj = this;
 			
-			this.collection = new POScheduleCollection({id:option.id});
+			this.collection = new SalesOrderCollection();
 			this.collection.on('sync', function() {
 				thisObj.displayList();
 			});
 			this.collection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
+			
+			this.originCollection = new OriginCollection();
+			this.originCollection.on('sync', function() {	
+				thisObj.natureOfSaleCollection.getModels();
+				this.off('sync');
+			});
+			this.originCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
+			
+			this.natureOfSaleCollection = new NatureOfSaleCollection();
+			this.natureOfSaleCollection.on('sync', function() {
+				thisObj.displaySO();
+				thisObj.renderList(1);
+				this.off('sync');
+			});
+			this.natureOfSaleCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 		},
 		
 		render: function(){
-			thisObj.renderList(1);
+			this.originCollection.getModels();
 		},
 		
 		displaySO: function () {
-			//var destinationTemplate = _.template(bidDestinationTemplate, {'destinations': this.bidDestinationCollection.models});
+			var originTemplate = _.template(salesOrderOriginTemplate, {'origins': this.originCollection.models});
+			var nosTemplate = _.template(salesOrderNatureOfSaleTemplate, {'natureOfSales': this.natureOfSaleCollection.models});
 			var innerTemplateVar = {
 				'so_add_url' : '#/'+Const.URL.SO+'/'+Const.CRUD.ADD,
-				'origin_filters' : '',
+				'origin_filters' : originTemplate.replace(/<label class="radio-inline">/g, '<li>').replace(/<\/label>/g, '</li>'),
+				'nos_filters' : nosTemplate.replace(/<label class="radio-inline">/g, '<li>').replace(/<\/label>/g, '</li>'),
 			};
 			var innerTemplate = _.template(salesOrderListTemplate, innerTemplateVar);
 			
@@ -54,18 +84,18 @@ define([
 		
 		displayList: function () {
 			
-			/*var data = {
-				po_url: '#/'+Const.URL.PO,
-				po_edit_url: '#/'+Const.URL.PO+'/'+Const.CRUD.EDIT,
-				po_sched_url: '#/'+Const.URL.PICKUPSCHEDULE,
-				pos: this.collection.models,
+			var data = {
+				so_url: '#/'+Const.URL.SO,
+				so_edit_url: '#/'+Const.URL.SO+'/'+Const.CRUD.EDIT,
+				so_sched_url: '',
+				sos: this.collection.models,
 				_: _ 
 			};
 			
 			var innerListTemplate = _.template(salesOrderInnerListTemplate, data);
-			$("#po-list tbody").html(innerListTemplate);
+			$("#so-list tbody").html(innerListTemplate);
 			
-			this.generatePagination();*/
+			this.generatePagination();
 		},
 		
 		initCalendars: function () {

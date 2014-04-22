@@ -45,12 +45,17 @@
 							<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu pull-right filters" role="menu">
-							<li class="dropdown-header">Filter By origin</li>
+							<li class="dropdown-header">Filter By Origin</li>
 							<li>
-								<input class="bidDestination" type="radio" name="destination" value="" checked> All
+								<input class="origin_id" type="radio" name="origin_id" value="" checked> All
 							</li>
-							<%= destination_filters %>
-							<li class="dropdown-header">Filter By status</li>
+							<%= origin_filters %>
+							<li class="dropdown-header">Filter By Nature Of Sale</li>
+							<li>
+								<input class="nature_of_sale_id" type="radio" name="nature_of_sale_id" value="" checked> All
+							</li>
+							<%= nos_filters %>
+							<li class="dropdown-header">Filter By Status</li>
 							<li>
 								<input class="statusFilter" type="radio" name="statusFilter" value="" checked> All
 							</li>
@@ -80,7 +85,7 @@
 </div>
 
 <div class="content-inner table-responsive">
-	<table id="po-list" class="table table-bordered table-striped table-hover">
+	<table id="so-list" class="table table-bordered table-striped table-hover">
 		<thead>
 			<tr>
 				<th>SO No.</th>
