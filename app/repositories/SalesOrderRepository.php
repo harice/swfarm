@@ -9,14 +9,41 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
             $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
             $sortby   = isset($params['sortby']) ? $params['sortby'] : 'so_number';
             $orderby  = isset($params['orderby']) ? $params['orderby'] : 'dsc';
+            $status = isset($params['status']) ? $params['status'] : null;
+            $nature_of_sale = isset($params['nature_of_sale']) ? $params['nature_of_sale'] : null;
             
-            $result = SalesOrder::with('products.product')
-                ->with('customer')
-                ->with('address', 'address.addressStates', 'address.addressCity', 'address.addressType')
-                ->with('origin')
-                ->with('natureOfSale')
-                ->orderBy($sortby, $orderby)
-                ->paginate($perPage);
+            if (!isset($params['filter']) || $params['filter'] == '')
+            {
+                $salesorders = SalesOrder::with('products.product')
+                    ->with('customer')
+                    ->with('address', 'address.addressStates', 'address.addressCity', 'address.addressType')
+                    ->with('origin')
+                    ->with('natureOfSale')
+                    ->orderBy($sortby, $orderby);
+                
+                if ($status)
+                {
+                    $salesorders->where('status', 'like', $status);
+                }
+                
+                $result = $salesorders->paginate($perPage);
+            }
+            else
+            {
+                $filter = $params['filter'];
+                
+                $result = SalesOrder::with('products.product')
+                    ->with('customer')
+                    ->with('address', 'address.addressStates', 'address.addressCity', 'address.addressType')
+                    ->with('origin')
+                    ->with('natureOfSale')
+                    ->where(function ($query) use ($filter){
+                        $query->where('status', '=', $filter);
+                    })
+                    ->orderBy($sortby, $orderby)
+                    ->paginate($perPage);
+            }
+                
             
             return $result;
         }
@@ -38,6 +65,7 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
                 ->find($id);
 
             if(!$salesorder) throw new NotFoundException('Sales Order Not Found');
+            
             return $salesorder;
         }
         catch (Exception $e)
