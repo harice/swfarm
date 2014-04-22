@@ -5,10 +5,10 @@
 		<td><%= so.get("date_of_sale").split(" ")[0] %></td>
 		<td><%= so.get("delivery_date_start").split(" ")[0] %></td>
 		<td><%= so.get("delivery_date_end").split(" ")[0] %></td>
-		<td></td>
+		<td><%= so.get("customer").name %></td>
 		<td><%= so.get("status") %></td>
-		<td></td>
-		<td></td>
+		<td><%= so.get("origin").origin %></td>
+		<td><%= so.get("nature_of_sale").nature_of_sale %></td>
 		<td></td>
 		<td>
 			<% if (so.get("status").toLowerCase() == "open") { %>

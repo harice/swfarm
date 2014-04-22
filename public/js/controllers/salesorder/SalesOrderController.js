@@ -2,10 +2,10 @@ define([
 	'backbone',
 	'views/salesorder/SalesOrderListView',
 	'views/salesorder/SalesOrderAddView',
-	'views/bid/BidEditView',
+	'views/salesorder/SalesOrderEditView',
 	'views/bid/BidView',
 	'constant',
-], function(Backbone, SalesOrderListView, SalesOrderAddView, BidEditView, BidView, Const){
+], function(Backbone, SalesOrderListView, SalesOrderAddView, SalesOrderEditView, BidView, Const){
 	
 	function SalesOrderController () {	
 		
@@ -33,7 +33,7 @@ define([
 		};
 		
 		this.edit = function (id) {
-			return new BidEditView({'id':id});
+			return new SalesOrderEditView({'id':id});
 		};
 		
 		this.listView = function () {

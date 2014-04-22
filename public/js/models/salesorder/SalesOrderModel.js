@@ -22,9 +22,9 @@ define([
 				headers: thisObj.getAuth(),
 			});
 		},
-		/*setCancelURL: function () {
-			this.urlRoot = '/apiv1/bid/cancelBid';
-		},*/
+		setCancelURL: function () {
+			this.urlRoot = 'salesorder/'+this.get('id')+'/cancel';
+		},
 	});
 	return SalesOrderModel;
 });

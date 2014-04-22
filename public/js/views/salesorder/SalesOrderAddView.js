@@ -103,6 +103,10 @@ define([
 			var innerTemplateVariables = {
 				'so_url' : '#/'+Const.URL.SO,
 			};
+			
+			if(this.soId != null)
+				innerTemplateVariables['so_id'] = this.soId;
+			
 			var innerTemplate = _.template(salesOrderAddTemplate, innerTemplateVariables);
 			
 			var variables = {
@@ -113,11 +117,21 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
+			
+			this.initValidateForm();
+			this.addProduct();
+			this.generateOrigin();
+			this.generateNatureOfSale();
+			this.initCustomerAutocomplete();
+			this.initCalendar();
+		},
+		
+		initValidateForm: function () {
+			var thisObj = this;
+			
 			var validate = $('#soForm').validate({
 				submitHandler: function(form) {
 					var data = thisObj.formatFormField($(form).serializeObject());
-					
-					console.log(data);
 					
 					var salesOrderModel = new SalesOrderModel(data);
 					
@@ -150,12 +164,6 @@ define([
 					}
 				},
 			});
-			
-			this.addProduct();
-			this.generateOrigin();
-			this.generateNatureOfSale();
-			this.initCustomerAutocomplete();
-			this.initCalendar();
 		},
 		
 		generateOrigin: function () {
@@ -229,6 +237,7 @@ define([
 		},
 		
 		addProduct: function () {
+			var clone = null;
 			
 			if(this.options.productFieldClone == null) {
 				var productTemplate = _.template(productItemTemplate, {});
@@ -238,6 +247,7 @@ define([
 				this.options.productFieldClone = productItem.clone();
 				this.initProductAutocomplete(productItem);
 				this.addIndexToProductFields(productItem);
+				clone = productItem
 			}
 			else {
 				var clone = this.options.productFieldClone.clone();
@@ -247,6 +257,7 @@ define([
 			}
 				
 			this.addValidationToProduct();
+			return clone;
 		},
 		
 		initProductAutocomplete: function (productItem) {
@@ -303,8 +314,12 @@ define([
 							var arrayBidProductFields = {};
 							
 							for(var i = 0; i < productFieldClass.length; i++) {
-								if(this.options.productFieldExempt.indexOf(productFieldClass[i]) < 0)
-									arrayBidProductFields[productFieldClass[i]] = data[productFieldClass[i]+this.options.productFieldSeparator+index];
+								if(this.options.productFieldExempt.indexOf(productFieldClass[i]) < 0) {
+									
+									var fieldValue = data[productFieldClass[i]+this.options.productFieldSeparator+index];
+									if(!(productFieldClass[i] == 'id' && fieldValue == ''))
+										arrayBidProductFields[productFieldClass[i]] = fieldValue;
+								}
 							}
 								
 							formData.products.push(arrayBidProductFields);
@@ -323,6 +338,7 @@ define([
 			'blur .unitprice': 'onBlurUnitPrice',
 			'keyup .unitprice': 'onKeyUpUnitPrice',
 			'keyup .tons': 'onKeyUpTons',
+			'click #cancel-so': 'cancelSO',
 		},
 		
 		removeProduct: function (ev) {
@@ -399,6 +415,36 @@ define([
 			var unitPrice = 0;
 			unitPrice = tonsOrBales * bidPrice;
 			unitePriceField.val(unitPrice.toFixed(2));
+		},
+		
+		cancelSO: function () {
+			if(this.soId != null) {
+				var thisObj = this;
+				
+				var verifyCancel = confirm('Are you sure you want to cancel this Sales Order?');
+				
+				if(verifyCancel) {
+					var salesOrderModel = new SalesOrderModel({id:this.soId});
+					salesOrderModel.setCancelURL();
+					salesOrderModel.save(
+						null, 
+						{
+							success: function (model, response, options) {
+								thisObj.displayMessage(response);
+								Global.getGlobalVars().app_router.navigate(Const.URL.SO, {trigger: true});
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: salesOrderModel.getAuth(),
+						}
+					);
+				}
+			}
+			return false;
 		},
 	});
 
