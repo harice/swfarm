@@ -39,7 +39,6 @@ class SalesOrder extends BaseModel {
         'origin_id' => 'required',
         'nature_of_sale_id' => 'required',
         'customer_id' => 'required',
-        'address_id' => 'required',
         'delivery_date_start' => 'required',
         'delivery_date_end' => 'required'
     );
