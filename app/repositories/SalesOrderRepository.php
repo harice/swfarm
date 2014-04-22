@@ -99,7 +99,9 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
                 $salesorder = $this->findById($id);
                 $salesorder->fill($data);
                 $salesorder->update();
-
+                
+                $this->updateProductOrder($salesorder['products']);
+                
                 return $salesorder;
             });
             
@@ -152,7 +154,7 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
         return 'S'.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
     }
     
-    public function addProductOrder($entity, $entity_id, $products = array())
+    private function addProductOrder($entity, $entity_id, $products = array())
     {
         try
         {
@@ -175,6 +177,29 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
         {
             return $e->getMessage();
         }
+    }
+    
+    private function updateProductOrder($productorders)
+    {
+        try
+        {
+            foreach ($productorders as $productorder)
+            {
+                $productorder_data = $productorder;
+                
+                // $productorder_data['description'] = 'Test descsdf';
+
+                $productorder = ProductOrder::find($productorder_data->id);
+                $productorder->fill($productorder_data->toArray());
+                
+                $productorder->update();
+            }
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
+            
     }
     
 }
