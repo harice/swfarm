@@ -39,6 +39,9 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
         $data['status'] = 'Open';
         $data['user_id'] = 1;
         
+        $customer_address = $this->getAddress($data['customer_id']);
+        $data['address_id'] = $customer_address[0]['id'];
+        
         $this->validate($data, 'SalesOrder');
         
         try
@@ -49,31 +52,31 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
                 $salesorder->fill($data);
                 $salesorder->save();
 
-//                $now = new DateTime('NOW');
-//                $date = $now->format('Y-m-d H:i:s');
-//
-//                $data['products'] = array(
-//                    array(
-//                        'product_id' => 1,
-//                        'description' => 'Sample product order.',
-//                        'stacknumber' => 'S123',
-//                        'tons' => 5.23,
-//                        'bales' => 10,
-//                        'unitprice' => 10.00,
-//                        'created_at' => $date,
-//                        'updated_at' => $date
-//                    ),
-//                    array(
-//                        'product_id' => 1,
-//                        'description' => 'Sample product order.',
-//                        'stacknumber' => 'S123',
-//                        'tons' => 5.23,
-//                        'bales' => 10,
-//                        'unitprice' => 10.00,
-//                        'created_at' => $date,
-//                        'updated_at' => $date
-//                    ),
-//                );
+                $now = new DateTime('NOW');
+                $date = $now->format('Y-m-d H:i:s');
+
+                $data['products'] = array(
+                    array(
+                        'product_id' => 1,
+                        'description' => 'Sample product order.',
+                        'stacknumber' => 'S123',
+                        'tons' => 5.23,
+                        'bales' => 10,
+                        'unitprice' => 10.00,
+                        'created_at' => $date,
+                        'updated_at' => $date
+                    ),
+                    array(
+                        'product_id' => 1,
+                        'description' => 'Sample product order.',
+                        'stacknumber' => 'S123',
+                        'tons' => 5.23,
+                        'bales' => 10,
+                        'unitprice' => 10.00,
+                        'created_at' => $date,
+                        'updated_at' => $date
+                    ),
+                );
 
                 $this->addProductOrder('salesorder', $salesorder->id, $data['products']);
                 
@@ -150,7 +153,7 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
     private function generateSONumber(){
         $dateToday = date('Y-m-d');
         $count = SalesOrder::where('created_at', 'like', $dateToday.'%')->count()+1;
-
+        
         return 'S'.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
     }
     
@@ -200,6 +203,14 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
             return $e->getMessage();
         }
             
+    }
+    
+    private function getAddress($account_id)
+    {
+        $result = Address::where('type', '=', 1)
+            ->where('account', '=', $account_id)
+            ->get();
+        return $result;
     }
     
 }
