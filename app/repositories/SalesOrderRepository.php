@@ -6,7 +6,19 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
     {
         try
         {
-            return SalesOrder::with('products.product')->get();
+            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+            $sortby   = isset($params['sortby']) ? $params['sortby'] : 'so_number';
+            $orderby  = isset($params['orderby']) ? $params['orderby'] : 'dsc';
+            
+            $result = SalesOrder::with('products.product')
+                ->with('customer')
+                ->with('address', 'address.addressStates', 'address.addressCity', 'address.addressType')
+                ->with('origin')
+                ->with('natureOfSale')
+                ->orderBy($sortby, $orderby)
+                ->paginate($perPage);
+            
+            return $result;
         }
         catch (Exception $e)
         {
@@ -18,7 +30,12 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
     {
         try
         {
-            $salesorder = SalesOrder::with('products.product')->find($id);
+            $salesorder = SalesOrder::with('products.product')
+                ->with('customer')
+                ->with('address', 'address.addressStates', 'address.addressCity', 'address.addressType')
+                ->with('origin')
+                ->with('natureOfSale')
+                ->find($id);
 
             if(!$salesorder) throw new NotFoundException('Sales Order Not Found');
             return $salesorder;
