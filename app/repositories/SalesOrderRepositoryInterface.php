@@ -9,4 +9,6 @@ interface SalesOrderRepositoryInterface {
     public function validate($data, $entity);
     public function getOrigin();
     public function getNatureOfSale();
+    public function close($id);
+    public function cancel($id);
 }

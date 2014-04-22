@@ -68,8 +68,11 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('pickupschedule/getTruckerAccount', 'APIv1\PickupScheduleController@getTruckerAccount');
     Route::resource('pickupschedule', 'APIv1\PickupScheduleController');
     
+    // Sales Order
     Route::get('salesorder/getOrigin', 'APIv1\SalesOrderController@getOrigin');
     Route::get('salesorder/getNatureOfSale', 'APIv1\SalesOrderController@getNatureOfSale');
+    Route::put('salesorder/{id}/cancel', 'APIv1\SalesOrderController@cancel');
+    Route::put('salesorder/{id}/close', 'APIv1\SalesOrderController@close');
     Route::resource('salesorder', 'APIv1\SalesOrderController');
     
 });

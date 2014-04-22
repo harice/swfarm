@@ -79,5 +79,15 @@ class SalesOrderController extends BaseController {
     {
         return $this->repo->getNatureOfSale();
     }
+    
+    public function cancel($id)
+    {
+        $this->repo->cancel($id);
+    }
+    
+    public function close($id)
+    {
+        $this->repo->close($id);
+    }
 
 }

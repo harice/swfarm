@@ -213,11 +213,18 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
         return $result;
     }
     
-    public function closeSO($salesorder_id)
+    public function close($id)
     {
-        $salesorder = SalesOrder::find($salesorder_id);
+        $salesorder = SalesOrder::find($id);
         $salesorder->status = "Close";
-        return $salesorder->save();
+        $salesorder->save();
+    }
+    
+    public function cancel($id)
+    {
+        $salesorder = SalesOrder::find($id);
+        $salesorder->status = "Cancelled";
+        $salesorder->save();
     }
     
 }
