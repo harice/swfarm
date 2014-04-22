@@ -20,8 +20,11 @@ class SalesOrderController extends BaseController {
 	 */
 	public function index()
 	{
-		$collection = $this->repo->findAll();
-        return Response::json($collection);
+		$collection = $this->repo->findAll( Input::all() );
+        return Response::json(array(
+            'data' => $collection->toArray(),
+            'total' => $collection->count()
+        ));
 	}
 
 	/**

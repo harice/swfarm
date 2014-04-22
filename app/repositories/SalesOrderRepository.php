@@ -2,7 +2,7 @@
 
 class SalesOrderRepository implements SalesOrderRepositoryInterface {
     
-    public function findAll()
+    public function findAll($params)
     {
         try
         {
@@ -56,16 +56,6 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
 //                $date = $now->format('Y-m-d H:i:s');
 //
 //                $data['products'] = array(
-//                    array(
-//                        'product_id' => 1,
-//                        'description' => 'Sample product order.',
-//                        'stacknumber' => 'S123',
-//                        'tons' => 5.23,
-//                        'bales' => 10,
-//                        'unitprice' => 10.00,
-//                        'created_at' => $date,
-//                        'updated_at' => $date
-//                    ),
 //                    array(
 //                        'product_id' => 1,
 //                        'description' => 'Sample product order.',
