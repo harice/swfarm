@@ -2,7 +2,7 @@
 
 class SalesOrderRepository implements SalesOrderRepositoryInterface {
     
-    public function findAll()
+    public function findAll($params)
     {
         try
         {
@@ -56,16 +56,6 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
 //                $date = $now->format('Y-m-d H:i:s');
 //
 //                $data['products'] = array(
-//                    array(
-//                        'product_id' => 1,
-//                        'description' => 'Sample product order.',
-//                        'stacknumber' => 'S123',
-//                        'tons' => 5.23,
-//                        'bales' => 10,
-//                        'unitprice' => 10.00,
-//                        'created_at' => $date,
-//                        'updated_at' => $date
-//                    ),
 //                    array(
 //                        'product_id' => 1,
 //                        'description' => 'Sample product order.',
@@ -213,11 +203,18 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
         return $result;
     }
     
-    public function closeSO($salesorder_id)
+    public function close($id)
     {
-        $salesorder = SalesOrder::find($salesorder_id);
+        $salesorder = SalesOrder::find($id);
         $salesorder->status = "Close";
-        return $salesorder->save();
+        $salesorder->save();
+    }
+    
+    public function cancel($id)
+    {
+        $salesorder = SalesOrder::find($id);
+        $salesorder->status = "Cancelled";
+        $salesorder->save();
     }
     
 }

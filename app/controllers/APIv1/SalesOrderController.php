@@ -20,8 +20,11 @@ class SalesOrderController extends BaseController {
 	 */
 	public function index()
 	{
-		$collection = $this->repo->findAll();
-        return Response::json($collection);
+		$collection = $this->repo->findAll( Input::all() );
+        return Response::json(array(
+            'data' => $collection->toArray(),
+            'total' => $collection->count()
+        ));
 	}
 
 	/**
@@ -78,6 +81,16 @@ class SalesOrderController extends BaseController {
     public function getNatureOfSale()
     {
         return $this->repo->getNatureOfSale();
+    }
+    
+    public function cancel($id)
+    {
+        $this->repo->cancel($id);
+    }
+    
+    public function close($id)
+    {
+        $this->repo->close($id);
     }
 
 }
