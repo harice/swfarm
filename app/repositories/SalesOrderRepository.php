@@ -52,31 +52,31 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
                 $salesorder->fill($data);
                 $salesorder->save();
 
-                $now = new DateTime('NOW');
-                $date = $now->format('Y-m-d H:i:s');
-
-                $data['products'] = array(
-                    array(
-                        'product_id' => 1,
-                        'description' => 'Sample product order.',
-                        'stacknumber' => 'S123',
-                        'tons' => 5.23,
-                        'bales' => 10,
-                        'unitprice' => 10.00,
-                        'created_at' => $date,
-                        'updated_at' => $date
-                    ),
-                    array(
-                        'product_id' => 1,
-                        'description' => 'Sample product order.',
-                        'stacknumber' => 'S123',
-                        'tons' => 5.23,
-                        'bales' => 10,
-                        'unitprice' => 10.00,
-                        'created_at' => $date,
-                        'updated_at' => $date
-                    ),
-                );
+//                $now = new DateTime('NOW');
+//                $date = $now->format('Y-m-d H:i:s');
+//
+//                $data['products'] = array(
+//                    array(
+//                        'product_id' => 1,
+//                        'description' => 'Sample product order.',
+//                        'stacknumber' => 'S123',
+//                        'tons' => 5.23,
+//                        'bales' => 10,
+//                        'unitprice' => 10.00,
+//                        'created_at' => $date,
+//                        'updated_at' => $date
+//                    ),
+//                    array(
+//                        'product_id' => 1,
+//                        'description' => 'Sample product order.',
+//                        'stacknumber' => 'S123',
+//                        'tons' => 5.23,
+//                        'bales' => 10,
+//                        'unitprice' => 10.00,
+//                        'created_at' => $date,
+//                        'updated_at' => $date
+//                    ),
+//                );
 
                 $this->addProductOrder('salesorder', $salesorder->id, $data['products']);
                 
@@ -211,6 +211,13 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
             ->where('account', '=', $account_id)
             ->get();
         return $result;
+    }
+    
+    public function closeSO($salesorder_id)
+    {
+        $salesorder = SalesOrder::find($salesorder_id);
+        $salesorder->status = "Close";
+        return $salesorder->save();
     }
     
 }

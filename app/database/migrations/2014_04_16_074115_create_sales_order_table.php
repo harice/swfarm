@@ -32,7 +32,7 @@ class CreateSalesOrderTable extends Migration {
             
             $table->foreign('origin_id')->references('id')->on('origin');
             $table->foreign('nature_of_sale_id')->references('id')->on('nature_of_sale');
-            $table->foreign('customer_id')->references('id')->on('contact');
+            $table->foreign('customer_id')->references('id')->on('account');
             $table->foreign('address_id')->references('id')->on('address');
             $table->foreign('user_id')->references('id')->on('users');
 		});
