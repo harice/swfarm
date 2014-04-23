@@ -61,7 +61,7 @@ define(function () {
 			'DELETE': 'delete',
 		},
 		'CONTAINER': {
-			'MAIN':'content',
+			'MAIN':'cl-mcont',
 		},
 		'MAXITEMPERPAGE': 10,
 		'PLACEHOLDER': {
