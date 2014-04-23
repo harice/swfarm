@@ -90,34 +90,31 @@ class OrderRepository implements OrderRepositoryInterface {
         // $data['address_id'] = $customer_address['id'];
         
         $this->validate($data, 'Order', $data['ordertype']);
-        // var_dump($data);exit;
-        try
+       
+        $result = DB::transaction(function() use ($data)
         {
-            $result = DB::transaction(function() use ($data)
-            {
-                $data['orderaddress_id'] = $this->addOrderAddress($data['businessaddress']);
+            $data['orderaddress_id'] = $this->addOrderAddress($data['businessaddress']);
 
-                $order = $this->instance();
-                $order->fill($data);
-                $order->save();
+            $order = $this->instance();
+            $order->fill($data);
+            $order->save();
 
-                $this->addProductOrder($order->id, $data['products']);
-                
-                return $order;
-            });
+            $this->addProductOrder($order->id, $data['products']);
             
-            return $result;
-        }
-        catch (Exception $e)
-        {
-            return $e->getMessage();
-        }
+            return $order;
+        });
+        
+        return $result;
+       
     }
 
-    public function addOrderAddress($data){
+    public function addOrderAddress($data, $orderAddressId = null){
         $this->validate($data, 'OrderAddress');
 
-        $orderaddress = new OrderAddress;
+        if($orderAddressId == null)
+            $orderaddress = new OrderAddress;
+        else
+            $orderaddress = OrderAddress::find($orderAddressId);
         $orderaddress->fill($data);
         $orderaddress->save();
 
@@ -126,28 +123,72 @@ class OrderRepository implements OrderRepositoryInterface {
     
     public function update($id, $data)
     {
-        // $this->validate($data, 'SalesOrder');
+        // $now = new DateTime('NOW');
+        // $date = $now->format('Y-m-d H:i:s');
         
-        // try
-        // {
-        //     $result = DB::transaction(function() use ($id, $data)
-        //     {
-        //         $salesorder = $this->findById($id);
-        //         $salesorder->fill($data);
-        //         $salesorder->update();
-                
-        //         $this->updateProductOrder($salesorder['products']);
-                
-        //         return $salesorder;
-        //     });
-            
-        //     return $result;
-        // }
-        // catch (Exception $e)
-        // {
-        //     return $e->getMessage();
-        // }
+        $data['ordertype'] = 1; //PO type
+        // $data['order_number'] = $this->generateOrderNumber(1);
+        // $data['dateofsale'] = $date;
+        // $data['status_id'] = 1; //Open status
+        // $data['user_id'] = Auth::user()->id;
+
+        $data['businessaddress'] = $this->getBusinessAddress($data['account_id']);
+        // $data['address_id'] = $customer_address['id'];
+        
+        $this->validate($data, 'Order', $data['ordertype']);
+       
+        $result = DB::transaction(function() use ($id, $data)
+        {   
+            $order = Order::find($id);
+
+
+            $this->addOrderAddress($data['businessaddress'], $order->orderaddress_id); //just editing the address
+
+            $order->fill($data);
+            $order->save();
+            if(isset($data['products'])){
+                $this->deleteProductOrder($id, $data['products']); //delete product order that is remove by client
+                $this->addProductOrder($order->id, $data['products']);
+            } else {
+                $this->deleteProductOrder($id, null);
+            }
+            return $order;
+        });
+        
+        return $result;
     }
+
+    private function deleteProductOrder($orderId, $products){
+      //deleting bidproduct
+      $existingProductOrderId = array();
+      if($products != null){
+          foreach($products as $item){
+            $productOrderData = $item;
+            if(isset($productOrderData['id'])){
+              $existingProductOrderId[] = $productOrderData['id'];
+            }
+          }
+        }
+    if($existingProductOrderId == null){ //delete all product order associated with this order
+      $productOrder = ProductOrder::with('order')
+                ->whereHas('order', function($query) use ($orderId)
+                {
+                    $query->where('id', '=', $orderId);
+
+                })
+                ->delete();
+    } else { //delete product order that is included in array
+      $productOrder = ProductOrder::with('order')
+                ->whereHas('order', function($query) use ($orderId)
+                {
+                    $query->where('id', '=', $orderId);
+
+                })
+                ->whereNotIn('id',$existingProductOrderId)
+                ->delete();
+    }
+    return $productOrder;
+  }
     
     public function destroy($id)
     {
@@ -209,8 +250,11 @@ class OrderRepository implements OrderRepositoryInterface {
                 $product['order_id'] = $order_id;
 
                 $this->validate($product, 'ProductOrder');
+                if(isset($product['id']))
+                    $productorder = ProductOrder::find($product['id']);
+                else
+                    $productorder = new ProductOrder();
 
-                $productorder = new ProductOrder();
                 $productorder->fill($product);
                 $productorder->save();
             }

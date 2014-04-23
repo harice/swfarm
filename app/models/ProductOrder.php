@@ -44,4 +44,8 @@ class ProductOrder extends Eloquent {
         return $this->belongsTo('Product', 'product_id');
     }
 
+    public function order(){
+        return $this->belongsTo('Order', 'order_id');
+    }
+
 }

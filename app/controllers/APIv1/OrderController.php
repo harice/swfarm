@@ -55,8 +55,8 @@ class OrderController extends BaseController {
 	 */
 	public function update($id)
 	{
-		// $model = $this->repo->update($id, Input::all());
-  //       return Response::json($model);
+		$model = $this->repo->update($id, Input::all());
+        return Response::json($model);
 	}
 
 	/**
