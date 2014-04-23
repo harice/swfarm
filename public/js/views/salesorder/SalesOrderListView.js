@@ -99,40 +99,40 @@ define([
 		},
 		
 		initCalendars: function () {
-			/*var thisObj = this;
+			var thisObj = this;
 			
-			this.$el.find('#filter-date-of-purchase .input-group.date').datepicker({
+			this.$el.find('#filter-date-of-sale .input-group.date').datepicker({
 				orientation: "top left",
 				autoclose: true,
 				clearBtn: true,
 				todayHighlight: true,
 				format: 'yyyy-mm-dd',
 			}).on('changeDate', function (ev) {
-				thisObj.collection.setDate($('#filter-date-of-purchase .input-group.date input').val());
-				thisObj.renderList(1);
+				//thisObj.collection.setDate($('#filter-date-of-purchase .input-group.date input').val());
+				//thisObj.renderList(1);
 			});
 			
-			this.$el.find('#filter-pickup-start .input-group.date').datepicker({
+			this.$el.find('#filter-delivery-start .input-group.date').datepicker({
 				orientation: "top left",
 				autoclose: true,
 				clearBtn: true,
 				todayHighlight: true,
 				format: 'yyyy-mm-dd',
 			}).on('changeDate', function (ev) {
-				thisObj.collection.setFilter('pickupstart', $('#filter-pickup-start .input-group.date input').val());
-				thisObj.renderList(1);
+				//thisObj.collection.setFilter('pickupstart', $('#filter-pickup-start .input-group.date input').val());
+				//thisObj.renderList(1);
 			});
 			
-			this.$el.find('#filter-pickup-end .input-group.date').datepicker({
+			this.$el.find('#filter-delivery-end .input-group.date').datepicker({
 				orientation: "top left",
 				autoclose: true,
 				clearBtn: true,
 				todayHighlight: true,
 				format: 'yyyy-mm-dd',
 			}).on('changeDate', function (ev) {
-				thisObj.collection.setFilter('pickupend', $('#filter-pickup-end .input-group.date input').val());
-				thisObj.renderList(1);
-			});*/
+				//thisObj.collection.setFilter('pickupend', $('#filter-pickup-end .input-group.date input').val());
+				//thisObj.renderList(1);
+			});
 		},
 	});
 

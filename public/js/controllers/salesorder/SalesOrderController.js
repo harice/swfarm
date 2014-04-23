@@ -3,9 +3,9 @@ define([
 	'views/salesorder/SalesOrderListView',
 	'views/salesorder/SalesOrderAddView',
 	'views/salesorder/SalesOrderEditView',
-	'views/bid/BidView',
+	'views/salesorder/SalesOrderView',
 	'constant',
-], function(Backbone, SalesOrderListView, SalesOrderAddView, SalesOrderEditView, BidView, Const){
+], function(Backbone, SalesOrderListView, SalesOrderAddView, SalesOrderEditView, SalesOrderView, Const){
 	
 	function SalesOrderController () {	
 		
@@ -41,7 +41,7 @@ define([
 		};
 		
 		this.view = function (id) {
-			return new BidView({'id':id});
+			return new SalesOrderView({'id':id});
 		};
 		
 		this.IsInt = function (i) {

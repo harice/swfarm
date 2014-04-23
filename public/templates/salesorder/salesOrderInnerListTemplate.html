@@ -1,7 +1,7 @@
 <% if (!_.isEmpty(sos)) { %>
 	<% _.each(sos, function(so){ %>
 	<tr>
-		<td><%= so.get("so_number") %></td>
+		<td><a href="<%= so_url %>/<%= so.get("id") %>"><%= so.get("so_number") %></a></td>
 		<td><%= so.get("date_of_sale").split(" ")[0] %></td>
 		<td><%= so.get("delivery_date_start").split(" ")[0] %></td>
 		<td><%= so.get("delivery_date_end").split(" ")[0] %></td>
