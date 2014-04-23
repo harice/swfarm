@@ -97,21 +97,21 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
                 $salesorder->fill($data);
                 $salesorder->save();
 
-//                $now = new DateTime('NOW');
-//                $date = $now->format('Y-m-d H:i:s');
-//
-//                $data['products'] = array(
-//                    array(
-//                        'product_id' => 1,
-//                        'description' => 'Sample product order.',
-//                        'stacknumber' => 'S123',
-//                        'tons' => 5.23,
-//                        'bales' => 10,
-//                        'unitprice' => 10.00,
-//                        'created_at' => $date,
-//                        'updated_at' => $date
-//                    ),
-//                );
+                $now = new DateTime('NOW');
+                $date = $now->format('Y-m-d H:i:s');
+
+                $data['products'] = array(
+                    array(
+                        'product_id' => 1,
+                        'description' => 'Sample product order.',
+                        'stacknumber' => 'S123',
+                        'tons' => 5.23,
+                        'bales' => 10,
+                        'unitprice' => 10.00,
+                        'created_at' => $date,
+                        'updated_at' => $date
+                    ),
+                );
                 
                 $this->addProductOrder('salesorder', $salesorder->id, $data['products']);
                 
