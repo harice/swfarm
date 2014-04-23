@@ -45,7 +45,7 @@ class DatabaseSeeder extends Seeder {
         // Sales Order
         $this->call('OriginTableSeeder');
         $this->call('NatureOfSaleTableSeeder');
-        
+        $this->call('StatusTableSeeder');
         
         // Testing
 //        $this->call('DestinationTableSeeder');
