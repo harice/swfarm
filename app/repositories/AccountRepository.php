@@ -351,5 +351,33 @@ class AccountRepository implements AccountRepositoryInterface {
           200
       );
   }
+  
+  public function getCustomerAccount($search){
+    $producers = Account::with('address')
+                  ->with('address.addressCity')
+                  ->with('address.addressStates')
+                  ->where('accounttype', '=', 1)
+                  ->where('name','like', '%'.$search.'%')
+                  ->orderBy('name', 'asc')
+                  ->get();
+
+    return Response::json(
+          $producers->toArray(),
+          200
+      );
+  }
+
+  public function getAddress($accountId){
+    $addresses = Address::with('addressType')
+                  ->with('addressCity')
+                  ->with('addressStates')
+                  ->where('account', '=', $accountId)
+                  ->get();
+
+    return Response::json(
+          $addresses->toArray(),
+          200
+      );
+  }
 
 }
