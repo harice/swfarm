@@ -70,8 +70,8 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // Sales Order
     Route::get('salesorder/getOrigin', 'APIv1\SalesOrderController@getOrigin');
     Route::get('salesorder/getNatureOfSale', 'APIv1\SalesOrderController@getNatureOfSale');
-    Route::put('salesorder/{id}/cancel', 'APIv1\SalesOrderController@cancel');
-    Route::put('salesorder/{id}/close', 'APIv1\SalesOrderController@close');
+    Route::put('salesorder/cancel/{id}', 'APIv1\SalesOrderController@cancel');
+    Route::put('salesorder/close/{id}', 'APIv1\SalesOrderController@close');
     Route::resource('salesorder', 'APIv1\SalesOrderController');
     
 });
