@@ -7,6 +7,6 @@ class NatureOfSale extends BaseModel {
 	 *
 	 * @var string
 	 */
-	protected $table = 'nature_of_sale';
+	protected $table = 'natureofsale';
 
 }
