@@ -15,25 +15,23 @@ class ProductOrder extends Eloquent {
      * @var array
      */
     protected $fillable = array(
-        'entity',
-        'entity_id',
+        'order_id',
         'product_id',
         'description',
         'stacknumber',
         'tons',
         'bales',
-        'unitprice'
+        'unitprice',
+        'ishold'
     );
     
     public static $rules = array(
-        'entity' => 'required',
-        'entity_id' => 'required',
+        'order_id' => 'required',
         'product_id' => 'required',
         'description' => 'max:250',
         'stacknumber' => 'required',
         'tons' => 'required',
-        'bales' => 'required',
-        'unitprice' => 'required'
+        'bales' => 'required'
     );
     
     public function salesOrder()

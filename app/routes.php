@@ -73,6 +73,8 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::put('salesorder/cancel/{id}', 'APIv1\SalesOrderController@cancel');
     Route::put('salesorder/close/{id}', 'APIv1\SalesOrderController@close');
     Route::resource('salesorder', 'APIv1\SalesOrderController');
+
+    Route::resource('order', 'APIv1\OrderController');
     
 });
 

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateOriginTable extends Migration {
+class CreateLocationTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,11 +12,11 @@ class CreateOriginTable extends Migration {
 	 */
 	public function up()
 	{
-        Schema::create('origin', function(Blueprint $table)
+        Schema::create('location', function(Blueprint $table)
         {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->string('origin', 20)->unique();
+            $table->string('location', 20)->unique();
         });
 	}
 
@@ -27,7 +27,7 @@ class CreateOriginTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('origin');
+		Schema::dropIfExists('location');
 	}
 
 }
