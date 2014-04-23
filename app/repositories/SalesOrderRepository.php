@@ -96,22 +96,6 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
                 $salesorder = $this->instance();
                 $salesorder->fill($data);
                 $salesorder->save();
-
-                $now = new DateTime('NOW');
-                $date = $now->format('Y-m-d H:i:s');
-
-                $data['products'] = array(
-                    array(
-                        'product_id' => 1,
-                        'description' => 'Sample product order.',
-                        'stacknumber' => 'S123',
-                        'tons' => 5.23,
-                        'bales' => 10,
-                        'unitprice' => 10.00,
-                        'created_at' => $date,
-                        'updated_at' => $date
-                    ),
-                );
                 
                 $this->addProductOrder('salesorder', $salesorder->id, $data['products']);
                 
@@ -128,6 +112,7 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
     
     public function update($id, $data)
     {
+        // Log::debug($data);
         $this->validate($data, 'SalesOrder');
         
         try
@@ -138,7 +123,7 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
                 $salesorder->fill($data);
                 $salesorder->update();
                 
-                $this->updateProductOrder($salesorder['products']);
+                $this->updateProductOrder($salesorder['products'], $data['products']);
                 
                 return $salesorder;
             });
@@ -215,18 +200,19 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
         }
     }
     
-    private function updateProductOrder($productorders)
+    private function updateProductOrder($oldproducts, $productorders)
     {
+        // Log::debug($oldproducts);
+        // Log::debug($productorders);
         try
         {
-            foreach ($productorders as $productorder)
+            foreach ($oldproducts as $productorder)
             {
-                $productorder_data = $productorder;
-                
+                $id = $productorder['id'];
                 // $productorder_data['description'] = 'Test descsdf';
 
-                $productorder = ProductOrder::find($productorder_data->id);
-                $productorder->fill($productorder_data->toArray());
+                $productorder = ProductOrder::find($id);
+                $productorder->fill($productorders[0]);
                 
                 $productorder->update();
             }
