@@ -112,7 +112,7 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
 //                        'updated_at' => $date
 //                    ),
 //                );
-
+                
                 $this->addProductOrder('salesorder', $salesorder->id, $data['products']);
                 
                 return $salesorder;
@@ -199,7 +199,7 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
             foreach ($products as $product) {
                 $product['entity'] = $entity;
                 $product['entity_id'] = $entity_id;
-                $product['salesorder_id'] = $entity_id;
+                // $product['salesorder_id'] = $entity_id;
 
                 $this->validate($product, 'ProductOrder');
 
@@ -208,8 +208,6 @@ class SalesOrderRepository implements SalesOrderRepositoryInterface {
 
                 $productorder->save();
             }
-            
-            return true;
         }
         catch (Exception $e)
         {

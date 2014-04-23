@@ -45,7 +45,7 @@ class SalesOrder extends BaseModel {
     
     public function products()
     {
-        return $this->hasMany('ProductOrder', 'salesorder_id');
+        return $this->hasMany('ProductOrder', 'entity_id');
     }
     
     public function customer()

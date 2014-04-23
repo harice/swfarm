@@ -15,7 +15,8 @@ class ProductOrder extends Eloquent {
      * @var array
      */
     protected $fillable = array(
-        'salesorder_id',
+        'entity',
+        'entity_id',
         'product_id',
         'description',
         'stacknumber',
@@ -25,7 +26,8 @@ class ProductOrder extends Eloquent {
     );
     
     public static $rules = array(
-        'salesorder_id' => 'required',
+        'entity' => 'required',
+        'entity_id' => 'required',
         'product_id' => 'required',
         'description' => 'max:250',
         'stacknumber' => 'required',
