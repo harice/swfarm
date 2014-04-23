@@ -4,19 +4,19 @@ class NatureOfSaleTableSeeder extends Seeder {
 
 	public function run()
 	{
-		$nature_of_sale = array(
+		$natureofsale = array(
             array(
-                'nature_of_sale' => 'Reservation'
+                'name' => 'Reservation'
             ),
             array(
-                'nature_of_sale' => 'Incoming'
+                'name' => 'Incoming'
             ),
             array(
-                'nature_of_sale' => 'Outgoing'
+                'name' => 'Outgoing'
             )
         );
         
-        DB::table('nature_of_sale')->insert($nature_of_sale);
+        DB::table('natureofsale')->insert($natureofsale);
 	}
 
 }
