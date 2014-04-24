@@ -14,6 +14,7 @@ class OrderRepository implements OrderRepositoryInterface {
         $filter = isset($params['search']) ? $params['search'] : null;
         
         $order = Order::with('productorder')
+                        ->with('productorder.product')
                         ->with('account')
                         ->with('orderaddress', 'orderaddress.addressStates', 'orderaddress.addressCity')
                         ->with('location')
@@ -74,9 +75,11 @@ class OrderRepository implements OrderRepositoryInterface {
     public function getOrder($id, $orderType = 1)
     {
         $order = Order::with('productorder')
+                ->with('productorder.product')
                 ->with('account')
                 ->with('orderaddress', 'orderaddress.addressStates', 'orderaddress.addressCity')
-                ->with('location');
+                ->with('location')
+                ->with('status');
 
         if($orderType == 2) //for SO only
             $order = $order->with('natureofsale');
