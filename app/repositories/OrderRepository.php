@@ -11,6 +11,8 @@ class OrderRepository implements OrderRepositoryInterface {
         $natureofsale = isset($params['natureofsale']) ? $params['natureofsale'] : null;
         $location = isset($params['location']) ? $params['location'] : null;
         $date = isset($params['date']) ? $params['date'] : null; //default date is the present date
+        $transportstart = isset($params['transportstart']) ? $params['transportstart'] : null;
+        $transportend = isset($params['transportend']) ? $params['transportend'] : null;
         $filter = isset($params['search']) ? $params['search'] : null;
         
         $order = Order::with('productorder')
@@ -49,11 +51,17 @@ class OrderRepository implements OrderRepositoryInterface {
         }
 
         if ($location){
-            $order->where('location_id', '=', $natureofsale);
+            $order->where('location_id', '=', $location);
         }
 
         if($date != null){
           $order = $order->where('created_at', 'like', $date.'%'); 
+        }
+
+        //with transport date filter
+        if($transportstart != null && $transportend != null){
+          $order = $order->where('transportdatestart','like', $transportstart.'%')
+                         ->where('transportdateend','like', $transportend.'%');
         }
             
         $result = $order->paginate($perPage);
