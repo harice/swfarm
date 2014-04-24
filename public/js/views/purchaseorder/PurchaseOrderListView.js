@@ -4,6 +4,7 @@ define([
 	'collections/purchaseorder/PurchaseOrderCollection',
 	'collections/purchaseorder/DestinationCollection',
 	'collections/purchaseorder/POStatusCollection',
+	'models/purchaseorder/PurchaseOrderModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderListTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderInnerListTemplate.html',
@@ -15,6 +16,7 @@ define([
 			PurchaseOrderCollection,
 			DestinationCollection,
 			POStatusCollection,
+			PurchaseOrderModel,
 			contentTemplate,
 			purchaseOrderListTemplate,
 			purchaseOrderInnerListTemplate,
@@ -23,7 +25,7 @@ define([
 			Const
 ){
 
-	var SalesOrderListView = ListView.extend({
+	var PurchaseOrderListView = ListView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
@@ -121,8 +123,8 @@ define([
 				todayHighlight: true,
 				format: 'yyyy-mm-dd',
 			}).on('changeDate', function (ev) {
-				//thisObj.collection.setFilter('pickupstart', $('#filter-pickup-start .input-group.date input').val());
-				//thisObj.renderList(1);
+				thisObj.collection.setFilter('transportstart', $('#filter-pickup-start .input-group.date input').val());
+				thisObj.renderList(1);
 			});
 			
 			this.$el.find('#filter-pickup-end .input-group.date').datepicker({
@@ -132,23 +134,68 @@ define([
 				todayHighlight: true,
 				format: 'yyyy-mm-dd',
 			}).on('changeDate', function (ev) {
-				//thisObj.collection.setFilter('pickupend', $('#filter-pickup-end .input-group.date input').val());
-				//thisObj.renderList(1);
+				thisObj.collection.setFilter('transportend', $('#filter-pickup-end .input-group.date input').val());
+				thisObj.renderList(1);
 			});
 		},
 		
 		events: {
 			'click .sort-date-of-po' : 'sortPODate',
-			//'click .cancel-po' : 'cancelPO',
-			//'change .bidDestination' : 'filterByDestination',
-			//'change .statusFilter' : 'filterByStatus',
+			'click .cancel-po' : 'cancelPO',
+			'change .location_id' : 'filterByDestination',
+			'change .statusFilter' : 'filterByStatus',
 		},
 		
 		sortPODate: function () {
 			this.sortByField('created_at');
 		},
+		
+		filterByDestination: function (ev) {
+			var filter = $(ev.target).val(); console.log(filter);
+			this.collection.setFilter('location', filter)
+			this.renderList(1);
+			return false;
+		},
+		
+		filterByStatus: function (ev) {
+			var filter = $(ev.target).val(); console.log(filter);
+			this.collection.setFilter('status', filter)
+			this.renderList(1);
+			return false;
+		},
+		
+		cancelPO: function (ev) {
+			var thisObj = this;
+			var field = $(ev.currentTarget);
+			
+			var verifyCancel = confirm('Are you sure you want to cancel this PO?');
+			
+			if(verifyCancel) {
+				var purchaseOrderModel = new PurchaseOrderModel({id:field.attr('data-id')});
+				
+				purchaseOrderModel.setCancelURL();		
+				purchaseOrderModel.save(
+					null, 
+					{
+						success: function (model, response, options) {
+							thisObj.displayMessage(response);
+							thisObj.renderList(thisObj.collection.getCurrentPage());
+						},
+						error: function (model, response, options) {
+							if(typeof response.responseJSON.error == 'undefined')
+								validate.showErrors(response.responseJSON);
+							else
+								thisObj.displayMessage(response);
+						},
+						headers: purchaseOrderModel.getAuth(),
+					}
+				);
+			}
+			
+			return false;
+		},
 	});
 
-  return SalesOrderListView;
+  return PurchaseOrderListView;
   
 });
