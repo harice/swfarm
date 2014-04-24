@@ -1,4 +1,4 @@
-<form id="soForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+<form id="poForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
 	<% if (typeof po_id !== "undefined") { %>
 		<input type="hidden" name="id" value="<%= po_id %>" />
 	<% } %>
@@ -100,7 +100,7 @@
 	<fieldset>
 		<legend>
 			Products
-			<button title="Add Product" id="add-so-product" type="button" class="pull-right btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
+			<button title="Add Product" id="add-product" type="button" class="pull-right btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
 		</legend>
 		<div class="table-responsive">
 			<table id="product-list" class="table table-bordered">
@@ -124,7 +124,7 @@
 	<div class="form-group form-button-container">
 		<div class="pull-right">
 		<% if (typeof po_id !== "undefined") { %>
-			<a id="cancel-so" class="btn btn-default" href="#">Cancel Sales Order</a>
+			<a id="cancel-po" class="btn btn-default" href="#">Cancel Sales Order</a>
 		<% } %>
 		<button id="save" type="submit" class="save btn btn-default">Save</button>
 		<a id="cancel-save" class="btn btn-default" href="<%= po_url %>">Back</a>

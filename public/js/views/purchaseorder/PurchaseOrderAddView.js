@@ -7,12 +7,12 @@ define([
 	'jqueryphonenumber',
 	'views/autocomplete/CustomAutoCompleteView',
 	'collections/account/AccountProducerCollection',
-	'collections/bid/BidDestinationCollection',
+	'collections/purchaseorder/DestinationCollection',
 	'collections/product/ProductCollection',
-	'models/salesorder/SalesOrderModel',
+	'models/purchaseorder/PurchaseOrderModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddTemplate.html',
-	'text!templates/salesorder/salesOrderProductItemTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderProductItemTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderDestinationTemplate.html',
 	'global',
 	'constant',
@@ -24,9 +24,9 @@ define([
 			PhoneNumber,
 			CustomAutoCompleteView,
 			AccountProducerCollection,
-			BidDestinationCollection,
+			DestinationCollection,
 			ProductCollection,
-			SalesOrderModel,
+			PurchaseOrderModel,
 			contentTemplate,
 			purchaseOrderAddTemplate,
 			productItemTemplate,
@@ -47,13 +47,13 @@ define([
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
-				productFieldClass: ['product_id', 'description', 'productname', 'stacknumber', 'unitprice', 'tons', 'bales'],
+				productFieldClass: ['product_id', 'description', 'productname', 'stacknumber', 'unitprice', 'tons', 'bales', 'ishold'],
 				productFieldClassRequired: ['productname', 'stacknumber', 'unitprice', 'tons', 'bales'],
 				productFieldExempt: ['productname'],
 				productFieldSeparator: '.',
 			};
 			
-			this.destinationCollection = new BidDestinationCollection();
+			this.destinationCollection = new DestinationCollection();
 			this.destinationCollection.on('sync', function() {	
 				thisObj.productCollection.getModels();
 				this.off('sync');
@@ -92,7 +92,7 @@ define([
 				'po_url' : '#/'+Const.URL.PO,
 			};
 			
-			if(this.soId != null)
+			if(this.poId != null)
 				innerTemplateVariables['po_id'] = this.poId;
 			
 			var innerTemplate = _.template(purchaseOrderAddTemplate, innerTemplateVariables);
@@ -109,26 +109,27 @@ define([
 			this.generateDestination();
 			this.initProducerAutocomplete();
 			this.initCalendar();
+			this.addProduct();
 			
 			/*this.initValidateForm();
-			this.addProduct();*/
+			*/
 		},
 		
 		initValidateForm: function () {
 			var thisObj = this;
 			
-			var validate = $('#soForm').validate({
+			var validate = $('#poForm').validate({
 				submitHandler: function(form) {
 					var data = thisObj.formatFormField($(form).serializeObject());
 					
-					var salesOrderModel = new SalesOrderModel(data);
+					var purchaseOrderModel = new PurchaseOrderModel(data);
 					
-					salesOrderModel.save(
+					purchaseOrderModel.save(
 						null, 
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								Global.getGlobalVars().app_router.navigate(Const.URL.SO, {trigger: true});
+								Global.getGlobalVars().app_router.navigate(Const.URL.PO, {trigger: true});
 							},
 							error: function (model, response, options) {
 								if(typeof response.responseJSON.error == 'undefined')
@@ -136,7 +137,7 @@ define([
 								else
 									thisObj.displayMessage(response);
 							},
-							headers: salesOrderModel.getAuth(),
+							headers: purchaseOrderModel.getAuth(),
 						}
 					);
 				},
@@ -222,18 +223,18 @@ define([
 			var clone = null;
 			
 			if(this.options.productFieldClone == null) {
-				var productTemplate = _.template(productItemTemplate, {});
+				var productTemplate = _.template(productItemTemplate, {product_list:this.getProductDropdown()});
 				
 				this.$el.find('#product-list tbody').append(productTemplate);
 				var productItem = this.$el.find('#product-list tbody').find('.product-item:first-child');
 				this.options.productFieldClone = productItem.clone();
-				this.initProductAutocomplete(productItem);
+				//this.initProductAutocomplete(productItem);
 				this.addIndexToProductFields(productItem);
 				clone = productItem
 			}
 			else {
 				var clone = this.options.productFieldClone.clone();
-				this.initProductAutocomplete(clone);
+				//this.initProductAutocomplete(clone);
 				this.addIndexToProductFields(clone);
 				this.$el.find('#product-list tbody').append(clone);
 			}
@@ -256,6 +257,15 @@ define([
 					return false;
 				},
 			});
+		},
+		
+		getProductDropdown: function () {
+			var dropDown = '';
+			_.each(this.productCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
+			});
+			
+			return dropDown;
 		},
 		
 		addIndexToProductFields: function (bidProductItem) {
@@ -314,13 +324,13 @@ define([
 		},
 		
 		events: {
-			'click #add-so-product': 'addProduct',
+			'click #add-product': 'addProduct',
 			'click .remove-product': 'removeProduct',
 			'blur .productname': 'validateProduct',
 			'blur .unitprice': 'onBlurUnitPrice',
 			'keyup .unitprice': 'onKeyUpUnitPrice',
 			'keyup .tons': 'onKeyUpTons',
-			'click #cancel-so': 'cancelSO',
+			'click #cancel-po': 'cancelPO',
 		},
 		
 		removeProduct: function (ev) {
@@ -399,21 +409,21 @@ define([
 			unitePriceField.val(unitPrice.toFixed(2));
 		},
 		
-		cancelSO: function () {
+		cancelPO: function () {
 			if(this.soId != null) {
 				var thisObj = this;
 				
-				var verifyCancel = confirm('Are you sure you want to cancel this Sales Order?');
+				var verifyCancel = confirm('Are you sure you want to cancel this Purchase Order?');
 				
 				if(verifyCancel) {
-					var salesOrderModel = new SalesOrderModel({id:this.soId});
-					salesOrderModel.setCancelURL();
-					salesOrderModel.save(
+					var purchaseOrderModel = new PurchaseOrderModel({id:this.soId});
+					purchaseOrderModel.setCancelURL();
+					purchaseOrderModel.save(
 						null, 
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								Global.getGlobalVars().app_router.navigate(Const.URL.SO, {trigger: true});
+								Global.getGlobalVars().app_router.navigate(Const.URL.PO, {trigger: true});
 							},
 							error: function (model, response, options) {
 								if(typeof response.responseJSON.error == 'undefined')
@@ -421,7 +431,7 @@ define([
 								else
 									thisObj.displayMessage(response);
 							},
-							headers: salesOrderModel.getAuth(),
+							headers: purchaseOrderModel.getAuth(),
 						}
 					);
 				}
