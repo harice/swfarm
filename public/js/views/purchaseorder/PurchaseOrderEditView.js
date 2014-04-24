@@ -96,6 +96,34 @@ define([
 			this.model.runFetch();
 		},
 		
+		displayForm: function () {
+			var thisObj = this;
+			
+			var innerTemplateVariables = {
+				'po_url' : '#/'+Const.URL.PO,
+			};
+			
+			if(this.poId != null)
+				innerTemplateVariables['po_id'] = this.poId;
+			
+			var innerTemplate = _.template(purchaseOrderAddTemplate, innerTemplateVariables);
+			
+			var variables = {
+				h1_title: "Purchase Order",
+				h1_small: "edit",
+				sub_content_template: innerTemplate,
+			};
+			var compiledTemplate = _.template(contentTemplate, variables);
+			this.$el.html(compiledTemplate);
+			
+			this.initValidateForm();
+			
+			this.generateDestination();
+			this.initProducerAutocomplete();
+			this.initCalendar();
+			this.addProduct();
+		},
+		
 		supplyPOData: function () {
 			var thisObj = this;
 			
@@ -104,7 +132,7 @@ define([
 			var products = this.model.get('productorder');
 			
 			this.$el.find('#ponumber').val(this.model.get('order_number'));
-			this.$el.find('#status').val(this.model.get('status_id'));
+			this.$el.find('#status').val(this.model.get('status').name);
 			this.$el.find('[name="location_id"][value="'+this.model.get('location').id+'"]').attr('checked', true);
 			this.producerAutoCompleteView.autoCompleteResult = [{name:account.name, id:account.id, address:address}];
 			this.$el.find('#account').val(account.name);
