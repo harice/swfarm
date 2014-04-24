@@ -97,6 +97,10 @@ class AccountController extends BaseController {
 		return $this->account->getCustomerAccount(Input::get('search'));
 	}
 
+	public function getProducerAccount(){
+		return $this->account->getProducerAccount(Input::get('search'));
+	}
+
 	public function getAddress(){
 		return $this->account->getAddress(Input::get('accountId'));
 	}

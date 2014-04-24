@@ -1,12 +1,12 @@
 <?php
 
-class NatureOfSale extends BaseModel {
+class Location extends BaseModel {
     
     /**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table = 'natureofsale';
+	protected $table = 'location';
 
 }

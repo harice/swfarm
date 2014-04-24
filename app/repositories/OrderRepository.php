@@ -2,31 +2,32 @@
 
 class OrderRepository implements OrderRepositoryInterface {
     
-    public function findAll($params)
+    public function getAllOrders($params)
     {
-        try
-        {
+        // try
+        // {
             $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
-            $sortby   = isset($params['sortby']) ? $params['sortby'] : 'so_number';
-            $orderby  = isset($params['orderby']) ? $params['orderby'] : 'dsc';
+            $sortby   = isset($params['sortby']) ? $params['sortby'] : 'dateofsale';
+            $orderby  = isset($params['orderby']) ? $params['orderby'] : 'desc';
             $status = isset($params['status']) ? $params['status'] : null;
             $nature_of_sale = isset($params['natureofsale']) ? $params['natureofsale'] : null;
             
             if (!isset($params['filter']) || $params['filter'] == '')
             {
                 $order = Order::with('productorder')
-                    ->with('customer')
-                    ->with('orderaddress', 'address.addressStates', 'address.addressCity', 'address.addressType')
+                    ->with('account')
+                    ->with('orderaddress', 'orderaddress.addressStates', 'orderaddress.addressCity')
                     ->with('location')
                     ->with('natureofsale')
                     ->orderBy($sortby, $orderby);
-                
+                    
                 if ($status)
                 {
                     $order->where('status', '=', $status);
                 }
                 
                 $result = $order->paginate($perPage);
+                
             }
             else
             {
@@ -46,11 +47,11 @@ class OrderRepository implements OrderRepositoryInterface {
                 
             
             return $result;
-        }
-        catch (Exception $e)
-        {
-            return $e->getMessage();
-        }
+        // }
+        // catch (Exception $e)
+        // {
+        //     return $e->getMessage();
+        // }
     }
     
     public function findById($id)
