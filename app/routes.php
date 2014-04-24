@@ -83,7 +83,8 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::post('purchaseorder', 'APIv1\OrderController@addPurchaseOrder');
     Route::put('purchaseorder/{id}', 'APIv1\OrderController@updatePurchaseOrder');
     Route::get('purchaseorder/{id}', 'APIv1\OrderController@show');
-    Route::resource('purchaseorder', 'APIv1\OrderController');
+    Route::delete('purchaseorder/{id}', 'APIv1\OrderController@destroy');
+    // Route::resource('purchaseorder', 'APIv1\OrderController');
     
 });
 
