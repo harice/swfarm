@@ -1,110 +1,118 @@
-<form id="poForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-	<fieldset>
-		<legend>Details</legend>
-		<div class="row">
-			<div class="col-md-6">
-				<div class="form-group">
-					<label for="ponumber" class="col-sm-3 control-label">PO Number</label>
-					<div class="col-sm-9">
-						<input id="ponumber" type="text" class="form-control ponumber" placeholder="" maxlength="250" readonly>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="status" class="col-sm-3 control-label">Status</label>
-					<div class="col-sm-9">
-						<input id="status" type="text" class="form-control status" placeholder="" maxlength="250" readonly>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="destination" class="col-sm-3 control-label">Destination</label>
-					<div class="col-sm-9">
-						<input id="destination" type="text" class="form-control destination" placeholder="" maxlength="250" readonly>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="account" class="col-sm-3 control-label">Producer *</label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control capitalize" id="account" maxlength="50" readonly>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="street" class="col-sm-3 control-label">Street</label>
-					<div class="col-sm-9">
-						<input id="street" type="text" class="form-control street" placeholder="" maxlength="250" readonly>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="state" class="col-sm-3 control-label">State/Province</label>
-					<div class="col-sm-9">
-						<input id="state" type="text" class="form-control state" placeholder="" maxlength="250" readonly>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="city" class="col-sm-3 control-label">City</label>
-					<div class="col-sm-9">
-						<input id="city" type="text" class="form-control city" placeholder="" maxlength="250" readonly>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="zipcode" class="col-sm-3 control-label">Zip/Postal Code</label>
-					<div class="col-sm-9">
-						<input id="zipcode" type="number" class="form-control zipcode" placeholder="" maxlength="250" readonly>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-6">
-				<div class="form-group">
-					<label for="dateofpurchase" class="col-sm-3 control-label">Date of Purchase</label>
-					<div class="col-sm-9">
-						<input id="dateofpurchase" type="text" class="form-control dateofpurchase" placeholder="" maxlength="250" readonly>
-					</div>
-				</div>
-				<div class="form-group"><label for="" class="col-sm-3 control-label">Delivery Period:</label></div>
-				<div class="form-group">
-					<label for="transportdatestart" class="col-sm-3 control-label">Start</label>
-					<div class="col-sm-4">
-						<input id="transportdatestart" type="text" class="form-control transportdatestart" placeholder="" maxlength="250" readonly>
-					</div>
-					<label for="transportdateend" class="col-sm-1 control-label">End</label>
-					<div class="col-sm-4">
-						<input id="transportdateend" type="text" class="form-control transportdateend" placeholder="" maxlength="250" readonly>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="notes" class="col-sm-3 control-label">Notes</label>
-					<div class="col-sm-9">
-						<textarea class="form-control notes" id="notes" readonly></textarea>
-					</div>
-				</div>
-			</div>
-		</div>
-	</fieldset>
-	<fieldset>
-		<legend>
-			Products
-		</legend>
-		<div class="table-responsive">
-			<table id="product-list" class="table table-bordered">
-				<thead>
-					<tr>
-						<th>Product</th>
-						<th>Description</th>
-						<th>Stack No.</th>
-						<th>Unit Price</th>
-						<th>Est Tons</th>
-						<th>Bales</th>
-						<th>Total Price</th>
-						<th>Hold for Testing</th>
-					</tr>
-				</thead>
-				<tbody></tbody>
-			</table>
-		</div>
-	</fieldset>
-	<div class="form-group form-button-container">
-		<div class="pull-right">
-		<a id="edit-po" class="btn btn-default" href="<%= po_edit_url %>">Edit Purchase Order</a>
-		<a id="cancel-save" class="btn btn-default" href="<%= po_url %>">Back</a>
-		</div>
-	</div>
-</form>
+<div class="row">
+    <div class="col-md-12">
+        <div class="block-flat">
+
+          <form id="poForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+            <fieldset>
+              <legend>Details</legend>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="ponumber" class="col-sm-3 control-label">PO Number</label>
+                    <div class="col-sm-9">
+                      <input id="ponumber" type="text" class="form-control ponumber" placeholder="" maxlength="250" readonly>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="status" class="col-sm-3 control-label">Status</label>
+                    <div class="col-sm-9">
+                      <input id="status" type="text" class="form-control status" placeholder="" maxlength="250" readonly>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="destination" class="col-sm-3 control-label">Destination</label>
+                    <div class="col-sm-9">
+                      <input id="destination" type="text" class="form-control destination" placeholder="" maxlength="250" readonly>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="account" class="col-sm-3 control-label">Producer *</label>
+                    <div class="col-sm-9">
+                      <input type="text" class="form-control capitalize" id="account" maxlength="50" readonly>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="street" class="col-sm-3 control-label">Street</label>
+                    <div class="col-sm-9">
+                      <input id="street" type="text" class="form-control street" placeholder="" maxlength="250" readonly>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="state" class="col-sm-3 control-label">State/Province</label>
+                    <div class="col-sm-9">
+                      <input id="state" type="text" class="form-control state" placeholder="" maxlength="250" readonly>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="city" class="col-sm-3 control-label">City</label>
+                    <div class="col-sm-9">
+                      <input id="city" type="text" class="form-control city" placeholder="" maxlength="250" readonly>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="zipcode" class="col-sm-3 control-label">Zip/Postal Code</label>
+                    <div class="col-sm-9">
+                      <input id="zipcode" type="number" class="form-control zipcode" placeholder="" maxlength="250" readonly>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="dateofpurchase" class="col-sm-3 control-label">Date of Purchase</label>
+                    <div class="col-sm-9">
+                      <input id="dateofpurchase" type="text" class="form-control dateofpurchase" placeholder="" maxlength="250" readonly>
+                    </div>
+                  </div>
+                  <div class="form-group"><label for="" class="col-sm-3 control-label">Delivery Period:</label></div>
+                  <div class="form-group">
+                    <label for="transportdatestart" class="col-sm-3 control-label">Start</label>
+                    <div class="col-sm-4">
+                      <input id="transportdatestart" type="text" class="form-control transportdatestart" placeholder="" maxlength="250" readonly>
+                    </div>
+                    <label for="transportdateend" class="col-sm-1 control-label">End</label>
+                    <div class="col-sm-4">
+                      <input id="transportdateend" type="text" class="form-control transportdateend" placeholder="" maxlength="250" readonly>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="notes" class="col-sm-3 control-label">Notes</label>
+                    <div class="col-sm-9">
+                      <textarea class="form-control notes" id="notes" readonly></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>
+                Products
+              </legend>
+              <div class="table-responsive">
+                <table id="product-list" class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Description</th>
+                      <th>Stack No.</th>
+                      <th>Unit Price</th>
+                      <th>Est Tons</th>
+                      <th>Bales</th>
+                      <th>Total Price</th>
+                      <th>Hold for Testing</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </fieldset>
+            <div class="form-group form-button-container">
+              <div class="pull-right">
+              <a id="edit-po" class="btn btn-default" href="<%= po_edit_url %>">Edit Purchase Order</a>
+              <a id="cancel-save" class="btn btn-default" href="<%= po_url %>">Back</a>
+              </div>
+            </div>
+          </form>
+          
+        </div>
+    </div>
+</div>
