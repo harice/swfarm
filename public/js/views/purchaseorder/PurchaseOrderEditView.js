@@ -108,7 +108,7 @@ define([
 			this.$el.find('[name="location_id"][value="'+this.model.get('location').id+'"]').attr('checked', true);
 			this.producerAutoCompleteView.autoCompleteResult = [{name:account.name, id:account.id, address:address}];
 			this.$el.find('#account').val(account.name);
-			this.$el.find('#account-id').val(account.id);
+			this.$el.find('#account_id').val(account.id);
 			this.$el.find('#street').val(address[0].street);
 			this.$el.find('#state').val(address[0].address_states[0].state);
 			this.$el.find('#city').val(address[0].address_city[0].city);
@@ -123,15 +123,15 @@ define([
 				var productFields = (i > 0)? thisObj.addProduct(): thisObj.$el.find('#product-list tbody .product-item:first-child');
 				i++;
 				
-				/*productFields.find('.id').val(product.id);
-				productFields.find('.product_id').val(product.product.name);
+				productFields.find('.id').val(product.id);
+				productFields.find('.product_id').val(product.product.id);
 				productFields.find('.description').val(product.description);
 				productFields.find('.stacknumber').val(product.stacknumber);
 				productFields.find('.unitprice').val(product.unitprice);
 				productFields.find('.tons').val(product.tons);
 				productFields.find('.bales').val(product.bales);
 				productFields.find('.ishold').val(product.ishold);
-				productFields.find('.unitprice').blur();*/
+				productFields.find('.unitprice').blur();
 			});
 		},
 	});
