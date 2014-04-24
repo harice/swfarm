@@ -50,7 +50,7 @@ class Order extends BaseModel {
         'isfrombid' => 'required'
     );
     
-    public function products()
+    public function productorder()
     {
         return $this->hasMany('ProductOrder', 'order_id');
     }

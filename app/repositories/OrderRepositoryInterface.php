@@ -3,8 +3,8 @@
 interface OrderRepositoryInterface {
 	public function findAll($params);
     public function findById($id);
-    public function store($data);
-    public function update($id, $data);
+    public function addOrder($data);
+    public function updateOrder($id, $data);
     public function destroy($id);
     public function validate($data, $entity);
     public function getOrigin();
