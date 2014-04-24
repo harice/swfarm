@@ -33,4 +33,12 @@ class OrderAddress extends BaseModel {
         'zipcode' => 'required'
     );
 
+    public function addressCity(){
+        return $this->hasMany('AddressCity', 'id', 'city');
+    }
+
+    public function addressStates(){
+        return $this->hasMany('AddressStates', 'id','state');
+    }
+
 }

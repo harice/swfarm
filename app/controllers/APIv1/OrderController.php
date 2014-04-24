@@ -29,9 +29,9 @@ class OrderController extends BaseController {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function addPurchaseOrder()
 	{
-		$model = $this->repo->store(Input::all());
+		$model = $this->repo->addOrder(Input::all());
         return Response::json($model);
 	}
 
@@ -53,9 +53,9 @@ class OrderController extends BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function updatePurchaseOrder($id)
 	{
-		$model = $this->repo->update($id, Input::all());
+		$model = $this->repo->updateOrder($id, Input::all());
         return Response::json($model);
 	}
 

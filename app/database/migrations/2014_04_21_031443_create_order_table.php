@@ -22,8 +22,8 @@ class CreateOrderTable extends Migration {
             $table->integer('account_id')->unsigned();
             $table->integer('orderaddress_id')->unsigned();
             $table->timestamp('dateofsale');
-            $table->timestamp('transportdatestart');
-            $table->timestamp('transportdateend');
+            $table->timestamp('transportdatestart')->nullable();
+            $table->timestamp('transportdateend')->nullable();
             $table->integer('status_id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->text('notes')->nullable();

@@ -4,53 +4,53 @@ class OrderRepository implements OrderRepositoryInterface {
     
     public function findAll($params)
     {
-        // try
-        // {
-        //     $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
-        //     $sortby   = isset($params['sortby']) ? $params['sortby'] : 'so_number';
-        //     $orderby  = isset($params['orderby']) ? $params['orderby'] : 'dsc';
-        //     $status = isset($params['status']) ? $params['status'] : null;
-        //     $nature_of_sale = isset($params['nature_of_sale']) ? $params['nature_of_sale'] : null;
+        try
+        {
+            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+            $sortby   = isset($params['sortby']) ? $params['sortby'] : 'so_number';
+            $orderby  = isset($params['orderby']) ? $params['orderby'] : 'dsc';
+            $status = isset($params['status']) ? $params['status'] : null;
+            $nature_of_sale = isset($params['natureofsale']) ? $params['natureofsale'] : null;
             
-        //     if (!isset($params['filter']) || $params['filter'] == '')
-        //     {
-        //         $salesorders = SalesOrder::with('products.product')
-        //             ->with('customer')
-        //             ->with('address', 'address.addressStates', 'address.addressCity', 'address.addressType')
-        //             ->with('origin')
-        //             ->with('natureOfSale')
-        //             ->orderBy($sortby, $orderby);
+            if (!isset($params['filter']) || $params['filter'] == '')
+            {
+                $order = Order::with('productorder')
+                    ->with('customer')
+                    ->with('orderaddress', 'address.addressStates', 'address.addressCity', 'address.addressType')
+                    ->with('location')
+                    ->with('natureofsale')
+                    ->orderBy($sortby, $orderby);
                 
-        //         if ($status)
-        //         {
-        //             $salesorders->where('status', 'like', $status);
-        //         }
+                if ($status)
+                {
+                    $order->where('status', '=', $status);
+                }
                 
-        //         $result = $salesorders->paginate($perPage);
-        //     }
-        //     else
-        //     {
-        //         $filter = $params['filter'];
+                $result = $order->paginate($perPage);
+            }
+            else
+            {
+                // $filter = $params['filter'];
                 
-        //         $result = SalesOrder::with('products.product')
-        //             ->with('customer')
-        //             ->with('address', 'address.addressStates', 'address.addressCity', 'address.addressType')
-        //             ->with('origin')
-        //             ->with('natureOfSale')
-        //             ->where(function ($query) use ($filter){
-        //                 $query->where('status', '=', $filter);
-        //             })
-        //             ->orderBy($sortby, $orderby)
-        //             ->paginate($perPage);
-        //     }
+                // $result = SalesOrder::with('products.product')
+                //     ->with('customer')
+                //     ->with('address', 'address.addressStates', 'address.addressCity', 'address.addressType')
+                //     ->with('origin')
+                //     ->with('natureOfSale')
+                //     ->where(function ($query) use ($filter){
+                //         $query->where('status', '=', $filter);
+                //     })
+                //     ->orderBy($sortby, $orderby)
+                //     ->paginate($perPage);
+            }
                 
             
-        //     return $result;
-        // }
-        // catch (Exception $e)
-        // {
-        //     return $e->getMessage();
-        // }
+            return $result;
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
     }
     
     public function findById($id)
@@ -74,7 +74,7 @@ class OrderRepository implements OrderRepositoryInterface {
         // }
     }
     
-    public function store($data)
+    public function addOrder($data)
     {
         
         $now = new DateTime('NOW');
@@ -107,21 +107,8 @@ class OrderRepository implements OrderRepositoryInterface {
         return $result;
        
     }
-
-    public function addOrderAddress($data, $orderAddressId = null){
-        $this->validate($data, 'OrderAddress');
-
-        if($orderAddressId == null)
-            $orderaddress = new OrderAddress;
-        else
-            $orderaddress = OrderAddress::find($orderAddressId);
-        $orderaddress->fill($data);
-        $orderaddress->save();
-
-        return $orderaddress->id;
-    }
     
-    public function update($id, $data)
+    public function updateOrder($id, $data)
     {
         // $now = new DateTime('NOW');
         // $date = $now->format('Y-m-d H:i:s');
@@ -156,6 +143,19 @@ class OrderRepository implements OrderRepositoryInterface {
         });
         
         return $result;
+    }
+
+    public function addOrderAddress($data, $orderAddressId = null){
+        $this->validate($data, 'OrderAddress');
+
+        if($orderAddressId == null)
+            $orderaddress = new OrderAddress;
+        else
+            $orderaddress = OrderAddress::find($orderAddressId);
+        $orderaddress->fill($data);
+        $orderaddress->save();
+
+        return $orderaddress->id;
     }
 
     private function deleteProductOrder($orderId, $products){

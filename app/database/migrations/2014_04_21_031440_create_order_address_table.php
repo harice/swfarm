@@ -17,10 +17,15 @@ class CreateOrderAddressTable extends Migration {
 			$table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('street');
-			$table->string('city', 60);
-            $table->string('state', 60);
+			$table->integer('city')->unsigned();
+			$table->integer('state')->unsigned();
             $table->string('zipcode', 60);
+
+            $table->foreign('state')->references('id')->on('addressstates');
+			$table->foreign('city')->references('id')->on('addresscities');
 		});
+
+		
 	}
 
 	/**
