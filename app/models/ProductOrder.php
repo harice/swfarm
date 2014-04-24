@@ -15,23 +15,23 @@ class ProductOrder extends Eloquent {
      * @var array
      */
     protected $fillable = array(
-        'salesorder_id',
+		'order_id',
         'product_id',
         'description',
         'stacknumber',
         'tons',
         'bales',
-        'unitprice'
+        'unitprice',
+        'ishold'
     );
     
     public static $rules = array(
-        'salesorder_id' => 'required',
+		'order_id' => 'required',
         'product_id' => 'required',
         'description' => 'max:250',
         'stacknumber' => 'required',
         'tons' => 'required',
-        'bales' => 'required',
-        'unitprice' => 'required'
+        'bales' => 'required'
     );
     
     public function salesOrder()
@@ -42,6 +42,10 @@ class ProductOrder extends Eloquent {
     public function product()
     {
         return $this->belongsTo('Product', 'product_id');
+    }
+
+    public function order(){
+        return $this->belongsTo('Order', 'order_id');
     }
 
 }
