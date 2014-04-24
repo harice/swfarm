@@ -248,7 +248,7 @@ define([
 					$('.'+addressFieldClassRequired[i]).each(function() {
 						$(this).rules('add', {
 							required: true,
-							valid_zipcode: true,
+							// valid_zipcode: true,
 							messages: {
 								number: 'Please enter a valid zip code.'
 							},

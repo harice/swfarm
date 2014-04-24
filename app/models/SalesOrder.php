@@ -17,7 +17,7 @@ class SalesOrder extends BaseModel {
     protected $fillable = array(
         'so_number',
         'origin_id',
-        'nature_of_sale_id',
+        'natureofsale_id',
         'customer_id',
         'address_id',
         'date_of_sale',
@@ -37,7 +37,7 @@ class SalesOrder extends BaseModel {
      */
 	public static $rules = array(
         'origin_id' => 'required',
-        'nature_of_sale_id' => 'required',
+        'natureofsale_id' => 'required',
         'customer_id' => 'required',
         'delivery_date_start' => 'required',
         'delivery_date_end' => 'required'
@@ -65,7 +65,7 @@ class SalesOrder extends BaseModel {
     
     public function natureOfSale()
     {
-        return $this->belongsTo('NatureOfSale');
+        return $this->belongsTo('NatureOfSale', 'natureofsale_id');
     }
 
 }
