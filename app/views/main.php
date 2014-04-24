@@ -27,8 +27,10 @@
 
 	<body class="texture">
 		<div id="cl-wrapper" class="login-container">
+
 			<div class="middle-login"></div>
-			<div class="cl-sidebar" style="display:none"></div>
+
+			<div id="cl-sidebar" class="cl-sidebar" style="display:none"></div>
 			<div class="container-fluid" id="pcont" style="display:none">
 				<div id="head-nav" class="navbar navbar-default"></div>
 				<div class="cl-mcont" id="cl-mcont"></div>

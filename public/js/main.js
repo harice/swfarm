@@ -33,7 +33,7 @@ require.config({
 			exports: 'Base64'
 		},
 		'backbone': {
-			deps: ['underscore', 'jquery', 'bootstrap', 'growl'],
+			deps: ['underscore', 'jquery', 'bootstrap', 'growl','jquerypushmenu','jquerynanoscroller','behaviourcore'],
 			exports: 'Backbone'
 		},
 		'bootstrapdatepicker': {

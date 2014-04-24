@@ -77,7 +77,6 @@ define([
               if(that.get('redirectFrom')){
                 var path = that.get('redirectFrom');
                 that.unset('redirectFrom');
-                Backbone.View.prototype.refreshHeader();
                 Backbone.history.navigate(path, { trigger : true });
              }else{
                  Backbone.history.navigate('#/'+Const.URL.DASHBOARD, { trigger : true });

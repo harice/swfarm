@@ -5,7 +5,8 @@ define([
 	'router',
 	'models/session/SessionModel',
 	'views/layout/HeaderView',
-], function(Backbone, Bootstrap, Router, SessionModel, HeaderView){
+	'views/layout/SideMenuView',
+], function(Backbone, Bootstrap, Router, SessionModel, HeaderView, SideMenuView){
 	var initialize = function(){
 		
 		Backbone.View.prototype.close = function () {
@@ -17,7 +18,28 @@ define([
 		Backbone.View.prototype.refreshHeader = function () {
 			var headerView = new HeaderView();
 			headerView.render();
+
+			var sideMenu = new SideMenuView();
+			sideMenu.render();
 		};
+
+		Backbone.View.prototype.showLogin = function () {
+			$('body').addClass('texture');
+			$('.middle-login').show();
+			$('#cl-wrapper').addClass('login-container');
+			$('.cl-sidebar').hide();
+			$('#pcont').hide();
+		}
+
+		Backbone.View.prototype.showContent = function () {
+			if($('body').hasClass('texture')) {
+				$('body').removeClass('texture');
+				$('.middle-login').hide();
+				$('#cl-wrapper').removeAttr('class');
+				$('.cl-sidebar').removeAttr('style');
+				$('#pcont').removeAttr('style');
+			}
+		}
 		
 		Backbone.View.prototype.displayGrowl = function (message, type) {
 			if(type == null)

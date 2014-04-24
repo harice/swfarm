@@ -701,8 +701,9 @@ pre {
 }
 .profile_menu img {
   margin-right: 5px;
-  border-radius: 2px;
-  -webkit-border-radius: 2px;
+  /*border-radius: 2px;
+  -webkit-border-radius: 2px;*/
+  width: 30px;
 }
 /*END - Profile menu*/
 /*BODY*/
@@ -930,7 +931,7 @@ input::-webkit-input-speech-button {
   font-size: 21px;
 }
 .sidebar-logo {
-  background: #19b698 url(../images/logo.png) no-repeat 15px 19px;
+  background: #19b698 url(../images/logo.png) no-repeat 15px 12px;
   padding: 15px 20px;
   display: block;
   height: 64px;
@@ -1035,7 +1036,7 @@ input::-webkit-input-speech-button {
 }
 .sb-collapsed .sidebar-logo {
   padding: 4px 0 5px;
-  background: url("../images/logo.png") no-repeat scroll 23px -48px #19b698;
+  background: url("../images/logo.png") no-repeat scroll 11px -48px #19b698;
 }
 .sb-collapsed .sidebar-logo .logo a {
   content: " ";
