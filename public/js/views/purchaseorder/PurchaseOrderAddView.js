@@ -47,9 +47,9 @@ define([
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
-				productFieldClass: ['product_id', 'description', 'productname', 'stacknumber', 'unitprice', 'tons', 'bales', 'ishold'],
+				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'ishold'],
 				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales'],
-				productFieldExempt: ['productname'],
+				productFieldExempt: [],
 				productFieldSeparator: '.',
 			};
 			
@@ -120,8 +120,8 @@ define([
 				submitHandler: function(form) {
 					var data = thisObj.formatFormField($(form).serializeObject());
 					
-					if(this.poId == null || this.poId == '' || this.poId == 'undefined')
-						data['isfrombid'] = false;
+					//if(this.poId == null || this.poId == '' || this.poId == 'undefined')
+						//data['isfrombid'] = false;
 					
 					console.log(data);
 					
