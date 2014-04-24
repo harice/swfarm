@@ -4,12 +4,11 @@ class OrderRepository implements OrderRepositoryInterface {
     
     public function getAllOrders($params)
     {
-        
         $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
         $sortby   = isset($params['sortby']) ? $params['sortby'] : 'dateofsale';
         $orderby  = isset($params['orderby']) ? $params['orderby'] : 'desc';
         $status = isset($params['status']) ? $params['status'] : null;
-        $nature_of_sale = isset($params['natureofsale']) ? $params['natureofsale'] : null;
+        $natureofsale = isset($params['natureofsale']) ? $params['natureofsale'] : null;
         $date = isset($params['date']) ? $params['date'] : null; //default date is the present date
         $filter = isset($params['search']) ? $params['search'] : null;
         
@@ -21,15 +20,30 @@ class OrderRepository implements OrderRepositoryInterface {
                 ->orderBy($sortby, $orderby);
 
         if ($filter != null){
-            
-        }
-        else {
-            $filter = $params['filter'];
+            $order = $order->where(function($query) use ($filter){
+                     $query->orWhereHas('account', function($query) use ($filter){
+                          $query->where('name', 'like', '%'.$filter.'%');
+
+                      })
+                      ->orWhereHas('location', function($query) use ($filter){
+                          $query->where('destination', 'like', '%'.$filter.'%');
+
+                      })
+                      ->orWhere(function ($query) use ($filter){
+                          $query->orWhere('bidnumber','like','%'.$filter.'%');
+                      });
+                  })
+                  ->where('order_number', 'like', '%'.$filter.'%')
+                  ->whereNull('deleted_at');
         }
 
         //status filter
         if ($status){
             $order->where('status_id', '=', $status);
+        }
+
+        if ($natureofsale){
+            $order->where('natureofsale_id', '=', $natureofsale);
         }
 
         //date filter
@@ -73,11 +87,15 @@ class OrderRepository implements OrderRepositoryInterface {
         $data['ordertype'] = 1; //PO type
         $data['order_number'] = $this->generateOrderNumber(1);
         $data['dateofsale'] = $date;
-        $data['status_id'] = 1; //Open status
         $data['user_id'] = Auth::user()->id;
+        $data['isfrombid'] = isset($data['isfrombid']) ? $data['isfrombid'] : 0;
+
+        if($data['isfrombid'])
+            $data['status_id'] = 4; //Pending status
+        else
+            $data['status_id'] = 1; //Open status
 
         $data['businessaddress'] = $this->getBusinessAddress($data['account_id']);
-        // $data['address_id'] = $customer_address['id'];
         
         $this->validate($data, 'Order', $data['ordertype']);
        
@@ -109,15 +127,18 @@ class OrderRepository implements OrderRepositoryInterface {
         // $data['status_id'] = 1; //Open status
         // $data['user_id'] = Auth::user()->id;
 
+        //for purchase order
+        $data['createPO'] = isset($data['createPO']) ? $data['createPO'] : 0;
+        if($data['createPO']) //update PO status when true
+            $data['status_id'] = 1; //Open status
+
         $data['businessaddress'] = $this->getBusinessAddress($data['account_id']);
-        // $data['address_id'] = $customer_address['id'];
         
         $this->validate($data, 'Order', $data['ordertype']);
        
         $result = DB::transaction(function() use ($id, $data)
         {   
             $order = Order::find($id);
-
 
             $this->addOrderAddress($data['businessaddress'], $order->orderaddress_id); //just editing the address
 
@@ -303,6 +324,10 @@ class OrderRepository implements OrderRepositoryInterface {
 
     public function getOrderDestination(){
         return Location::whereIn('id',array(1,2,3))->get()->toArray(); //return destination for orders
+    }
+
+    public function getNatureOfSaleList(){
+        return NatureOfSale::whereIn('id',array(1,2,3))->get()->toArray(); //return nature of sale for orders
     }
     
 }

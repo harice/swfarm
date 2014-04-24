@@ -100,4 +100,9 @@ class OrderController extends BaseController {
     	return Response::json($model);
     }
 
+    public function getNatureOfSaleList(){
+    	$model = $this->repo->getNatureOfSaleList();
+    	return Response::json($model);
+    }
+
 }
