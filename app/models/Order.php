@@ -46,8 +46,7 @@ class Order extends BaseModel {
 
     public static $po_rules = array(
         'location_id' => 'required',
-        'account_id' => 'required',
-        'isfrombid' => 'required'
+        'account_id' => 'required'
     );
     
     public function productorder()
