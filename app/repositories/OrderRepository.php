@@ -2,42 +2,43 @@
 
 class OrderRepository implements OrderRepositoryInterface {
     
-    public function getAllOrders($params)
+    public function getAllOrders($params, $orderType = 1) //1 for PO, 2 for SO
     {
         $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
-        $sortby   = isset($params['sortby']) ? $params['sortby'] : 'dateofsale';
+        $sortby   = isset($params['sortby']) ? $params['sortby'] : 'created_at';
         $orderby  = isset($params['orderby']) ? $params['orderby'] : 'desc';
         $status = isset($params['status']) ? $params['status'] : null;
         $natureofsale = isset($params['natureofsale']) ? $params['natureofsale'] : null;
+        $location = isset($params['location']) ? $params['location'] : null;
         $date = isset($params['date']) ? $params['date'] : null; //default date is the present date
         $filter = isset($params['search']) ? $params['search'] : null;
         
         $order = Order::with('productorder')
-                ->with('account')
-                ->with('orderaddress', 'orderaddress.addressStates', 'orderaddress.addressCity')
-                ->with('location')
-                ->with('natureofsale')
-                ->orderBy($sortby, $orderby);
+                        ->with('account')
+                        ->with('orderaddress', 'orderaddress.addressStates', 'orderaddress.addressCity')
+                        ->with('location')
+                        ->with('status');
 
+        if($orderType == 2) //for SO only
+            $order = $order->with('natureofsale');
+
+        $order = $order->where('ordertype', '=', $orderType)
+                       ->orderBy($sortby, $orderby);
+
+        //filters
         if ($filter != null){
             $order = $order->where(function($query) use ($filter){
-                     $query->orWhereHas('account', function($query) use ($filter){
-                          $query->where('name', 'like', '%'.$filter.'%');
+                         $query->orWhereHas('account', function($query) use ($filter){
+                              $query->where('name', 'like', '%'.$filter.'%');
 
+                          })
+                          ->orWhere(function ($query) use ($filter){
+                              $query->orWhere('order_number','like','%'.$filter.'%');
+                          });
                       })
-                      ->orWhereHas('location', function($query) use ($filter){
-                          $query->where('destination', 'like', '%'.$filter.'%');
-
-                      })
-                      ->orWhere(function ($query) use ($filter){
-                          $query->orWhere('bidnumber','like','%'.$filter.'%');
-                      });
-                  })
-                  ->where('order_number', 'like', '%'.$filter.'%')
-                  ->whereNull('deleted_at');
+                      ->whereNull('deleted_at');
         }
 
-        //status filter
         if ($status){
             $order->where('status_id', '=', $status);
         }
@@ -46,36 +47,51 @@ class OrderRepository implements OrderRepositoryInterface {
             $order->where('natureofsale_id', '=', $natureofsale);
         }
 
-        //date filter
+        if ($location){
+            $order->where('location_id', '=', $natureofsale);
+        }
+
         if($date != null){
-          $order = $order->where('dateofsale', 'like', $date.'%'); 
+          $order = $order->where('created_at', 'like', $date.'%'); 
         }
             
         $result = $order->paginate($perPage);
+
+        //get the total price of products (unit price x tons)
+        foreach($result as $item){
+          $item['totalPrice'] = 0.00;
+          foreach($item['productorder'] as $productorder){
+            if($productorder['unitprice'] != null){
+              $item['totalPrice'] += $productorder['unitprice'] * $productorder['tons'];
+            }
+          }
+        }
 
         return $result;
         
     }
     
-    public function findById($id)
+    public function getOrder($id, $orderType = 1)
     {
-        // try
-        // {
-        //     $salesorder = SalesOrder::with('products.product')
-        //         ->with('customer')
-        //         ->with('address', 'address.addressStates', 'address.addressCity', 'address.addressType')
-        //         ->with('origin')
-        //         ->with('natureOfSale')
-        //         ->find($id);
+        $order = Order::with('productorder')
+                ->with('account')
+                ->with('orderaddress', 'orderaddress.addressStates', 'orderaddress.addressCity')
+                ->with('location');
 
-        //     if(!$salesorder) throw new NotFoundException('Sales Order Not Found');
-            
-        //     return $salesorder;
-        // }
-        // catch (Exception $e)
-        // {
-        //     return $e->getMessage();
-        // }
+        if($orderType == 2) //for SO only
+            $order = $order->with('natureofsale');
+
+        $order = $order->find($id);
+
+        if($order){
+          $response = $order->toArray();
+        } else {
+          $response = array(
+            'error' => true,
+            'message' => "Order not found");
+        }
+
+        return $response;
     }
     
     public function addOrder($data)
@@ -86,7 +102,6 @@ class OrderRepository implements OrderRepositoryInterface {
         
         $data['ordertype'] = 1; //PO type
         $data['order_number'] = $this->generateOrderNumber(1);
-        $data['dateofsale'] = $date;
         $data['user_id'] = Auth::user()->id;
         $data['isfrombid'] = isset($data['isfrombid']) ? $data['isfrombid'] : 0;
 
@@ -112,7 +127,12 @@ class OrderRepository implements OrderRepositoryInterface {
             return $order;
         });
         
-        return $result;
+        if($result){
+            if($data['ordertype'] == 1)
+                return array("error" => "false", "message" => "Purchase order successfully created");
+            else
+                return array("error" => "false", "message" => "Sales order successfully created");
+        }
        
     }
     
@@ -123,7 +143,6 @@ class OrderRepository implements OrderRepositoryInterface {
         
         $data['ordertype'] = 1; //PO type
         // $data['order_number'] = $this->generateOrderNumber(1);
-        // $data['dateofsale'] = $date;
         // $data['status_id'] = 1; //Open status
         // $data['user_id'] = Auth::user()->id;
 
@@ -153,7 +172,12 @@ class OrderRepository implements OrderRepositoryInterface {
             return $order;
         });
         
-        return $result;
+        if($result){
+            if($data['ordertype'] == 1)
+                return array("error" => "false", "message" => "Purchase order successfully created");
+            else
+                return array("error" => "false", "message" => "Sales order successfully created");
+        }
     }
 
     public function addOrderAddress($data, $orderAddressId = null){
@@ -201,10 +225,16 @@ class OrderRepository implements OrderRepositoryInterface {
     return $productOrder;
   }
     
-    public function destroy($id)
-    {
-        // $salesorder = $this->findById($id);
-        // return $salesorder->delete();
+    public function deleteOrder($id)
+    {   $result = false;
+        $order = Order::find($id);
+        if($order)
+            $result = $order->delete();
+        if($result)
+            return array("error" => false, "message" => "Successfully deleted");
+        else {
+            return array("error" => true, "message" => "Order not found.");
+        }
     }
     
     public function validate($data, $entity, $orderType = null)
