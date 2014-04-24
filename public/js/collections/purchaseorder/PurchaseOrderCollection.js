@@ -9,14 +9,14 @@ define([
 		initialize: function(option){
 			this.runInit();
 			this.setDefaultURL(this.url);
-			/*this.setSortOptions(
+			this.setSortOptions(
 				{
-					currentSort: 'pickupdate',
+					currentSort: 'created_at',
 					sort: {
-						pickupdate: false,
+						created_at: false,
 					},
 				}
-			);*/
+			);
 		},
 	});
 

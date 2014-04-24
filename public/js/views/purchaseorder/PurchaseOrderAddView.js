@@ -123,7 +123,7 @@ define([
 					//if(this.poId == null || this.poId == '' || this.poId == 'undefined')
 						//data['isfrombid'] = false;
 					
-					console.log(data);
+					//console.log(data);
 					
 					var purchaseOrderModel = new PurchaseOrderModel(data);
 					

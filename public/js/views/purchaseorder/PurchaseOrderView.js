@@ -13,7 +13,7 @@ define([
 	'models/purchaseorder/PurchaseOrderModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderViewTemplate.html',
-	'text!templates/purchaseorder/purchaseOrderProductItemTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderViewProductItemTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderDestinationTemplate.html',
 	'global',
 	'constant',
@@ -116,7 +116,7 @@ define([
 		},
 		
 		supplyPOData: function () {
-			/*var thisObj = this;
+			var thisObj = this;
 			
 			var account = this.model.get('account');
 			var address = [this.model.get('orderaddress')];
@@ -135,21 +135,24 @@ define([
 			this.$el.find('#transportdateend').val(this.model.get('transportdateend').split(' ')[0]);
 			this.$el.find('#notes').val(this.model.get('notes'));
 			
-			var i= 0;
 			_.each(products, function (product) {
-				var productFields = (i > 0)? thisObj.addProduct(): thisObj.$el.find('#product-list tbody .product-item:first-child');
-				i++;
+				var unitprice = (!isNaN(product.unitprice))? product.unitprice : 0;
+				var tons = (!isNaN(product.tons))? product.tons : 0;
+				var totalprice = parseFloat(unitprice * tons).toFixed(2);
 				
-				productFields.find('.id').val(product.id);
-				productFields.find('.product_id').val(product.product.id);
-				productFields.find('.description').val(product.description);
-				productFields.find('.stacknumber').val(product.stacknumber);
-				productFields.find('.unitprice').val(product.unitprice);
-				productFields.find('.tons').val(product.tons);
-				productFields.find('.bales').val(product.bales);
-				productFields.find('.ishold').val(product.ishold);
-				productFields.find('.unitprice').blur();
-			});*/
+				var variables = {
+					productname: product.product.name,
+					description: product.description,
+					stacknumber: product.stacknumber,
+					unitprice: parseFloat(unitprice).toFixed(2),
+					tons: parseFloat(tons).toFixed(2),
+					bales: product.bales,
+					totalprice: totalprice,
+					ishold: (parseInt(product.ishold) == 1)? 'Yes' : 'No',
+				};
+				var template = _.template(productItemTemplate, variables);
+				thisObj.$el.find('#product-list tbody').append(template);
+			});
 		},
 	});
 

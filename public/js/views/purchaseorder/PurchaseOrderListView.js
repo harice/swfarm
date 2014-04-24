@@ -110,8 +110,8 @@ define([
 				todayHighlight: true,
 				format: 'yyyy-mm-dd',
 			}).on('changeDate', function (ev) {
-				//thisObj.collection.setDate($('#filter-date-of-purchase .input-group.date input').val());
-				//thisObj.renderList(1);
+				thisObj.collection.setDate($('#filter-date-of-purchase .input-group.date input').val());
+				thisObj.renderList(1);
 			});
 			
 			this.$el.find('#filter-pickup-start .input-group.date').datepicker({
@@ -135,6 +135,17 @@ define([
 				//thisObj.collection.setFilter('pickupend', $('#filter-pickup-end .input-group.date input').val());
 				//thisObj.renderList(1);
 			});
+		},
+		
+		events: {
+			'click .sort-date-of-po' : 'sortPODate',
+			//'click .cancel-po' : 'cancelPO',
+			//'change .bidDestination' : 'filterByDestination',
+			//'change .statusFilter' : 'filterByStatus',
+		},
+		
+		sortPODate: function () {
+			this.sortByField('created_at');
 		},
 	});
 
