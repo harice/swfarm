@@ -131,7 +131,6 @@ define([
 				Backbone.View.prototype.showLogin();
 			} else {
 				Backbone.View.prototype.showContent();
-				Backbone.View.prototype.refreshHeader();
 			}
 
 			if(path === '#/'+Const.URL.LOGOUT && isAuth)
@@ -264,15 +263,8 @@ define([
 			this.closeView();
 			console.log('default page');
 		});
-		
+
 		Global.getGlobalVars().app_router = app_router;
-		
-		var headerView = new HeaderView();
-        headerView.render();
-
-        var sideMenu = new SideMenuView();
-		sideMenu.render();
-
 		Backbone.history.start();
 	};
 	return { 

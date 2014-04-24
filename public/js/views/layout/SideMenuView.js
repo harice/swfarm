@@ -16,35 +16,10 @@ define([
 		
 		render: function(){
 			var innerTemplateVariables = {
-				'admin_url': '#/'+Const.URL.ADMIN,
-				'user_url': '#/'+Const.URL.USER,
-				'role_url': '#/'+Const.URL.ROLE,
-				'permission_url': '#/'+Const.URL.PERMISSION,
-				'audittrail_url': '#/'+Const.URL.AUDITTRAIL,
-
-				'contact_url'	: '#/'+Const.URL.CONTACT,
-				'accounts_url'	: '#/'+Const.URL.ACCOUNT,
-				'purchases_url'	: '#/',
-				
-				'bid_url'       : '#/'+Const.URL.BID,
-				'purchase_order_url': '#/'+Const.URL.PO,
-                'weightinfo_url': '#/'+Const.URL.WEIGHTINFO,
-				
-				'sales_url'		: '#/',
-				'inventory_url'	: '#/',
-				'product_url'	: '#/'+Const.URL.PRODUCT,
-				'reports_url'	: '#/',
-
-				'logout_url'	: '#/'+Const.URL.LOGOUT,
-				'login_url'		: '#/'+Const.URL.LOGIN,
-				
-				'profile_view_url'	: '#/'+Const.URL.PROFILE,
-				'profile_edit_url'		: '#/'+Const.URL.PROFILE+'/'+Const.CRUD.EDIT,
-				
-				'menu'			: Const.MENU,
-				'token'			: Session.get('token'),
-				'permission'	: Session.get('permission'),
-				'su'			: Session.get('su'),
+				token			: Session.get('token'),
+				permission		: Session.get('permission').split(',').map(Number),
+				su				: parseInt(Session.get('su')),
+				constant		: Const
 			};
 
 			var compiledTemplate = _.template(SideMenuTemplate, innerTemplateVariables);

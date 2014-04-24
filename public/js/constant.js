@@ -1,5 +1,6 @@
 define(function () {
     var constant = {
+    	'SU': 1,
 		'URL': {
 			'LOGIN':'login',
 			'LOGOUT':'logout',
@@ -18,41 +19,55 @@ define(function () {
             'WEIGHTINFO': 'purchases/weightinfo'
 		},
 		'MENU': {
-			'PURCHASE': {
+			'PURCHASES': {
 				'VIEW'	:1,
 				'ADD'	:2,
 				'EDIT'	:3,
-				'DELETE':4
+				'CANCEL':4
 			},
 			'SALES': {
 				'VIEW'	:5,
 				'ADD'	:6,
 				'EDIT'	:7,
-				'DELETE':8
+				'CANCEL':8
 			},
-			'PRODUCT': {
+			'PRODUCTS': {
 				'VIEW'	:9,
 				'ADD'	:10,
 				'EDIT'	:11,
 				'DELETE':12
 			},
-			'CONTACT': {
+			'CONTACTS': {
 				'VIEW'	:13,
 				'ADD'	:14,
 				'EDIT'	:15,
 				'DELETE':16
 			},
-			'USER': {
+			'USERS': {
 				'VIEW'	:17,
 				'ADD'	:18,
 				'EDIT'	:19,
 				'DELETE':20
 			},
-			'ROLE': {
+			'ROLES': {
 				'VIEW'	:21,
 				'ADD'	:22,
 				'EDIT'	:23,
 				'DELETE':24
+			},
+			'ACCOUNTS': {
+				'VIEW'	:25,
+				'ADD'	:26,
+				'EDIT'	:27,
+				'DELETE':28
+			},
+			'REPORTS': {
+				'VIEW'		:29,
+				'GENERATE'	:30
+			},
+			'ADMIN': {
+				'VIEW'	:31,
+				'TRAIL'	:32
 			}
 		},
 		'CRUD': {

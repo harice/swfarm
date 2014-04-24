@@ -9,6 +9,9 @@ define([
 ], function(Backbone, Bootstrap, Router, SessionModel, HeaderView, SideMenuView){
 	var initialize = function(){
 		
+		var headerView;
+		var sideMenu;
+
 		Backbone.View.prototype.close = function () {
 			this.$el.empty();
 			this.unbind();
@@ -16,14 +19,18 @@ define([
 		};
 
 		Backbone.View.prototype.refreshHeader = function () {
-			var headerView = new HeaderView();
-			headerView.render();
+			this.headerView = new HeaderView();
+			this.headerView.render();
 
-			var sideMenu = new SideMenuView();
-			sideMenu.render();
+			this.sideMenu = new SideMenuView();
+			this.sideMenu.render();
 		};
 
 		Backbone.View.prototype.showLogin = function () {
+			if( this.headerView != null) {
+				this.headerView.close();
+				this.sideMenu.close();
+			}
 			$('body').addClass('texture');
 			$('.middle-login').show();
 			$('#cl-wrapper').addClass('login-container');
@@ -33,6 +40,9 @@ define([
 
 		Backbone.View.prototype.showContent = function () {
 			if($('body').hasClass('texture')) {
+
+				Backbone.View.prototype.refreshHeader();
+
 				$('body').removeClass('texture');
 				$('.middle-login').hide();
 				$('#cl-wrapper').removeAttr('class');

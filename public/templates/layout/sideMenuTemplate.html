@@ -5,7 +5,7 @@
     <div class="content">
       <div class="sidebar-logo">
         <div class="logo">
-            <a href="#/dashboard"></a>
+            <a href="#/<%= constant.URL.DASHBOARD %>"></a>
         </div>
       </div>
       <div class="side-user">
@@ -13,31 +13,69 @@
         <div class="info"></div>
       </div>
       <ul class="cl-vnavigation">
-        <li class="active" ><a href="#/dashboard"><i class="fa fa-home"></i><span>Dashboard</span></a></li>
+        <li class="active" ><a href="#/<%= constant.URL.DASHBOARD %>"><i class="fa fa-home"></i><span>Dashboard</span></a></li>
 
-        <li><a href="<%= contact_url %>"><i class="fa fa-users"></i><span>Contacts</span></a></li>
-        <li><a href="<%= accounts_url %>"><i class="fa fa-building-o"></i><span>Accounts</span></a></li>
+        <% if(_.contains(permission,constant.MENU.CONTACTS.VIEW) || _.isEqual(su,constant.SU)) { %>
+        <li><a href="#/<%= constant.URL.CONTACT %>"><i class="fa fa-users"></i><span>Contacts</span></a></li>
+        <% } %>
 
+        <% if(_.contains(permission,constant.MENU.ACCOUNTS.VIEW) || _.isEqual(su,constant.SU)) { %>
+        <li><a href="#/<%= constant.URL.ACCOUNT %>"><i class="fa fa-building-o"></i><span>Accounts</span></a></li>
+        <% } %>
+
+        <% if(_.contains(permission,constant.MENU.PURCHASES.VIEW) || _.isEqual(su,constant.SU)) { %>
         <li class="parent"><a href="#"><i class="fa fa-file"></i><span>Purchases</span></a>
           <ul class="sub-menu">
-            <li><a href="<%= bid_url %>">Bids</a></li>
-            <li><a href="<%= purchase_order_url %>">Purchase Order</a></li>
+            <li><a href="#/<%= constant.URL.BID %>">Bids</a></li>
+            <li><a href="#/<%= constant.URL.PO %>">Purchase Order</a></li>
           </ul>
         </li>
+        <% } %>
 
-        <li><a href="<%= sales_url %>"><i class="fa fa-folder-o"></i><span>Sales</span></a></li>
-        <li><a href="<%= inventory_url %>"><i class="fa fa-archive"></i><span>Inventory</span></a></li>
-        <li><a href="<%= product_url %>"><i class="fa fa-barcode"></i><span>Products</span></a></li>
-        <li><a href="<%= reports_url %>"><i class="fa fa-bar-chart-o"></i><span>Reports</span></a></li>
+        <% if(_.contains(permission,constant.MENU.SALES.VIEW) || _.isEqual(su,constant.SU)) { %>
+        <li><a href="#/"><i class="fa fa-folder-o"></i><span>Sales</span></a></li>
+        <% } %>
 
+        <li><a href="#/"><i class="fa fa-archive"></i><span>Inventory</span></a></li>
+
+        <% if(_.contains(permission,constant.MENU.PRODUCTS.VIEW) || _.isEqual(su,constant.SU)) { %>
+        <li><a href="#/<%= constant.URL.PRODUCT %>"><i class="fa fa-barcode"></i><span>Products</span></a></li>
+        <% } %>
+
+        <% if(_.contains(permission,constant.MENU.REPORTS.VIEW) || _.isEqual(su,constant.SU)) { %>
+        <li><a href="#/"><i class="fa fa-bar-chart-o"></i><span>Reports</span></a></li>
+        <% } %>
+
+        <% 
+          if(
+              _.contains(permission,constant.MENU.USERS.VIEW) || 
+              _.contains(permission,constant.MENU.ROLES.VIEW) || 
+              _.contains(permission,constant.MENU.ADMIN.VIEW) || 
+              _.contains(permission,constant.MENU.ADMIN.TRAIL) || 
+              _.isEqual(su,constant.SU)
+            ) { 
+        %>
         <li class="parent"><a href="#"><i class="fa fa-cogs"></i><span>Administration</span></a>
           <ul class="sub-menu">
-            <li><a href="<%= admin_url %>">Dashboard</a></li>
-            <li><a href="<%= user_url %>">Users</a></li>
-            <li><a href="<%= role_url %>">Roles</a></li>
-            <li><a href="<%= audittrail_url %>">Audit Trail</a></li>
+
+            <% if(_.contains(permission,constant.MENU.ADMIN.VIEW) || _.isEqual(su,constant.SU)) { %>
+            <li><a href="#/<%= constant.URL.ADMIN %>">Dashboard</a></li>
+            <% } %>
+
+            <% if(_.contains(permission,constant.MENU.USERS.VIEW) || _.isEqual(su,constant.SU)) { %>
+            <li><a href="#/<%= constant.URL.USER %>">Users</a></li>
+            <% } %>
+
+            <% if(_.contains(permission,constant.MENU.ROLES.VIEW) || _.isEqual(su,constant.SU)) { %>
+            <li><a href="#/<%= constant.URL.ROLE %>">Roles</a></li>
+            <% } %>
+
+            <% if(_.contains(permission,constant.MENU.ADMIN.VIEW) || _.isEqual(su,constant.SU)) { %>
+            <li><a href="#/<%= constant.URL.AUDITTRAIL %>">Audit Trail</a></li>
+            <% } %>
           </ul>
         </li>
+        <% } %>
 
       </ul>
     </div>

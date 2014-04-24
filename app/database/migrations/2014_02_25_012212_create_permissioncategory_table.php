@@ -15,7 +15,7 @@ class CreatePermissioncategoryTable extends Migration {
 		Schema::create('permissioncategory',function($table){
 			$table->increments('id');
 			$table->string('name')->unique();
-			$table->string('link')->nullable();
+			$table->integer('sort')->unsigned()->nullable();
 		});
 	}
 
