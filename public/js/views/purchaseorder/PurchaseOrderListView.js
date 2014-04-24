@@ -30,7 +30,7 @@ define([
 			this.bidDestinationCollection = new BidDestinationCollection();
 			this.bidDestinationCollection.on('sync', function() {
 				thisObj.displayPO();
-				thisObj.renderList(1);
+				//thisObj.renderList(1);
 				this.off('sync');
 			});
 			this.bidDestinationCollection.on('error', function(collection, response, options) {
