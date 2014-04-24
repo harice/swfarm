@@ -413,13 +413,13 @@ define([
 		},
 		
 		cancelPO: function () {
-			if(this.soId != null) {
+			if(this.poId != null) {
 				var thisObj = this;
 				
 				var verifyCancel = confirm('Are you sure you want to cancel this Purchase Order?');
 				
 				if(verifyCancel) {
-					var purchaseOrderModel = new PurchaseOrderModel({id:this.soId});
+					var purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
 					purchaseOrderModel.setCancelURL();
 					purchaseOrderModel.save(
 						null, 
