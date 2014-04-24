@@ -1,7 +1,11 @@
-<div class="container">
-	<h1 class="margin-0"><%= h1_title %> <% if (typeof(h1_small) != "undefined") { %> <small class="transform-upper"><%= h1_small %></small><% } %></h1>
-	<hr />
-	<div class="content">
-		<%= sub_content_template %>
-	</div>
+<div id="page" class="row">
+    <div class="col-md-12">
+        <div class="block-flat">
+            <h1 class="margin-0"><%= h1_title %> <% if (typeof(h1_small) != "undefined") { %> <small class="transform-upper"><%= h1_small %></small><% } %></h1>
+            <hr />
+            <div class="content">
+                <%= sub_content_template %>
+            </div>
+        </div>
+    </div>
 </div>
