@@ -68,7 +68,7 @@ define([
 			var statusTemplate = _.template(purchaseOrderStatusTemplate, {'statuses': this.poStatusCollection.models});
 			var destinationTemplate = _.template(purchaseOrderDestinationTemplate, {'destinations': this.destinationCollection.models});
 			var innerTemplateVar = {
-				'po_add_url' : '#/'+Const.URL.SO+'/'+Const.CRUD.ADD,
+				'po_add_url' : '#/'+Const.URL.PO+'/'+Const.CRUD.ADD,
 				'destination_filters' : destinationTemplate.replace(/<label class="radio-inline">/g, '<li>').replace(/<\/label>/g, '</li>'),
 				'status_filters' : statusTemplate,
 			};
@@ -89,7 +89,7 @@ define([
 			var data = {
 				po_url: '#/'+Const.URL.PO,
 				po_edit_url: '#/'+Const.URL.PO+'/'+Const.CRUD.EDIT,
-				po_sched_url: '',
+				po_sched_url: '#/'+Const.URL.PICKUPSCHEDULE,
 				pos: this.collection.models,
 				_: _ 
 			};
