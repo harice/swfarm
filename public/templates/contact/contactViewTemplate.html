@@ -1,8 +1,8 @@
 <div class="row">
     <div class="col-md-12">
         <div class="block-flat">
+          
             <dl class="dl-horizontal">
-                
               <% if(!_.isEmpty(contact.get("firstname"))) { %>
                 <dt>Full Name</dt>
                 <dd><%= contact.get("lastname") %>, <%= contact.get("firstname") %></dd>
@@ -43,6 +43,7 @@
                     <a href="#" id="delete" class="btn btn-link">Delete</a>
                 </dd>
             </dl>
-        </div>
+          
+        </div> <!-- /.block-flat -->
     </div>
 </div>
