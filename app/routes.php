@@ -35,6 +35,8 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
   	Route::get('account/getCitiesByState/{id}', 'APIv1\AccountController@getCitiesByState');
   	Route::get('account/getAccountsByName', 'APIv1\AccountController@getAccountsByName');
   	Route::get('account/getZipcodeUsingCity/{id}', 'APIv1\AccountController@getZipcodeUsingCity');
+    Route::get('account/getAddress', 'APIv1\AccountController@getAddress');
+	Route::get('account/getCustomerAccount', 'APIv1\AccountController@getCustomerAccount');
 	Route::resource('account', 'APIv1\AccountController');
 
 	Route::get('contact/search', 'APIv1\ContactController@search');
@@ -42,8 +44,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 
 	Route::get('po', 'APIv1\BidController@getPurchaseOrder');
 	Route::put('po/addUnitPriceToBidProduct/{bidId}', 'APIv1\BidController@addUnitPriceToBidProduct');
-	Route::put('po/addPickupDateToPurchaseOrder/{bidId}', 'APIv1\BidController@addPickupDateToPurchaseOrder');
-	Route::post('po/createPurchaseOrder', 'APIv1\BidController@createPurchaseOrder');
+	Route::put('po/addPickupDateToPurchaseOrder/{bidId}', 'APIv1\BidController@addPickupDateToPurchaseOrder');	
 	Route::put('po/cancelPurchaseOrder/{id}', 'APIv1\BidController@cancelPurchaseOrder');
 	Route::put('po/closePurchaseOrder/{id}', 'APIv1\BidController@closePurchaseOrder');
 	Route::get('po/search', 'APIv1\BidController@searchPurchaseOrder');
@@ -61,10 +62,17 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('weightticket', 'APIv1\WeightTicketController');
 
 
-    Route::get('pickupschedule/getTruckingRate', 'APIv1\PickupScheduleController@getTruckingRate');
-    Route::get('pickupschedule/getLoaderAccount', 'APIv1\PickupScheduleController@getLoaderAccount');
-    Route::get('pickupschedule/getTruckerAccount', 'APIv1\PickupScheduleController@getTruckerAccount');
-    Route::resource('pickupschedule', 'APIv1\PickupScheduleController');
+    Route::get('transportschedule/getTruckingRate', 'APIv1\TransportScheduleController@getTruckingRate');
+    Route::get('transportschedule/getLoaderAccount', 'APIv1\TransportScheduleController@getLoaderAccount');
+    Route::get('transportschedule/getTruckerAccount', 'APIv1\TransportScheduleController@getTruckerAccount');
+    Route::resource('transportschedule', 'APIv1\TransportScheduleController');
+    
+    // Sales Order
+    Route::get('salesorder/getOrigin', 'APIv1\SalesOrderController@getOrigin');
+    Route::get('salesorder/getNatureOfSale', 'APIv1\SalesOrderController@getNatureOfSale');
+    Route::put('salesorder/cancel/{id}', 'APIv1\SalesOrderController@cancel');
+    Route::put('salesorder/close/{id}', 'APIv1\SalesOrderController@close');
+    Route::resource('salesorder', 'APIv1\SalesOrderController');
     
 });
 

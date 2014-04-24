@@ -1,0 +1,49 @@
+<?php
+
+class ProductOrder extends Eloquent {
+    
+    /**
+	 * The database table used by the model.
+	 *
+	 * @var string
+	 */
+    protected $table = 'productorder';
+    
+    /**
+     * Define fillable attributes in a model.
+     * 
+     * @var array
+     */
+    protected $fillable = array(
+        'entity',
+        'entity_id',
+        'product_id',
+        'description',
+        'stacknumber',
+        'tons',
+        'bales',
+        'unitprice'
+    );
+    
+    public static $rules = array(
+        'entity' => 'required',
+        'entity_id' => 'required',
+        'product_id' => 'required',
+        'description' => 'max:250',
+        'stacknumber' => 'required',
+        'tons' => 'required',
+        'bales' => 'required',
+        'unitprice' => 'required'
+    );
+    
+    public function salesOrder()
+    {
+        return $this->belongsTo('SalesOrder', 'salesorder_id');
+    }
+    
+    public function product()
+    {
+        return $this->belongsTo('Product', 'product_id');
+    }
+
+}
