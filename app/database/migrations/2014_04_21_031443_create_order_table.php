@@ -17,20 +17,21 @@ class CreateOrderTable extends Migration {
 			$table->engine = 'InnoDB';
             $table->increments('id');
 			$table->string('order_number', 20)->unique();
-            $table->integer('origin_id')->unsigned();
-            $table->integer('natureofsale_id')->unsigned();
+            $table->integer('location_id')->unsigned();
+            $table->integer('natureofsale_id')->unsigned()->nullable();
             $table->integer('account_id')->unsigned();
             $table->integer('orderaddress_id')->unsigned();
-            $table->timestamp('dateofsale');
-            $table->timestamp('transportdatestart');
-            $table->timestamp('transportdateend');
+            $table->timestamp('transportdatestart')->nullable();
+            $table->timestamp('transportdateend')->nullable();
             $table->integer('status_id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->text('notes')->nullable();
+            $table->boolean('isfrombid');
+            $table->smallInteger('ordertype');
             $table->timestamps();
             $table->softDeletes();
             
-            $table->foreign('origin_id')->references('id')->on('origin');
+            $table->foreign('location_id')->references('id')->on('location');
             $table->foreign('natureofsale_id')->references('id')->on('natureofsale');
             $table->foreign('account_id')->references('id')->on('account');
             $table->foreign('orderaddress_id')->references('id')->on('orderaddress');

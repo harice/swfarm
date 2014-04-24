@@ -1,0 +1,112 @@
+<div class="row">
+	<div class="col-md-12">
+		<a href="<%= so_add_url %>" class="btn btn-danger">+ Add Sales Order</a>
+	</div>
+</div>
+
+<div class="row margin-top-10">
+	<div class="col-md-6 search-filter-cont">
+		<div class="sub-cont">
+			<label>Date of Sale</label>
+			<div id="filter-date-of-sale" class="search-filter-field calendar-cont">
+				<div class="input-group date">
+					<input type="text" class="form-control" value="">
+					<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+				</div>
+			</div>
+		</div>
+		<div class="sub-cont">
+			<label>Delivery Period: </label>
+			<label>Start</label>
+			<div id="filter-delivery-start" class="search-filter-field calendar-cont">
+				<div class="input-group date">
+					<input type="text" class="form-control" value="">
+					<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+				</div>
+			</div>
+			<label>End</label>
+			<div id="filter-delivery-end" class="search-filter-field calendar-cont">
+				<div class="input-group date">
+					<input type="text" class="form-control" value="">
+					<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<form class="form-inline" role="form">
+			<div class="form-group pull-right">
+				<div class="input-group col-md-8 pull-right">
+					<label class="sr-only" for="search">Search</label>
+					<input type="text" class="search form-control" id="search-keyword" placeholder="">
+
+					<div class="input-group-btn">
+						<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu pull-right filters" role="menu">
+							<li class="dropdown-header">Filter By Origin</li>
+							<li>
+								<input class="origin_id" type="radio" name="origin_id" value="" checked> All
+							</li>
+							<%= origin_filters %>
+							<li class="dropdown-header">Filter By Nature Of Sale</li>
+							<li>
+								<input class="nature_of_sale_id" type="radio" name="nature_of_sale_id" value="" checked> All
+							</li>
+							<%= nos_filters %>
+							<li class="dropdown-header">Filter By Status</li>
+							<li>
+								<input class="statusFilter" type="radio" name="statusFilter" value="" checked> All
+							</li>
+							<li>
+								<input class="statusFilter" type="radio" name="statusFilter" value="Open"> Open
+							</li>
+							<li>
+								<input class="statusFilter" type="radio" name="statusFilter" value="Closed"> Closed
+							</li>
+							<li>
+								<input class="statusFilter" type="radio" name="statusFilter" value="Cancelled"> Cancelled
+							</li>
+						</ul>
+						<button type="button" class="btn btn-primary search-local">Search</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="clearfix">
+	<ul class="pagination" style="display:none;">
+		<li><a class="first-page" href="#">&laquo;</a></li>
+		<li><a class="last-page" href="#">&raquo;</a></li>
+	</ul>
+</div>
+
+<div class="content-inner table-responsive">
+	<table id="so-list" class="table table-bordered table-striped table-hover">
+		<thead>
+			<tr>
+				<th>SO No.</th>
+				<th class="sortable sort-date-of-po">Date of Sale <span class="glyphicon glyphicon-sort"></span></th>
+				<th>Start</th>
+				<th>End</th>
+				<th>Customer</th>
+				<th>Status</th>
+				<th>Origin</th>
+				<th>Nature of Sale</th>
+				<th>Total Amount</th>
+				<th>Operation</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+</div>
+
+<!--<div class="clearfix">
+	<ul class="pagination" style="display:none;">
+		<li><a class="first-page" href="#">&laquo;</a></li>
+		<li><a class="last-page" href="#">&raquo;</a></li>
+	</ul>
+</div>-->

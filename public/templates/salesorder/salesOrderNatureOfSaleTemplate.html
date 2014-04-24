@@ -1,0 +1,5 @@
+<% _.each(natureOfSales, function(natureOfSale){ %>
+<label class="radio-inline">
+	<input class="nature_of_sale_id" type="radio" name="nature_of_sale_id" value="<%= natureOfSale.get("id") %>"> <%= natureOfSale.get("nature_of_sale") %>
+</label>
+<% }); %>

@@ -37,6 +37,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
   	Route::get('account/getZipcodeUsingCity/{id}', 'APIv1\AccountController@getZipcodeUsingCity');
     Route::get('account/getAddress', 'APIv1\AccountController@getAddress');
 	Route::get('account/getCustomerAccount', 'APIv1\AccountController@getCustomerAccount');
+	Route::get('account/getProducerAccount', 'APIv1\AccountController@getProducerAccount');
 	Route::resource('account', 'APIv1\AccountController');
 
 	Route::get('contact/search', 'APIv1\ContactController@search');
@@ -70,9 +71,20 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // Sales Order
     Route::get('salesorder/getOrigin', 'APIv1\SalesOrderController@getOrigin');
     Route::get('salesorder/getNatureOfSale', 'APIv1\SalesOrderController@getNatureOfSale');
-    Route::put('salesorder/cancel/{id}', 'APIv1\SalesOrderController@cancel');
-    Route::put('salesorder/close/{id}', 'APIv1\SalesOrderController@close');
+    Route::put('salesorder/{id}/cancel', 'APIv1\SalesOrderController@cancel');
+    Route::put('salesorder/{id}/close', 'APIv1\SalesOrderController@close');
     Route::resource('salesorder', 'APIv1\SalesOrderController');
+
+    Route::get('purchaseorder/getStatusList', 'APIv1\OrderController@getStatusList');
+    Route::get('purchaseorder/getDestinationList', 'APIv1\OrderController@getDestinationList');
+    Route::get('purchaseorder/getNatureOfSaleList', 'APIv1\OrderController@getNatureOfSaleList');
+    Route::get('purchaseorder', 'APIv1\OrderController@index');
+    Route::get('purchaseorder/search', 'APIv1\OrderController@index');
+    Route::post('purchaseorder', 'APIv1\OrderController@addPurchaseOrder');
+    Route::put('purchaseorder/{id}', 'APIv1\OrderController@updatePurchaseOrder');
+    Route::get('purchaseorder/{id}', 'APIv1\OrderController@show');
+    Route::delete('purchaseorder/{id}', 'APIv1\OrderController@destroy');
+    // Route::resource('purchaseorder', 'APIv1\OrderController');
     
 });
 

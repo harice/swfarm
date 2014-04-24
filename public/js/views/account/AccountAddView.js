@@ -1,5 +1,6 @@
 define([
 	'backbone',
+	'views/base/AppView',
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
@@ -13,6 +14,7 @@ define([
 	'global',
 	'constant',
 ], function(Backbone,
+			AppView,
 			Validate,
 			TextFormatter,
 			PhoneNumber,
@@ -27,7 +29,7 @@ define([
 			Const
 ){
 
-	var AccountAddView = Backbone.View.extend({
+	var AccountAddView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
@@ -77,12 +79,15 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
+			this.focusOnFirstField();
+			
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
 			this.$el.find('.lowercase').textFormatter({type:'lowercase'});
 			this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
 			
 			this.options.addressFieldClone = this.$el.find('.address-fields-container').clone();
 			this.options.addressFieldClone.find('#add-address-field').remove();
+			this.options.addressFieldClone.find('.type option:first-child').remove();
 			
 			var addressTypeField = this.$el.find('.type');
 			addressTypeField.attr('disabled', true);

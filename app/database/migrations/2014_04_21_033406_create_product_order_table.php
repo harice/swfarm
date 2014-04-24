@@ -16,17 +16,18 @@ class CreateProductOrderTable extends Migration {
 		{
 			$table->engine = 'InnoDB';
 			$table->increments('id');
-            $table->integer('salesorder_id')->unsigned();
+            $table->integer('order_id')->unsigned();
 			$table->integer('product_id')->unsigned();
 			$table->text('description')->nullable();
 			$table->string('stacknumber', 20);
 			$table->decimal('tons', 8, 2);
 			$table->integer('bales');
-			$table->decimal('unitprice', 8, 2);
+			$table->decimal('unitprice', 8, 2)->nullable();
+			$table->boolean('ishold');
 			$table->timestamps();
 
 			$table->foreign('product_id')->references('id')->on('products');
-            $table->foreign('salesorder_id')->references('id')->on('salesorder');
+            $table->foreign('order_id')->references('id')->on('order');
 		});
 	}
 
