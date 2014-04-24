@@ -261,8 +261,8 @@ class UsersRepository implements UsersRepositoryInterface {
 
     $user['id'] = Auth::user()->id;
     $user['firstname'] = Auth::user()->firstname;
-    $user['lastname'] = Auth::user()->firstname;
-    $user['suffix'] = Auth::user()->firstname;
+    $user['lastname'] = Auth::user()->lastname;
+    $user['suffix'] = Auth::user()->suffix;
 
     return Response::json(array(
           'user' => $user,

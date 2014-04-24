@@ -1,0 +1,50 @@
+<% if(token) { %>
+<div class="cl-toggle"><i class="fa fa-bars"></i></div>
+<div class="cl-navblock">
+  <div class="menu-space">
+    <div class="content">
+      <div class="sidebar-logo">
+        <div class="logo">
+            <a href="#/dashboard"></a>
+        </div>
+      </div>
+      <div class="side-user">
+        <div class="avatar"><img src="images/user-icon.png" alt="Avatar" /></div>
+        <div class="info"></div>
+      </div>
+      <ul class="cl-vnavigation">
+        <li class="active" ><a href="#/dashboard"><i class="fa fa-home"></i><span>Dashboard</span></a></li>
+
+        <li><a href="<%= contact_url %>"><i class="fa fa-users"></i><span>Contacts</span></a></li>
+        <li><a href="<%= accounts_url %>"><i class="fa fa-building-o"></i><span>Accounts</span></a></li>
+
+        <li class="parent"><a href="#"><i class="fa fa-file"></i><span>Purchases</span></a>
+          <ul class="sub-menu">
+            <li><a href="<%= bid_url %>">Bids</a></li>
+            <li><a href="<%= purchase_order_url %>">Purchase Order</a></li>
+          </ul>
+        </li>
+
+        <li><a href="<%= sales_url %>"><i class="fa fa-folder-o"></i><span>Sales</span></a></li>
+        <li><a href="<%= inventory_url %>"><i class="fa fa-archive"></i><span>Inventory</span></a></li>
+        <li><a href="<%= product_url %>"><i class="fa fa-barcode"></i><span>Products</span></a></li>
+        <li><a href="<%= reports_url %>"><i class="fa fa-bar-chart-o"></i><span>Reports</span></a></li>
+
+        <li class="parent"><a href="#"><i class="fa fa-cogs"></i><span>Administration</span></a>
+          <ul class="sub-menu">
+            <li><a href="<%= admin_url %>">Dashboard</a></li>
+            <li><a href="<%= user_url %>">Users</a></li>
+            <li><a href="<%= role_url %>">Roles</a></li>
+            <li><a href="<%= audittrail_url %>">Audit Trail</a></li>
+          </ul>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+  <div class="text-right collapse-button" style="padding:7px 9px;">
+    <input type="text" class="form-control search" placeholder="Search..." />
+    <button id="sidebar-collapse" class="btn btn-default" style=""><i style="color:#fff;" class="fa fa-angle-left"></i></button>
+  </div>
+</div>
+<% } %>

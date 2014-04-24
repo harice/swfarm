@@ -3,6 +3,7 @@ define([
 	'backbone',
 	'baserouter',
 	'views/layout/HeaderView',
+	'views/layout/SideMenuView',
 	'views/admin/AdminView',
 	'controllers/login/LoginController',
 	'controllers/user/UserController',
@@ -24,6 +25,7 @@ define([
 ], function(Backbone,
 			BaseRouter,
 			HeaderView,
+			SideMenuView,
 			AdminView,
 			LoginController,
 			UserController,
@@ -149,12 +151,17 @@ define([
 			var needAuth = _.contains(this.requiresAuthExcept, path);
 			var cancelAccess = _.contains(this.preventAccessWhenAuth, path);
 
+			if(!isAuth) {
+				Backbone.View.prototype.showLogin();
+			} else {
+				Backbone.View.prototype.showContent();
+				Backbone.View.prototype.refreshHeader();
+			}
+
 			if(path === '#/'+Const.URL.LOGOUT && isAuth)
 			{
 				Session.clear();
 				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
-				var headerView = new HeaderView();
-        		headerView.render();
 			}
 
 			if(!needAuth && !isAuth){
@@ -165,7 +172,7 @@ define([
 			}else if(isAuth && cancelAccess){
 				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.DASHBOARD, { trigger : true });
 			}else{
-			  return next();
+			  	return next();
 			}
 		},
 
@@ -301,16 +308,16 @@ define([
 		app_router.on('route:defaultAction', function (actions) {
 			this.closeView();
 			console.log('default page');
-
-			var headerView = new HeaderView();
-        	headerView.render();
 		});
 		
 		Global.getGlobalVars().app_router = app_router;
 		
 		var headerView = new HeaderView();
         headerView.render();
-		
+
+        var sideMenu = new SideMenuView();
+		sideMenu.render();
+
 		Backbone.history.start();
 	};
 	return { 

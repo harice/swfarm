@@ -17,6 +17,14 @@ require.config({
         autocomplete: 'libs/fatiherikli/backbone-autocomplete/src/backbone.autocomplete.js',
 		base64: 'libs/base64/base64.min',
         growl: 'libs/bootstrap-growl/jquery.bootstrap-growl.min',
+
+        behaviourcore: 'libs/behaviour/core',
+        jqueryparsley: 'libs/jquery.parsley/parsley',
+        jquerypushmenu: 'libs/jquery.pushmenu/js/jPushMenu',
+        jquerynanoscroller: 'libs/jquery.nanoscroller/jquery.nanoscroller',
+		jquerysparkline: 'libs/jquery.sparkline/jquery.sparkline.min',
+		jquerygritter: 'libs/jquery.gritter/js/jquery.gritter',
+
 		templates: '../templates'
 	},
 	shim: {
@@ -25,13 +33,39 @@ require.config({
 			exports: 'Base64'
 		},
 		'backbone': {
-			deps: ['underscore', 'jquery', 'bootstrap', 'growl'],
+			deps: ['underscore', 'jquery', 'bootstrap', 'growl','jquerypushmenu','jquerynanoscroller','behaviourcore'],
 			exports: 'Backbone'
 		},
 		'bootstrapdatepicker': {
 			deps: ['jquery'],
 			exports: 'DatePicker',
 		},
+
+		'behaviourcore': {
+			deps: ['jquery','bootstrap'],
+			exports: 'BehaviourCore'
+		},
+		'jqueryparsley': {
+			deps: ['jquery'],
+			exports: 'Parsley'
+		},
+		'jquerypushmenu': {
+			deps: ['jquery'],
+			exports: 'PushMenu'
+		},
+		'jquerynanoscroller': {
+			deps: ['jquery'],
+			exports: 'NanoScroller'
+		},
+		'jquerysparkline': {
+			deps: ['jquery'],
+			exports: 'SparkLine'
+		},
+		'jquerygritter': {
+			deps: ['jquery'],
+			exports: 'Gritter'
+		},
+
 		'bootstrap': {
 			deps: ['jquery'],
 			exports: 'Bootstrap'

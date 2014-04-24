@@ -6,36 +6,17 @@ define([
 ], function(Backbone, headerTemplate, Const, Session){
 
 	var HeaderView = Backbone.View.extend({
-		el: $("#header"),
+		el: $("#head-nav"),
 
 
 		initialize: function() {
-			_.bindAll(this,'navDropDownHandler','navMainHandler');
+			_.bindAll(this,'profileMenuHandler');
 		},
 		
 		render: function(){
 			var innerTemplateVariables = {
-				'admin_url': '#/'+Const.URL.ADMIN,
-				'user_url': '#/'+Const.URL.USER,
-				'role_url': '#/'+Const.URL.ROLE,
-				'permission_url': '#/'+Const.URL.PERMISSION,
-				'audittrail_url': '#/'+Const.URL.AUDITTRAIL,
-
-				'contact_url'	: '#/'+Const.URL.CONTACT,
-				'accounts_url'	: '#/'+Const.URL.ACCOUNT,
-				'purchases_url'	: '#/',
-				
-				'bid_url'       : '#/'+Const.URL.BID,
-				'purchase_order_url': '#/'+Const.URL.PO,
-                'weightinfo_url': '#/'+Const.URL.WEIGHTINFO,
-				
-				'sales_url'		: '#/'+Const.URL.SO,
-				'inventory_url'	: '#/',
-				'product_url'	: '#/'+Const.URL.PRODUCT,
-				'reports_url'	: '#/',
 
 				'logout_url'	: '#/'+Const.URL.LOGOUT,
-				'login_url'		: '#/'+Const.URL.LOGIN,
 				
 				'profile_view_url'	: '#/'+Const.URL.PROFILE,
 				'profile_edit_url'		: '#/'+Const.URL.PROFILE+'/'+Const.CRUD.EDIT,
@@ -44,6 +25,7 @@ define([
 				'token'			: Session.get('token'),
 				'permission'	: Session.get('permission'),
 				'su'			: Session.get('su'),
+				'full_name'		: Session.get('firstname') + ' ' + Session.get('lastname'),
 			};
 
 			var compiledTemplate = _.template(headerTemplate, innerTemplateVariables);
@@ -51,22 +33,12 @@ define([
 		},
 
 		events: {
-			'click ul.navbar-nav li' : 'navMainHandler',
-			'click ul.navbar-nav li ul li' : 'navDropDownHandler'
+			'click .profile_menu' : 'profileMenuHandler'
 		},
 
-		navDropDownHandler: function(e) {
-			$("ul.navbar-nav li").removeClass('active');
-			$(e.currentTarget).closest('ul').closest('li').addClass('active');
-		},
-
-		navMainHandler: function(e) {
-			if(!$(e.currentTarget).hasClass('dropdown')) {
-				$("ul.navbar-nav li").removeClass('active');
-				$(e.currentTarget).addClass('active');
-			}
-			$("ul.navbar-nav li a").blur();
-		},
+		profileMenuHandler: function(e) {
+			$("ul.cl-vnavigation li").removeClass('active');
+		}
 
 	});
 

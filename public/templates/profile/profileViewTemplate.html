@@ -1,4 +1,25 @@
 <div class="row">
+  <div class="col-sm-12">
+    <div class="block-flat profile-info">
+      <div class="row">
+        <div class="col-sm-2">
+          <div class="avatar">
+          	<img class="profile-avatar" src="<% if (user.get("profileimg") != "" && user.get("profileimg") != null) { %><%= user.get("profileimg")+"?qwert="+(new Date().getTime()) %><% } else { %><%= user_pic_default %><% } %>" />
+          </div>
+        </div>
+        <div class="col-sm-10">
+          <div class="personal">
+            <h1 class="name"><%= user.get("firstname") %> <%= user.get("lastname") %> <%= user.get("suffix") %></h1>
+            <p class="description"><p>
+            <a  href="<%=profile_edit_url%>" class="btn btn-primary btn-flat btn-rad" data-modal="reply-ticket"><i class="fa fa-pencil-square-o"></i> Edit Profile</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div
+</div>
+
+<div class="row">
 	<div class="col-md-3 user-pic-cont">
 		<img class="user-pic" src="<% if (user.get("profileimg") != "" && user.get("profileimg") != null) { %><%= user.get("profileimg")+"?qwert="+(new Date().getTime()) %><% } else { %><%= user_pic_default %><% } %>" />
 	</div>

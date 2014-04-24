@@ -31,15 +31,10 @@ define([
 			var innerTemplateVariables = {
 				user:userModel,
 				user_pic_default: Const.PLACEHOLDER.PROFILEPIC,
+				profile_edit_url: '#/'+Const.URL.PROFILE+'/'+Const.CRUD.EDIT,
 			}
 			var innerTemplate = _.template(profileViewTemplate, innerTemplateVariables);
-			
-			var variables = {
-				h1_title: userModel.get('lastname')+', '+userModel.get('firstname')+' '+userModel.get('suffix'),
-				sub_content_template: innerTemplate,
-			};
-			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.$el.html(innerTemplate);
 		},
 		
 	});
