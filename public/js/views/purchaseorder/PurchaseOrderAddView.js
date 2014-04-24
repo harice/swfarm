@@ -48,7 +48,7 @@ define([
 				productFieldClone: null,
 				productFieldCounter: 0,
 				productFieldClass: ['product_id', 'description', 'productname', 'stacknumber', 'unitprice', 'tons', 'bales', 'ishold'],
-				productFieldClassRequired: ['productname', 'stacknumber', 'unitprice', 'tons', 'bales'],
+				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales'],
 				productFieldExempt: ['productname'],
 				productFieldSeparator: '.',
 			};
@@ -105,14 +105,12 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
+			this.initValidateForm();
 			
 			this.generateDestination();
 			this.initProducerAutocomplete();
 			this.initCalendar();
 			this.addProduct();
-			
-			/*this.initValidateForm();
-			*/
 		},
 		
 		initValidateForm: function () {
@@ -121,6 +119,11 @@ define([
 			var validate = $('#poForm').validate({
 				submitHandler: function(form) {
 					var data = thisObj.formatFormField($(form).serializeObject());
+					
+					if(this.poId == null || this.poId == '' || this.poId == 'undefined')
+						data['isfrombid'] = false;
+					
+					console.log(data);
 					
 					var purchaseOrderModel = new PurchaseOrderModel(data);
 					
@@ -260,7 +263,7 @@ define([
 		},
 		
 		getProductDropdown: function () {
-			var dropDown = '';
+			var dropDown = '<option value="">Select a product</option>';
 			_.each(this.productCollection.models, function (model) {
 				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
@@ -326,7 +329,7 @@ define([
 		events: {
 			'click #add-product': 'addProduct',
 			'click .remove-product': 'removeProduct',
-			'blur .productname': 'validateProduct',
+			//'blur .productname': 'validateProduct',
 			'blur .unitprice': 'onBlurUnitPrice',
 			'keyup .unitprice': 'onKeyUpUnitPrice',
 			'keyup .tons': 'onKeyUpTons',

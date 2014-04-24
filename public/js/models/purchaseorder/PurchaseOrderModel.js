@@ -3,7 +3,7 @@ define([
 ], function(Backbone) {
 
 	var PurchaseOrderModel = Backbone.Model.extend({
-		urlRoot: '/apiv1/salesorder',
+		urlRoot: '/apiv1/purchaseorder',
 		defaults: {
         },
 		runFetch: function () {
@@ -13,7 +13,7 @@ define([
 				success: function(model, response, options) {
 					if(typeof response.error != 'undefined') {
 						alert(response.message);
-						Global.getGlobalVars().app_router.navigate(Const.URL.SO, {trigger: true});
+						Global.getGlobalVars().app_router.navigate(Const.URL.PO, {trigger: true});
 					}
 				},
 				error: function(model, response, options) {
@@ -23,7 +23,7 @@ define([
 			});
 		},
 		setCancelURL: function () {
-			this.urlRoot = 'salesorder/'+this.get('id')+'/cancel';
+			this.urlRoot = '/apiv1/purchaseorder/cancel';
 		},
 	});
 	return PurchaseOrderModel;
