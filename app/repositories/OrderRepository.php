@@ -76,7 +76,8 @@ class OrderRepository implements OrderRepositoryInterface {
         $order = Order::with('productorder')
                 ->with('account')
                 ->with('orderaddress', 'orderaddress.addressStates', 'orderaddress.addressCity')
-                ->with('location');
+                ->with('location')
+                ->with('status');
 
         if($orderType == 2) //for SO only
             $order = $order->with('natureofsale');
