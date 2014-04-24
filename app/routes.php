@@ -79,6 +79,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('purchaseorder/getDestinationList', 'APIv1\OrderController@getDestinationList');
     Route::get('purchaseorder/getNatureOfSaleList', 'APIv1\OrderController@getNatureOfSaleList');
     Route::get('purchaseorder', 'APIv1\OrderController@index');
+    Route::get('purchaseorder/search', 'APIv1\OrderController@index');
     Route::post('purchaseorder', 'APIv1\OrderController@addPurchaseOrder');
     Route::put('purchaseorder/{id}', 'APIv1\OrderController@updatePurchaseOrder');
     Route::get('purchaseorder/{id}', 'APIv1\OrderController@show');
