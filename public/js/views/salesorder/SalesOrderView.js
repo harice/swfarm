@@ -103,29 +103,24 @@ define([
 			this.$el.find('#delivery_date_end').val(this.model.get('delivery_date_end').split(' ')[0]);
 			this.$el.find('#notes').val(this.model.get('notes'));
 			
-			/*var i= 0;
+			var i= 0;
 			_.each(products, function (product) {
-				var productFields = (i > 0)? thisObj.addProduct(): thisObj.$el.find('#product-list tbody .product-item:first-child');
-				i++;
-				
-				productFields.find('.id').val(product.id);
-				productFields.find('.productname').val(product.product.name);
-				productFields.find('.product_id').val(product.product.id);
-				productFields.find('.description').val(product.description);
-				productFields.find('.stacknumber').val(product.stacknumber);
-				productFields.find('.unitprice').val(product.unitprice);
-				productFields.find('.tons').val(product.tons);
-				productFields.find('.bales').val(product.bales);
-				productFields.find('.unitprice').blur();
+				var unitprice = (!isNaN(product.unitprice))? product.unitprice : 0;
+				var tons = (!isNaN(product.tons))? product.tons : 0;
+				var totalprice = parseFloat(unitprice * tons).toFixed(2);
 				
 				var variables = {
-					h1_title: 'Sales Order',
-					h1_small: '',
-					sub_content_template: innerTemplate,
+					productname: product.product.name,
+					description: product.description,
+					stacknumber: product.stacknumber,
+					unitprice: parseFloat(unitprice).toFixed(2),
+					tons: parseFloat(tons).toFixed(2),
+					bales: product.bales,
+					totalprice: totalprice,
 				};
 				var template = _.template(productItemTemplate, variables);
-				this.$el.find('#product-list tbody').append(template);
-			});*/
+				thisObj.$el.find('#product-list tbody').append(template);
+			});
 		},
 	});
 
