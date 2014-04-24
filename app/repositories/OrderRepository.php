@@ -4,54 +4,43 @@ class OrderRepository implements OrderRepositoryInterface {
     
     public function getAllOrders($params)
     {
-        // try
-        // {
-            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
-            $sortby   = isset($params['sortby']) ? $params['sortby'] : 'dateofsale';
-            $orderby  = isset($params['orderby']) ? $params['orderby'] : 'desc';
-            $status = isset($params['status']) ? $params['status'] : null;
-            $nature_of_sale = isset($params['natureofsale']) ? $params['natureofsale'] : null;
+        
+        $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+        $sortby   = isset($params['sortby']) ? $params['sortby'] : 'dateofsale';
+        $orderby  = isset($params['orderby']) ? $params['orderby'] : 'desc';
+        $status = isset($params['status']) ? $params['status'] : null;
+        $nature_of_sale = isset($params['natureofsale']) ? $params['natureofsale'] : null;
+        $date = isset($params['date']) ? $params['date'] : null; //default date is the present date
+        $filter = isset($params['search']) ? $params['search'] : null;
+        
+        $order = Order::with('productorder')
+                ->with('account')
+                ->with('orderaddress', 'orderaddress.addressStates', 'orderaddress.addressCity')
+                ->with('location')
+                ->with('natureofsale')
+                ->orderBy($sortby, $orderby);
+
+        if ($filter != null){
             
-            if (!isset($params['filter']) || $params['filter'] == '')
-            {
-                $order = Order::with('productorder')
-                    ->with('account')
-                    ->with('orderaddress', 'orderaddress.addressStates', 'orderaddress.addressCity')
-                    ->with('location')
-                    ->with('natureofsale')
-                    ->orderBy($sortby, $orderby);
-                    
-                if ($status)
-                {
-                    $order->where('status', '=', $status);
-                }
-                
-                $result = $order->paginate($perPage);
-                
-            }
-            else
-            {
-                // $filter = $params['filter'];
-                
-                // $result = SalesOrder::with('products.product')
-                //     ->with('customer')
-                //     ->with('address', 'address.addressStates', 'address.addressCity', 'address.addressType')
-                //     ->with('origin')
-                //     ->with('natureOfSale')
-                //     ->where(function ($query) use ($filter){
-                //         $query->where('status', '=', $filter);
-                //     })
-                //     ->orderBy($sortby, $orderby)
-                //     ->paginate($perPage);
-            }
-                
+        }
+        else {
+            $filter = $params['filter'];
+        }
+
+        //status filter
+        if ($status){
+            $order->where('status_id', '=', $status);
+        }
+
+        //date filter
+        if($date != null){
+          $order = $order->where('dateofsale', 'like', $date.'%'); 
+        }
             
-            return $result;
-        // }
-        // catch (Exception $e)
-        // {
-        //     return $e->getMessage();
-        // }
+        $result = $order->paginate($perPage);
+
+        return $result;
+        
     }
     
     public function findById($id)
@@ -306,6 +295,14 @@ class OrderRepository implements OrderRepositoryInterface {
         // $salesorder = SalesOrder::find($id);
         // $salesorder->status = "Cancelled";
         // $salesorder->save();
+    }
+
+    public function getStatusList(){
+        return Status::whereIn('id',array(1,2,3,4))->get()->toArray(); //return statuses for orders
+    }
+
+    public function getOrderDestination(){
+        return Location::whereIn('id',array(1,2,3))->get()->toArray(); //return destination for orders
     }
     
 }

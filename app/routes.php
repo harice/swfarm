@@ -75,6 +75,8 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::put('salesorder/close/{id}', 'APIv1\SalesOrderController@close');
     Route::resource('salesorder', 'APIv1\SalesOrderController');
 
+    Route::get('purchaseorder/getStatusList', 'APIv1\OrderController@getStatusList');
+    Route::get('purchaseorder/getDestinationList', 'APIv1\OrderController@getDestinationList');
     Route::get('purchaseorder', 'APIv1\OrderController@index');
     Route::post('purchaseorder', 'APIv1\OrderController@addPurchaseOrder');
     Route::put('purchaseorder/{id}', 'APIv1\OrderController@updatePurchaseOrder');
