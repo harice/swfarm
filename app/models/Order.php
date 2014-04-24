@@ -52,27 +52,27 @@ class Order extends BaseModel {
     
     public function productorder()
     {
-        return $this->hasMany('ProductOrder', 'order_id');
+        return $this->hasMany('ProductOrder', 'id', 'order_id');
     }
     
     public function account()
     {
-        return $this->hasOne('Account', 'account_id');
+        return $this->hasOne('Account', 'id', 'account_id');
     }
     
     public function orderaddress()
     {
-        return $this->hasOne('OrderAddress');
+        return $this->hasOne('OrderAddress', 'id', 'orderaddress_id');
     }
     
     public function location()
     {
-        return $this->hasOne('Location');
+        return $this->hasOne('Location', 'id', 'location_id');
     }
     
     public function natureofsale()
     {
-        return $this->hasOne('NatureOfSale');
+        return $this->hasOne('NatureOfSale', 'id', 'natureofsale_id');
     }
 
 }

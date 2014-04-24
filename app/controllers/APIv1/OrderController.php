@@ -20,8 +20,8 @@ class OrderController extends BaseController {
 	 */
 	public function index()
 	{
-		// $collection = $this->repo->findAll( Input::all() );
-  //       return Response::json($collection);
+		$collection = $this->repo->getAllOrders( Input::all() );
+        return Response::json($collection);
 	}
 
 	/**

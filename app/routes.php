@@ -37,6 +37,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
   	Route::get('account/getZipcodeUsingCity/{id}', 'APIv1\AccountController@getZipcodeUsingCity');
     Route::get('account/getAddress', 'APIv1\AccountController@getAddress');
 	Route::get('account/getCustomerAccount', 'APIv1\AccountController@getCustomerAccount');
+	Route::get('account/getProducerAccount', 'APIv1\AccountController@getProducerAccount');
 	Route::resource('account', 'APIv1\AccountController');
 
 	Route::get('contact/search', 'APIv1\ContactController@search');
@@ -74,6 +75,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::put('salesorder/{id}/close', 'APIv1\SalesOrderController@close');
     Route::resource('salesorder', 'APIv1\SalesOrderController');
 
+    Route::get('purchaseorder', 'APIv1\OrderController@index');
     Route::post('purchaseorder', 'APIv1\OrderController@addPurchaseOrder');
     Route::put('purchaseorder/{id}', 'APIv1\OrderController@updatePurchaseOrder');
     //Route::resource('order', 'APIv1\OrderController');

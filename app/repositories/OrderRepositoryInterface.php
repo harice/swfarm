@@ -1,7 +1,7 @@
 <?php
 
 interface OrderRepositoryInterface {
-	public function findAll($params);
+	public function getAllOrders($params);
     public function findById($id);
     public function addOrder($data);
     public function updateOrder($id, $data);
