@@ -81,7 +81,8 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('purchaseorder', 'APIv1\OrderController@index');
     Route::post('purchaseorder', 'APIv1\OrderController@addPurchaseOrder');
     Route::put('purchaseorder/{id}', 'APIv1\OrderController@updatePurchaseOrder');
-    //Route::resource('order', 'APIv1\OrderController');
+    Route::get('purchaseorder/{id}', 'APIv1\OrderController@show');
+    Route::resource('purchaseorder', 'APIv1\OrderController');
     
 });
 

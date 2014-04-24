@@ -43,8 +43,8 @@ class OrderController extends BaseController {
 	 */
 	public function show($id)
 	{
-		// $model = $this->repo->findById($id);
-  //       return Response::json($model);
+		$model = $this->repo->getOrder($id);
+        return Response::json($model);
 	}
 
 	/**
@@ -67,7 +67,8 @@ class OrderController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		// $this->repo->destroy($id);
+		$model = $this->repo->deleteOrder($id);
+		return Response::json($model);
 	}
     
     public function getOrigin()

@@ -8,6 +8,8 @@ class Order extends BaseModel {
 	 * @var string
 	 */
 	protected $table = 'order';
+
+    protected $softDelete = true;
     
     /**
      * Define fillable attributes in a model.
@@ -20,7 +22,6 @@ class Order extends BaseModel {
         'natureofsale_id',
         'account_id',
         'orderaddress_id',
-        'dateofsale',
         'transportdatestart',
         'transportdateend',
         'status_id',
@@ -51,12 +52,16 @@ class Order extends BaseModel {
     
     public function productorder()
     {
-        return $this->hasMany('ProductOrder', 'id', 'order_id');
+        return $this->hasMany('ProductOrder', 'order_id', 'id');
     }
     
-    public function account()
-    {
-        return $this->hasOne('Account', 'id', 'account_id');
+    // public function account()
+    // {
+    //     return $this->hasOne('Account', 'id', 'account_id');
+    // }
+
+    public function account(){
+        return $this->hasOne('Account', 'id', 'account_id')->select(array('id', 'name'));
     }
     
     public function orderaddress()
@@ -72,6 +77,11 @@ class Order extends BaseModel {
     public function natureofsale()
     {
         return $this->hasOne('NatureOfSale', 'id', 'natureofsale_id');
+    }
+
+    public function status()
+    {
+        return $this->hasOne('Status', 'id', 'status_id');
     }
 
 }

@@ -1,11 +1,11 @@
 <?php
 
 interface OrderRepositoryInterface {
-	public function getAllOrders($params);
-    public function findById($id);
+	public function getAllOrders($params, $orderType);
+    public function getOrder($id, $orderType);
     public function addOrder($data);
     public function updateOrder($id, $data);
-    public function destroy($id);
+    public function deleteOrder($id);
     public function validate($data, $entity);
     public function getOrigin();
     public function getNatureOfSale();
