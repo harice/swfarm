@@ -141,14 +141,8 @@ class OrderRepository implements OrderRepositoryInterface {
     
     public function updateOrder($id, $data)
     {
-        // $now = new DateTime('NOW');
-        // $date = $now->format('Y-m-d H:i:s');
-        
         $data['ordertype'] = 1; //PO type
-        // $data['order_number'] = $this->generateOrderNumber(1);
-        // $data['status_id'] = 1; //Open status
-        // $data['user_id'] = Auth::user()->id;
-
+   
         //for purchase order
         $data['createPO'] = isset($data['createPO']) ? $data['createPO'] : 0;
         if($data['createPO']) //update PO status when true
@@ -262,17 +256,10 @@ class OrderRepository implements OrderRepositoryInterface {
     {
         return new Order($data);
     }
-    
-    public function getOrigin()
-    {
-        // $data = DB::table('origin')->get();
-        // return Response::json($data);
-    }
-    
+
     public function getNatureOfSale()
     {
-        // $data = DB::table('nature_of_sale')->get();
-        // return Response::json($data);
+        return NatureOfSale::all()->toArray(); //return statuses for orders
     }
     
     private function generateOrderNumber($type = 1){ //type default is PO
@@ -289,46 +276,20 @@ class OrderRepository implements OrderRepositoryInterface {
     
     private function addProductOrder($order_id, $products = array())
     {
-        
-            foreach ($products as $product) {
-                $product['order_id'] = $order_id;
+        foreach ($products as $product) {
+            $product['order_id'] = $order_id;
 
-                $this->validate($product, 'ProductOrder');
-                if(isset($product['id']))
-                    $productorder = ProductOrder::find($product['id']);
-                else
-                    $productorder = new ProductOrder();
+            $this->validate($product, 'ProductOrder');
+            if(isset($product['id']))
+                $productorder = ProductOrder::find($product['id']);
+            else
+                $productorder = new ProductOrder();
 
-                $productorder->fill($product);
-                $productorder->save();
-            }
-        
-        
+            $productorder->fill($product);
+            $productorder->save();
+        }
     }
-    
-    private function updateProductOrder($productorders)
-    {
-        // try
-        // {
-        //     foreach ($productorders as $productorder)
-        //     {
-        //         $productorder_data = $productorder;
-                
-        //         // $productorder_data['description'] = 'Test descsdf';
-
-        //         $productorder = ProductOrder::find($productorder_data->id);
-        //         $productorder->fill($productorder_data->toArray());
-                
-        //         $productorder->update();
-        //     }
-        // }
-        // catch (Exception $e)
-        // {
-        //     return $e->getMessage();
-        // }
-            
-    }
-    
+   
     private function getBusinessAddress($account_id)
     {
         $result = Address::where('type', '=', 1)
@@ -351,6 +312,22 @@ class OrderRepository implements OrderRepositoryInterface {
         // $salesorder->save();
     }
 
+    public function cancelOrder($id){
+        $order = Order::find($id);
+        if($order->status_id == 1 || $order->status_id == 4){ //check if Open or pending
+          $order->status_id = 3;
+          $order->save();
+
+          return array(
+              'error' => false,
+              'message' => 'Order cancelled.');
+        } else {
+          return array(
+              'error' => false,
+              'message' => 'Order cannot be cancel if the status is not open or pending.');
+        }    
+    }
+
     public function getStatusList(){
         return Status::whereIn('id',array(1,2,3,4))->get()->toArray(); //return statuses for orders
     }
@@ -360,7 +337,7 @@ class OrderRepository implements OrderRepositoryInterface {
     }
 
     public function getNatureOfSaleList(){
-        return NatureOfSale::whereIn('id',array(1,2,3))->get()->toArray(); //return nature of sale for orders
+        return NatureOfSale::all()->toArray(); //return nature of sale for orders
     }
     
 }

@@ -83,7 +83,8 @@ class OrderController extends BaseController {
     
     public function cancel($id)
     {
-        // $this->repo->cancel($id);
+        $model = $this->repo->cancelOrder($id);
+    	return Response::json($model);
     }
     
     public function close($id)
@@ -105,5 +106,6 @@ class OrderController extends BaseController {
     	$model = $this->repo->getNatureOfSaleList();
     	return Response::json($model);
     }
+
 
 }
