@@ -1,5 +1,6 @@
 define([
 	'backbone',
+	'bootstrapdatepicker',
 	'views/base/AppView',
 	'jqueryui',
 	'jqueryvalidate',
@@ -17,6 +18,7 @@ define([
 	'global',
 	'constant',
 ], function(Backbone,
+			DatePicker,
 			AppView,
 			JqueryUI,
 			Validate,
@@ -42,7 +44,11 @@ define([
 		
 		initialize: function() {
 			var thisObj = this;
+			this.isBid = false;
+			this.isConvertToPO = false;
 			this.poId = null;
+			this.h1Title = 'Purchase Order';
+			this.h1Small = 'add';
 			
 			this.productAutoCompletePool = [];
 			this.options = {
@@ -93,14 +99,17 @@ define([
 				'po_url' : '#/'+Const.URL.PO,
 			};
 			
+			if(this.isBid)
+				innerTemplateVariables['is_bid'] = true;
+			
 			if(this.poId != null)
 				innerTemplateVariables['po_id'] = this.poId;
 			
 			var innerTemplate = _.template(purchaseOrderAddTemplate, innerTemplateVariables);
 			
 			var variables = {
-				h1_title: "Purchase Order",
-				h1_small: "add",
+				h1_title: this.h1Title,
+				h1_small: this.h1Small,
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
@@ -122,10 +131,13 @@ define([
 					console.log($(form).serializeObject());
 					var data = thisObj.formatFormField($(form).serializeObject());
 					
-					//if(this.poId == null || this.poId == '' || this.poId == 'undefined')
-						//data['isfrombid'] = false;
+					if(thisObj.isBid)
+						data['isfrombid'] = '1';
 					
-					//console.log(data);
+					if(thisObj.isConvertToPO)
+						data['createPO'] = '1';
+					
+					console.log(data);
 					
 					var purchaseOrderModel = new PurchaseOrderModel(data);
 					
@@ -133,10 +145,12 @@ define([
 						null, 
 						{
 							success: function (model, response, options) {
+								thisObj.isConvertToPO = false;
 								thisObj.displayMessage(response);
 								Global.getGlobalVars().app_router.navigate(Const.URL.PO, {trigger: true});
 							},
 							error: function (model, response, options) {
+								thisObj.isConvertToPO = false;
 								if(typeof response.responseJSON.error == 'undefined')
 									validate.showErrors(response.responseJSON);
 								else
@@ -145,6 +159,9 @@ define([
 							headers: purchaseOrderModel.getAuth(),
 						}
 					);
+				},
+				invalidHandler: function (event, validator) {
+					thisObj.isConvertToPO = false;
 				},
 				errorPlacement: function(error, element) {
 					if(element.hasClass('form-date')) {
@@ -228,7 +245,14 @@ define([
 			var clone = null;
 			
 			if(this.options.productFieldClone == null) {
-				var productTemplate = _.template(productItemTemplate, {product_list:this.getProductDropdown()});
+				var productTemplateVars = {
+					product_list:this.getProductDropdown(),
+				};
+				
+				if(this.isBid)
+					productTemplateVars['is_bid'] = true;
+				
+				var productTemplate = _.template(productItemTemplate, productTemplateVars);
 				
 				this.$el.find('#product-list tbody').append(productTemplate);
 				var productItem = this.$el.find('#product-list tbody').find('.product-item:first-child');
@@ -336,6 +360,7 @@ define([
 			'keyup .unitprice': 'onKeyUpUnitPrice',
 			'keyup .tons': 'onKeyUpTons',
 			'click #cancel-po': 'cancelPO',
+			'click #convert-po': 'convertPO',
 		},
 		
 		removeProduct: function (ev) {
@@ -418,7 +443,9 @@ define([
 			if(this.poId != null) {
 				var thisObj = this;
 				
-				var verifyCancel = confirm('Are you sure you want to cancel this Purchase Order?');
+				var verifyMsg = (!this.isBid)? 'Are you sure you want to cancel this Purchase Order?' : 'Are you sure you want to cancel this Bid?';
+				
+				var verifyCancel = confirm(verifyMsg);
 				
 				if(verifyCancel) {
 					var purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
@@ -442,6 +469,11 @@ define([
 				}
 			}
 			return false;
+		},
+		
+		convertPO: function () {
+			this.isConvertToPO = true;
+			$('#poForm').submit();
 		},
 	});
 

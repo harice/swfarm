@@ -1,3 +1,4 @@
+/* Table  */
 .cl-sidebar {
   width: 200px;
 }
@@ -49,8 +50,12 @@ body .filter > li {
 .btn-link {
   border: 0 none;
 }
-.table > thead > tr > th {
+/* Table  */
+.table > thead > tr > th.sortable {
   cursor: pointer;
+}
+.table > thead > tr > th {
+  font-weight: 400;
 }
 .table > thead > tr > th,
 .table > tbody > tr > th,

@@ -70,6 +70,7 @@
                           </div>
                         </div>
                       <% } %>
+					  <% if (typeof is_bid === "undefined") { %>
                       <div class="form-group"><label for="" class="col-sm-12">Delivery Period:</label></div>
                       <div class="form-group">
                         <label for="transportdatestart" class="col-sm-3 control-label">Start</label>
@@ -93,19 +94,21 @@
                           <div class="error-msg-cont"></div>
                         </div>
                       </div>
+					  <% } %>
                       <div class="form-group">
                         <label for="notes" class="col-sm-3 control-label">Notes</label>
                         <div class="col-sm-9">
                           <textarea class="form-control notes" id="notes" name="notes"></textarea>
                         </div>
                       </div>
+                      
                     </div>
                   </div>
                 </fieldset>
                 <fieldset>
                   <legend>
                     Products
-                    <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
+                    <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
                   </legend>
                   <div class="table-responsive">
                     <table id="product-list" class="table table-bordered">
@@ -114,11 +117,25 @@
                           <th>Product</th>
                           <th>Description</th>
                           <th>Stack No.</th>
-                          <th>Unit Price</th>
+                          <th>
+						  <% if (typeof is_bid === "undefined") { %>
+						    Unit Price
+						  <% } else { %>
+						    Bid Unit Price
+						  <% } %>
+						  </th>
                           <th>Est Tons</th>
                           <th>Bales</th>
-                          <th>Total Price</th>
+                          <th>
+						  <% if (typeof is_bid === "undefined") { %>
+						    Total Price
+						  <% } else { %>
+						    Bid Total Price
+						  <% } %>
+						  </th>
+						  <% if (typeof is_bid === "undefined") { %>
                           <th>Hold for Testing</th>
+						  <% } %>
                           <th></th>
                         </tr>
                       </thead>
@@ -129,7 +146,12 @@
                 <div class="form-group form-button-container">
                   <div class="pull-right">
                   <% if (typeof po_id !== "undefined") { %>
-                    <a id="cancel-po" class="btn btn-danger" href="#">Cancel Purchase Order</a>
+					<% if (typeof is_bid === "undefined") { %>
+                      <a id="cancel-po" class="btn btn-danger" href="#">Cancel Purchase Order</a>
+					<% } else { %>
+					  <a id="cancel-po" class="btn btn-danger" href="#">Cancel Bid</a>
+					  <button id="convert-po" type="button" class="save btn btn-primary">Convert to PO</button>
+					<% } %>
                   <% } %>
                   <button id="save" type="submit" class="save btn btn-primary">Save</button>
                   <a id="cancel-save" class="btn btn-link" href="<%= po_url %>">Back</a>

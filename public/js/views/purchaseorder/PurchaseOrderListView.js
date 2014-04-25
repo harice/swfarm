@@ -1,5 +1,6 @@
 define([
 	'backbone',
+	'bootstrapdatepicker',
 	'views/base/ListView',
 	'collections/purchaseorder/PurchaseOrderCollection',
 	'collections/purchaseorder/DestinationCollection',
@@ -12,6 +13,7 @@ define([
 	'text!templates/purchaseorder/purchaseOrderStatusTemplate.html',
 	'constant',
 ], function(Backbone,
+			DatePicker,
 			ListView,
 			PurchaseOrderCollection,
 			DestinationCollection,
