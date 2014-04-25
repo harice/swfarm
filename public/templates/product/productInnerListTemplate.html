@@ -4,7 +4,14 @@
       <td class="align-center"><input type="checkbox" name="productids[]" class="productids" value="<%= product.get("id") %>"></td>
       <td><a href="<%= product_url %>/<%= product.get("id") %>"><%= product.get("name") %></a></td>
       <td><%= product.get("description") %></td>
-      <td><a href="<%= product_edit_url %>/<%= product.get("id") %>">edit</a></td>
+      <td>
+        <a href="<%= product_edit_url %>/<%= product.get("id") %>">
+           <span class="glyphicon glyphicon-pencil"></span>
+        </a>
+        <a href="<%= product_edit_url %>/<%= product.get("id") %>" id="delete" class="btn btn-danger btn-xs">
+          <span class="glyphicon glyphicon-remove"></span>
+        </a>
+      </td>
     </tr>
   <% }); %>
 <% } else { %>
