@@ -99,7 +99,7 @@ define([
 			};
 			
 			if(this.isBid)
-				innerTemplateVariables['po_id' ] = true;
+				innerTemplateVariables['is_bid'] = true;
 			
 			if(this.poId != null)
 				innerTemplateVariables['po_id'] = this.poId;
@@ -130,10 +130,10 @@ define([
 					console.log($(form).serializeObject());
 					var data = thisObj.formatFormField($(form).serializeObject());
 					
-					//if(this.poId == null || this.poId == '' || this.poId == 'undefined')
-						//data['isfrombid'] = false;
+					if(thisObj.isBid)
+						data['isfrombid'] = '1';
 					
-					//console.log(data);
+					console.log(data);
 					
 					var purchaseOrderModel = new PurchaseOrderModel(data);
 					
@@ -241,9 +241,9 @@ define([
 				};
 				
 				if(this.isBid)
-					innerTemplateVariables['po_id' ] = true;
+					productTemplateVars['is_bid'] = true;
 				
-				var productTemplateVars = _.template(productItemTemplate, productTemplateVars);
+				var productTemplate = _.template(productItemTemplate, productTemplateVars);
 				
 				this.$el.find('#product-list tbody').append(productTemplate);
 				var productItem = this.$el.find('#product-list tbody').find('.product-item:first-child');
