@@ -14,7 +14,7 @@ require.config({
 		bootstrapdatepicker: 'libs/bootstrap/bootstrap-datepicker',
 		underscore: 'libs/underscore/underscore-min',
 		backbone: 'libs/backbone/backbone-min',
-        autocomplete: 'libs/fatiherikli/backbone-autocomplete/src/backbone.autocomplete.js',
+        autocomplete: 'libs/fatiherikli/backbone-autocomplete/src/backbone.autocomplete',
 		base64: 'libs/base64/base64.min',
         growl: 'libs/bootstrap-growl/jquery.bootstrap-growl.min',
 

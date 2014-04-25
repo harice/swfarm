@@ -70,6 +70,7 @@
                           </div>
                         </div>
                       <% } %>
+					  <% if (typeof is_bid === "undefined") { %>
                       <div class="form-group"><label for="" class="col-sm-12">Delivery Period:</label></div>
                       <div class="form-group">
                         <label for="transportdatestart" class="col-sm-3 control-label">Start</label>
@@ -93,6 +94,7 @@
                           <div class="error-msg-cont"></div>
                         </div>
                       </div>
+					  <% } %>
                       <div class="form-group">
                         <label for="notes" class="col-sm-3 control-label">Notes</label>
                         <div class="col-sm-9">
@@ -115,11 +117,25 @@
                           <th>Product</th>
                           <th>Description</th>
                           <th>Stack No.</th>
-                          <th>Unit Price</th>
+                          <th>
+						  <% if (typeof is_bid === "undefined") { %>
+						    Unit Price
+						  <% } else { %>
+						    Bid Unit Price
+						  <% } %>
+						  </th>
                           <th>Est Tons</th>
                           <th>Bales</th>
-                          <th>Total Price</th>
+                          <th>
+						  <% if (typeof is_bid === "undefined") { %>
+						    Total Price
+						  <% } else { %>
+						    Bid Total Price
+						  <% } %>
+						  </th>
+						  <% if (typeof is_bid === "undefined") { %>
                           <th>Hold for Testing</th>
+						  <% } %>
                           <th></th>
                         </tr>
                       </thead>
@@ -130,7 +146,12 @@
                 <div class="form-group form-button-container">
                   <div class="pull-right">
                   <% if (typeof po_id !== "undefined") { %>
-                    <a id="cancel-po" class="btn btn-danger" href="#">Cancel Purchase Order</a>
+					<% if (typeof is_bid === "undefined") { %>
+                      <a id="cancel-po" class="btn btn-danger" href="#">Cancel Purchase Order</a>
+					<% } else { %>
+					  <a id="cancel-po" class="btn btn-danger" href="#">Cancel Bid</a>
+					  <button id="convert-po" type="button" class="save btn btn-primary">Convert to PO</button>
+					<% } %>
                   <% } %>
                   <button id="save" type="submit" class="save btn btn-primary">Save</button>
                   <a id="cancel-save" class="btn btn-link" href="<%= po_url %>">Back</a>
