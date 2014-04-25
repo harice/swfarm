@@ -69,24 +69,36 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('transportschedule', 'APIv1\TransportScheduleController');
     
     // Sales Order
-    Route::get('salesorder/getOrigin', 'APIv1\SalesOrderController@getOrigin');
-    Route::get('salesorder/getNatureOfSale', 'APIv1\SalesOrderController@getNatureOfSale');
-    Route::put('salesorder/cancel/{id}', 'APIv1\SalesOrderController@cancel');
-    Route::put('salesorder/close/{id}', 'APIv1\SalesOrderController@close');
-    Route::resource('salesorder', 'APIv1\SalesOrderController');
+    // Route::get('salesorder/getOrigin', 'APIv1\SalesOrderController@getOrigin');
+    // Route::get('salesorder/getNatureOfSale', 'APIv1\SalesOrderController@getNatureOfSale');
+    // Route::put('salesorder/cancel/{id}', 'APIv1\SalesOrderController@cancel');
+    // Route::put('salesorder/close/{id}', 'APIv1\SalesOrderController@close');
+    // Route::resource('salesorder', 'APIv1\SalesOrderController');
 
     //Purchase Order
     Route::get('purchaseorder/getStatusList', 'APIv1\OrderController@getStatusList');
     Route::get('purchaseorder/getDestinationList', 'APIv1\OrderController@getDestinationList');
     Route::get('purchaseorder/getNatureOfSaleList', 'APIv1\OrderController@getNatureOfSaleList');
-    Route::get('purchaseorder', 'APIv1\OrderController@index');
-    Route::get('purchaseorder/search', 'APIv1\OrderController@index');
+    Route::put('purchaseorder/cancel/{id}', 'APIv1\OrderController@cancelOrder');
+    Route::get('purchaseorder', 'APIv1\OrderController@getPurchaseOrders');
+    Route::get('purchaseorder/search', 'APIv1\OrderController@getPurchaseOrders');
     Route::post('purchaseorder', 'APIv1\OrderController@addPurchaseOrder');
     Route::put('purchaseorder/{id}', 'APIv1\OrderController@updatePurchaseOrder');
-    Route::get('purchaseorder/{id}', 'APIv1\OrderController@show');
-    Route::put('purchaseorder/cancel/{id}', 'APIv1\OrderController@cancel');
+    Route::get('purchaseorder/{id}', 'APIv1\OrderController@getPurchaseOrder');
+    
     Route::delete('purchaseorder/{id}', 'APIv1\OrderController@destroy');
     // Route::resource('purchaseorder', 'APIv1\OrderController');
+
+    //Sales Order
+    Route::get('salesorder/getPickupLocationList', 'APIv1\OrderController@getPickupLocationList');
+    Route::put('salesorder/cancel/{id}', 'APIv1\OrderController@cancelOrder');
+    Route::get('salesorder/{id}', 'APIv1\OrderController@getSalesOrder');
+    Route::get('salesorder', 'APIv1\OrderController@getSalesOrders');
+    Route::get('salesorder/search', 'APIv1\OrderController@getSalesOrders');
+    Route::post('salesorder', 'APIv1\OrderController@addSalesOrder');
+    Route::put('salesorder/{id}', 'APIv1\OrderController@updateSalesOrder');
+    Route::delete('salesorder/{id}', 'APIv1\OrderController@destroy');
+
     
 });
 

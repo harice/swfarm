@@ -13,75 +13,64 @@ class OrderController extends BaseController {
         $this->repo = $repo;
     }
     
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function index()
+	public function getPurchaseOrders()
 	{
 		$collection = $this->repo->getAllOrders( Input::all() );
         return Response::json($collection);
 	}
 
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
+	public function getSalesOrders()
+	{
+		$collection = $this->repo->getAllOrders( Input::all(), 2);
+        return Response::json($collection);
+	}
+
 	public function addPurchaseOrder()
 	{
 		$model = $this->repo->addOrder(Input::all());
         return Response::json($model);
 	}
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
+	public function addSalesOrder()
 	{
-		$model = $this->repo->getOrder($id);
+		$model = $this->repo->addOrder(Input::all(), 2); //2 for SO
         return Response::json($model);
 	}
 
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
 	public function updatePurchaseOrder($id)
 	{
 		$model = $this->repo->updateOrder($id, Input::all());
         return Response::json($model);
 	}
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
+	public function updateSalesOrder($id)
+	{
+		$model = $this->repo->updateOrder($id, Input::all(), 2);
+        return Response::json($model);
+	}
+
+
+	public function getPurchaseOrder($id)
+	{
+		$model = $this->repo->getOrder($id);
+        return Response::json($model);
+	}
+
+	public function getSalesOrder($id)
+	{
+		$model = $this->repo->getOrder($id, 2);
+        return Response::json($model);
+	}
+
+	
 	public function destroy($id)
 	{
 		$model = $this->repo->deleteOrder($id);
 		return Response::json($model);
 	}
     
-    public function getOrigin()
-    {
-        // return $this->repo->getOrigin();
-    }
     
-    public function getNatureOfSale()
-    {
-        // return $this->repo->getNatureOfSale();
-    }
-    
-    public function cancel($id)
+    public function cancelOrder($id)
     {
         $model = $this->repo->cancelOrder($id);
     	return Response::json($model);
@@ -99,6 +88,11 @@ class OrderController extends BaseController {
 
     public function getDestinationList(){
     	$model = $this->repo->getOrderDestination();
+    	return Response::json($model);
+    }
+
+    public function getPickupLocationList(){
+    	$model = $this->repo->getOrderPickupLocation();
     	return Response::json($model);
     }
 
