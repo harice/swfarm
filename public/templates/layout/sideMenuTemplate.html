@@ -24,12 +24,7 @@
         <% } %>
 
         <% if(_.contains(permission,constant.MENU.PURCHASES.VIEW) || _.isEqual(su,constant.SU)) { %>
-        <li class="parent"><a href="#"><i class="fa fa-file"></i><span>Purchases</span></a>
-          <ul class="sub-menu">
-            <li><a href="#/<%= constant.URL.BID %>">Bids</a></li>
-            <li><a href="#/<%= constant.URL.PO %>">Purchase Order</a></li>
-          </ul>
-        </li>
+        <li class="parent"><a href="#/<%= constant.URL.PO %>"><i class="fa fa-file"></i><span>Purchases</span></a></li>
         <% } %>
 
         <% if(_.contains(permission,constant.MENU.SALES.VIEW) || _.isEqual(su,constant.SU)) { %>
