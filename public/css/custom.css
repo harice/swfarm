@@ -1,4 +1,10 @@
 /* Table  */
+.width-100 {
+  width: 100px;
+}
+.width-150 {
+  width: 150px;
+}
 .cl-sidebar {
   width: 200px;
 }
@@ -32,6 +38,9 @@
 .margin-bottom-0 {
   margin-bottom: 0;
 }
+.margin-bottom-10 {
+  margin-bottom: 10px;
+}
 .help-block {
   font-size: 11px;
 }
@@ -55,7 +64,7 @@ body .filter > li {
   cursor: pointer;
 }
 .table > thead > tr > th {
-  font-weight: 400;
+  font-weight: bold;
 }
 .table > thead > tr > th,
 .table > tbody > tr > th,
