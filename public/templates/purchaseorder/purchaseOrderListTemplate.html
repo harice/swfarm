@@ -5,14 +5,45 @@
                 <h3>Purchase Orders <small class="transform-upper">LIST</small></h3>
             </div>
             <div class="content">
-              
               <div class="row">
-                <div class="col-md-6 col-xs-4">
-                  <a href="<%= bid_add_url %>" class="btn btn-primary">+ Add Bid</a>
-				  <a href="<%= po_add_url %>" class="btn btn-primary">+ Add Purchase Order</a>
+                <div class="col-md-3 padding-top-10 padding-right-0">
+                  <a href="<%= po_add_url %>" class="btn btn-primary">+ Add Purchase Order</a>
+                  <a href="<%= bid_add_url %>" class="btn btn-info">+ Add Bid</a>
                 </div>
-                
-                <div class="col-md-6 col-xs-8">
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <div id="filter-date-of-purchase" class="search-filter-field calendar-cont">
+                        <div class="input-group date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                          <input class="form-control" size="16" type="text" value="" />
+                          <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                        <p class="help-block">Date of Purchase</p>
+                    </div>  
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                      <div id="filter-pickup-start" class="search-filter-field calendar-cont">
+                          <div class="input-group date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                            <input class="form-control" size="16" type="text" value="" />
+                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                          </div>
+                          <p class="help-block">Pick-up Period: Start</p>
+                      </div>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                      <div id="filter-pickup-end" class="search-filter-field calendar-cont">
+                          <div class="input-group date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                            <input class="form-control" size="16" type="text" value="" />
+                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                          </div>
+                          <p class="help-block">Pick-up Period: End</p>
+                      </div>
+                  </div>
+                </div>
+                <div class="col-md-3 padding-top-10">
                   <form class="form-inline" role="form">
                     <div class="pull-right">
                       <div class="input-group">
@@ -23,16 +54,12 @@
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                             <span class="caret"></span>
                           </button>
-                          <ul class="dropdown-menu pull-right filters" role="menu">
-                            <li class="dropdown-header">Filter By Destination</li>
-                            <li>
-                              <input class="location_id" type="radio" name="location_id" value="" checked> All
-                            </li>
+                          <ul class="dropdown-menu filter" role="menu">
+                            <li class="dropdown-header"><i class="fa fa-truck"></i>Filter By Destination</li>
+                            <li><input class="location_id" type="radio" name="location_id" value="" checked> All</li>
                             <%= destination_filters %>
-                            <li class="dropdown-header">Filter By Status</li>
-                            <li>
-                              <input class="statusFilter" type="radio" name="statusFilter" value="" checked> All
-                            </li>
+                            <li class="dropdown-header"><i class="fa fa-tags"></i>Filter By Status</li>
+                            <li><input class="statusFilter" type="radio" name="statusFilter" value="" checked> All</li>
                             <%= status_filters %>
                           </ul>
                           <button type="button" class="btn btn-primary search-local">Search</button>
@@ -40,55 +67,6 @@
                       </div>
                     </div>
                   </form>
-                </div>
-              </div>
-
-              <div class="row margin-top-10">
-                <div class="col-md-12 search-filter-cont">
-                  <div class="sub-cont">
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">Date of Purchase</label>
-                            <div id="filter-date-of-purchase" class="search-filter-field calendar-cont col-md-6">
-                                <div class="input-group date datetime" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
-                                  <input class="form-control" size="16" type="text" value="" />
-                                  <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
-                                </div>
-                            </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div class="sub-cont">
-                    <div class="row">
-                      <div class="col-md-5">
-                        <div class="form-group">
-                            <label class="col-md-5 control-label">Pick-up Period: Start</label>
-                            <div id="filter-pickup-start" class="search-filter-field calendar-cont col-md-7">
-                                <div class="input-group date datetime" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
-                                  <input class="form-control" size="16" type="text" value="" />
-                                  <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
-                                </div>
-                            </div>
-                        </div>
-                      </div>
-                      
-                      <div class="col-md-5">
-                        <div class="form-group">
-                            <label class="col-md-2 col-md-offset-0 control-label">End</label>
-                            <div id="filter-pickup-end" class="search-filter-field calendar-cont col-md-7">
-                                <div class="input-group date datetime" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
-                                  <input class="form-control" size="16" type="text" value="" />
-                                  <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
-                                </div>
-                            </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                  </div>
                 </div>
               </div>
 
@@ -104,7 +82,7 @@
                   <thead>
                     <tr>
                       <th>PO No.</th>
-                      <th class="sortable sort-date-of-po">Date of Purchase <span class="glyphicon glyphicon-sort"></span></th>
+                      <th class="sortable sort-date-of-po"><i class="fa fa-sort"></i> Date of Purchase</span></th>
                       <th>Start</th>
                       <th>End</th>
                       <th>Producer</th>
