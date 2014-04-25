@@ -1,5 +1,6 @@
 define([
 	'backbone',
+	'bootstrapdatepicker',
 	'views/base/AppView',
 	'jqueryui',
 	'jqueryvalidate',
@@ -17,6 +18,7 @@ define([
 	'global',
 	'constant',
 ], function(Backbone,
+			DatePicker,
 			AppView,
 			JqueryUI,
 			Validate,
@@ -43,6 +45,8 @@ define([
 		initialize: function() {
 			var thisObj = this;
 			this.poId = null;
+			this.h1Title = 'Purchase Order';
+			this.h1Small = 'add';
 			
 			this.productAutoCompletePool = [];
 			this.options = {
@@ -99,8 +103,8 @@ define([
 			var innerTemplate = _.template(purchaseOrderAddTemplate, innerTemplateVariables);
 			
 			var variables = {
-				h1_title: "Purchase Order",
-				h1_small: "add",
+				h1_title: this.h1Title,
+				h1_small: this.h1Small,
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);

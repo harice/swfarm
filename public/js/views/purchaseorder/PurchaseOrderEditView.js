@@ -1,11 +1,11 @@
 define([
 	'backbone',
-	'views/base/AppView',
+	'bootstrapdatepicker',
+	'views/purchaseorder/PurchaseOrderAddView',
 	'jqueryui',
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
-	'views/purchaseorder/PurchaseOrderAddView',
 	'views/autocomplete/CustomAutoCompleteView',
 	'collections/account/AccountProducerCollection',
 	'collections/purchaseorder/DestinationCollection',
@@ -18,12 +18,12 @@ define([
 	'global',
 	'constant',
 ], function(Backbone,
-			AppView,
+			DatePicker,
+			PurchaseOrderAddView,
 			JqueryUI,
 			Validate,
 			TextFormatter,
 			PhoneNumber,
-			PurchaseOrderAddView,
 			CustomAutoCompleteView,
 			AccountProducerCollection,
 			DestinationCollection,
@@ -44,8 +44,9 @@ define([
 		
 		initialize: function(option) {
 			var thisObj = this;
-			
 			this.poId = option.id;
+			this.h1Title = 'Purchase Order';
+			this.h1Small = 'edit';
 			
 			this.productAutoCompletePool = [];
 			this.options = {
@@ -94,34 +95,6 @@ define([
 		
 		render: function(){
 			this.model.runFetch();
-		},
-		
-		displayForm: function () {
-			var thisObj = this;
-			
-			var innerTemplateVariables = {
-				'po_url' : '#/'+Const.URL.PO,
-			};
-			
-			if(this.poId != null)
-				innerTemplateVariables['po_id'] = this.poId;
-			
-			var innerTemplate = _.template(purchaseOrderAddTemplate, innerTemplateVariables);
-			
-			var variables = {
-				h1_title: "Purchase Order",
-				h1_small: "edit",
-				sub_content_template: innerTemplate,
-			};
-			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
-			
-			this.initValidateForm();
-			
-			this.generateDestination();
-			this.initProducerAutocomplete();
-			this.initCalendar();
-			this.addProduct();
 		},
 		
 		supplyPOData: function () {
