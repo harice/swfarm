@@ -44,8 +44,10 @@ define([
 		
 		initialize: function(option) {
 			var thisObj = this;
-			
 			this.poId = option.id;
+			this.isBid = false;
+			this.h1Title = 'Purchase Order';
+			this.h1Small = 'view';
 			
 			this.productAutoCompletePool = [];
 			this.options = {
@@ -87,6 +89,10 @@ define([
 			
 			this.model = new PurchaseOrderModel({id:this.poId});
 			this.model.on('change', function() {
+				if(parseInt(this.get('isfrombid')) == 1) {
+					thisObj.isBid = true;
+					thisObj.h1Title = 'Bid';
+				}
 				thisObj.destinationCollection.getModels();
 				this.off('change');
 			});
@@ -104,11 +110,17 @@ define([
 				'po_edit_url' : '#/'+Const.URL.PO+'/'+Const.CRUD.EDIT+'/'+this.poId,
 			};
 			
+			if(this.model.get('status').name.toLowerCase() == 'pending' || this.model.get('status').name.toLowerCase() == 'open')
+				innerTemplateVariables['editable'] = true;
+				
+			if(this.isBid)
+				innerTemplateVariables['is_bid'] = true;
+			
 			var innerTemplate = _.template(purchaseOrderAddTemplate, innerTemplateVariables);
 			
 			var variables = {
-				h1_title: "Purchase Order",
-				h1_small: "View",
+				h1_title: this.h1Title,
+				h1_small: this.h1Small,
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
@@ -131,8 +143,10 @@ define([
 			this.$el.find('#city').val(address[0].address_city[0].city);
 			this.$el.find('#zipcode').val(address[0].zipcode);
 			this.$el.find('#dateofpurchase').val(this.model.get('created_at').split(' ')[0]);
-			this.$el.find('#transportdatestart').val(this.model.get('transportdatestart').split(' ')[0]);
-			this.$el.find('#transportdateend').val(this.model.get('transportdateend').split(' ')[0]);
+			if(!thisObj.isBid) {
+				this.$el.find('#transportdatestart').val(this.model.get('transportdatestart').split(' ')[0]);
+				this.$el.find('#transportdateend').val(this.model.get('transportdateend').split(' ')[0]);
+			}
 			this.$el.find('#notes').val(this.model.get('notes'));
 			
 			_.each(products, function (product) {
@@ -150,6 +164,10 @@ define([
 					totalprice: totalprice,
 					ishold: (parseInt(product.ishold) == 1)? 'Yes' : 'No',
 				};
+				
+				if(thisObj.isBid)
+					variables['is_bid'] = true;
+				
 				var template = _.template(productItemTemplate, variables);
 				thisObj.$el.find('#product-list tbody').append(template);
 			});

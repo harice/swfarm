@@ -45,6 +45,7 @@ define([
 		initialize: function(option) {
 			var thisObj = this;
 			this.isBid = false;
+			this.isConvertToPO = false;
 			this.poId = option.id;
 			this.h1Title = 'Purchase Order';
 			this.h1Small = 'edit';
@@ -89,6 +90,11 @@ define([
 			
 			this.model = new PurchaseOrderModel({id:this.poId});
 			this.model.on('change', function() {
+				if(parseInt(this.get('isfrombid')) == 1) {
+					thisObj.isBid = true;
+					thisObj.h1Title = 'Bid';
+				}
+				
 				thisObj.destinationCollection.getModels();
 				this.off('change');
 			});
@@ -116,8 +122,11 @@ define([
 			this.$el.find('#city').val(address[0].address_city[0].city);
 			this.$el.find('#zipcode').val(address[0].zipcode);
 			this.$el.find('#dateofpurchase').val(this.model.get('created_at').split(' ')[0]);
-			this.$el.find('#start-date .input-group.date').datepicker('update', this.model.get('transportdatestart').split(' ')[0]);
-			this.$el.find('#end-date .input-group.date').datepicker('update', this.model.get('transportdateend').split(' ')[0]);
+			
+			if(!this.isBid) {
+				this.$el.find('#start-date .input-group.date').datepicker('update', this.model.get('transportdatestart').split(' ')[0]);
+				this.$el.find('#end-date .input-group.date').datepicker('update', this.model.get('transportdateend').split(' ')[0]);
+			}
 			this.$el.find('#notes').val(this.model.get('notes'));
 			
 			var i= 0;

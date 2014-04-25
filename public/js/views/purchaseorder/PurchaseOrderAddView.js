@@ -45,6 +45,7 @@ define([
 		initialize: function() {
 			var thisObj = this;
 			this.isBid = false;
+			this.isConvertToPO = false;
 			this.poId = null;
 			this.h1Title = 'Purchase Order';
 			this.h1Small = 'add';
@@ -133,6 +134,9 @@ define([
 					if(thisObj.isBid)
 						data['isfrombid'] = '1';
 					
+					if(thisObj.isConvertToPO)
+						data['createPO'] = '1';
+					
 					console.log(data);
 					
 					var purchaseOrderModel = new PurchaseOrderModel(data);
@@ -141,10 +145,12 @@ define([
 						null, 
 						{
 							success: function (model, response, options) {
+								thisObj.isConvertToPO = false;
 								thisObj.displayMessage(response);
 								Global.getGlobalVars().app_router.navigate(Const.URL.PO, {trigger: true});
 							},
 							error: function (model, response, options) {
+								thisObj.isConvertToPO = false;
 								if(typeof response.responseJSON.error == 'undefined')
 									validate.showErrors(response.responseJSON);
 								else
@@ -153,6 +159,9 @@ define([
 							headers: purchaseOrderModel.getAuth(),
 						}
 					);
+				},
+				invalidHandler: function (event, validator) {
+					thisObj.isConvertToPO = false;
 				},
 				errorPlacement: function(error, element) {
 					if(element.hasClass('form-date')) {
@@ -351,6 +360,7 @@ define([
 			'keyup .unitprice': 'onKeyUpUnitPrice',
 			'keyup .tons': 'onKeyUpTons',
 			'click #cancel-po': 'cancelPO',
+			'click #convert-po': 'convertPO',
 		},
 		
 		removeProduct: function (ev) {
@@ -433,7 +443,9 @@ define([
 			if(this.poId != null) {
 				var thisObj = this;
 				
-				var verifyCancel = confirm('Are you sure you want to cancel this Purchase Order?');
+				var verifyMsg = (!this.isBid)? 'Are you sure you want to cancel this Purchase Order?' : 'Are you sure you want to cancel this Bid?';
+				
+				var verifyCancel = confirm(verifyMsg);
 				
 				if(verifyCancel) {
 					var purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
@@ -457,6 +469,11 @@ define([
 				}
 			}
 			return false;
+		},
+		
+		convertPO: function () {
+			this.isConvertToPO = true;
+			$('#poForm').submit();
 		},
 	});
 
