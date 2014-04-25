@@ -1,7 +1,6 @@
 <% if (!_.isEmpty(products)) { %>
   <% _.each(products, function(product){ %>
     <tr>
-      <td class="align-center"><input type="checkbox" name="productids[]" class="productids" value="<%= product.get("id") %>"></td>
       <td><a href="<%= product_url %>/<%= product.get("id") %>"><%= product.get("name") %></a></td>
       <td><%= product.get("description") %></td>
       <td>
@@ -16,6 +15,6 @@
   <% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="4">No result found.</td>
+		<td colspan="3">No result found.</td>
 	</tr>
 <% } %>

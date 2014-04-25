@@ -1,22 +1,20 @@
-<div class="row">
+<div class="row margin-top-0">
     <div class="col-md-12">
         <div class="block-flat">
-            <div class="content">
+            <div class="content padding-top-0">
 
-                <div id="content-top" class="row">
-                    <div class="col-md-6 col-xs-4">
+                <div id="content-top" class="row margin-top-0">
+                    <div class="col-md-9 col-xs-9">
                         <a href="<%= product_add_url %>" class="btn btn-primary">+ Add Product</a>
                     </div>
-                    <div class="col-md-6 col-xs-8">
+                    <div class="col-md-3 col-xs-3">
                         <form class="form-inline" role="form">
-                            <div class="pull-right">
-                                <div class="input-group">
-                                    <label class="sr-only" for="search">Search</label>
-                                    <input type="text" class="search form-control" id="search-keyword" placeholder="">
-                                    <span class="input-group-btn">
-                                        <button type="button" class="btn btn-info search-local">Search</button>
-                                    </span>
-                                </div>
+                            <div class="input-group">
+                                <label class="sr-only" for="search">Search</label>
+                                <input type="text" class="search form-control" id="search-keyword" placeholder="">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-primary search-local">Search</button>
+                                </span>
                             </div>
                         </form>
                     </div>
@@ -26,10 +24,9 @@
                   <table id="product-list" class="table table-bordered table-striped table-hover">
                     <thead>
                       <tr>
-                        <th class="width-40"><input type="checkbox" name="checkall" class="checkall"></th>
-                            <th id="t-product-name" class="sortable sort-name">Product <span class="glyphicon glyphicon-sort"></span></th>
-                        <th>Description</th>
-                        <th class="width-70">Action</th>
+                            <th id="t-product-name" class="sortable sort-name"><i class="fa fa-sort"></i> Product</th>
+                            <th>Description</th>
+                            <th class="width-70">Action</th>
                       </tr>
                     </thead>
                     <tbody></tbody>
