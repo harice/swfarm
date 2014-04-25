@@ -1,7 +1,6 @@
 <% if (!_.isEmpty(contacts)) { %>
   <% _.each(contacts, function(contact){ %>
     <tr>
-      <td class="align-center"><input type="checkbox" name="contactids[]" class="contactids" value="<%= contact.get("id") %>"></td>
       <td><a href="<%= contact_url %>/<%= contact.get("id") %>"><%= contact.get("lastname") %>, <%= contact.get("firstname") %></a></td>
       <td><%= contact.get("account").name %></td>
       <td><%= contact.get("position") %></td>
@@ -21,6 +20,6 @@
   <% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="8">No result found.</td>
+		<td colspan="7">No result found.</td>
 	</tr>
 <% } %>
