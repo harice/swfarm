@@ -15,12 +15,14 @@
 	<td><input class="form-control text-align-right number tons" type="text" name="tons"></td>
 	<td><input class="form-control text-align-right number bales" type="text" name="bales"></td>
 	<td><div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-align-right unit-price" type="text" value="0.00" readonly></div></td>
+	<% if (typeof is_bid === "undefined") { %>
 	<td>
 		<select class="form-control ishold" name="ishold">
 			<option value="0">No</option>
 			<option value="1">Yes</option>
 		</select>
 	</td>
+	<% } %>
 	<td>
 		<button title="Remove Product" type="button" class="pull-right btn btn-danger btn-xs remove-product"><span class="glyphicon glyphicon-remove"></span></button>
 	</td>
