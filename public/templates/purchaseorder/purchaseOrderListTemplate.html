@@ -8,7 +8,7 @@
               <div class="row">
                 <div class="col-md-3 padding-top-10 padding-right-0">
                   <a href="<%= po_add_url %>" class="btn btn-primary">+ Add Purchase Order</a>
-                  <a href="<%= bid_add_url %>" class="btn btn-info">+ Add Bid</a>
+                  <a href="<%= bid_add_url %>" class="btn btn-success">+ Add Bid</a>
                 </div>
                 <div class="col-md-2">
                   <div class="form-group">
@@ -45,7 +45,6 @@
                 </div>
                 <div class="col-md-3 padding-top-10">
                   <form class="form-inline" role="form">
-                    <div class="pull-right">
                       <div class="input-group">
                         <label class="sr-only" for="search">Search</label>
                         <input type="text" class="search form-control" id="search-keyword" placeholder="">
@@ -54,7 +53,7 @@
                           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                             <span class="caret"></span>
                           </button>
-                          <ul class="dropdown-menu filter" role="menu">
+                          <ul class="dropdown-menu pull-right filter" role="menu">
                             <li class="dropdown-header"><i class="fa fa-truck"></i>Filter By Destination</li>
                             <li><input class="location_id" type="radio" name="location_id" value="" checked> All</li>
                             <%= destination_filters %>
@@ -65,7 +64,6 @@
                           <button type="button" class="btn btn-primary search-local">Search</button>
                         </div>
                       </div>
-                    </div>
                   </form>
                 </div>
               </div>
