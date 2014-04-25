@@ -98,16 +98,33 @@ class BidRepository implements BidRepositoryInterface {
                     'address.account',
                     'purchaseorder');
 
-    $poList = $poList->whereNotNull('ponumber')
-                  ->take($perPage)
-                  ->offset($offset)
-                  ->orderBy($sortby, $orderby);
+    $poList = $poList->whereHas('purchaseorder', function($query){
+                      $query->whereNotNull('ponumber');
+              })
+              ->take($perPage)
+              ->offset($offset)
+              ->orderBy($sortby, $orderby);
+
+    // $poList = $poList->whereNotNull('ponumber')
+    //               ->take($perPage)
+    //               ->offset($offset)
+    //               ->orderBy($sortby, $orderby);
 
     if($date != null){
-      $poList = $poList->where('po_date', 'like', $date.'%'); 
-      $count = Bid::whereNotNull('ponumber')->where('po_date', 'like', $date.'%')->count();
+      $poList = $poList->whereHas('purchaseorder', function($query) use ($date){
+                      $query->where('date', 'like', $date.'%');
+              });
+      $count = Bid::whereHas('purchaseorder', function($query) use ($date){
+                      $query->whereNotNull('ponumber')
+                            ->where('date', 'like', $date.'%');
+                    })->count();
+      //$poList = $poList->where('po_date', 'like', $date.'%'); 
+      //$count = Bid::whereNotNull('ponumber')->where('po_date', 'like', $date.'%')->count();
     } else {
-      $count = Bid::whereNotNull('ponumber')->count();
+      $count = Bid::whereHas('purchaseorder', function($query){
+                      $query->whereNotNull('ponumber');
+                    })->count();
+      //$count = Bid::whereNotNull('ponumber')->count();
     }
 
     $poList = $poList->get();             
@@ -135,7 +152,7 @@ class BidRepository implements BidRepositoryInterface {
       'destination' => 'required'
     );
 
-    $data['isPO'] = isset($data['purchaseorder']) ? true : false;
+    $data['isPO'] = isset($data['purchaseorder']) && $data['purchaseorder'] != 'false' ? true : false;
 
     $this->validate($data, $rules);
 
@@ -148,13 +165,20 @@ class BidRepository implements BidRepositoryInterface {
       $bid->status = 'Open';
       $bid->notes = isset($data['notes']) ? $data['notes'] : null;
       $bid->bidnumber = $this->generateBidNumber(); //creating bid number
-      if($data['isPO']){
-        $bid->ponumber = $this->generatePurchaseOrderNumber(); //creating bid number  
-        $bid->status = 'Closed';
-        $bid->po_status = 'Open';
-        $bid->po_date = date('Y-m-d H:i:s');
-      }
       $bid->save();
+
+      if($data['isPO']){
+        $bid->status = 'Closed'; //close the bid when PO is created
+        $bid->save();
+
+        $po = new PurchaseOrder;
+        $po->bid_id = $bid->id;
+        $po->ponumber = $this->generatePurchaseOrderNumber(); //creating bid number  
+        $po->status = 'Open';
+        $po->date = date('Y-m-d H:i:s');
+        $po->save();
+      }
+      
 
 
       if(isset($data['products'])){
@@ -209,7 +233,7 @@ class BidRepository implements BidRepositoryInterface {
 
   private function generatePurchaseOrderNumber(){
     $dateToday = date('Y-m-d');
-    $count = Bid::whereNotNull('ponumber')->where('po_date', 'like', $dateToday.'%')->count()+1;
+    $count = PurchaseOrder::whereNotNull('ponumber')->where('date', 'like', $dateToday.'%')->count()+1;
     
     return 'P'.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
   }
@@ -241,11 +265,22 @@ class BidRepository implements BidRepositoryInterface {
         $bid->user_id = Auth::user()->id; //user that is currently log in
         $bid->status = 'Open';
         $bid->notes = isset($data['notes']) ? $data['notes'] : null;
+
         if($data['isPO']){
-          $bid->ponumber = $this->generatePurchaseOrderNumber(); //creating bid number  
-          $bid->status = 'Closed';
-          $bid->po_status = 'Open';
-          $bid->po_date = date('Y-m-d H:i:s');
+          $bid->status = 'Closed'; //close the bid when PO is created
+          // $po = PurchaseOrder::where('bid_id', '=', $id)->first();
+          
+          // if($po == null){
+          //   $po = new PurchaseOrder;
+          // }
+
+          $po = new PurchaseOrder;
+          $po->bid_id = $bid->id;
+          $po->ponumber = $this->generatePurchaseOrderNumber(); //creating bid number  
+          $po->status = 'Open';
+          $po->date = date('Y-m-d H:i:s');
+          $po->save();
+          
         }
         $bid->save();
         
@@ -436,7 +471,7 @@ class BidRepository implements BidRepositoryInterface {
 
     $searchWord = isset($_search['search']) ? $_search['search'] : '';
 
-    $count = Bid::where(function($query) use ($searchWord, $pickupstart, $pickupend){
+    $count = Bid::where(function($query) use ($searchWord){
                      $query->orWhereHas('account', function($query) use ($searchWord){
                           $query->where('name', 'like', '%'.$searchWord.'%');
 
@@ -445,12 +480,16 @@ class BidRepository implements BidRepositoryInterface {
                           $query->where('destination', 'like', '%'.$searchWord.'%');
 
                       })
-                      ->orWhere(function ($query) use ($searchWord){
-                          $query->orWhere('ponumber','like','%'.$searchWord.'%');
-                      });     
+                      ->orWhereHas('purchaseorder', function ($query) use ($searchWord){
+                        $query->whereNotNull('ponumber')->whereNull('deleted_at');
+                        if($searchWord != ''){
+                          $query->where('ponumber','like','%'.$searchWord.'%');
+                        }
+                      });
                   })
-                  ->whereNull('deleted_at')
-                  ->whereNotNull('ponumber');
+                  ->whereHas('purchaseorder', function ($query) {
+                    $query->whereNotNull('ponumber')->whereNull('deleted_at');
+                  });
 
     $purchaseOrder = Bid::with('bidproduct', 
                       'account', 
@@ -462,7 +501,7 @@ class BidRepository implements BidRepositoryInterface {
                       'address.addressType', 
                       'address.account',
                       'purchaseorder')
-                  ->where(function($query) use ($searchWord, $pickupstart, $pickupend){
+                  ->where(function($query) use ($searchWord){
                      $query->orWhereHas('account', function($query) use ($searchWord){
                           $query->where('name', 'like', '%'.$searchWord.'%');
 
@@ -471,12 +510,16 @@ class BidRepository implements BidRepositoryInterface {
                           $query->where('destination', 'like', '%'.$searchWord.'%');
 
                       })
-                      ->orWhere(function ($query) use ($searchWord){
-                          $query->orWhere('ponumber','like','%'.$searchWord.'%');
+                      ->orWhereHas('purchaseorder', function ($query) use ($searchWord){
+                        $query->whereNotNull('ponumber')->whereNull('deleted_at');
+                        if($searchWord != ''){
+                          $query->where('ponumber','like','%'.$searchWord.'%');
+                        }
                       });
                   })
-                  ->whereNull('deleted_at')
-                  ->whereNotNull('ponumber');
+                  ->whereHas('purchaseorder', function ($query) {
+                    $query->whereNotNull('ponumber')->whereNull('deleted_at');
+                  });
 
       //with pick up date filter
       if($pickupstart != null && $pickupend != null){
@@ -491,11 +534,17 @@ class BidRepository implements BidRepositoryInterface {
       }
       //with PO status filter
       if($poStatus !=  null){ //postatus can only be "Open", "Cancelled" or "Closed"
-        $count = $count->where(function ($query) use ($poStatus){
-                          $query->where('po_status', '=', $poStatus);
+        // $count = $count->where(function ($query) use ($poStatus){
+        //                   $query->where('po_status', '=', $poStatus);
+        //                 });
+        // $purchaseOrder = $purchaseOrder->where(function ($query) use ($poStatus){
+        //                   $query->where('po_status', '=', $poStatus);
+        //                 });
+        $count = $count->whereHas('purchaseorder', function ($query) use ($poStatus){
+                          $query->where('status', '=', $poStatus);
                         });
-        $purchaseOrder = $purchaseOrder->where(function ($query) use ($poStatus){
-                          $query->where('po_status', '=', $poStatus);
+        $purchaseOrder = $purchaseOrder->whereHas('purchaseorder',function ($query) use ($poStatus){
+                          $query->where('status', '=', $poStatus);
                         });
       }
       //with destination filter
@@ -509,11 +558,17 @@ class BidRepository implements BidRepositoryInterface {
       }
 
       if($date !=  null){
-        $count = $count->where(function ($query) use ($date){
-                          $query->where('po_date', 'like', $date.'%');
+        // $count = $count->where(function ($query) use ($date){
+        //                   $query->where('po_date', 'like', $date.'%');
+        //                 });
+        // $purchaseOrder = $purchaseOrder->where(function ($query) use ($date){
+        //                   $query->where('po_date', 'like', $date.'%');
+        //                 });
+        $count = $count->whereHas('purchaseorder', function ($query) use ($date){
+                          $query->where('date', 'like', $date.'%');
                         });
-        $purchaseOrder = $purchaseOrder->where(function ($query) use ($date){
-                          $query->where('po_date', 'like', $date.'%');
+        $purchaseOrder = $purchaseOrder->whereHas('purchaseorder', function ($query) use ($date){
+                          $query->where('date', 'like', $date.'%');
                         });
       }
 
@@ -610,41 +665,6 @@ class BidRepository implements BidRepositoryInterface {
       );
   }
 
-  public function createPurchaseOrder($data){
-    $rules = array(
-      'bidId' => 'required',
-      'pickupstart' => 'required|date',
-      'pickupend' => 'required|date'
-    );
-
-    $this->validate($data, $rules);
-
-    DB::transaction(function() use ($data){
-      $purchaseOrder = new PurchaseOrder;
-      $purchaseOrder->bid_id = $data['bidId'];
-      $purchaseOrder->pickupstart = $data['pickupstart'];
-      $purchaseOrder->pickupend = $data['pickupend'];
-      $purchaseOrder->save();
-
-      $bid = Bid::find($data['bidId']);
-      $bid->po_status = "Open";
-      $bid->notes =  isset($data['notes']) ? $data['notes'] : '';
-      $bid->save();
-
-      foreach($data['products'] as $bidProductData){
-        $bidproduct = BidProduct::find($bidProductData['id']);
-        $bidproduct->unitprice = isset($bidProductData['unitprice']) ? $bidProductData['unitprice'] : null;
-        $bidproduct->save();
-      }
-    });
-
-    return Response::json(array(
-          'error' => false,
-          'message' => 'Purchase order successfully created.'),
-          200
-      );
-  }
-
   public function addPickupDateToPurchaseOrder($bidId, $data){
      $rules = array(
       'pickupstart' => 'required|date',
@@ -711,10 +731,10 @@ class BidRepository implements BidRepositoryInterface {
   }
 
   public function cancelPurchaseOrder($bidId){
-    $bid = Bid::find($bidId);
-    if(strcmp($bid->po_status, "Open") == 0){
-      $bid->po_status = "Cancelled";
-      $bid->save();
+    $po = PurchaseOrder::where('bid_id', '=', $bidId)->first();
+    if(strcmp($po->status, "Open") == 0){
+      $po->status = "Cancelled";
+      $po->save();
 
       return Response::json(array(
           'error' => false,
@@ -731,10 +751,10 @@ class BidRepository implements BidRepositoryInterface {
   }
 
   public function closePurchaseOrder($bidId){
-    $bid = Bid::find($bidId);
-    if(strcmp($bid->po_status, "Open") == 0){
-      $bid->po_status = "Closed";
-      $bid->save();
+    $po = PurchaseOrder::where('bid_id', '=', $bidId)->first();
+    if(strcmp($po->status, "Open") == 0){
+      $po->status = "Closed";
+      $po->save();
 
      return Response::json(array(
         'error' => false,

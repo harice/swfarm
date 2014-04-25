@@ -1,16 +1,21 @@
 define([
 	'backbone',
 	'views/purchaseorder/PurchaseOrderListView',
+	'views/purchaseorder/PurchaseOrderAddView',
 	'views/purchaseorder/PurchaseOrderEditView',
 	'views/purchaseorder/PurchaseOrderView',
 	'constant',
-], function(Backbone, PurchaseOrderListView, PurchaseOrderEditView, PurchaseOrderView, Const){
+], function(Backbone, PurchaseOrderListView, PurchaseOrderAddView, PurchaseOrderEditView, PurchaseOrderView, Const){
 	
 	function PurchaseOrderController () {	
 		
 		this.setAction = function (action, id) {
 			
 			switch (action) {
+				case Const.CRUD.ADD:
+					return this.add();
+					break;
+				
 				case Const.CRUD.EDIT:
 					if(id != null && this.IsInt(id))
 						return this.edit(id);
@@ -21,6 +26,10 @@ define([
 					else
 						return this.listView();
 			}
+		};
+		
+		this.add = function () {
+			return new PurchaseOrderAddView();
 		};
 		
 		this.edit = function (id) {

@@ -1,37 +1,41 @@
 <% if (!_.isEmpty(pos)) { %>
 	<% _.each(pos, function(po){ %>
 	<tr>
-		<td><a href="<%= po_url %>/<%= po.get("id") %>"><%= po.get("ponumber") %></a></td>
-		<td>
-			<% if (po.get("po_date")) { %>
-				<%= po.get("po_date").split(" ")[0] %>
-			<% } %>
-			
-		</td>
-		<td>
-			<% if (po.get("purchaseorder")) { %>
-				<%= po.get("purchaseorder").pickupstart.split(" ")[0] %>
-			<% } %>
-		</td>
-		<td>
-			<% if (po.get("purchaseorder")) { %>
-				<%= po.get("purchaseorder").pickupend.split(" ")[0] %>
-			<% } %>
-		</td>
+		<td><a href="<%= po_url %>/<%= po.get("id") %>"><%= po.get("order_number") %></a></td>
+		<td><%= po.get("created_at").split(" ")[0] %></td>
+		<td><%= po.get("transportdatestart").split(" ")[0] %></td>
+		<td><%= po.get("transportdateend").split(" ")[0] %></td>
 		<td><%= po.get("account").name %></td>
-		<td><%= po.get("po_status") %></td>
-		<td><%= po.get("destination").destination %></td>
-		<td class="text-align-right"><span>$ </span><%= parseFloat(po.get("totalPrice")).toFixed(2) %></td>
+		<td><%= po.get("status").name %></td>
+		<td><%= po.get("location").location %></td>
+		<td class="text-align-right"><%= parseFloat(po.get("totalPrice")).toFixed(2) %></td>
 		<td>
-			<% if (po.get("po_status").toLowerCase() == "open") { %>
-				<a href="<%= po_edit_url %>/<%= po.get("id") %>">edit</a>
-				<a class="cancel-po" href="#" data-id="<%= po.get("id") %>">cancel po</a>
+			<% if (po.get("status").name.toLowerCase() == "open") { %>
+				<a href="<%= po_edit_url %>/<%= po.get("id") %>" class="btn btn-info btn-xs" title="edit">
+				  <span class="glyphicon glyphicon-pencil"></span>
+				</a>
+				<a href="#" data-id="<%= po.get("id") %>" class="btn btn-danger btn-xs cancel-po">
+				  <span class="glyphicon glyphicon-off"></span>
+				</a>
+				<a href="<%= po_sched_url %>/<%= po.get("id") %>" class="btn btn-info btn-xs" title="schedule">
+				  <span class="glyphicon glyphicon-time"></span>
+				</a>
+			<% } else {%>
+				<a href="#" class="btn btn-info btn-xs" title="edit" disabled>
+				  <span class="glyphicon glyphicon-pencil"></span>
+				</a>
+				<a href="#" class="btn btn-danger btn-xs" disabled>
+				  <span class="glyphicon glyphicon-off"></span>
+				</a>
+				<a href="#" class="btn btn-info btn-xs" title="schedule" disabled>
+				  <span class="glyphicon glyphicon-time"></span>
+				</a>
 			<% } %>
 		</td>
 	</tr>
 	<% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="8">No result found.</td>
+		<td colspan="9">No result found.</td>
 	</tr>
 <% } %>

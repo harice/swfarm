@@ -32,12 +32,20 @@
 			<div class="form-group">
 				<label for="fuelcharge" class="col-sm-4 control-label small">Fuel Charges</label>
 				<div class="col-sm-8">
-					<input type="text" class="form-control text-align-right" id="fuelcharge" readonly>
+					<div class="input-group">
+						<span class="input-group-addon">$</span>
+						<input type="text" class="form-control text-align-right" id="fuelcharge" readonly>
+					</div>
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="truckingrate" class="col-sm-4 control-label small">Trucking/Hauling Rate</label>
-				<div class="col-sm-8 value-text"><input type="text" class="form-control text-align-right" id="truckingrate" value="" readonly></div>
+				<div class="col-sm-8 value-text">
+					<div class="input-group">
+						<span class="input-group-addon">$</span>
+						<input type="text" class="form-control text-align-right" id="truckingrate" value="" readonly>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="col-sm-4">
@@ -51,7 +59,10 @@
 			<div class="form-group">
 				<label for="originloadersfee" class="col-sm-4 control-label small">Loader's Fee</label>
 				<div class="col-sm-8">
-					<input type="text" class="form-control text-align-right loader" id="originloadersfee" readonly>
+					<div class="input-group">
+						<span class="input-group-addon">$</span>
+						<input type="text" class="form-control text-align-right loader" id="originloadersfee" readonly>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -66,16 +77,19 @@
 			<div class="form-group">
 				<label for="destinationloadersfee" class="col-sm-4 control-label small">Loader's Fee</label>
 				<div class="col-sm-8">
-					<input type="text" class="form-control text-align-right loader" id="destinationloadersfee" readonly>
+					<div class="input-group">
+						<span class="input-group-addon">$</span>
+						<input type="text" class="form-control text-align-right loader" id="destinationloadersfee" readonly>
+					</div>
 				</div>
 			</div>
 		</div>
 	</fieldset>
 	<div class="form-group form-button-container">
 		<div class="pull-right">
-			<a id="show-weight-info" class="btn btn-default" href="#" style="display:none;">Show Weight Info</a>
-			<a id="edit-schedule" class="btn btn-default" href="#">Edit</a>
-			<a id="cancel-add-schedule" class="btn btn-default" href="#">Close</a>
+			<a class="btn btn-default" href="<%= po_weight_info_url %>">Show Weight Info</a>
+			<a class="btn btn-default" href="<%= po_schedule_edit_url %>">Edit</a>
+			<a class="btn btn-default" href="<%= po_schedule_url %>">Back</a>
 		</div>
 	</div>
 </form>

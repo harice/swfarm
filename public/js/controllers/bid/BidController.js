@@ -7,7 +7,7 @@ define([
 	'constant',
 ], function(Backbone, BidListView, BidAddView, BidEditView, BidView, Const){
 	
-	function UserController () {	
+	function BidController () {	
 		
 		this.setAction = function (action, id) {
 			
@@ -50,5 +50,5 @@ define([
 		};
 	};
 
-	return UserController;
+	return BidController;
 });

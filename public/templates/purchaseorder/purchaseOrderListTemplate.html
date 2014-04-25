@@ -1,101 +1,130 @@
-<div class="clearfix">
-	<div class="search-filter-cont clearfix">
-		<div class="pull-left">
-			<div class="sub-cont">
-				<label>Date of Purchase</label>
-				<div id="filter-date-of-purchase" class="search-filter-field calendar-cont">
-					<div class="input-group date">
-						<input type="text" class="form-control" value="">
-						<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-					</div>
-				</div>
-			</div>
-			<div class="sub-cont">
-				<label>Pick-up Period: </label>
-				<label>Start</label>
-				<div id="filter-pickup-start" class="search-filter-field calendar-cont">
-					<div class="input-group date">
-						<input type="text" class="form-control" value="">
-						<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-					</div>
-				</div>
-				<label>End</label>
-				<div id="filter-pickup-end" class="search-filter-field calendar-cont">
-					<div class="input-group date">
-						<input type="text" class="form-control" value="">
-						<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="pull-right">
-			<form class="form-inline" role="form">
-				<div>
-					<div class="form-group">
-						<label class="sr-only" for="search">Search</label>
-						<input type="text" class="search form-control" id="search-keyword" placeholder="">
-					</div>
-					<button type="button" class="btn btn-default search-local">Search</button>
-					<button type="button" class="btn btn-link" data-toggle="collapse" href="#collapseFilters">Advance Search</button>
-				</div>
-				<div id="collapseFilters" class="collapse filters">
-					<div>
-						<h4>Filter by destination</h4>
-						<label class="radio-inline">
-							<input class="bidDestination" type="radio" name="destination" value="" checked> All
-						</label>
-						<%= destination_filters %>
-					</div>
-					<div>
-						<h4>Filter by status</h4>
-						<label class="radio-inline">
-							<input class="statusFilter" type="radio" name="statusFilter" value="" checked> All
-						</label>
-						<label class="radio-inline">
-							<input class="statusFilter" type="radio" name="statusFilter" value="Open"> Open
-						</label>
-						<label class="radio-inline">
-							<input class="statusFilter" type="radio" name="statusFilter" value="Closed"> Closed
-						</label>
-						<label class="radio-inline">
-							<input class="statusFilter" type="radio" name="statusFilter" value="Cancelled"> Cancelled
-						</label>
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="block-flat">
+            <div class="header">
+                <h3>Purchase Orders <small class="transform-upper">LIST</small></h3>
+            </div>
+            <div class="content">
+              
+              <div class="row">
+                <div class="col-md-6 col-xs-4">
+                  <a href="<%= po_add_url %>" class="btn btn-primary">+ Add Purchase Order</a>
+                </div>
+                
+                <div class="col-md-6 col-xs-8">
+                  <form class="form-inline" role="form">
+                    <div class="pull-right">
+                      <div class="input-group">
+                        <label class="sr-only" for="search">Search</label>
+                        <input type="text" class="search form-control" id="search-keyword" placeholder="">
 
-<div class="clearfix">
-	<ul class="pagination" style="display:none;">
-		<li><a class="first-page" href="#">&laquo;</a></li>
-		<li><a class="last-page" href="#">&raquo;</a></li>
-	</ul>
-</div>
+                        <div class="input-group-btn">
+                          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu pull-right filters" role="menu">
+                            <li class="dropdown-header">Filter By Destination</li>
+                            <li>
+                              <input class="location_id" type="radio" name="location_id" value="" checked> All
+                            </li>
+                            <%= destination_filters %>
+                            <li class="dropdown-header">Filter By Status</li>
+                            <li>
+                              <input class="statusFilter" type="radio" name="statusFilter" value="" checked> All
+                            </li>
+                            <%= status_filters %>
+                          </ul>
+                          <button type="button" class="btn btn-primary search-local">Search</button>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
 
-<div class="content-inner table-responsive">
-	<table id="po-list" class="table table-bordered table-striped table-hover">
-		<thead>
-			<tr>
-				<th>PO No.</th>
-				<th class="sortable sort-date-of-po">Date of Purchase <span class="glyphicon glyphicon-sort"></span></th>
-				<th>Start</th>
-				<th>End</th>
-				<th>Producer</th>
-				<th>Status</th>
-				<th>Destination</th>
-				<th>Total Amount</th>
-				<th>Operation</th>
-			</tr>
-		</thead>
-		<tbody></tbody>
-	</table>
-</div>
+              <div class="row margin-top-10">
+                <div class="col-md-12 search-filter-cont">
+                  <div class="sub-cont">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Date of Purchase</label>
+                            <div id="filter-date-of-purchase" class="search-filter-field calendar-cont col-md-6">
+                                <div class="input-group date datetime" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                                  <input class="form-control" size="16" type="text" value="" />
+                                  <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="sub-cont">
+                    <div class="row">
+                      <div class="col-md-5">
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">Pick-up Period: Start</label>
+                            <div id="filter-pickup-start" class="search-filter-field calendar-cont col-md-7">
+                                <div class="input-group date datetime" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                                  <input class="form-control" size="16" type="text" value="" />
+                                  <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                      
+                      <div class="col-md-5">
+                        <div class="form-group">
+                            <label class="col-md-2 col-md-offset-0 control-label">End</label>
+                            <div id="filter-pickup-end" class="search-filter-field calendar-cont col-md-7">
+                                <div class="input-group date datetime" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                                  <input class="form-control" size="16" type="text" value="" />
+                                  <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
 
-<!--<div class="clearfix">
-	<ul class="pagination" style="display:none;">
-		<li><a class="first-page" href="#">&laquo;</a></li>
-		<li><a class="last-page" href="#">&raquo;</a></li>
-	</ul>
-</div>-->
+              <div class="clearfix">
+                <ul class="pagination" style="display:none;">
+                  <li><a class="first-page" href="#">&laquo;</a></li>
+                  <li><a class="last-page" href="#">&raquo;</a></li>
+                </ul>
+              </div>
+
+              <div class="content-inner table-responsive">
+                <table id="po-list" class="table table-bordered table-striped table-hover">
+                  <thead>
+                    <tr>
+                      <th>PO No.</th>
+                      <th class="sortable sort-date-of-po">Date of Purchase <span class="glyphicon glyphicon-sort"></span></th>
+                      <th>Start</th>
+                      <th>End</th>
+                      <th>Producer</th>
+                      <th>Status</th>
+                      <th>Destination</th>
+                      <th>Total Amount</th>
+                      <th>Operation</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+
+              <!--<div class="clearfix">
+                <ul class="pagination" style="display:none;">
+                  <li><a class="first-page" href="#">&laquo;</a></li>
+                  <li><a class="last-page" href="#">&raquo;</a></li>
+                </ul>
+              </div>-->
+
+            </div> <!-- /.content -->
+        </div> <!-- /.block-flat -->
+    </div>
+</div>

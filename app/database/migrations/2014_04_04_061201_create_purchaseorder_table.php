@@ -17,9 +17,11 @@ class CreatePurchaseorderTable extends Migration {
 			$table->engine = 'InnoDB';
 			$table->increments('id');
 			$table->integer('bid_id')->unsigned();
-			$table->timestamp('pickupstart');
-			$table->timestamp('pickupend');
-			//$table->string('status', 10);
+			$table->string('ponumber', 20)->unique()->nullable();
+			$table->timestamp('date')->nullable();
+			$table->string('status', 10)->nullable();
+			$table->timestamp('pickupstart')->nullable();
+			$table->timestamp('pickupend')->nullable();
 			$table->timestamps();
 			$table->softDeletes();
 
