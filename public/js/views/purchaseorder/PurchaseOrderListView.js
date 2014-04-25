@@ -70,6 +70,7 @@ define([
 			var statusTemplate = _.template(purchaseOrderStatusTemplate, {'statuses': this.poStatusCollection.models});
 			var destinationTemplate = _.template(purchaseOrderDestinationTemplate, {'destinations': this.destinationCollection.models});
 			var innerTemplateVar = {
+				'bid_add_url' : '#/'+Const.URL.BID+'/'+Const.CRUD.ADD,
 				'po_add_url' : '#/'+Const.URL.PO+'/'+Const.CRUD.ADD,
 				'destination_filters' : destinationTemplate.replace(/<label class="radio-inline">/g, '<li>').replace(/<\/label>/g, '</li>'),
 				'status_filters' : statusTemplate,
