@@ -2,96 +2,101 @@
     <div class="col-md-12">
         <div class="block-flat">
             <div class="content">
+                <div class="row">
+                    <div class="col-md-9">
 
-                <form id="addUserForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-                  <% if (typeof user_id !== "undefined") { %>
-                    <input type="hidden" id="id" name="id" value="<%= user_id %>" />
-                  <% } %>
-                  <fieldset>
-                    <legend>Personal Information</legend>
-                    <div class="form-group">
-                      <label for="firstname" class="col-sm-2 control-label">First Name *</label>
-                      <div class="col-sm-10">
-                        <input type="text" class="form-control capitalize" id="firstname" name="firstname" placeholder="" minlength="2" maxlength="50" required>
-                      </div>
+                        <form id="addUserForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+                          <% if (typeof user_id !== "undefined") { %>
+                            <input type="hidden" id="id" name="id" value="<%= user_id %>" />
+                          <% } %>
+                          <fieldset>
+                            <legend>Personal Information</legend>
+                            <div class="form-group">
+                              <label for="firstname" class="col-sm-4 control-label">First Name *</label>
+                              <div class="col-sm-8">
+                                <input type="text" class="form-control capitalize" id="firstname" name="firstname" placeholder="" minlength="2" maxlength="50" required>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="lastname" class="col-sm-4 control-label">Last Name *</label>
+                              <div class="col-sm-8">
+                                <input type="text" class="form-control capitalize" id="lastname" name="lastname" placeholder="" minlength="2" maxlength="50" required>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="suffix" class="col-sm-4 control-label">Suffix</label>
+                              <div class="col-sm-8">
+                                <input type="text" class="form-control capitalize" id="suffix" name="suffix" placeholder="" minlength="2" maxlength="6">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="email" class="col-sm-4 control-label">Email *</label>
+                              <div class="col-sm-8">
+                                <input type="email" class="form-control lowercase" id="email" name="email" placeholder="" maxlength="250" required>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="position" class="col-sm-4 control-label">Position</label>
+                              <div class="col-sm-8">
+                                <input type="text" class="form-control capitalize" id="position" name="position" placeholder="" minlength="2" maxlength="50">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="emp_no" class="col-sm-4 control-label">Employee No. *</label>
+                              <div class="col-sm-8">
+                                <input type="text" class="form-control" id="emp_no" name="emp_no" placeholder="" maxlength="250" required>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="phone" class="col-sm-4 control-label">Phone</label>
+                              <div class="col-sm-8">
+                                <input type="text" class="form-control phone-number" id="phone" name="phone" placeholder="" minlength="12" maxlength="12">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="mobile" class="col-sm-4 control-label">Mobile</label>
+                              <div class="col-sm-8">
+                                <input type="text" class="form-control mobile-number" id="mobile" name="mobile" placeholder="" minlength="12" maxlength="12">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="profile-pic" class="col-sm-4 control-label">Profile Image</label>
+                              <div id="profile-pic-upload" class="col-sm-8">
+                                <input type="file" id="profile-pic" class="profile-pic" name="profile-pic"> <a class="cancel-remove-image" href="#" style="display:none;">cancel remove</a>
+                                <p class="help-block">Example block-level help text here.</p>
+                              </div>
+                              <div id="profile-pic-preview" class="col-sm-8" style="display:none;">
+                                <div class="pull-left max-width-300">
+                                  <div><img src="" /></div>
+                                  <a class="remove-image pull-right" href="#">remove</a>
+                                </div>
+                              </div>
+                            </div>
+                          </fieldset>
+                          <fieldset>
+                            <legend>User Settings</legend>
+                            <div class="form-group">
+                              <label for="username" class="col-sm-4 control-label">Username *</label>
+                              <div class="col-sm-8">
+                                <input type="text" class="form-control" id="username" name="username" placeholder="" minlength="2" maxlength="50" required>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="" class="col-sm-4 control-label">Roles</label>
+                              <div class="col-sm-8 user-role-container"></div>
+                            </div>
+                          </fieldset>
+                          <div class="form-group form-button-container" style="display:none;">
+                            <label for="" class="col-sm-4 control-label"></label>
+                            <div class="col-sm-8">
+                               <button id="save" type="submit" class="save btn btn-primary">Save</button>
+                               <a id="cancel-user-save" class="btn btn-link" href="<%= user_url %>">Cancel</a>
+                            </div>
+                          </div>
+                        </form>
+                      
                     </div>
-                    <div class="form-group">
-                      <label for="lastname" class="col-sm-2 control-label">Last Name *</label>
-                      <div class="col-sm-10">
-                        <input type="text" class="form-control capitalize" id="lastname" name="lastname" placeholder="" minlength="2" maxlength="50" required>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="suffix" class="col-sm-2 control-label">Suffix</label>
-                      <div class="col-sm-10">
-                        <input type="text" class="form-control capitalize" id="suffix" name="suffix" placeholder="" minlength="2" maxlength="6">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="email" class="col-sm-2 control-label">Email *</label>
-                      <div class="col-sm-10">
-                        <input type="email" class="form-control lowercase" id="email" name="email" placeholder="" maxlength="250" required>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="position" class="col-sm-2 control-label">Position</label>
-                      <div class="col-sm-10">
-                        <input type="text" class="form-control capitalize" id="position" name="position" placeholder="" minlength="2" maxlength="50">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="emp_no" class="col-sm-2 control-label">Employee No. *</label>
-                      <div class="col-sm-10">
-                        <input type="text" class="form-control" id="emp_no" name="emp_no" placeholder="" maxlength="250" required>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="phone" class="col-sm-2 control-label">Phone</label>
-                      <div class="col-sm-10">
-                        <input type="text" class="form-control phone-number" id="phone" name="phone" placeholder="" minlength="12" maxlength="12">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="mobile" class="col-sm-2 control-label">Mobile</label>
-                      <div class="col-sm-10">
-                        <input type="text" class="form-control mobile-number" id="mobile" name="mobile" placeholder="" minlength="12" maxlength="12">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="profile-pic" class="col-sm-2 control-label">Profile Image</label>
-                      <div id="profile-pic-upload" class="col-sm-10">
-                        <input type="file" id="profile-pic" class="profile-pic" name="profile-pic"> <a class="cancel-remove-image" href="#" style="display:none;">cancel remove</a>
-                        <p class="help-block">Example block-level help text here.</p>
-                      </div>
-                      <div id="profile-pic-preview" class="col-sm-10" style="display:none;">
-                        <div class="pull-left max-width-300">
-                          <div><img src="" /></div>
-                          <a class="remove-image pull-right" href="#">remove</a>
-                        </div>
-                      </div>
-                    </div>
-                  </fieldset>
-                  <fieldset>
-                    <legend>User Settings</legend>
-                    <div class="form-group">
-                      <label for="username" class="col-sm-2 control-label">Username *</label>
-                      <div class="col-sm-10">
-                        <input type="text" class="form-control" id="username" name="username" placeholder="" minlength="2" maxlength="50" required>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="" class="col-sm-2 control-label">Roles</label>
-                      <div class="col-sm-10 user-role-container"></div>
-                    </div>
-                  </fieldset>
-                  <div class="form-group form-button-container" style="display:none;">
-                    <label for="" class="col-sm-2 control-label"></label>
-                    <div class="col-sm-10">
-                       <button id="save" type="submit" class="save btn btn-primary">Save</button>
-                       <a id="cancel-user-save" class="btn btn-link" href="<%= user_url %>">Cancel</a>
-                    </div>
-                  </div>
-                </form>
+                </div>
               
             </div> <!-- /.content -->
         </div> <!-- /.block-flat -->
