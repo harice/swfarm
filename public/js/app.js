@@ -56,7 +56,7 @@ define([
 				type = 'info';
 				
 			$.bootstrapGrowl(message, {
-						ele: '#message',
+						ele: '#cl-mcont',
 						type: type,
 						offset: {from: 'bottom'},
 						align: 'right',
