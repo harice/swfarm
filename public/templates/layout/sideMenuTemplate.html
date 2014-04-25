@@ -24,7 +24,7 @@
         <% } %>
 
         <% if(_.contains(permission,constant.MENU.PURCHASES.VIEW) || _.isEqual(su,constant.SU)) { %>
-        <li class="parent"><a href="#/<%= constant.URL.PO %>"><i class="fa fa-file"></i><span>Purchases</span></a></li>
+        <li><a href="#/<%= constant.URL.PO %>"><i class="fa fa-file"></i><span>Purchases</span></a></li>
         <% } %>
 
         <% if(_.contains(permission,constant.MENU.SALES.VIEW) || _.isEqual(su,constant.SU)) { %>
