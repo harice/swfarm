@@ -42,12 +42,13 @@ define([
 		
 		initialize: function() {
 			var thisObj = this;
+			this.poId = null;
 			
 			this.productAutoCompletePool = [];
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
-				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'ishold'],
+				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'ishold', 'id'],
 				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
@@ -118,6 +119,7 @@ define([
 			
 			var validate = $('#poForm').validate({
 				submitHandler: function(form) {
+					console.log($(form).serializeObject());
 					var data = thisObj.formatFormField($(form).serializeObject());
 					
 					//if(this.poId == null || this.poId == '' || this.poId == 'undefined')

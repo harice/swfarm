@@ -51,7 +51,7 @@ define([
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
-				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'ishold'],
+				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'ishold', 'id'],
 				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
