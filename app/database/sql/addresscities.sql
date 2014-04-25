@@ -26,13 +26,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `addresscities`
 --
 
-CREATE TABLE IF NOT EXISTS `addresscities` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `city` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `state` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `addresscities_state_foreign` (`state`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=29723 ;
+DELETE FROM `addresscities` WHERE 1;
 
 --
 -- Dumping data for table `addresscities`
@@ -29691,16 +29685,6 @@ INSERT INTO `addresscities` (`id`, `city`, `state`) VALUES
 (29720, 'Zurich', 27),
 (29721, 'Zwingle', 13),
 (29722, 'Zwolle', 19);
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `addresscities`
---
-ALTER TABLE `addresscities`
-  ADD CONSTRAINT `addresscities_state_foreign` FOREIGN KEY (`state`) REFERENCES `addressstates` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
