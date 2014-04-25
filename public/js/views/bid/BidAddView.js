@@ -45,6 +45,8 @@ define([
 		initialize: function() {
 			var thisObj = this;
 			this.poId = null;
+			this.h1Title = 'Bid';
+			this.h1Small = 'add';
 			
 			this.productAutoCompletePool = [];
 			this.options = {

@@ -44,6 +44,7 @@ define([
 		
 		initialize: function() {
 			var thisObj = this;
+			this.isBid = false;
 			this.poId = null;
 			this.h1Title = 'Purchase Order';
 			this.h1Small = 'add';
@@ -96,6 +97,9 @@ define([
 			var innerTemplateVariables = {
 				'po_url' : '#/'+Const.URL.PO,
 			};
+			
+			if(this.isBid)
+				innerTemplateVariables['po_id' ] = true;
 			
 			if(this.poId != null)
 				innerTemplateVariables['po_id'] = this.poId;
@@ -232,7 +236,14 @@ define([
 			var clone = null;
 			
 			if(this.options.productFieldClone == null) {
-				var productTemplate = _.template(productItemTemplate, {product_list:this.getProductDropdown()});
+				var productTemplateVars = {
+					product_list:this.getProductDropdown(),
+				};
+				
+				if(this.isBid)
+					innerTemplateVariables['po_id' ] = true;
+				
+				var productTemplateVars = _.template(productItemTemplate, productTemplateVars);
 				
 				this.$el.find('#product-list tbody').append(productTemplate);
 				var productItem = this.$el.find('#product-list tbody').find('.product-item:first-child');

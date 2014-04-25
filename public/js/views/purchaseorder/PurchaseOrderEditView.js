@@ -44,6 +44,7 @@ define([
 		
 		initialize: function(option) {
 			var thisObj = this;
+			this.isBid = false;
 			this.poId = option.id;
 			this.h1Title = 'Purchase Order';
 			this.h1Small = 'edit';
