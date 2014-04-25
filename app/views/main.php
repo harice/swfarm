@@ -37,6 +37,6 @@
 				<div class="cl-mcont" id="cl-mcont"></div>
 			</div>
 		</div>
-		<script data-main="js/main" src="js/libs/require/require.js"></script>
+		<script data-main="js/main" src="js/libs/require/require.js?<?php echo time(); ?>"></script>
   	</body>
 </html>
