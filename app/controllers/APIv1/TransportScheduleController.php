@@ -58,7 +58,8 @@ class TransportScheduleController extends BaseController {
 	 */
 	public function update($transportScheduleId)
 	{
-		return $this->repo->addOrUpdateTransportSchedule(Input::all(), $transportScheduleId);
+		$collection = $this->repo->addOrUpdateTransportSchedule(Input::all(), $transportScheduleId);
+        return Response::json($collection);
 	}
 
 	/**
