@@ -50,20 +50,17 @@ define([
 		removeProduct: function (){
 			var thisObj = this;
 			
-			var verifyDelete = confirm('Are you sure you want to delete this product?');
-			if(verifyDelete) {
-				this.model.destroy({
-					success: function (model, response, options) {
-                        console.log(response);
-                        thisObj.displayMessage(response);
-						Global.getGlobalVars().app_router.navigate(Const.URL.PRODUCT, {trigger: true});
-					},
-					error: function (model, response, options) {
-					},
-					wait: true,
-					headers: thisObj.model.getAuth(),
-				});
-			}
+            this.model.destroy({
+                success: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                    Global.getGlobalVars().app_router.navigate(Const.URL.PRODUCT, {trigger: true});
+                },
+                error: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                },
+                wait: true,
+                headers: thisObj.model.getAuth(),
+            });
 		},
 		
 	});
