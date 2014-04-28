@@ -3,7 +3,14 @@
     <tr>
       <td><%= role.get("name") %></td>
       <td><%= role.get("description") %></td>
-      <td><a href="<%= role_url %>/<%= role.get("id") %>">view</a> <a href="<%= role_edit_url %>/<%= role.get("id") %>">edit</a> <a href="<%= permission_edit_url %>/<%= role.get("id") %>">permission</a></td>
+      <td>
+        <a href="<%= role_edit_url %>/<%= role.get("id") %>" class="btn btn-info btn-xs">
+          <span class="glyphicon glyphicon-pencil"></span>
+        </a>
+        <a href="<%= permission_edit_url %>/<%= role.get("id") %>" class="btn btn-warning btn-xs">
+           <span class="glyphicon glyphicon-cog"></span>
+        </a>
+      </td>
     </tr>
   <% }); %>
 <% } else { %>

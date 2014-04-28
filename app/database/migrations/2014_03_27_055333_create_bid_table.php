@@ -23,9 +23,9 @@ class CreateBidTable extends Migration {
 			$table->integer('user_id')->unsigned();
 			$table->string('status', 10);
 			$table->text('notes')->nullable();
-			$table->string('ponumber', 20)->unique()->nullable();
-			$table->timestamp('po_date')->nullable();
-			$table->string('po_status', 10)->nullable();
+			// $table->string('ponumber', 20)->unique()->nullable();
+			// $table->timestamp('po_date')->nullable();
+			// $table->string('po_status', 10)->nullable();
 			$table->timestamps();
 			$table->softDeletes();
 

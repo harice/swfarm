@@ -3,10 +3,9 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/product/productViewTemplate.html',
 	'models/product/ProductModel',
-    'views/notification/NotificationView',
 	'global',
 	'constant',
-], function(Backbone, contentTemplate, productViewTemplate, ProductModel, NotificationView, Global, Const){
+], function(Backbone, contentTemplate, productViewTemplate, ProductModel, Global, Const){
 
 	var ProductView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -51,24 +50,17 @@ define([
 		removeProduct: function (){
 			var thisObj = this;
 			
-			var verifyDelete = confirm('Are you sure you want to delete this product?');
-			if(verifyDelete) {
-				this.model.destroy({
-					success: function (model, response, options) {
-						//console.log('success: UserModel.destroy');
-						//console.log(response);
-                        var message = new NotificationView({ type: 'success', text: 'Product has been deleted.' });
-						Global.getGlobalVars().app_router.navigate(Const.URL.PRODUCT, {trigger: true});
-					},
-					error: function (model, response, options) {
-                        var message = new NotificationView({ type: 'error', text: 'Sorry! An error occurred in the process.' });
-						//console.log('error: UserModel.destroy');
-						//console.log(response);
-					},
-					wait: true,
-					headers: thisObj.model.getAuth(),
-				});
-			}
+            this.model.destroy({
+                success: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                    Global.getGlobalVars().app_router.navigate(Const.URL.PRODUCT, {trigger: true});
+                },
+                error: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                },
+                wait: true,
+                headers: thisObj.model.getAuth(),
+            });
 		},
 		
 	});

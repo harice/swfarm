@@ -3,45 +3,42 @@
   	<head>
 	    <meta charset="utf-8">
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	    <meta name="description" content="">
 	    <meta name="author" content="">
+	    <link rel="shortcut icon" href="images/icon.png">
 
 	    <title>Southwest Farms</title>
-		<link rel="stylesheet" href="css/smoothness/jquery-ui-1.10.4.custom.min.css">
-	    <link rel="stylesheet" href="css/bootstrap.min.css">
-		<link rel="stylesheet" href="css/datepicker.min.css">
-	    <link rel="stylesheet" href="css/styles.min.css">
+	    
+	    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,700,800' rel='stylesheet' type='text/css'>
+	  	<link href='http://fonts.googleapis.com/css?family=Raleway:300,200,100' rel='stylesheet' type='text/css'>
+		
+		<link href="js/libs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  		<link rel="stylesheet" type="text/css" href="js/libs/jquery.gritter/css/jquery.gritter.css" />
+		<link rel="stylesheet" href="fonts/font-awesome-4/css/font-awesome.min.css">
+		<link rel="stylesheet" type="text/css" href="js/libs/jquery.nanoscroller/nanoscroller.css" />
+        <link rel="stylesheet" type="text/css" href="js/libs/jquery.select2/select2.css" />
+        <link rel="stylesheet" type="text/css" href="js/libs/jquery.icheck/skins/flat/green.css" />
+	    <link rel="stylesheet" href="css/skin-green.css">
+        <link rel="stylesheet" href="css/custom.css">
+
+	  	<!--[if lt IE 9]>
+		<script src="js/libs/html5shiv.js"></script>
+		<script src="js/libs/respond.min.js"></script>
+		<![endif]-->
 	</head>
 
-	<body>
-		<div class="topheader bg-primary">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-6 margin-top-bottom-10">
-						<a href="/"><img src="images/southwest-farm-services-logo.png"></a>
-					</div>
-					<div class="col-md-6"></div>
-				</div>
+	<body class="texture">
+		<div id="cl-wrapper" class="login-container">
+
+			<div class="middle-login"></div>
+            
+			<div id="cl-sidebar" class="cl-sidebar" style="display:none"></div>
+			<div class="container-fluid" id="pcont" style="display:none">
+				<div id="head-nav" class="navbar navbar-default"></div>
+				<div class="cl-mcont" id="cl-mcont"></div>
 			</div>
-			<div id="header"></div>
 		</div>
-<!-- 		<div class="loader">
-			<img src="images/loader.gif">
-		</div> -->
-        <div id="message" class="container"></div>
-		<div id="content" class="container min-height-400"></div>
-
-		<div id="footer">
-		  <div class="container">
-		  	<div class="row">
-	  			<div class="col-md-6"><p class="text-muted">&copy; <?php echo date('Y');?> | Southwest Farm Services</p></div>
-	  			<div class="col-md-6"><p class="text-muted pull-right">REL <small>v</small><em><?php echo $version; ?></em></p></div>
-		  	</div>
-		  </div>
-		</div>
-
-
-		<script data-main="js/main" src="js/libs/require/require.js"></script>
+		<script data-main="js/main" src="js/libs/require/require.js?<?php echo time(); ?>"></script>
   	</body>
 </html>

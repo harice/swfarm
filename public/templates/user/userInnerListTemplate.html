@@ -1,9 +1,8 @@
 <% if (!_.isEmpty(users)) { %>
   <% _.each(users, function(user){ %>
     <tr>
-      <td><%= user.get("lastname") %></td>
-      <td><%= user.get("firstname") %></td>
-      <td><%= user.get("suffix") %></td>
+      <td><a href="<%= user_url %>/<%= user.get("id") %>"><%= user.get("lastname") %>, <%= user.get("firstname") %> <%= user.get("suffix") %></a></td>
+      
       <td><%= user.get("email") %></td>
       <td>
         <% _.each(user.get("roles"), function(role){ %>
@@ -12,7 +11,11 @@
       </td>
       <td><% if (user.get("validated") == 1) { %>yes<% } else { %>no<% } %></td>
       <td><% if (user.get("status") == 1) { %>active<% } else { %>inactive<% } %></td>
-      <td><a href="<%= user_url %>/<%= user.get("id") %>">view</a> <a href="<%= user_edit_url %>/<%= user.get("id") %>">edit</a></td>
+      <td>
+          <a href="<%= user_edit_url %>/<%= user.get("id") %>" class="btn btn-info btn-xs">
+             <span class="glyphicon glyphicon-pencil"></span>
+          </a>
+      </td>
     </tr>
   <% }); %>
 <% } else { %>

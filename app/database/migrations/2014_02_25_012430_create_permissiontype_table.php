@@ -15,7 +15,6 @@ class CreatePermissiontypeTable extends Migration {
 		Schema::create('permissiontype',function($table){
 			$table->increments('id');
 			$table->string('name');
-			$table->string('link')->nullable();
 			$table->text('description')->nullable();
 		});
 	}

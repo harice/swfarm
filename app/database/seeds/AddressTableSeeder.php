@@ -28,6 +28,17 @@ class AddressTableSeeder extends Seeder {
                 'type' => '1',
                 'created_at' => $date,
                 'updated_at' => $date
+            ),
+            array(
+                'account' => '6',
+                'street' => 'North St.',
+                'city' => '2',
+                'state' => '2',
+                'zipcode' => '29620',
+                'country' => '1',
+                'type' => '1',
+                'created_at' => $date,
+                'updated_at' => $date
             )
 		);
 

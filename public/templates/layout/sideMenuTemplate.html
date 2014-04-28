@@ -1,0 +1,83 @@
+<% if(token) { %>
+<div class="cl-toggle"><i class="fa fa-bars"></i></div>
+<div class="cl-navblock">
+  <div class="menu-space">
+    <div class="content">
+      <div class="sidebar-logo">
+        <div class="logo">
+            <a href="#/<%= constant.URL.DASHBOARD %>"></a>
+        </div>
+      </div>
+      <div class="side-user hidden">
+        <div class="avatar"><img src="images/user-icon.png" alt="Avatar" /></div>
+        <div class="info"></div>
+      </div>
+      <ul class="cl-vnavigation">
+        <li class="active" ><a href="#/<%= constant.URL.DASHBOARD %>"><i class="fa fa-home"></i><span>Dashboard</span></a></li>
+
+        <% if(_.contains(permission,constant.MENU.CONTACTS.VIEW) || _.isEqual(su,constant.SU)) { %>
+        <li><a href="#/<%= constant.URL.CONTACT %>"><i class="fa fa-users"></i><span>Contacts</span></a></li>
+        <% } %>
+
+        <% if(_.contains(permission,constant.MENU.ACCOUNTS.VIEW) || _.isEqual(su,constant.SU)) { %>
+        <li><a href="#/<%= constant.URL.ACCOUNT %>"><i class="fa fa-building-o"></i><span>Accounts</span></a></li>
+        <% } %>
+
+        <% if(_.contains(permission,constant.MENU.PURCHASES.VIEW) || _.isEqual(su,constant.SU)) { %>
+        <li><a href="#/<%= constant.URL.PO %>"><i class="fa fa-file"></i><span>Purchases</span></a></li>
+        <% } %>
+
+        <% if(_.contains(permission,constant.MENU.SALES.VIEW) || _.isEqual(su,constant.SU)) { %>
+        <li><a href="#/<%= constant.URL.SO %>"><i class="fa fa-folder-o"></i><span>Sales</span></a></li>
+        <% } %>
+
+        <li><a href="#/"><i class="fa fa-archive"></i><span>Inventory</span></a></li>
+
+        <% if(_.contains(permission,constant.MENU.PRODUCTS.VIEW) || _.isEqual(su,constant.SU)) { %>
+        <li><a href="#/<%= constant.URL.PRODUCT %>"><i class="fa fa-barcode"></i><span>Products</span></a></li>
+        <% } %>
+
+        <% if(_.contains(permission,constant.MENU.REPORTS.VIEW) || _.isEqual(su,constant.SU)) { %>
+        <li><a href="#/"><i class="fa fa-bar-chart-o"></i><span>Reports</span></a></li>
+        <% } %>
+
+        <% 
+          if(
+              _.contains(permission,constant.MENU.USERS.VIEW) || 
+              _.contains(permission,constant.MENU.ROLES.VIEW) || 
+              _.contains(permission,constant.MENU.ADMIN.VIEW) || 
+              _.contains(permission,constant.MENU.ADMIN.TRAIL) || 
+              _.isEqual(su,constant.SU)
+            ) { 
+        %>
+        <li class="parent"><a href="#"><i class="fa fa-cogs"></i><span>Administration</span></a>
+          <ul class="sub-menu">
+
+            <% if(_.contains(permission,constant.MENU.ADMIN.VIEW) || _.isEqual(su,constant.SU)) { %>
+            <li><a href="#/<%= constant.URL.ADMIN %>">Dashboard</a></li>
+            <% } %>
+
+            <% if(_.contains(permission,constant.MENU.USERS.VIEW) || _.isEqual(su,constant.SU)) { %>
+            <li><a href="#/<%= constant.URL.USER %>">Users</a></li>
+            <% } %>
+
+            <% if(_.contains(permission,constant.MENU.ROLES.VIEW) || _.isEqual(su,constant.SU)) { %>
+            <li><a href="#/<%= constant.URL.ROLE %>">Roles</a></li>
+            <% } %>
+
+            <% if(_.contains(permission,constant.MENU.ADMIN.VIEW) || _.isEqual(su,constant.SU)) { %>
+            <li><a href="#/<%= constant.URL.AUDITTRAIL %>">Audit Trail</a></li>
+            <% } %>
+          </ul>
+        </li>
+        <% } %>
+
+      </ul>
+    </div>
+  </div>
+  <div class="text-right collapse-button" style="padding:7px 9px;">
+    <input type="text" class="form-control search" placeholder="Search..." />
+    <button id="sidebar-collapse" class="btn btn-default hidden" style=""><i style="color:#fff;" class="fa fa-angle-left"></i></button>
+  </div>
+</div>
+<% } %>

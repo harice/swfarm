@@ -1,0 +1,129 @@
+<form id="POPropertiesForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+	<% if (typeof po_id !== "undefined") { %>
+		<input type="hidden" id="id" name="id" value="<%= po_id %>" />
+	<% } %>
+	<fieldset>
+		<legend>Details</legend>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<div class="col-sm-3 label-text">PO Number</div>
+					<div class="col-sm-9 value-text"><span id="po-number"></span></div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-3 label-text">Status</div>
+					<div class="col-sm-9 value-text"><span id="po-status"></span></div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-3 label-text">Destination</div>
+					<div class="col-sm-9 value-text"><span id="po-destination"></span></div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-3 label-text">Producer</div>
+					<div class="col-sm-9 value-text"><span id="po-producer"></span></div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-3 label-text">Address Type</div>
+					<div class="col-sm-9 value-text"><span id="po-address-type"></span></div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-3 label-text">Street</div>
+					<div class="col-sm-9 value-text"><span id="po-address-street"></span></div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-3 label-text">State</div>
+					<div class="col-sm-9 value-text"><span id="po-address-state"></span></div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-3 label-text">City</div>
+					<div class="col-sm-9 value-text"><span id="po-address-city"></span></div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-3 label-text">Zip Code</div>
+					<div class="col-sm-9 value-text"><span id="po-address-zip-code"></span></div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+					<div class="col-sm-3 label-text">Date</div>
+					<div class="col-sm-9 value-text"><span id="po-date"></span></div>
+				</div>
+				<div class="form-group"><label for="date" class="col-sm-3 control-label">Pick-up Period:</label></div>
+				<div class="form-group">
+					<label for="date" class="col-sm-3 control-label">Start</label>
+					<div class="col-sm-4">
+						<div id="start-date" class="calendar-cont">
+							<div class="input-group date">
+								<input type="text" class="form-control" name="pickupstart" value="" required>
+								<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+							</div>
+						</div>
+						<div class="error-msg-cont"></div>
+					</div>
+					<label for="date" class="col-sm-1 control-label">End</label>
+					<div class="col-sm-4">
+						<div id="end-date" class="calendar-cont">
+							<div class="input-group date">
+								<input type="text" class="form-control" name="pickupend" value="" required>
+								<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+							</div>
+						</div>
+						<div class="error-msg-cont"></div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="notes" class="col-sm-3 control-label">Notes</label>
+					<div id="bid-destination" class="col-sm-9">
+						<textarea class="form-control notes" id="notes" name="notes"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+	</fieldset>
+	<div class="form-group form-button-container">
+		<div class="pull-right">
+			<button id="save" type="submit" class="save btn btn-default">Save</button>
+			<a id="cancel-po" class="btn btn-default" href="#">Cancel PO</a>
+			<a id="cancel-save" class="btn btn-default" href="<%= po_url %>">Back</a>
+		</div>
+	</div>
+</form>	
+	
+<div>
+	<form id="POProductForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+		<fieldset>
+			<legend>
+				Products
+			</legend>
+			<div class="table-responsive">
+				<table id="bid-product-list" class="table table-bordered">
+					<thead>
+						<tr>
+							<th style="width:12%">Product</th>
+							<th style="width:34%">Description</th>
+							<th style="width:7%">Stack No.</th>
+							<th style="width:7%">Est Tons</th>
+							<th style="width:7%">Bales</th>
+							<th style="width:15%">Unit Price</th>
+							<th style="width:10%">Amount</th>
+							<th style="width:8%">Hold for Testing</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+					<tfoot>
+						<tr>
+							<td colspan="6" class="text-align-right">Total</td>
+							<td class="text-align-right"><span>$ </span><span class="amounttotal">0.00</span></td>
+							<td></td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</fieldset>
+		<div class="form-group form-button-container">
+			<div class="pull-right">
+				<button id="save" type="submit" class="save btn btn-default">Save</button>
+			</div>
+		</div>
+	</form>
+</div>

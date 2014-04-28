@@ -5,9 +5,13 @@ define([
 	'router',
 	'models/session/SessionModel',
 	'views/layout/HeaderView',
-], function(Backbone, Bootstrap, Router, SessionModel, HeaderView){
+	'views/layout/SideMenuView',
+], function(Backbone, Bootstrap, Router, SessionModel, HeaderView, SideMenuView){
 	var initialize = function(){
 		
+		var headerView;
+		var sideMenu;
+
 		Backbone.View.prototype.close = function () {
 			this.$el.empty();
 			this.unbind();
@@ -15,16 +19,44 @@ define([
 		};
 
 		Backbone.View.prototype.refreshHeader = function () {
-			var headerView = new HeaderView();
-			headerView.render();
+			this.headerView = new HeaderView();
+			this.headerView.render();
+
+			this.sideMenu = new SideMenuView();
+			this.sideMenu.render();
 		};
+
+		Backbone.View.prototype.showLogin = function () {
+			if( this.headerView != null) {
+				this.headerView.close();
+				this.sideMenu.close();
+			}
+			$('body').addClass('texture');
+			$('.middle-login').show();
+			$('#cl-wrapper').addClass('login-container');
+			$('.cl-sidebar').hide();
+			$('#pcont').hide();
+		}
+
+		Backbone.View.prototype.showContent = function () {
+			if($('body').hasClass('texture')) {
+
+				Backbone.View.prototype.refreshHeader();
+
+				$('body').removeClass('texture');
+				$('.middle-login').hide();
+				$('#cl-wrapper').removeAttr('class');
+				$('.cl-sidebar').removeAttr('style');
+				$('#pcont').removeAttr('style');
+			}
+		}
 		
 		Backbone.View.prototype.displayGrowl = function (message, type) {
 			if(type == null)
 				type = 'info';
 				
 			$.bootstrapGrowl(message, {
-						ele: '#message',
+						ele: '#message .message-inner',
 						type: type,
 						offset: {from: 'bottom'},
 						align: 'right',
@@ -32,6 +64,23 @@ define([
 						delay: 4000
 					});
 		};
+        
+        Backbone.View.prototype.displayGritter = function (message, type) {
+            if(type == null)
+				type = 'info';
+            
+            $.gritter.removeAll({
+                after_close: function(){
+                  $.gritter.add({
+                    position: 'bottom-right',
+                    text: message,
+                    class_name: type
+                  });
+                }
+            });
+            return false;
+            
+        };
 		
 		Backbone.View.prototype.displayMessage = function (data) {
 			if(data.error != 'undefined') {
@@ -43,7 +92,8 @@ define([
 					message = data.message;
 				
 				if(typeof message == 'string') {
-					this.displayGrowl(message, type);
+                    message = '<p>' + message + '</p>';
+					this.displayGritter(message, type);
 				}
 				else 
 					alert(message);
