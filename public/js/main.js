@@ -24,6 +24,8 @@ require.config({
         jquerynanoscroller: 'libs/jquery.nanoscroller/jquery.nanoscroller',
 		jquerysparkline: 'libs/jquery.sparkline/jquery.sparkline.min',
 		jquerygritter: 'libs/jquery.gritter/js/jquery.gritter',
+        jqueryselect: 'libs/jquery.select2/select2.min',
+        icheck: 'libs/jquery.icheck/icheck.min',
 
 		templates: '../templates'
 	},
@@ -33,7 +35,7 @@ require.config({
 			exports: 'Base64'
 		},
 		'backbone': {
-			deps: ['underscore', 'jquery', 'bootstrap', 'growl', 'jquerygritter', 'jquerypushmenu','jquerynanoscroller','behaviourcore'],
+			deps: ['underscore', 'jquery', 'bootstrap', 'growl', 'jquerygritter', 'jqueryselect', 'icheck', 'jquerypushmenu','jquerynanoscroller','behaviourcore'],
 			exports: 'Backbone'
 		},
 		'bootstrapdatepicker': {
@@ -96,6 +98,14 @@ require.config({
 		'jqueryphonenumber': {
 			deps: ['jquery'],
 			exports: 'PhoneNumber',
+		},
+        'jqueryselect': {
+			deps: ['jquery'],
+			exports: 'Select 2',
+		},
+        'icheck': {
+			deps: ['jquery'],
+			exports: 'iCheck',
 		},
 		'jquery': {
 			exports: '$'
