@@ -81,8 +81,13 @@ class OrderController extends BaseController {
         // $this->repo->close($id);
     }
 
-    public function getStatusList(){
-    	$model = $this->repo->getStatusList();
+    public function getPOStatus(){
+    	$model = $this->repo->getPOStatus();
+    	return Response::json($model);
+    }
+
+    public function getSOStatus(){
+    	$model = $this->repo->getSOStatus();
     	return Response::json($model);
     }
 

@@ -73,7 +73,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 	Route::resource('transportschedule', 'APIv1\TransportScheduleController');
 
     //Purchase Order
-    Route::get('purchaseorder/getStatusList', 'APIv1\OrderController@getStatusList');
+    Route::get('purchaseorder/getStatuses', 'APIv1\OrderController@getPOStatus');
     Route::get('purchaseorder/getDestinationList', 'APIv1\OrderController@getDestinationList');
     Route::put('purchaseorder/cancel/{id}', 'APIv1\OrderController@cancelOrder');
     Route::get('purchaseorder', 'APIv1\OrderController@getPurchaseOrders');
@@ -86,6 +86,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // Route::resource('purchaseorder', 'APIv1\OrderController');
 
     //Sales Order
+    Route::get('salesorder/getStatuses', 'APIv1\OrderController@getSOStatus');
     Route::get('salesorder/getPickupLocationList', 'APIv1\OrderController@getPickupLocationList');
     Route::get('salesorder/getNatureOfSaleList', 'APIv1\OrderController@getNatureOfSaleList');
     Route::put('salesorder/cancel/{id}', 'APIv1\OrderController@cancelOrder');

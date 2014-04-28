@@ -335,8 +335,12 @@ class OrderRepository implements OrderRepositoryInterface {
         }       
     }
 
-    public function getStatusList(){
+    public function getPOStatus(){
         return Status::whereIn('id',array(1,2,3,4))->get()->toArray(); //return statuses for orders
+    }
+
+    public function getSOStatus(){
+        return Status::whereIn('id',array(1,2,3))->get()->toArray(); //return statuses for orders
     }
 
     public function getOrderDestination(){
