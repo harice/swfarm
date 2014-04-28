@@ -4,6 +4,7 @@ define([
 	'baserouter',
 	'views/layout/HeaderView',
 	'views/layout/SideMenuView',
+	'views/layout/HomePageView',
 	'views/admin/AdminView',
 	'controllers/login/LoginController',
 	'controllers/user/UserController',
@@ -26,6 +27,7 @@ define([
 			BaseRouter,
 			HeaderView,
 			SideMenuView,
+			HomePageView,
 			AdminView,
 			LoginController,
 			UserController,
@@ -307,6 +309,8 @@ define([
 		app_router.on('route:defaultAction', function (actions) {
 			this.closeView();
 			console.log('default page');
+			this.currView = new HomePageView();
+			this.currView.render();
 		});
 
 		Global.getGlobalVars().app_router = app_router;
