@@ -1,11 +1,10 @@
 define([
 	'backbone',
-	'views/base/AppView',
+	'views/salesorder/SalesOrderAddView',
 	'jqueryui',
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
-	'views/salesorder/SalesOrderAddView',
 	'views/autocomplete/CustomAutoCompleteView',
 	'collections/account/AccountCustomerCollection',
 	'collections/salesorder/OriginCollection',
@@ -20,12 +19,11 @@ define([
 	'global',
 	'constant',
 ], function(Backbone,
-			AppView,
+			SalesOrderAddView,
 			JqueryUI,
 			Validate,
 			TextFormatter,
 			PhoneNumber,
-			SalesOrderAddView,
 			CustomAutoCompleteView,
 			AccountCustomerCollection,
 			OriginCollection,
@@ -48,16 +46,17 @@ define([
 		
 		initialize: function(option) {
 			var thisObj = this;
-			
 			this.soId = option.id;
+			this.h1Title = 'Sales Order';
+			this.h1Small = 'edit';
 			
 			this.productAutoCompletePool = [];
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
-				productFieldClass: ['product_id', 'description', 'productname', 'stacknumber', 'unitprice', 'tons', 'bales', 'id'],
-				productFieldClassRequired: ['productname', 'stacknumber', 'unitprice', 'tons', 'bales'],
-				productFieldExempt: ['productname'],
+				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'id'],
+				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales'],
+				productFieldExempt: [],
 				productFieldSeparator: '.',
 			};
 			
@@ -151,25 +150,24 @@ define([
 		supplySOData: function () {
 			var thisObj = this;
 			
-			var customer = this.model.get('customer');
-			var address = [this.model.get('address')];
-			var products = this.model.get('products');
+			var account = this.model.get('account');
+			var address = [this.model.get('orderaddress')];
+			var products = this.model.get('productorder');
 			
-			this.$el.find('#sonumber').val(this.model.get('so_number'));
-			this.$el.find('#status').val(this.model.get('status'));
-			this.$el.find('[name="origin_id"][value="'+this.model.get('origin').id+'"]').attr('checked', true);
-			this.$el.find('[name="nature_of_sale_id"][value="'+this.model.get('nature_of_sale').id+'"]').attr('checked', true);
-			this.customerAutoCompleteView.autoCompleteResult = [{name:customer.name, id:customer.id, address:address}];
-			this.$el.find('#customer').val(customer.name);
-			this.$el.find('#customer-id').val(customer.id);
+			this.$el.find('#sonumber').val(this.model.get('order_number'));
+			this.$el.find('#status').val(this.model.get('status').name);
+			this.$el.find('[name="location_id"][value="'+this.model.get('location').id+'"]').attr('checked', true);
+			this.customerAutoCompleteView.autoCompleteResult = [{name:account.name, id:account.id, address:address}];
+			this.$el.find('#account').val(account.name);
+			this.$el.find('#account_id').val(account.id);
 			this.$el.find('#street').val(address[0].street);
 			this.$el.find('#state').val(address[0].address_states[0].state);
 			this.$el.find('#city').val(address[0].address_city[0].city);
 			this.$el.find('#zipcode').val(address[0].zipcode);
-			this.$el.find('#dateofsale').val(this.model.get('date_of_sale').split(' ')[0]);
-			this.$el.find('#delivery_date_start').val(this.model.get('delivery_date_start').split(' ')[0]);
-			this.$el.find('#delivery_date_end').val(this.model.get('delivery_date_end').split(' ')[0]);
+			this.$el.find('#dateofsale').val(this.model.get('created_at').split(' ')[0]);
 			this.$el.find('#notes').val(this.model.get('notes'));
+			this.$el.find('#start-date .input-group.date').datepicker('update', this.model.get('transportdatestart').split(' ')[0]);
+			this.$el.find('#end-date .input-group.date').datepicker('update', this.model.get('transportdateend').split(' ')[0]);
 			
 			var i= 0;
 			_.each(products, function (product) {
@@ -177,7 +175,6 @@ define([
 				i++;
 				
 				productFields.find('.id').val(product.id);
-				productFields.find('.productname').val(product.product.name);
 				productFields.find('.product_id').val(product.product.id);
 				productFields.find('.description').val(product.description);
 				productFields.find('.stacknumber').val(product.stacknumber);

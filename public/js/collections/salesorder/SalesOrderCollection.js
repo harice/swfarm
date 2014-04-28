@@ -9,14 +9,19 @@ define([
 		initialize: function(option){
 			this.runInit();
 			this.setDefaultURL(this.url);
-			/*this.setSortOptions(
+			this.setSortOptions(
 				{
-					currentSort: 'pickupdate',
+					currentSort: 'created_at',
 					sort: {
-						pickupdate: false,
+						created_at: false,
 					},
 				}
-			);*/
+			);
+			
+			this.listView.filters.location = '';
+			this.listView.filters.status = '';
+			this.listView.filters.transportstart = '';
+			this.listView.filters.transportend = '';
 		},
 	});
 

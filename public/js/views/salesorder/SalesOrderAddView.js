@@ -353,7 +353,7 @@ define([
 		},
 		
 		events: {
-			'click #add-so-product': 'addProduct',
+			'click #add-product': 'addProduct',
 			'click .remove-product': 'removeProduct',
 			//'blur .productname': 'validateProduct',
 			'blur .unitprice': 'onBlurUnitPrice',
