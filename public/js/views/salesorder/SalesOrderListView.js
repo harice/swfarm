@@ -125,8 +125,8 @@ define([
 				todayHighlight: true,
 				format: 'yyyy-mm-dd',
 			}).on('changeDate', function (ev) {
-				//thisObj.collection.setDate($('#filter-date-of-purchase .input-group.date input').val());
-				//thisObj.renderList(1);
+				thisObj.collection.setDate($('#filter-date-of-sale .input-group.date input').val());
+				thisObj.renderList(1);
 			});
 			
 			this.$el.find('#filter-delivery-start .input-group.date').datepicker({
@@ -136,8 +136,8 @@ define([
 				todayHighlight: true,
 				format: 'yyyy-mm-dd',
 			}).on('changeDate', function (ev) {
-				//thisObj.collection.setFilter('pickupstart', $('#filter-pickup-start .input-group.date input').val());
-				//thisObj.renderList(1);
+				thisObj.collection.setFilter('transportstart', $('#filter-delivery-start .input-group.date input').val());
+				thisObj.renderList(1);
 			});
 			
 			this.$el.find('#filter-delivery-end .input-group.date').datepicker({
@@ -147,20 +147,35 @@ define([
 				todayHighlight: true,
 				format: 'yyyy-mm-dd',
 			}).on('changeDate', function (ev) {
-				//thisObj.collection.setFilter('pickupend', $('#filter-pickup-end .input-group.date input').val());
-				//thisObj.renderList(1);
+				thisObj.collection.setFilter('transportend', $('#filter-delivery-end .input-group.date input').val());
+				thisObj.renderList(1);
 			});
 		},
 		
 		events: {
 			'click .sort-date-of-so' : 'sortSODate',
 			'click .cancel-so' : 'cancelSO',
-			//'change .location_id' : 'filterByDestination',
+			'change .location_id' : 'filterByOrigin',
+			'change .natureofsale_id' : 'filterByNatureOfSale',
 			'change .statusFilter' : 'filterByStatus',
 		},
 		
 		sortSODate: function () {
 			this.sortByField('created_at');
+		},
+		
+		filterByOrigin: function (ev) {
+			var filter = $(ev.target).val();
+			this.collection.setFilter('location', filter)
+			this.renderList(1);
+			return false;
+		},
+		
+		filterByNatureOfSale: function (ev) {
+			var filter = $(ev.target).val();
+			this.collection.setFilter('natureofsale', filter)
+			this.renderList(1);
+			return false;
 		},
 		
 		filterByStatus: function (ev) {

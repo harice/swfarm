@@ -20,6 +20,7 @@ define([
 			
 			this.listView.filters.location = '';
 			this.listView.filters.status = '';
+			this.listView.filters.natureofsale = '';
 			this.listView.filters.transportstart = '';
 			this.listView.filters.transportend = '';
 		},
