@@ -66,19 +66,14 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('transportschedule/getTruckingRate', 'APIv1\TransportScheduleController@getTruckingRate');
     Route::get('transportschedule/getLoaderAccount', 'APIv1\TransportScheduleController@getLoaderAccount');
     Route::get('transportschedule/getTruckerAccount', 'APIv1\TransportScheduleController@getTruckerAccount');
-    Route::resource('transportschedule', 'APIv1\TransportScheduleController');
-    
-    // Sales Order
-	// Route::get('salesorder/getOrigin', 'APIv1\SalesOrderController@getOrigin');
-    // Route::get('salesorder/getNatureOfSale', 'APIv1\SalesOrderController@getNatureOfSale');
-    // Route::put('salesorder/cancel/{id}', 'APIv1\SalesOrderController@cancel');
-    // Route::put('salesorder/close/{id}', 'APIv1\SalesOrderController@close');
-    // Route::resource('salesorder', 'APIv1\SalesOrderController');
-
+	Route::resource('transportschedule', 'APIv1\TransportScheduleController');
+	Route::get('transportschedule/getAllPickupSchedules', 'APIv1\TransportScheduleController@getAllPickupSchedules');
+    Route::get('transportschedule/getPickupSchedule/{id}', 'APIv1\TransportScheduleController@getPickupSchedule');
+	Route::resource('transportschedule', 'APIv1\TransportScheduleController');
+	
     //Purchase Order
     Route::get('purchaseorder/getStatusList', 'APIv1\OrderController@getStatusList');
     Route::get('purchaseorder/getDestinationList', 'APIv1\OrderController@getDestinationList');
-    Route::get('purchaseorder/getNatureOfSaleList', 'APIv1\OrderController@getNatureOfSaleList');
     Route::put('purchaseorder/cancel/{id}', 'APIv1\OrderController@cancelOrder');
     Route::get('purchaseorder', 'APIv1\OrderController@getPurchaseOrders');
     Route::get('purchaseorder/search', 'APIv1\OrderController@getPurchaseOrders');
@@ -91,6 +86,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 
     //Sales Order
     Route::get('salesorder/getPickupLocationList', 'APIv1\OrderController@getPickupLocationList');
+    Route::get('salesorder/getNatureOfSaleList', 'APIv1\OrderController@getNatureOfSaleList');
     Route::put('salesorder/cancel/{id}', 'APIv1\OrderController@cancelOrder');
     Route::get('salesorder/{id}', 'APIv1\OrderController@getSalesOrder');
     Route::get('salesorder', 'APIv1\OrderController@getSalesOrders');

@@ -16,7 +16,7 @@ class CreateTransportscheduleTable extends Migration {
 		{
 			$table->engine = 'InnoDB';
 			$table->increments('id');
-			$table->integer('bid_id')->unsigned();
+			$table->integer('order_id')->unsigned();
 			$table->timestamp('date');
 			$table->integer('trucker_id')->unsigned();
 			$table->decimal('distance', 8, 4);
@@ -29,7 +29,7 @@ class CreateTransportscheduleTable extends Migration {
 			$table->tinyInteger('type'); //1 - for pickup, 2 - for delivery
 			$table->timestamps();
 
-			$table->foreign('bid_id')->references('id')->on('bid');
+			$table->foreign('order_id')->references('id')->on('order');
 			$table->foreign('trucker_id')->references('id')->on('account');
 			$table->foreign('originloader_id')->references('id')->on('account');
 			$table->foreign('destinationloader_id')->references('id')->on('account');
