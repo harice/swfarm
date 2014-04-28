@@ -23,7 +23,7 @@ define([
 			});
 		},
 		setCancelURL: function () {
-			this.urlRoot = 'salesorder/'+this.get('id')+'/cancel';
+			this.urlRoot = '/apiv1/salesorder/cancel';
 		},
 	});
 	return SalesOrderModel;

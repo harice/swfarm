@@ -4,7 +4,7 @@ define([
 	'models/salesorder/OriginModel',
 ], function(Backbone, AppCollection, OriginModel){
 	var OriginCollection = AppCollection.extend({
-		url: '/apiv1/salesorder/getOrigin',
+		url: '/apiv1/salesorder/getPickupLocationList',
 		model: OriginModel,
 		initialize: function(){
 			

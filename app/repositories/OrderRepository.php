@@ -92,7 +92,7 @@ class OrderRepository implements OrderRepositoryInterface {
         if($orderType == 2) //for SO only
             $order = $order->with('natureofsale');
 
-        $order = $order->find($id);
+        $order = $order->where('ordertype', '=', $orderType)->find($id);
 
         if($order){
           $response = $order->toArray();
@@ -105,14 +105,14 @@ class OrderRepository implements OrderRepositoryInterface {
         return $response;
     }
     
-    public function addOrder($data)
+    public function addOrder($data, $orderType = 1)
     {
         
         $now = new DateTime('NOW');
         $date = $now->format('Y-m-d H:i:s');
         
-        $data['ordertype'] = 1; //PO type
-        $data['order_number'] = $this->generateOrderNumber(1);
+        $data['ordertype'] = $orderType;
+        $data['order_number'] = $this->generateOrderNumber($orderType);
         $data['user_id'] = Auth::user()->id;
         $data['isfrombid'] = isset($data['isfrombid']) ? $data['isfrombid'] : 0;
 
@@ -147,9 +147,9 @@ class OrderRepository implements OrderRepositoryInterface {
        
     }
     
-    public function updateOrder($id, $data)
+    public function updateOrder($id, $data, $orderType = 1)
     {
-        $data['ordertype'] = 1; //PO type
+        $data['ordertype'] = $orderType;
    
         //for purchase order
         $data['createPO'] = isset($data['createPO']) ? $data['createPO'] : 0;
@@ -179,9 +179,9 @@ class OrderRepository implements OrderRepositoryInterface {
         
         if($result){
             if($data['ordertype'] == 1)
-                return array("error" => "false", "message" => "Purchase order successfully created");
+                return array("error" => "false", "message" => "Purchase order successfully updated");
             else
-                return array("error" => "false", "message" => "Sales order successfully created");
+                return array("error" => "false", "message" => "Sales order successfully updated");
         }
     }
 
@@ -244,13 +244,14 @@ class OrderRepository implements OrderRepositoryInterface {
     
     public function validate($data, $entity, $orderType = null)
     {
-        if($orderType == null)
+        if($orderType == null){
             $validator = Validator::make($data, $entity::$rules);
-        else{
-            if($orderType == 1) //PO rules need to used
+        } else {
+            if($orderType == 1){ //PO rules need to used
                 $validator = Validator::make($data, $entity::$po_rules);
-            else //SO rules need to used
+            } else { //SO rules need to used
                 $validator = Validator::make($data, $entity::$so_rules);
+            }
         }
         
         if($validator->fails()) { 
@@ -312,13 +313,7 @@ class OrderRepository implements OrderRepositoryInterface {
     //     $salesorder->status = "Close";
     //     $salesorder->save();
     }
-    
-    public function cancel($id)
-    {
-        // $salesorder = SalesOrder::find($id);
-        // $salesorder->status = "Cancelled";
-        // $salesorder->save();
-    }
+
 
     public function cancelOrder($id){
         $order = Order::find($id);
@@ -329,18 +324,30 @@ class OrderRepository implements OrderRepositoryInterface {
           return array(
               'error' => false,
               'message' => 'Order cancelled.');
+        } else if($order->status_id == 3) {
+          return array(
+              'error' => false,
+              'message' => 'Order is already cancelled');
         } else {
           return array(
               'error' => false,
               'message' => 'Order cannot be cancel if the status is not open or pending.');
-        }    
+        }       
     }
 
-    public function getStatusList(){
+    public function getPOStatus(){
         return Status::whereIn('id',array(1,2,3,4))->get()->toArray(); //return statuses for orders
     }
 
+    public function getSOStatus(){
+        return Status::whereIn('id',array(1,2,3))->get()->toArray(); //return statuses for orders
+    }
+
     public function getOrderDestination(){
+        return Location::whereIn('id',array(1,2,3))->get()->toArray(); //return destination for orders
+    }
+
+    public function getOrderPickupLocation(){
         return Location::whereIn('id',array(1,2,3))->get()->toArray(); //return destination for orders
     }
 

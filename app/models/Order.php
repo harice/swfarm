@@ -84,4 +84,8 @@ class Order extends BaseModel {
         return $this->hasOne('Status', 'id', 'status_id');
     }
 
+    public function transportschedule(){
+        return $this->hasMany('TransportSchedule', 'order_id', 'id');
+    }
+
 }

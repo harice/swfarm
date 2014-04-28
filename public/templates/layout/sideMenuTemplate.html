@@ -28,7 +28,7 @@
         <% } %>
 
         <% if(_.contains(permission,constant.MENU.SALES.VIEW) || _.isEqual(su,constant.SU)) { %>
-        <li><a href="#/"><i class="fa fa-folder-o"></i><span>Sales</span></a></li>
+        <li><a href="#/<%= constant.URL.SO %>"><i class="fa fa-folder-o"></i><span>Sales</span></a></li>
         <% } %>
 
         <li><a href="#/"><i class="fa fa-archive"></i><span>Inventory</span></a></li>

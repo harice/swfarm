@@ -1,7 +1,6 @@
 <?php
 
 class TransportSchedule extends Eloquent {
-    protected $fillable = [];
 
     /**
      * The database table used by the model.
@@ -10,8 +9,49 @@ class TransportSchedule extends Eloquent {
      */
     protected $table = 'transportschedule';
 
-    public function bid(){
-        return $this->belongsTo('bid');
+    /**
+     * Define fillable attributes in a model.
+     * 
+     * @var array
+     */
+    protected $fillable = array(
+        'order_id',
+        'date',
+        'trucker_id',
+        'distance',
+        'fuelcharge',
+        'originloader_id',
+        'originloadersfee',
+        'destinationloader_id',
+        'destinationloadersfee',
+        'truckingrate',
+        'type',
+        'created_at',
+        'updated_at'
+    );
+
+    /**
+     * Define field validation rules.
+     * 
+     * @var array
+     */
+    public static $rules = array(
+      'order_id' => 'required',
+      'scheduledate' => 'required|date',
+      'scheduletimeHour' => 'required',
+      'scheduletimeMin' => 'required',
+      'scheduletimeAmPm' => 'required',
+      'trucker_id' => 'required',
+      'distance' => 'required',
+      'fuelcharge' => 'required',
+      'originloader_id' => 'required',
+      'originloaderfee' => 'required',
+      'destinationloader_id' => 'required',
+      'destinationloaderfee' => 'required',
+    );
+
+    public function order(){
+        return $this->belongsTo('order');
     }
 
     public function trucker(){

@@ -11,18 +11,19 @@ use Response;
 
 class TransportScheduleController extends BaseController {
 
-	public function __construct(TransportScheduleRepositoryInterface $transportSchedule)
+	public function __construct(TransportScheduleRepositoryInterface $repo)
 	{
-		$this->transportSchedule = $transportSchedule;
+		$this->repo = $repo;
 	}
 	/**
 	 * Display a listing of the resource.
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function getAllPickupSchedules()
 	{
-		return $this->transportSchedule->paginate(Input::all());
+		$collection = $this->repo->getAllTransportSchedules( Input::all() );
+        return Response::json($collection);
 	}
 
 	/**
@@ -31,9 +32,10 @@ class TransportScheduleController extends BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function getPickupSchedule($id)
 	{
-		return $this->transportSchedule->getSchedule($id, Input::get('type'));
+		$collection = $this->repo->getSchedule($id);
+        return Response::json($collection);
 	}
 
 
@@ -44,7 +46,8 @@ class TransportScheduleController extends BaseController {
 	 */
 	public function store()
 	{
-		return $this->transportSchedule->addOrUpdateTransportSchedule(Input::all());
+		$collection = $this->repo->addOrUpdateTransportSchedule(Input::all());
+        return Response::json($collection);
 	}
 
 	/**
@@ -55,7 +58,8 @@ class TransportScheduleController extends BaseController {
 	 */
 	public function update($transportScheduleId)
 	{
-		return $this->transportSchedule->addOrUpdateTransportSchedule(Input::all(), $transportScheduleId);
+		$collection = $this->repo->addOrUpdateTransportSchedule(Input::all(), $transportScheduleId);
+        return Response::json($collection);
 	}
 
 	/**
@@ -66,15 +70,15 @@ class TransportScheduleController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		return $this->transportSchedule->deleteTransportSchedule($id);
+		return $this->repo->deleteTransportSchedule($id);
 	}
 
 	public function getTruckerAccount(){
-		return $this->transportSchedule->getTruckerAccount(Input::get('search'));
+		return $this->repo->getTruckerAccount(Input::get('search'));
 	}
 
 	public function getLoaderAccount(){
-		return $this->transportSchedule->getLoaderAccount(Input::get('search'));
+		return $this->repo->getLoaderAccount(Input::get('search'));
 	}
 
 	public function getTruckingRate(){
