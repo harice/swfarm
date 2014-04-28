@@ -1,5 +1,6 @@
 define([
 	'backbone',
+	'bootstrapdatepicker',
 	'views/base/AppView',
 	'jqueryui',
 	'jqueryvalidate',
@@ -19,6 +20,7 @@ define([
 	'global',
 	'constant',
 ], function(Backbone,
+			DatePicker,
 			AppView,
 			JqueryUI,
 			Validate,
@@ -46,14 +48,17 @@ define([
 		
 		initialize: function() {
 			var thisObj = this;
+			this.soId = null;
+			this.h1Title = 'Sales Order';
+			this.h1Small = 'add';
 			
 			this.productAutoCompletePool = [];
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
-				productFieldClass: ['product_id', 'description', 'productname', 'stacknumber', 'unitprice', 'tons', 'bales'],
-				productFieldClassRequired: ['productname', 'stacknumber', 'unitprice', 'tons', 'bales'],
-				productFieldExempt: ['productname'],
+				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'id'],
+				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales'],
+				productFieldExempt: [],
 				productFieldSeparator: '.',
 			};
 			
@@ -110,8 +115,8 @@ define([
 			var innerTemplate = _.template(salesOrderAddTemplate, innerTemplateVariables);
 			
 			var variables = {
-				h1_title: "Sales Order",
-				h1_small: "add",
+				h1_title: this.h1Title,
+				h1_small: this.h1Small,
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
@@ -119,11 +124,12 @@ define([
 			
 			
 			this.initValidateForm();
-			this.addProduct();
+			
 			this.generateOrigin();
 			this.generateNatureOfSale();
 			this.initCustomerAutocomplete();
 			this.initCalendar();
+			this.addProduct();
 		},
 		
 		initValidateForm: function () {
@@ -131,7 +137,10 @@ define([
 			
 			var validate = $('#soForm').validate({
 				submitHandler: function(form) {
+					console.log($(form).serializeObject());
 					var data = thisObj.formatFormField($(form).serializeObject());
+					
+					console.log(data);
 					
 					var salesOrderModel = new SalesOrderModel(data);
 					
@@ -186,8 +195,8 @@ define([
 			
 			var accountCustomerCollection = new AccountCustomerCollection();
 			this.customerAutoCompleteView = new CustomAutoCompleteView({
-                input: $('#customer'),
-				hidden: $('#customer-id'),
+                input: $('#account'),
+				hidden: $('#account_id'),
                 collection: accountCustomerCollection,
 				fields: ['address'],
             });
@@ -240,18 +249,21 @@ define([
 			var clone = null;
 			
 			if(this.options.productFieldClone == null) {
-				var productTemplate = _.template(productItemTemplate, {});
+				var productTemplateVars = {
+					product_list:this.getProductDropdown(),
+				};
+				var productTemplate = _.template(productItemTemplate, productTemplateVars);
 				
 				this.$el.find('#product-list tbody').append(productTemplate);
 				var productItem = this.$el.find('#product-list tbody').find('.product-item:first-child');
 				this.options.productFieldClone = productItem.clone();
-				this.initProductAutocomplete(productItem);
+				//this.initProductAutocomplete(productItem);
 				this.addIndexToProductFields(productItem);
 				clone = productItem
 			}
 			else {
 				var clone = this.options.productFieldClone.clone();
-				this.initProductAutocomplete(clone);
+				//this.initProductAutocomplete(clone);
 				this.addIndexToProductFields(clone);
 				this.$el.find('#product-list tbody').append(clone);
 			}
@@ -274,6 +286,15 @@ define([
 					return false;
 				},
 			});
+		},
+		
+		getProductDropdown: function () {
+			var dropDown = '<option value="">Select a product</option>';
+			_.each(this.productCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
+			});
+			
+			return dropDown;
 		},
 		
 		addIndexToProductFields: function (bidProductItem) {
@@ -334,7 +355,7 @@ define([
 		events: {
 			'click #add-so-product': 'addProduct',
 			'click .remove-product': 'removeProduct',
-			'blur .productname': 'validateProduct',
+			//'blur .productname': 'validateProduct',
 			'blur .unitprice': 'onBlurUnitPrice',
 			'keyup .unitprice': 'onKeyUpUnitPrice',
 			'keyup .tons': 'onKeyUpTons',
