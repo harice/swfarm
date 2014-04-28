@@ -181,7 +181,7 @@ class ProductRepository implements ProductRepositoryInterface {
 
             $response = Response::json(array(
                 'error' => false,
-                'product' => $product->toArray()),
+                'message' => "Product has been updated."),
                 200
             );
         } else {
@@ -209,7 +209,7 @@ class ProductRepository implements ProductRepositoryInterface {
 
             $response = Response::json(array(
                 'error' => false,
-                'product' => $product->toArray()),
+                'message' => "Product has been deleted."),
                 200
             );
         } else {

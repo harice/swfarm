@@ -3,10 +3,9 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/role/roleViewTemplate.html',
 	'models/role/RoleModel',
-    'views/notification/NotificationView',
 	'global',
 	'constant',
-], function(Backbone, contentTemplate, roleViewTemplate, RoleModel, NotificationView, Global, Const){
+], function(Backbone, contentTemplate, roleViewTemplate, RoleModel, Global, Const){
 
 	var UserView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -55,11 +54,11 @@ define([
 			if(verifyDelete) {
 				this.model.destroy({
 					success: function (model, response, options) {
-						var message = new NotificationView({ type: 'success', text: 'Role has been deleted.' });
+						thisObj.displayMessage(response);
 						Global.getGlobalVars().app_router.navigate(Const.URL.ROLE, {trigger: true});
 					},
 					error: function (model, response, options) {
-						var message = new NotificationView({ type: 'error', text: 'Sorry! An error occurred in the process.' });
+						thisObj.displayMessage(response);
 					},
 					wait: true,
 					headers: thisObj.model.getAuth(),

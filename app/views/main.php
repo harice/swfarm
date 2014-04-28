@@ -17,6 +17,7 @@
   		<link rel="stylesheet" type="text/css" href="js/libs/jquery.gritter/css/jquery.gritter.css" />
 		<link rel="stylesheet" href="fonts/font-awesome-4/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="js/libs/jquery.nanoscroller/nanoscroller.css" />
+        <link rel="stylesheet" type="text/css" href="js/libs/jquery.select2/select2.css" />
 	    <link rel="stylesheet" href="css/skin-green.css">
         <link rel="stylesheet" href="css/custom.css">
 
@@ -30,7 +31,7 @@
 		<div id="cl-wrapper" class="login-container">
 
 			<div class="middle-login"></div>
-
+            
 			<div id="cl-sidebar" class="cl-sidebar" style="display:none"></div>
 			<div class="container-fluid" id="pcont" style="display:none">
 				<div id="head-nav" class="navbar navbar-default"></div>

@@ -5,9 +5,8 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/permission/permissionListTemplate.html',
 	'text!templates/permission/permissionInnerListTemplate.html',
-    'views/notification/NotificationView',
 	'constant',
-], function(Backbone, RoleModel, PermissionCategoryTypeCollection, contentTemplate, permissionListTemplate, permissionInnerListTemplate, NotificationView, Const){
+], function(Backbone, RoleModel, PermissionCategoryTypeCollection, contentTemplate, permissionListTemplate, permissionInnerListTemplate, Const){
 
 	var PermissionListView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -86,7 +85,7 @@ define([
 					data.id = thisObj.model.get('id');
 					
 					var roleModel = new RoleModel(data);
-                    var message = new NotificationView({ type: 'success', text: 'Permission has been saved.' });
+                    // thisObj.displayMessage(response);
 					roleModel.savePermissions();
 				}
 			});
