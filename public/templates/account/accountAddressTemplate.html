@@ -27,7 +27,7 @@
 		<div class="form-group">
 			<label for="state" class="col-sm-4 control-label">State</label>
 			<div class="col-sm-8">
-				<select class="select2 state" name="state">
+				<select class="form-control state" name="state">
 					<option value="">Select a state</option>
 					<% _.each(address_states, function(state){ %>
 					<option value="<%= state.id %>"><%= state.state %></option>
