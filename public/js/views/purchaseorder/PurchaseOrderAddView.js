@@ -270,8 +270,16 @@ define([
 			}
 				
 			this.addValidationToProduct();
+            // this.styleSelect(clone);
 			return clone;
 		},
+                
+        styleSelect: function (clone) {
+            clone.find(".select2").select2({
+                width: '100%',
+                minimumResultsForSearch: -1
+            });
+        },
 		
 		initProductAutocomplete: function (productItem) {
 			var thisObj = this;
