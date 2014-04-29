@@ -4212,7 +4212,7 @@ fieldset[disabled] .btn-primary.active {
   top: 45px;
 }
 .gritter-item-wrapper {
-  background: url(../js/jquery.gritter/images/gritter-bg.png);
+  background: url(../js/libs/jquery.gritter/images/gritter-bg.png);
   border-bottom: 1px solid rgba(0, 0, 0, 0.13);
   border-left: 1px solid rgba(0, 0, 0, 0.05);
   border-right: 1px solid rgba(0, 0, 0, 0.05);
