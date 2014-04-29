@@ -446,28 +446,26 @@ define([
 				
 				var verifyMsg = (!this.isBid)? 'Are you sure you want to cancel this Purchase Order?' : 'Are you sure you want to cancel this Bid?';
 				
-				var verifyCancel = confirm(verifyMsg);
+				// var verifyCancel = confirm(verifyMsg);
 				
-				if(verifyCancel) {
-					var purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
-					purchaseOrderModel.setCancelURL();
-					purchaseOrderModel.save(
-						null, 
-						{
-							success: function (model, response, options) {
-								thisObj.displayMessage(response);
-								Global.getGlobalVars().app_router.navigate(Const.URL.PO, {trigger: true});
-							},
-							error: function (model, response, options) {
-								if(typeof response.responseJSON.error == 'undefined')
-									validate.showErrors(response.responseJSON);
-								else
-									thisObj.displayMessage(response);
-							},
-							headers: purchaseOrderModel.getAuth(),
-						}
-					);
-				}
+                var purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
+                purchaseOrderModel.setCancelURL();
+                purchaseOrderModel.save(
+                    null, 
+                    {
+                        success: function (model, response, options) {
+                            thisObj.displayMessage(response);
+                            Global.getGlobalVars().app_router.navigate(Const.URL.PO, {trigger: true});
+                        },
+                        error: function (model, response, options) {
+                            if(typeof response.responseJSON.error == 'undefined')
+                                validate.showErrors(response.responseJSON);
+                            else
+                                thisObj.displayMessage(response);
+                        },
+                        headers: purchaseOrderModel.getAuth(),
+                    }
+                );
 			}
 			return false;
 		},

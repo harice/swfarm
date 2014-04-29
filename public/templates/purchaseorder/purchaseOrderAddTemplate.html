@@ -147,7 +147,7 @@
                   <div class="pull-right">
                   <% if (typeof po_id !== "undefined") { %>
 					<% if (typeof is_bid === "undefined") { %>
-                      <a id="cancel-po" class="btn btn-danger" href="#">Cancel Purchase Order</a>
+                      <button data-toggle="modal" data-target="#mod-success" type="button" class="btn btn-warning">Cancel Purchase Order</button>
 					<% } else { %>
 					  <a id="cancel-po" class="btn btn-danger" href="#">Cancel Bid</a>
 					  <button id="convert-po" type="button" class="save btn btn-primary">Convert to PO</button>
@@ -158,6 +158,28 @@
                   </div>
                 </div>
               </form>
+                
+                <!-- Modal -->
+                <div class="modal fade" id="mod-success" tabindex="-1" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button " class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="text-center">
+                                    <div class="i-circle warning"><i class="fa fa-warning"></i></div>
+                                    <h4>Warning!</h4>
+                                    <p>Are you sure you want to cancel this purchase order?</p>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">No</button>
+                                <button type="button" class="btn btn-warning btn-flat" data-dismiss="modal" id="cancel-po">Yes</button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
               
             </div> <!-- /.content -->
         </div> <!-- /.block-flat -->
