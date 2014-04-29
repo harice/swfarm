@@ -18,8 +18,8 @@
 		<link rel="stylesheet" href="fonts/font-awesome-4/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="js/libs/jquery.nanoscroller/nanoscroller.css" />
         <link rel="stylesheet" type="text/css" href="js/libs/jquery.select2/select2.css" />
-        <link rel="stylesheet" type="text/css" href="js/libs/jquery.icheck/skins/flat/green.css" />
-	    <link rel="stylesheet" href="css/skin-green.css">
+        <link rel="stylesheet" type="text/css" href="js/libs/jquery.icheck/skins/flat/blue.css" />
+	    <link rel="stylesheet" href="css/skin-blue.css">
         <link rel="stylesheet" href="css/custom.css">
 
 	  	<!--[if lt IE 9]>
