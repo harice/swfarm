@@ -271,7 +271,7 @@ define([
 				
 			this.addValidationToProduct();
             // this.styleSelect(clone);
-            this.styleRadio();
+            // this.styleRadio();
 			return clone;
 		},
                 
