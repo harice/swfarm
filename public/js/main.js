@@ -26,6 +26,7 @@ require.config({
 		jquerygritter: 'libs/jquery.gritter/js/jquery.gritter',
         jqueryselect: 'libs/jquery.select2/select2.min',
         icheck: 'libs/jquery.icheck/icheck.min',
+        maskedinput: 'libs/jquery.maskedinput/jquery.maskedinput',
 
 		templates: '../templates'
 	},
@@ -35,7 +36,7 @@ require.config({
 			exports: 'Base64'
 		},
 		'backbone': {
-			deps: ['underscore', 'jquery', 'bootstrap', 'growl', 'jquerygritter', 'jqueryselect', 'icheck', 'jquerypushmenu','jquerynanoscroller','behaviourcore'],
+			deps: ['underscore', 'jquery', 'bootstrap', 'growl', 'jquerygritter', 'jqueryselect', 'icheck', 'jquerypushmenu','jquerynanoscroller','behaviourcore', 'maskedinput'],
 			exports: 'Backbone'
 		},
 		'bootstrapdatepicker': {
@@ -106,6 +107,10 @@ require.config({
         'icheck': {
 			deps: ['jquery'],
 			exports: 'iCheck',
+		},
+        'maskedinput': {
+			deps: ['jquery'],
+			exports: 'MackedInput',
 		},
 		'jquery': {
 			exports: '$'
