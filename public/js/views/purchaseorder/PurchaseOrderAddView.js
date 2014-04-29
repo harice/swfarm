@@ -271,6 +271,7 @@ define([
 				
 			this.addValidationToProduct();
             // this.styleSelect(clone);
+            this.styleRadio();
 			return clone;
 		},
                 
@@ -279,6 +280,15 @@ define([
                 width: '100%',
                 minimumResultsForSearch: -1
             });
+        },
+                
+        styleRadio: function () {
+            $('.icheck').iCheck({
+                checkboxClass: 'icheckbox_flat-blue',
+                radioClass: 'iradio_flat-blue'
+            });
+
+            $('.iradio_flat-green').first().addClass('checked');
         },
 		
 		initProductAutocomplete: function (productItem) {
