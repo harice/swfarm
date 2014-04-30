@@ -259,7 +259,7 @@ define([
 				this.options.productFieldClone = productItem.clone();
 				//this.initProductAutocomplete(productItem);
 				this.addIndexToProductFields(productItem);
-				clone = productItem
+				clone = productItem;
 			}
 			else {
 				var clone = this.options.productFieldClone.clone();
@@ -268,9 +268,17 @@ define([
 				this.$el.find('#product-list tbody').append(clone);
 			}
 				
-			this.addValidationToProduct();
+			this.addValidationToProduct(clone);
+			//this.styleSelect(clone);
 			return clone;
 		},
+		
+		styleSelect: function (clone) {
+            clone.find(".select2").select2({
+                width: '100%',
+                minimumResultsForSearch: -1
+            });
+        },
 		
 		initProductAutocomplete: function (productItem) {
 			var thisObj = this;
@@ -308,11 +316,11 @@ define([
 			this.options.productFieldCounter++;
 		},
 		
-		addValidationToProduct: function () {
+		addValidationToProduct: function (clone) {
 			var thisObj = this;
 			var productFieldClassRequired = this.options.productFieldClassRequired;
 			for(var i=0; i < productFieldClassRequired.length; i++) {
-				$('.'+productFieldClassRequired[i]).each(function() {
+				clone.find('.'+productFieldClassRequired[i]).each(function() {
 					$(this).rules('add', {required: true});
 				});
 			}
@@ -364,7 +372,7 @@ define([
 		},
 		
 		removeProduct: function (ev) {
-			$(ev.target).closest('tr').remove();
+			$(ev.currentTarget).closest('tr').remove();
 			
 			if(!this.hasProduct())
 				this.addProduct();
