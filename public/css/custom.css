@@ -5,6 +5,13 @@
 .width-150 {
   width: 150px;
 }
+input.error {
+  border-color: #CC0000 !important;
+}
+label.error {
+  color: #CC0000 !important;
+  font-weight: normal;
+}
 @media only screen and (max-width: 767px) {
   .cl-sidebar {
     width: 100%;
