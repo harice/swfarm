@@ -150,10 +150,10 @@ class ProductRepository implements ProductRepositoryInterface {
             $product->description = isset($data['description']) ? $data['description'] : null;
 
             $product->save();
-
+            
             return Response::json(array(
                 'error' => false,
-                'message' => "Product successfully added."),
+                'message' => Lang::get('messages.success.created', array('entity' => 'Product'))),
                 200
             );
         } catch (Exception $e) {
@@ -172,7 +172,7 @@ class ProductRepository implements ProductRepositoryInterface {
         $product = Product::find($id); //get the product row
 
         if($product) {
-            $this->validate($data);
+            $this->validate($data, $id);
 
             $product->name = $data['name'];
             $product->description = isset($data['description']) ? $data['description'] : null;
@@ -181,13 +181,13 @@ class ProductRepository implements ProductRepositoryInterface {
 
             $response = Response::json(array(
                 'error' => false,
-                'message' => "Product has been updated."),
+                'message' => Lang::get('messages.success.updated', array('entity' => 'Product'))),
                 200
             );
         } else {
             $response = Response::json(array(
                 'error' => true,
-                'message' => "Product not found"),
+                'message' => Lang::get('messages.notfound', array('entity' => 'Product'))),
                 200
             );
         }
@@ -209,13 +209,13 @@ class ProductRepository implements ProductRepositoryInterface {
 
             $response = Response::json(array(
                 'error' => false,
-                'message' => "Product has been deleted."),
+                'message' => Lang::get('messages.success.deleted', array('entity' => 'Product'))),
                 200
             );
         } else {
             $response = Response::json(array(
                 'error' => true,
-                'message' => "Product not found"),
+                'message' => Lang::get('messages.notfound', array('entity' => 'Product'))),
                 200
             );
         }
@@ -229,12 +229,18 @@ class ProductRepository implements ProductRepositoryInterface {
 	 * @param  int  $id
 	 * @return Response
 	 */
-    public function validate($data)
+    public function validate($data, $id = null)
     {
-        $validator = Validator::make($data, Product::$rules);
+        $rules = Product::$rules;
         
-        if($validator->fails()) { 
-            throw new ValidationException($validator); 
+        if ($id) {
+            $rules['name'] = 'required|unique:products,name,'.$id;
+        }
+        
+        $validator = Validator::make($data, $rules);
+        
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
         }
         
         return true;

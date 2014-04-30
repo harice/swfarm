@@ -57,7 +57,7 @@ class RolesRepository implements RolesRepositoryInterface {
 
     return Response::json(array(
         'error' => false,
-        'message' => 'Role successfully created.'),
+        'message' => Lang::get('messages.success.created', array('entity' => 'Role'))),
         200
     );
   }
@@ -81,13 +81,13 @@ class RolesRepository implements RolesRepositoryInterface {
 
       $response = Response::json(array(
           'error' => false,
-          'message' => 'Role successfully updated.'),
+          'message' => Lang::get('messages.success.updated', array('entity' => 'Role'))),
           200
       );
     } else {
       $response = Response::json(array(
           'error' => true,
-          'message' => "Role not found"),
+          'message' => Lang::get('messages.notfound', array('entity' => 'Role'))),
           200
       );
     }
@@ -103,14 +103,14 @@ class RolesRepository implements RolesRepositoryInterface {
 
       $response = Response::json(array(
           'error' => false,
-          'message' => 'Role successfully deleted.',
+          'message' => Lang::get('messages.success.deleted', array('entity' => 'Role')),
           'role' => $role->toArray()),
           200
       );
     } else {
       $response = Response::json(array(
           'error' => true,
-          'message' => "Role not found"),
+          'message' => Lang::get('messages.notfound', array('entity' => 'Role'))),
           200
       );
     }
