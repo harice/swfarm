@@ -146,7 +146,6 @@ define([
 						{
 							success: function (model, response, options) {
 								thisObj.isConvertToPO = false;
-                                console.log(response);
 								thisObj.displayMessage(response);
 								Global.getGlobalVars().app_router.navigate(Const.URL.PO, {trigger: true});
 							},
