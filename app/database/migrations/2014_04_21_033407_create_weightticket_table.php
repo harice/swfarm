@@ -16,7 +16,7 @@ class CreateWeightticketTable extends Migration {
 		{
 			$table->engine = 'InnoDB';
 			$table->increments('id');
-            $table->string('wtn', 20)->unique();
+            $table->string('weightticket_number', 20)->unique();
             $table->integer('order_id')->unsigned();
             $table->integer('transportschedule_id')->unsigned();
             $table->integer('productorder_id')->unsigned();

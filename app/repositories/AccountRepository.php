@@ -96,8 +96,8 @@ class AccountRepository implements AccountRepositoryInterface {
           'type' => 'required_with:street,city,state,country'
         );
 
-        foreach($data['address'] as $item){
-          $addressData = (array)json_decode($item);
+        foreach($data['address'] as $addressData){
+          //$addressData = (array)json_decode($item);
 
           $this->validate($addressData, $addressRules);
 
@@ -159,8 +159,8 @@ class AccountRepository implements AccountRepositoryInterface {
         //deleting addresses
         $existingAddressId = array();
 
-        foreach($data['address'] as $item){
-          $addressData = (array)json_decode($item);
+        foreach($data['address'] as $addressData){
+          //$addressData = (array)json_decode($item);
           if(isset($addressData['id'])){
             $existingAddressId[] = $addressData['id'];
           }
@@ -168,8 +168,8 @@ class AccountRepository implements AccountRepositoryInterface {
         
         $this->deleteAddresses($account->id, $existingAddressId); //delete addresses that is not pass excluding the new addresses
 
-        foreach($data['address'] as $item){
-          $addressData = (array)json_decode($item);
+        foreach($data['address'] as $addressData){
+          //$addressData = (array)json_decode($item);
           $this->validate($addressData, $addressRules);
           
           if(isset($addressData['id'])){
