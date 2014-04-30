@@ -272,8 +272,16 @@ define([
 			this.addValidationToProduct();
             // this.styleSelect(clone);
             // this.styleRadio();
+            // this.maskInputs();
 			return clone;
 		},
+                
+        maskInputs: function () {
+            $(".unitprice").mask('0,000.00', {reverse: true});
+            $(".tons").mask('0,000.00', {reverse: true});
+            $(".bales").mask('000', {reverse: true});
+            $(".unit-price").mask('000,000.00', {reverse: true});
+        },
                 
         styleSelect: function (clone) {
             clone.find(".select2").select2({
