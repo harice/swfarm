@@ -27,6 +27,7 @@ require.config({
         jqueryselect: 'libs/jquery.select2/select2.min',
         icheck: 'libs/jquery.icheck/icheck.min',
         maskedinput: 'libs/jquery.maskedinput/jquery.maskedinput',
+        nanoscroller: 'libs/jquery.nanoscroller/jquery.nanoscroller',
 
 		templates: '../templates'
 	},
@@ -36,7 +37,7 @@ require.config({
 			exports: 'Base64'
 		},
 		'backbone': {
-			deps: ['underscore', 'jquery', 'bootstrap', 'growl', 'jquerygritter', 'jqueryselect', 'icheck', 'jquerypushmenu','jquerynanoscroller','behaviourcore', 'maskedinput'],
+			deps: ['underscore', 'jquery', 'bootstrap', 'growl', 'jquerygritter', 'jqueryselect', 'icheck', 'jquerypushmenu','jquerynanoscroller','behaviourcore', 'maskedinput', 'nanoscroller'],
 			exports: 'Backbone'
 		},
 		'bootstrapdatepicker': {
@@ -111,6 +112,10 @@ require.config({
         'maskedinput': {
 			deps: ['jquery'],
 			exports: 'MackedInput',
+		},
+        'nanoscroller': {
+			deps: ['jquery'],
+			exports: 'Nano Scroller',
 		},
 		'jquery': {
 			exports: '$'
