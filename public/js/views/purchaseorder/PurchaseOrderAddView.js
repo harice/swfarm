@@ -146,6 +146,7 @@ define([
 						{
 							success: function (model, response, options) {
 								thisObj.isConvertToPO = false;
+                                console.log(response);
 								thisObj.displayMessage(response);
 								Global.getGlobalVars().app_router.navigate(Const.URL.PO, {trigger: true});
 							},
@@ -269,8 +270,26 @@ define([
 			}
 				
 			this.addValidationToProduct();
+            // this.styleSelect(clone);
+            // this.styleRadio();
 			return clone;
 		},
+                
+        styleSelect: function (clone) {
+            clone.find(".select2").select2({
+                width: '100%',
+                minimumResultsForSearch: -1
+            });
+        },
+                
+        styleRadio: function () {
+            $('.icheck').iCheck({
+                checkboxClass: 'icheckbox_flat-blue',
+                radioClass: 'iradio_flat-blue'
+            });
+
+            $('.iradio_flat-green').first().addClass('checked');
+        },
 		
 		initProductAutocomplete: function (productItem) {
 			var thisObj = this;
@@ -445,28 +464,26 @@ define([
 				
 				var verifyMsg = (!this.isBid)? 'Are you sure you want to cancel this Purchase Order?' : 'Are you sure you want to cancel this Bid?';
 				
-				var verifyCancel = confirm(verifyMsg);
+				// var verifyCancel = confirm(verifyMsg);
 				
-				if(verifyCancel) {
-					var purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
-					purchaseOrderModel.setCancelURL();
-					purchaseOrderModel.save(
-						null, 
-						{
-							success: function (model, response, options) {
-								thisObj.displayMessage(response);
-								Global.getGlobalVars().app_router.navigate(Const.URL.PO, {trigger: true});
-							},
-							error: function (model, response, options) {
-								if(typeof response.responseJSON.error == 'undefined')
-									validate.showErrors(response.responseJSON);
-								else
-									thisObj.displayMessage(response);
-							},
-							headers: purchaseOrderModel.getAuth(),
-						}
-					);
-				}
+                var purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
+                purchaseOrderModel.setCancelURL();
+                purchaseOrderModel.save(
+                    null, 
+                    {
+                        success: function (model, response, options) {
+                            thisObj.displayMessage(response);
+                            Global.getGlobalVars().app_router.navigate(Const.URL.PO, {trigger: true});
+                        },
+                        error: function (model, response, options) {
+                            if(typeof response.responseJSON.error == 'undefined')
+                                validate.showErrors(response.responseJSON);
+                            else
+                                thisObj.displayMessage(response);
+                        },
+                        headers: purchaseOrderModel.getAuth(),
+                    }
+                );
 			}
 			return false;
 		},

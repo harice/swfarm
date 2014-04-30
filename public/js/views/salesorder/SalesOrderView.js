@@ -71,6 +71,9 @@ define([
 				'so_edit_url' : '#/'+Const.URL.SO+'/'+Const.CRUD.EDIT+'/'+this.soId,
 			};
 			
+			if(this.model.get('status').name.toLowerCase() == 'open')
+				innerTemplateVariables['editable'] = true;
+			
 			var innerTemplate = _.template(salesOrderViewTemplate, innerTemplateVariables);
 			
 			var variables = {
@@ -85,25 +88,24 @@ define([
 		supplySOData: function () {
 			var thisObj = this;
 			
-			var customer = this.model.get('customer');
-			var address = [this.model.get('address')];
-			var products = this.model.get('products');
+			var account = this.model.get('account');
+			var address = [this.model.get('orderaddress')];
+			var products = this.model.get('productorder');
 			
-			this.$el.find('#sonumber').val(this.model.get('so_number'));
-			this.$el.find('#status').val(this.model.get('status'));
-			this.$el.find('#origin').val(this.model.get('origin').origin);
-			this.$el.find('#nos').val(this.model.get('nature_of_sale').nature_of_sale);
-			this.$el.find('#customer').val(customer.name);
+			this.$el.find('#sonumber').val(this.model.get('order_number'));
+			this.$el.find('#status').val(this.model.get('status').name);
+			this.$el.find('#origin').val(this.model.get('location').location);
+			this.$el.find('#nos').val(this.model.get('natureofsale').name);
+			this.$el.find('#account').val(account.name);
 			this.$el.find('#street').val(address[0].street);
 			this.$el.find('#state').val(address[0].address_states[0].state);
 			this.$el.find('#city').val(address[0].address_city[0].city);
 			this.$el.find('#zipcode').val(address[0].zipcode);
-			this.$el.find('#dateofsale').val(this.model.get('date_of_sale').split(' ')[0]);
-			this.$el.find('#delivery_date_start').val(this.model.get('delivery_date_start').split(' ')[0]);
-			this.$el.find('#delivery_date_end').val(this.model.get('delivery_date_end').split(' ')[0]);
+			this.$el.find('#dateofsales').val(this.model.get('created_at').split(' ')[0]);
+			this.$el.find('#transportdatestart').val(this.model.get('transportdatestart').split(' ')[0]);
+			this.$el.find('#transportdateend').val(this.model.get('transportdateend').split(' ')[0]);
 			this.$el.find('#notes').val(this.model.get('notes'));
 			
-			var i= 0;
 			_.each(products, function (product) {
 				var unitprice = (!isNaN(product.unitprice))? product.unitprice : 0;
 				var tons = (!isNaN(product.tons))? product.tons : 0;
@@ -118,6 +120,7 @@ define([
 					bales: product.bales,
 					totalprice: totalprice,
 				};
+				
 				var template = _.template(productItemTemplate, variables);
 				thisObj.$el.find('#product-list tbody').append(template);
 			});

@@ -106,3 +106,30 @@ table td.align-center {
 .textarea-height-34 {
   max-height: 34px;
 }
+ul.autocomplete {
+  display: none;
+  max-height: 200px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0 0 0 4px;
+  position: absolute;
+  z-index: 20;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 0;
+}
+ul.autocomplete li {
+  background-image: none;
+  display: list-item;
+  list-style: none outside none;
+}
+ul.autocomplete li a {
+  display: block;
+  padding: 5px 20px;
+  clear: both;
+}
+ul.autocomplete li a:hover,
+ul.autocomplete li a:focus {
+  background-color: #19B698;
+  color: #fff;
+}

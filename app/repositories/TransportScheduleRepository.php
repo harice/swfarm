@@ -15,99 +15,89 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       $transportSchedule['scheduletimeMin'] = date('i', strtotime($transportSchedule['date']));
       $transportSchedule['scheduletimeAmPm'] = date('A', strtotime($transportSchedule['date']));
 
-      return Response::json(
-          $transportSchedule,
-          200
-        );
+      return $transportSchedule;
+      
     } else {
-      return Response::json(array(
+      return array(
         'error' => true,
-        'message' => "Schedule not found."),
-        200
-    );
+        'message' => "Schedule not found.");
     }
   }
 
-  public function paginate($params){
+  public function getAllTransportSchedules($params, $scheduleType = 1){ //default schedule type to pull is pickup
     $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST'); //default to 10 items, see app/config/constants
     $page = isset($params['page']) ? $params['page'] : '1'; //default to page 1
     $sortby = isset($params['sortby']) ? $params['sortby'] : 'date'; //default sort to date
-    $type = isset($params['type']) ? $params['type'] : 1; //default schedule type to pull is pickup
+    // $type = isset($params['type']) ? $params['type'] : 1; //default schedule type to pull is pickup
     $orderby = isset($params['orderby']) ? $params['orderby'] : 'DESC'; //default order is Ascending
     $offset = $page*$perPage-$perPage;
-    $bidId = $params['bidId'];
-    //pulling of data
-    $count = TransportSchedule::where('bid_id', '=', $bidId)->where('type', '=', $type)->count();
+    $orderId = $params['order_id'];
+    //pulling of data    
     $transportSchedules = TransportSchedule::with('trucker')
                     ->with('originLoader')
                     ->with('destinationLoader')
                     ->with('trucker.accounttype')
-                    ->where('bid_id', '=', $bidId)
-                    ->where('type', '=', $type)
-                    ->take($perPage)
-                    ->offset($offset)
-                    ->orderBy($sortby, $orderby)
-                    ->get();
+                    ->where('order_id', '=', $orderId)
+                    ->where('type', '=', $scheduleType)
+                    ->paginate($perPage);
+
     foreach($transportSchedules as $item){
-      $item['scheduledate'] = date('Y-m-d', strtotime($item['date']));
-      $item['scheduletimeHour'] = date('h', strtotime($item['date']));
-      $item['scheduletimeMin'] = date('i', strtotime($item['date']));
-      $item['scheduletimeAmPm'] = date('A', strtotime($item['date']));
+        $item['scheduledate'] = date('Y-m-d', strtotime($item['date']));
+        $item['scheduletimeHour'] = date('h', strtotime($item['date']));
+        $item['scheduletimeMin'] = date('i', strtotime($item['date']));
+        $item['scheduletimeAmPm'] = date('A', strtotime($item['date']));
     }
-    return Response::json(array(
-      'total'=>$count,
-      'data'=>$transportSchedules->toArray()
-    ));
+
+    return $transportSchedules;
 
   }
 
   public function addOrUpdateTransportSchedule($data, $transportScheduleId = null){
-    $rules = array(
-      'bid_id' => 'required',
-      'scheduledate' => 'required|date',
-      'scheduletimeHour' => 'required',
-      'scheduletimeMin' => 'required',
-      'scheduletimeAmPm' => 'required',
-      'trucker' => 'required',
-      'distance' => 'required',
-      'fuelcharge' => 'required',
-      'originLoader' => 'required',
-      'originLoaderFee' => 'required',
-      'destinationLoader' => 'required',
-      'destinationLoaderFee' => 'required',
-    );
-
-    $this->validate($data, $rules);
+    // $rules = array(
+    //   'order_id' => 'required',
+    //   'scheduledate' => 'required|date',
+    //   'scheduletimeHour' => 'required',
+    //   'scheduletimeMin' => 'required',
+    //   'scheduletimeAmPm' => 'required',
+    //   'trucker' => 'required',
+    //   'distance' => 'required',
+    //   'fuelcharge' => 'required',
+    //   'originLoader' => 'required',
+    //   'originLoaderFee' => 'required',
+    //   'destinationLoader' => 'required',
+    //   'destinationLoaderFee' => 'required',
+    // );
+// var_dump($data);
+    $this->validate($data, 'TransportSchedule');
+    
     if($transportScheduleId == null)
       $transportschedule = new TransportSchedule;
     else
       $transportschedule = TransportSchedule::find($transportScheduleId);
+
     //convert pass date parameters to timestamp
     $data['scheduletimeMin'] = str_pad($data['scheduletimeMin'], 2, '0', STR_PAD_LEFT); //adding leading zero
-    $transportdate = Date('Y-m-d H:i:s', strtotime($data['scheduledate'].' '.$data['scheduletimeHour'].':'.$data['scheduletimeMin'].' '.$data['scheduletimeAmPm']));
-    $transportschedule->bid_id = $data['bid_id'];
-    $transportschedule->date = $transportdate;
-    $transportschedule->trucker_id = $data['trucker'];
-    $transportschedule->distance = $data['distance'];
-    $transportschedule->fuelcharge = $data['fuelcharge'];
-    $transportschedule->originloader_id = $data['originLoader'];
-    $transportschedule->originloadersfee = $data['originLoaderFee'];
-    $transportschedule->destinationloader_id = $data['destinationLoader'];
-    $transportschedule->destinationloadersfee = $data['destinationLoaderFee'];
-    $transportschedule->truckingrate = isset($data['truckingrate']) ? $data['truckingrate'] : Config::get('constants.GLOBAL_PER_LIST');
+    $data['date'] = Date('Y-m-d H:i:s', strtotime($data['scheduledate'].' '.$data['scheduletimeHour'].':'.$data['scheduletimeMin'].' '.$data['scheduletimeAmPm']));
+    $data['truckingrate'] = isset($data['truckingrate']) ? $data['truckingrate'] : Config::get('constants.GLOBAL_PER_LIST');
+    $data['type'] = isset($data['type']) ? $data['type'] : 1;
 
-    if($transportScheduleId == null) //set only type when creating new schedule
-      $transportschedule->type = isset($data['type']) ? $data['type'] : 1;
-   
-    try{
-      $transportschedule->save();
-    } catch(Exception $e){
-      return Response::json(array(
-        'error' => true,
-        'message' => $e->errorInfo[2]),
-        200
-      );
-    }
+    $transportschedule->fill($data);
+
+    // $transportschedule->order_id = $data['order_id'];
+    // $transportschedule->date = $data['date'];
+    // $transportschedule->trucker_id = $data['trucker_id'];
+    // $transportschedule->distance = $data['distance'];
+    // $transportschedule->fuelcharge = $data['fuelcharge'];
+    // $transportschedule->originloader_id = $data['originLoader_id'];
+    // $transportschedule->originloadersfee = $data['originLoaderFee'];
+    // $transportschedule->destinationloader_id = $data['destinationLoader_id'];
+    // $transportschedule->destinationloadersfee = $data['destinationLoaderFee'];
+    // $transportschedule->truckingrate = isset($data['truckingrate']) ? $data['truckingrate'] : Config::get('constants.GLOBAL_PER_LIST');
+
+    // if($transportScheduleId == null) //set only type when creating new schedule
+    //   $transportschedule->type = isset($data['type']) ? $data['type'] : 1;
+    
+    $transportschedule->save();
 
     if($transportScheduleId == null){
       $message = 'Schedule successfully created.';
@@ -115,11 +105,9 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       $message = 'Schedule successfully updated.';
     }
 
-    return Response::json(array(
+    return array(
         'error' => false,
-        'message' => $message),
-        200
-    );
+        'message' => $message);
   }
 
 
@@ -145,12 +133,15 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
     return $response;
   }
   
-  public function validate($data, $rules){
-    $validator = Validator::make($data, $rules);
-
-    if($validator->fails()) { 
-      throw new ValidationException($validator); 
-    }
+  public function validate($data, $entity)
+  {
+      $validator = Validator::make($data, $entity::$rules);
+      
+      if($validator->fails()) { 
+          throw new ValidationException($validator); 
+      }
+      
+      return true;
   }
 
 

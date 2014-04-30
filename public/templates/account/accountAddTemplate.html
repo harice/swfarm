@@ -20,7 +20,7 @@
                             <div class="form-group">
                                 <label for="accounttype" class="col-sm-4 control-label">Type *</label>
                                 <div class="col-sm-8">
-                                    <select class="form-control width-300" id="accounttype" name="accounttype">
+                                    <select class="form-control" id="accounttype" name="accounttype">
                                         <% _.each(account_types, function(account_type){ %>
                                         <option value="<%= account_type.id %>"><%= account_type.name %></option>
                                         <% }); %>
@@ -66,3 +66,8 @@
         </div> <!-- /.block-flat -->
     </div>
 </div>
+<script>
+    $(".select2").select2({
+        width: '100%'
+    });
+</script>

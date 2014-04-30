@@ -1,136 +1,147 @@
-<form id="soForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-	<% if (typeof so_id !== "undefined") { %>
-		<input type="hidden" name="id" value="<%= so_id %>" />
-	<% } %>
-	<fieldset>
-		<legend>Details</legend>
-		<div class="row">
-			<div class="col-md-6">
-				<% if (typeof so_id !== "undefined") { %>
-					<div class="form-group">
-						<label for="sonumber" class="col-sm-3 control-label">SO Number</label>
+<div class="row">
+    <div class="col-md-12">
+        <div class="block-flat">
+            <div class="content">
+              
+              <form id="soForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+                <% if (typeof so_id !== "undefined") { %>
+                  <input type="hidden" name="id" value="<%= so_id %>" />
+                <% } %>
+                <fieldset>
+                  <legend>Details</legend>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <% if (typeof so_id !== "undefined") { %>
+                        <div class="form-group">
+                          <label for="sonumber" class="col-sm-3 control-label">SO Number</label>
+                          <div class="col-sm-9">
+                            <input id="sonumber" type="text" class="form-control sonumber" placeholder="" maxlength="250" readonly>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label for="status" class="col-sm-3 control-label">Status</label>
+                          <div class="col-sm-9">
+                            <input id="status" type="text" class="form-control status" placeholder="" maxlength="250" readonly>
+                          </div>
+                        </div>
+                      <% } %>
+                      <div class="form-group">
+						<label for="location_id" class="col-sm-3 control-label">Origin</label>
+						<div id="so-origin" class="col-sm-9"></div>
+					  </div>
+					  <div class="form-group">
+						<label for="natureofsale_id" class="col-sm-3 control-label">Nature of Sales</label>
+						<div id="so-nos" class="col-sm-9"></div>
+					  </div>
+					  <div class="form-group">
+						<label for="account" class="col-sm-3 control-label">Customer *</label>
 						<div class="col-sm-9">
-							<input id="sonumber" type="text" class="form-control sonumber" placeholder="" maxlength="250" readonly>
+						  <input type="text" class="form-control capitalize" id="account" name="account" maxlength="50" required>
+						  <input type="hidden" class="form-control" id="account_id" name="account_id" value="" required>
 						</div>
-					</div>
-					<div class="form-group">
-						<label for="status" class="col-sm-3 control-label">Status</label>
-						<div class="col-sm-9">
-							<input id="status" type="text" class="form-control status" placeholder="" maxlength="250" readonly>
-						</div>
-					</div>
-				<% } %>
-				<div class="form-group">
-					<label for="origin" class="col-sm-3 control-label">Origin</label>
-					<div id="so-origin" class="col-sm-9"></div>
-				</div>
-				<div class="form-group">
-					<label for="nos" class="col-sm-3 control-label">Nature of Sales</label>
-					<div id="so-nos" class="col-sm-9"></div>
-				</div>
-				<div class="form-group">
-					<label for="customer" class="col-sm-3 control-label">Customer *</label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control capitalize" id="customer" name="customername" maxlength="50" required>
-						<input type="hidden" class="form-control" id="customer-id" name="customer_id" value="" required>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="street" class="col-sm-3 control-label">Street</label>
-					<div class="col-sm-9">
-						<input id="street" type="text" class="form-control street" placeholder="" maxlength="250" readonly>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="state" class="col-sm-3 control-label">State</label>
-					<div class="col-sm-9">
-						<input id="state" type="text" class="form-control state" placeholder="" maxlength="250" readonly>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="city" class="col-sm-3 control-label">City</label>
-					<div class="col-sm-9">
-						<input id="city" type="text" class="form-control city" placeholder="" maxlength="250" readonly>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="zipcode" class="col-sm-3 control-label">Zip Code</label>
-					<div class="col-sm-9">
-						<input id="zipcode" type="number" class="form-control zipcode" placeholder="" maxlength="250" readonly>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-6">
-				<% if (typeof so_id !== "undefined") { %>
-					<div class="form-group">
-						<label for="dateofsale" class="col-sm-3 control-label">Date of Sale</label>
-						<div class="col-sm-9">
-							<input id="dateofsale" type="text" class="form-control dateofsale" placeholder="" maxlength="250" readonly>
-						</div>
-					</div>
-				<% } %>
-				<div class="form-group"><label for="" class="col-sm-3 control-label">Delivery Period:</label></div>
-				<div class="form-group">
-					<label for="delivery_date_start" class="col-sm-3 control-label">Start</label>
-					<div class="col-sm-4">
-						<div id="start-date" class="calendar-cont">
-							<div class="input-group date">
-								<input id="delivery_date_start" type="text" class="form-control form-date" name="delivery_date_start" value="" required>
-								<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-							</div>
-						</div>
-						<div class="error-msg-cont"></div>
-					</div>
-					<label for="delivery_date_end" class="col-sm-1 control-label">End</label>
-					<div class="col-sm-4">
-						<div id="end-date" class="calendar-cont">
-							<div class="input-group date">
-								<input id="delivery_date_end" type="text" class="form-control form-date" name="delivery_date_end" value="" required>
-								<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-							</div>
-						</div>
-						<div class="error-msg-cont"></div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="notes" class="col-sm-3 control-label">Notes</label>
-					<div id="bid-destination" class="col-sm-9">
-						<textarea class="form-control notes" id="notes" name="notes"></textarea>
-					</div>
-				</div>
-			</div>
-		</div>
-	</fieldset>
-	<fieldset>
-		<legend>
-			Products
-			<button title="Add Product" id="add-so-product" type="button" class="pull-right btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
-		</legend>
-		<div class="table-responsive">
-			<table id="product-list" class="table table-bordered">
-				<thead>
-					<tr>
-						<th>Product</th>
-						<th>Description</th>
-						<th>Stack No.</th>
-						<th>Unit Price</th>
-						<th>Est Tons</th>
-						<th>Bales</th>
-						<th>Total Price</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody></tbody>
-			</table>
-		</div>
-	</fieldset>
-	<div class="form-group form-button-container">
-		<div class="pull-right">
-		<% if (typeof so_id !== "undefined") { %>
-			<a id="cancel-so" class="btn btn-default" href="#">Cancel Sales Order</a>
-		<% } %>
-		<button id="save" type="submit" class="save btn btn-default">Save</button>
-		<a id="cancel-save" class="btn btn-default" href="<%= so_url %>">Back</a>
-		</div>
-	</div>
-</form>
+					  </div>
+                      <div class="form-group">
+                        <label for="street" class="col-sm-3 control-label">Street</label>
+                        <div class="col-sm-9">
+                          <input id="street" type="text" class="form-control street" placeholder="" maxlength="250" readonly>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="state" class="col-sm-3 control-label">State/Province</label>
+                        <div class="col-sm-9">
+                          <input id="state" type="text" class="form-control state" placeholder="" maxlength="250" readonly>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="city" class="col-sm-3 control-label">City</label>
+                        <div class="col-sm-9">
+                          <input id="city" type="text" class="form-control city" placeholder="" maxlength="250" readonly>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="zipcode" class="col-sm-3 control-label">Zip Code</label>
+                        <div class="col-sm-9">
+                          <input id="zipcode" type="number" class="form-control zipcode" placeholder="" maxlength="250" readonly>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <% if (typeof so_id !== "undefined") { %>
+                        <div class="form-group">
+                          <label for="dateofsale" class="col-sm-3 control-label">Date of Sale</label>
+                          <div class="col-sm-9">
+                            <input id="dateofsale" type="text" class="form-control dateofsale" placeholder="" maxlength="250" readonly>
+                          </div>
+                        </div>
+                      <% } %>
+                      <div class="form-group"><label for="" class="col-sm-12">Delivery Period:</label></div>
+                      <div class="form-group">
+                        <label for="transportdatestart" class="col-sm-3 control-label">Start</label>
+                        <div class="col-sm-4">
+                          <div id="start-date" class="calendar-cont">
+                            <div class="input-group date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                              <input id="transportdatestart" class="form-control form-date" name="transportdatestart" size="16" type="text" value="" required/>
+                              <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                            </div>
+                          </div>
+                          <div class="error-msg-cont"></div>
+                        </div>
+                        <label for="transportdateend" class="col-sm-1 control-label">End</label>
+                        <div class="col-sm-4">
+                          <div id="end-date" class="calendar-cont">
+                            <div class="input-group date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                              <input id="transportdateend" class="form-control form-date" name="transportdateend" size="16" type="text" value="" required/>
+                              <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                            </div>
+                          </div>
+                          <div class="error-msg-cont"></div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="notes" class="col-sm-3 control-label">Notes</label>
+                        <div class="col-sm-9">
+                          <textarea class="form-control notes" id="notes" name="notes"></textarea>
+                        </div>
+                      </div>
+                      
+                    </div>
+                  </div>
+                </fieldset>
+                <fieldset>
+                  <legend>
+                    Products
+                    <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
+                  </legend>
+                  <div class="table-responsive">
+                    <table id="product-list" class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Product</th>
+                          <th>Description</th>
+                          <th>Stack No.</th>
+                          <th>Unit Price</th>
+                          <th>Est Tons</th>
+                          <th>Bales</th>
+                          <th>Total Price</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                </fieldset>
+                <div class="form-group form-button-container">
+                  <div class="pull-right">
+                  <% if (typeof so_id !== "undefined") { %>
+					<a id="cancel-so" class="btn btn-danger" href="#">Cancel sales Order</a>
+                  <% } %>
+                  <button id="save" type="submit" class="save btn btn-primary">Save</button>
+                  <a id="cancel-save" class="btn btn-link" href="<%= so_url %>">Back</a>
+                  </div>
+                </div>
+              </form>
+              
+            </div> <!-- /.content -->
+        </div> <!-- /.block-flat -->
+    </div>
+</div>

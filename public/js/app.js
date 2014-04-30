@@ -56,7 +56,7 @@ define([
 				type = 'info';
 				
 			$.bootstrapGrowl(message, {
-						ele: '#cl-mcont',
+						ele: '#message .message-inner',
 						type: type,
 						offset: {from: 'bottom'},
 						align: 'right',
@@ -64,6 +64,23 @@ define([
 						delay: 4000
 					});
 		};
+        
+        Backbone.View.prototype.displayGritter = function (message, type) {
+            if(type == null)
+				type = 'info';
+            
+            $.gritter.removeAll({
+                after_close: function(){
+                  $.gritter.add({
+                    position: 'bottom-right',
+                    text: message,
+                    class_name: type
+                  });
+                }
+            });
+            return false;
+            
+        };
 		
 		Backbone.View.prototype.displayMessage = function (data) {
 			if(data.error != 'undefined') {
@@ -75,7 +92,8 @@ define([
 					message = data.message;
 				
 				if(typeof message == 'string') {
-					this.displayGrowl(message, type);
+                    message = '<p>' + message + '</p>';
+					this.displayGritter(message, type);
 				}
 				else 
 					alert(message);
