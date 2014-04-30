@@ -10,9 +10,7 @@ interface AccountRepositoryInterface {
 	public function search($_search);
 	public function validate($data, $rules);
 	public function instance();
-	public function getCitiesByState($stateId);
 	public function getFormData();
-	public function getZipcodeUsingCity($city);
 	public function getAccountsByName($name);
     public function getCustomerAccount($search);
     public function getAddress($accountId);

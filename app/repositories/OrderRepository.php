@@ -18,7 +18,7 @@ class OrderRepository implements OrderRepositoryInterface {
         $order = Order::with('productorder')
                         ->with('productorder.product')
                         ->with('account')
-                        ->with('orderaddress', 'orderaddress.addressStates', 'orderaddress.addressCity')
+                        ->with('orderaddress', 'orderaddress.addressStates')
                         ->with('location')
                         ->with('status');
 
@@ -85,7 +85,7 @@ class OrderRepository implements OrderRepositoryInterface {
         $order = Order::with('productorder')
                 ->with('productorder.product')
                 ->with('account')
-                ->with('orderaddress', 'orderaddress.addressStates', 'orderaddress.addressCity')
+                ->with('orderaddress', 'orderaddress.addressStates')
                 ->with('location')
                 ->with('status');
 
