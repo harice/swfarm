@@ -117,22 +117,10 @@
                                         <th>Product</th>
                                         <th>Description</th>
                                         <th>Stack No.</th>
-                                        <th>
-                                            <% if (typeof is_bid === "undefined") { %>
-                                            Unit Price
-                                            <% } else { %>
-                                            Bid Unit Price
-                                            <% } %>
-                                        </th>
+                                        <th class="width-130"><% if (typeof is_bid === "undefined") { %>Unit Price<% } else { %>Bid Unit Price<% } %></th>
                                         <th>Est Tons</th>
                                         <th>Bales</th>
-                                        <th>
-                                            <% if (typeof is_bid === "undefined") { %>
-                                            Total Price
-                                            <% } else { %>
-                                            Bid Total Price
-                                            <% } %>
-                                        </th>
+                                        <th class="width-130"><% if (typeof is_bid === "undefined") { %>Total Price<% } else { %>Bid Total Price<% } %></th>
                                         <% if (typeof is_bid === "undefined") { %>
                                         <th>Hold for Testing</th>
                                         <% } %>
