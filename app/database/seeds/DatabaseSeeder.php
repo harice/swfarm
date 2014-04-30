@@ -27,16 +27,12 @@ class DatabaseSeeder extends Seeder {
         $this->call('AddressStatesTableSeeder');
 
 
-        $this->call('DestinationTableSeeder');
         
         // Testing
         $this->call('ProductsTableSeeder');
         $this->call('AccountTableSeeder');
         $this->call('ContactTableSeeder');
         $this->call('AddressTableSeeder');
-        $this->call('BidTableSeeder');
-        $this->call('BidProductTableSeeder');
-        $this->call('PurchaseOrderTableSeeder');
         $this->call('TransportScheduleTableSeeder');
         $this->call('WeightTicketTableSeeder');
  
