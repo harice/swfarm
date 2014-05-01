@@ -140,9 +140,15 @@ class OrderRepository implements OrderRepositoryInterface {
         
         if($result){
             if($data['ordertype'] == 1)
-                return array("error" => "false", "message" => "Purchase order successfully created");
+                return array(
+                    "error" => false,
+                    'message' => Lang::get('messages.success.created', array('entity' => 'Purchase Order'))
+                );
             else
-                return array("error" => "false", "message" => "Sales order successfully created");
+                return array(
+                    "error" => false,
+                    'message' => Lang::get('messages.success.created', array('entity' => 'Sales Order'))
+                );
         }
        
     }
@@ -179,9 +185,15 @@ class OrderRepository implements OrderRepositoryInterface {
         
         if($result){
             if($data['ordertype'] == 1)
-                return array("error" => "false", "message" => "Purchase order successfully updated");
+                return array(
+                    "error" => false,
+                    'message' => Lang::get('messages.success.updated', array('entity' => 'Purchase Order'))
+                );
             else
-                return array("error" => "false", "message" => "Sales order successfully updated");
+                return array(
+                    "error" => false,
+                    'message' => Lang::get('messages.success.updated', array('entity' => 'Sales Order'))
+                );
         }
     }
 

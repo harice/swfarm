@@ -1,7 +1,7 @@
 <% if (!_.isEmpty(roles)) { %>
   <% _.each(roles, function(role){ %>
     <tr>
-      <td><%= role.get("name") %></td>
+      <td><a href="<%= role_url %>/<%= role.get("id") %>"><%= role.get("name") %></a></td>
       <td><%= role.get("description") %></td>
       <td>
         <a href="<%= role_edit_url %>/<%= role.get("id") %>" class="btn btn-info btn-xs">

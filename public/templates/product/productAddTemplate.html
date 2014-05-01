@@ -10,20 +10,20 @@
                         <input type="hidden" id="id" name="id" value="<%= product_id %>" />
                       <% } %>
                       <div class="form-group">
-                        <label for="name" class="col-sm-4 control-label">Name *</label>
-                        <div class="col-sm-8">
+                        <label for="name" class="col-sm-3 control-label">Name *</label>
+                        <div class="col-sm-5">
                           <input type="text" class="form-control capitalize" id="name" name="name" placeholder="" minlength="2" maxlength="50" required>
                         </div>
                       </div>
                       <div class="form-group">
-                        <label for="description" class="col-sm-4 control-label">Description</label>
-                        <div class="col-sm-8">
+                        <label for="description" class="col-sm-3 control-label">Description</label>
+                        <div class="col-sm-9">
                           <textarea class="form-control" rows="3" id="description" name="description"></textarea>
                         </div>
                       </div>
                       <div class="form-group">
-                        <label for="" class="col-sm-4 control-label"></label>
-                        <div class="col-sm-8">
+                        <label for="" class="col-sm-3 control-label"></label>
+                        <div class="col-sm-5">
                            <button id="save" type="submit" class="save btn btn-primary">Save</button>
                            <a id="cancel-product-save" class="btn btn-link" href="<%= product_url %>">Cancel</a>
                         </div>

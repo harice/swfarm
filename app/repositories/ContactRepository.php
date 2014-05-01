@@ -91,7 +91,7 @@ class ContactRepository implements ContactRepositoryInterface {
 
     return Response::json(array(
         'error' => false,
-        'message' => 'Contact successfully created.'),
+        'message' => Lang::get('messages.success.created', array('entity' => 'Contact'))),
         200
     );
   }
@@ -132,7 +132,7 @@ class ContactRepository implements ContactRepositoryInterface {
 
     return Response::json(array(
         'error' => false,
-        'message' => 'Contact successfully updated'),
+        'message' => Lang::get('messages.success.updated', array('entity' => 'Contact'))),
         200
     );
   }
@@ -188,13 +188,13 @@ class ContactRepository implements ContactRepositoryInterface {
 
       $response = Response::json(array(
           'error' => false,
-          'message' => 'Contact successfully deleted.'),
+          'message' => Lang::get('messages.success.deleted', array('entity' => 'Contact'))),
           200
       );
     } else {
       $response = Response::json(array(
           'error' => true,
-          'message' => "Contact not found"),
+          'message' => Lang::get('messages.notfound', array('entity' => 'Contact'))),
           200
       );
     }

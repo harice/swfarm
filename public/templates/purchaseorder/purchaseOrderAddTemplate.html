@@ -2,163 +2,173 @@
     <div class="col-md-12">
         <div class="block-flat">
             <div class="content">
-              
-              <form id="poForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-                <% if (typeof po_id !== "undefined") { %>
-                  <input type="hidden" name="id" value="<%= po_id %>" />
-                <% } %>
-                <fieldset>
-                  <legend>Details</legend>
-                  <div class="row">
-                    <div class="col-md-6">
-                      <% if (typeof po_id !== "undefined") { %>
-                        <div class="form-group">
-                          <label for="ponumber" class="col-sm-3 control-label">PO Number</label>
-                          <div class="col-sm-9">
-                            <input id="ponumber" type="text" class="form-control ponumber" placeholder="" maxlength="250" readonly>
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <label for="status" class="col-sm-3 control-label">Status</label>
-                          <div class="col-sm-9">
-                            <input id="status" type="text" class="form-control status" placeholder="" maxlength="250" readonly>
-                          </div>
-                        </div>
-                      <% } %>
-                      <div class="form-group">
-                        <label for="location_id" class="col-sm-3 control-label">Destination</label>
-                        <div id="po-destination" class="col-sm-9"></div>
-                      </div>
-                      <div class="form-group">
-                        <label for="account" class="col-sm-3 control-label">Producer *</label>
-                        <div class="col-sm-9">
-                          <input type="text" class="form-control capitalize" id="account" name="account" maxlength="50" required>
-                          <input type="hidden" class="form-control" id="account_id" name="account_id" value="" required>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="street" class="col-sm-3 control-label">Street</label>
-                        <div class="col-sm-9">
-                          <input id="street" type="text" class="form-control street" placeholder="" maxlength="250" readonly>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="state" class="col-sm-3 control-label">State/Province</label>
-                        <div class="col-sm-9">
-                          <input id="state" type="text" class="form-control state" placeholder="" maxlength="250" readonly>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="city" class="col-sm-3 control-label">City</label>
-                        <div class="col-sm-9">
-                          <input id="city" type="text" class="form-control city" placeholder="" maxlength="250" readonly>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="zipcode" class="col-sm-3 control-label">Zip Code</label>
-                        <div class="col-sm-9">
-                          <input id="zipcode" type="number" class="form-control zipcode" placeholder="" maxlength="250" readonly>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <% if (typeof po_id !== "undefined") { %>
-                        <div class="form-group">
-                          <label for="dateofpurchase" class="col-sm-3 control-label">Date of Purchase</label>
-                          <div class="col-sm-9">
-                            <input id="dateofpurchase" type="text" class="form-control dateofpurchase" placeholder="" maxlength="250" readonly>
-                          </div>
-                        </div>
-                      <% } %>
-					  <% if (typeof is_bid === "undefined") { %>
-                      <div class="form-group"><label for="" class="col-sm-12">Pick-up Period:</label></div>
-                      <div class="form-group">
-                        <label for="transportdatestart" class="col-sm-3 control-label">Start</label>
-                        <div class="col-sm-4">
-                          <div id="start-date" class="calendar-cont">
-                            <div class="input-group date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
-                              <input id="transportdatestart" class="form-control form-date" name="transportdatestart" size="16" type="text" value="" required/>
-                              <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+
+                <form id="poForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+                    <% if (typeof po_id !== "undefined") { %>
+                    <input type="hidden" name="id" value="<%= po_id %>" />
+                    <% } %>
+                    <fieldset>
+                        <legend>Details</legend>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <% if (typeof po_id !== "undefined") { %>
+                                <div class="form-group">
+                                    <label for="ponumber" class="col-sm-3 control-label">PO Number</label>
+                                    <div class="col-sm-7">
+                                        <input id="ponumber" type="text" class="form-control ponumber" placeholder="" maxlength="250" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="status" class="col-sm-3 control-label">Status</label>
+                                    <div class="col-sm-7">
+                                        <input id="status" type="text" class="form-control status" placeholder="" maxlength="250" readonly>
+                                    </div>
+                                </div>
+                                <% } %>
+                                <div class="form-group">
+                                    <label for="location_id" class="col-sm-3 control-label">Destination</label>
+                                    <div id="po-destination" class="col-sm-9"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="account" class="col-sm-3 control-label">Producer *</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control capitalize" id="account" name="account" maxlength="50" required>
+                                        <input type="hidden" class="form-control" id="account_id" name="account_id" value="" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="street" class="col-sm-3 control-label">Street</label>
+                                    <div class="col-sm-7">
+                                        <input id="street" type="text" class="form-control street" placeholder="" maxlength="250" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="state" class="col-sm-3 control-label">State/Province</label>
+                                    <div class="col-sm-7">
+                                        <input id="state" type="text" class="form-control state" placeholder="" maxlength="250" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="city" class="col-sm-3 control-label">City</label>
+                                    <div class="col-sm-7">
+                                        <input id="city" type="text" class="form-control city" placeholder="" maxlength="250" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="zipcode" class="col-sm-3 control-label">Zip Code</label>
+                                    <div class="col-sm-3">
+                                        <input id="zipcode" type="number" class="form-control zipcode" placeholder="" maxlength="250" readonly>
+                                    </div>
+                                </div>
                             </div>
-                          </div>
-                          <div class="error-msg-cont"></div>
-                        </div>
-                        <label for="transportdateend" class="col-sm-1 control-label">End</label>
-                        <div class="col-sm-4">
-                          <div id="end-date" class="calendar-cont">
-                            <div class="input-group date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
-                              <input id="transportdateend" class="form-control form-date" name="transportdateend" size="16" type="text" value="" required/>
-                              <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                            <div class="col-md-6">
+                                <% if (typeof po_id !== "undefined") { %>
+                                <div class="form-group">
+                                    <label for="dateofpurchase" class="col-sm-3 control-label">Date of Purchase</label>
+                                    <div class="col-sm-9">
+                                        <input id="dateofpurchase" type="text" class="form-control dateofpurchase" placeholder="" maxlength="250" readonly>
+                                    </div>
+                                </div>
+                                <% } %>
+                                <% if (typeof is_bid === "undefined") { %>
+                                <div class="form-group"><label for="" class="col-sm-12">Pick-up Period:</label></div>
+                                <div class="form-group">
+                                    <label for="transportdatestart" class="col-sm-3 control-label">Start</label>
+                                    <div class="col-sm-4">
+                                        <div id="start-date" class="calendar-cont">
+                                            <div class="input-group date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                                                <input id="transportdatestart" class="form-control form-date" name="transportdatestart" size="16" type="text" value="" required/>
+                                                <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                            </div>
+                                        </div>
+                                        <div class="error-msg-cont"></div>
+                                    </div>
+                                    <label for="transportdateend" class="col-sm-1 control-label">End</label>
+                                    <div class="col-sm-4">
+                                        <div id="end-date" class="calendar-cont">
+                                            <div class="input-group date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                                                <input id="transportdateend" class="form-control form-date" name="transportdateend" size="16" type="text" value="" required/>
+                                                <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                            </div>
+                                        </div>
+                                        <div class="error-msg-cont"></div>
+                                    </div>
+                                </div>
+                                <% } %>
+                                <div class="form-group">
+                                    <label for="notes" class="col-sm-3 control-label">Notes</label>
+                                    <div class="col-sm-9">
+                                        <textarea class="form-control notes" id="notes" name="notes"></textarea>
+                                    </div>
+                                </div>
+
                             </div>
-                          </div>
-                          <div class="error-msg-cont"></div>
                         </div>
-                      </div>
-					  <% } %>
-                      <div class="form-group">
-                        <label for="notes" class="col-sm-3 control-label">Notes</label>
-                        <div class="col-sm-9">
-                          <textarea class="form-control notes" id="notes" name="notes"></textarea>
+                    </fieldset>
+                    <fieldset>
+                        <legend>
+                            Products
+                            <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
+                        </legend>
+                        <div class="table-responsive">
+                            <table id="product-list" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Description</th>
+                                        <th>Stack No.</th>
+                                        <th class="width-130"><% if (typeof is_bid === "undefined") { %>Unit Price<% } else { %>Bid Unit Price<% } %></th>
+                                        <th>Est Tons</th>
+                                        <th>Bales</th>
+                                        <th class="width-130"><% if (typeof is_bid === "undefined") { %>Total Price<% } else { %>Bid Total Price<% } %></th>
+                                        <% if (typeof is_bid === "undefined") { %>
+                                        <th>Hold for Testing</th>
+                                        <% } %>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
                         </div>
-                      </div>
-                      
+                    </fieldset>
+                    <div class="form-group form-button-container">
+                        <div class="pull-right">
+                            <% if (typeof po_id !== "undefined") { %>
+                            <% if (typeof is_bid === "undefined") { %>
+                            <button data-toggle="modal" data-target="#mod-success" type="button" class="btn btn-warning">Cancel Purchase Order</button>
+                            <% } else { %>
+                            <a id="cancel-po" class="btn btn-danger" href="#">Cancel Bid</a>
+                            <button id="convert-po" type="button" class="save btn btn-primary">Convert to PO</button>
+                            <% } %>
+                            <% } %>
+                            <button id="save" type="submit" class="save btn btn-primary">Save</button>
+                            <a id="cancel-save" class="btn btn-link" href="<%= po_url %>">Back</a>
+                        </div>
                     </div>
-                  </div>
-                </fieldset>
-                <fieldset>
-                  <legend>
-                    Products
-                    <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
-                  </legend>
-                  <div class="table-responsive">
-                    <table id="product-list" class="table table-bordered">
-                      <thead>
-                        <tr>
-                          <th>Product</th>
-                          <th>Description</th>
-                          <th>Stack No.</th>
-                          <th>
-						  <% if (typeof is_bid === "undefined") { %>
-						    Unit Price
-						  <% } else { %>
-						    Bid Unit Price
-						  <% } %>
-						  </th>
-                          <th>Est Tons</th>
-                          <th>Bales</th>
-                          <th>
-						  <% if (typeof is_bid === "undefined") { %>
-						    Total Price
-						  <% } else { %>
-						    Bid Total Price
-						  <% } %>
-						  </th>
-						  <% if (typeof is_bid === "undefined") { %>
-                          <th>Hold for Testing</th>
-						  <% } %>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody></tbody>
-                    </table>
-                  </div>
-                </fieldset>
-                <div class="form-group form-button-container">
-                  <div class="pull-right">
-                  <% if (typeof po_id !== "undefined") { %>
-					<% if (typeof is_bid === "undefined") { %>
-                      <a id="cancel-po" class="btn btn-danger" href="#">Cancel Purchase Order</a>
-					<% } else { %>
-					  <a id="cancel-po" class="btn btn-danger" href="#">Cancel Bid</a>
-					  <button id="convert-po" type="button" class="save btn btn-primary">Convert to PO</button>
-					<% } %>
-                  <% } %>
-                  <button id="save" type="submit" class="save btn btn-primary">Save</button>
-                  <a id="cancel-save" class="btn btn-link" href="<%= po_url %>">Back</a>
-                  </div>
-                </div>
-              </form>
-              
+                </form>
+
+                <!-- Modal -->
+                <div class="modal fade" id="mod-success" tabindex="-1" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button " class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="text-center">
+                                    <div class="i-circle warning"><i class="fa fa-warning"></i></div>
+                                    <h4>Warning!</h4>
+                                    <p>Are you sure you want to cancel this purchase order?</p>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">No</button>
+                                <button type="button" class="btn btn-warning btn-flat" data-dismiss="modal" id="cancel-po">Yes</button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+
             </div> <!-- /.content -->
         </div> <!-- /.block-flat -->
     </div>

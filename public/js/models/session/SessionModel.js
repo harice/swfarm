@@ -84,7 +84,7 @@ define([
           });
           
           login.fail(function(response,textStatus){
-              Backbone.View.prototype.displayGrowl('Login failed. Either username or password is incorrect. ', 'error');
+              Backbone.View.prototype.displayGritter('Login failed. Either username or password is incorrect. ', 'danger');
               Backbone.history.navigate('#/'+Const.URL.LOGIN, { trigger : true });
           });
       }
