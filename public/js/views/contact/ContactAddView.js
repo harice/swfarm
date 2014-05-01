@@ -7,13 +7,30 @@ define([
 	'text!templates/contact/contactAddTemplate.html',
 	'models/contact/ContactModel',
     'collections/account/AccountNameCollection',
+	'collections/account/AccountAutocompleteCollection',
     'views/autocomplete/AutoCompleteView',
+	'views/autocomplete/AccountCustomAutoCompleteView',
 	'global',
 	'constant',
-], function(Backbone, Validate, TextFormatter, PhoneNumber, contentTemplate, contactAddTemplate, ContactModel, AccountNameCollection, AutoCompleteView, Global, Const){
+], function(Backbone,
+			Validate,
+			TextFormatter,
+			PhoneNumber,
+			contentTemplate,
+			contactAddTemplate,
+			ContactModel,
+			AccountNameCollection,
+			AccountAutocompleteCollection,
+			AutoCompleteView,
+			AccountCustomAutoCompleteView,
+			Global,
+			Const
+){
 
 	var ContactAddView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
+		
+		accountAutoCompleteView: null,
 		
 		initialize: function() {
 			//console.log('ContactAdd.js:init');
@@ -75,15 +92,32 @@ define([
 				}
 			});
             
-            var accountNameCollection = new AccountNameCollection();
+            /*var accountNameCollection = new AccountNameCollection();
             
             new AutoCompleteView({
                 input: $('#account'),
 				hidden: $('#account_id'),
                 collection: accountNameCollection
-            }).render();
+            }).render();*/
             
-		}
+			this.initAccountAutocomplete();
+		},
+		
+		initAccountAutocomplete: function () {
+			var thisObj = this;
+			
+			if(this.accountAutoCompleteView != null)
+				this.accountAutoCompleteView.deAlloc();
+			
+			var accountAutocompleteCollection = new AccountAutocompleteCollection();
+			this.accountAutoCompleteView = new AccountCustomAutoCompleteView({
+                input: $('#account'),
+				hidden: $('#account_id'),
+                collection: accountAutocompleteCollection,
+            });
+			
+			this.accountAutoCompleteView.render();
+		},
         
 	});
     

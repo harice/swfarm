@@ -7,13 +7,30 @@ define([
 	'text!templates/contact/contactAddTemplate.html',
 	'models/contact/ContactModel',
     'collections/account/AccountNameCollection',
+	'collections/account/AccountAutocompleteCollection',
     'views/autocomplete/AutoCompleteView',
+	'views/autocomplete/AccountCustomAutoCompleteView',
 	'global',
 	'constant',
-], function(Backbone, Validate, TextFormatter, PhoneNumber, contentTemplate, contactAddTemplate, ContactModel, AccountNameCollection, AutoCompleteView, Global, Const){
+], function(Backbone,
+			Validate,
+			TextFormatter,
+			PhoneNumber,
+			contentTemplate,
+			contactAddTemplate,
+			ContactModel,
+			AccountNameCollection,
+			AccountAutocompleteCollection,
+			AutoCompleteView,
+			AccountCustomAutoCompleteView,
+			Global,
+			Const
+){
 
 	var ContactEditView = Backbone.View.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
+		
+		accountAutoCompleteView: null,
 		
 		initialize: function(option) {
 			var thisObj = this;
@@ -52,16 +69,6 @@ define([
 			this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
 			this.$el.find('.mobile-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
 			
-			this.$el.find('#firstname').val(contactModel.get('firstname'));
-            this.$el.find('#lastname').val(contactModel.get('lastname'));
-            this.$el.find('#suffix').val(this.model.get('suffix'));
-            this.$el.find('#account').val(contactModel.get('account').name + ' (' + contactModel.get('account').account_name + ')');
-            this.$el.find('#position').val(contactModel.get('position'));
-            this.$el.find('#email').val(contactModel.get('email'));
-            this.$el.find('#phone').val(contactModel.get('phone'));
-            this.$el.find('#mobile').val(contactModel.get('mobile'));
-            this.$el.find('#account_id').val(contactModel.get('account').id);
-			
 			var validate = $('#addContactForm').validate({
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
@@ -85,13 +92,49 @@ define([
 				}
 			});
             
-            var accountNameCollection = new AccountNameCollection();
+            /*var accountNameCollection = new AccountNameCollection();
             
             new AutoCompleteView({
                 input: $('#account'),
 				hidden: $('#account_id'),
                 collection: accountNameCollection
-            }).render();
+            }).render();*/
+			
+			this.initAccountAutocomplete();
+			this.supplyContactData();
+		},
+		
+		initAccountAutocomplete: function () {
+			var thisObj = this;
+			
+			if(this.accountAutoCompleteView != null)
+				this.accountAutoCompleteView.deAlloc();
+			
+			var accountAutocompleteCollection = new AccountAutocompleteCollection();
+			this.accountAutoCompleteView = new AccountCustomAutoCompleteView({
+                input: $('#account'),
+				hidden: $('#account_id'),
+                collection: accountAutocompleteCollection,
+            });
+			
+			this.accountAutoCompleteView.render();
+		},
+		
+		supplyContactData: function () {
+			var contact = this.model;
+			var account = this.model.get('account');
+			
+			this.$el.find('#firstname').val(contact.get('firstname'));
+            this.$el.find('#lastname').val(contact.get('lastname'));
+            this.$el.find('#suffix').val(contact.get('suffix'));
+			this.accountAutoCompleteView.autoCompleteResult = [{name:account.name, id:account.id}];
+            this.$el.find('#account').val(account.name);
+			this.$el.find('#account_id').val(account.id);
+            this.$el.find('#position').val(contact.get('position'));
+            this.$el.find('#email').val(contact.get('email'));
+            this.$el.find('#phone').val(contact.get('phone'));
+            this.$el.find('#mobile').val(contact.get('mobile'));
+            this.$el.find('#account_id').val(contact.get('account').id);
 		},
 	});
 
