@@ -205,7 +205,7 @@ define([
 				var address = model.get('address');
 				thisObj.$el.find('#street').val(address[0].street);
 				thisObj.$el.find('#state').val(address[0].address_states[0].state);
-				thisObj.$el.find('#city').val(address[0].address_city[0].city);
+				thisObj.$el.find('#city').val(address[0].city);
 				thisObj.$el.find('#zipcode').val(address[0].zipcode);
 			};
 			
@@ -213,7 +213,7 @@ define([
 				var address = result.address;
 				thisObj.$el.find('#street').val(address[0].street);
 				thisObj.$el.find('#state').val(address[0].address_states[0].state);
-				thisObj.$el.find('#city').val(address[0].address_city[0].city);
+				thisObj.$el.find('#city').val(address[0].city);
 				thisObj.$el.find('#zipcode').val(address[0].zipcode);
 			},
 			

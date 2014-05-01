@@ -119,7 +119,7 @@ define([
 			this.$el.find('#account_id').val(account.id);
 			this.$el.find('#street').val(address[0].street);
 			this.$el.find('#state').val(address[0].address_states[0].state);
-			this.$el.find('#city').val(address[0].address_city[0].city);
+			this.$el.find('#city').val(address[0].city);
 			this.$el.find('#zipcode').val(address[0].zipcode);
 			this.$el.find('#dateofpurchase').val(this.model.get('created_at').split(' ')[0]);
 			
