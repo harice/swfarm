@@ -89,10 +89,13 @@ define([
 			
 			this.model = new PurchaseOrderModel({id:this.poId});
 			this.model.on('change', function() {
-				if(parseInt(this.get('isfrombid')) == 1) {
+				if(parseInt(this.get('isfrombid')) == 1 && this.get('status').name.toLowerCase() == 'pending') {
 					thisObj.isBid = true;
 					thisObj.h1Title = 'Bid';
 				}
+				else
+					thisObj.isBid = false;
+				
 				thisObj.destinationCollection.getModels();
 				this.off('change');
 			});
