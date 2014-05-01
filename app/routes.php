@@ -50,12 +50,12 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 	Route::put('po/closePurchaseOrder/{id}', 'APIv1\BidController@closePurchaseOrder');
 	Route::get('po/search', 'APIv1\BidController@searchPurchaseOrder');
 
-	Route::put('bid/cancelBid/{id}', 'APIv1\BidController@cancelBid');
-	Route::get('bid/search', 'APIv1\BidController@search');
-	Route::get('bid/getProducerAddress', 'APIv1\BidController@getProducerAddress');
-	Route::get('bid/getProducerAccount', 'APIv1\BidController@getProducerAccount');
-	Route::get('bid/getDestination', 'APIv1\BidController@getDestination');
-	Route::resource('bid', 'APIv1\BidController');
+	// Route::put('bid/cancelBid/{id}', 'APIv1\BidController@cancelBid');
+	// Route::get('bid/search', 'APIv1\BidController@search');
+	// Route::get('bid/getProducerAddress', 'APIv1\BidController@getProducerAddress');
+	// Route::get('bid/getProducerAccount', 'APIv1\BidController@getProducerAccount');
+	// Route::get('bid/getDestination', 'APIv1\BidController@getDestination');
+	// Route::resource('bid', 'APIv1\BidController');
     
     Route::get('weightticket/getWeightTicketOfSchedule', 'APIv1\WeightTicketController@getWeightTicketOfSchedule');
     Route::get('weightticket/getAllBidProductOnBid', 'APIv1\WeightTicketController@getAllBidProductOnBid');

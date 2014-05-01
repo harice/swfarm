@@ -20,10 +20,6 @@ class Address extends Eloquent {
     	return $this->belongsTo('Account', 'account', 'id');
     }
 
-    public function addressCity(){
-        return $this->hasMany('AddressCity', 'id', 'city');
-    }
-
     public function addressStates(){
         return $this->hasMany('AddressStates', 'id','state');
     }
