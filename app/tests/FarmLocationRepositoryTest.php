@@ -77,7 +77,7 @@ class FarmLocationRepositoryTest extends TestCase {
     public function testValidatePasses()
     {
         $data = array(
-            'locationnumber' => 'L001',
+            'locationnumber' => 'L998',
             'status' => 1
         );
         

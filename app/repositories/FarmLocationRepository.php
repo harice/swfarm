@@ -80,8 +80,8 @@ class FarmLocationRepository implements FarmLocationRepositoryInterface {
                 );
             }
             
-            // return $farmlocation;
-            return Response::json($farmlocation);
+            return $farmlocation;
+            // return Response::json($farmlocation);
 //            return array(
 //                'farmlocation' => $farmlocation->toArray(),
 //                'message' => 'Farm Location has been updated.'
