@@ -21,4 +21,4 @@ App::bind('TransportScheduleRepositoryInterface', 'TransportScheduleRepository')
 App::bind('WeightTicketRepositoryInterface', 'WeightTicketRepository');
 App::bind('SalesOrderRepositoryInterface', 'SalesOrderRepository');
 App::bind('OrderRepositoryInterface', 'OrderRepository');
-
+App::bind('FarmLocationRepositoryInterface', 'FarmLocationRepository');
