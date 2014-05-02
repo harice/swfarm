@@ -101,6 +101,9 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // Farm Location
     Route::resource('farmlocation', 'APIv1\FarmLocationController');
     
+    // Stack
+    Route::resource('stack', 'APIv1\StackController');
+    
 });
 
 /* API ROUTES without HTTP Basic */
