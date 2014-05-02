@@ -13,7 +13,7 @@ class FarmLocationRepository implements FarmLocationRepositoryInterface {
         {
             $perPage = isset($params['perpage']) ? $params['perpage'] : 10;
             
-            $result = FarmLocation::paginate($perPage);
+            $result = FarmLocation::with('stack')->paginate($perPage);
             return $result->getCollection();
         }
         catch (Exception $e)

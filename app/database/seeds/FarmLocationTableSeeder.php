@@ -18,12 +18,6 @@ class FarmLocationTableSeeder extends Seeder {
                 'status'            => 1,
                 'created_at'        => $date,
                 'updated_at'        => $date,
-            ),
-            array(
-                'locationnumber'    => 'L002',
-                'status'            => 1,
-                'created_at'        => $date,
-                'updated_at'        => $date,
             )
         );
         

@@ -5,21 +5,21 @@
  *
  * @author Das
  */
-class FarmLocation extends BaseModel {
+class Stack extends BaseModel {
     
     /**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table = 'farmlocation';
+	protected $table = 'stack';
     
     /**
      * Define fillable attributes in a model.
      * 
      * @var array
      */
-    protected $fillable = array('locationnumber', 'status');
+    protected $fillable = array('stacknumber', 'product_id', 'farmlocation_id', 'notes');
 
     /**
      * Define field validation rules.
@@ -27,18 +27,19 @@ class FarmLocation extends BaseModel {
      * @var array
      */
 	public static $rules = array(
-        'locationnumber' => 'required|unique:farmlocation,locationnumber',
-        'status' => 'required'
+        'stacknumber' => 'required',
+        'product_id' => 'required',
+        'farmlocation_id' => 'required'
     );
     
     /**
-     * Define relationship with Stack model.
+     * Define relationship with FarmLocation model.
      * 
      * @return type
      */
-    public function stack()
+    public function farmlocation()
     {
-        return $this->hasOne('Stack', 'farmlocation_id');
+        return $this->belongsTo('FarmLocation');
     }
     
 }
