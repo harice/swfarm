@@ -20,7 +20,6 @@ class CreateFarmLocationTable extends Migration {
             // $table->integer('address')->unsigned();
 			$table->boolean('status');
 			$table->timestamps();
-			$table->softDeletes();
 		});
 	}
 
