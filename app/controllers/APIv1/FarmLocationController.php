@@ -38,7 +38,8 @@ class FarmLocationController extends BaseController {
 	 */
 	public function store()
 	{
-		return $this->repo->store(Input::all());
+		$response = $this->repo->store(Input::all());
+        return Response::json($response);
 	}
 
 	/**
@@ -61,7 +62,8 @@ class FarmLocationController extends BaseController {
 	 */
 	public function update($id)
 	{
-		return $this->repo->update($id, Input::all());
+		$response = $this->repo->update($id, Input::all());
+        return Response::json($response);
 	}
 
 	/**
@@ -72,7 +74,8 @@ class FarmLocationController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		return $this->repo->destroy($id);
+		$response = $this->repo->destroy($id);
+        return Response::json($response);
 	}
 
 }

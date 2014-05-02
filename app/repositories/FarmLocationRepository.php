@@ -50,15 +50,18 @@ class FarmLocationRepository implements FarmLocationRepositoryInterface {
             
             if (!$farmlocation->save()) {
                 return array(
+                    'error' => true,
                     'message' => 'Farm Location was not created.'
                 );
             }
             
-            return $farmlocation;
-//            return array(
-//                'farmlocation' => $farmlocation->toArray(),
-//                'message' => 'Farm Location was been created.'
-//            );
+            $response = array(
+                'error' => false,
+                'message' => Lang::get('messages.success.created', array('entity' => 'Location')),
+                'data' => $farmlocation->toArray()
+            );
+            
+            return $response;
         }
         catch (Exception $e)
         {
@@ -76,16 +79,18 @@ class FarmLocationRepository implements FarmLocationRepositoryInterface {
             
             if (!$farmlocation->update()) {
                 return array(
+                    'error' => true,
                     'message' => 'Farm Location was not updated.'
                 );
             }
             
-            return $farmlocation;
-            // return Response::json($farmlocation);
-//            return array(
-//                'farmlocation' => $farmlocation->toArray(),
-//                'message' => 'Farm Location has been updated.'
-//            );
+            $response = array(
+                'error' => false,
+                'message' => Lang::get('messages.success.updated', array('entity' => 'Location')),
+                'data' => $farmlocation->toArray()
+            );
+            
+            return $response;
         }
         catch (Exception $e)
         {
@@ -101,15 +106,18 @@ class FarmLocationRepository implements FarmLocationRepositoryInterface {
 
             if (!$farmlocation->delete()) {
                 return array(
+                    'error' => true,
                     'message' => 'Farm Location was not deleted.'
                 );
             }
 
-            return $farmlocation;
-//            return array(
-//                'farmlocation' => $farmlocation->toArray(),
-//                'message' => 'Farm Location has been deleted.'
-//            );
+            $response = array(
+                'error' => false,
+                'message' => Lang::get('messages.success.deleted', array('entity' => 'Location')),
+                'data' => $farmlocation->toArray()
+            );
+            
+            return $response;
         }
         catch (Exception $e)
         {
