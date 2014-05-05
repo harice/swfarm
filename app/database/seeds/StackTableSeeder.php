@@ -15,7 +15,7 @@ class StackTableSeeder extends Seeder {
             array(
                 'stacknumber'       => 'STACK001',
                 'product_id'        => 1,
-                'farmlocation_id'   => 1,
+                'location'          => 'LOCATION1',
                 'notes'             => 'Lorem ipsum set amet.',
                 'created_at'        => $now,
                 'updated_at'        => $now

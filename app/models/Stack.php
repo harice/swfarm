@@ -29,7 +29,7 @@ class Stack extends BaseModel {
 	public static $rules = array(
         'stacknumber' => 'required',
         'product_id' => 'required',
-        'farmlocation_id' => 'required'
+        'location' => 'required'
     );
     
     /**

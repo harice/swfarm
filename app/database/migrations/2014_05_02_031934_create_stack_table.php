@@ -18,12 +18,12 @@ class CreateStackTable extends Migration {
             $table->increments('id');
 			$table->string('stacknumber', 20)->unique();
             $table->integer('product_id')->unsigned();
-            $table->integer('farmlocation_id')->unsigned();
+            $table->string('location', 20)->unique();
             $table->string('notes', 254)->nullable();
 			$table->timestamps();
             
             $table->foreign('product_id')->references('id')->on('products');
-            $table->foreign('farmlocation_id')->references('id')->on('farmlocation');
+            // $table->foreign('farmlocation_id')->references('id')->on('farmlocation');
             
             // $table->primary(array('stacknumber', 'farmlocation_id'));
 		});

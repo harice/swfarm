@@ -132,7 +132,7 @@ class StackRepository implements StackRepositoryInterface {
         if ($id) {
             $rules['stacknumber'] = 'required';
             $rules['product_id'] = 'required';
-            $rules['farmlocation_id'] = 'required';
+            $rules['location'] = 'required';
         }
         
         $validator = Validator::make($data, $rules);
