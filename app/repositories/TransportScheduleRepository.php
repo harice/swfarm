@@ -70,36 +70,48 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
 // var_dump($data);
     $this->validate($data, 'TransportSchedule');
     
-    if($transportScheduleId == null)
-      $transportschedule = new TransportSchedule;
-    else
-      $transportschedule = TransportSchedule::find($transportScheduleId);
+    $result = DB::transaction(function() use ($data, $transportScheduleId){
+      if($transportScheduleId == null)
+        $transportschedule = new TransportSchedule;
+      else
+        $transportschedule = TransportSchedule::find($transportScheduleId);
 
-    //convert pass date parameters to timestamp
-    $data['scheduletimeMin'] = str_pad($data['scheduletimeMin'], 2, '0', STR_PAD_LEFT); //adding leading zero
-    $data['date'] = Date('Y-m-d H:i:s', strtotime($data['scheduledate'].' '.$data['scheduletimeHour'].':'.$data['scheduletimeMin'].' '.$data['scheduletimeAmPm']));
-    $data['truckingrate'] = isset($data['truckingrate']) ? $data['truckingrate'] : Config::get('constants.GLOBAL_PER_LIST');
-    $data['type'] = isset($data['type']) ? $data['type'] : 1;
+      //convert pass date parameters to timestamp
+      $data['scheduletimeMin'] = str_pad($data['scheduletimeMin'], 2, '0', STR_PAD_LEFT); //adding leading zero
+      $data['date'] = Date('Y-m-d H:i:s', strtotime($data['scheduledate'].' '.$data['scheduletimeHour'].':'.$data['scheduletimeMin'].' '.$data['scheduletimeAmPm']));
+      $data['truckingrate'] = isset($data['truckingrate']) ? $data['truckingrate'] : Config::get('constants.GLOBAL_PER_LIST');
+      $data['type'] = isset($data['type']) ? $data['type'] : 1;
 
-    $transportschedule->fill($data);
 
-    // $transportschedule->order_id = $data['order_id'];
-    // $transportschedule->date = $data['date'];
-    // $transportschedule->trucker_id = $data['trucker_id'];
-    // $transportschedule->distance = $data['distance'];
-    // $transportschedule->fuelcharge = $data['fuelcharge'];
-    // $transportschedule->originloader_id = $data['originLoader_id'];
-    // $transportschedule->originloadersfee = $data['originLoaderFee'];
-    // $transportschedule->destinationloader_id = $data['destinationLoader_id'];
-    // $transportschedule->destinationloadersfee = $data['destinationLoaderFee'];
-    // $transportschedule->truckingrate = isset($data['truckingrate']) ? $data['truckingrate'] : Config::get('constants.GLOBAL_PER_LIST');
+      $transportschedule->fill($data);
 
-    // if($transportScheduleId == null) //set only type when creating new schedule
-    //   $transportschedule->type = isset($data['type']) ? $data['type'] : 1;
-    
-    $transportschedule->save();
+      // $transportschedule->order_id = $data['order_id'];
+      // $transportschedule->date = $data['date'];
+      // $transportschedule->trucker_id = $data['trucker_id'];
+      // $transportschedule->distance = $data['distance'];
+      // $transportschedule->fuelcharge = $data['fuelcharge'];
+      // $transportschedule->originloader_id = $data['originLoader_id'];
+      // $transportschedule->originloadersfee = $data['originLoaderFee'];
+      // $transportschedule->destinationloader_id = $data['destinationLoader_id'];
+      // $transportschedule->destinationloadersfee = $data['destinationLoaderFee'];
+      // $transportschedule->truckingrate = isset($data['truckingrate']) ? $data['truckingrate'] : Config::get('constants.GLOBAL_PER_LIST');
 
-    if($transportScheduleId == null){
+      // if($transportScheduleId == null) //set only type when creating new schedule
+      //   $transportschedule->type = isset($data['type']) ? $data['type'] : 1;
+      
+      $transportschedule->save();
+      
+      //when updating only
+      if($transportScheduleId != null){
+        $this->deleteProductToSchedule($transportschedule->id, $data['products']);
+      }
+
+      $this->addProductToSchedule($transportschedule->id, $data['products']);
+
+      return $transportschedule->id;
+    });
+
+    if($result == null){
       $message = 'Schedule successfully created.';
     } else {
       $message = 'Schedule successfully updated.';
@@ -110,6 +122,54 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
         'message' => $message);
   }
 
+  private function addProductToSchedule($schedule_id, $products = array())
+  {
+      foreach ($products as $product) {
+          $product['transportschedule_id'] = $schedule_id;
+
+          $this->validate($product, 'transportscheduleproduct');
+          if(isset($product['id']))
+              $transportscheduleproduct = TransportScheduleProduct::find($product['id']);
+          else
+              $transportscheduleproduct = new TransportScheduleProduct();
+
+          $transportscheduleproduct->fill($product);
+          $transportscheduleproduct->save();
+      }
+  }
+
+  private function deleteProductToSchedule($scheduleId, $products){
+      //deleting bidproduct
+    $existingProductId = array();
+    if($products != null){
+      foreach($products as $item){
+        $productToScheduleData = $item;
+        if(isset($productToScheduleData['id'])){
+          $existingProductId[] = $productToScheduleData['id'];
+        }
+      }
+    }
+
+    if($existingProductId == null){ //delete all product order associated with this order
+      $productToSchedule = TransportScheduleProduct::with('transportschedule')
+                ->whereHas('transportschedule', function($query) use ($scheduleId)
+                {
+                    $query->where('id', '=', $scheduleId);
+
+                })
+                ->delete();
+    } else { //delete product order that is included in array
+      $productToSchedule = TransportScheduleProduct::with('transportschedule')
+                ->whereHas('transportschedule', function($query) use ($scheduleId)
+                {
+                    $query->where('id', '=', $scheduleId);
+
+                })
+                ->whereNotIn('id',$existingProductId)
+                ->delete();
+    }
+    return $productToSchedule;
+  }
 
   public function deleteTransportSchedule($id){
     $transportschedule = TransportSchedule::find($id);
@@ -150,44 +210,12 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
     return new TransportSchedule($data);
   }
 
-  public function getTruckerAccount($search){
-    if($search == ''){
-      return Response::json(array(
-          'error' => true,
-          'message' => "Search word is required"),
-          200
-      );
-    } else{
-      $accountIds = array(2, 4, 9); //operator, hauler and Southwest Farms trucker accounts ids
-      $truckers = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($search, $accountIds){
-                    $query->whereIn('id', $accountIds);
-                  })->where('name', 'like', '%'.$search.'%')->get(array('id', 'name', 'accounttype'));
-      
-      return Response::json(
-        $truckers->toArray(),
-        200);
-      }
-  }
 
-  public function getLoaderAccount($search){
-    if($search == ''){
-    return Response::json(array(
-        'error' => true,
-        'message' => "Search word is required"),
-        200
-    );
-  } else{
-      $accountIds = array(3); //loader id
-      $loader = Account::whereHas('accounttype', function ($query) use ($search, $accountIds){
-                    $query->whereIn('id', $accountIds);
-                  })->where('name', 'like', '%'.$search.'%')->get(array('id', 'name'));
-      
-      return Response::json(
-        $loader->toArray(),
-        200);
-      }
-  }
 
+  public function getProductsOfOrder($order_id){
+    $orderproducts = ProductOrder::where('order_id', '=', $order_id)->get();
+    return $orderproducts->toArray();
+  }
 
   private function displayLastQuery(){
     $queries = DB::getQueryLog();

@@ -38,6 +38,9 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('account/getAddress', 'APIv1\AccountController@getAddress');
 	Route::get('account/getCustomerAccount', 'APIv1\AccountController@getCustomerAccount');
 	Route::get('account/getProducerAccount', 'APIv1\AccountController@getProducerAccount');
+    Route::get('account/getTruckerAccount', 'APIv1\AccountController@getTruckerAccount');
+    Route::get('account/getLoaderAccount', 'APIv1\AccountController@getLoaderAccount');
+    Route::get('account/getAllContactOnAccount', 'APIv1\AccountController@getAllContactOnAccount');
 	Route::resource('account', 'APIv1\AccountController');
 
 	Route::get('contact/search', 'APIv1\ContactController@search');
@@ -62,10 +65,10 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('weightticket/getAllScaleProviderAccount', 'APIv1\WeightTicketController@getAllScaleProviderAccount');
     Route::resource('weightticket', 'APIv1\WeightTicketController');
 
-
+    Route::get('transportschedule/getProductsOfOrder', 'APIv1\TransportScheduleController@getProductsOfOrder');
     Route::get('transportschedule/getTruckingRate', 'APIv1\TransportScheduleController@getTruckingRate');
-    Route::get('transportschedule/getLoaderAccount', 'APIv1\TransportScheduleController@getLoaderAccount');
-    Route::get('transportschedule/getTruckerAccount', 'APIv1\TransportScheduleController@getTruckerAccount');
+    
+    
     //Route::resource('transportschedule', 'APIv1\TransportScheduleController');
 
     Route::get('transportschedule/getAllPickupSchedules', 'APIv1\TransportScheduleController@getAllPickupSchedules');

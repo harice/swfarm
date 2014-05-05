@@ -54,16 +54,28 @@ class TransportSchedule extends Eloquent {
         return $this->belongsTo('order');
     }
 
+    // public function trucker(){
+    //     return $this->hasMany('Account', 'id', 'trucker_id');
+    // }
+
+    // public function originLoader(){
+    //     return $this->hasMany('Account', 'id', 'originloader_id');
+    // }
+
+    // public function destinationLoader(){
+    //     return $this->hasMany('Account', 'id', 'destinationloader_id');
+    // }
+
     public function trucker(){
-        return $this->hasMany('Account', 'id', 'trucker_id');
+        return $this->hasOne('Contact', 'id', 'trucker_id');
     }
 
     public function originLoader(){
-        return $this->hasMany('Account', 'id', 'originloader_id');
+        return $this->hasOne('Contact', 'id', 'originloader_id');
     }
 
     public function destinationLoader(){
-        return $this->hasMany('Account', 'id', 'destinationloader_id');
+        return $this->hasOne('Contact', 'id', 'destinationloader_id');
     }
 
     public function weightticket(){
