@@ -98,6 +98,11 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::put('salesorder/{id}', 'APIv1\OrderController@updateSalesOrder');
     Route::delete('salesorder/{id}', 'APIv1\OrderController@destroy');
 
+    // Farm Location
+    Route::resource('farmlocation', 'APIv1\FarmLocationController');
+    
+    // Stack
+    Route::resource('stack', 'APIv1\StackController');
     
 });
 
