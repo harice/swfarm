@@ -104,6 +104,9 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // Stack
     Route::resource('stack', 'APIv1\StackController');
     
+    // Fee
+    Route::resource('fee', 'APIv1\FeeController');
+    
 });
 
 /* API ROUTES without HTTP Basic */
