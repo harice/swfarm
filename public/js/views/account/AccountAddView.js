@@ -44,6 +44,8 @@ define([
 				addressFieldClass: ['type', 'street', 'state', 'city', 'zipcode', 'country', 'id'],
 				addressFieldClassRequired: ['street', 'state', 'city', 'zipcode'],
 				addressFieldSeparator: '.',
+				addressTypeUniqueForCustomer: null,
+				addressTypeUniqueForProducer: null,
 			};
 			
 			this.accountExtrasModel = new AccountExtrasModel();
@@ -145,7 +147,7 @@ define([
 		
 		addAddressFields: function () {
 			var clone = null;
-			var multipleAddress = Const.MULTIPLEADDRESS;
+			var multipleAddress = Const.ACCOUNT.MULTIPLEADDRESS;
 			var accountTypeText = $('#accounttype').find('option:selected').text();
 			
 			if(this.options.addressFieldClone == null) {
@@ -161,6 +163,9 @@ define([
 				this.options.addressFieldClone.find('#add-address-field').remove();
 				this.options.addressFieldClone.find('.type option:first-child').remove();
 				
+				this.options.addressTypeUniqueForCustomer = this.options.addressFieldClone.find('.type option').filter(function () { return $(this).html() == Const.ACCOUNT.UNIQUEADDRESS.CUSTOMER; }).clone();
+				this.options.addressTypeUniqueForProducer = this.options.addressFieldClone.find('.type option').filter(function () { return $(this).html() == Const.ACCOUNT.UNIQUEADDRESS.PRODUCER; }).clone();
+				
 				var addressTypeField = this.$el.find('.type');
 				addressTypeField.attr('disabled', true);
 				addressTypeField.after('<input class="type" type="hidden" name="'+addressTypeField.attr('name')+'" value="'+addressTypeField.val()+'" />');
@@ -173,6 +178,12 @@ define([
 			else {
 				if(multipleAddress.indexOf(accountTypeText) > -1) {
 					var clone = this.options.addressFieldClone.clone();
+					
+					if(accountTypeText == 'Producer')
+						clone.find('.type option').filter(function () { return $(this).html() == Const.ACCOUNT.UNIQUEADDRESS.CUSTOMER; }).remove();
+					else if(accountTypeText == 'Customer')
+						clone.find('.type option').filter(function () { return $(this).html() == Const.ACCOUNT.UNIQUEADDRESS.PRODUCER; }).remove();
+					
 					this.addIndexToAddressFields(clone);
 					$('#account-adresses').append(clone);
 				}
@@ -254,11 +265,21 @@ define([
 		},
 		
 		onChangeAccountType: function (ev) {
-			var multipleAddress = Const.MULTIPLEADDRESS;
+			var multipleAddress = Const.ACCOUNT.MULTIPLEADDRESS;
 			var accountTypeText = $(ev.target).find('option:selected').text();
 			
 			if(multipleAddress.indexOf(accountTypeText) < 0) {
 				$('#account-adresses').find('.address-fields-container:gt(0)').remove();
+			}
+			else {
+				if(accountTypeText == 'Producer') {
+					$('#account-adresses').find('.type option').filter(function () { return $(this).html() == Const.ACCOUNT.UNIQUEADDRESS.CUSTOMER; }).remove();
+					$('#account-adresses').find('.type').append(this.options.addressTypeUniqueForProducer);
+				}
+				else if(accountTypeText == 'Customer') {
+					$('#account-adresses').find('.type option').filter(function () { return $(this).html() == Const.ACCOUNT.UNIQUEADDRESS.PRODUCER; }).remove();
+					$('#account-adresses').find('.type').append(this.options.addressTypeUniqueForCustomer);
+				}
 			}
 		},
 	});

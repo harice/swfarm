@@ -68,6 +68,10 @@
             <% if(_.contains(permission,constant.MENU.ADMIN.VIEW) || _.isEqual(su,constant.SU)) { %>
             <li><a href="#/<%= constant.URL.AUDITTRAIL %>">Audit Trail</a></li>
             <% } %>
+			
+			<% if(_.contains(permission,constant.MENU.STACKLOCATION.VIEW) || _.isEqual(su,constant.SU)) { %>
+            <li><a href="#/<%= constant.URL.STACKLOCATION %>">Stack Location</a></li>
+            <% } %>
           </ul>
         </li>
         <% } %>

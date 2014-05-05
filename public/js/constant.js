@@ -19,6 +19,7 @@ define(function () {
 			'PICKUPSCHEDULE': 'purchases/pickupschedule',
             'WEIGHTINFO': 'purchases/weightinfo',
 			'SO': 'sales/so',
+			'STACKLOCATION': 'administration/stack',
 		},
 		'MENU': {
 			'PURCHASES': {
@@ -70,7 +71,13 @@ define(function () {
 			'ADMIN': {
 				'VIEW'	:31,
 				'TRAIL'	:32
-			}
+			},
+			'STACKLOCATION': {
+				'VIEW'	:33,
+				'ADD'	:34,
+				'EDIT'	:35,
+				'CANCEL':36
+			},
 		},
 		'CRUD': {
 			'ADD': 'add',
@@ -84,7 +91,13 @@ define(function () {
 		'PLACEHOLDER': {
 			'PROFILEPIC': '/images/default_profile.jpg',
 		},
-		'MULTIPLEADDRESS': ['Producer', 'Customer'],
+		'ACCOUNT': {
+			'MULTIPLEADDRESS': ['Producer', 'Customer'],
+			'UNIQUEADDRESS': {
+				'PRODUCER': 'Stack Address',
+				'CUSTOMER': 'Delivery Address',
+			},
+		},
 		'PO': {
 			'PICKUPSCHEDULE': {
 				'EDITABLERATE': {

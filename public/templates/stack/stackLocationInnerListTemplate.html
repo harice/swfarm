@@ -1,0 +1,18 @@
+<% if (!_.isEmpty(sls)) { %>
+	<% _.each(sls, function(sl){ %>
+	<tr>
+		<td><%= sl.get("location") %></td>
+		<td><%= sl.get("stacknumber") %></td>
+		<td><%= sl.get("product_id") %></td>
+		<td>
+			<a href="<%= sl_edit_url %>/<%= sl.get("id") %>" class="btn btn-info btn-xs" title="edit">
+			  <span class="glyphicon glyphicon-pencil"></span>
+			</a>
+		</td>
+	</tr>
+	<% }); %>
+<% } else { %>
+	<tr>
+		<td colspan="4">No result found.</td>
+	</tr>
+<% } %>
