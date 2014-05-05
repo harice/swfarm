@@ -147,8 +147,10 @@ define([
 			this.$el.find('#zipcode').val(address[0].zipcode);
 			this.$el.find('#dateofpurchase').val(this.model.get('created_at').split(' ')[0]);
 			if(!thisObj.isBid) {
-				this.$el.find('#transportdatestart').val(this.model.get('transportdatestart').split(' ')[0]);
-				this.$el.find('#transportdateend').val(this.model.get('transportdateend').split(' ')[0]);
+				if(this.model.get('transportdatestart'))
+					this.$el.find('#transportdatestart').val(this.model.get('transportdatestart').split(' ')[0]);
+				if(this.model.get('transportdateend'))
+					this.$el.find('#transportdateend').val(this.model.get('transportdateend').split(' ')[0]);
 			}
 			this.$el.find('#notes').val(this.model.get('notes'));
 			
