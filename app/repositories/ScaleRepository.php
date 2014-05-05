@@ -26,7 +26,7 @@ class ScaleRepository implements ScaleRepositoryInterface {
     {
         try
         {
-            $scale = Scale::find($id);
+            $scale = Scale::find($id)->fee;
             
             if (!$scale) {
                 throw new NotFoundException();
