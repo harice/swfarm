@@ -130,8 +130,8 @@ class FeeRepository implements FeeRepositoryInterface {
         $rules = Fee::$rules;
         
         if ($id) {
-            $rules['account_id'] = 'required';
-            $rules['type'] = 'required';
+            $rules['entity_id'] = 'required';
+            $rules['entity_type'] = 'required';
             $rules['fee'] = 'required';
         }
         

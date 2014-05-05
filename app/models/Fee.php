@@ -27,9 +27,14 @@ class Fee extends BaseModel {
      * @var array
      */
 	public static $rules = array(
-        'account_id' => 'required',
-        'type' => 'required',
+        'entity_id' => 'required',
+        'entity_type' => 'required',
         'fee' => 'required'
     );
+    
+    public function entity()
+    {
+        return $this->morphTo();
+    }
     
 }

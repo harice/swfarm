@@ -13,15 +13,15 @@ class FeeTableSeeder extends Seeder {
         
 		$fee = array(
             array(
-                'account_id'        => 1,
-                'type'              => 'scale',
+                'entity_id'        => 1,
+                'entity_type'              => 'Scale',
                 'fee'               => 10.00,
                 'created_at'        => $now,
                 'updated_at'        => $now
             ),
             array(
-                'account_id'        => 1,
-                'type'              => 'trailer',
+                'entity_id'        => 1,
+                'entity_type'              => 'Trailer',
                 'fee'               => 10.00,
                 'created_at'        => $now,
                 'updated_at'        => $now

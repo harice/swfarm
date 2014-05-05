@@ -31,4 +31,9 @@ class Trailer extends BaseModel {
         'name' => 'required'
     );
     
+    public function fee()
+    {
+        return $this->morphOne('Fee', 'entity');
+    }
+    
 }

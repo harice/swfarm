@@ -16,12 +16,10 @@ class CreateFeeTable extends Migration {
 		{
 			$table->engine = 'InnoDB';
             $table->increments('id');
-			$table->integer('account_id')->unsigned();
-            $table->string('type', 20);
+			$table->integer('entity_id')->unsigned();
+            $table->string('entity_type', 20);
             $table->decimal('fee', 8, 2);
 			$table->timestamps();
-            
-            $table->foreign('account_id')->references('id')->on('account');
 		});
 	}
 
