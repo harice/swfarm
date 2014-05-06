@@ -13,8 +13,7 @@ class StackRepository implements StackRepositoryInterface {
         {
             $perPage = isset($params['perpage']) ? $params['perpage'] : 10;
             
-            $result = Stack::paginate($perPage);
-            return $result->getCollection();
+            return Stack::with('product')->paginate($perPage);
         }
         catch (Exception $e)
         {
