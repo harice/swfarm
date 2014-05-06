@@ -42,4 +42,9 @@ class Stack extends BaseModel {
         return $this->belongsTo('FarmLocation');
     }
     
+    public function product()
+    {
+        return $this->belongsTo('Product');
+    }
+    
 }

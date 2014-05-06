@@ -35,5 +35,9 @@ class Trailer extends BaseModel {
     {
         return $this->morphOne('Fee', 'entity');
     }
+
+    public function tranportschedule(){
+        return $this->hasMany('TransportSchedule');
+    }
     
 }

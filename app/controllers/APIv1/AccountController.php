@@ -105,4 +105,13 @@ class AccountController extends BaseController {
 		return $this->account->getAddress(Input::get('accountId'));
 	}
 
+	public function getTruckerAccount(){
+		return $this->account->getTruckerAccount(Input::get('search'));
+	}
+
+	public function getAllContactOnAccount(){
+		return $this->account->getAllContactOnAccount(Input::get('accountId'));
+	}
+
+
 }

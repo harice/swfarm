@@ -15,6 +15,8 @@ class TransportScheduleController extends BaseController {
 	{
 		$this->repo = $repo;
 	}
+
+	public function index(){}
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -73,10 +75,6 @@ class TransportScheduleController extends BaseController {
 		return $this->repo->deleteTransportSchedule($id);
 	}
 
-	public function getTruckerAccount(){
-		return $this->repo->getTruckerAccount(Input::get('search'));
-	}
-
 	public function getLoaderAccount(){
 		return $this->repo->getLoaderAccount(Input::get('search'));
 	}
@@ -85,6 +83,11 @@ class TransportScheduleController extends BaseController {
 		return Response::json(array(
 			'truckingrate' => Config::get('constants.TRUCKING_RATE')),
 	        200);
+	}
+
+	public function getProductsOfOrder(){
+		$model = $this->repo->getProductsOfOrder(Input::get('orderId'));
+        return Response::json($model);
 	}
 
 }

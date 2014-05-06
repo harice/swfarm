@@ -13,8 +13,7 @@ class TrailerRepository implements TrailerRepositoryInterface {
         {
             $perPage = isset($params['perpage']) ? $params['perpage'] : 10;
             
-            $result = Trailer::paginate($perPage);
-            return $result->getCollection();
+            return Trailer::paginate($perPage);
         }
         catch (Exception $e)
         {

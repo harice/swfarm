@@ -9,8 +9,20 @@ class ProductsTableSeeder extends Seeder {
         
 		$products = array(
 			array(
+                'name' => 'Alfalfa',
+                'description' => "Alfalfa is a genus of nine species of grasses, native to warm temperate to tropical regions of the Old World. The genus as a whole as well as its species are commonly known as Bermuda Grass.",
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
+            array(
                 'name' => 'Bermuda',
-                'description' => "Cynodon is a genus of nine species of grasses, native to warm temperate to tropical regions of the Old World. The genus as a whole as well as its species are commonly known as Bermuda Grass.",
+                'description' => "Bermuda is a genus of nine species of grasses, native to warm temperate to tropical regions of the Old World. The genus as a whole as well as its species are commonly known as Bermuda Grass.",
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
+            array(
+                'name' => 'Balili',
+                'description' => "Balili is a genus of nine species of grasses, native to warm temperate to tropical regions of the Old World. The genus as a whole as well as its species are commonly known as Bermuda Grass.",
                 'created_at' => $date,
                 'updated_at' => $date
             )

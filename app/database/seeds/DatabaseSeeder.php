@@ -19,11 +19,8 @@ class DatabaseSeeder extends Seeder {
 		$this->call('AddressTypeTableSeeder');
         
         $this->call('AddressStatesTableSeeder');
-        // $this->call('AddressCitiesTableSeeder');
-        // $this->call('AddressZipTableSeeder');
 
-        $this->call('DestinationTableSeeder');
-        
+
         // Sales Order
         $this->call('LocationTableSeeder');
         $this->call('NatureOfSaleTableSeeder');
@@ -32,8 +29,9 @@ class DatabaseSeeder extends Seeder {
         // Testing
         $this->call('ProductsTableSeeder');
         $this->call('AccountTableSeeder');
-        // $this->call('ContactTableSeeder');
-        // $this->call('AddressTableSeeder');
+        $this->call('ContactTableSeeder');
+        $this->call('AddressTableSeeder');
+
 		// $this->call('BidTableSeeder');
         // $this->call('BidProductTableSeeder');
         // $this->call('PurchaseOrderTableSeeder');
@@ -43,11 +41,11 @@ class DatabaseSeeder extends Seeder {
         // $this->call('PickupScheduleTableSeeder');
         // $this->call('SalesOrderTableSeeder');
         // $this->call('ProductOrderTableSeeder');
-        $this->call('FarmLocationTableSeeder');
-        $this->call('StackTableSeeder');
+        // $this->call('FarmLocationTableSeeder');
+        // $this->call('StackTableSeeder');
         
-        $this->call('ScaleTableSeeder');
-        $this->call('TrailerTableSeeder');
-        $this->call('FeeTableSeeder');
+        // $this->call('ScaleTableSeeder');
+        // $this->call('TrailerTableSeeder');
+        // $this->call('FeeTableSeeder');
 	}
 }

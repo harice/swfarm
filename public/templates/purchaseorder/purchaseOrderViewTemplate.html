@@ -96,7 +96,7 @@
                       <th>Product</th>
                       <th>Description</th>
                       <th>Stack No.</th>
-                      <th>
+                      <th  class="width-130">
 					  <% if (typeof is_bid === "undefined") { %>
 						Unit Price
 					  <% } else { %>
@@ -105,7 +105,7 @@
 					  </th>
                       <th>Est Tons</th>
                       <th>Bales</th>
-                      <th>
+                      <th  class="width-130">
 					  <% if (typeof is_bid === "undefined") { %>
 						Total Price
 					  <% } else { %>
@@ -125,12 +125,12 @@
               <div class="pull-right">
 			  <% if (typeof editable !== "undefined") { %>
 				<% if (typeof is_bid === "undefined") { %>
-                  <a id="edit-po" class="btn btn-default" href="<%= po_edit_url %>">Edit Purchase Order</a>
+                  <a id="edit-po" class="btn btn-primary" href="<%= po_edit_url %>">Edit Purchase Order</a>
 				<% } else {%>
-				  <a id="edit-po" class="btn btn-default" href="<%= po_edit_url %>">Edit Bid</a>
+				  <a id="edit-po" class="btn btn-primary" href="<%= po_edit_url %>">Edit Bid</a>
 				<% } %>
 			  <% } %>
-              <a id="cancel-save" class="btn btn-default" href="<%= po_url %>">Back</a>
+              <a id="cancel-save" class="btn btn-link" href="<%= po_url %>">Back</a>
               </div>
             </div>
           </form>

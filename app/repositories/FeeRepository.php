@@ -13,8 +13,7 @@ class FeeRepository implements FeeRepositoryInterface {
         {
             $perPage = isset($params['perpage']) ? $params['perpage'] : 10;
             
-            $result = Fee::paginate($perPage);
-            return $result->getCollection();
+            return Fee::paginate($perPage);
         }
         catch (Exception $e)
         {
