@@ -56,7 +56,7 @@
                     </div>
                   </div>
                 </div>
-				<% if (typeof is_bid === "undefined") { %>
+				
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="dateofpurchase" class="col-sm-3 control-label">Date of Purchase</label>
@@ -64,6 +64,7 @@
                       <input id="dateofpurchase" type="text" class="form-control dateofpurchase" placeholder="" maxlength="250" readonly>
                     </div>
                   </div>
+				  <% if (typeof is_bid === "undefined") { %>
                   <div class="form-group"><label for="" class="col-sm-3 control-label">Delivery Period:</label></div>
                   <div class="form-group">
                     <label for="transportdatestart" class="col-sm-3 control-label">Start</label>
@@ -75,6 +76,7 @@
                       <input id="transportdateend" type="text" class="form-control transportdateend" placeholder="" maxlength="250" readonly>
                     </div>
                   </div>
+				  <% } %>
                   <div class="form-group">
                     <label for="notes" class="col-sm-3 control-label">Notes</label>
                     <div class="col-sm-9">
@@ -82,7 +84,6 @@
                     </div>
                   </div>
                 </div>
-				<% } %>
               </div>
             </fieldset>
             <fieldset>
