@@ -36,6 +36,12 @@ define([
 			
 			this.collection = new PurchaseOrderCollection();
 			this.collection.on('sync', function() {
+				_.each(this.models, function (model) {
+					model.set('created_at', thisObj.convertDateFormat(model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
+					model.set('transportdatestart', thisObj.convertDateFormat(model.get('transportdatestart').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
+					model.set('transportdateend', thisObj.convertDateFormat(model.get('transportdateend').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
+				});
+				
 				thisObj.displayList();
 			});
 			this.collection.on('error', function(collection, response, options) {
@@ -114,9 +120,14 @@ define([
 				autoclose: true,
 				clearBtn: true,
 				todayHighlight: true,
-				format: 'yyyy-mm-dd',
+				format: this.dateFormat,
 			}).on('changeDate', function (ev) {
-				thisObj.collection.setDate($('#filter-date-of-purchase .input-group.date input').val());
+				var selectedDate = $('#filter-date-of-purchase .input-group.date input').val();
+				var date = '';
+				if(selectedDate != '' && typeof selectedDate != 'undefined')
+					date = thisObj.convertDateFormat(selectedDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
+				
+				thisObj.collection.setDate(date);
 				thisObj.renderList(1);
 			});
 			
@@ -125,9 +136,14 @@ define([
 				autoclose: true,
 				clearBtn: true,
 				todayHighlight: true,
-				format: 'yyyy-mm-dd',
+				format: this.dateFormat,
 			}).on('changeDate', function (ev) {
-				thisObj.collection.setFilter('transportstart', $('#filter-pickup-start .input-group.date input').val());
+				var selectedDate = $('#filter-pickup-start .input-group.date input').val();
+				var date = '';
+				if(selectedDate != '' && typeof selectedDate != 'undefined')
+					date = thisObj.convertDateFormat(selectedDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
+			
+				thisObj.collection.setFilter('transportstart', date);
 				thisObj.renderList(1);
 			});
 			
@@ -136,9 +152,14 @@ define([
 				autoclose: true,
 				clearBtn: true,
 				todayHighlight: true,
-				format: 'yyyy-mm-dd',
+				format: this.dateFormat,
 			}).on('changeDate', function (ev) {
-				thisObj.collection.setFilter('transportend', $('#filter-pickup-end .input-group.date input').val());
+				var selectedDate = $('#filter-pickup-end .input-group.date input').val();
+				var date = '';
+				if(selectedDate != '' && typeof selectedDate != 'undefined')
+					date = thisObj.convertDateFormat(selectedDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
+				
+				thisObj.collection.setFilter('transportend', date);
 				thisObj.renderList(1);
 			});
 		},
