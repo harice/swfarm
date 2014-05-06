@@ -13,8 +13,7 @@ class ScaleRepository implements ScaleRepositoryInterface {
         {
             $perPage = isset($params['perpage']) ? $params['perpage'] : 10;
             
-            $result = Scale::paginate($perPage);
-            return $result->getCollection();
+            return Scale::paginate($perPage);
         }
         catch (Exception $e)
         {
