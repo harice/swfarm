@@ -1,100 +1,57 @@
-<div class="clearfix">
-	<div class="row">
-		<div class="col-md-6">
-			<a href="<%= account_add_url %>" class="btn btn-danger">+ Add Account</a>
-		</div>
-		<div class="col-md-6">
-			<form class="form-inline" role="form">
-				<div class="form-group pull-right">
-					<div class="input-group col-md-8 pull-right">
-						<label class="sr-only" for="search">Search</label>
-						<input type="text" class="search form-control" id="search-keyword" placeholder="">
+<div class="row margin-top-0">
+    <div class="col-md-12">
+        <div class="block-flat">
+            <div class="content padding-top-0">
+            
+                <div id="content-top" class="row margin-top-0">
+                    <div class="col-md-9 col-xs-9">
+                        <a href="<%= account_add_url %>" class="btn btn-primary">+ Add Account</a>
+                    </div>
+                    <div class="col-md-3 col-xs-3">
+                        <form class="form-inline" role="form">
+                            <div class="pull-right">
+                                <div class="input-group">
+                                    <label class="sr-only" for="search">Search</label>
+                                    <input type="text" class="search form-control" id="search-keyword" placeholder="">
 
-						<div class="input-group-btn">
-							<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-								<span class="caret"></span>
-							</button>
-							<%= type_filters %>
-							<button type="button" class="btn btn-primary search-local">Search</button>
-						</div>
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                        </button>
+                                        <%= type_filters %>
+                                        <button type="button" class="btn btn-primary search-local">Search</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
-<div class="clearfix">
-	<div class="row">
-		<div class="col-md-6">
-			<div class="btn-group margin-top-10 display-items" style="display:none;">
-				<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-				Display Items <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu filters">
-					<li>
-						<input class="item-per-page" type="radio" name="itemperpage" value="10" checked> 10 items
-					</li>
-					<li>
-						<input class="item-per-page" type="radio" name="itemperpage" value="20"> 20 items
-					</li>
-					<li>
-						<input class="item-per-page" type="radio" name="itemperpage" value="50"> 50 items
-					</li>
-					<li>
-						<input class="item-per-page" type="radio" name="itemperpage" value="100"> 100 items
-					</li>
-				</ul>
-			</div>
-		</div>
-		<div class="col-md-6">
-			<ul class="pagination pagination-sm pull-right" style="display:none;">
-				<li><a class="first-page btn" href="#"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
-				<li><a class="prev-page btn" href="#"><span class="glyphicon glyphicon-step-backward"></span></a></li>
-				<li><a class="next-page btn" href="#"><span class="glyphicon glyphicon-step-forward"></span></a></li>
-				<li><a class="last-page btn" href="#"><span class="glyphicon glyphicon-fast-forward"></span></a></li>
-			</ul>
-		</div>
-	</div>
-</div>
+                <div class="content-inner table-responsive">
+                    <table id="account-list" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th class="sortable sort-name"><i class="fa fa-sort"></i> Account Name</th>
+                                <th class="sortable sort-type"><i class="fa fa-sort"></i> Type</th>
+                                <th>Website</th>
+                                <th>Phone</th>
+                                <th class="width-70">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    
+                    <div class="clearfix">
+                        <ul class="pagination pagination-sm pull-right margin-none" style="display:none;">
+                            <li><a class="first-page btn" href="#"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
+                            <li><a class="prev-page btn" href="#"><span class="glyphicon glyphicon-step-backward"></span></a></li>
+                            <li><a class="next-page btn" href="#"><span class="glyphicon glyphicon-step-forward"></span></a></li>
+                            <li><a class="last-page btn" href="#"><span class="glyphicon glyphicon-fast-forward"></span></a></li>
+                        </ul>
+                    </div>
+                </div> <!-- /.content-inner -->
 
-<div class="content-inner table-responsive">
-	<table id="account-list" class="table table-bordered table-striped table-hover">
-		<thead>
-			<tr>
-				<th class="width-40"><input type="checkbox" name="checkall" class="checkall"></th>
-				<th class="sortable sort-name">Account Name <span class="glyphicon glyphicon-sort"></span></th>
-				<th class="sortable sort-type">Type  <span class="glyphicon glyphicon-sort"></span></th>
-				<th>Website</th>
-				<th>Phone</th>
-				<th class="width-70">Action</th>
-			</tr>
-		</thead>
-		<tbody></tbody>
-	</table>
-</div>
-
-<div class="clearfix">
-	<div class="row">
-		<div class="col-md-6">
-			<div class="btn-group dropup margin-top-10">
-				<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-				Action <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu">
-					<li>
-						<a class="delete-selected btn disabled" href="#">Delete selected</a>
-					</li>
-				</ul>
-			</div>
-		</div>
-		<div class="col-md-6">
-			<ul class="pagination pagination-sm pull-right" style="display:none;">
-				<li><a class="first-page btn" href="#"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
-				<li><a class="prev-page btn" href="#"><span class="glyphicon glyphicon-step-backward"></span></a></li>
-				<li><a class="next-page btn" href="#"><span class="glyphicon glyphicon-step-forward"></span></a></li>
-				<li><a class="last-page btn" href="#"><span class="glyphicon glyphicon-fast-forward"></span></a></li>
-			</ul>
-		</div>
-	</div>
+            </div> <!-- /.content -->
+        </div> <!-- /.block-flat -->
+    </div>
 </div>

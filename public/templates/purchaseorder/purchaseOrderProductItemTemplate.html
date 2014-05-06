@@ -1,12 +1,29 @@
 <tr class="product-item">
-	<td><span class="po-product"></span><input class="product_id id" type="hidden" name="id" value="" ></td>
-	<td><span class="po-product-desc"></span></td>
-	<td class="text-align-right"><span class="po-product-stacknumber"></span></td>
-	<td class="text-align-right"><span class="po-product-tons"></span></td>
-	<td class="text-align-right"><span class="po-product-bales"></span></td>
+	<td style="width: 150px;">
+		<!--<input type="hidden" class="id" name="id" value="" />
+		<input class="form-control productname" type="text" name="productname" maxlength="50"/>
+		<input type="hidden" class="form-control product_id product" name="product_id" value="">-->
+		<input type="hidden" class="id" name="id" value="" />
+		<select class="select2 product_id" name="product_id"><%= product_list %></select>
+	</td>
+	<td><textarea class="form-control description textarea-height-34" name="description" maxlength="200"></textarea></td>
+	<td><input class="form-control text-align-right stacknumber" type="text" name="stacknumber" maxlength="20" required></td>
 	<td>
-		<div class="input-group"><span class="input-group-addon">$</span><input class="form-control text-align-right unitprice" name="unitprice" type="text" value="" required></div>
+		<div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-align-right price unitprice" type="text" name="unitprice" placeholder="0.00" value="" required></div>
 		<div class="error-msg-cont"></div>
 	</td>
-	<td class="text-align-right"><span>$ </span><span class="po-product-amount"></span></td>
+	<td><input class="form-control text-align-right number tons" type="text" name="tons"></td>
+	<td><input class="form-control text-align-right number bales" type="text" name="bales"></td>
+	<td><div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-align-right unit-price" type="text" value="0.00" readonly></div></td>
+	<% if (typeof is_bid === "undefined") { %>
+	<td>
+		<select class="select2 ishold" name="ishold">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</select>
+	</td>
+	<% } %>
+	<td>
+		<button title="Remove Product" type="button" class="pull-right btn btn-danger btn-xs remove-product"><span class="glyphicon glyphicon-remove"></span></button>
+	</td>
 </tr>

@@ -53,23 +53,17 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 	Route::put('po/closePurchaseOrder/{id}', 'APIv1\BidController@closePurchaseOrder');
 	Route::get('po/search', 'APIv1\BidController@searchPurchaseOrder');
 
-	// Route::put('bid/cancelBid/{id}', 'APIv1\BidController@cancelBid');
-	// Route::get('bid/search', 'APIv1\BidController@search');
-	// Route::get('bid/getProducerAddress', 'APIv1\BidController@getProducerAddress');
-	// Route::get('bid/getProducerAccount', 'APIv1\BidController@getProducerAccount');
-	// Route::get('bid/getDestination', 'APIv1\BidController@getDestination');
-	// Route::resource('bid', 'APIv1\BidController');
-    
     Route::get('weightticket/getWeightTicketOfSchedule', 'APIv1\WeightTicketController@getWeightTicketOfSchedule');
     Route::get('weightticket/getAllBidProductOnBid', 'APIv1\WeightTicketController@getAllBidProductOnBid');
     Route::get('weightticket/getAllScaleProviderAccount', 'APIv1\WeightTicketController@getAllScaleProviderAccount');
     Route::resource('weightticket', 'APIv1\WeightTicketController');
 
-    Route::get('transportschedule', 'APIv1\TransportScheduleController@getAllPickupSchedules');
+    //tranport schedule
+    Route::get('transportschedule/getAllPickupSchedules', 'APIv1\TransportScheduleController@getAllPickupSchedules');
     Route::get('transportschedule/{id}', 'APIv1\TransportScheduleController@getPickupSchedule');
     Route::get('transportschedule/getProductsOfOrder', 'APIv1\TransportScheduleController@getProductsOfOrder');
     Route::get('transportschedule/getTruckingRate', 'APIv1\TransportScheduleController@getTruckingRate');
-	//Route::resource('transportschedule', 'APIv1\TransportScheduleController');
+    Route::resource('transportschedule', 'APIv1\TransportScheduleController');
 
     //Purchase Order
     Route::get('purchaseorder/getStatuses', 'APIv1\OrderController@getPOStatus');
@@ -98,6 +92,20 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::put('salesorder/{id}', 'APIv1\OrderController@updateSalesOrder');
     Route::delete('salesorder/{id}', 'APIv1\OrderController@destroy');
 
+    // Farm Location
+    Route::resource('farmlocation', 'APIv1\FarmLocationController');
+    
+    // Stack
+    Route::resource('stack', 'APIv1\StackController');
+    
+    // Scale
+    Route::resource('scale', 'APIv1\ScaleController');
+    
+    // Trailer
+    Route::resource('trailer', 'APIv1\TrailerController');
+    
+    // Fee
+    Route::resource('fee', 'APIv1\FeeController');
     
 });
 

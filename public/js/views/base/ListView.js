@@ -75,6 +75,7 @@ define([
 			'click .last-page' : 'gotoLastPage',
 			'click .page-number' : 'gotoPage',
 			'click .search-local' : 'searchLocal',
+			'submit #searchLocal' : 'onSubmitSearchLocal',
 		},
 		
 		gotoFirstPage: function () {
@@ -152,6 +153,10 @@ define([
 			return false;
 		},
 		
+		onSubmitSearchLocal: function () {
+			this.searchLocal();
+			return false;
+		},
 	});
 
   return ListView;

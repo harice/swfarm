@@ -1,58 +1,68 @@
-<form id="addAccountForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-	<% if (typeof account_id !== "undefined") { %>
-		<input type="hidden" id="id" name="id" value="<%= account_id %>" />
-	<% } %>
-	<div class="row">
-		<div class="col-md-3">
-			<img class="img-circle margin-top-10" src="/images/default_profile.jpg">
-		</div>
-		<div class="col-md-9">
-			<div class="form-group">
-				<label for="name" class="col-sm-4 control-label">Account Name *</label>
-				<div class="col-sm-8">
-					<input type="text" class="form-control capitalize width-300" id="name" name="name" placeholder="" minlength="2" maxlength="50" required>
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="accounttype" class="col-sm-4 control-label">Type *</label>
-				<div class="col-sm-8">
-					<select class="form-control width-300" id="accounttype" name="accounttype">
-						<% _.each(account_types, function(account_type){ %>
-						<option value="<%= account_type.id %>"><%= account_type.name %></option>
-						<% }); %>
-					</select>
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="website" class="col-sm-4 control-label">Website</label>
-				<div class="col-sm-8">
-					<input type="text" class="form-control width-300" id="website" name="website" placeholder="" minlength="2" maxlength="255">
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="phone" class="col-sm-4 control-label">Phone</label>
-				<div class="col-sm-8">
-					<input type="text" class="form-control phone-number width-150" id="phone" name="phone" placeholder="" minlength="12" maxlength="12">
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="description" class="col-sm-4 control-label">Description</label>
-				<div class="col-sm-8">
-					<textarea class="form-control width-400" rows="3" id="description" name="description"></textarea>
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="block-flat">
+            <div class="content">
+            
+                <div class="row">
+                    <div class="col-md-9">
+            
+                        <form id="addAccountForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+                            <% if (typeof account_id !== "undefined") { %>
+                            <input type="hidden" id="id" name="id" value="<%= account_id %>" />
+                            <% } %>
+                            
+                            <div class="form-group">
+                                <label for="name" class="col-sm-3 control-label">Account Name *</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control capitalize width-300" id="name" name="name" placeholder="" minlength="2" maxlength="50" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="accounttype" class="col-sm-3 control-label">Type *</label>
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="accounttype" name="accounttype">
+                                        <% _.each(account_types, function(account_type){ %>
+                                        <option value="<%= account_type.id %>"><%= account_type.name %></option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="website" class="col-sm-3 control-label">Website</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control width-300" id="website" name="website" placeholder="" minlength="2" maxlength="255">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone" class="col-sm-3 control-label">Phone</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control phone-number width-150" id="phone" name="phone" placeholder="" minlength="12" maxlength="12">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="description" class="col-sm-3 control-label">Description</label>
+                                <div class="col-sm-9">
+                                    <textarea class="form-control width-400" rows="3" id="description" name="description"></textarea>
+                                </div>
+                            </div>
 
-	<div id="account-adresses" class="row margin-top-10">
-		<%= address_fields %>
-	</div>
-	
-	<div class="form-group form-button-container" style="display:none;">
-		<label for="" class="col-sm-4 control-label"></label>
-		<div class="col-sm-8">
-			 <button id="save" type="submit" class="save btn btn-danger">Create</button>
-			 <a id="cancel-user-save" class="btn btn-link" href="<%= account_url %>">Back</a>
-		</div>
-	</div>
-</form>
+                            <div id="account-adresses" class="row margin-top-10">
+                                <%= address_fields %>
+                            </div>
+                            
+                            <div class="form-group form-button-container" style="display:none;">
+                                <label for="" class="col-sm-3 control-label"></label>
+                                <div class="col-sm-5">
+                                     <button id="save" type="submit" class="save btn btn-primary">Save</button>
+                                     <a id="cancel-user-save" class="btn btn-link" href="<%= account_url %>">Cancel</a>
+                                </div>
+                            </div>
+                        </form>
+                
+                    </div>
+                </div>
+
+            </div> <!-- /.content -->
+        </div> <!-- /.block-flat -->
+    </div>
+</div>

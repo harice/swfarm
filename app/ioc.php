@@ -20,4 +20,8 @@ App::bind('TransportScheduleRepositoryInterface', 'TransportScheduleRepository')
 App::bind('WeightTicketRepositoryInterface', 'WeightTicketRepository');
 App::bind('SalesOrderRepositoryInterface', 'SalesOrderRepository');
 App::bind('OrderRepositoryInterface', 'OrderRepository');
-
+App::bind('FarmLocationRepositoryInterface', 'FarmLocationRepository');
+App::bind('StackRepositoryInterface', 'StackRepository');
+App::bind('TrailerRepositoryInterface', 'TrailerRepository');
+App::bind('ScaleRepositoryInterface', 'ScaleRepository');
+App::bind('FeeRepositoryInterface', 'FeeRepository');

@@ -1,5 +1,6 @@
 define([
 	'backbone',
+	'views/base/AppView',
 	'jqueryui',
 	'jqueryvalidate',
 	'jquerytextformatter',
@@ -17,6 +18,7 @@ define([
 	'global',
 	'constant',
 ], function(Backbone,
+			AppView,
 			JqueryUI,
 			Validate,
 			TextFormatter,
@@ -35,7 +37,7 @@ define([
 			Const
 ){
 
-	var BidEditView = Backbone.View.extend({
+	var BidEditView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {

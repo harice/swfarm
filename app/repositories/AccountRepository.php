@@ -119,7 +119,7 @@ class AccountRepository implements AccountRepositoryInterface {
 
     return Response::json(array(
         'error' => false,
-        'message' => 'Account successfully created.'),
+        'message' => Lang::get('messages.success.created', array('entity' => 'Account'))),
         200
     );
   }
@@ -196,7 +196,7 @@ class AccountRepository implements AccountRepositoryInterface {
 
     return Response::json(array(
         'error' => false,
-        'message' => 'Account successfully updated.'),
+        'message' => Lang::get('messages.success.updated', array('entity' => 'Account'))),
         200
     );
   }
@@ -277,14 +277,14 @@ class AccountRepository implements AccountRepositoryInterface {
 
       $response = Response::json(array(
           'error' => false,
-          'message' => 'Account successfully deleted.',
+          'message' => Lang::get('messages.success.deleted', array('entity' => 'Account')),
           'account' => $account->toArray()),
           200
       );
     } else {
       $response = Response::json(array(
           'error' => true,
-          'message' => "Account not found"),
+          'message' => Lang::get('messages.notfound', array('entity' => 'Account'))),
           200
       );
     }
@@ -355,7 +355,7 @@ class AccountRepository implements AccountRepositoryInterface {
   public function getCustomerAccount($search){
     $producers = Account::with('address')
                   ->with('address.addressStates')
-                  ->where('accounttype', '=', 1)
+				          ->where('accounttype', '=', 1)
                   ->where('name','like', '%'.$search.'%')
                   ->orderBy('name', 'asc')
                   ->get();

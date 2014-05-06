@@ -1,13 +1,11 @@
 define([
 	'backbone',
-	'views/bid/BidListView',
 	'views/bid/BidAddView',
-	'views/bid/BidEditView',
-	'views/bid/BidView',
+	'views/purchaseorder/PurchaseOrderListView',
 	'constant',
-], function(Backbone, BidListView, BidAddView, BidEditView, BidView, Const){
+], function(Backbone, BidAddView, PurchaseOrderListView, Const){
 	
-	function UserController () {	
+	function BidController () {	
 		
 		this.setAction = function (action, id) {
 			
@@ -16,15 +14,9 @@ define([
 					return this.add();
 					break;
 				
-				case Const.CRUD.EDIT:
-					if(id != null && this.IsInt(id))
-						return this.edit(id);
-				
 				default:
-					if(action != null && this.IsInt(action))
-						return this.view(action);
-					else
-						return this.listView();
+					return this.list();
+					break;
 			}
 		};
 		
@@ -32,23 +24,10 @@ define([
 			return new BidAddView();
 		};
 		
-		this.edit = function (id) {
-			return new BidEditView({'id':id});
-		};
-		
-		this.listView = function () {
-			return new BidListView();
-		};
-		
-		this.view = function (id) {
-			return new BidView({'id':id});
-		};
-		
-		this.IsInt = function (i) {
-			var reg = /^\d+$/;
-			return reg.test(i);
+		this.list = function () {
+			return new PurchaseOrderListView();
 		};
 	};
 
-	return UserController;
+	return BidController;
 });

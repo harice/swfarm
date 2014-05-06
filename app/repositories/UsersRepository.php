@@ -121,7 +121,7 @@ class UsersRepository implements UsersRepositoryInterface {
 
   	return Response::json(array(
   	    'error' => false,
-        'message' => 'User successfully created.',
+        'message' => Lang::get('messages.success.created', array('entity' => 'User')),
         'emailStatus' => $emailStatus
         ),
   	    200
@@ -192,13 +192,13 @@ class UsersRepository implements UsersRepositoryInterface {
 
       $response = Response::json(array(
           'error' => false,
-          'message' => 'User successfully updated.'),
+          'message' => Lang::get('messages.success.updated', array('entity' => 'User'))),
           200
       );
     } else {
       $response = Response::json(array(
           'error' => true,
-          'message' => "User not found."),
+          'message' => Lang::get('messages.notfound', array('entity' => 'User'))),
           200
       );
     }
@@ -214,13 +214,13 @@ class UsersRepository implements UsersRepositoryInterface {
 
       $response = Response::json(array(
           'error' => false,
-          'message' => 'User successfully deleted.'),
+          'message' => Lang::get('messages.success.deleted', array('entity' => 'User'))),
           200
       );
     } else {
       $response = Response::json(array(
           'error' => true,
-          'message' => "User not found"),
+          'message' => Lang::get('messages.notfound', array('entity' => 'User'))),
           200
       );
     }
@@ -261,8 +261,8 @@ class UsersRepository implements UsersRepositoryInterface {
 
     $user['id'] = Auth::user()->id;
     $user['firstname'] = Auth::user()->firstname;
-    $user['lastname'] = Auth::user()->firstname;
-    $user['suffix'] = Auth::user()->firstname;
+    $user['lastname'] = Auth::user()->lastname;
+    $user['suffix'] = Auth::user()->suffix;
 
     return Response::json(array(
           'user' => $user,
@@ -427,14 +427,14 @@ class UsersRepository implements UsersRepositoryInterface {
 
       $response = Response::json(array(
           'error' => false,
-          'message' => 'Profile successfully updated.'
+          'message' => Lang::get('messages.success.updated', array('entity' => 'Profile')),
           ),
           200
       );
     } else {
       $response = Response::json(array(
           'error' => true,
-          'message' => "User not found"),
+          'message' => Lang::get('messages.notfound', array('entity' => 'User'))),
           200
       );
     }

@@ -3,6 +3,8 @@ define([
 	'backbone',
 	'baserouter',
 	'views/layout/HeaderView',
+	'views/layout/SideMenuView',
+	'views/layout/HomePageView',
 	'views/admin/AdminView',
 	'controllers/login/LoginController',
 	'controllers/user/UserController',
@@ -15,12 +17,17 @@ define([
 	'controllers/product/ProductController',
 	'controllers/bid/BidController',
 	'controllers/purchaseorder/PurchaseOrderController',
+	'controllers/purchaseorder/POPickUpScheduleController',
+	'controllers/purchaseorder/POWeightInfoController',
+	'controllers/salesorder/SalesOrderController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
 ], function(Backbone,
 			BaseRouter,
 			HeaderView,
+			SideMenuView,
+			HomePageView,
 			AdminView,
 			LoginController,
 			UserController,
@@ -33,6 +40,9 @@ define([
 			ProductController,
 			BidController,
 			PurchaseOrderController,
+			POPickUpScheduleController,
+			POWeightInfoController,
+			SalesOrderController,
 			Global,
 			Const,
 			Session) {
@@ -110,6 +120,24 @@ define([
 	routerRoutes[Const.URL.PO+'/:action'] = 'showPOPage';
 	routerRoutes[Const.URL.PO+'/:action/:id'] = 'showPOPage';
 	
+	//pickup schedule
+	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poid'] = 'showPOPickupSchedulePage';
+	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poid/'] = 'showPOPickupSchedulePage';
+	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poid/:action'] = 'showPOPickupSchedulePage';
+	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poid/:action/:id'] = 'showPOPickupSchedulePage';
+	
+	//weight info
+	routerRoutes[Const.URL.WEIGHTINFO+'/:poid/:schedid'] = 'showPOWeightInfoPage';
+	routerRoutes[Const.URL.WEIGHTINFO+'/:poid/:schedid/'] = 'showPOWeightInfoPage';
+	routerRoutes[Const.URL.WEIGHTINFO+'/:poid/:schedid/:action'] = 'showPOWeightInfoPage';
+	routerRoutes[Const.URL.WEIGHTINFO+'/:poid/:schedid/:action/:id'] = 'showPOWeightInfoPage';
+	
+	//so
+	routerRoutes[Const.URL.SO] = 'showSOPage';
+	routerRoutes[Const.URL.SO+'/'] = 'showSOPage';
+	routerRoutes[Const.URL.SO+'/:action'] = 'showSOPage';
+	routerRoutes[Const.URL.SO+'/:action/:id'] = 'showSOPage';
+	
 	routerRoutes['*actions'] = 'defaultAction';
 
 	var AppRouter = BaseRouter.extend({
@@ -125,12 +153,16 @@ define([
 			var needAuth = _.contains(this.requiresAuthExcept, path);
 			var cancelAccess = _.contains(this.preventAccessWhenAuth, path);
 
+			if(!isAuth) {
+				Backbone.View.prototype.showLogin();
+			} else {
+				Backbone.View.prototype.showContent();
+			}
+
 			if(path === '#/'+Const.URL.LOGOUT && isAuth)
 			{
 				Session.clear();
 				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
-				var headerView = new HeaderView();
-        		headerView.render();
 			}
 
 			if(!needAuth && !isAuth){
@@ -141,7 +173,7 @@ define([
 			}else if(isAuth && cancelAccess){
 				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.DASHBOARD, { trigger : true });
 			}else{
-			  return next();
+			  	return next();
 			}
 		},
 
@@ -253,19 +285,35 @@ define([
 			this.currView.render();
 		});
 		
+		app_router.on('route:showPOPickupSchedulePage', function (poid, action, id) {
+			this.closeView();
+			var pickUpScheduleController = new POPickUpScheduleController();
+			this.currView = pickUpScheduleController.setAction(poid, action, id);
+			this.currView.render();
+		});
+		
+		app_router.on('showPOWeightInfoPage', function (poid, schedid, action, id) {
+			this.closeView();
+			var poWeightInfoController = new POWeightInfoController();
+			this.currView = poWeightInfoController.setAction(poid, schedid, action, id);
+			this.currView.render();
+		});
+		
+		app_router.on('route:showSOPage', function (action, id) {
+			this.closeView();
+			var salesOrderController = new SalesOrderController();
+			this.currView = salesOrderController.setAction(action, id);
+			this.currView.render();
+		});
+		
 		app_router.on('route:defaultAction', function (actions) {
 			this.closeView();
 			console.log('default page');
-
-			var headerView = new HeaderView();
-        	headerView.render();
+			this.currView = new HomePageView();
+			this.currView.render();
 		});
-		
+
 		Global.getGlobalVars().app_router = app_router;
-		
-		var headerView = new HeaderView();
-        headerView.render();
-		
 		Backbone.history.start();
 	};
 	return { 

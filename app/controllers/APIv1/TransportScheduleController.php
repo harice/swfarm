@@ -15,6 +15,8 @@ class TransportScheduleController extends BaseController {
 	{
 		$this->repo = $repo;
 	}
+
+	public function index(){}
 	/**
 	 * Display a listing of the resource.
 	 *

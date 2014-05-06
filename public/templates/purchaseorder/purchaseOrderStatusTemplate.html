@@ -1,0 +1,5 @@
+<% _.each(statuses, function(status){ %>
+<li>
+	<input class="statusFilter" type="radio" name="statusFilter" value="<%= status.get("id") %>"> <%= status.get("name") %>
+</li>
+<% }); %>

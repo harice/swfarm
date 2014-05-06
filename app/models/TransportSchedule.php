@@ -18,6 +18,7 @@ class TransportSchedule extends Eloquent {
         'order_id',
         'date',
         'trucker_id',
+        'trailer_id',
         'distance',
         'fuelcharge',
         'originloader_id',
@@ -80,5 +81,9 @@ class TransportSchedule extends Eloquent {
 
     public function weightticket(){
         return $this->hasOne('WeightTicket', 'pickupschedule_id', 'id');
+    }
+
+    public function trailer(){
+        return $this->hasOne('Trailer', 'id', 'trailer_id')->select(array('id','name'));
     }
 }

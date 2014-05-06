@@ -7,12 +7,15 @@ class PermissioncategoryTableSeeder extends Seeder {
 		// DB::table('permissioncategory')->truncate();
 
 		$permissioncategory = array(
-			array('name' => 'Purchase Order', 'link' => 'po'),
-			array('name' => 'Sales Order', 'link' => 'so'),
-			array('name' => 'Product', 'link' => 'product'),
-			array('name' => 'Contact', 'link' => 'contact'),
-			array('name' => 'User Management', 'link' => 'user'),
-			array('name' => 'Role Management', 'link' => 'role'),
+			array('name' => 'Purchase Orders', 'sort' => 1),
+			array('name' => 'Sales Orders', 'sort' => 2),
+			array('name' => 'Product Management', 'sort' => 3),
+			array('name' => 'Contact Management', 'sort' => 4),
+			array('name' => 'User Management', 'sort' => 5),
+			array('name' => 'Role Management', 'sort' => 6),
+			array('name' => 'Account Management', 'sort' => 7),
+			array('name' => 'Reports', 'sort' => 8),
+			array('name' => 'Admin', 'sort' => 9),
 		);
 		
 		DB::table('permissioncategory')->insert($permissioncategory);
