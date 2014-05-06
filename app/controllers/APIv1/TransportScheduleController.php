@@ -90,4 +90,9 @@ class TransportScheduleController extends BaseController {
         return Response::json($model);
 	}
 
+	public function getTrailerList(){
+		$model = $this->repo->getTrailerList();
+        return Response::json($model);
+	}
+
 }

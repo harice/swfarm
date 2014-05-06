@@ -88,10 +88,6 @@ class AccountController extends BaseController {
 		
 		return $this->account->getAccountsByName( $name );
 	}	
-
-	public function getZipcodeUsingCity($city){
-		return $this->account->getZipcodeUsingCity($city);
-	}
     
     public function getCustomerAccount(){
 		return $this->account->getCustomerAccount(Input::get('search'));
@@ -106,7 +102,12 @@ class AccountController extends BaseController {
 	}
 
 	public function getTruckerAccount(){
-		return $this->account->getTruckerAccount(Input::get('search'));
+		//return $this->account->getTruckerAccount(Input::get('search'));
+		return $this->account->getTruckerAccount();
+	}
+
+	public function getLoaderAccount(){
+		return $this->account->getLoaderAccount();
 	}
 
 	public function getAllContactOnAccount(){

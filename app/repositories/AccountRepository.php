@@ -393,43 +393,67 @@ class AccountRepository implements AccountRepositoryInterface {
   }
 
 
-  public function getTruckerAccount($search){
-    if($search == ''){
-      return Response::json(array(
-          'error' => true,
-          'message' => "Search word is required"),
+  // public function getTruckerAccount($search){
+  //   if($search == ''){
+  //     return Response::json(array(
+  //         'error' => true,
+  //         'message' => "Search word is required"),
+  //         200
+  //     );
+  //   } else{
+  //     $accountIds = array(2, 4, 9); //operator, hauler and Southwest Farms trucker accounts ids
+  //     $truckers = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($search, $accountIds){
+  //                   $query->whereIn('id', $accountIds);
+  //                 })->where('name', 'like', '%'.$search.'%')->get(array('id', 'name', 'accounttype'));
+      
+  //     return Response::json(
+  //       $truckers->toArray(),
+  //       200);
+  //     }
+  // }
+
+  public function getTruckerAccount(){
+      $accountIds = array(2, 4, 9); //operator, hauler and Southwest Farms trucker accounts ids
+      $truckers = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($accountIds){
+                    $query->whereIn('id', $accountIds);
+                  })->get(array('id', 'name', 'accounttype'));
+
+    return Response::json(
+          $truckers->toArray(),
           200
       );
-    } else{
-      $accountIds = array(2, 4, 9); //operator, hauler and Southwest Farms trucker accounts ids
-      $truckers = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($search, $accountIds){
-                    $query->whereIn('id', $accountIds);
-                  })->where('name', 'like', '%'.$search.'%')->get(array('id', 'name', 'accounttype'));
-      
-      return Response::json(
-        $truckers->toArray(),
-        200);
-      }
   }
 
-  public function getLoaderAccount($search){
-    if($search == '') {
-      return Response::json(array(
-          'error' => true,
-          'message' => "Search word is required"),
+  public function getLoaderAccount(){
+      $accountIds = array(3); //loader id
+      $truckers = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($accountIds){
+                    $query->whereIn('id', $accountIds);
+                  })->get(array('id', 'name', 'accounttype'));
+
+    return Response::json(
+          $truckers->toArray(),
           200
       );
-    } else {
-      $accountIds = array(3); //loader id
-      $loader = Account::whereHas('accounttype', function ($query) use ($search, $accountIds){
-                    $query->whereIn('id', $accountIds);
-                  })->where('name', 'like', '%'.$search.'%')->get(array('id', 'name'));
-      
-      return Response::json(
-        $loader->toArray(),
-        200);
-      }
   }
+
+  // public function getLoaderAccount($search){
+  //   if($search == '') {
+  //     return Response::json(array(
+  //         'error' => true,
+  //         'message' => "Search word is required"),
+  //         200
+  //     );
+  //   } else {
+  //     $accountIds = array(3); //loader id
+  //     $loader = Account::whereHas('accounttype', function ($query) use ($search, $accountIds){
+  //                   $query->whereIn('id', $accountIds);
+  //                 })->where('name', 'like', '%'.$search.'%')->get(array('id', 'name'));
+      
+  //     return Response::json(
+  //       $loader->toArray(),
+  //       200);
+  //     }
+  // }
 
   public function getAllContactOnAccount($accountId){
     $truckerList = Contact::whereHas('Account', function($query) use ($accountId){

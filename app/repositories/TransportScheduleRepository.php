@@ -189,6 +189,10 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       return $orderproducts->toArray();
   }
 
+  public function getTrailerList(){
+    return Trailer::all();
+  }
+
   private function displayLastQuery(){
       $queries = DB::getQueryLog();
       $last_query = end($queries);
