@@ -67,15 +67,15 @@ class TransportSchedule extends Eloquent {
     // }
 
     public function trucker(){
-        return $this->hasOne('Contact', 'id', 'trucker_id');
+        return $this->hasOne('Contact', 'id', 'trucker_id')->select(array('id','firstname','lastname','suffix','account'));
     }
 
-    public function originLoader(){
-        return $this->hasOne('Contact', 'id', 'originloader_id');
+    public function originloader(){
+        return $this->hasOne('Contact', 'id', 'originloader_id')->select(array('id','firstname','lastname','suffix','account'));
     }
 
-    public function destinationLoader(){
-        return $this->hasOne('Contact', 'id', 'destinationloader_id');
+    public function destinationloader(){
+        return $this->hasOne('Contact', 'id', 'destinationloader_id')->select(array('id','firstname','lastname','suffix','account'));
     }
 
     public function weightticket(){

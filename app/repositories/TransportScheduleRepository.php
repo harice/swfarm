@@ -2,12 +2,14 @@
  
 class TransportScheduleRepository implements TransportScheduleRepositoryInterface {
 
-  public function getSchedule($id, $scheduleType = 1){ //default sked is pickup
+  public function getSchedule($id){ //default sked is pickup
       $transportSchedule = TransportSchedule::with('trucker')
-                        ->with('originLoader')
-                        ->with('destinationLoader')
-                        ->where('id', '=', $id)
-                        ->where('type', '=', $scheduleType)->first();
+                        ->with('originloader')
+                        ->with('destinationloader')
+                        ->with('trucker.accountidandname')
+                        ->with('originloader.accountidandname')
+                        ->with('destinationloader.accountidandname')
+                        ->where('id', '=', $id)->first();
       if($transportSchedule){
           $transportSchedule = $transportSchedule->toArray();
           $transportSchedule['scheduledate'] = date('Y-m-d', strtotime($transportSchedule['date']));
@@ -34,9 +36,11 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       $orderId = $params['order_id'];
       //pulling of data    
       $transportSchedules = TransportSchedule::with('trucker')
-                      ->with('originLoader')
-                      ->with('destinationLoader')
-                      ->with('trucker.accounttype')
+                      ->with('originloader')
+                      ->with('destinationloader')
+                      ->with('trucker.accountidandname')
+                      ->with('originloader.accountidandname')
+                      ->with('destinationloader.accountidandname')
                       ->where('order_id', '=', $orderId)
                       ->where('type', '=', $scheduleType)
                       ->paginate($perPage);
@@ -79,7 +83,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           return $transportschedule->id;
       });
 
-      if($result == null){
+      if($transportScheduleId == null){
           $message = 'Schedule successfully created.';
       } else {
           $message = 'Schedule successfully updated.';

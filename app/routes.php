@@ -65,15 +65,11 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('weightticket/getAllScaleProviderAccount', 'APIv1\WeightTicketController@getAllScaleProviderAccount');
     Route::resource('weightticket', 'APIv1\WeightTicketController');
 
+    Route::get('transportschedule', 'APIv1\TransportScheduleController@getAllPickupSchedules');
+    Route::get('transportschedule/{id}', 'APIv1\TransportScheduleController@getPickupSchedule');
     Route::get('transportschedule/getProductsOfOrder', 'APIv1\TransportScheduleController@getProductsOfOrder');
     Route::get('transportschedule/getTruckingRate', 'APIv1\TransportScheduleController@getTruckingRate');
-    
-    
-    //Route::resource('transportschedule', 'APIv1\TransportScheduleController');
-
-    Route::get('transportschedule/getAllPickupSchedules', 'APIv1\TransportScheduleController@getAllPickupSchedules');
-    Route::get('transportschedule/getPickupSchedule/{id}', 'APIv1\TransportScheduleController@getPickupSchedule');
-	Route::resource('transportschedule', 'APIv1\TransportScheduleController');
+	//Route::resource('transportschedule', 'APIv1\TransportScheduleController');
 
     //Purchase Order
     Route::get('purchaseorder/getStatuses', 'APIv1\OrderController@getPOStatus');
