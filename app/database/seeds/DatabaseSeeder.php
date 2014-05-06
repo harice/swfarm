@@ -30,8 +30,8 @@ class DatabaseSeeder extends Seeder {
         $this->call('StatusTableSeeder');
         
         // Testing
-        $this->call('ProductsTableSeeder');
-        $this->call('AccountTableSeeder');
+        // $this->call('ProductsTableSeeder');
+        // $this->call('AccountTableSeeder');
         // $this->call('ContactTableSeeder');
         // $this->call('AddressTableSeeder');
 		// $this->call('BidTableSeeder');
@@ -43,11 +43,11 @@ class DatabaseSeeder extends Seeder {
         // $this->call('PickupScheduleTableSeeder');
         // $this->call('SalesOrderTableSeeder');
         // $this->call('ProductOrderTableSeeder');
-        $this->call('FarmLocationTableSeeder');
-        $this->call('StackTableSeeder');
+        // $this->call('FarmLocationTableSeeder');
+        // $this->call('StackTableSeeder');
         
-        $this->call('ScaleTableSeeder');
-        $this->call('TrailerTableSeeder');
-        $this->call('FeeTableSeeder');
+        // $this->call('ScaleTableSeeder');
+        // $this->call('TrailerTableSeeder');
+        // $this->call('FeeTableSeeder');
 	}
 }
