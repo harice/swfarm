@@ -131,8 +131,10 @@ define([
 					console.log($(form).serializeObject());
 					var data = thisObj.formatFormField($(form).serializeObject());
 					//console.log(data);
-					data['transportdatestart'] = thisObj.convertDateFormat(data['transportdatestart'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
-					data['transportdateend'] = thisObj.convertDateFormat(data['transportdateend'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
+					if(typeof data['transportdatestart'] != 'undefined')
+						data['transportdatestart'] = thisObj.convertDateFormat(data['transportdatestart'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
+					if(typeof data['transportdateend'] != 'undefined')
+						data['transportdateend'] = thisObj.convertDateFormat(data['transportdateend'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					
 					if(thisObj.isBid)
 						data['isfrombid'] = '1';
