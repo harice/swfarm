@@ -123,13 +123,17 @@ define([
 			this.$el.find('#state').val(address[0].address_states[0].state);
 			this.$el.find('#city').val(address[0].city);
 			this.$el.find('#zipcode').val(address[0].zipcode);
-			this.$el.find('#dateofpurchase').val(this.model.get('created_at').split(' ')[0]);
+			this.$el.find('#dateofpurchase').val(this.convertDateFormat(this.model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
 			
 			if(!this.isBid) {
-				if(this.model.get('transportdatestart'))
-					this.$el.find('#start-date .input-group.date').datepicker('update', this.model.get('transportdatestart').split(' ')[0]);
-				if(this.model.get('transportdateend'))
-				this.$el.find('#end-date .input-group.date').datepicker('update', this.model.get('transportdateend').split(' ')[0]);
+				if(this.model.get('transportdatestart')) {
+					var date = this.convertDateFormat(this.model.get('transportdatestart').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-');
+					this.$el.find('#start-date .input-group.date').datepicker('update', date);
+				}
+				if(this.model.get('transportdateend')) {
+					var date = this.convertDateFormat(this.model.get('transportdateend').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-');
+					this.$el.find('#end-date .input-group.date').datepicker('update', date);
+				}
 			}
 			this.$el.find('#notes').val(this.model.get('notes'));
 			

@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Description of StackRepository
+ * Description of TrailerRepository
  *
  * @author Das
  */
-class StackRepository implements StackRepositoryInterface {
+class TrailerRepository implements TrailerRepositoryInterface {
     
     public function findAll($params)
     {
@@ -13,7 +13,7 @@ class StackRepository implements StackRepositoryInterface {
         {
             $perPage = isset($params['perpage']) ? $params['perpage'] : 10;
             
-            return Stack::with('product')->paginate($perPage);
+            return Trailer::paginate($perPage);
         }
         catch (Exception $e)
         {
@@ -25,13 +25,13 @@ class StackRepository implements StackRepositoryInterface {
     {
         try
         {
-            $stack = Stack::find($id);
+            $trailer = Trailer::find($id)->fee;
             
-            if (!$stack) {
+            if (!$trailer) {
                 throw new NotFoundException();
             }
             
-            return $stack;
+            return $trailer;
         }
         catch (Exception $e)
         {
@@ -44,20 +44,20 @@ class StackRepository implements StackRepositoryInterface {
         try
         {
             $this->validate($data);
-            $stack = $this->instance();
-            $stack->fill($data);
+            $trailer = $this->instance();
+            $trailer->fill($data);
             
-            if (!$stack->save()) {
+            if (!$trailer->save()) {
                 return array(
                     'error' => true,
-                    'message' => 'Stack was not created.'
+                    'message' => 'Trailer was not created.'
                 );
             }
             
             $response = array(
                 'error' => false,
-                'message' => Lang::get('messages.success.created', array('entity' => 'Stack')),
-                'data' => $stack->toArray()
+                'message' => Lang::get('messages.success.created', array('entity' => 'Trailer')),
+                'data' => $trailer->toArray()
             );
             
             return $response;
@@ -73,20 +73,20 @@ class StackRepository implements StackRepositoryInterface {
         try
         {
             $this->validate($data, $id);
-            $stack = $this->findById($id);
-            $stack->fill($data);
+            $trailer = $this->findById($id);
+            $trailer->fill($data);
             
-            if (!$stack->update()) {
+            if (!$trailer->update()) {
                 return array(
                     'error' => true,
-                    'message' => 'Stack was not updated.'
+                    'message' => 'Trailer was not updated.'
                 );
             }
             
             $response = array(
                 'error' => false,
-                'message' => Lang::get('messages.success.updated', array('entity' => 'Stack')),
-                'data' => $stack->toArray()
+                'message' => Lang::get('messages.success.updated', array('entity' => 'Trailer')),
+                'data' => $trailer->toArray()
             );
             
             return $response;
@@ -101,19 +101,19 @@ class StackRepository implements StackRepositoryInterface {
     {
         try
         {
-            $stack = $this->findById($id);
+            $trailer = $this->findById($id);
 
-            if (!$stack->delete()) {
+            if (!$trailer->delete()) {
                 return array(
                     'error' => true,
-                    'message' => 'Stack was not deleted.'
+                    'message' => 'Trailer was not deleted.'
                 );
             }
 
             $response = array(
                 'error' => false,
-                'message' => Lang::get('messages.success.deleted', array('entity' => 'Stack')),
-                'data' => $stack->toArray()
+                'message' => Lang::get('messages.success.deleted', array('entity' => 'Trailer')),
+                'data' => $trailer->toArray()
             );
             
             return $response;
@@ -126,12 +126,11 @@ class StackRepository implements StackRepositoryInterface {
     
     public function validate($data, $id = null)
     {
-        $rules = Stack::$rules;
+        $rules = Trailer::$rules;
         
         if ($id) {
-            $rules['stacknumber'] = 'required';
-            $rules['product_id'] = 'required';
-            $rules['location'] = 'required';
+            $rules['account_id'] = 'required';
+            $rules['name'] = 'required';
         }
         
         $validator = Validator::make($data, $rules);
@@ -145,7 +144,7 @@ class StackRepository implements StackRepositoryInterface {
     
     public function instance($data = array())
     {
-        return new Stack($data);
+        return new Trailer($data);
     }
     
 }

@@ -101,9 +101,9 @@ define([
 			this.$el.find('#state').val(address[0].address_states[0].state);
 			this.$el.find('#city').val(address[0].city);
 			this.$el.find('#zipcode').val(address[0].zipcode);
-			this.$el.find('#dateofsales').val(this.model.get('created_at').split(' ')[0]);
-			this.$el.find('#transportdatestart').val(this.model.get('transportdatestart').split(' ')[0]);
-			this.$el.find('#transportdateend').val(this.model.get('transportdateend').split(' ')[0]);
+			this.$el.find('#dateofsales').val(this.convertDateFormat(this.model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
+			this.$el.find('#transportdatestart').val(this.convertDateFormat(this.model.get('transportdatestart').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
+			this.$el.find('#transportdateend').val(this.convertDateFormat(this.model.get('transportdateend').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
 			this.$el.find('#notes').val(this.model.get('notes'));
 			
 			_.each(products, function (product) {

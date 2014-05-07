@@ -5,19 +5,19 @@
 		<td><%= so.get("created_at").split(" ")[0] %></td>
 		<td>
 			<% if (so.get("transportdatestart")) { %>
-				<%= so.get("transportdatestart").split(" ")[0] %>
+				<%= so.get("transportdatestart") %>
 			<% } %>
 		</td>
 		<td>
 			<% if (so.get("transportdateend")) { %>
-				<%= so.get("transportdateend").split(" ")[0] %>
+				<%= so.get("transportdateend") %>
 			<% } %>
 		</td>
 		<td><%= so.get("account").name %></td>
 		<td><%= so.get("status").name %></td>
 		<td><%= so.get("location").location %></td>
 		<td><%= so.get("natureofsale").name %></td>
-		<td class="text-align-right"><%= parseFloat(so.get("totalPrice")).toFixed(2) %></td>
+		<td class="text-right">$ <%= parseFloat(so.get("totalPrice")).toFixed(2) %></td>
 		<td>
 			<% if (so.get("status").name.toLowerCase() == "open" || so.get("status").name.toLowerCase() == "pending") { %>
 				<a href="<%= so_edit_url %>/<%= so.get("id") %>" class="btn btn-info btn-xs" title="edit">

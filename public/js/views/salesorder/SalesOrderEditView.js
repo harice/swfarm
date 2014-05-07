@@ -107,46 +107,6 @@ define([
 			this.model.runFetch();
 		},
 		
-		initValidateForm: function () {
-			var thisObj = this;
-			
-			var validate = $('#soForm').validate({
-				submitHandler: function(form) {
-					var data = thisObj.formatFormField($(form).serializeObject());
-					
-					var salesOrderModel = new SalesOrderModel(data);
-					
-					salesOrderModel.save(
-						null, 
-						{
-							success: function (model, response, options) {
-								thisObj.displayMessage(response);
-								Global.getGlobalVars().app_router.navigate(Const.URL.SO, {trigger: true});
-							},
-							error: function (model, response, options) {
-								if(typeof response.responseJSON.error == 'undefined')
-									validate.showErrors(response.responseJSON);
-								else
-									thisObj.displayMessage(response);
-							},
-							headers: salesOrderModel.getAuth(),
-						}
-					);
-				},
-				errorPlacement: function(error, element) {
-					if(element.hasClass('form-date')) {
-						element.closest('.calendar-cont').siblings('.error-msg-cont').html(error);
-					}
-					else if(element.hasClass('price')) {
-						element.closest('.input-group').siblings('.error-msg-cont').html(error);
-					}
-					else {
-						error.insertAfter(element);
-					}
-				},
-			});
-		},
-		
 		supplySOData: function () {
 			var thisObj = this;
 			
@@ -164,10 +124,10 @@ define([
 			this.$el.find('#state').val(address[0].address_states[0].state);
 			this.$el.find('#city').val(address[0].city);
 			this.$el.find('#zipcode').val(address[0].zipcode);
-			this.$el.find('#dateofsale').val(this.model.get('created_at').split(' ')[0]);
+			this.$el.find('#dateofsale').val(this.convertDateFormat(this.model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
 			this.$el.find('#notes').val(this.model.get('notes'));
-			this.$el.find('#start-date .input-group.date').datepicker('update', this.model.get('transportdatestart').split(' ')[0]);
-			this.$el.find('#end-date .input-group.date').datepicker('update', this.model.get('transportdateend').split(' ')[0]);
+			this.$el.find('#start-date .input-group.date').datepicker('update', this.convertDateFormat(this.model.get('transportdatestart').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
+			this.$el.find('#end-date .input-group.date').datepicker('update', this.convertDateFormat(this.model.get('transportdateend').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
 			
 			var i= 0;
 			_.each(products, function (product) {

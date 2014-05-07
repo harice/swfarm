@@ -5,18 +5,18 @@
 		<td><%= po.get("created_at").split(" ")[0] %></td>
 		<td>
 			<% if (po.get("transportdatestart")) { %>
-				<%= po.get("transportdatestart").split(" ")[0] %>
+				<%= po.get("transportdatestart") %>
 			<% } %>
 		</td>
 		<td>
 			<% if (po.get("transportdateend")) { %>
-				<%= po.get("transportdateend").split(" ")[0] %>
+				<%= po.get("transportdateend") %>
 			<% } %>
 		</td>
 		<td><%= po.get("account").name %></td>
 		<td><%= po.get("status").name %></td>
 		<td><%= po.get("location").location %></td>
-		<td class="text-align-right"><%= parseFloat(po.get("totalPrice")).toFixed(2) %></td>
+		<td class="text-right">$ <%= parseFloat(po.get("totalPrice")).toFixed(2) %></td>
 		<td>
 			<% if (po.get("status").name.toLowerCase() == "open" || po.get("status").name.toLowerCase() == "pending") { %>
 				<a href="<%= po_edit_url %>/<%= po.get("id") %>" class="btn btn-info btn-xs" title="edit">

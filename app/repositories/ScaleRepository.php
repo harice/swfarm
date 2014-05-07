@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Description of StackRepository
+ * Description of ScaleRepository
  *
  * @author Das
  */
-class StackRepository implements StackRepositoryInterface {
+class ScaleRepository implements ScaleRepositoryInterface {
     
     public function findAll($params)
     {
@@ -13,7 +13,7 @@ class StackRepository implements StackRepositoryInterface {
         {
             $perPage = isset($params['perpage']) ? $params['perpage'] : 10;
             
-            return Stack::with('product')->paginate($perPage);
+            return Scale::paginate($perPage);
         }
         catch (Exception $e)
         {
@@ -25,13 +25,13 @@ class StackRepository implements StackRepositoryInterface {
     {
         try
         {
-            $stack = Stack::find($id);
+            $scale = Scale::find($id)->fee;
             
-            if (!$stack) {
+            if (!$scale) {
                 throw new NotFoundException();
             }
             
-            return $stack;
+            return $scale;
         }
         catch (Exception $e)
         {
@@ -44,20 +44,20 @@ class StackRepository implements StackRepositoryInterface {
         try
         {
             $this->validate($data);
-            $stack = $this->instance();
-            $stack->fill($data);
+            $scale = $this->instance();
+            $scale->fill($data);
             
-            if (!$stack->save()) {
+            if (!$scale->save()) {
                 return array(
                     'error' => true,
-                    'message' => 'Stack was not created.'
+                    'message' => 'Scale was not created.'
                 );
             }
             
             $response = array(
                 'error' => false,
-                'message' => Lang::get('messages.success.created', array('entity' => 'Stack')),
-                'data' => $stack->toArray()
+                'message' => Lang::get('messages.success.created', array('entity' => 'Scale')),
+                'data' => $scale->toArray()
             );
             
             return $response;
@@ -73,20 +73,20 @@ class StackRepository implements StackRepositoryInterface {
         try
         {
             $this->validate($data, $id);
-            $stack = $this->findById($id);
-            $stack->fill($data);
+            $scale = $this->findById($id);
+            $scale->fill($data);
             
-            if (!$stack->update()) {
+            if (!$scale->update()) {
                 return array(
                     'error' => true,
-                    'message' => 'Stack was not updated.'
+                    'message' => 'Scale was not updated.'
                 );
             }
             
             $response = array(
                 'error' => false,
-                'message' => Lang::get('messages.success.updated', array('entity' => 'Stack')),
-                'data' => $stack->toArray()
+                'message' => Lang::get('messages.success.updated', array('entity' => 'Scale')),
+                'data' => $scale->toArray()
             );
             
             return $response;
@@ -101,19 +101,19 @@ class StackRepository implements StackRepositoryInterface {
     {
         try
         {
-            $stack = $this->findById($id);
+            $scale = $this->findById($id);
 
-            if (!$stack->delete()) {
+            if (!$scale->delete()) {
                 return array(
                     'error' => true,
-                    'message' => 'Stack was not deleted.'
+                    'message' => 'Scale was not deleted.'
                 );
             }
 
             $response = array(
                 'error' => false,
-                'message' => Lang::get('messages.success.deleted', array('entity' => 'Stack')),
-                'data' => $stack->toArray()
+                'message' => Lang::get('messages.success.deleted', array('entity' => 'Scale')),
+                'data' => $scale->toArray()
             );
             
             return $response;
@@ -126,12 +126,11 @@ class StackRepository implements StackRepositoryInterface {
     
     public function validate($data, $id = null)
     {
-        $rules = Stack::$rules;
+        $rules = Scale::$rules;
         
         if ($id) {
-            $rules['stacknumber'] = 'required';
-            $rules['product_id'] = 'required';
-            $rules['location'] = 'required';
+            $rules['account_id'] = 'required';
+            $rules['name'] = 'required';
         }
         
         $validator = Validator::make($data, $rules);
@@ -145,7 +144,7 @@ class StackRepository implements StackRepositoryInterface {
     
     public function instance($data = array())
     {
-        return new Stack($data);
+        return new Scale($data);
     }
     
 }

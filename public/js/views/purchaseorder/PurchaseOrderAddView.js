@@ -130,6 +130,11 @@ define([
 				submitHandler: function(form) {
 					console.log($(form).serializeObject());
 					var data = thisObj.formatFormField($(form).serializeObject());
+					//console.log(data);
+					if(typeof data['transportdatestart'] != 'undefined')
+						data['transportdatestart'] = thisObj.convertDateFormat(data['transportdatestart'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
+					if(typeof data['transportdateend'] != 'undefined')
+						data['transportdateend'] = thisObj.convertDateFormat(data['transportdateend'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					
 					if(thisObj.isBid)
 						data['isfrombid'] = '1';
@@ -137,7 +142,7 @@ define([
 					if(thisObj.isConvertToPO)
 						data['createPO'] = '1';
 					
-					console.log(data);
+					//console.log(data);
 					
 					var purchaseOrderModel = new PurchaseOrderModel(data);
 					
@@ -229,7 +234,7 @@ define([
 				autoclose: true,
 				clearBtn: true,
 				todayHighlight: true,
-				format: 'yyyy-mm-dd',
+				format: this.dateFormat,
 			});
 			
 			this.$el.find('#end-date .input-group.date').datepicker({
@@ -237,7 +242,7 @@ define([
 				autoclose: true,
 				clearBtn: true,
 				todayHighlight: true,
-				format: 'yyyy-mm-dd',
+				format: this.dateFormat,
 			});
 		},
 		

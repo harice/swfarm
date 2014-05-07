@@ -100,10 +100,10 @@
                       <th>Product</th>
                       <th>Description</th>
                       <th>Stack No.</th>
-                      <th>Unit Price</th>
+                      <th class="width-130">Unit Price</th>
                       <th>Est Tons</th>
                       <th>Bales</th>
-                      <th>Total Price</th>
+                      <th class="width-130">Total Price</th>
                     </tr>
                   </thead>
                   <tbody></tbody>
@@ -113,9 +113,9 @@
             <div class="form-group form-button-container">
               <div class="pull-right">
 			  <% if (typeof editable !== "undefined") { %>
-				<a id="edit-so" class="btn btn-default" href="<%= so_edit_url %>">Edit Sales Order</a>
+				<a id="edit-so" class="btn btn-primary" href="<%= so_edit_url %>">Edit Sales Order</a>
 			  <% } %>
-              <a class="btn btn-default" href="<%= so_url %>">Back</a>
+              <a class="btn btn-link" href="<%= so_url %>">Back</a>
               </div>
             </div>
           </form>
