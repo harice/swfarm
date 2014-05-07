@@ -5,21 +5,21 @@
  *
  * @author Das
  */
-class Fee extends BaseModel {
+class Truck extends BaseModel {
     
     /**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table = 'fee';
+	protected $table = 'truck';
     
     /**
      * Define fillable attributes in a model.
      * 
      * @var array
      */
-    protected $fillable = array('entity_id', 'entity_type', 'fee');
+    protected $fillable = array('account_id', 'name', 'rate');
 
     /**
      * Define field validation rules.
@@ -27,14 +27,9 @@ class Fee extends BaseModel {
      * @var array
      */
 	public static $rules = array(
-        'entity_id' => 'required',
-        'entity_type' => 'required',
-        'fee' => 'required'
+        'account_id' => 'required',
+        'name' => 'required|unique:truck,name',
+        'rate' => 'required'
     );
-    
-    public function entity()
-    {
-        return $this->morphTo();
-    }
     
 }

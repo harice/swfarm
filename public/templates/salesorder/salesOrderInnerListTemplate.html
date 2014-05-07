@@ -5,12 +5,12 @@
 		<td><%= so.get("created_at").split(" ")[0] %></td>
 		<td>
 			<% if (so.get("transportdatestart")) { %>
-				<%= so.get("transportdatestart").split(" ")[0] %>
+				<%= so.get("transportdatestart") %>
 			<% } %>
 		</td>
 		<td>
 			<% if (so.get("transportdateend")) { %>
-				<%= so.get("transportdateend").split(" ")[0] %>
+				<%= so.get("transportdateend") %>
 			<% } %>
 		</td>
 		<td><%= so.get("account").name %></td>

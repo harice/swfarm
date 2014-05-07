@@ -25,7 +25,7 @@ class TrailerRepository implements TrailerRepositoryInterface {
     {
         try
         {
-            $trailer = Trailer::find($id)->fee;
+            $trailer = Trailer::find($id);
             
             if (!$trailer) {
                 throw new NotFoundException();
@@ -130,7 +130,8 @@ class TrailerRepository implements TrailerRepositoryInterface {
         
         if ($id) {
             $rules['account_id'] = 'required';
-            $rules['name'] = 'required';
+            $rules['name'] = 'required|unique:scale,name,'.$id;
+            $rules['rate'] = 'required';
         }
         
         $validator = Validator::make($data, $rules);

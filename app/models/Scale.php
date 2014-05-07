@@ -19,7 +19,7 @@ class Scale extends BaseModel {
      * 
      * @var array
      */
-    protected $fillable = array('account_id', 'name');
+    protected $fillable = array('account_id', 'name', 'rate');
 
     /**
      * Define field validation rules.
@@ -28,7 +28,8 @@ class Scale extends BaseModel {
      */
 	public static $rules = array(
         'account_id' => 'required',
-        'name' => 'required'
+        'name' => 'required',
+        'rate' => 'required'
     );
     
     public function fee()
