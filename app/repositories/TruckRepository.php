@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Description of ScaleRepository
+ * Description of TruckRepository
  *
  * @author Das
  */
-class ScaleRepository implements ScaleRepositoryInterface {
+class TruckRepository implements TruckRepositoryInterface {
     
     public function findAll($params)
     {
@@ -13,7 +13,7 @@ class ScaleRepository implements ScaleRepositoryInterface {
         {
             $perPage = isset($params['perpage']) ? $params['perpage'] : 10;
             
-            return Scale::paginate($perPage);
+            return Truck::paginate($perPage);
         }
         catch (Exception $e)
         {
@@ -25,13 +25,13 @@ class ScaleRepository implements ScaleRepositoryInterface {
     {
         try
         {
-            $scale = Scale::find($id);
+            $truck = Truck::find($id);
             
-            if (!$scale) {
+            if (!$truck) {
                 throw new NotFoundException();
             }
             
-            return $scale;
+            return $truck;
         }
         catch (Exception $e)
         {
@@ -44,20 +44,20 @@ class ScaleRepository implements ScaleRepositoryInterface {
         try
         {
             $this->validate($data);
-            $scale = $this->instance();
-            $scale->fill($data);
+            $truck = $this->instance();
+            $truck->fill($data);
             
-            if (!$scale->save()) {
+            if (!$truck->save()) {
                 return array(
                     'error' => true,
-                    'message' => 'Scale was not created.'
+                    'message' => 'Truck was not created.'
                 );
             }
             
             $response = array(
                 'error' => false,
-                'message' => Lang::get('messages.success.created', array('entity' => 'Scale')),
-                'data' => $scale->toArray()
+                'message' => Lang::get('messages.success.created', array('entity' => 'Truck')),
+                'data' => $truck->toArray()
             );
             
             return $response;
@@ -73,20 +73,20 @@ class ScaleRepository implements ScaleRepositoryInterface {
         try
         {
             $this->validate($data, $id);
-            $scale = $this->findById($id);
-            $scale->fill($data);
+            $truck = $this->findById($id);
+            $truck->fill($data);
             
-            if (!$scale->update()) {
+            if (!$truck->update()) {
                 return array(
                     'error' => true,
-                    'message' => 'Scale was not updated.'
+                    'message' => 'Truck was not updated.'
                 );
             }
             
             $response = array(
                 'error' => false,
-                'message' => Lang::get('messages.success.updated', array('entity' => 'Scale')),
-                'data' => $scale->toArray()
+                'message' => Lang::get('messages.success.updated', array('entity' => 'Truck')),
+                'data' => $truck->toArray()
             );
             
             return $response;
@@ -101,19 +101,19 @@ class ScaleRepository implements ScaleRepositoryInterface {
     {
         try
         {
-            $scale = $this->findById($id);
+            $truck = $this->findById($id);
 
-            if (!$scale->delete()) {
+            if (!$truck->delete()) {
                 return array(
                     'error' => true,
-                    'message' => 'Scale was not deleted.'
+                    'message' => 'Truck was not deleted.'
                 );
             }
 
             $response = array(
                 'error' => false,
-                'message' => Lang::get('messages.success.deleted', array('entity' => 'Scale')),
-                'data' => $scale->toArray()
+                'message' => Lang::get('messages.success.deleted', array('entity' => 'Truck')),
+                'data' => $truck->toArray()
             );
             
             return $response;
@@ -126,11 +126,11 @@ class ScaleRepository implements ScaleRepositoryInterface {
     
     public function validate($data, $id = null)
     {
-        $rules = Scale::$rules;
+        $rules = Truck::$rules;
         
         if ($id) {
             $rules['account_id'] = 'required';
-            $rules['name'] = 'required|unique:scale,name,'.$id;
+            $rules['name'] = 'required|unique:truck,name,'.$id;
             $rules['rate'] = 'required';
         }
         
@@ -145,7 +145,7 @@ class ScaleRepository implements ScaleRepositoryInterface {
     
     public function instance($data = array())
     {
-        return new Scale($data);
+        return new Truck($data);
     }
     
 }

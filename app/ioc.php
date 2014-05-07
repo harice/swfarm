@@ -25,4 +25,5 @@ App::bind('FarmLocationRepositoryInterface', 'FarmLocationRepository');
 App::bind('StackRepositoryInterface', 'StackRepository');
 App::bind('TrailerRepositoryInterface', 'TrailerRepository');
 App::bind('ScaleRepositoryInterface', 'ScaleRepository');
+App::bind('TruckRepositoryInterface', 'TruckRepository');
 App::bind('FeeRepositoryInterface', 'FeeRepository');

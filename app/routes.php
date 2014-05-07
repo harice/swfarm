@@ -110,6 +110,9 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // Trailer
     Route::resource('trailer', 'APIv1\TrailerController');
     
+    // Truck
+    Route::resource('truck', 'APIv1\TruckController');
+    
     // Fee
     Route::resource('fee', 'APIv1\FeeController');
     

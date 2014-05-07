@@ -5,14 +5,14 @@
  *
  * @author Das
  */
-class Scale extends BaseModel {
+class Truck extends BaseModel {
     
     /**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table = 'scale';
+	protected $table = 'truck';
     
     /**
      * Define fillable attributes in a model.
@@ -28,13 +28,8 @@ class Scale extends BaseModel {
      */
 	public static $rules = array(
         'account_id' => 'required',
-        'name' => 'required',
+        'name' => 'required|unique:truck,name',
         'rate' => 'required'
     );
-    
-    public function fee()
-    {
-        return $this->morphOne('Fee', 'entity');
-    }
     
 }
