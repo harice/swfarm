@@ -71,6 +71,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           $data['date'] = Date('Y-m-d H:i:s', strtotime($data['scheduledate'].' '.$data['scheduletimeHour'].':'.$data['scheduletimeMin'].' '.$data['scheduletimeAmPm']));
           $data['truckingrate'] = isset($data['truckingrate']) ? $data['truckingrate'] : Config::get('constants.GLOBAL_PER_LIST');
           $data['type'] = isset($data['type']) ? $data['type'] : 1;
+          $data['trailerrate'] = 99.50; //dummy data only because ther is no formula yet
 
           $transportschedule->fill($data);
           $transportschedule->save();

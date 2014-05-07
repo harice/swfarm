@@ -22,10 +22,11 @@ class TransportSchedule extends Eloquent {
         'distance',
         'fuelcharge',
         'originloader_id',
-        'originloadersfee',
+        'originloaderfee',
         'destinationloader_id',
-        'destinationloadersfee',
+        'destinationloaderfee',
         'truckingrate',
+        'trailerrate',
         'type',
         'created_at',
         'updated_at'

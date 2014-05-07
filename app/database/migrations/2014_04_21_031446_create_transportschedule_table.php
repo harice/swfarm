@@ -28,7 +28,6 @@ class CreateTransportscheduleTable extends Migration {
 			$table->decimal('destinationloaderfee', 8, 2);
 			$table->decimal('truckingrate', 8, 2);
 			$table->decimal('trailerrate', 8, 2);
-			$table->decimal('scalerate', 8, 2);
 			$table->tinyInteger('type'); //1 - for pickup, 2 - for delivery
 			$table->timestamps();
 
