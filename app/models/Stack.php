@@ -19,7 +19,7 @@ class Stack extends BaseModel {
      * 
      * @var array
      */
-    protected $fillable = array('stacknumber', 'product_id', 'farmlocation_id', 'notes');
+    protected $fillable = array('stacknumber', 'product_id', 'location');
 
     /**
      * Define field validation rules.
