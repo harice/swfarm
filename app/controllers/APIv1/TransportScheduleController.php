@@ -28,13 +28,19 @@ class TransportScheduleController extends BaseController {
         return Response::json($collection);
 	}
 
+	public function getAllDeliverySchedules()
+	{
+		$collection = $this->repo->getAllTransportSchedules( Input::all(), 2);
+        return Response::json($collection);
+	}
+
 	/**
 	 * Display the specified resource.
 	 *
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function getPickupSchedule($id)
+	public function getTransportSchedule($id)
 	{
 		$collection = $this->repo->getSchedule($id);
         return Response::json($collection);

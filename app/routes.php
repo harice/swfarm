@@ -61,9 +61,10 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     //tranport schedule
     Route::get('transportschedule/getTrailerList', 'APIv1\TransportScheduleController@getTrailerList');
     Route::get('transportschedule/getAllPickupSchedules', 'APIv1\TransportScheduleController@getAllPickupSchedules');
+    Route::get('transportschedule/getAllDeliverySchedules', 'APIv1\TransportScheduleController@getAllDeliverySchedules');
     Route::get('transportschedule/getProductsOfOrder', 'APIv1\TransportScheduleController@getProductsOfOrder');
     Route::get('transportschedule/getTruckingRate', 'APIv1\TransportScheduleController@getTruckingRate');
-    Route::get('transportschedule/{id}', 'APIv1\TransportScheduleController@getPickupSchedule');
+    Route::get('transportschedule/{id}', 'APIv1\TransportScheduleController@getTransportSchedule');
     Route::resource('transportschedule', 'APIv1\TransportScheduleController');
 
     //Purchase Order
