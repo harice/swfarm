@@ -19,7 +19,7 @@ class Fee extends BaseModel {
      * 
      * @var array
      */
-    protected $fillable = array('account_id', 'type', 'fee');
+    protected $fillable = array('entity_id', 'entity_type', 'fee');
 
     /**
      * Define field validation rules.

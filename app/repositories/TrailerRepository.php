@@ -25,7 +25,7 @@ class TrailerRepository implements TrailerRepositoryInterface {
     {
         try
         {
-            $trailer = Trailer::find($id)->fee;
+            $trailer = Trailer::find($id);
             
             if (!$trailer) {
                 throw new NotFoundException();
