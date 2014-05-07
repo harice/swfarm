@@ -181,6 +181,10 @@ define([
 				thisObj.$el.find('#product-list tbody').append(template);
 			});
 		},
+		
+		events:{
+			'click #go-to-previous-page': 'goToPreviousPage',
+		},
 	});
 
   return PurchaseOrderEditView;

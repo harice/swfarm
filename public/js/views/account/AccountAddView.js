@@ -140,6 +140,7 @@ define([
 		},
 		
 		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #add-address-field' : 'addAddressFields',
 			'click .remove-address-fields' : 'removeAddressFields',
 			'change #accounttype': 'onChangeAccountType',

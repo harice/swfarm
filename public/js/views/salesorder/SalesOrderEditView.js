@@ -144,6 +144,16 @@ define([
 				productFields.find('.unitprice').blur();
 			});
 		},
+		
+		otherInitializations: function () {
+			this.initCancelConfirmation();
+		},
+		
+		initCancelConfirmation: function () {
+			this.initConfirmationWindow('Are you sure you want to cancel this Sales Order?',
+										'confirm-cancel-so',
+										'Cancel Sales Order');
+		},
 	});
 
   return SalesOrderEditView;

@@ -70,6 +70,8 @@ define([
 			this.focusOnFirstField();
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
 			this.initValidateForm();
+			
+			this.otherInitializations();
 		},
 		
 		initValidateForm: function () {
@@ -109,6 +111,30 @@ define([
 			
 			this.$el.find('#product_id').html(options);
 		},
+		
+		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
+			'click #delete-sl': 'showConfirmationWindow',
+			'click #confirm-delete-sl': 'deleteStockLocation'
+		},
+		
+		deleteStockLocation: function () {
+			var thisObj = this;
+            
+            this.model.destroy({
+                success: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                    Global.getGlobalVars().app_router.navigate(Const.URL.STACKLOCATION, {trigger: true});
+                },
+                error: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                },
+                wait: true,
+                headers: thisObj.model.getAuth(),
+            });
+		},
+		
+		otherInitializations: function () {},
 	});
 
 	return StackLocationAddView;

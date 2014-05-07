@@ -153,6 +153,18 @@ define([
 				productFields.find('.unitprice').blur();
 			});
 		},
+		
+		otherInitializations: function () {
+			this.initCancelConfirmation();
+		},
+		
+		initCancelConfirmation: function () {
+			var verifyMsg = (!this.isBid)? 'Are you sure you want to cancel this Purchase Order?' : 'Are you sure you want to cancel this Bid?';
+			var verifyButtonLabel = (!this.isBid)? 'Cancel Purchase Order' : 'Cancel Bid';
+			this.initConfirmationWindow(verifyMsg,
+										'confirm-cancel-po',
+										verifyButtonLabel);
+		},
 	});
 
   return PurchaseOrderEditView;

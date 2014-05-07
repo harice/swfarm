@@ -1,5 +1,6 @@
 define([
 	'backbone',
+	'views/base/AppView',
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
@@ -13,6 +14,7 @@ define([
 	'global',
 	'constant',
 ], function(Backbone,
+			AppView,
 			Validate,
 			TextFormatter,
 			PhoneNumber,
@@ -27,26 +29,36 @@ define([
 			Const
 ){
 
-	var ContactAddView = Backbone.View.extend({
+	var ContactAddView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		accountAutoCompleteView: null,
 		
 		initialize: function() {
-			//console.log('ContactAdd.js:init');
+			this.contactId = null;
+			this.h1Title = 'Contacts';
+			this.h1Small = 'add';
 		},
 		
 		render: function(){
+            this.displayForm();
+		},
+		
+		displayForm: function(){
 			var thisObj = this;
 			
             var innerTemplateVariables = {
 				'contact_url' : '#/'+Const.URL.CONTACT
 			};
+			
+			if(this.contactId != null)
+				innerTemplateVariables['contact_id'] = this.contactId;
+			
 			var innerTemplate = _.template(contactAddTemplate, innerTemplateVariables);
 			
 			var variables = {
-				h1_title: "Contacts",
-				h1_small: "add",
+				h1_title: this.h1Title,
+				h1_small: this.h1Small,
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
@@ -56,6 +68,13 @@ define([
 			this.$el.find('.lowercase').textFormatter({type:'lowercase'});
 			this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
 			this.$el.find('.mobile-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
+			
+            this.initValidateForm();
+			this.initAccountAutocomplete();
+		},
+		
+		initValidateForm: function () {
+			var thisObj = this;
 			
 			var validate = $('#addContactForm').validate({
 				submitHandler: function(form) {
@@ -91,16 +110,6 @@ define([
 					},
 				}
 			});
-            
-            /*var accountNameCollection = new AccountNameCollection();
-            
-            new AutoCompleteView({
-                input: $('#account'),
-				hidden: $('#account_id'),
-                collection: accountNameCollection
-            }).render();*/
-            
-			this.initAccountAutocomplete();
 		},
 		
 		initAccountAutocomplete: function () {
@@ -118,10 +127,11 @@ define([
 			
 			this.accountAutoCompleteView.render();
 		},
-        
+		
+		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
+		},
 	});
-    
-    
     
     return ContactAddView;
 });

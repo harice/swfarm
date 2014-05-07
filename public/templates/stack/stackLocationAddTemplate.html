@@ -31,10 +31,10 @@
                 <div class="form-group form-button-container">
                   <div class="pull-right">
                   <% if (typeof sl_id !== "undefined") { %>
-					<a id="delete-sl" class="btn btn-danger" href="#">Delete</a>
+					<button id="delete-sl" type="button" class="btn btn-danger">Delete</button>
                   <% } %>
                   <button id="save" type="submit" class="save btn btn-primary">Save</button>
-                  <a id="cancel-save" class="btn btn-link" href="<%= sl_url %>">Back</a>
+                  <a id="go-to-previous-page" class="btn btn-link" href="#">Back</a>
                   </div>
                 </div>
               </form>

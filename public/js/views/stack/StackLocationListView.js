@@ -1,6 +1,7 @@
 define([
 	'backbone',
 	'views/base/ListView',
+	'models/stack/StackLocationModel',
 	'collections/stack/StackLocationCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/stack/stackLocationListTemplate.html',
@@ -8,6 +9,7 @@ define([
 	'constant',
 ], function(Backbone,
 			ListView,
+			StackLocationModel,
 			StackLocationCollection,
 			contentTemplate,
 			stackLocationListTemplate,
@@ -48,6 +50,10 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+			
+			this.initConfirmationWindow('Are you sure you want to delete this Stock Location?',
+										'confirm-delete-sl',
+										'Delete');
 		},
 		
 		displayList: function () {
@@ -62,6 +68,35 @@ define([
 			$("#sl-list tbody").html(innerListTemplate);
 			
 			this.generatePagination();
+		},
+		
+		events: {
+			'click .delete-sl': 'preShowConfirmationWindow',
+			'click #confirm-delete-sl': 'deleteStockLocation'
+		},
+		
+		preShowConfirmationWindow: function (ev) {
+			this.$el.find('#confirm-delete-sl').attr('data-id', $(ev.currentTarget).attr('data-id'));
+			
+			this.showConfirmationWindow();
+			return false;
+		},
+		
+		deleteStockLocation: function (ev) {
+			var thisObj = this;
+			var stackLocationModel = new StackLocationModel({id:$(ev.currentTarget).attr('data-id')});
+			
+            stackLocationModel.destroy({
+                success: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                    thisObj.renderList(1);
+                },
+                error: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                },
+                wait: true,
+                headers: stackLocationModel.getAuth(),
+            });
 		},
 	});
 

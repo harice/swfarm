@@ -1,15 +1,15 @@
 <% if (!_.isEmpty(products)) { %>
   <% _.each(products, function(product){ %>
     <tr>
-      <td><a href="<%= product_url %>/<%= product.get("id") %>"><%= product.get("name") %></a></td>
+      <td><%= product.get("name") %></td>
       <td><%= product.get("description") %></td>
       <td>
         <a href="<%= product_edit_url %>/<%= product.get("id") %>" class="btn btn-info btn-xs">
-           <span class="glyphicon glyphicon-pencil"></span>
+			<span class="glyphicon glyphicon-pencil"></span>
         </a>
-        <a href="<%= product_edit_url %>/<%= product.get("id") %>" id="delete" class="btn btn-danger btn-xs">
-          <span class="glyphicon glyphicon-remove"></span>
-        </a>
+        <a href="#" class="btn btn-danger btn-xs delete-product" data-id="<%= product.get("id") %>">
+			<span class="glyphicon glyphicon-remove"></span>
+		</a>
       </td>
     </tr>
   <% }); %>

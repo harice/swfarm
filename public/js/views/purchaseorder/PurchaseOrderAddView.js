@@ -121,6 +121,8 @@ define([
 			this.initProducerAutocomplete();
 			this.initCalendar();
 			this.addProduct();
+			
+			this.otherInitializations();
 		},
 		
 		initValidateForm: function () {
@@ -391,14 +393,16 @@ define([
 		},
 		
 		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #add-product': 'addProduct',
 			'click .remove-product': 'removeProduct',
 			//'blur .productname': 'validateProduct',
 			'blur .unitprice': 'onBlurUnitPrice',
 			'keyup .unitprice': 'onKeyUpUnitPrice',
 			'keyup .tons': 'onKeyUpTons',
-			'click #cancel-po': 'cancelPO',
 			'click #convert-po': 'convertPO',
+			'click #cancel-po': 'showConfirmationWindow',
+			'click #confirm-cancel-po': 'cancelPO',
 		},
 		
 		removeProduct: function (ev) {
@@ -480,12 +484,7 @@ define([
 		cancelPO: function () {
 			if(this.poId != null) {
 				var thisObj = this;
-				
-				var verifyMsg = (!this.isBid)? 'Are you sure you want to cancel this Purchase Order?' : 'Are you sure you want to cancel this Bid?';
-				
-				// var verifyCancel = confirm(verifyMsg);
-				
-                var purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
+				var purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
                 purchaseOrderModel.setCancelURL();
                 purchaseOrderModel.save(
                     null, 
@@ -511,6 +510,8 @@ define([
 			this.isConvertToPO = true;
 			$('#poForm').submit();
 		},
+		
+		otherInitializations: function () {},
 	});
 
   return PurchaseOrderAddView;

@@ -9,7 +9,7 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/stack/stackLocationAddTemplate.html',
 	'global',
-	'constant',
+	'constant'
 ], function(Backbone,
 			DatePicker,
 			StackLocationAddView,
@@ -42,11 +42,15 @@ define([
 				this.off('error');
 			});
 			
-			this.model = new StackLocationModel({id:this.soId});
+			this.model = new StackLocationModel({id:this.slId});
 			this.model.on('change', function() {
 				thisObj.productCollection.getAllModel();
 				this.off('change');
 			});
+		},
+		
+		otherInitializations: function () {
+			this.initDeleteConfirmation();
 		},
 		
 		render: function(){
@@ -54,7 +58,15 @@ define([
 		},
 		
 		supplyStackLocationData: function () {
-			
+			this.$el.find('#location').val(this.model.get('location'));
+			this.$el.find('#stacknumber').val(this.model.get('stacknumber'));
+			this.$el.find('#product_id').val(this.model.get('product_id'));
+		},
+		
+		initDeleteConfirmation: function () {
+			this.initConfirmationWindow('Are you sure you want to delete this Stock Location?',
+										'confirm-delete-sl',
+										'Delete');
 		},
 	});
 
