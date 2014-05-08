@@ -117,6 +117,7 @@ define([
 			this.$el.find('#sonumber').val(this.model.get('order_number'));
 			this.$el.find('#status').val(this.model.get('status').name);
 			this.$el.find('[name="location_id"][value="'+this.model.get('location').id+'"]').attr('checked', true);
+			this.$el.find('[name="natureofsale_id"][value="'+this.model.get('natureofsale').id+'"]').attr('checked', true);
 			this.customerAutoCompleteView.autoCompleteResult = [{name:account.name, id:account.id, address:address}];
 			this.$el.find('#account').val(account.name);
 			this.$el.find('#account_id').val(account.id);

@@ -1,7 +1,7 @@
 define([
 	'backbone',
 	'views/base/ListView',
-	'models/purchaseorder/POModel',
+	'models/purchaseorder/PurchaseOrderModel',
 	'collections/purchaseorder/POScheduleCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderPickUpScheduleListTemplate.html',
@@ -9,7 +9,7 @@ define([
 	'constant',
 ], function(Backbone,
 			ListView,
-			POModel,
+			PurchaseOrderModel,
 			POScheduleCollection,
 			contentTemplate,
 			purchaseOrderPickUpScheduleListTemplate,
@@ -26,18 +26,18 @@ define([
 			this.poid = option.id;
 			var thisObj = this;
 			
-			this.collection = new POScheduleCollection({id:option.id});
+			/*this.collection = new POScheduleCollection({id:option.id});
 			this.collection.on('sync', function() {
 				thisObj.displayList();
 			});
 			this.collection.on('error', function(collection, response, options) {
 				this.off('error');
-			});
+			});*/
 			
-			this.model = new POModel({id:option.id});
+			this.model = new PurchaseOrderModel({id:option.id});
 			this.model.on('change', function() {
 				thisObj.displayPickUpSchedule();
-				thisObj.renderList(1);
+				//thisObj.renderList(1);
 				this.off('change');
 			});
 		},
@@ -49,6 +49,7 @@ define([
 		displayPickUpSchedule: function () {
 			var innerTemplateVar = {
 				po_schedule_add_url : '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poid+'/'+Const.CRUD.ADD,
+				status_filters : '',
 			};
 			
 			var innerTemplate = _.template(purchaseOrderPickUpScheduleListTemplate, innerTemplateVar);

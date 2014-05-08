@@ -10,8 +10,10 @@ define([
 	'models/purchaseorder/POScheduleModel',
 	'collections/account/AccountTruckerCollection',
 	'collections/account/AccountLoaderCollection',
+	'collections/product/ProductCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddScheduleTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderPickUpScheduleProductItemTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -25,8 +27,10 @@ define([
 			POScheduleModel,
 			AccountTruckerCollection,
 			AccountLoaderCollection,
+			ProductCollection,
 			contentTemplate,
 			purchaseOrderAddScheduleTemplate,
+			purchaseOrderPickUpScheduleProductItemTemplate,
 			Global,
 			Const
 ){
@@ -44,6 +48,10 @@ define([
 			this.poid = option.poid;
 			this.truckingRatePerMile = null;
 			
+			this.options = {
+				productFieldClone: null,
+			},
+			
 			this.truckingRateModel = new TruckingRateModel();
 			this.truckingRateModel.on('change', function() {
 				thisObj.truckingRatePerMile = this.get('truckingrate');
@@ -51,10 +59,19 @@ define([
 				this.off('change');
 			});
 			
+			this.productCollection = new ProductCollection();
+			this.productCollection.on('sync', function() {
+				thisObj.displayForm();
+				this.off('sync');
+			});
+			this.productCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 		},
 		
 		render: function(){
-			this.truckingRateModel.runFetch();
+			//this.truckingRateModel.runFetch();
+			this.productCollection.getAllModel();
 		},
 		
 		displayForm: function () {
@@ -62,6 +79,10 @@ define([
 			
 			var innerTemplateVariables = {
 				sched_url : '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poid,
+				trucker_account_list : '',
+				trailer_account_list : '',
+				originloader_account_list : '',
+				destinationloader_account_list : '',
 				po_id : this.poid,
 			};
 			var innerTemplate = _.template(purchaseOrderAddScheduleTemplate, innerTemplateVariables);
@@ -111,7 +132,8 @@ define([
 			
 			this.populateTimeOptions();
 			this.initCalendar();
-			this.initAutocomplete();
+			//this.initAutocomplete();
+			this.addProduct();
 		},
 		
 		populateTimeOptions: function () {
@@ -140,6 +162,40 @@ define([
 				todayHighlight: true,
 				format: 'yyyy-mm-dd',
 			});
+		},
+		
+		addProduct: function () {
+			var clone = null;
+			
+			if(this.options.productFieldClone == null) {
+				var productTemplateVars = {
+					product_list:this.getProductDropdown(),
+				};
+				var productTemplate = _.template(purchaseOrderPickUpScheduleProductItemTemplate, productTemplateVars);
+				
+				this.$el.find('#product-list tbody').append(productTemplate);
+				var productItem = this.$el.find('#product-list tbody').find('.product-item:first-child');
+				this.options.productFieldClone = productItem.clone();
+				//this.addIndexToProductFields(productItem);
+				clone = productItem;
+			}
+			else {
+				var clone = this.options.productFieldClone.clone();
+				//this.addIndexToProductFields(clone);
+				this.$el.find('#product-list tbody').append(clone);
+			}
+				
+			//this.addValidationToProduct();
+			return clone;
+		},
+		
+		getProductDropdown: function () {
+			var dropDown = '<option value="">Select a product</option>';
+			_.each(this.productCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
+			});
+			
+			return dropDown;
 		},
 		
 		initAutocomplete: function () {
