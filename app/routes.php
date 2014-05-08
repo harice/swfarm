@@ -38,11 +38,11 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('account/getAddress', 'APIv1\AccountController@getAddress');
 	Route::get('account/getCustomerAccount', 'APIv1\AccountController@getCustomerAccount');
 	Route::get('account/getProducerAccount', 'APIv1\AccountController@getProducerAccount');
-    Route::get('account/getTruckerAccount', 'APIv1\AccountController@getTruckerAccount');
-    Route::get('account/getTrailerAccount', 'APIv1\AccountController@getTrailerAccount');
-    Route::get('account/getTrailerListByAccount', 'APIv1\AccountController@getTrailerListByAccount');
-    Route::get('account/getLoaderAccount', 'APIv1\AccountController@getLoaderAccount');
-    Route::get('account/getAllContactOnAccount', 'APIv1\AccountController@getAllContactOnAccount');
+    Route::get('account/trucker', 'APIv1\AccountController@getTruckerAccount');
+    Route::get('account/trailer', 'APIv1\AccountController@getTrailerAccount');
+    
+    Route::get('account/loader', 'APIv1\AccountController@getLoaderAccount');
+    Route::get('account/contact', 'APIv1\AccountController@getAllContactOnAccount');
 	Route::resource('account', 'APIv1\AccountController');
 
 	Route::get('contact/search', 'APIv1\ContactController@search');
@@ -61,6 +61,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('weightticket', 'APIv1\WeightTicketController');
 
     //tranport schedule
+    Route::get('transportschedule/trailer', 'APIv1\TransportScheduleController@getTrailerList');
     Route::get('transportschedule/getTrailerList', 'APIv1\TransportScheduleController@getTrailerList');
     Route::get('transportschedule/getAllPickupSchedules', 'APIv1\TransportScheduleController@getAllPickupSchedules');
     Route::get('transportschedule/getAllDeliverySchedules', 'APIv1\TransportScheduleController@getAllDeliverySchedules');

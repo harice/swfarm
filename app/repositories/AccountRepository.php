@@ -436,16 +436,6 @@ class AccountRepository implements AccountRepositoryInterface {
       );
   }
 
-  public function getTrailerListByAccount($accountId){
-      $truckerList = Trailer::whereHas('Account', function($query) use ($accountId){
-                    $query->where('id', '=', $accountId);
-                  })->get(array('id','account_id','number','rate'));
-    
-    return Response::json(
-        $truckerList->toArray(),
-        200);
-  }
-
   public function getLoaderAccount(){
       $accountIds = array(3); //loader id
       $truckers = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($accountIds){

@@ -97,7 +97,7 @@ class TransportScheduleController extends BaseController {
 	}
 
 	public function getTrailerList(){
-		$model = $this->repo->getTrailerList();
+		$model = $this->repo->getTrailerList(Input::get('accountId'));
         return Response::json($model);
 	}
 
