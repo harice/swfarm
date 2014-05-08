@@ -71,7 +71,7 @@ define([
 		
 		render: function(){
 			//this.truckingRateModel.runFetch();
-			this.productCollection.getAllModel();
+			this.productCollection.getPOProducts(this.poid);
 		},
 		
 		displayForm: function () {
@@ -192,7 +192,7 @@ define([
 		getProductDropdown: function () {
 			var dropDown = '<option value="">Select a product</option>';
 			_.each(this.productCollection.models, function (model) {
-				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('stacknumber')+'</option>';
 			});
 			
 			return dropDown;
