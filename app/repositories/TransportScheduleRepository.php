@@ -190,8 +190,17 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       return $orderproducts->toArray();
   }
 
-  public function getTrailerList(){
-    return Trailer::all();
+  // public function getTrailerList(){
+  //   return Trailer::all();
+  // }
+
+
+  public function getTrailerList($accountId){
+      $trailerList = Trailer::whereHas('Account', function($query) use ($accountId){
+                    $query->where('id', '=', $accountId);
+                  })->get(array('id','account_id','number','rate'));
+    
+    return $trailerList->toArray();
   }
 
   private function displayLastQuery(){
