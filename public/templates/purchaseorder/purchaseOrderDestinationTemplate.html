@@ -1,3 +1,4 @@
 <% _.each(destinations, function(destination){ %>
-<label class="radio-inline"> <input class="location_id icheck" type="radio" name="location_id" value="<%= destination.get("id") %>"> <%= destination.get("location") %></label>
+<input class="location_id icheck" type="radio" name="location_id" value="<%= destination.get("id") %>" id="r<%= destination.get("id") %>" />
+<label for="r<%= destination.get("id") %>"><span></span><%= destination.get("location") %></label>
 <% }); %>

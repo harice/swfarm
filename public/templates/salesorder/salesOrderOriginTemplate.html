@@ -1,5 +1,4 @@
 <% _.each(origins, function(origin){ %>
-<label class="radio-inline">
-	<input class="location_id" type="radio" name="location_id" value="<%= origin.get("id") %>"> <%= origin.get("location") %>
-</label>
+<input class="location_id icheck" type="radio" name="location_id" value="<%= origin.get("id") %>" id="or<%= origin.get("id") %>" />
+<label for="or<%= origin.get("id") %>"><span></span><%= origin.get("location") %></label>
 <% }); %>

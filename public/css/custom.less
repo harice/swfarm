@@ -2,9 +2,6 @@ body {
     font-size: 13px;
 }
 
-.width-100 { width:100px; }
-.width-150 { width:150px; }
-
 input.error { border-color: #CC0000 !important; }
 label.error { color: #CC0000 !important; font-weight: normal; }
 
@@ -133,49 +130,88 @@ ul.autocomplete {
                 color: #fff;
             }
         }
+
+        &.active {
+            a {
+                background-color: #19B698;
+                color: #fff;
+            }
+        }
     }
 }
 
-select {
-    border: 1px solid #ccc;
-    padding: 6px 8px;
-    height: 33px;
-}
-
-.max-width-80 {
-    max-width: 130px;
-}
-
-.width-70 {
-    width: 70px;
-}
-
-.width-80 {
-    width: 70px;
-}
-
-.width-130 {
-    width: 130px;
-}
-
-.width-110 {
-    width: 110px;
-}
-
 .styled-select select {
-    background: transparent;
-    border: 0 none;
-    width: 335px;
-    padding: 6px 8px;
-    height: 34px;
+    -webkit-appearance: none;  /*Removes default chrome and safari style*/
+    -moz-appearance: none; /* Removes Default Firefox style*/
+    background: url('select2.png') no-repeat #fff;  /*Adds background-image*/
+    background-position: 272px 0;  /*Position of the background-image*/
+    text-indent: 0.01px; /* Removes default arrow from firefox*/
+    text-overflow: "";  /*Removes default arrow from firefox*/
+    width: 304px;
+    outline: 0 none;
     font-size: 14px;
-    -webkit-appearance: none;
-} 
-
-.styled-select {
+    color: #555;
+    color: rgba(37,37,37,1);
+    text-shadow: 0 0 0 #555;
     border: 1px solid #ccc;
-    width: 305px;
     height: 34px;
-    overflow: hidden;
-    background: url("select2.png") no-repeat scroll right center rgba(0, 0, 0, 0);
+    padding: 6px 8px;
+
+    option {
+        background: #fff;
+        height: 34px;
+        padding: 6px 8px;
+        -webkit-appearance: button;
+        
+        &:hover,
+        &:focus {
+            background-color: #19B698;
+            color: #555;
+        }
+    }
+
+    &.width-80 {
+        width:80px;
+        background-position: 44px 0;
+    }
+
+    &.width-100 {
+        width:100px;
+        background-position: 64px 0;
+    }
+
+    &.width-160 {
+        width:160px;
+        background-position: 126px 0;
+    }
 }
+
+#so-origin,
+#so-nos,
+#po-destination {
+    input[type="radio"] {
+        display:none;
+    }
+    input[type="radio"] + label span {
+        display:inline-block;
+        width:20px;
+        height:20px;
+        margin:-1px 4px 0 0;
+        vertical-align:middle;
+        background:url(green.png) -132px top no-repeat;
+        cursor:pointer;
+    }
+    input[type="radio"]:checked + label span {
+        background:url(green.png) -110px top no-repeat;
+    }
+}
+
+.max-width-80 { max-width: 130px; }
+.width-70  { width: 70px; }
+.width-80  { width: 70px; }
+.width-100 { width:100px; }
+.width-110 { width: 110px; }
+.width-130 { width: 130px; }
+.width-150 { width:150px; }
+.width-300 { width: 300px; }
+.width-304 { width: 304px; }
