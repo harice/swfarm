@@ -19,7 +19,7 @@ class Trailer extends BaseModel {
      * 
      * @var array
      */
-    protected $fillable = array('account_id', 'name');
+    protected $fillable = array('account_id', 'name', 'rate');
 
     /**
      * Define field validation rules.
@@ -28,12 +28,21 @@ class Trailer extends BaseModel {
      */
 	public static $rules = array(
         'account_id' => 'required',
-        'name' => 'required'
+        'name' => 'required',
+        'rate' => 'required'
     );
     
     public function fee()
     {
         return $this->morphOne('Fee', 'entity');
+    }
+
+    public function tranportschedule(){
+        return $this->hasMany('TransportSchedule');
+    }
+
+    public function account(){
+        return $this->hasOne('Account', 'id', 'account_id')->select('id', 'name','accounttype');
     }
     
 }

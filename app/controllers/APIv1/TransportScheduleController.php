@@ -15,6 +15,8 @@ class TransportScheduleController extends BaseController {
 	{
 		$this->repo = $repo;
 	}
+
+	public function index(){}
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -26,13 +28,19 @@ class TransportScheduleController extends BaseController {
         return Response::json($collection);
 	}
 
+	public function getAllDeliverySchedules()
+	{
+		$collection = $this->repo->getAllTransportSchedules( Input::all(), 2);
+        return Response::json($collection);
+	}
+
 	/**
 	 * Display the specified resource.
 	 *
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function getPickupSchedule($id)
+	public function getTransportSchedule($id)
 	{
 		$collection = $this->repo->getSchedule($id);
         return Response::json($collection);
@@ -73,10 +81,6 @@ class TransportScheduleController extends BaseController {
 		return $this->repo->deleteTransportSchedule($id);
 	}
 
-	public function getTruckerAccount(){
-		return $this->repo->getTruckerAccount(Input::get('search'));
-	}
-
 	public function getLoaderAccount(){
 		return $this->repo->getLoaderAccount(Input::get('search'));
 	}
@@ -85,6 +89,16 @@ class TransportScheduleController extends BaseController {
 		return Response::json(array(
 			'truckingrate' => Config::get('constants.TRUCKING_RATE')),
 	        200);
+	}
+
+	public function getProductsOfOrder(){
+		$model = $this->repo->getProductsOfOrder(Input::get('orderId'));
+        return Response::json($model);
+	}
+
+	public function getTrailerList(){
+		$model = $this->repo->getTrailerList();
+        return Response::json($model);
 	}
 
 }

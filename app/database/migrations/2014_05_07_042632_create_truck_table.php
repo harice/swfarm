@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTrailerTable extends Migration {
+class CreateTruckTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,12 +12,13 @@ class CreateTrailerTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('trailer', function(Blueprint $table)
+		Schema::create('truck', function(Blueprint $table)
 		{
 			$table->engine = 'InnoDB';
             $table->increments('id');
 			$table->integer('account_id')->unsigned();
             $table->string('name', 20);
+            $table->decimal('rate', 8, 2);
 			$table->timestamps();
             
             $table->foreign('account_id')->references('id')->on('account');
@@ -31,7 +32,7 @@ class CreateTrailerTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('trailer');
+		Schema::dropIfExists('truck');
 	}
 
 }
