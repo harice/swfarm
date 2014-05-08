@@ -424,6 +424,28 @@ class AccountRepository implements AccountRepositoryInterface {
       );
   }
 
+  public function getTrailerAccount(){
+      $accountIds = array(7); //operator, hauler and Southwest Farms trucker accounts ids
+      $truckers = Account::with('accounttype')->with('trailer')->whereHas('accounttype', function ($query) use ($accountIds){
+                    $query->whereIn('id', $accountIds);
+                  })->get(array('id', 'name', 'accounttype'));
+
+    return Response::json(
+          $truckers->toArray(),
+          200
+      );
+  }
+
+  public function getTrailerListByAccount($accountId){
+      $truckerList = Trailer::whereHas('Account', function($query) use ($accountId){
+                    $query->where('id', '=', $accountId);
+                  })->get(array('id','account_id','number','rate'));
+    
+    return Response::json(
+        $truckerList->toArray(),
+        200);
+  }
+
   public function getLoaderAccount(){
       $accountIds = array(3); //loader id
       $truckers = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($accountIds){

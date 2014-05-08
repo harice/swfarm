@@ -110,6 +110,14 @@ class AccountController extends BaseController {
 		return $this->account->getLoaderAccount();
 	}
 
+	public function getTrailerAccount(){
+		return $this->account->getTrailerAccount();
+	}
+
+	public function getTrailerListByAccount(){
+		return $this->account->getTrailerListByAccount(Input::get('accountId'));
+	}
+
 	public function getAllContactOnAccount(){
 		return $this->account->getAllContactOnAccount(Input::get('accountId'));
 	}

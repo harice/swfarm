@@ -85,6 +85,6 @@ class TransportSchedule extends Eloquent {
     }
 
     public function trailer(){
-        return $this->hasOne('Trailer', 'id', 'trailer_id')->select(array('id','name'));
+        return $this->hasOne('Trailer', 'id', 'trailer_id')->select(array('id','account_id','number','rate'));
     }
 }

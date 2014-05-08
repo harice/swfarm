@@ -39,6 +39,8 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 	Route::get('account/getCustomerAccount', 'APIv1\AccountController@getCustomerAccount');
 	Route::get('account/getProducerAccount', 'APIv1\AccountController@getProducerAccount');
     Route::get('account/getTruckerAccount', 'APIv1\AccountController@getTruckerAccount');
+    Route::get('account/getTrailerAccount', 'APIv1\AccountController@getTrailerAccount');
+    Route::get('account/getTrailerListByAccount', 'APIv1\AccountController@getTrailerListByAccount');
     Route::get('account/getLoaderAccount', 'APIv1\AccountController@getLoaderAccount');
     Route::get('account/getAllContactOnAccount', 'APIv1\AccountController@getAllContactOnAccount');
 	Route::resource('account', 'APIv1\AccountController');

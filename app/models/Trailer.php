@@ -40,5 +40,9 @@ class Trailer extends BaseModel {
     public function tranportschedule(){
         return $this->hasMany('TransportSchedule');
     }
+
+    public function account(){
+        return $this->hasOne('Account', 'id', 'account_id')->select('id', 'name','accounttype');
+    }
     
 }

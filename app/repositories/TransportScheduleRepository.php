@@ -42,7 +42,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
                       ->with('trucker.accountidandname')
                       ->with('originloader.accountidandname')
                       ->with('destinationloader.accountidandname')
-                      ->with('trailer')
+                      ->with('trailer.account')
                       ->where('order_id', '=', $orderId)
                       ->where('type', '=', $scheduleType)
                       ->paginate($perPage);
