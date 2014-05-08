@@ -186,7 +186,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
 
 
   public function getProductsOfOrder($order_id){
-      $orderproducts = ProductOrder::where('order_id', '=', $order_id)->get();
+      $orderproducts = ProductOrder::with('product')->where('order_id', '=', $order_id)->get();
       return $orderproducts->toArray();
   }
 
