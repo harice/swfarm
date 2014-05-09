@@ -21,8 +21,8 @@ define([
 			);
 		},
 		
-		getTruckerAccounts: function () {
-			this.url = '/apiv1/account/trucker';
+		getTruckerAccountsByAccountType: function (id) {
+			this.url = '/apiv1/account/accountsByType?accountTypeId='+id;
 			this.getModels();
 		},
 		

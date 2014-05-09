@@ -101,7 +101,7 @@ define(function () {
 		'PO': {
 			'PICKUPSCHEDULE': {
 				'EDITABLERATE': {
-					'ACCOUNTTYPE': ['Hauler'],
+					'ACCOUNTTYPE': ['hauler'],
 				},
 			},
 		},

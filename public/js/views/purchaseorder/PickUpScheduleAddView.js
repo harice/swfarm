@@ -5,13 +5,11 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
-	'views/autocomplete/CustomAutoCompleteView',
-	'models/purchaseorder/TruckingRateModel',
+	'models/order/OrderScheduleVariablesModel',
 	'models/purchaseorder/POScheduleModel',
-	'collections/account/AccountTruckerCollection',
-	'collections/account/AccountLoaderCollection',
 	'collections/product/ProductCollection',
 	'collections/account/AccountCollection',
+	'collections/account/AccountTypeCollection',
 	'collections/contact/ContactCollection',
 	'collections/account/TrailerCollection',
 	'text!templates/layout/contentTemplate.html',
@@ -25,13 +23,11 @@ define([
 			Validate,
 			TextFormatter,
 			PhoneNumber,
-			CustomAutoCompleteView,
-			TruckingRateModel,
+			OrderScheduleVariablesModel,
 			POScheduleModel,
-			AccountTruckerCollection,
-			AccountLoaderCollection,
 			ProductCollection,
 			AccountCollection,
+			AccountTypeCollection,
 			ContactCollection,
 			TrailerCollection,
 			contentTemplate,
@@ -52,7 +48,12 @@ define([
 			var thisObj = this;
 			
 			this.poid = option.poid;
-			this.truckingRatePerMile = null;
+			this.freightRate = null;
+			this.loadingRate = null;
+			this.unloadingRate = null;
+			this.trailerPercentageRate = null;
+			
+			this.truckingRateEditable = false;
 			
 			this.options = {
 				productFieldClone: null,
@@ -63,11 +64,58 @@ define([
 				productFieldSeparator: '.',
 			};
 			
-			this.truckingRateModel = new TruckingRateModel();
-			this.truckingRateModel.on('change', function() {
-				thisObj.truckingRatePerMile = this.get('truckingrate');
-				thisObj.displayForm();
+			this.orderScheduleVariablesModel = new OrderScheduleVariablesModel();
+			this.orderScheduleVariablesModel.on('change', function() {
+				thisObj.freightRate = parseFloat(this.get('freight_rate'));
+				thisObj.loadingRate = parseFloat(this.get('loading_rate'));
+				thisObj.unloadingRate = parseFloat(this.get('unloading_rate'));
+				thisObj.trailerPercentageRate = parseFloat(this.get('trailer_percentage_rate'));
+				thisObj.accountTypeCollection.getModels();
 				this.off('change');
+			});
+			
+			this.accountTypeCollection = new AccountTypeCollection();
+			this.accountTypeCollection.on('sync', function() {
+				thisObj.productCollection.getPOProducts(thisObj.poid);
+				this.off('sync');
+			});
+			this.accountTypeCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
+			
+			this.productCollection = new ProductCollection();
+			this.productCollection.on('sync', function() {
+				thisObj.trailerAccountCollection.getTrailerAccounts();
+				this.off('sync');
+			});
+			this.productCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
+			
+			this.trailerAccountCollection = new AccountCollection();
+			this.trailerAccountCollection.on('sync', function() {
+				thisObj.loaderAccountCollection.getLoaderAccounts();
+				this.off('sync');
+			});
+			this.trailerAccountCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
+			
+			this.loaderAccountCollection = new AccountCollection();
+			this.loaderAccountCollection.on('sync', function() {
+				thisObj.displayForm();
+				this.off('sync');
+			});
+			this.loaderAccountCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
+			
+			this.truckerAccountCollection = new AccountCollection();
+			this.truckerAccountCollection.on('sync', function() {
+				thisObj.generateTruckerDropdown();
+			});
+			this.truckerAccountCollection.on('error', function(collection, response, options) {
+				//this.off('error');
 			});
 			
 			this.trailerCollection = new TrailerCollection();
@@ -101,47 +149,10 @@ define([
 			this.truckerContactCollection.on('error', function(collection, response, options) {
 				//this.off('error');
 			});
-			
-			this.truckerAccountCollection = new AccountCollection();
-			this.truckerAccountCollection.on('sync', function() {
-				thisObj.trailerAccountCollection.getTrailerAccounts();
-				this.off('sync');
-			});
-			this.truckerAccountCollection.on('error', function(collection, response, options) {
-				this.off('error');
-			});
-			
-			this.trailerAccountCollection = new AccountCollection();
-			this.trailerAccountCollection.on('sync', function() {
-				thisObj.loaderAccountCollection.getLoaderAccounts();
-				this.off('sync');
-			});
-			this.trailerAccountCollection.on('error', function(collection, response, options) {
-				this.off('error');
-			});
-			
-			this.loaderAccountCollection = new AccountCollection();
-			this.loaderAccountCollection.on('sync', function() {
-				thisObj.displayForm();
-				this.off('sync');
-			});
-			this.loaderAccountCollection.on('error', function(collection, response, options) {
-				this.off('error');
-			});
-			
-			this.productCollection = new ProductCollection();
-			this.productCollection.on('sync', function() {
-				thisObj.truckerAccountCollection.getTruckerAccounts();
-				this.off('sync');
-			});
-			this.productCollection.on('error', function(collection, response, options) {
-				this.off('error');
-			});
 		},
 		
 		render: function(){
-			//this.truckingRateModel.runFetch();
-			this.productCollection.getPOProducts(this.poid);
+			this.orderScheduleVariablesModel.runFetch();
 		},
 		
 		displayForm: function () {
@@ -149,8 +160,7 @@ define([
 			
 			var innerTemplateVariables = {
 				sched_url : '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poid,
-				trucker_account_type_list : '',
-				trucker_account_list : this.getTruckerDropdown(),
+				trucker_account_type_list : this.getTruckerType(),
 				trailer_account_list : this.getTrailerDropdown(),
 				originloader_account_list : this.getLoaderDropdown(),
 				destinationloader_account_list : this.getLoaderDropdown(),
@@ -234,9 +244,9 @@ define([
 			});
 		},
 		
-		getTruckerDropdown: function () {
+		getTruckerType: function () {
 			var dropDown = '';
-			_.each(this.truckerAccountCollection.models, function (model) {
+			_.each(this.accountTypeCollection.models, function (model) {
 				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
 			return dropDown;
@@ -256,6 +266,14 @@ define([
 				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
 			return dropDown;
+		},
+		
+		generateTruckerDropdown: function () {
+			var dropDown = '';
+			_.each(this.truckerAccountCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
+			});
+			this.$el.find('#truckerAccount_id').append(dropDown);
 		},
 		
 		generateTruckerAccountContacts: function () {
@@ -346,37 +364,21 @@ define([
 			this.options.productFieldCounter++;
 		},
 		
-		toggleTruckingRate: function (accountType) {
-			if(Const.PO.PICKUPSCHEDULE.EDITABLERATE.ACCOUNTTYPE.indexOf(accountType) >= 0) {
-				this.truckingRateEditable = true;
-				$('#truckingrate').attr('readonly', false);
-				$('#truckingrate').val('');
-			}
-			else {
-				this.truckingRateEditable = false;
-				$('#truckingrate').attr('readonly', true);
-				this.computeTruckingRate();
-			}
-		},
-		
-		computeTruckingRate: function () {
-			var distanceField = $('#distance');
-			var distanceValue = (!isNaN(parseFloat(distanceField.val())))? parseFloat(distanceField.val()) : 0;
-			$('#truckingrate').val(parseFloat(distanceValue * this.truckingRatePerMile).toFixed(2));
-		},
-		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #add-product': 'addProduct',
 			'click .remove-product': 'removeProduct',
 			'change .productorder_id': 'onChangeProduct',
-			'change #trucker': 'onChangeTrucker',
+			'change #truckerAccountType_id': 'onChangeTruckerType',
+			'change #truckerAccount_id': 'onChangeTrucker',
 			'change #trailer': 'onChangeTrailer',
 			'change #originloader': 'onChangeOriginloader',
 			'change #destinationloader': 'onChangeDestinationloader',
 			
-			'blur #truckingrate': 'onBlurTruckingRate',
+			'keyup #truckingrate': 'onKeyUpTrackingRate',
+			//'blur #truckingrate': 'onBlurTruckingRate',
 			'blur #distance': 'onBlurDistance',
+			'keyup #distance': 'onBlurDistance',
 			'blur #fuelcharge': 'onBlurFuelCharge',
 			'blur .loader': 'onBlurLoader',
 			'click #delete-schedule': 'deleteSchedule',
@@ -388,6 +390,19 @@ define([
 				var productModel = this.productCollection.get(productId);
 				$(ev.currentTarget).closest('tr').find('.product').text(productModel.get('product').name);
 			}
+		},
+		
+		onChangeTruckerType: function (ev) {
+			var accountTypeId = $(ev.currentTarget).val();
+			this.resetSelect($('#truckerAccount_id'));
+			this.resetSelect($('#trucker_id'));
+			if(accountTypeId != '') {
+				var accountTypeModel = this.accountTypeCollection.get(accountTypeId);
+				this.toggleTruckingRate(accountTypeModel.get('name'));
+				this.truckerAccountCollection.getTruckerAccountsByAccountType(accountTypeId);
+			}
+			else
+				this.toggleTruckingRate('');
 		},
 		
 		onChangeTrucker: function (ev) {
@@ -437,6 +452,41 @@ define([
 		
 		onBlurLoader: function (ev) {
 			this.toFixedValue($(ev.target), 2);
+		},
+		
+		toggleTruckingRate: function (accountType) {
+			if(Const.PO.PICKUPSCHEDULE.EDITABLERATE.ACCOUNTTYPE.indexOf(accountType.toLowerCase()) >= 0) {
+				this.truckingRateEditable = true;
+				$('#truckingrate').attr('readonly', false);
+				$('#truckingrate').val('');
+			}
+			else {
+				this.truckingRateEditable = false;
+				$('#truckingrate').attr('readonly', true);
+				this.computeTruckingRate();
+			}
+		},
+		
+		onKeyUpTrackingRate: function (ev) {
+			
+		},
+		
+		computeTruckingRate: function () {
+			var distanceField = $('#distance');
+			var distanceValue = (!isNaN(parseFloat(distanceField.val())))? parseFloat(distanceField.val()) : 0;
+			var truckingRate = (distanceValue > 0)? ((this.freightRate * distanceValue) + this.loadingRate + this.unloadingRate).toFixed(2) : ''; //divide by tons
+			$('#truckingrate').val(truckingRate);
+		},
+		
+		computeTrailerRent: function (haulingRate) {
+			if(!this.truckingRateEditable) {
+				
+				if(typeof haulingRate == 'undefined')
+					haulingRate = (!isNaN(parseFloat($('#truckingrate').val())))? parseFloat($('#truckingrate').val()) : 0;
+			
+				trailerRent = haulingRate * this.trailerPercentageRate / 100;
+				$('#trailer-rent').val(trailerRent.toFixed(2))
+			}
 		},
 		
 		deleteSchedule: function () {
