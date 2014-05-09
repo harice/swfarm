@@ -42,6 +42,10 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+			
+			this.initConfirmationWindow('Are you sure you want to delete this product?',
+										'confirm-delete-product',
+										'Delete');
 		},
 		
 		displayList: function () {
@@ -60,7 +64,9 @@ define([
 		
 		events: {
 			'click .sort-name' : 'sortName',
-			'change .checkall' : 'checkAll'
+			'change .checkall' : 'checkAll',
+			'click .delete-product': 'preShowConfirmationWindow',
+			'click #confirm-delete-product': 'deleteProduct',
 		},
         
         checkAll: function () {
@@ -73,6 +79,30 @@ define([
 
 		sortName: function () {
 			this.sortByField('name');
+		},
+		
+		preShowConfirmationWindow: function (ev) {
+			this.$el.find('#confirm-delete-product').attr('data-id', $(ev.currentTarget).attr('data-id'));
+			
+			this.showConfirmationWindow();
+			return false;
+		},
+		
+		deleteProduct: function (ev) {
+			var thisObj = this;
+			var productModel = new ProductModel({id:$(ev.currentTarget).attr('data-id')});
+			
+            productModel.destroy({
+                success: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                    thisObj.renderList(1);
+                },
+                error: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                },
+                wait: true,
+                headers: productModel.getAuth(),
+            });
 		},
 	});
 

@@ -105,6 +105,10 @@ define([
 			this.$el.html(compiledTemplate);
 			
 			this.initCalendars();
+			
+			this.initConfirmationWindow('Are you sure you want to cancel this SO?',
+										'confirm-cancel-so',
+										'Cancel Sales Order');
 		},
 		
 		displayList: function () {
@@ -181,6 +185,8 @@ define([
 			'change .location_id' : 'filterByOrigin',
 			'change .natureofsale_id' : 'filterByNatureOfSale',
 			'change .statusFilter' : 'filterByStatus',
+			'click .cancel-so': 'preShowConfirmationWindow',
+			'click #confirm-cancel-so': 'cancelSO',
 		},
 		
 		sortSODate: function () {
@@ -208,33 +214,34 @@ define([
 			return false;
 		},
 		
+		preShowConfirmationWindow: function (ev) {
+			this.$el.find('#confirm-cancel-so').attr('data-id', $(ev.currentTarget).attr('data-id'));
+			
+			this.showConfirmationWindow();
+			return false;
+		},
+		
 		cancelSO: function (ev) {
 			var thisObj = this;
-			var field = $(ev.currentTarget);
-			
-			var verifyCancel = confirm('Are you sure you want to cancel this Sales Order?');
-			
-			if(verifyCancel) {
-				var salesOrderModel = new SalesOrderModel({id:field.attr('data-id')});
+			var salesOrderModel = new SalesOrderModel({id:$(ev.currentTarget).attr('data-id')});
 				
-				salesOrderModel.setCancelURL();		
-				salesOrderModel.save(
-					null, 
-					{
-						success: function (model, response, options) {
+			salesOrderModel.setCancelURL();		
+			salesOrderModel.save(
+				null, 
+				{
+					success: function (model, response, options) {
+						thisObj.displayMessage(response);
+						thisObj.renderList(thisObj.collection.getCurrentPage());
+					},
+					error: function (model, response, options) {
+						if(typeof response.responseJSON.error == 'undefined')
+							validate.showErrors(response.responseJSON);
+						else
 							thisObj.displayMessage(response);
-							thisObj.renderList(thisObj.collection.getCurrentPage());
-						},
-						error: function (model, response, options) {
-							if(typeof response.responseJSON.error == 'undefined')
-								validate.showErrors(response.responseJSON);
-							else
-								thisObj.displayMessage(response);
-						},
-						headers: salesOrderModel.getAuth(),
-					}
-				);
-			}
+					},
+					headers: salesOrderModel.getAuth(),
+				}
+			);
 			
 			return false;
 		},

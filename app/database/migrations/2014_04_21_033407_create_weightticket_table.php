@@ -16,10 +16,10 @@ class CreateWeightticketTable extends Migration {
 		{
 			$table->engine = 'InnoDB';
 			$table->increments('id');
-            $table->string('wtn', 20)->unique();
-            $table->integer('purchaseorder_id')->unsigned();
+            $table->string('weightticket_number', 20)->unique();
+            $table->integer('order_id')->unsigned();
             $table->integer('transportschedule_id')->unsigned();
-            $table->integer('bidproduct_id')->unsigned();
+            $table->integer('productorder_id')->unsigned();
             
             $table->string('origin_weightinfo_type', 60)->default('Origin');
             $table->integer('origin_bales')->nullable();
@@ -39,9 +39,9 @@ class CreateWeightticketTable extends Migration {
             
 			$table->timestamps();
             
-            $table->foreign('purchaseorder_id')->references('id')->on('bid');
+            $table->foreign('order_id')->references('id')->on('order');
             $table->foreign('transportschedule_id')->references('id')->on('transportschedule')->onDelete('cascade');
-            $table->foreign('bidproduct_id')->references('id')->on('bidproduct');
+            $table->foreign('productorder_id')->references('id')->on('productorder');
             $table->foreign('origin_account_id')->references('id')->on('account');
             $table->foreign('destination_account_id')->references('id')->on('account');
 		});

@@ -130,6 +130,8 @@ define([
 			this.initCustomerAutocomplete();
 			this.initCalendar();
 			this.addProduct();
+			
+			this.otherInitializations();
 		},
 		
 		initValidateForm: function () {
@@ -208,7 +210,7 @@ define([
 				var address = model.get('address');
 				thisObj.$el.find('#street').val(address[0].street);
 				thisObj.$el.find('#state').val(address[0].address_states[0].state);
-				thisObj.$el.find('#city').val(address[0].address_city[0].city);
+				thisObj.$el.find('#city').val(address[0].city);
 				thisObj.$el.find('#zipcode').val(address[0].zipcode);
 			};
 			
@@ -216,7 +218,7 @@ define([
 				var address = result.address;
 				thisObj.$el.find('#street').val(address[0].street);
 				thisObj.$el.find('#state').val(address[0].address_states[0].state);
-				thisObj.$el.find('#city').val(address[0].address_city[0].city);
+				thisObj.$el.find('#city').val(address[0].city);
 				thisObj.$el.find('#zipcode').val(address[0].zipcode);
 			},
 			
@@ -356,13 +358,15 @@ define([
 		},
 		
 		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #add-product': 'addProduct',
 			'click .remove-product': 'removeProduct',
 			//'blur .productname': 'validateProduct',
 			'blur .unitprice': 'onBlurUnitPrice',
 			'keyup .unitprice': 'onKeyUpUnitPrice',
 			'keyup .tons': 'onKeyUpTons',
-			'click #cancel-so': 'cancelSO',
+			'click #cancel-so': 'showConfirmationWindow',
+			'click #confirm-cancel-so': 'cancelSO',
 		},
 		
 		removeProduct: function (ev) {
@@ -444,32 +448,29 @@ define([
 		cancelSO: function () {
 			if(this.soId != null) {
 				var thisObj = this;
-				
-				var verifyCancel = confirm('Are you sure you want to cancel this Sales Order?');
-				
-				if(verifyCancel) {
-					var salesOrderModel = new SalesOrderModel({id:this.soId});
-					salesOrderModel.setCancelURL();
-					salesOrderModel.save(
-						null, 
-						{
-							success: function (model, response, options) {
+				var salesOrderModel = new SalesOrderModel({id:this.soId});
+				salesOrderModel.setCancelURL();
+				salesOrderModel.save(
+					null, 
+					{
+						success: function (model, response, options) {
+							thisObj.displayMessage(response);
+							Global.getGlobalVars().app_router.navigate(Const.URL.SO, {trigger: true});
+						},
+						error: function (model, response, options) {
+							if(typeof response.responseJSON.error == 'undefined')
+								validate.showErrors(response.responseJSON);
+							else
 								thisObj.displayMessage(response);
-								Global.getGlobalVars().app_router.navigate(Const.URL.SO, {trigger: true});
-							},
-							error: function (model, response, options) {
-								if(typeof response.responseJSON.error == 'undefined')
-									validate.showErrors(response.responseJSON);
-								else
-									thisObj.displayMessage(response);
-							},
-							headers: salesOrderModel.getAuth(),
-						}
-					);
-				}
+						},
+						headers: salesOrderModel.getAuth(),
+					}
+				);
 			}
 			return false;
 		},
+		
+		otherInitializations: function () {},
 	});
 
   return SalesOrderAddView;

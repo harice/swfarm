@@ -121,7 +121,7 @@ define([
 			this.$el.find('#account_id').val(account.id);
 			this.$el.find('#street').val(address[0].street);
 			this.$el.find('#state').val(address[0].address_states[0].state);
-			this.$el.find('#city').val(address[0].address_city[0].city);
+			this.$el.find('#city').val(address[0].city);
 			this.$el.find('#zipcode').val(address[0].zipcode);
 			this.$el.find('#dateofpurchase').val(this.convertDateFormat(this.model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
 			
@@ -152,6 +152,18 @@ define([
 				productFields.find('.ishold').val(product.ishold);
 				productFields.find('.unitprice').blur();
 			});
+		},
+		
+		otherInitializations: function () {
+			this.initCancelConfirmation();
+		},
+		
+		initCancelConfirmation: function () {
+			var verifyMsg = (!this.isBid)? 'Are you sure you want to cancel this Purchase Order?' : 'Are you sure you want to cancel this Bid?';
+			var verifyButtonLabel = (!this.isBid)? 'Cancel Purchase Order' : 'Cancel Bid';
+			this.initConfirmationWindow(verifyMsg,
+										'confirm-cancel-po',
+										verifyButtonLabel);
 		},
 	});
 

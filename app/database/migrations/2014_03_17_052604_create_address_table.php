@@ -18,7 +18,7 @@ class CreateAddressTable extends Migration {
 			$table->increments('id');
 			$table->integer('account')->unsigned();
 			$table->string('street');
-			$table->integer('city')->unsigned();
+			$table->string('city');
 			$table->integer('state')->unsigned();
 			$table->string('zipcode');
 			$table->string('country');
@@ -34,8 +34,7 @@ class CreateAddressTable extends Migration {
 			$table->foreign('account')->references('id')->on('account')->onDelete('cascade');
 			$table->foreign('type')->references('id')->on('addresstype');
 			
-			$table->foreign('state')->references('id')->on('addressstates');
-			$table->foreign('city')->references('id')->on('addresscities');
+			$table->foreign('state')->references('id')->on('addressstates');			
 		});
 	}
 

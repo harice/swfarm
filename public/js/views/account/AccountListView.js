@@ -1,6 +1,7 @@
 define([
 	'backbone',
 	'views/base/ListView',
+	'models/account/AccountModel',
 	'models/account/AccountExtrasModel',
 	'collections/account/AccountCollection',
 	'text!templates/layout/contentTemplate.html',
@@ -8,7 +9,7 @@ define([
 	'text!templates/account/accountFilterTemplate.html',
 	'text!templates/account/accountInnerListTemplate.html',
 	'constant',
-], function(Backbone, ListView, AccountExtrasModel, AccountCollection, contentTemplate, accountListTemplate, accountFilterTemplate, accountInnerListTemplate, Const){
+], function(Backbone, ListView, AccountModel, AccountExtrasModel, AccountCollection, contentTemplate, accountListTemplate, accountFilterTemplate, accountInnerListTemplate, Const){
 
 	var AccountListView = ListView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -50,6 +51,10 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+			
+			this.initConfirmationWindow('Are you sure you want to delete this account?',
+										'confirm-delete-account',
+										'Delete');
 		},
 		
 		displayList: function () {
@@ -70,7 +75,9 @@ define([
 			'click .sort-name' : 'sortName',
 			'click .sort-type' : 'sortType',
 			'change .accounttypeFilter' : 'filterByType',
-			'change .checkall' : 'checkAll'
+			'change .checkall' : 'checkAll',
+			'click .delete-account': 'preShowConfirmationWindow',
+			'click #confirm-delete-account': 'deleteAccount',
 		},
 
 		checkAll: function () {
@@ -94,6 +101,30 @@ define([
 			this.collection.setFilter('filter',filter);
 			this.renderList(1);
 			return false;
+		},
+		
+		preShowConfirmationWindow: function (ev) {
+			this.$el.find('#confirm-delete-account').attr('data-id', $(ev.currentTarget).attr('data-id'));
+			
+			this.showConfirmationWindow();
+			return false;
+		},
+		
+		deleteAccount: function (ev) {
+			var thisObj = this;
+			var accountModel = new AccountModel({id:$(ev.currentTarget).attr('data-id')});
+			
+            accountModel.destroy({
+                success: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                    thisObj.renderList(1);
+                },
+                error: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                },
+                wait: true,
+                headers: accountModel.getAuth(),
+            });
 		},
 	});
 
