@@ -149,13 +149,14 @@ ul.autocomplete {
     text-overflow: "";  /*Removes default arrow from firefox*/
     width: 304px;
     outline: 0 none;
-    font-size: 14px;
-    color: #555;
-    color: rgba(37,37,37,1);
+    // font-size: 14px;
+    // color: #555;
+    // color: rgba(37,37,37,1);
     text-shadow: 0 0 0 #555;
     border: 1px solid #ccc;
     height: 34px;
     padding: 6px 8px;
+    vertical-align: middle;
 
     option {
         background: #fff;
@@ -186,24 +187,15 @@ ul.autocomplete {
     }
 }
 
+#accounttype select {
+    background-position: 272px 0;  /*Position of the background-image*/
+    width: 100%;
+}
+
 #so-origin,
 #so-nos,
 #po-destination {
-    input[type="radio"] {
-        display:none;
-    }
-    input[type="radio"] + label span {
-        display:inline-block;
-        width:20px;
-        height:20px;
-        margin:-1px 4px 0 0;
-        vertical-align:middle;
-        background:url(green.png) -132px top no-repeat;
-        cursor:pointer;
-    }
-    input[type="radio"]:checked + label span {
-        background:url(green.png) -110px top no-repeat;
-    }
+
 }
 
 .max-width-80 { max-width: 130px; }
