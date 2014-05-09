@@ -412,16 +412,28 @@ class AccountRepository implements AccountRepositoryInterface {
   //     }
   // }
 
-  public function getTruckerAccount(){
-      $accountIds = array(2, 4, 9); //operator, hauler and Southwest Farms trucker accounts ids
-      $truckers = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($accountIds){
-                    $query->whereIn('id', $accountIds);
-                  })->get(array('id', 'name', 'accounttype'));
+  // public function getTruckerAccount(){
+  //     $accountIds = array(2, 4, 9); //operator, hauler and Southwest Farms trucker accounts ids
+  //     $truckers = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($accountIds){
+  //                   $query->whereIn('id', $accountIds);
+  //                 })->get(array('id', 'name', 'accounttype'));
 
-    return Response::json(
-          $truckers->toArray(),
-          200
-      );
+  //   return Response::json(
+  //         $truckers->toArray(),
+  //         200
+  //     );
+  // }
+
+  public function getAccountsByType($accountTypeId){
+      $accounts = Account::with('accounttype')
+                  ->whereHas('accounttype', function ($query) use ($accountTypeId){
+                      $query->where('id', '=', $accountTypeId);
+                  })->get(array('id', 'name','accounttype'));
+
+      return Response::json(
+            $accounts->toArray(),
+            200
+        );
   }
 
   public function getTrailerAccount(){
@@ -444,6 +456,19 @@ class AccountRepository implements AccountRepositoryInterface {
 
     return Response::json(
           $truckers->toArray(),
+          200
+      );
+  }
+
+  public function getTruckerAccountTypes(){
+      $accountTypeIds = array(2, 4, 9); //operator, hauler and Southwest Farms trucker accounts ids
+      // $truckerTypes = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($accountIds){
+      //               $query->whereIn('id', $accountIds);
+      //             })->get(array('id', 'name', 'accounttype'));
+      $truckerTypes = AccountType::whereIn('id', $accountTypeIds)->get(array('id', 'name'));
+
+    return Response::json(
+          $truckerTypes->toArray(),
           200
       );
   }
