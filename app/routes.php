@@ -38,9 +38,9 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('account/getAddress', 'APIv1\AccountController@getAddress');
 	Route::get('account/getCustomerAccount', 'APIv1\AccountController@getCustomerAccount');
 	Route::get('account/getProducerAccount', 'APIv1\AccountController@getProducerAccount');
-    Route::get('account/trucker', 'APIv1\AccountController@getTruckerAccount');
+    Route::get('account/truckerAccountTypes', 'APIv1\AccountController@getTruckerAccountTypes');
+    Route::get('account/accountsByType', 'APIv1\AccountController@getAccountsByType');
     Route::get('account/trailer', 'APIv1\AccountController@getTrailerAccount');
-    
     Route::get('account/loader', 'APIv1\AccountController@getLoaderAccount');
     Route::get('account/contact', 'APIv1\AccountController@getAllContactOnAccount');
 	Route::resource('account', 'APIv1\AccountController');
@@ -48,12 +48,12 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 	Route::get('contact/search', 'APIv1\ContactController@search');
 	Route::resource('contact', 'APIv1\ContactController');
 
-	Route::get('po', 'APIv1\BidController@getPurchaseOrder');
-	Route::put('po/addUnitPriceToBidProduct/{bidId}', 'APIv1\BidController@addUnitPriceToBidProduct');
-	Route::put('po/addPickupDateToPurchaseOrder/{bidId}', 'APIv1\BidController@addPickupDateToPurchaseOrder');	
-	Route::put('po/cancelPurchaseOrder/{id}', 'APIv1\BidController@cancelPurchaseOrder');
-	Route::put('po/closePurchaseOrder/{id}', 'APIv1\BidController@closePurchaseOrder');
-	Route::get('po/search', 'APIv1\BidController@searchPurchaseOrder');
+	// Route::get('po', 'APIv1\BidController@getPurchaseOrder');
+	// Route::put('po/addUnitPriceToBidProduct/{bidId}', 'APIv1\BidController@addUnitPriceToBidProduct');
+	// Route::put('po/addPickupDateToPurchaseOrder/{bidId}', 'APIv1\BidController@addPickupDateToPurchaseOrder');	
+	// Route::put('po/cancelPurchaseOrder/{id}', 'APIv1\BidController@cancelPurchaseOrder');
+	// Route::put('po/closePurchaseOrder/{id}', 'APIv1\BidController@closePurchaseOrder');
+	// Route::get('po/search', 'APIv1\BidController@searchPurchaseOrder');
 
     Route::get('weightticket/getWeightTicketOfSchedule', 'APIv1\WeightTicketController@getWeightTicketOfSchedule');
     Route::get('weightticket/getAllBidProductOnBid', 'APIv1\WeightTicketController@getAllBidProductOnBid');
@@ -84,7 +84,6 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // Route::resource('purchaseorder', 'APIv1\OrderController');
 
     //Sales Order
-
     Route::get('salesorder/getStatuses', 'APIv1\OrderController@getSOStatus');
     Route::get('salesorder/getPickupLocationList', 'APIv1\OrderController@getPickupLocationList');
     Route::get('salesorder/getNatureOfSaleList', 'APIv1\OrderController@getNatureOfSaleList');
@@ -114,6 +113,10 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     
     // Fee
     Route::resource('fee', 'APIv1\FeeController');
+
+    // settings
+    Route::get('settings', 'APIv1\SettingsController@settings');
+    Route::get('settings/getTransportSettings', 'APIv1\SettingsController@getTransportSettings');
     
 });
 

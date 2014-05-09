@@ -20,7 +20,7 @@ class CreateProductOrderTable extends Migration {
 			$table->integer('product_id')->unsigned();
 			$table->text('description')->nullable();
 			$table->string('stacknumber', 20);
-			$table->decimal('tons', 8, 2);
+			$table->decimal('tons', 8, 4);
 			$table->integer('bales');
 			$table->decimal('unitprice', 8, 2)->nullable();
 			$table->boolean('ishold');

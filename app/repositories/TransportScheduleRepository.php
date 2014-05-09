@@ -69,9 +69,28 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           //convert pass date parameters to timestamp
           $data['scheduletimeMin'] = str_pad($data['scheduletimeMin'], 2, '0', STR_PAD_LEFT); //adding leading zero
           $data['date'] = Date('Y-m-d H:i:s', strtotime($data['scheduledate'].' '.$data['scheduletimeHour'].':'.$data['scheduletimeMin'].' '.$data['scheduletimeAmPm']));
-          $data['truckingrate'] = isset($data['truckingrate']) ? $data['truckingrate'] : Config::get('constants.GLOBAL_PER_LIST');
+          //$data['truckingrate'] = isset($data['truckingrate']) ? $data['truckingrate'] : Config::get('constants.GLOBAL_PER_LIST');
           $data['type'] = isset($data['type']) ? $data['type'] : 1;
-          $data['trailerrate'] = 99.50; //dummy data only because ther is no formula yet
+
+          //computations
+          if($data['truckerAccountType_id'] == 2){ //for hauler account type only
+            $trailerPercentageRateArr = Settings::where('name','=','trailer_percentage_rate')->first(array('value'))->toArray();
+            $trailerPercentageRate = floatval($trailerPercentageRateArr['value'])/100; //get trailer perentage and convert it to decimal
+            $data['trailerrate'] = $trailerPercentageRate * $data['truckingrate']; //dummy data only because ther is no formula yet
+          } else { //
+            $data['trailerrate'] = null;
+            $freightRateArr = Settings::where('name','=','freight_rate')->first(array('value'))->toArray();
+            $freightRate = floatval($freightRateArr['value']);
+
+            $loadingRateArr = Settings::where('name','=','loading_rate')->first(array('value'))->toArray();
+            $loadingRate = floatval($loadingRateArr['value']);
+
+            $unloadingRateArr = Settings::where('name','=','unloading_rate')->first(array('value'))->toArray();
+            $unloadingRate = floatval($unloadingRateArr['value']);
+
+            $totalWeight = $this->getTotalWieghtOfSchedule($data['products']);
+            $data['truckingrate'] = ($freightRate * $data['distance'] + ($loadingRate + $unloadingRate))/$totalWeight;
+          }
 
           $transportschedule->fill($data);
           $transportschedule->save();
@@ -95,6 +114,15 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       return array(
           'error' => false,
           'message' => $message);
+  }
+
+  private function getTotalWieghtOfSchedule($products){
+      $totalWeightInTons = 0;
+      foreach ($products as $product) {
+            $totalWeightInTons += floatval($product['quantity']);
+      }
+
+      return $totalWeightInTons;
   }
 
   private function addProductToSchedule($schedule_id, $products = array())
