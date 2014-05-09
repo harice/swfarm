@@ -61,7 +61,7 @@ class Order extends BaseModel {
     // }
 
     public function account(){
-        return $this->hasOne('Account', 'id', 'account_id')->select(array('id', 'name'));
+        return $this->hasOne('Account', 'id', 'account_id')->select(array('id', 'name'))->withTrashed();
     }
     
     public function orderaddress()

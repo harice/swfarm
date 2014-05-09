@@ -94,7 +94,7 @@ class AccountTableSeeder extends Seeder {
                 'website' => 'http://www.haysupplier.com',
                 'description' => 'Lorem ipsum set amet.',
                 'phone' => '123-434-4343',
-                'accounttype' => 8,
+                'accounttype' => 7,
                 'created_at' => $date,
                 'updated_at' => $date
             ),

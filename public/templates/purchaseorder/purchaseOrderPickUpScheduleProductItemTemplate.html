@@ -1,0 +1,17 @@
+<tr class="product-item">
+	<td style="width: 150px;">
+		<input type="hidden" class="id" name="id" value="" />
+		<select class="select2 productorder_id" name="productorder_id"><%= product_list %></select>
+	</td>
+    <td><span class="product"></span></td>
+	<td>
+		<div class="input-group">
+			<input type="text" class="form-control text-align-right quantity" name="quantity" required>
+			<span class="input-group-addon">Tons</span>
+		</div>	
+		<div class="error-msg-cont"></div>
+	</td>
+	<td>
+		<button title="Remove Product" type="button" class="pull-right btn btn-danger btn-xs remove-product"><span class="glyphicon glyphicon-remove"></span></button>
+	</td>
+</tr>

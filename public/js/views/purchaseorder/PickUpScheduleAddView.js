@@ -10,8 +10,10 @@ define([
 	'models/purchaseorder/POScheduleModel',
 	'collections/account/AccountTruckerCollection',
 	'collections/account/AccountLoaderCollection',
+	'collections/product/ProductCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddScheduleTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderPickUpScheduleProductItemTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -25,8 +27,10 @@ define([
 			POScheduleModel,
 			AccountTruckerCollection,
 			AccountLoaderCollection,
+			ProductCollection,
 			contentTemplate,
 			purchaseOrderAddScheduleTemplate,
+			purchaseOrderPickUpScheduleProductItemTemplate,
 			Global,
 			Const
 ){
@@ -44,6 +48,15 @@ define([
 			this.poid = option.poid;
 			this.truckingRatePerMile = null;
 			
+			this.options = {
+				productFieldClone: null,
+				productFieldCounter: 0,
+				productFieldClass: ['productorder_id', 'quantity', 'id'],
+				productFieldClassRequired: ['productorder_id', 'quantity'],
+				productFieldExempt: [],
+				productFieldSeparator: '.',
+			};
+			
 			this.truckingRateModel = new TruckingRateModel();
 			this.truckingRateModel.on('change', function() {
 				thisObj.truckingRatePerMile = this.get('truckingrate');
@@ -51,10 +64,19 @@ define([
 				this.off('change');
 			});
 			
+			this.productCollection = new ProductCollection();
+			this.productCollection.on('sync', function() {
+				thisObj.displayForm();
+				this.off('sync');
+			});
+			this.productCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 		},
 		
 		render: function(){
-			this.truckingRateModel.runFetch();
+			//this.truckingRateModel.runFetch();
+			this.productCollection.getPOProducts(this.poid);
 		},
 		
 		displayForm: function () {
@@ -62,6 +84,10 @@ define([
 			
 			var innerTemplateVariables = {
 				sched_url : '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poid,
+				trucker_account_list : '',
+				trailer_account_list : '',
+				originloader_account_list : '',
+				destinationloader_account_list : '',
 				po_id : this.poid,
 			};
 			var innerTemplate = _.template(purchaseOrderAddScheduleTemplate, innerTemplateVariables);
@@ -111,7 +137,7 @@ define([
 			
 			this.populateTimeOptions();
 			this.initCalendar();
-			this.initAutocomplete();
+			this.addProduct();
 		},
 		
 		populateTimeOptions: function () {
@@ -142,58 +168,60 @@ define([
 			});
 		},
 		
-		initAutocomplete: function () {
-			var thisObj = this;
+		addProduct: function () {
+			var clone = null;
 			
-			//producer
-			if(this.accountTruckerAutoCompleteView != null)
-				this.accountTruckerAutoCompleteView.deAlloc();
+			if(this.options.productFieldClone == null) {
+				var productTemplateVars = {
+					product_list:this.getProductDropdown(),
+				};
+				var productTemplate = _.template(purchaseOrderPickUpScheduleProductItemTemplate, productTemplateVars);
+				
+				this.$el.find('#product-list tbody').append(productTemplate);
+				var productItem = this.$el.find('#product-list tbody').find('.product-item:first-child');
+				this.options.productFieldClone = productItem.clone();
+				this.addIndexToProductFields(productItem);
+				clone = productItem;
+			}
+			else {
+				var clone = this.options.productFieldClone.clone();
+				this.addIndexToProductFields(clone);
+				this.$el.find('#product-list tbody').append(clone);
+			}
+				
+			//this.addValidationToProduct();
+			return clone;
+		},
+		
+		removeProduct: function (ev) {
+			$(ev.target).closest('tr').remove();
 			
-			var accountTruckerCollection = new AccountTruckerCollection();
-			this.accountTruckerAutoCompleteView = new CustomAutoCompleteView({
-                input: $('#trucker'),
-				hidden: $('#trucker-id'),
-                collection: accountTruckerCollection,
-				fields: ['accounttype'],
-            });
+			if(!this.hasProduct())
+				this.addProduct();
+		},
+		
+		hasProduct: function () {
+			return (this.$el.find('#product-list tbody .product-item').length)? true : false;
+		},
+		
+		getProductDropdown: function () {
+			var dropDown = '<option value="">Select a stack number</option>';
+			_.each(this.productCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('stacknumber')+'</option>';
+			});
 			
-			this.accountTruckerAutoCompleteView.onSelect = function (model) {
-				var accountType = model.get('accounttype')[0].name;
-				thisObj.toggleTruckingRate(accountType);
-			};
+			return dropDown;
+		},
+		
+		addIndexToProductFields: function (bidProductItem) {
+			var productFieldClass = this.options.productFieldClass;
+			for(var i=0; i < productFieldClass.length; i++) {
+				var field = bidProductItem.find('.'+productFieldClass[i]);
+				var name = field.attr('name');
+				field.attr('name', name + this.options.productFieldSeparator + this.options.productFieldCounter);
+			}
 			
-			this.accountTruckerAutoCompleteView.typeInCallback = function (result) {
-				var accountType = result.accounttype[0].name;
-				thisObj.toggleTruckingRate(accountType);
-			},
-			
-			this.accountTruckerAutoCompleteView.render();
-			
-			//Loader Origin
-			if(this.accountLoaderOriginAutoCompleteView != null)
-				this.accountLoaderOriginAutoCompleteView.deAlloc();
-			
-			var accountLoaderOriginCollection = new AccountLoaderCollection();
-			this.accountLoaderOriginAutoCompleteView = new CustomAutoCompleteView({
-                input: $('#originloader'),
-				hidden: $('#originloader-id'),
-                collection: accountLoaderOriginCollection,
-            });
-			
-			this.accountLoaderOriginAutoCompleteView.render();
-			
-			//Loader Destination
-			if(this.accountLoaderDestinationAutoCompleteView != null)
-				this.accountLoaderDestinationAutoCompleteView.deAlloc();
-			
-			var accountLoaderDestinationCollection = new AccountLoaderCollection();
-			this.accountLoaderDestinationAutoCompleteView = new CustomAutoCompleteView({
-                input: $('#destinationloader'),
-				hidden: $('#destinationloader-id'),
-                collection: accountLoaderDestinationCollection,
-            });
-			
-			this.accountLoaderDestinationAutoCompleteView.render();
+			this.options.productFieldCounter++;
 		},
 		
 		toggleTruckingRate: function (accountType) {
@@ -216,11 +244,26 @@ define([
 		},
 		
 		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
+			'click #add-product': 'addProduct',
+			'click .remove-product': 'removeProduct',
 			'blur #truckingrate': 'onBlurTruckingRate',
 			'blur #distance': 'onBlurDistance',
 			'blur #fuelcharge': 'onBlurFuelCharge',
 			'blur .loader': 'onBlurLoader',
 			'click #delete-schedule': 'deleteSchedule',
+			'change .productorder_id': 'onChangeProduct',
+			
+		},
+		
+		onChangeProduct: function (ev) {
+			var productId = $(ev.currentTarget).val();
+			if(productId != '') {
+				var productModel = this.productCollection.get(productId);
+				$(ev.currentTarget).closest('tr').find('.product').text(productModel.get('product').name);
+			}
+			else
+				$(ev.currentTarget).closest('tr').find('.product').text('');
 		},
 		
 		onBlurTruckingRate: function (ev) {
