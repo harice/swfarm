@@ -205,7 +205,27 @@ ul.autocomplete {
 #so-origin,
 #so-nos,
 #po-destination {
+    input[type="radio"] {
+        display:none;
+    }
 
+    input[type="radio"] + span {
+        display:inline-block;
+        width:20px;
+        height:20px;
+        margin:-1px 4px 0 0;
+        vertical-align:middle;
+        background:url(green.png) -132px top no-repeat;
+        cursor:pointer;
+    }
+
+    input[type="radio"]:checked + span {
+        background:url(green.png) -110px top no-repeat;
+    }
+
+    label {
+        padding-left: 0;
+    }
 }
 
 .max-width-80 { max-width: 130px; }
