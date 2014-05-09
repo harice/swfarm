@@ -1,12 +1,14 @@
 <tr class="product-item">
 	<td style="width: 150px;">
 		<input type="hidden" class="id" name="id" value="" />
-		<select class="select2 productorder_id" name="productorder_id"><%= product_list %></select>
+        <div class="styled-select">
+            <select class="form-control productorder_id width-180" name="productorder_id"><%= product_list %></select>
+        </div>
 	</td>
     <td><span class="product"></span></td>
 	<td>
-		<div class="input-group">
-			<input type="text" class="form-control text-align-right quantity" name="quantity" required>
+		<div class="input-group margin-0">
+			<input type="text" class="form-control text-right quantity" name="quantity" required>
 			<span class="input-group-addon">Tons</span>
 		</div>	
 		<div class="error-msg-cont"></div>
