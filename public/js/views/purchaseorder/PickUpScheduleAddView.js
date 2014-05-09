@@ -11,6 +11,9 @@ define([
 	'collections/account/AccountTruckerCollection',
 	'collections/account/AccountLoaderCollection',
 	'collections/product/ProductCollection',
+	'collections/account/AccountCollection',
+	'collections/contact/ContactCollection',
+	'collections/account/TrailerCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddScheduleTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderPickUpScheduleProductItemTemplate.html',
@@ -28,6 +31,9 @@ define([
 			AccountTruckerCollection,
 			AccountLoaderCollection,
 			ProductCollection,
+			AccountCollection,
+			ContactCollection,
+			TrailerCollection,
 			contentTemplate,
 			purchaseOrderAddScheduleTemplate,
 			purchaseOrderPickUpScheduleProductItemTemplate,
@@ -64,9 +70,68 @@ define([
 				this.off('change');
 			});
 			
+			this.trailerCollection = new TrailerCollection();
+			this.trailerCollection.on('sync', function() {
+				thisObj.generateTrailers();
+			});
+			this.trailerCollection.on('error', function(collection, response, options) {
+				//this.off('error');
+			});
+			
+			this.destinationLoaderContactCollection = new ContactCollection();
+			this.destinationLoaderContactCollection.on('sync', function() {
+				thisObj.generateDestinationLoaderAccountContacts();
+			});
+			this.destinationLoaderContactCollection.on('error', function(collection, response, options) {
+				//this.off('error');
+			});
+			
+			this.originLoaderContactCollection = new ContactCollection();
+			this.originLoaderContactCollection.on('sync', function() {
+				thisObj.generateOriginLoaderAccountContacts();
+			});
+			this.originLoaderContactCollection.on('error', function(collection, response, options) {
+				//this.off('error');
+			});
+			
+			this.truckerContactCollection = new ContactCollection();
+			this.truckerContactCollection.on('sync', function() {
+				thisObj.generateTruckerAccountContacts();
+			});
+			this.truckerContactCollection.on('error', function(collection, response, options) {
+				//this.off('error');
+			});
+			
+			this.truckerAccountCollection = new AccountCollection();
+			this.truckerAccountCollection.on('sync', function() {
+				thisObj.trailerAccountCollection.getTrailerAccounts();
+				this.off('sync');
+			});
+			this.truckerAccountCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
+			
+			this.trailerAccountCollection = new AccountCollection();
+			this.trailerAccountCollection.on('sync', function() {
+				thisObj.loaderAccountCollection.getLoaderAccounts();
+				this.off('sync');
+			});
+			this.trailerAccountCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
+			
+			this.loaderAccountCollection = new AccountCollection();
+			this.loaderAccountCollection.on('sync', function() {
+				thisObj.displayForm();
+				this.off('sync');
+			});
+			this.loaderAccountCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
+			
 			this.productCollection = new ProductCollection();
 			this.productCollection.on('sync', function() {
-				thisObj.displayForm();
+				thisObj.truckerAccountCollection.getTruckerAccounts();
 				this.off('sync');
 			});
 			this.productCollection.on('error', function(collection, response, options) {
@@ -84,10 +149,11 @@ define([
 			
 			var innerTemplateVariables = {
 				sched_url : '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poid,
-				trucker_account_list : '',
-				trailer_account_list : '',
-				originloader_account_list : '',
-				destinationloader_account_list : '',
+				trucker_account_type_list : '',
+				trucker_account_list : this.getTruckerDropdown(),
+				trailer_account_list : this.getTrailerDropdown(),
+				originloader_account_list : this.getLoaderDropdown(),
+				destinationloader_account_list : this.getLoaderDropdown(),
 				po_id : this.poid,
 			};
 			var innerTemplate = _.template(purchaseOrderAddScheduleTemplate, innerTemplateVariables);
@@ -166,6 +232,62 @@ define([
 				todayHighlight: true,
 				format: 'yyyy-mm-dd',
 			});
+		},
+		
+		getTruckerDropdown: function () {
+			var dropDown = '';
+			_.each(this.truckerAccountCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
+			});
+			return dropDown;
+		},
+		
+		getTrailerDropdown: function () {
+			var dropDown = '';
+			_.each(this.trailerAccountCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
+			});
+			return dropDown;
+		},
+		
+		getLoaderDropdown: function () {
+			var dropDown = '';
+			_.each(this.loaderAccountCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
+			});
+			return dropDown;
+		},
+		
+		generateTruckerAccountContacts: function () {
+			var dropDown = '';
+			_.each(this.truckerContactCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('lastname')+', '+model.get('firstname')+'</option>';
+			});
+			this.$el.find('#trucker_id').append(dropDown);
+		},
+		
+		generateTrailers: function () {
+			var dropDown = '';
+			_.each(this.trailerCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('number')+'</option>';
+			});
+			this.$el.find('#trailer_id').append(dropDown);
+		},
+		
+		generateOriginLoaderAccountContacts: function () {
+			var dropDown = '';
+			_.each(this.originLoaderContactCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('lastname')+', '+model.get('firstname')+'</option>';
+			});
+			this.$el.find('#originloader_id').append(dropDown);
+		},
+		
+		generateDestinationLoaderAccountContacts: function () {
+			var dropDown = '';
+			_.each(this.destinationLoaderContactCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('lastname')+', '+model.get('firstname')+'</option>';
+			});
+			this.$el.find('#destinationloader_id').append(dropDown);
 		},
 		
 		addProduct: function () {
@@ -247,13 +369,17 @@ define([
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #add-product': 'addProduct',
 			'click .remove-product': 'removeProduct',
+			'change .productorder_id': 'onChangeProduct',
+			'change #trucker': 'onChangeTrucker',
+			'change #trailer': 'onChangeTrailer',
+			'change #originloader': 'onChangeOriginloader',
+			'change #destinationloader': 'onChangeDestinationloader',
+			
 			'blur #truckingrate': 'onBlurTruckingRate',
 			'blur #distance': 'onBlurDistance',
 			'blur #fuelcharge': 'onBlurFuelCharge',
 			'blur .loader': 'onBlurLoader',
 			'click #delete-schedule': 'deleteSchedule',
-			'change .productorder_id': 'onChangeProduct',
-			
 		},
 		
 		onChangeProduct: function (ev) {
@@ -262,8 +388,38 @@ define([
 				var productModel = this.productCollection.get(productId);
 				$(ev.currentTarget).closest('tr').find('.product').text(productModel.get('product').name);
 			}
-			else
-				$(ev.currentTarget).closest('tr').find('.product').text('');
+		},
+		
+		onChangeTrucker: function (ev) {
+			var accountId = $(ev.currentTarget).val();
+			this.resetSelect($('#trucker_id'));
+			if(accountId != '')
+				this.truckerContactCollection.getContactsByAccountId(accountId);
+		},
+		
+		onChangeTrailer: function (ev) {
+			var accountId = $(ev.currentTarget).val();
+			this.resetSelect($('#trailer_id'));
+			if(accountId != '')
+				this.trailerCollection.getTrailerByAccountId(accountId);
+		},
+		
+		onChangeOriginloader: function (ev) {
+			var accountId = $(ev.currentTarget).val();
+			this.resetSelect($('#originloader_id'));
+			if(accountId != '')
+				this.originLoaderContactCollection.getContactsByAccountId(accountId);
+		},
+		
+		onChangeDestinationloader: function (ev) {
+			var accountId = $(ev.currentTarget).val();
+			this.resetSelect($('#destinationloader_id'));
+			if(accountId != '')
+				this.destinationLoaderContactCollection.getContactsByAccountId(accountId);
+		},
+		
+		resetSelect: function (select) {
+			select.find('option:gt(0)').remove();
 		},
 		
 		onBlurTruckingRate: function (ev) {
