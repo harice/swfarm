@@ -36,10 +36,12 @@
 							<div class="form-group">
 								<label for="truckerAccountType_id" class="col-sm-4 control-label small">Trucker Type</label>
 								<div class="col-sm-8">
-									<select class="form-control" id="truckerAccountType_id" name="truckerAccountType_id">
-										<option value="">Select a trucker type</option>
-										<%= trucker_account_type_list %>
-									</select>
+									<div class="styled-select">
+										<select class="form-control width-200" id="truckerAccountType_id" name="truckerAccountType_id">
+											<option value="">Select a trucker type</option>
+											<%= trucker_account_type_list %>
+										</select>
+									</div>
 								</div>
 							</div>
 							<div class="form-group">
@@ -94,18 +96,28 @@
 								<div class="col-sm-8">
 									<div class="input-group margin-0">
 										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right monetary-value" id="fuelcharge" name="fuelcharge" required>
+										<input type="text" class="form-control text-right monetary-value" id="fuelcharge" name="fuelcharge" placeholder="0.00">
 									</div>	
 									<div class="error-msg-cont"></div>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="truckingrate" class="col-sm-4 control-label small">Trucking/Hauling Rate</label>
-								<div class="col-sm-8 value-text"><input type="text" class="form-control text-right" id="truckingrate" name="truckingrate" placeholder="0.00" required readonly></div>
+								<div class="col-sm-8">
+									<div class="input-group margin-0">
+										<span class="input-group-addon">$</span>
+										<input type="text" class="form-control text-right monetary-value" id="truckingrate" name="truckingrate" placeholder="0.00" value="0.00" required readonly>
+									</div>
+								</div>
 							</div>
 							<div class="form-group">
 								<label for="trailer-rent" class="col-sm-4 control-label small">Trailer Rent</label>
-								<div class="col-sm-8 value-text"><input type="text" class="form-control text-right" id="trailer-rent" placeholder="0.00" readonly></div>
+								<div class="col-sm-8">
+									<div class="input-group margin-0">
+										<span class="input-group-addon">$</span>
+										<input type="text" class="form-control text-right monetary-value" id="trailer-rent" placeholder="0.00" readonly>
+									</div>
+								</div>
 							</div>
 						</div>
 						<div class="col-md-4 col-sm-6">
@@ -136,7 +148,7 @@
 								<div class="col-sm-8">
 									<div class="input-group margin-0">
 										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right loader monetary-value" id="originloaderfee" name="originloaderfee" required>
+										<input type="text" class="form-control text-right loader monetary-value" id="originloaderfee" name="originloaderfee" placeholder="0.00" required>
 									</div>	
 									<div class="error-msg-cont"></div>
 								</div>
@@ -170,7 +182,7 @@
 								<div class="col-sm-8">
 									<div class="input-group margin-0">
 										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right loader monetary-value" id="destinationloaderfee" name="destinationloaderfee" required>
+										<input type="text" class="form-control text-right loader monetary-value" id="destinationloaderfee" name="destinationloaderfee" placeholder="0.00" required>
 									</div>	
 									<div class="error-msg-cont"></div>
 								</div>
@@ -192,6 +204,18 @@
 									<th class="width-40"></th>
 								</tr>
 							</thead>
+							<tfoot>
+								<tr>
+									<td class="text-right" colspan="2">Total</td>
+									<td>
+										<div class="input-group margin-0">
+											<input id="total-quantity" type="text" class="form-control text-right" placeholder="0.0000">
+											<span class="input-group-addon">Tons</span>
+										</div>
+									</td>
+									<td></td>
+								</tr>
+							</tfoot>
 							<tbody></tbody>
 						</table>
 					</div>

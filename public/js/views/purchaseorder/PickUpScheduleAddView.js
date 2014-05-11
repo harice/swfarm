@@ -175,11 +175,22 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
+			this.initValidateForm();
+			
+			this.populateTimeOptions();
+			this.initCalendar();
+			this.addProduct();
+		},
+		
+		initValidateForm: function () {
+			var thisObj = this;
+			
 			var validate = $('#POScheduleForm').validate({
 				submitHandler: function(form) {
-					var data = $(form).serializeObject();
+					var data = thisObj.formatFormField($(form).serializeObject());
+					console.log(data);
 					
-					var poScheduleModel = new POScheduleModel(data);
+					/*var poScheduleModel = new POScheduleModel(data);
 					
 					poScheduleModel.save(
 						null, 
@@ -196,13 +207,13 @@ define([
 							},
 							headers: poScheduleModel.getAuth(),
 						}
-					);
+					);*/
 				},
 				errorPlacement: function(error, element) {
 					if(element.attr('name') == 'scheduledate') {
 						element.closest('.calendar-cont').siblings('.error-msg-cont').html(error);
 					}
-					else if(element.hasClass('monetary-value')) {
+					else if(element.hasClass('monetary-value') || element.hasClass('quantity')) {
 						element.closest('.input-group').siblings('.error-msg-cont').html(error);
 					}
 					else {
@@ -210,10 +221,6 @@ define([
 					}
 				},
 			});
-			
-			this.populateTimeOptions();
-			this.initCalendar();
-			this.addProduct();
 		},
 		
 		populateTimeOptions: function () {
@@ -338,6 +345,8 @@ define([
 			
 			if(!this.hasProduct())
 				this.addProduct();
+				
+			this.computeTotalQuantity();
 		},
 		
 		hasProduct: function () {
@@ -364,6 +373,40 @@ define([
 			this.options.productFieldCounter++;
 		},
 		
+		formatFormField: function (data) {
+			var formData = {products:[]};
+			var productFieldClass = this.options.productFieldClass;
+			
+			for(var key in data) {
+				if(typeof data[key] !== 'function'){
+					var value = data[key];
+					var arrayKey = key.split(this.options.productFieldSeparator);
+					
+					if(arrayKey.length < 2)
+						formData[key] = value;
+					else {
+						if(arrayKey[0] == productFieldClass[0]) {
+							var index = arrayKey[1];
+							var arrayProductFields = {};
+							
+							for(var i = 0; i < productFieldClass.length; i++) {
+								if(this.options.productFieldExempt.indexOf(productFieldClass[i]) < 0) {
+									
+									var fieldValue = data[productFieldClass[i]+this.options.productFieldSeparator+index];
+									if(!(productFieldClass[i] == 'id' && fieldValue == ''))
+										arrayProductFields[productFieldClass[i]] = fieldValue;
+								}
+							}
+								
+							formData.products.push(arrayProductFields);
+						}
+					}
+				}
+			}
+			
+			return formData;
+		},
+		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #add-product': 'addProduct',
@@ -376,11 +419,13 @@ define([
 			'change #destinationloader': 'onChangeDestinationloader',
 			
 			'keyup #truckingrate': 'onKeyUpTrackingRate',
-			//'blur #truckingrate': 'onBlurTruckingRate',
+			'blur #truckingrate': 'onBlurTruckingRate',
 			'blur #distance': 'onBlurDistance',
 			'keyup #distance': 'onBlurDistance',
 			'blur #fuelcharge': 'onBlurFuelCharge',
 			'blur .loader': 'onBlurLoader',
+			'keyup .quantity': 'onKeyUpQuantity',
+			'blur .quantity': 'onBlurQuantity',
 			'click #delete-schedule': 'deleteSchedule',
 		},
 		
@@ -396,13 +441,16 @@ define([
 			var accountTypeId = $(ev.currentTarget).val();
 			this.resetSelect($('#truckerAccount_id'));
 			this.resetSelect($('#trucker_id'));
-			if(accountTypeId != '') {
+			this.truckerAccountCollection.getTruckerAccountsByAccountType(accountTypeId);
+			this.toggleTruckingRate(accountTypeId);
+			
+			/*if(accountTypeId != '') {
 				var accountTypeModel = this.accountTypeCollection.get(accountTypeId);
 				this.toggleTruckingRate(accountTypeModel.get('name'));
 				this.truckerAccountCollection.getTruckerAccountsByAccountType(accountTypeId);
 			}
 			else
-				this.toggleTruckingRate('');
+				this.toggleTruckingRate('');*/
 		},
 		
 		onChangeTrucker: function (ev) {
@@ -437,13 +485,17 @@ define([
 			select.find('option:gt(0)').remove();
 		},
 		
+		onKeyUpTrackingRate: function (ev) {
+			this.computeTrailerRent(parseFloat($(ev.target).val()));
+		},
+		
 		onBlurTruckingRate: function (ev) {
 			this.toFixedValue($(ev.target), 2);
+			this.computeTrailerRent(parseFloat($(ev.target).val()));
 		},
 		
 		onBlurDistance: function () {
-			if(!this.truckingRateEditable)
-				this.computeTruckingRate();
+			this.computeTruckingRate();
 		},
 		
 		onBlurFuelCharge: function (ev) {
@@ -454,38 +506,96 @@ define([
 			this.toFixedValue($(ev.target), 2);
 		},
 		
-		toggleTruckingRate: function (accountType) {
-			if(Const.PO.PICKUPSCHEDULE.EDITABLERATE.ACCOUNTTYPE.indexOf(accountType.toLowerCase()) >= 0) {
-				this.truckingRateEditable = true;
-				$('#truckingrate').attr('readonly', false);
-				$('#truckingrate').val('');
+		onKeyUpQuantity: function (ev) {
+			this.computeTotalQuantity();
+		},
+		
+		onBlurQuantity: function (ev) {
+			this.toFixedValue($(ev.target), 4);
+			this.computeTotalQuantity();
+		},
+		
+		computeTotalQuantity: function () {
+			var total = 0;
+			this.$el.find('.quantity').each(function (index, element) {
+				var value = $(element).val();
+				if(!isNaN(value) && value != '') {
+					total += parseFloat(value);
+				}
+			});
+			
+			if(total != 0)
+				$('#total-quantity').val(total.toFixed(4));
+			else
+				$('#total-quantity').val('');
+				
+			this.computeTruckingRate();
+		},
+		
+		/*toggleTruckingRate: function (accountType) {
+			if(accountType != '') {
+				if(Const.PO.PICKUPSCHEDULE.EDITABLERATE.ACCOUNTTYPE.indexOf(accountType.toLowerCase()) >= 0) {
+					this.truckingRateEditable = true;
+					$('#truckingrate').attr('readonly', false);
+					$('#truckingrate').val('');
+					this.computeTrailerRent();
+				}
+				else {
+					this.truckingRateEditable = false;
+					$('#truckingrate').attr('readonly', true);
+					this.computeTruckingRate();
+					$('#trailer-rent').val('');
+				}
+			}
+		},*/
+		
+		toggleTruckingRate: function (accountTypeId) {
+			if(accountTypeId != '') {
+				var accountTypeModel = this.accountTypeCollection.get(accountTypeId);
+				var accountType = accountTypeModel.get('name');
+				
+				if(Const.PO.PICKUPSCHEDULE.EDITABLERATE.ACCOUNTTYPE.indexOf(accountType.toLowerCase()) >= 0) {
+					this.truckingRateEditable = true;
+					$('#truckingrate').attr('readonly', false);
+					$('#truckingrate').val('');
+					this.computeTrailerRent();
+				}
+				else {
+					this.truckingRateEditable = false;
+					$('#truckingrate').attr('readonly', true);
+					this.computeTruckingRate();
+					$('#trailer-rent').val('');
+				}
 			}
 			else {
 				this.truckingRateEditable = false;
 				$('#truckingrate').attr('readonly', true);
-				this.computeTruckingRate();
+				$('#truckingrate').val('0.00');
+				$('#trailer-rent').val('');
 			}
 		},
 		
-		onKeyUpTrackingRate: function (ev) {
-			
-		},
-		
 		computeTruckingRate: function () {
-			var distanceField = $('#distance');
-			var distanceValue = (!isNaN(parseFloat(distanceField.val())))? parseFloat(distanceField.val()) : 0;
-			var truckingRate = (distanceValue > 0)? ((this.freightRate * distanceValue) + this.loadingRate + this.unloadingRate).toFixed(2) : ''; //divide by tons
-			$('#truckingrate').val(truckingRate);
+			if(!this.truckingRateEditable && $('#truckerAccountType_id').val() != '') {
+				var distanceField = $('#distance');
+				var distanceValue = (!isNaN(parseFloat(distanceField.val())))? parseFloat(distanceField.val()) : 0;
+				var totalQuantity = (!isNaN(parseFloat($('#total-quantity').val())))? parseFloat($('#total-quantity').val()) : 0;
+				var truckingRate = (distanceValue > 0 && totalQuantity > 0)? (((this.freightRate * distanceValue) + this.loadingRate + this.unloadingRate) / totalQuantity).toFixed(2) : ''; //divide by tons
+				$('#truckingrate').val(truckingRate);
+			}
 		},
 		
 		computeTrailerRent: function (haulingRate) {
-			if(!this.truckingRateEditable) {
-				
+			if(this.truckingRateEditable) {
 				if(typeof haulingRate == 'undefined')
 					haulingRate = (!isNaN(parseFloat($('#truckingrate').val())))? parseFloat($('#truckingrate').val()) : 0;
-			
-				trailerRent = haulingRate * this.trailerPercentageRate / 100;
-				$('#trailer-rent').val(trailerRent.toFixed(2))
+				
+				if(!isNaN(haulingRate) && haulingRate != 0) {
+					trailerRent = haulingRate * this.trailerPercentageRate / 100;
+					$('#trailer-rent').val(trailerRent.toFixed(2))
+				}
+				else
+					$('#trailer-rent').val('');
 			}
 		},
 		
