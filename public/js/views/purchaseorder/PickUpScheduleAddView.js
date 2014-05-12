@@ -172,6 +172,10 @@ define([
 				destinationloader_account_list : this.getLoaderDropdown(),
 				po_id : this.poId,
 			};
+			
+			if(this.schedId != null)
+				innerTemplateVariables['sched_id'] = this.schedId
+			
 			var innerTemplate = _.template(purchaseOrderAddScheduleTemplate, innerTemplateVariables);
 			
 			var variables = {
@@ -477,9 +481,12 @@ define([
 			this.fetchTruckerAccounts($(ev.currentTarget).val());
 		},
 		
-		fetchTruckerAccounts: function (accountTypeId, accountId, contactId) {
+		fetchTruckerAccounts: function (accountTypeId, accountId, contactId, truckingRate) {
 			if(accountId != null)
 				this.selectedTruckerAccountId = accountId;
+			
+			if(truckingRate != null)
+				this.selectedTruckingRate = truckingRate;
 			
 			this.resetSelect($('#truckerAccount_id'));
 			this.resetSelect($('#trucker_id'));
@@ -619,6 +626,10 @@ define([
 					this.truckingRateEditable = true;
 					$('#truckingrate').attr('readonly', false);
 					$('#truckingrate').val('');
+					
+					if(typeof this.selectedTruckingRate != 'undefined' && this.selectedTruckingRate != null)
+						$('#truckingrate').val(this.selectedTruckingRate).blur();
+					
 					this.computeTrailerRent();
 				}
 				else {
@@ -627,6 +638,8 @@ define([
 					this.computeTruckingRate();
 					$('#trailerrate').val('0.00');
 				}
+				
+				this.selectedTruckingRate = null;
 			}
 			else {
 				this.truckingRateEditable = false;

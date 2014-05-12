@@ -20,6 +20,7 @@ define(function () {
             'WEIGHTINFO': 'purchases/weightinfo',
 			'SO': 'sales/so',
 			'STACKLOCATION': 'administration/stack',
+			'TRAILER': 'administration/trailer',
 		},
 		'MENU': {
 			'PURCHASES': {
@@ -77,6 +78,12 @@ define(function () {
 				'ADD'	:34,
 				'EDIT'	:35,
 				'CANCEL':36
+			},
+			'TRAILER': {
+				'VIEW'	:37,
+				'ADD'	:38,
+				'EDIT'	:39,
+				'CANCEL':40
 			},
 		},
 		'CRUD': {

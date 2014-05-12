@@ -72,6 +72,10 @@
 			<% if(_.contains(permission,constant.MENU.STACKLOCATION.VIEW) || _.isEqual(su,constant.SU)) { %>
             <li><a href="#/<%= constant.URL.STACKLOCATION %>">Stack Location</a></li>
             <% } %>
+			
+			<% if(_.contains(permission,constant.MENU.TRAILER.VIEW) || _.isEqual(su,constant.SU)) { %>
+            <li><a href="#/<%= constant.URL.TRAILER %>">Trailer</a></li>
+            <% } %>
           </ul>
         </li>
         <% } %>

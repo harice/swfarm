@@ -4,6 +4,9 @@
             <div class="content">
               
 				<form id="POScheduleForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+					<% if (typeof sched_id !== "undefined") { %>
+						<input type="hidden" name="id" value="<%= sched_id %>" />
+					<% } %>
 					<fieldset>
 						<legend>Schedule</legend>
 						<input type="hidden" id="order_id" name="order_id" value="<%= po_id %>" />

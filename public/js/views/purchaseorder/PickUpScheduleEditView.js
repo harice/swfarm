@@ -50,7 +50,6 @@ define([
 			
 			this.model = new POScheduleModel({id:this.schedId});
 			this.model.on('change', function() {
-				thisObj.inits();
 				thisObj.orderScheduleVariablesModel.runFetch();
 				thisObj.off('change');
 			});
@@ -60,26 +59,37 @@ define([
 			this.model.runFetch();
 		},
 		
-		supplyPOData: function () {
+		supplyScheduleData: function () {
 			var thisObj = this;
 			var trucker = this.model.get('trucker');
 			var originloader = this.model.get('originloader');
 			var destinationloader = this.model.get('destinationloader');
 			var trailer = this.model.get('trailer');
+			var products = this.model.get('transportscheduleproduct');
 			
-			this.$el.find('#po-sched-start-date .input-group.date').datepicker('update', this.convertDateFormat(this.model.get('scheduledate').split(' ')[0], this.dateFormatDB, this.dateFormat, '-'));
+			this.$el.find('#po-sched-start-date .input-group.date').datepicker('update', this.convertDateFormat(this.model.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-'));
 			this.$el.find('#scheduletimeHour').val(this.model.get('scheduletimeHour'));
 			this.$el.find('#scheduletimeMin').val(this.model.get('scheduletimeMin'));
 			this.$el.find('#scheduletimeAmPm').val(this.model.get('scheduletimeAmPm'));
 			
-			this.$el.find('#truckerAccountType_id').val(trucker.accountidandname.accounttype);
-			this.fetchTruckerAccounts(trucker.accountidandname.accounttype, trucker.accountidandname.id, trucker.id);
+			this.$el.find('#distance').val(this.model.get('distance'));
+			this.$el.find('#fuelcharge').val(this.model.get('fuelcharge')).blur();
+			
+			var i= 0;
+			_.each(products, function (product) {
+				var productFields = (i > 0)? thisObj.addProduct(): thisObj.$el.find('#product-list tbody .product-item:first-child');
+				i++;
+				productFields.find('.id').val(product.id);
+				productFields.find('.productorder_id').val(product.productorder_id).change();
+				productFields.find('.quantity').val(product.quantity).blur();
+				
+			});
+			
+			this.$el.find('#truckerAccountType_id').val(trucker.accountidandname.accounttype[0].id);
+			this.fetchTruckerAccounts(trucker.accountidandname.accounttype[0].id, trucker.accountidandname.id, trucker.id, this.model.get('truckingrate'));
 			
 			this.$el.find('#trailer').val(trailer.account_id);
 			this.fetchTrailer(trailer.account_id, trailer.id);
-			
-			this.$el.find('#distance').val(this.model.get('distance'));
-			this.$el.find('#fuelcharge').val(this.model.get('fuelcharge')).blur();
 			
 			this.$el.find('#originloader').val(originloader.accountidandname.id);
 			this.fetchOriginLoaderContacts(originloader.accountidandname.id, originloader.id);
@@ -91,7 +101,7 @@ define([
 		},
 		
 		postDisplayForm: function () {
-			this.supplyPOData();
+			this.supplyScheduleData();
 		},
 	});
 

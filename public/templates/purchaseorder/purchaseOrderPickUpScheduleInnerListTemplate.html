@@ -1,9 +1,8 @@
 <% if (!_.isEmpty(schedules)) { %>
 	<% _.each(schedules, function(schedule){ %>
 	<tr>
-		<td><%= schedule.get("scheduledate") %></td>
-		<td><%= schedule.get("scheduletimeHour") %>:<%= schedule.get("scheduletimeMin") %> <%= schedule.get("scheduletimeAmPm") %></td>
-		<td></td>
+		<td><a href="<%= po_schedule_url %>/<%= schedule.get("id") %>"><%= schedule.get("scheduledate") %> <%= schedule.get("scheduletimeHour") %>:<%= schedule.get("scheduletimeMin") %> <%= schedule.get("scheduletimeAmPm") %></a></td>
+		<td><%= schedule.get("trucker").accountidandname.accounttype[0].name %></td>
 		<td><%= schedule.get("trucker").lastname %>, <%= schedule.get("trucker").firstname %> <%= schedule.get("trucker").suffix %></td>
 		<td><%= schedule.get("originloader").lastname %>, <%= schedule.get("originloader").firstname %> <%= schedule.get("originloader").suffix %></td>
 		<td><%= schedule.get("destinationloader").lastname %>, <%= schedule.get("destinationloader").firstname %> <%= schedule.get("destinationloader").suffix %></td>
@@ -17,6 +16,6 @@
 	<% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="8">No result found.</td>
+		<td colspan="7">No result found.</td>
 	</tr>
 <% } %>
