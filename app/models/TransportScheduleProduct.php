@@ -17,4 +17,8 @@ class TransportScheduleProduct extends Eloquent {
     	return $this->belongsTo('TransportSchedule', 'transportschedule_id', 'id');
     }
 
+    public function productorder(){
+        return $this->hasOne('ProductOrder', 'id', 'productorder_id');
+    }
+
 }
