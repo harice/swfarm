@@ -7,9 +7,13 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
                         ->with('originloader')
                         ->with('destinationloader')
                         ->with('trucker.accountidandname')
+                        ->with('trucker.accountidandname.accounttype')
                         ->with('originloader.accountidandname')
                         ->with('destinationloader.accountidandname')
                         ->with('trailer')
+                        ->with('transportscheduleproduct')
+                        ->with('transportscheduleproduct.productorder')
+                        ->with('transportscheduleproduct.productorder.product')
                         ->where('id', '=', $id)->first();
       if($transportSchedule){
           $transportSchedule = $transportSchedule->toArray();
@@ -40,9 +44,13 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
                       ->with('originloader')
                       ->with('destinationloader')
                       ->with('trucker.accountidandname')
+                      ->with('trucker.accountidandname.accounttype')
                       ->with('originloader.accountidandname')
                       ->with('destinationloader.accountidandname')
                       ->with('trailer.account')
+                      ->with('transportscheduleproduct')
+                      ->with('transportscheduleproduct.productorder')
+                      ->with('transportscheduleproduct.productorder.product')
                       ->where('order_id', '=', $orderId)
                       ->where('type', '=', $scheduleType)
                       ->paginate($perPage);
