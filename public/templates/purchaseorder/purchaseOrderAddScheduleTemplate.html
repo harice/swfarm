@@ -24,9 +24,9 @@
 								<label for="" class="col-sm-4 control-label small">Time</label>
 								<div class="col-sm-8">
                                     <div class="styled-select">
-                                        <select class="form-control hours width-80" name="scheduletimeHour"></select>
-                                        <select class="form-control minutes width-80" name="scheduletimeMin"></select>
-                                        <select class="form-control ampm width-80" name="scheduletimeAmPm">
+                                        <select class="form-control hours width-80" id="scheduletimeHour" name="scheduletimeHour"></select>
+                                        <select class="form-control minutes width-80" id="scheduletimeMin" name="scheduletimeMin"></select>
+                                        <select class="form-control ampm width-80" id="scheduletimeAmPm" name="scheduletimeAmPm">
                                             <option value="AM">AM</option>
                                             <option value="PM">PM</option>
                                         </select>
@@ -111,11 +111,11 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="trailer-rent" class="col-sm-4 control-label small">Trailer Rent</label>
+								<label for="trailerrate" class="col-sm-4 control-label small">Trailer Rent</label>
 								<div class="col-sm-8">
 									<div class="input-group margin-0">
 										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right monetary-value" id="trailer-rent" placeholder="0.00" readonly>
+										<input type="text" class="form-control text-right monetary-value" id="trailerrate" name="trailerrate" placeholder="0.00" value="0.00" readonly>
 									</div>
 								</div>
 							</div>
@@ -126,7 +126,7 @@
 								<label for="originloader" class="col-sm-4 control-label small">Loader</label>
 								<div class="col-sm-8">
 									<div class="styled-select">
-                                        <select class="form-control width-200" id="originloader" name="originloader">
+                                        <select class="form-control width-200" id="originloader" name="originloader" required>
                                             <option value="">Select a loader</option>
 											<%= originloader_account_list %>
                                         </select>
@@ -137,7 +137,7 @@
 								<label for="originloader_id" class="col-sm-4 control-label small">Loader Contact</label>
 								<div class="col-sm-8">
 									<div class="styled-select">
-                                        <select class="form-control width-200" id="originloader_id" name="originloader_id">
+                                        <select class="form-control width-200" id="originloader_id" name="originloader_id" required>
 											<option value="">Select a loader contact</option>
 										</select>
                                     </div>
@@ -160,7 +160,7 @@
 								<label for="destinationloader" class="col-sm-4 control-label small">Loader</label>
 								<div class="col-sm-8">
 									<div class="styled-select">
-                                        <select class="form-control width-200" id="destinationloader" name="destinationloader">
+                                        <select class="form-control width-200" id="destinationloader" name="destinationloader" required>
 											<option value="">Select a loader</option>
                                             <%= destinationloader_account_list %>
                                         </select>
@@ -171,7 +171,7 @@
 								<label for="destinationloader_id" class="col-sm-4 control-label small">Loader Contact</label>
 								<div class="col-sm-8">
 									<div class="styled-select">
-                                        <select class="form-control width-200" id="destinationloader_id" name="destinationloader_id">
+                                        <select class="form-control width-200" id="destinationloader_id" name="destinationloader_id" required>
 											<option value="">Select a loader contact</option>
 										</select>
                                     </div>
@@ -209,7 +209,7 @@
 									<td class="text-right" colspan="2">Total</td>
 									<td>
 										<div class="input-group margin-0">
-											<input id="total-quantity" type="text" class="form-control text-right" placeholder="0.0000">
+											<input id="total-quantity" type="text" class="form-control text-right" placeholder="0.0000" readonly>
 											<span class="input-group-addon">Tons</span>
 										</div>
 									</td>

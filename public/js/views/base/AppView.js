@@ -7,6 +7,7 @@ define([
 	var AppView = Backbone.View.extend({
 		
 		dateFormat: 'mm-dd-yyyy',
+		dateFormatDB: 'yyyy-mm-dd',
 		
 		focusOnFirstField: function () {
 			console.log('focusOnFirstField');

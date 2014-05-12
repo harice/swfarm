@@ -45,9 +45,15 @@ define([
 		accountLoaderDestinationAutoCompleteView: null,
 		
 		initialize: function(option) {
+			this.poId = option.poId;
+			this.schedId = null;
+			this.h1Title = 'Pick Up Schedule';
+			this.h1Small = 'add';
+			this.inits();
+		},
+		
+		inits: function () {
 			var thisObj = this;
-			
-			this.poid = option.poid;
 			this.freightRate = null;
 			this.loadingRate = null;
 			this.unloadingRate = null;
@@ -76,7 +82,7 @@ define([
 			
 			this.accountTypeCollection = new AccountTypeCollection();
 			this.accountTypeCollection.on('sync', function() {
-				thisObj.productCollection.getPOProducts(thisObj.poid);
+				thisObj.productCollection.getPOProducts(thisObj.poId);
 				this.off('sync');
 			});
 			this.accountTypeCollection.on('error', function(collection, response, options) {
@@ -159,17 +165,18 @@ define([
 			var thisObj = this;
 			
 			var innerTemplateVariables = {
-				sched_url : '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poid,
+				sched_url : '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId,
 				trucker_account_type_list : this.getTruckerType(),
 				trailer_account_list : this.getTrailerDropdown(),
 				originloader_account_list : this.getLoaderDropdown(),
 				destinationloader_account_list : this.getLoaderDropdown(),
-				po_id : this.poid,
+				po_id : this.poId,
 			};
 			var innerTemplate = _.template(purchaseOrderAddScheduleTemplate, innerTemplateVariables);
 			
 			var variables = {
-				h1_title: "Add Pick Up Schedule",
+				h1_title: this.h1Title,
+				h1_small: this.h1Small,
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
@@ -180,6 +187,8 @@ define([
 			this.populateTimeOptions();
 			this.initCalendar();
 			this.addProduct();
+			
+			this.postDisplayForm();
 		},
 		
 		initValidateForm: function () {
@@ -188,16 +197,18 @@ define([
 			var validate = $('#POScheduleForm').validate({
 				submitHandler: function(form) {
 					var data = thisObj.formatFormField($(form).serializeObject());
-					console.log(data);
 					
-					/*var poScheduleModel = new POScheduleModel(data);
+					data['scheduledate'] = thisObj.convertDateFormat(data['scheduledate'], thisObj.dateFormat, thisObj.dateFormatDB, '-');
+					//console.log(data);
+					
+					var poScheduleModel = new POScheduleModel(data);
 					
 					poScheduleModel.save(
 						null, 
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								Global.getGlobalVars().app_router.navigate(Const.URL.PICKUPSCHEDULE+'/'+thisObj.poid, {trigger: true});
+								Global.getGlobalVars().app_router.navigate(Const.URL.PICKUPSCHEDULE+'/'+thisObj.poId, {trigger: true});
 							},
 							error: function (model, response, options) {
 								if(typeof response.responseJSON.error == 'undefined')
@@ -207,7 +218,7 @@ define([
 							},
 							headers: poScheduleModel.getAuth(),
 						}
-					);*/
+					);
 				},
 				errorPlacement: function(error, element) {
 					if(element.attr('name') == 'scheduledate') {
@@ -230,7 +241,7 @@ define([
 				hour = (hour.length > 1)? i : '0'+i;
 				hourOptions += '<option value="'+hour+'">'+hour+'</option>';
 			}
-			this.$el.find('.hours').html(hourOptions);
+			this.$el.find('#scheduletimeHour').html(hourOptions);
 			
 			var minutesOptions = '';
 			for(var i=0; i< 60; i++) {
@@ -238,7 +249,7 @@ define([
 				minute = (minute.length > 1)? i : '0'+i;
 				minutesOptions += '<option value="'+minute+'">'+minute+'</option>';
 			}
-			this.$el.find('.minutes').html(minutesOptions);
+			this.$el.find('#scheduletimeMin').html(minutesOptions);
 		},
 		
 		initCalendar: function () {
@@ -247,7 +258,7 @@ define([
 				autoclose: true,
 				clearBtn: true,
 				todayHighlight: true,
-				format: 'yyyy-mm-dd',
+				format: this.dateFormat,
 			});
 		},
 		
@@ -281,6 +292,11 @@ define([
 				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
 			this.$el.find('#truckerAccount_id').append(dropDown);
+			
+			if(typeof this.selectedTruckerAccountId != 'undefined' && this.selectedTruckerAccountId != null) {
+				this.$el.find('#truckerAccount_id').val(this.selectedTruckerAccountId);
+				this.selectedTruckerAccountId = null;
+			}
 		},
 		
 		generateTruckerAccountContacts: function () {
@@ -289,6 +305,11 @@ define([
 				dropDown += '<option value="'+model.get('id')+'">'+model.get('lastname')+', '+model.get('firstname')+'</option>';
 			});
 			this.$el.find('#trucker_id').append(dropDown);
+			
+			if(typeof this.selectedTruckerContactId != 'undefined' && this.selectedTruckerContactId != null) {
+				this.$el.find('#trucker_id').val(this.selectedTruckerContactId);
+				this.selectedTruckerContactId = null;
+			}
 		},
 		
 		generateTrailers: function () {
@@ -297,6 +318,11 @@ define([
 				dropDown += '<option value="'+model.get('id')+'">'+model.get('number')+'</option>';
 			});
 			this.$el.find('#trailer_id').append(dropDown);
+			
+			if(typeof this.selectedTrailerId != 'undefined' && this.selectedTrailerId != null) {
+				this.$el.find('#trailer_id').val(this.selectedTrailerId);
+				this.selectedTrailerId = null;
+			}
 		},
 		
 		generateOriginLoaderAccountContacts: function () {
@@ -305,6 +331,11 @@ define([
 				dropDown += '<option value="'+model.get('id')+'">'+model.get('lastname')+', '+model.get('firstname')+'</option>';
 			});
 			this.$el.find('#originloader_id').append(dropDown);
+			
+			if(typeof this.selectedOriginLoaderContactId != 'undefined' && this.selectedOriginLoaderContactId != null) {
+				this.$el.find('#originloader_id').val(this.selectedOriginLoaderContactId);
+				this.selectedOriginLoaderContactId = null;
+			}
 		},
 		
 		generateDestinationLoaderAccountContacts: function () {
@@ -313,6 +344,11 @@ define([
 				dropDown += '<option value="'+model.get('id')+'">'+model.get('lastname')+', '+model.get('firstname')+'</option>';
 			});
 			this.$el.find('#destinationloader_id').append(dropDown);
+			
+			if(typeof this.selectedDestinationLoaderContactId != 'undefined' && this.selectedDestinationLoaderContactId != null) {
+				this.$el.find('#destinationloader_id').val(this.selectedDestinationLoaderContactId);
+				this.selectedDestinationLoaderContactId = null;
+			}
 		},
 		
 		addProduct: function () {
@@ -415,8 +451,8 @@ define([
 			'change #truckerAccountType_id': 'onChangeTruckerType',
 			'change #truckerAccount_id': 'onChangeTrucker',
 			'change #trailer': 'onChangeTrailer',
-			'change #originloader': 'onChangeOriginloader',
-			'change #destinationloader': 'onChangeDestinationloader',
+			'change #originloader': 'onChangeOriginLoader',
+			'change #destinationloader': 'onChangeDestinationLoader',
 			
 			'keyup #truckingrate': 'onKeyUpTrackingRate',
 			'blur #truckingrate': 'onBlurTruckingRate',
@@ -438,44 +474,69 @@ define([
 		},
 		
 		onChangeTruckerType: function (ev) {
-			var accountTypeId = $(ev.currentTarget).val();
+			this.fetchTruckerAccounts($(ev.currentTarget).val());
+		},
+		
+		fetchTruckerAccounts: function (accountTypeId, accountId, contactId) {
+			if(accountId != null)
+				this.selectedTruckerAccountId = accountId;
+			
 			this.resetSelect($('#truckerAccount_id'));
 			this.resetSelect($('#trucker_id'));
 			this.truckerAccountCollection.getTruckerAccountsByAccountType(accountTypeId);
 			this.toggleTruckingRate(accountTypeId);
 			
-			/*if(accountTypeId != '') {
-				var accountTypeModel = this.accountTypeCollection.get(accountTypeId);
-				this.toggleTruckingRate(accountTypeModel.get('name'));
-				this.truckerAccountCollection.getTruckerAccountsByAccountType(accountTypeId);
-			}
-			else
-				this.toggleTruckingRate('');*/
+			if(contactId != null)
+				this.fetchTruckerContacts(accountId, contactId);
 		},
 		
 		onChangeTrucker: function (ev) {
-			var accountId = $(ev.currentTarget).val();
+			this.fetchTruckerContacts($(ev.currentTarget).val());
+		},
+		
+		fetchTruckerContacts: function(accountId, contactId) {
+			if(contactId != null)
+				this.selectedTruckerContactId = contactId;
+		
 			this.resetSelect($('#trucker_id'));
 			if(accountId != '')
 				this.truckerContactCollection.getContactsByAccountId(accountId);
 		},
 		
 		onChangeTrailer: function (ev) {
-			var accountId = $(ev.currentTarget).val();
+			this.fetchTrailer($(ev.currentTarget).val());
+		},
+		
+		fetchTrailer: function (accountId, trailerId) {
+			if(trailerId != null)
+				this.selectedTrailerId = trailerId;
+				
 			this.resetSelect($('#trailer_id'));
 			if(accountId != '')
 				this.trailerCollection.getTrailerByAccountId(accountId);
 		},
 		
-		onChangeOriginloader: function (ev) {
-			var accountId = $(ev.currentTarget).val();
+		onChangeOriginLoader: function (ev) {
+			this.fetchOriginLoaderContacts($(ev.currentTarget).val());
+		},
+		
+		fetchOriginLoaderContacts: function(accountId, contactId) {
+			if(contactId != null)
+				this.selectedOriginLoaderContactId = contactId;
+		
 			this.resetSelect($('#originloader_id'));
 			if(accountId != '')
 				this.originLoaderContactCollection.getContactsByAccountId(accountId);
 		},
 		
-		onChangeDestinationloader: function (ev) {
-			var accountId = $(ev.currentTarget).val();
+		onChangeDestinationLoader: function (ev) {
+			this.fetchDestinationLoaderContacts($(ev.currentTarget).val());
+		},
+		
+		fetchDestinationLoaderContacts: function (accountId, contactId) {
+			if(contactId != null)
+				this.selectedDestinationLoaderContactId = contactId;
+			
 			this.resetSelect($('#destinationloader_id'));
 			if(accountId != '')
 				this.destinationLoaderContactCollection.getContactsByAccountId(accountId);
@@ -544,7 +605,7 @@ define([
 					this.truckingRateEditable = false;
 					$('#truckingrate').attr('readonly', true);
 					this.computeTruckingRate();
-					$('#trailer-rent').val('');
+					$('#trailerrate').val('');
 				}
 			}
 		},*/
@@ -564,14 +625,14 @@ define([
 					this.truckingRateEditable = false;
 					$('#truckingrate').attr('readonly', true);
 					this.computeTruckingRate();
-					$('#trailer-rent').val('');
+					$('#trailerrate').val('0.00');
 				}
 			}
 			else {
 				this.truckingRateEditable = false;
 				$('#truckingrate').attr('readonly', true);
 				$('#truckingrate').val('0.00');
-				$('#trailer-rent').val('');
+				$('#trailerrate').val('0.00');
 			}
 		},
 		
@@ -592,10 +653,10 @@ define([
 				
 				if(!isNaN(haulingRate) && haulingRate != 0) {
 					trailerRent = haulingRate * this.trailerPercentageRate / 100;
-					$('#trailer-rent').val(trailerRent.toFixed(2))
+					$('#trailerrate').val(trailerRent.toFixed(2))
 				}
 				else
-					$('#trailer-rent').val('');
+					$('#trailerrate').val('');
 			}
 		},
 		
@@ -607,7 +668,7 @@ define([
 				this.model.destroy({
 					success: function (model, response, options) {
 						thisObj.displayMessage(response);
-						Global.getGlobalVars().app_router.navigate(Const.URL.PICKUPSCHEDULE+'/'+thisObj.poid, {trigger: true});
+						Global.getGlobalVars().app_router.navigate(Const.URL.PICKUPSCHEDULE+'/'+thisObj.poId, {trigger: true});
 					},
 					error: function (model, response, options) {
 						thisObj.displayMessage(response);
@@ -619,6 +680,8 @@ define([
 			
 			return false;
 		},
+		
+		postDisplayForm: function () {},
 	});
 
 	return PickUpScheduleAddView;
