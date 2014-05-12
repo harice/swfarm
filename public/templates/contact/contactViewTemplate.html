@@ -38,9 +38,10 @@
                 <dt></dt>
                 <dd>
                     <div class="clearfix"></div>
-                    <a id="go-to-previous-page" href="#" class="btn btn-primary">Back</a> 
-                    <a href="<%= contact_edit_url %>/<%= contact.get("id") %>" class="btn btn-info">Edit</a>
-                    <button id="delete-contact" type="button" class="btn btn-danger">Delete</button>
+                    
+                    <a href="<%= contact_edit_url %>/<%= contact.get("id") %>" class="btn btn-primary">Edit</a>
+                    <a id="go-to-previous-page" href="#" class="btn btn-primary">Cancel</a>
+                    <button id="delete-contact" type="button" class="btn btn-link pull-right">Delete</button>
                 </dd>
             </dl>
         </div> <!-- /.block-flat -->
