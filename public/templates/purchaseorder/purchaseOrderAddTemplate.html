@@ -132,17 +132,19 @@
                         </div>
                     </fieldset>
                     <div class="form-group form-button-container">
-                        <div class="pull-right">
-                            <% if (typeof po_id !== "undefined") { %>
-                            <% if (typeof is_bid === "undefined") { %>
-                            <button id="cancel-po" type="button" class="btn btn-danger">Cancel Purchase Order</button>
-                            <% } else { %>
-                            <a id="cancel-po" class="btn btn-danger" href="#">Cancel Bid</a>
-                            <button id="convert-po" type="button" class="save btn btn-primary">Convert to PO</button>
-                            <% } %>
-                            <% } %>
-                            <button id="save" type="submit" class="save btn btn-primary">Save</button>
-                            <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <% if (typeof po_id !== "undefined") { %>
+                                <% if (typeof is_bid === "undefined") { %>
+                                <button id="cancel-po" type="button" class="btn btn-danger">Cancel Purchase Order</button>
+                                <% } else { %>
+                                <a id="cancel-po" class="btn btn-danger" href="#">Cancel Bid</a>
+                                <button id="convert-po" type="button" class="save btn btn-primary">Convert to PO</button>
+                                <% } %>
+                                <% } %>
+                                <button id="save" type="submit" class="save btn btn-primary">Save</button>
+                                <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
+                            </div>
                         </div>
                     </div>
                 </form>

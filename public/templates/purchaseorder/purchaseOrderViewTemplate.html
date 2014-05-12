@@ -123,16 +123,18 @@
               </div>
             </fieldset>
             <div class="form-group form-button-container">
-              <div class="pull-right">
-			  <% if (typeof editable !== "undefined") { %>
-				<% if (typeof is_bid === "undefined") { %>
-                  <a id="edit-po" class="btn btn-primary" href="<%= po_edit_url %>">Edit Purchase Order</a>
-				<% } else {%>
-				  <a id="edit-po" class="btn btn-primary" href="<%= po_edit_url %>">Edit Bid</a>
-				<% } %>
-			  <% } %>
-              <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
-              </div>
+                <div class="col-md-12">
+                    <div class="pull-right">
+                    <% if (typeof editable !== "undefined") { %>
+                      <% if (typeof is_bid === "undefined") { %>
+                        <a id="edit-po" class="btn btn-primary" href="<%= po_edit_url %>">Edit Purchase Order</a>
+                      <% } else {%>
+                        <a id="edit-po" class="btn btn-primary" href="<%= po_edit_url %>">Edit Bid</a>
+                      <% } %>
+                    <% } %>
+                    <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
+                    </div>
+                </div>
             </div>
           </form>
           

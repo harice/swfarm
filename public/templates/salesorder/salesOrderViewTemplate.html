@@ -111,12 +111,14 @@
               </div>
             </fieldset>
             <div class="form-group form-button-container">
-              <div class="pull-right">
-			  <% if (typeof editable !== "undefined") { %>
-				<a id="edit-so" class="btn btn-primary" href="<%= so_edit_url %>">Edit Sales Order</a>
-			  <% } %>
-              <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
-              </div>
+                <div class="col-md-12">
+                    <div class="pull-right">
+                    <% if (typeof editable !== "undefined") { %>
+                    <a id="edit-so" class="btn btn-primary" href="<%= so_edit_url %>">Edit Sales Order</a>
+                    <% } %>
+                    <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
+                    </div>
+                </div>
             </div>
           </form>
           
