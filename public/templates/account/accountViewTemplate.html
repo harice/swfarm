@@ -20,10 +20,9 @@
                 <% }); %>
                 <dd>
                     <div class="clearfix"></div>
-                    <br />
-                    <a id="go-to-previous-page" href="#" class="btn btn-primary">Back</a> 
-                    <a href="<%= account_edit_url %>/<%= account.get("id") %>" class="btn btn-info">Edit</a>
+                    <a href="<%= account_edit_url %>/<%= account.get("id") %>" class="btn btn-primary">Edit</a>
                     <button id="delete-account" type="button" class="btn btn-danger">Delete</button>
+                    <a id="go-to-previous-page" href="#" class="btn btn-default">Cancel</a>
                 </dd>
             </dl>
         </div>
