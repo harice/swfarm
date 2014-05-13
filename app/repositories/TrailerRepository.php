@@ -131,7 +131,6 @@ class TrailerRepository implements TrailerRepositoryInterface {
         if ($id) {
             $rules['account_id'] = 'required';
             $rules['number'] = 'required|unique:scale,number,'.$id;
-            $rules['rate'] = 'required';
         }
         
         $validator = Validator::make($data, $rules);
