@@ -28,8 +28,7 @@ class Trailer extends BaseModel {
      */
 	public static $rules = array(
         'account_id' => 'required',
-        'number' => 'required',
-        'rate' => 'required'
+        'number' => 'required'
     );
     
     public function fee()
