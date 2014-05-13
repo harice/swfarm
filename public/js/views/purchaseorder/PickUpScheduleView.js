@@ -1,6 +1,6 @@
 define([
 	'backbone',
-	'views/purchaseorder/PickUpScheduleAddView',
+	'views/base/AppView',
 	'jqueryui',
 	'jqueryvalidate',
 	'jquerytextformatter',
@@ -18,7 +18,7 @@ define([
 	'global',
 	'constant',
 ], function(Backbone,
-			PickUpScheduleAddView,
+			AppView,
 			JqueryUI,
 			Validate,
 			TextFormatter,
@@ -37,7 +37,7 @@ define([
 			Const
 ){
 
-	var PickUpScheduleView = PickUpScheduleAddView.extend({
+	var PickUpScheduleView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
@@ -90,6 +90,8 @@ define([
 			
 			this.$el.find('#distance').val(parseFloat(this.model.get('distance')).toFixed(2));
 			this.$el.find('#fuelcharge').val(parseFloat(this.model.get('fuelcharge')).toFixed(2));
+			this.$el.find('#truckingrate').val(parseFloat(this.model.get('truckingrate')).toFixed(2));
+			this.$el.find('#trailerrate').val(parseFloat(this.model.get('trailerrate')).toFixed(2));
 			
 			this.$el.find('#originloader').val(originloader.accountidandname.name);
 			this.$el.find('#originloader_id').val(originloader.lastname+', '+originloader.firstname+' '+originloader.suffix);
@@ -120,6 +122,10 @@ define([
 			});
 			
 			this.$el.find('#total-quantity').val(parseFloat(totalQuantity).toFixed(4));
+		},
+		
+		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
 		},
 	});
 
