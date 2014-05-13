@@ -2,7 +2,7 @@
   <% _.each(products, function(product){ %>
     <tr>
       <td><%= product.get("name") %></td>
-      <td><%= product.get("description") %></td>
+      <td style="word-wrap: break-word;"><%= product.get("description") %></td>
       <td>
         <a href="<%= product_edit_url %>/<%= product.get("id") %>" class="btn btn-info btn-xs">
 			<span class="glyphicon glyphicon-pencil"></span>
@@ -15,6 +15,6 @@
   <% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="3">No result found.</td>
+		<td colspan="3">No results found.</td>
 	</tr>
 <% } %>

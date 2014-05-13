@@ -57,7 +57,7 @@
                                 <div class="form-group">
                                     <label for="zipcode" class="col-sm-3 control-label">Zip Code</label>
                                     <div class="col-sm-3">
-                                        <input id="zipcode" type="number" class="form-control zipcode" placeholder="" maxlength="250" readonly>
+                                        <input id="zipcode" type="text" class="form-control zipcode" placeholder="" maxlength="250" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -138,8 +138,8 @@
                                 <% if (typeof is_bid === "undefined") { %>
                                 <!-- button id="cancel-po" type="button" class="btn btn-danger">Cancel Purchase Order</button -->
                                 <% } else { %>
-                                <a id="cancel-po" class="btn btn-danger" href="#">Cancel Bid</a>
-                                <button id="convert-po" type="button" class="save btn btn-primary">Convert to PO</button>
+                                <!-- a id="cancel-po" class="btn btn-danger" href="#">Cancel Bid</a -->
+                                <button id="convert-po" type="button" class="save btn btn-warning">Convert to PO</button>
                                 <% } %>
                                 <% } %>
                                 <button id="save" type="submit" class="save btn btn-primary">Save</button>
