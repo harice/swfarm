@@ -130,7 +130,7 @@ class TrailerRepository implements TrailerRepositoryInterface {
         
         if ($id) {
             $rules['account_id'] = 'required';
-            $rules['name'] = 'required|unique:scale,name,'.$id;
+            $rules['number'] = 'required|unique:scale,number,'.$id;
             $rules['rate'] = 'required';
         }
         
