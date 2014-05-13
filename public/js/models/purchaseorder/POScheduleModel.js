@@ -5,7 +5,7 @@ define([
 ], function(Backbone, Global, Const) {
 
 	var POScheduleModel = Backbone.Model.extend({
-		urlRoot: '/apiv1/pickupschedule',
+		urlRoot: '/apiv1/transportschedule',
 		defaults: {
         },
 		runFetch: function () {

@@ -1,13 +1,14 @@
 define([
 	'backbone',
+	'views/base/AppView',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/contact/contactViewTemplate.html',
 	'models/contact/ContactModel',
 	'global',
 	'constant',
-], function(Backbone, contentTemplate, contactViewTemplate, ContactModel, Global, Const){
+], function(Backbone, AppView, contentTemplate, contactViewTemplate, ContactModel, Global, Const){
 
-	var ContactView = Backbone.View.extend({
+	var ContactView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
@@ -40,13 +41,19 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+			
+			this.initConfirmationWindow('Are you sure you want to delete this contact?',
+										'confirm-delete-contact',
+										'Delete');
 		},
 		
 		events: {
-			'click #delete' : 'removeContact',
+			'click #go-to-previous-page': 'goToPreviousPage',
+			'click #delete-contact': 'showConfirmationWindow',
+			'click #confirm-delete-contact': 'deleteContact',
 		},
 		
-		removeContact: function (){
+		deleteContact: function (){
 			var thisObj = this;
             
             this.model.destroy({

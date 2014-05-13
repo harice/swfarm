@@ -5,13 +5,16 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
-	'views/autocomplete/CustomAutoCompleteView',
-	'models/purchaseorder/TruckingRateModel',
+	'models/order/OrderScheduleVariablesModel',
 	'models/purchaseorder/POScheduleModel',
-	'collections/account/AccountTruckerCollection',
-	'collections/account/AccountLoaderCollection',
+	'collections/product/ProductCollection',
+	'collections/account/AccountCollection',
+	'collections/account/AccountTypeCollection',
+	'collections/contact/ContactCollection',
+	'collections/account/TrailerCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddScheduleTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderPickUpScheduleProductItemTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -20,13 +23,16 @@ define([
 			Validate,
 			TextFormatter,
 			PhoneNumber,
-			CustomAutoCompleteView,
-			TruckingRateModel,
+			OrderScheduleVariablesModel,
 			POScheduleModel,
-			AccountTruckerCollection,
-			AccountLoaderCollection,
+			ProductCollection,
+			AccountCollection,
+			AccountTypeCollection,
+			ContactCollection,
+			TrailerCollection,
 			contentTemplate,
 			purchaseOrderAddScheduleTemplate,
+			purchaseOrderPickUpScheduleProductItemTemplate,
 			Global,
 			Const
 ){
@@ -36,22 +42,16 @@ define([
 		
 		initialize: function(option) {
 			var thisObj = this;
+			this.poId = option.poId;
+			this.schedId = option.id;
+			this.h1Title = 'Pick Up Schedule';
+			this.h1Small = 'edit';
+			this.inits();
 			
-			this.poid = option.poid;
-			this.truckingRatePerMile = null;
-			
-			this.truckingRateModel = new TruckingRateModel();
-			this.truckingRateModel.on('change', function() {
-				thisObj.truckingRatePerMile = this.get('truckingrate');
-				thisObj.displayForm();
-				thisObj.supplyScheduleData();
-				this.off('change');
-			});
-			
-			this.model = new POScheduleModel({id:option.id});
+			this.model = new POScheduleModel({id:this.schedId});
 			this.model.on('change', function() {
-				thisObj.truckingRateModel.runFetch();
-				this.off('change');
+				thisObj.orderScheduleVariablesModel.runFetch();
+				thisObj.off('change');
 			});
 		},
 		
@@ -60,36 +60,50 @@ define([
 		},
 		
 		supplyScheduleData: function () {
-			this.$el.find('#bid_id').before('<input id="schedId" type="hidden" name="id" value="'+this.model.get('id')+'" />');
-			this.$el.find('#po-sched-start-date input').val(this.model.get('scheduledate'));
+			var thisObj = this;
+			var trucker = this.model.get('trucker');
+			var originloader = this.model.get('originloader');
+			var destinationloader = this.model.get('destinationloader');
+			var trailer = this.model.get('trailer');
+			var products = this.model.get('transportscheduleproduct');
 			
-			this.accountTruckerAutoCompleteView.autoCompleteResult = [{name:this.model.get('trucker')[0].name, id:this.model.get('trucker')[0].id}];
-			this.toggleTruckingRate(this.model.get('trucker')[0].accounttype);
-			this.accountLoaderOriginAutoCompleteView.autoCompleteResult = [{name:this.model.get('origin_loader')[0].name,id:this.model.get('origin_loader')[0].id}];
-			this.accountLoaderDestinationAutoCompleteView.autoCompleteResult = [{name:this.model.get('destination_loader')[0].name,id:this.model.get('destination_loader')[0].id}];
+			this.$el.find('#po-sched-start-date .input-group.date').datepicker('update', this.convertDateFormat(this.model.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-'));
+			this.$el.find('#scheduletimeHour').val(this.model.get('scheduletimeHour'));
+			this.$el.find('#scheduletimeMin').val(this.model.get('scheduletimeMin'));
+			this.$el.find('#scheduletimeAmPm').val(this.model.get('scheduletimeAmPm'));
 			
-			this.$el.find('#trucker').val(this.model.get('trucker')[0].name);
-			this.$el.find('#trucker-id').val(this.model.get('trucker')[0].id);
-			
-			this.$el.find('#originloader').val(this.model.get('origin_loader')[0].name);
-			this.$el.find('#originloader-id').val(this.model.get('origin_loader')[0].id);
-			
-			this.$el.find('#destinationloader').val(this.model.get('destination_loader')[0].name);
-			this.$el.find('#destinationloader-id').val(this.model.get('destination_loader')[0].id);
-			
-			this.$el.find('.hours').val(this.model.get('scheduletimeHour'));
-			this.$el.find('.minutes').val(this.model.get('scheduletimeMin'));
-			this.$el.find('.ampm').val(this.model.get('scheduletimeAmPm'));
 			this.$el.find('#distance').val(this.model.get('distance'));
 			this.$el.find('#fuelcharge').val(this.model.get('fuelcharge')).blur();
-			this.$el.find('#truckingrate').val(this.model.get('truckingrate')).blur();
-			this.$el.find('#originloadersfee').val(this.model.get('originloadersfee')).blur();
-			this.$el.find('#destinationloadersfee').val(this.model.get('destinationloadersfee')).blur();
 			
-			this.$el.find('#delete-schedule').show();
+			var i= 0;
+			_.each(products, function (product) {
+				var productFields = (i > 0)? thisObj.addProduct(): thisObj.$el.find('#product-list tbody .product-item:first-child');
+				i++;
+				productFields.find('.id').val(product.id);
+				productFields.find('.productorder_id').val(product.productorder_id).change();
+				productFields.find('.quantity').val(product.quantity).blur();
+				
+			});
+			
+			this.$el.find('#truckerAccountType_id').val(trucker.accountidandname.accounttype[0].id);
+			this.fetchTruckerAccounts(trucker.accountidandname.accounttype[0].id, trucker.accountidandname.id, trucker.id, this.model.get('truckingrate'));
+			
+			this.$el.find('#trailer').val(trailer.account_id);
+			this.fetchTrailer(trailer.account_id, trailer.id);
+			
+			this.$el.find('#originloader').val(originloader.accountidandname.id);
+			this.fetchOriginLoaderContacts(originloader.accountidandname.id, originloader.id);
+			this.$el.find('#originloaderfee').val(this.model.get('originloaderfee')).blur();
+			
+			this.$el.find('#destinationloader').val(destinationloader.accountidandname.id);
+			this.fetchDestinationLoaderContacts(destinationloader.accountidandname.id, destinationloader.id);
+			this.$el.find('#destinationloaderfee').val(this.model.get('destinationloaderfee')).blur();
+		},
+		
+		postDisplayForm: function () {
+			this.supplyScheduleData();
 		},
 	});
 
-  return PickUpScheduleEditView;
-  
+	return PickUpScheduleEditView;
 });

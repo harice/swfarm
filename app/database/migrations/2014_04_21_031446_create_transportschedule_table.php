@@ -20,13 +20,14 @@ class CreateTransportscheduleTable extends Migration {
 			$table->timestamp('date');
 			$table->integer('trucker_id')->unsigned();
 			$table->integer('trailer_id')->unsigned()->nullable();
-			$table->decimal('distance', 8, 4);
-			$table->float('fuelcharge', 8, 4);
+			$table->decimal('distance', 8, 2);
+			$table->decimal('fuelcharge', 8, 2);
 			$table->integer('originloader_id')->unsigned();
 			$table->decimal('originloaderfee', 8, 2);
 			$table->integer('destinationloader_id')->unsigned();
 			$table->decimal('destinationloaderfee', 8, 2);
-			$table->decimal('truckingrate', 8, 2);
+			$table->decimal('truckingrate', 8, 2)->nullable();
+			$table->decimal('trailerrate', 8, 2)->nullable();
 			$table->tinyInteger('type'); //1 - for pickup, 2 - for delivery
 			$table->timestamps();
 

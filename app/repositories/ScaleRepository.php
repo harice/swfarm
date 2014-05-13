@@ -25,7 +25,7 @@ class ScaleRepository implements ScaleRepositoryInterface {
     {
         try
         {
-            $scale = Scale::find($id)->fee;
+            $scale = Scale::find($id);
             
             if (!$scale) {
                 throw new NotFoundException();
@@ -130,7 +130,8 @@ class ScaleRepository implements ScaleRepositoryInterface {
         
         if ($id) {
             $rules['account_id'] = 'required';
-            $rules['name'] = 'required';
+            $rules['name'] = 'required|unique:scale,name,'.$id;
+            $rules['rate'] = 'required';
         }
         
         $validator = Validator::make($data, $rules);

@@ -131,13 +131,15 @@
                   </div>
                 </fieldset>
                 <div class="form-group form-button-container">
-                  <div class="pull-right">
-                  <% if (typeof so_id !== "undefined") { %>
-					<a id="cancel-so" class="btn btn-danger" href="#">Cancel Sales Order</a>
-                  <% } %>
-                  <button id="save" type="submit" class="save btn btn-primary">Save</button>
-                  <a id="cancel-save" class="btn btn-link" href="<%= so_url %>">Back</a>
-                  </div>
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            <% if (typeof so_id !== "undefined") { %>
+                            <!-- a id="cancel-so" class="btn btn-danger" href="#">Cancel Sales Order</a -->
+                            <% } %>
+                            <button id="save" type="submit" class="save btn btn-primary">Save</button>
+                            <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
+                        </div>
+                    </div>
                 </div>
               </form>
               

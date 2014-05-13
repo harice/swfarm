@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder {
 		Eloquent::unguard();
 		
 		$this->call('UsersTableSeeder');
+        $this->call('SettingsTableSeeder');
 		$this->call('PermissioncategoryTableSeeder');
 		$this->call('PermissiontypeTableSeeder');
 		$this->call('PermissioncategorytypeTableSeeder');
@@ -20,18 +21,16 @@ class DatabaseSeeder extends Seeder {
         
         $this->call('AddressStatesTableSeeder');
 
-
-        // Sales Order
+		// Sales Order
         $this->call('LocationTableSeeder');
         $this->call('NatureOfSaleTableSeeder');
         $this->call('StatusTableSeeder');
         
         // Testing
-        $this->call('ProductsTableSeeder');
-        $this->call('AccountTableSeeder');
-        $this->call('ContactTableSeeder');
-        $this->call('AddressTableSeeder');
-
+		// $this->call('ProductsTableSeeder');
+        // $this->call('AccountTableSeeder');
+        // $this->call('ContactTableSeeder');
+        // $this->call('AddressTableSeeder');
 		// $this->call('BidTableSeeder');
         // $this->call('BidProductTableSeeder');
         // $this->call('PurchaseOrderTableSeeder');
@@ -41,7 +40,8 @@ class DatabaseSeeder extends Seeder {
         // $this->call('PickupScheduleTableSeeder');
         // $this->call('SalesOrderTableSeeder');
         // $this->call('ProductOrderTableSeeder');
-        // $this->call('FarmLocationTableSeeder');
+		
+		// $this->call('FarmLocationTableSeeder');
         // $this->call('StackTableSeeder');
         
         // $this->call('ScaleTableSeeder');

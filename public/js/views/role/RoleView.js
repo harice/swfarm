@@ -1,13 +1,14 @@
 define([
 	'backbone',
+    'views/base/AppView',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/role/roleViewTemplate.html',
 	'models/role/RoleModel',
 	'global',
 	'constant',
-], function(Backbone, contentTemplate, roleViewTemplate, RoleModel, Global, Const){
+], function(Backbone, AppView, contentTemplate, roleViewTemplate, RoleModel, Global, Const){
 
-	var UserView = Backbone.View.extend({
+	var UserView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
@@ -41,29 +42,31 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+            
+            this.initConfirmationWindow('Are you sure you want to delete this role?',
+										'confirm-delete-role',
+										'Delete');
 		},
 		
 		events: {
-			'click #delete' : 'removeRole',
+            'click #delete-role': 'showConfirmationWindow',
+			'click #confirm-delete-role': 'deleteRole',
 		},
 		
-		removeRole: function (){
+		deleteRole: function (){
 			var thisObj = this;
-			
-			var verifyDelete = confirm('Are you sure you want to delete this role?');
-			if(verifyDelete) {
-				this.model.destroy({
-					success: function (model, response, options) {
-						thisObj.displayMessage(response);
-						Global.getGlobalVars().app_router.navigate(Const.URL.ROLE, {trigger: true});
-					},
-					error: function (model, response, options) {
-						thisObj.displayMessage(response);
-					},
-					wait: true,
-					headers: thisObj.model.getAuth(),
-				});
-			}
+            
+            this.model.destroy({
+                success: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                    Global.getGlobalVars().app_router.navigate(Const.URL.ROLE, {trigger: true});
+                },
+                error: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                },
+                wait: true,
+                headers: thisObj.model.getAuth(),
+            });
 		},
 		
 	});

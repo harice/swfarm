@@ -40,13 +40,19 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+			
+			this.initConfirmationWindow('Are you sure you want to delete this account?',
+										'confirm-delete-account',
+										'Delete');
 		},
 		
 		events: {
-			'click #delete' : 'removeUser',
+			'click #go-to-previous-page': 'goToPreviousPage',
+			'click #delete-account': 'showConfirmationWindow',
+			'click #confirm-delete-account': 'deleteAccount',
 		},
 		
-		removeUser: function (){
+		deleteAccount: function (){
 			var thisObj = this;
             
             this.model.destroy({
@@ -63,6 +69,6 @@ define([
 		},
 	});
 
-  return AccountView;
+	return AccountView;
   
 });

@@ -22,10 +22,11 @@ class TransportSchedule extends Eloquent {
         'distance',
         'fuelcharge',
         'originloader_id',
-        'originloadersfee',
+        'originloaderfee',
         'destinationloader_id',
-        'destinationloadersfee',
+        'destinationloaderfee',
         'truckingrate',
+        'trailerrate',
         'type',
         'created_at',
         'updated_at'
@@ -84,6 +85,10 @@ class TransportSchedule extends Eloquent {
     }
 
     public function trailer(){
-        return $this->hasOne('Trailer', 'id', 'trailer_id')->select(array('id','name'));
+        return $this->hasOne('Trailer', 'id', 'trailer_id')->select(array('id','account_id','number','rate'));
+    }
+
+    public function transportscheduleproduct(){
+      return $this->hasMany('TransportScheduleProduct', 'transportschedule_id', 'id');
     }
 }

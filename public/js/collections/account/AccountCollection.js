@@ -20,6 +20,21 @@ define([
 				}
 			);
 		},
+		
+		getTruckerAccountsByAccountType: function (id) {
+			this.url = '/apiv1/account/accountsByType?accountTypeId='+id;
+			this.getModels();
+		},
+		
+		getTrailerAccounts: function () {
+			this.url = '/apiv1/account/trailer';
+			this.getModels();
+		},
+		
+		getLoaderAccounts: function () {
+			this.url = '/apiv1/account/loader';
+			this.getModels();
+		},
 	});
 
 	return AccountCollection;

@@ -42,6 +42,10 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+			
+			this.initConfirmationWindow('Are you sure you want to delete this contact?',
+										'confirm-delete-contact',
+										'Delete');
 		},
 		
 		displayList: function () {
@@ -61,7 +65,9 @@ define([
 		events: {
             'click .sort-name' : 'sortName',
             'click .sort-account' : 'sortAccount',
-            'change .checkall' : 'checkAll'
+            'change .checkall' : 'checkAll',
+			'click .delete-contact': 'preShowConfirmationWindow',
+			'click #confirm-delete-contact': 'deleteContact',
 		},
 
 		checkAll: function () {
@@ -78,6 +84,30 @@ define([
                 
         sortAccount: function () {
 			this.sortByField('account');
+		},
+		
+		preShowConfirmationWindow: function (ev) {
+			this.$el.find('#confirm-delete-contact').attr('data-id', $(ev.currentTarget).attr('data-id'));
+			
+			this.showConfirmationWindow();
+			return false;
+		},
+		
+		deleteContact: function (ev) {
+			var thisObj = this;
+			var contactModel = new ContactModel({id:$(ev.currentTarget).attr('data-id')});
+			
+            contactModel.destroy({
+                success: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                    thisObj.renderList(1);
+                },
+                error: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                },
+                wait: true,
+                headers: contactModel.getAuth(),
+            });
 		},
 	});
 
