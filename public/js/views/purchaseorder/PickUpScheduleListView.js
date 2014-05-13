@@ -64,7 +64,7 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
-			this.initCalendars();
+			//this.initCalendars();
 		},
 		
 		displayList: function () {
@@ -98,6 +98,7 @@ define([
 		},
 		
 		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
 		},
 	});
 

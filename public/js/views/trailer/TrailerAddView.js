@@ -77,7 +77,7 @@ define([
 			var validate = $('#trailerForm').validate({
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
-					data['rate'] = '0.00';
+					//data['rate'] = '0.00';
 					console.log(data);
 					var trailerModel = new TrailerModel(data);
 					

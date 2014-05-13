@@ -105,6 +105,7 @@ define([
 			this.$el.find('#truckerAccount_id').val(trucker.accountidandname.name);
 			this.$el.find('#trucker_id').val(trucker.lastname+', '+trucker.firstname+' '+trucker.suffix);
 			
+			this.$el.find('#trailer').val(trailer.account.name);
 			this.$el.find('#trailer_id').val(trailer.number);
 			
 			var totalQuantity = 0;

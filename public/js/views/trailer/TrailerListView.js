@@ -2,7 +2,7 @@ define([
 	'backbone',
 	'views/base/ListView',
 	'models/stack/StackLocationModel',
-	'collections/stack/StackLocationCollection',
+	'collections/trailer/TrailerCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/trailer/trailerListTemplate.html',
 	'text!templates/trailer/trailerInnerListTemplate.html',
@@ -10,7 +10,7 @@ define([
 ], function(Backbone,
 			ListView,
 			StackLocationModel,
-			StackLocationCollection,
+			TrailerCollection,
 			contentTemplate,
 			trailerListTemplate,
 			trailerInnerListTemplate,
@@ -24,7 +24,7 @@ define([
 			this.extendListEvents();
 			var thisObj = this;
 			
-			this.collection = new StackLocationCollection();
+			this.collection = new TrailerCollection();
 			this.collection.on('sync', function() {
 				thisObj.displayList();
 			});
@@ -60,13 +60,13 @@ define([
 		displayList: function () {
 			
 			var data = {
-				sl_edit_url: '#/'+Const.URL.STACKLOCATION+'/'+Const.CRUD.EDIT,
-				sls: this.collection.models,
+				trailer_edit_url: '#/'+Const.URL.TRAILER+'/'+Const.CRUD.EDIT,
+				trailers: this.collection.models,
 				_: _ 
 			};
 			
 			var innerListTemplate = _.template(trailerInnerListTemplate, data);
-			$("#sl-list tbody").html(innerListTemplate);
+			$("#trailer-list tbody").html(innerListTemplate);
 			
 			this.generatePagination();
 		},
