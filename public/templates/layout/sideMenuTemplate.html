@@ -76,6 +76,10 @@
 			<% if(_.contains(permission,constant.MENU.TRAILER.VIEW) || _.isEqual(su,constant.SU)) { %>
             <li><a href="#/<%= constant.URL.TRAILER %>">Trailer</a></li>
             <% } %>
+			
+			<% if(_.contains(permission,constant.MENU.SETTINGS.EDIT) || _.isEqual(su,constant.SU)) { %>
+            <li><a href="#/<%= constant.URL.SETTINGS %>">Settings</a></li>
+            <% } %>
           </ul>
         </li>
         <% } %>

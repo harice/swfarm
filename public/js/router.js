@@ -22,6 +22,7 @@ define([
 	'controllers/salesorder/SalesOrderController',
 	'controllers/stack/StackLocationController',
 	'controllers/trailer/TrailerController',
+	'controllers/settings/SettingsController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
@@ -47,6 +48,7 @@ define([
 			SalesOrderController,
 			StackLocationController,
 			TrailerController,
+			SettingsController,
 			Global,
 			Const,
 			Session) {
@@ -153,6 +155,9 @@ define([
 	routerRoutes[Const.URL.TRAILER+'/'] = 'showTrailerPage';
 	routerRoutes[Const.URL.TRAILER+'/:action'] = 'showTrailerPage';
 	routerRoutes[Const.URL.TRAILER+'/:action/:id'] = 'showTrailerPage';
+	
+	//settings
+	routerRoutes[Const.URL.SETTINGS] = 'showSettingsPage';
 	
 	routerRoutes['*actions'] = 'defaultAction';
 
@@ -333,6 +338,13 @@ define([
 			this.closeView();
 			var trailerController = new TrailerController();
 			this.currView = trailerController.setAction(action, id);
+			this.currView.render();
+		});
+		
+		app_router.on('route:showSettingsPage', function () {
+			this.closeView();
+			var settingsController = new SettingsController();
+			this.currView = settingsController.setAction();
 			this.currView.render();
 		});
 		

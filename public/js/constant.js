@@ -21,6 +21,7 @@ define(function () {
 			'SO': 'sales/so',
 			'STACKLOCATION': 'administration/stack',
 			'TRAILER': 'administration/trailer',
+			'SETTINGS': 'administration/settings',
 		},
 		'MENU': {
 			'PURCHASES': {
@@ -84,6 +85,9 @@ define(function () {
 				'ADD'	:38,
 				'EDIT'	:39,
 				'CANCEL':40
+			},
+			'SETTINGS': {
+				'EDIT'  :41,
 			},
 		},
 		'CRUD': {

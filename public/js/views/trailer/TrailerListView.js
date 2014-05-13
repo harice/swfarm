@@ -1,7 +1,7 @@
 define([
 	'backbone',
 	'views/base/ListView',
-	'models/stack/StackLocationModel',
+	'models/trailer/TrailerModel',
 	'collections/trailer/TrailerCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/trailer/trailerListTemplate.html',
@@ -9,7 +9,7 @@ define([
 	'constant',
 ], function(Backbone,
 			ListView,
-			StackLocationModel,
+			TrailerModel,
 			TrailerCollection,
 			contentTemplate,
 			trailerListTemplate,
@@ -52,8 +52,8 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
-			this.initConfirmationWindow('Are you sure you want to delete this Stock Location?',
-										'confirm-delete-sl',
+			this.initConfirmationWindow('Are you sure you want to delete this Trailer?',
+										'confirm-delete-trailer',
 										'Delete');
 		},
 		
@@ -72,22 +72,22 @@ define([
 		},
 		
 		events: {
-			'click .delete-sl': 'preShowConfirmationWindow',
-			'click #confirm-delete-sl': 'deleteStockLocation'
+			'click .delete-trailer': 'preShowConfirmationWindow',
+			'click #confirm-delete-trailer': 'deleteTrailer'
 		},
 		
 		preShowConfirmationWindow: function (ev) {
-			this.$el.find('#confirm-delete-sl').attr('data-id', $(ev.currentTarget).attr('data-id'));
+			this.$el.find('#confirm-delete-trailer').attr('data-id', $(ev.currentTarget).attr('data-id'));
 			
 			this.showConfirmationWindow();
 			return false;
 		},
 		
-		deleteStockLocation: function (ev) {
+		deleteTrailer: function (ev) {
 			var thisObj = this;
-			var stackLocationModel = new StackLocationModel({id:$(ev.currentTarget).attr('data-id')});
+			var trailerModel = new TrailerModel({id:$(ev.currentTarget).attr('data-id')});
 			
-            stackLocationModel.destroy({
+            trailerModel.destroy({
                 success: function (model, response, options) {
                     thisObj.displayMessage(response);
                     thisObj.renderList(1);
@@ -96,7 +96,7 @@ define([
                     thisObj.displayMessage(response);
                 },
                 wait: true,
-                headers: stackLocationModel.getAuth(),
+                headers: trailerModel.getAuth(),
             });
 		},
 	});

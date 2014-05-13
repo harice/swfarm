@@ -2,10 +2,10 @@ define([
 	'backbone',
 	'views/trailer/TrailerListView',
 	'views/trailer/TrailerAddView',
-	'views/stack/StackLocationEditView',
+	'views/trailer/TrailerEditView',
 	'views/salesorder/SalesOrderView',
 	'constant',
-], function(Backbone, TrailerListView, TrailerAddView, StackLocationEditView, SalesOrderView, Const){
+], function(Backbone, TrailerListView, TrailerAddView, TrailerEditView, SalesOrderView, Const){
 	
 	function TrailerController () {	
 		
@@ -33,7 +33,7 @@ define([
 		};
 		
 		this.edit = function (id) {
-			return new StackLocationEditView({'id':id});
+			return new TrailerEditView({'id':id});
 		};
 		
 		this.listView = function () {
