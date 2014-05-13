@@ -278,17 +278,18 @@ define([
 			this.addValidationToProduct(clone);
             // this.styleSelect(clone);
             // this.styleRadio();
-            // this.maskInputs();
+            this.maskInputs();
 			return clone;
 		},
                 
         maskInputs: function () {
-            $(".unitprice").mask('0,000.00', {reverse: true});
+            // $(".unitprice").mask('0,000.00', {reverse: true});
             $(".tons").mask('0,000.00', {reverse: true});
-            $(".bales").mask('000', {reverse: true});
-            $(".unit-price").mask('000,000.00', {reverse: true});
+            $(".bales").mask('0,000', {reverse: true});
+            // $(".unit-price").mask('000,000.00', {reverse: true});
         },
                 
+        // TO DO: Remove
         styleSelect: function (clone) {
             clone.find(".select2").select2({
                 width: '100%',
@@ -296,6 +297,7 @@ define([
             });
         },
                 
+        // TO DO: Remove
         styleRadio: function () {
             $('.icheck').iCheck({
                 checkboxClass: 'icheckbox_flat-blue',
@@ -305,6 +307,7 @@ define([
             $('.iradio_flat-green').first().addClass('checked');
         },
 		
+        // TO DO: Remove
 		styleSelect: function (clone) {
             clone.find(".select2").select2({
                 width: '100%',
