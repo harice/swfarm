@@ -133,6 +133,7 @@ define([
 					console.log($(form).serializeObject());
 					var data = thisObj.formatFormField($(form).serializeObject());
 					//console.log(data);
+					
 					if(typeof data['transportdatestart'] != 'undefined')
 						data['transportdatestart'] = thisObj.convertDateFormat(data['transportdatestart'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					if(typeof data['transportdateend'] != 'undefined')

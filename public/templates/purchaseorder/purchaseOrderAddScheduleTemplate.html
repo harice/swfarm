@@ -4,12 +4,15 @@
             <div class="content">
               
 				<form id="POScheduleForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+					<% if (typeof sched_id !== "undefined") { %>
+						<input type="hidden" name="id" value="<%= sched_id %>" />
+					<% } %>
 					<fieldset>
 						<legend>Schedule</legend>
-						<input type="hidden" id="bid_id" name="bid_id" value="<%= po_id %>" />
+						<input type="hidden" id="order_id" name="order_id" value="<%= po_id %>" />
 						<div class="col-md-4 col-sm-6">
 							<div class="form-group">
-								<label for="" class="col-sm-4 control-label small">Date</label>
+								<label for="scheduledate" class="col-sm-4 control-label small">Date</label>
 								<div class="col-sm-8">
 									<div id="po-sched-start-date" class="calendar-cont">
 										<div class="input-group date margin-0">
@@ -24,9 +27,9 @@
 								<label for="" class="col-sm-4 control-label small">Time</label>
 								<div class="col-sm-8">
                                     <div class="styled-select">
-                                        <select class="form-control hours width-80" name="scheduletimeHour"></select>
-                                        <select class="form-control minutes width-80" name="scheduletimeMin"></select>
-                                        <select class="form-control ampm width-80" name="scheduletimeAmPm">
+                                        <select class="form-control hours width-80" id="scheduletimeHour" name="scheduletimeHour"></select>
+                                        <select class="form-control minutes width-80" id="scheduletimeMin" name="scheduletimeMin"></select>
+                                        <select class="form-control ampm width-80" id="scheduletimeAmPm" name="scheduletimeAmPm">
                                             <option value="AM">AM</option>
                                             <option value="PM">PM</option>
                                         </select>
@@ -34,38 +37,54 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="trucker" class="col-sm-4 control-label small">Trucker</label>
+								<label for="truckerAccountType_id" class="col-sm-4 control-label small">Trucker Type</label>
 								<div class="col-sm-8">
-                                    <div class="styled-select">
-                                        <select class="form-control width-200" id="trucker" name="trucker">
-                                            <%= trucker_account_list %>
+									<div class="styled-select">
+										<select class="form-control width-200" id="truckerAccountType_id" name="truckerAccountType_id">
+											<option value="">Select a trucker type</option>
+											<%= trucker_account_type_list %>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="truckerAccount_id" class="col-sm-4 control-label small">Trucker</label>
+								<div class="col-sm-8">
+									<div class="styled-select">
+                                        <select class="form-control width-200" id="truckerAccount_id" name="truckerAccount_id">
+											<option value="">Select a trucker</option>
                                         </select>
                                     </div>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="trucker-contact" class="col-sm-4 control-label small">Trucker Contact</label>
+								<label for="trucker_id" class="col-sm-4 control-label small">Trucker Contact</label>
 								<div class="col-sm-8">
-                                    <div class="styled-select">
-                                        <select class="form-control width-200" id="trucker-contact" name="trucker-contact"></select>
+									<div class="styled-select">
+                                        <select class="form-control width-200" id="trucker_id" name="trucker_id">
+											<option value="">Select a trucker contact</option>
+										</select>
                                     </div>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="trailer" class="col-sm-4 control-label small">Trailer</label>
 								<div class="col-sm-8">
-                                    <div class="styled-select">
-                                        <select class="form-control width-200" id="trailer" name="trailer">
+									<div class="styled-select">
+                                        <select class="form-control width-200" id="trailer">
+											<option value="">Select a trailer</option>
                                             <%= trailer_account_list %>
                                         </select>
                                     </div>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="trailer-contact" class="col-sm-4 control-label small">Trailer Contact</label>
+								<label for="trailer_id" class="col-sm-4 control-label small">Trailer Number</label>
 								<div class="col-sm-8">
-                                    <div class="styled-select">
-                                        <select class="form-control width-200" id="trailer-contact" name="trailer-contact"></select>
+									<div class="styled-select">
+                                        <select class="form-control width-200" id="trailer_id" name="trailer_id">
+											<option value="">Select a trailer number</option>
+										</select>
                                     </div>
 								</div>
 							</div>
@@ -80,14 +99,28 @@
 								<div class="col-sm-8">
 									<div class="input-group margin-0">
 										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right monetary-value" id="fuelcharge" name="fuelcharge" required>
+										<input type="text" class="form-control text-right monetary-value" id="fuelcharge" name="fuelcharge" placeholder="0.00">
 									</div>	
 									<div class="error-msg-cont"></div>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="truckingrate" class="col-sm-4 control-label small">Trucking/Hauling Rate</label>
-								<div class="col-sm-8 value-text"><input type="text" class="form-control text-right" id="truckingrate" name="truckingrate" value="0.00" required readonly></div>
+								<div class="col-sm-8">
+									<div class="input-group margin-0">
+										<span class="input-group-addon">$</span>
+										<input type="text" class="form-control text-right monetary-value" id="truckingrate" name="truckingrate" placeholder="0.00" value="0.00" required readonly>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="trailerrate" class="col-sm-4 control-label small">Trailer Rent</label>
+								<div class="col-sm-8">
+									<div class="input-group margin-0">
+										<span class="input-group-addon">$</span>
+										<input type="text" class="form-control text-right monetary-value" id="trailerrate" name="trailerrate" placeholder="0.00" value="0.00" readonly>
+									</div>
+								</div>
 							</div>
 						</div>
 						<div class="col-md-4 col-sm-6">
@@ -95,27 +128,30 @@
 							<div class="form-group">
 								<label for="originloader" class="col-sm-4 control-label small">Loader</label>
 								<div class="col-sm-8">
-                                    <div class="styled-select">
-                                        <select class="form-control width-200" id="originloader" name="originloader">
-                                            <%= originloader_account_list %>
+									<div class="styled-select">
+                                        <select class="form-control width-200" id="originloader" name="originloader" required>
+                                            <option value="">Select a loader</option>
+											<%= originloader_account_list %>
                                         </select>
                                     </div>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="originloader-contact" class="col-sm-4 control-label small">Loader Contact</label>
+								<label for="originloader_id" class="col-sm-4 control-label small">Loader Contact</label>
 								<div class="col-sm-8">
-                                    <div class="styled-select">
-                                        <select class="form-control width-200" id="originloader-contact" name="originloader-contact"></select>
+									<div class="styled-select">
+                                        <select class="form-control width-200" id="originloader_id" name="originloader_id" required>
+											<option value="">Select a loader contact</option>
+										</select>
                                     </div>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="originloadersfee" class="col-sm-4 control-label small">Loader's Fee</label>
+								<label for="originloaderfee" class="col-sm-4 control-label small">Loader's Fee</label>
 								<div class="col-sm-8">
 									<div class="input-group margin-0">
 										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right loader monetary-value" id="originloadersfee" name="originLoaderFee" required>
+										<input type="text" class="form-control text-right loader monetary-value" id="originloaderfee" name="originloaderfee" placeholder="0.00" required>
 									</div>	
 									<div class="error-msg-cont"></div>
 								</div>
@@ -126,27 +162,30 @@
 							<div class="form-group">
 								<label for="destinationloader" class="col-sm-4 control-label small">Loader</label>
 								<div class="col-sm-8">
-                                    <div class="styled-select">
-                                        <select class="form-control width-200" id="destinationloader" name="destinationloader">
+									<div class="styled-select">
+                                        <select class="form-control width-200" id="destinationloader" name="destinationloader" required>
+											<option value="">Select a loader</option>
                                             <%= destinationloader_account_list %>
                                         </select>
                                     </div>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="destinationloader-contact" class="col-sm-4 control-label small">Loader Contact</label>
+								<label for="destinationloader_id" class="col-sm-4 control-label small">Loader Contact</label>
 								<div class="col-sm-8">
-                                    <div class="styled-select">
-                                        <select class="form-control width-200" id="destinationloader-contact" name="destinationloader-contact"></select>
+									<div class="styled-select">
+                                        <select class="form-control width-200" id="destinationloader_id" name="destinationloader_id" required>
+											<option value="">Select a loader contact</option>
+										</select>
                                     </div>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="destinationloadersfee" class="col-sm-4 control-label small">Loader's Fee</label>
+								<label for="destinationloaderfee" class="col-sm-4 control-label small">Loader's Fee</label>
 								<div class="col-sm-8">
 									<div class="input-group margin-0">
 										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right loader monetary-value" id="destinationloadersfee" name="destinationLoaderFee" required>
+										<input type="text" class="form-control text-right loader monetary-value" id="destinationloaderfee" name="destinationloaderfee" placeholder="0.00" required>
 									</div>	
 									<div class="error-msg-cont"></div>
 								</div>
@@ -168,6 +207,18 @@
 									<th class="width-40"></th>
 								</tr>
 							</thead>
+							<tfoot>
+								<tr>
+									<td class="text-right" colspan="2">Total</td>
+									<td>
+										<div class="input-group margin-0">
+											<input id="total-quantity" type="text" class="form-control text-right" placeholder="0.0000" readonly>
+											<span class="input-group-addon">Tons</span>
+										</div>
+									</td>
+									<td></td>
+								</tr>
+							</tfoot>
 							<tbody></tbody>
 						</table>
 					</div>

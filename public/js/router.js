@@ -21,6 +21,8 @@ define([
 	'controllers/purchaseorder/POWeightInfoController',
 	'controllers/salesorder/SalesOrderController',
 	'controllers/stack/StackLocationController',
+	'controllers/trailer/TrailerController',
+	'controllers/settings/SettingsController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
@@ -45,6 +47,8 @@ define([
 			POWeightInfoController,
 			SalesOrderController,
 			StackLocationController,
+			TrailerController,
+			SettingsController,
 			Global,
 			Const,
 			Session) {
@@ -145,6 +149,15 @@ define([
 	routerRoutes[Const.URL.STACKLOCATION+'/'] = 'showStackPage';
 	routerRoutes[Const.URL.STACKLOCATION+'/:action'] = 'showStackPage';
 	routerRoutes[Const.URL.STACKLOCATION+'/:action/:id'] = 'showStackPage';
+	
+	//trailer
+	routerRoutes[Const.URL.TRAILER] = 'showTrailerPage';
+	routerRoutes[Const.URL.TRAILER+'/'] = 'showTrailerPage';
+	routerRoutes[Const.URL.TRAILER+'/:action'] = 'showTrailerPage';
+	routerRoutes[Const.URL.TRAILER+'/:action/:id'] = 'showTrailerPage';
+	
+	//settings
+	routerRoutes[Const.URL.SETTINGS] = 'showSettingsPage';
 	
 	routerRoutes['*actions'] = 'defaultAction';
 
@@ -318,6 +331,20 @@ define([
 			this.closeView();
 			var stackLocationController = new StackLocationController();
 			this.currView = stackLocationController.setAction(action, id);
+			this.currView.render();
+		});
+		
+		app_router.on('route:showTrailerPage', function (action, id) {
+			this.closeView();
+			var trailerController = new TrailerController();
+			this.currView = trailerController.setAction(action, id);
+			this.currView.render();
+		});
+		
+		app_router.on('route:showSettingsPage', function () {
+			this.closeView();
+			var settingsController = new SettingsController();
+			this.currView = settingsController.setAction();
 			this.currView.render();
 		});
 		

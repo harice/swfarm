@@ -1,29 +1,21 @@
 <% if (!_.isEmpty(schedules)) { %>
 	<% _.each(schedules, function(schedule){ %>
 	<tr>
-		<td class="align-center"><input type="checkbox" name="popsids[]" class="popsids" value="<%= schedule.get("id") %>"></td>
-		<td><input class="schedId" type="hidden" value="<%= schedule.get("id") %>" /><%= schedule.get("scheduledate") %></td>
-		<td><%= schedule.get("scheduletimeHour") %>:<%= schedule.get("scheduletimeMin") %> <%= schedule.get("scheduletimeAmPm") %></td>
-		<td><%= schedule.get("trucker")[0].accounttype[0].name %></td>
-		<td><%= schedule.get("trucker")[0].name %></td>
-		<td><%= schedule.get("origin_loader")[0].name %></td>
-		<td><%= schedule.get("destination_loader")[0].name %></td>
+		<td><a href="<%= po_schedule_url %>/<%= schedule.get("id") %>"><%= schedule.get("scheduledate") %> <%= schedule.get("scheduletimeHour") %>:<%= schedule.get("scheduletimeMin") %> <%= schedule.get("scheduletimeAmPm") %></a></td>
+		<td><%= schedule.get("trucker").accountidandname.accounttype[0].name %></td>
+		<td><%= schedule.get("trucker").lastname %>, <%= schedule.get("trucker").firstname %> <%= schedule.get("trucker").suffix %></td>
+		<td><%= schedule.get("originloader").lastname %>, <%= schedule.get("originloader").firstname %> <%= schedule.get("originloader").suffix %></td>
+		<td><%= schedule.get("destinationloader").lastname %>, <%= schedule.get("destinationloader").firstname %> <%= schedule.get("destinationloader").suffix %></td>
 		<td><%= schedule.get("distance") %> miles</td>
 		<td>
 			<a href="<%= po_schedule_edit_url %>/<%= schedule.get("id") %>" class="btn btn-info btn-xs" title="edit">
 			  <span class="glyphicon glyphicon-pencil"></span>
-			</a>
-			<a href="<%= po_schedule_url %>/<%= schedule.get("id") %>" class="btn btn-info btn-xs" title="view">
-			  <span class="glyphicon glyphicon-eye-open"></span>
-			</a>
-			<a href="<%= po_schedule_edit_url %>/<%= schedule.get("id") %>" class="btn btn-info btn-xs">
-			  <span class="glyphicon glyphicon-circle-arrow-right"></span>
 			</a>
 		</td>
 	</tr>
 	<% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="9">No results found.</td>
+		<td colspan="7">No result found.</td>
 	</tr>
 <% } %>

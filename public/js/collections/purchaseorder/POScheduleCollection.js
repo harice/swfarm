@@ -5,20 +5,20 @@ define([
 	'collections/bid/BidCollection',
 ], function(Backbone, ListViewCollection, POScheduleModel, BidCollection){
 	var POScheduleCollection = BidCollection.extend({
-		url: '/apiv1/pickupschedule',
+		url: '/apiv1/transportschedule/getAllPickupSchedules',
 		model: POScheduleModel,
 		initialize: function(option){
 			this.runInit();
 			this.setDefaultURL(this.url);
 			this.setSortOptions(
 				{
-					currentSort: 'pickupdate',
+					currentSort: 'date',
 					sort: {
-						pickupdate: false,
+						date: false,
 					},
 				}
 			);
-			this.listView.lookUpIds.bidId = option.id;
+			this.listView.lookUpIds.order_id = option.id;
 		},
 	});
 
