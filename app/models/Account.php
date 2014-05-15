@@ -31,6 +31,10 @@ class Account extends Eloquent {
         return $this->hasMany('Trailer', 'account_id', 'id')->select(array('id', 'account_id', 'number', 'rate'));
     }
 
+    public function scaler(){
+        return $this->hasMany('Scale', 'account_id', 'id')->select(array('id', 'account_id', 'name'));
+    }
+
     // Laravel's equivalent to calling the constructor on a model
     public static function boot()
     {
