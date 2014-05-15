@@ -1,5 +1,6 @@
 define([
 	'backbone',
+    'views/base/AppView',
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
@@ -9,9 +10,9 @@ define([
 	'models/session/SessionModel',
 	'global',
 	'constant',
-], function(Backbone, Validate, TextFormatter, PhoneNumber, contentTemplate, profileEditTemplate, ProfileModel, SessionModel, Global, Const){
+], function(Backbone, AppView, Validate, TextFormatter, PhoneNumber, contentTemplate, profileEditTemplate, ProfileModel, SessionModel, Global, Const){
 
-	var ProfileEditView = Backbone.View.extend({
+	var ProfileEditView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		options: {
@@ -56,8 +57,9 @@ define([
 			
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
 			this.$el.find('.lowercase').textFormatter({type:'lowercase'});
-			this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
-			this.$el.find('.mobile-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
+			// this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
+			// this.$el.find('.mobile-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
+            this.maskInputs();
 			this.fileFileClone = $("#profile-pic").clone(true);
 			
 			this.$el.find('#firstname').val(this.model.get('firstname'));
