@@ -299,6 +299,9 @@ class OrderRepository implements OrderRepositoryInterface {
     {
         foreach ($products as $product) {
             $product['order_id'] = $order_id;
+            
+            $product['tons'] = str_replace(',', '', $product['tons']);
+            $product['bales'] = str_replace(',', '', $product['bales']);
 
             $this->validate($product, 'ProductOrder');
             if(isset($product['id']))
