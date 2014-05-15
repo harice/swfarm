@@ -35,6 +35,11 @@ define([
 			this.url = '/apiv1/account/loader';
 			this.getModels();
 		},
+		
+		getScalerAccounts: function () {
+			this.url = '/apiv1/account/scaler';
+			this.getModels();
+		},
 	});
 
 	return AccountCollection;

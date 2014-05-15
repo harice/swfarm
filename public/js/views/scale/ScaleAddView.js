@@ -32,18 +32,18 @@ define([
 			this.h1Title = 'Scale';
 			this.h1Small = 'add';
 			
-			this.trailerAccountCollection = new AccountCollection();
-			this.trailerAccountCollection.on('sync', function() {
+			this.scalerAccountCollection = new AccountCollection();
+			this.scalerAccountCollection.on('sync', function() {
 				thisObj.displayForm();
 				this.off('sync');
 			});
-			this.trailerAccountCollection.on('error', function(collection, response, options) {
+			this.scalerAccountCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
 		},
 		
 		render: function(){
-			this.trailerAccountCollection.getTrailerAccounts();
+			this.scalerAccountCollection.getScalerAccounts();
 		},
 		
 		displayForm: function () {
@@ -64,7 +64,7 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
-			this.generateTrailerAccount();
+			this.generateScalerAccount();
 			this.focusOnFirstField();
 			this.initValidateForm();
 			
@@ -102,9 +102,9 @@ define([
 			});
 		},
 		
-		generateTrailerAccount: function () {
+		generateScalerAccount: function () {
 			var options = '';
-			_.each(this.trailerAccountCollection.models, function (model) {
+			_.each(this.scalerAccountCollection.models, function (model) {
 				options += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
 			
