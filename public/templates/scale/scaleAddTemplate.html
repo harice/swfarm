@@ -4,39 +4,48 @@
             <div class="content">
               
 				<form id="trailerForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-					<% if (typeof trailer_id !== "undefined") { %>
-						<input type="hidden" name="id" value="<%= trailer_id %>" />
+					<% if (typeof scale_id !== "undefined") { %>
+						<input type="hidden" name="id" value="<%= scale_id %>" />
 					<% } %>
 					<fieldset>
 						<legend>Details</legend>                  
 						<div class="form-group">
-							<label for="account_id" class="col-sm-3 control-label">Trailer Account *</label>
+							<label for="account_id" class="col-sm-3 control-label">Scale Account *</label>
 							<div class="col-sm-5">
 								<div class="styled-select">
 									<select class="form-control width-304" id="account_id" name="account_id" required>
-										<option value="">Select a trailer account</option>
+										<option value="">Select a scale account</option>
 									</select>
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="number" class="col-sm-3 control-label">Trailer Number *</label>
+							<label for="name" class="col-sm-3 control-label">Name *</label>
 							<div class="col-sm-5">
-								<input type="text" class="form-control capitalize" id="number" name="number" maxlength="250" required>
+								<input type="text" class="form-control capitalize" id="name" name="name" maxlength="250" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="scale_rate" class="col-sm-3 control-label">Scale Fee *</label>
+							<div class="col-sm-5">
+								<div class="input-group margin-0">
+									<span class="input-group-addon">$</span>
+									<input type="text" class="form-control text-right" id="scale_rate" name="scale_rate" placeholder="0.00">
+								</div>
 							</div>
 						</div>
 					</fieldset>
 					<div class="form-group">
 						<div class="col-md-5 col-md-offset-3">
 							<button id="save" type="submit" class="save btn btn-primary">Save</button>
-							<% if (typeof trailer_id !== "undefined") { %>
-							<button id="delete-trailer" type="button" class="btn btn-danger">Delete</button>
+							<% if (typeof scale_id !== "undefined") { %>
+							<button id="delete-scale" type="button" class="btn btn-danger">Delete</button>
 							<% } %>
 							<a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
 						</div>
 					</div>
 				</form>
-			  
+              
             </div> <!-- /.content -->
         </div> <!-- /.block-flat -->
     </div>

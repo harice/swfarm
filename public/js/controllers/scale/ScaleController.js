@@ -1,15 +1,15 @@
 define([
 	'backbone',
-	'views/trailer/TrailerListView',
-	'views/trailer/TrailerAddView',
-	'views/trailer/TrailerEditView',
+	'views/scale/ScaleListView',
+	'views/scale/ScaleAddView',
+	'views/scale/ScaleEditView',
 	'constant',
-], function(Backbone, TrailerListView, TrailerAddView, TrailerEditView, Const){
+], function(Backbone, ScaleListView, ScaleAddView, ScaleEditView, Const){
 	
-	function TrailerController () {	
+	function ScaleController () {	
 		
 		this.setAction = function (action, id) {
-			
+			console.log(action+' '+id);
 			switch (action) {
 				case Const.CRUD.ADD:
 					return this.add();
@@ -27,15 +27,16 @@ define([
 		};
 		
 		this.add = function () {
-			return new TrailerAddView();
+			console.log('this.add');
+			return new ScaleAddView();
 		};
 		
 		this.edit = function (id) {
-			return new TrailerEditView({'id':id});
+			return new ScaleEditView({'id':id});
 		};
 		
 		this.listView = function () {
-			return new TrailerListView();
+			return new ScaleListView();
 		};
 		
 		this.IsInt = function (i) {
@@ -44,5 +45,5 @@ define([
 		};
 	};
 
-	return TrailerController;
+	return ScaleController;
 });

@@ -77,6 +77,10 @@
             <li><a href="#/<%= constant.URL.TRAILER %>">Trailer</a></li>
             <% } %>
 			
+			<% if(_.contains(permission,constant.MENU.SCALE.VIEW) || _.isEqual(su,constant.SU)) { %>
+            <li><a href="#/<%= constant.URL.SCALE %>">Scale</a></li>
+            <% } %>
+			
 			<% if(_.contains(permission,constant.MENU.SETTINGS.EDIT) || _.isEqual(su,constant.SU)) { %>
             <li><a href="#/<%= constant.URL.SETTINGS %>">Settings</a></li>
             <% } %>

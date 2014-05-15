@@ -23,6 +23,7 @@ define([
 	'controllers/stack/StackLocationController',
 	'controllers/trailer/TrailerController',
 	'controllers/settings/SettingsController',
+	'controllers/scale/ScaleController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
@@ -49,6 +50,7 @@ define([
 			StackLocationController,
 			TrailerController,
 			SettingsController,
+			ScaleController,
 			Global,
 			Const,
 			Session) {
@@ -158,6 +160,12 @@ define([
 	
 	//settings
 	routerRoutes[Const.URL.SETTINGS] = 'showSettingsPage';
+	
+	//scale
+	routerRoutes[Const.URL.SCALE] = 'showScalePage';
+	routerRoutes[Const.URL.SCALE+'/'] = 'showScalePage';
+	routerRoutes[Const.URL.SCALE+'/:action'] = 'showScalePage';
+	routerRoutes[Const.URL.SCALE+'/:action/:id'] = 'showScalePage';
 	
 	routerRoutes['*actions'] = 'defaultAction';
 
@@ -345,6 +353,13 @@ define([
 			this.closeView();
 			var settingsController = new SettingsController();
 			this.currView = settingsController.setAction();
+			this.currView.render();
+		});
+		
+		app_router.on('route:showScalePage', function (action, id) {
+			this.closeView();
+			var scaleController = new ScaleController();
+			this.currView = scaleController.setAction(action, id);
 			this.currView.render();
 		});
 		
