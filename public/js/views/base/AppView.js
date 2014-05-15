@@ -1,11 +1,13 @@
 define([
 	'backbone',
+	'text!templates/layout/confirmModalTemplate.html',
 	'constant',
-], function(Backbone, Const){
+], function(Backbone, confirmModalTemplate, Const){
 
 	var AppView = Backbone.View.extend({
 		
 		dateFormat: 'mm-dd-yyyy',
+		dateFormatDB: 'yyyy-mm-dd',
 		
 		focusOnFirstField: function () {
 			console.log('focusOnFirstField');
@@ -29,6 +31,27 @@ define([
 			}
 			
 			return arrFormattedDate.join(separator);
+		},
+		
+		initConfirmationWindow: function (content, buttonId, buttonLabel) {
+			var confirmTemplateVariables = {
+				confirm_content: content,
+				confirm_button_id: buttonId,
+				confirm_button_label: buttonLabel,
+			};
+			var confirmTemplate = _.template(confirmModalTemplate, confirmTemplateVariables);
+			this.$el.find('.modal-alert-cont').html(confirmTemplate);
+		},
+		
+		showConfirmationWindow: function () {
+			$('#modal-confirm').modal('show');
+			
+			return false;
+		},
+		
+		goToPreviousPage: function () {
+			Backbone.history.history.back();
+			return false;
 		},
 	});
 

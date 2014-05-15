@@ -57,7 +57,7 @@
                                 <div class="form-group">
                                     <label for="zipcode" class="col-sm-3 control-label">Zip Code</label>
                                     <div class="col-sm-3">
-                                        <input id="zipcode" type="number" class="form-control zipcode" placeholder="" maxlength="250" readonly>
+                                        <input id="zipcode" type="text" class="form-control zipcode" placeholder="" maxlength="250" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -76,7 +76,7 @@
                                     <label for="transportdatestart" class="col-sm-3 control-label">Start</label>
                                     <div class="col-sm-4">
                                         <div id="start-date" class="calendar-cont">
-                                            <div class="input-group date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                                            <div class="input-group date datetime margin-bottom-0">
                                                 <input id="transportdatestart" class="form-control form-date" name="transportdatestart" size="16" type="text" value="" required/>
                                                 <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
                                             </div>
@@ -86,7 +86,7 @@
                                     <label for="transportdateend" class="col-sm-1 control-label">End</label>
                                     <div class="col-sm-4">
                                         <div id="end-date" class="calendar-cont">
-                                            <div class="input-group date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                                            <div class="input-group date datetime margin-bottom-0">
                                                 <input id="transportdateend" class="form-control form-date" name="transportdateend" size="16" type="text" value="" required/>
                                                 <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
                                             </div>
@@ -132,43 +132,22 @@
                         </div>
                     </fieldset>
                     <div class="form-group form-button-container">
-                        <div class="pull-right">
-                            <% if (typeof po_id !== "undefined") { %>
-                            <% if (typeof is_bid === "undefined") { %>
-                            <button data-toggle="modal" data-target="#mod-success" type="button" class="btn btn-danger">Cancel Purchase Order</button>
-                            <% } else { %>
-                            <a id="cancel-po" class="btn btn-danger" href="#">Cancel Bid</a>
-                            <button id="convert-po" type="button" class="save btn btn-primary">Convert to PO</button>
-                            <% } %>
-                            <% } %>
-                            <button id="save" type="submit" class="save btn btn-primary">Save</button>
-                            <a id="cancel-save" class="btn btn-link" href="<%= po_url %>">Back</a>
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <% if (typeof po_id !== "undefined") { %>
+                                <% if (typeof is_bid === "undefined") { %>
+                                <!-- button id="cancel-po" type="button" class="btn btn-danger">Cancel Purchase Order</button -->
+                                <% } else { %>
+                                <!-- a id="cancel-po" class="btn btn-danger" href="#">Cancel Bid</a -->
+                                <button id="convert-po" type="button" class="save btn btn-warning">Convert to PO</button>
+                                <% } %>
+                                <% } %>
+                                <button id="save" type="submit" class="save btn btn-primary">Save</button>
+                                <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
+                            </div>
                         </div>
                     </div>
                 </form>
-
-                <!-- Modal -->
-                <div class="modal fade" id="mod-success" tabindex="-1" role="dialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button " class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="text-center">
-                                    <div class="i-circle warning"><i class="fa fa-warning"></i></div>
-                                    <h4>Warning!</h4>
-                                    <p>Are you sure you want to cancel this purchase order?</p>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">No</button>
-                                <button type="button" class="btn btn-warning btn-flat" data-dismiss="modal" id="cancel-po">Yes</button>
-                            </div>
-                        </div><!-- /.modal-content -->
-                    </div><!-- /.modal-dialog -->
-                </div><!-- /.modal -->
-
             </div> <!-- /.content -->
         </div> <!-- /.block-flat -->
     </div>

@@ -38,6 +38,7 @@ define([
 			this.collection.on('sync', function() {
 				_.each(this.models, function (model) {
 					model.set('created_at', thisObj.convertDateFormat(model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
+					
 					if(model.get('transportdatestart'))
 						model.set('transportdatestart', thisObj.convertDateFormat(model.get('transportdatestart').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
 					if(model.get('transportdateend'))
@@ -96,6 +97,10 @@ define([
 			this.$el.html(compiledTemplate);
 			
 			this.initCalendars();
+			
+			this.initConfirmationWindow('Are you sure you want to cancel this PO?',
+										'confirm-cancel-po',
+										'Cancel Purchase Order');
 		},
 		
 		displayList: function () {
@@ -168,9 +173,10 @@ define([
 		
 		events: {
 			'click .sort-date-of-po' : 'sortPODate',
-			'click .cancel-po' : 'cancelPO',
 			'change .location_id' : 'filterByDestination',
 			'change .statusFilter' : 'filterByStatus',
+			'click .cancel-po': 'preShowConfirmationWindow',
+			'click #confirm-cancel-po': 'cancelPO',
 		},
 		
 		sortPODate: function () {
@@ -191,33 +197,34 @@ define([
 			return false;
 		},
 		
+		preShowConfirmationWindow: function (ev) {
+			this.$el.find('#confirm-cancel-po').attr('data-id', $(ev.currentTarget).attr('data-id'));
+			
+			this.showConfirmationWindow();
+			return false;
+		},
+		
 		cancelPO: function (ev) {
 			var thisObj = this;
-			var field = $(ev.currentTarget);
-			
-			var verifyCancel = confirm('Are you sure you want to cancel this PO?');
-			
-			if(verifyCancel) {
-				var purchaseOrderModel = new PurchaseOrderModel({id:field.attr('data-id')});
+			var purchaseOrderModel = new PurchaseOrderModel({id:$(ev.currentTarget).attr('data-id')});
 				
-				purchaseOrderModel.setCancelURL();		
-				purchaseOrderModel.save(
-					null, 
-					{
-						success: function (model, response, options) {
+			purchaseOrderModel.setCancelURL();		
+			purchaseOrderModel.save(
+				null, 
+				{
+					success: function (model, response, options) {
+						thisObj.displayMessage(response);
+						thisObj.renderList(1);
+					},
+					error: function (model, response, options) {
+						if(typeof response.responseJSON.error == 'undefined')
+							validate.showErrors(response.responseJSON);
+						else
 							thisObj.displayMessage(response);
-							thisObj.renderList(thisObj.collection.getCurrentPage());
-						},
-						error: function (model, response, options) {
-							if(typeof response.responseJSON.error == 'undefined')
-								validate.showErrors(response.responseJSON);
-							else
-								thisObj.displayMessage(response);
-						},
-						headers: purchaseOrderModel.getAuth(),
-					}
-				);
-			}
+					},
+					headers: purchaseOrderModel.getAuth(),
+				}
+			);
 			
 			return false;
 		},

@@ -12,7 +12,7 @@ class AccountRepository implements AccountRepositoryInterface {
   }
 
   public function findById($id){
-    $account = Account::with('accounttype')->with('address', 'address.addressStates', 'address.addressCity', 'address.addressType')->find($id);          
+    $account = Account::with('accounttype')->with('address', 'address.addressStates', 'address.addressType')->find($id);          
 
     if($account){
       $response = Response::json(
@@ -70,7 +70,7 @@ class AccountRepository implements AccountRepositoryInterface {
     $rules = array(
       'name' => 'required|unique:account',
       'accounttype' => 'required',
-      'phone' => 'between:1,12'
+      'phone' => 'required|between:1,12'
     );
 
     $this->validate($data, $rules);
@@ -96,8 +96,8 @@ class AccountRepository implements AccountRepositoryInterface {
           'type' => 'required_with:street,city,state,country'
         );
 
-        foreach($data['address'] as $item){
-          $addressData = (array)json_decode($item);
+        foreach($data['address'] as $addressData){
+          //$addressData = (array)json_decode($item);
 
           $this->validate($addressData, $addressRules);
 
@@ -128,7 +128,7 @@ class AccountRepository implements AccountRepositoryInterface {
     $rules = array(
       'name' => 'required|unique:account,name,'.$id,
       'accounttype' => 'required',
-      'phone' => 'between:1,12',
+      'phone' => 'required|between:1,12',
     );
 
     $this->validate($data, $rules);
@@ -159,8 +159,8 @@ class AccountRepository implements AccountRepositoryInterface {
         //deleting addresses
         $existingAddressId = array();
 
-        foreach($data['address'] as $item){
-          $addressData = (array)json_decode($item);
+        foreach($data['address'] as $addressData){
+          //$addressData = (array)json_decode($item);
           if(isset($addressData['id'])){
             $existingAddressId[] = $addressData['id'];
           }
@@ -168,8 +168,8 @@ class AccountRepository implements AccountRepositoryInterface {
         
         $this->deleteAddresses($account->id, $existingAddressId); //delete addresses that is not pass excluding the new addresses
 
-        foreach($data['address'] as $item){
-          $addressData = (array)json_decode($item);
+        foreach($data['address'] as $addressData){
+          //$addressData = (array)json_decode($item);
           $this->validate($addressData, $addressRules);
           
           if(isset($addressData['id'])){
@@ -321,14 +321,14 @@ class AccountRepository implements AccountRepositoryInterface {
       );
   }
 
-  public function getCitiesByState($stateId){
-    $cities = AddressCity::where('state', '=', $stateId)->get();
+  // public function getCitiesByState($stateId){
+  //   $cities = AddressCity::where('state', '=', $stateId)->get();
     
-      return Response::json(
-          $cities->toArray(),
-          200
-      );
-  }
+  //     return Response::json(
+  //         $cities->toArray(),
+  //         200
+  //     );
+  // }
 
   public function getAccountsByName($name){
     if(isset($name)){
@@ -342,21 +342,20 @@ class AccountRepository implements AccountRepositoryInterface {
     return Response::json($account);
   }
 
-  public function getZipcodeUsingCity($city){
-    $zips = AddressZip::where('city','=', $city)
-                  ->orderBy('zip', 'asc')
-                  ->get(array('zip'));
-    return Response::json(
-          $zips->toArray(),
-          200
-      );
-  }
+  // public function getZipcodeUsingCity($city){
+  //   $zips = AddressZip::where('city','=', $city)
+  //                 ->orderBy('zip', 'asc')
+  //                 ->get(array('zip'));
+  //   return Response::json(
+  //         $zips->toArray(),
+  //         200
+  //     );
+  // }
   
   public function getCustomerAccount($search){
     $producers = Account::with('address')
-				  ->with('address.addressCity')
                   ->with('address.addressStates')
-				  ->where('accounttype', '=', 1)
+				          ->where('accounttype', '=', 1)
                   ->where('name','like', '%'.$search.'%')
                   ->orderBy('name', 'asc')
                   ->get();
@@ -369,7 +368,6 @@ class AccountRepository implements AccountRepositoryInterface {
 
   public function getProducerAccount($search){
     $producers = Account::with('address')
-                  ->with('address.addressCity')
                   ->with('address.addressStates')
                   ->where('accounttype', '=', 5)
                   ->where('name','like', '%'.$search.'%')
@@ -384,7 +382,6 @@ class AccountRepository implements AccountRepositoryInterface {
 
   public function getAddress($accountId){
     $addresses = Address::with('addressType')
-                  ->with('addressCity')
                   ->with('addressStates')
                   ->where('account', '=', $accountId)
                   ->get();
@@ -393,6 +390,116 @@ class AccountRepository implements AccountRepositoryInterface {
           $addresses->toArray(),
           200
       );
+  }
+
+
+  // public function getTruckerAccount($search){
+  //   if($search == ''){
+  //     return Response::json(array(
+  //         'error' => true,
+  //         'message' => "Search word is required"),
+  //         200
+  //     );
+  //   } else{
+  //     $accountIds = array(2, 4, 9); //operator, hauler and Southwest Farms trucker accounts ids
+  //     $truckers = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($search, $accountIds){
+  //                   $query->whereIn('id', $accountIds);
+  //                 })->where('name', 'like', '%'.$search.'%')->get(array('id', 'name', 'accounttype'));
+      
+  //     return Response::json(
+  //       $truckers->toArray(),
+  //       200);
+  //     }
+  // }
+
+  // public function getTruckerAccount(){
+  //     $accountIds = array(2, 4, 9); //operator, hauler and Southwest Farms trucker accounts ids
+  //     $truckers = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($accountIds){
+  //                   $query->whereIn('id', $accountIds);
+  //                 })->get(array('id', 'name', 'accounttype'));
+
+  //   return Response::json(
+  //         $truckers->toArray(),
+  //         200
+  //     );
+  // }
+
+  public function getAccountsByType($accountTypeId){
+      $accounts = Account::with('accounttype')
+                  ->whereHas('accounttype', function ($query) use ($accountTypeId){
+                      $query->where('id', '=', $accountTypeId);
+                  })->get(array('id', 'name','accounttype'));
+
+      return Response::json(
+            $accounts->toArray(),
+            200
+        );
+  }
+
+  public function getTrailerAccount(){
+      $accountIds = array(7); //operator, hauler and Southwest Farms trucker accounts ids
+      $truckers = Account::with('accounttype')->with('trailer')->whereHas('accounttype', function ($query) use ($accountIds){
+                    $query->whereIn('id', $accountIds);
+                  })->get(array('id', 'name', 'accounttype'));
+
+    return Response::json(
+          $truckers->toArray(),
+          200
+      );
+  }
+
+  public function getLoaderAccount(){
+      $accountIds = array(3); //loader id
+      $truckers = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($accountIds){
+                    $query->whereIn('id', $accountIds);
+                  })->get(array('id', 'name', 'accounttype'));
+
+    return Response::json(
+          $truckers->toArray(),
+          200
+      );
+  }
+
+  public function getTruckerAccountTypes(){
+      $accountTypeIds = array(2, 4, 9); //operator, hauler and Southwest Farms trucker accounts ids
+      // $truckerTypes = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($accountIds){
+      //               $query->whereIn('id', $accountIds);
+      //             })->get(array('id', 'name', 'accounttype'));
+      $truckerTypes = AccountType::whereIn('id', $accountTypeIds)->get(array('id', 'name'));
+
+    return Response::json(
+          $truckerTypes->toArray(),
+          200
+      );
+  }
+
+  // public function getLoaderAccount($search){
+  //   if($search == '') {
+  //     return Response::json(array(
+  //         'error' => true,
+  //         'message' => "Search word is required"),
+  //         200
+  //     );
+  //   } else {
+  //     $accountIds = array(3); //loader id
+  //     $loader = Account::whereHas('accounttype', function ($query) use ($search, $accountIds){
+  //                   $query->whereIn('id', $accountIds);
+  //                 })->where('name', 'like', '%'.$search.'%')->get(array('id', 'name'));
+      
+  //     return Response::json(
+  //       $loader->toArray(),
+  //       200);
+  //     }
+  // }
+
+  public function getAllContactOnAccount($accountId){
+    $truckerList = Contact::whereHas('Account', function($query) use ($accountId){
+                    $query->where('id', '=', $accountId);
+                  })->get(array('id','firstname','lastname'));
+    
+    return Response::json(
+        $truckerList->toArray(),
+        200);
   }
 
 }

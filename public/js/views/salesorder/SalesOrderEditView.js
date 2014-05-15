@@ -117,13 +117,13 @@ define([
 			this.$el.find('#sonumber').val(this.model.get('order_number'));
 			this.$el.find('#status').val(this.model.get('status').name);
 			this.$el.find('[name="location_id"][value="'+this.model.get('location').id+'"]').attr('checked', true);
-            this.$el.find('[name="natureofsale_id"][value="'+this.model.get('natureofsale').id+'"]').attr('checked', true);
+			this.$el.find('[name="natureofsale_id"][value="'+this.model.get('natureofsale').id+'"]').attr('checked', true);
 			this.customerAutoCompleteView.autoCompleteResult = [{name:account.name, id:account.id, address:address}];
 			this.$el.find('#account').val(account.name);
 			this.$el.find('#account_id').val(account.id);
 			this.$el.find('#street').val(address[0].street);
 			this.$el.find('#state').val(address[0].address_states[0].state);
-			this.$el.find('#city').val(address[0].address_city[0].city);
+			this.$el.find('#city').val(address[0].city);
 			this.$el.find('#zipcode').val(address[0].zipcode);
 			this.$el.find('#dateofsale').val(this.convertDateFormat(this.model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
 			this.$el.find('#notes').val(this.model.get('notes'));
@@ -144,6 +144,16 @@ define([
 				productFields.find('.bales').val(product.bales);
 				productFields.find('.unitprice').blur();
 			});
+		},
+		
+		otherInitializations: function () {
+			this.initCancelConfirmation();
+		},
+		
+		initCancelConfirmation: function () {
+			this.initConfirmationWindow('Are you sure you want to cancel this Sales Order?',
+										'confirm-cancel-so',
+										'Cancel Sales Order');
 		},
 	});
 

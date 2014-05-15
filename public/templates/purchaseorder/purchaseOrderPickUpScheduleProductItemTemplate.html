@@ -1,0 +1,19 @@
+<tr class="product-item">
+	<td style="width: 150px;">
+		<input type="hidden" class="id" name="id" value="" />
+        <div class="styled-select">
+            <select class="form-control productorder_id width-180" name="productorder_id" required><%= product_list %></select>
+        </div>
+	</td>
+    <td><span class="product"></span></td>
+	<td>
+		<div class="input-group margin-0">
+			<input type="text" class="form-control text-right quantity" name="quantity" placeholder="0.0000" required>
+			<span class="input-group-addon">Tons</span>
+		</div>	
+		<div class="error-msg-cont"></div>
+	</td>
+	<td>
+		<button title="Remove Product" type="button" class="pull-right btn btn-danger btn-xs remove-product"><span class="glyphicon glyphicon-remove"></span></button>
+	</td>
+</tr>

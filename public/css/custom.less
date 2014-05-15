@@ -149,13 +149,14 @@ ul.autocomplete {
     text-overflow: "";  /*Removes default arrow from firefox*/
     width: 304px;
     outline: 0 none;
-    font-size: 14px;
-    color: #555;
-    color: rgba(37,37,37,1);
+    // font-size: 14px;
+    // color: #555;
+    // color: rgba(37,37,37,1);
     text-shadow: 0 0 0 #555;
     border: 1px solid #ccc;
     height: 34px;
     padding: 6px 8px;
+    vertical-align: middle;
 
     option {
         background: #fff;
@@ -184,6 +185,21 @@ ul.autocomplete {
         width:160px;
         background-position: 126px 0;
     }
+
+    &.width-180 {
+        width:180px;
+        background-position: 146px 0;
+    }
+
+    &.width-200 {
+        width:200px;
+        background-position: 166px 0;
+    }
+}
+
+#accounttype select {
+    background-position: 272px 0;  /*Position of the background-image*/
+    width: 100%;
 }
 
 #so-origin,
@@ -192,7 +208,8 @@ ul.autocomplete {
     input[type="radio"] {
         display:none;
     }
-    input[type="radio"] + label span {
+
+    input[type="radio"] + span {
         display:inline-block;
         width:20px;
         height:20px;
@@ -201,14 +218,20 @@ ul.autocomplete {
         background:url(green.png) -132px top no-repeat;
         cursor:pointer;
     }
-    input[type="radio"]:checked + label span {
+
+    input[type="radio"]:checked + span {
         background:url(green.png) -110px top no-repeat;
+    }
+
+    label {
+        padding-left: 0;
     }
 }
 
 .max-width-80 { max-width: 130px; }
+.width-40  { width: 40px; }
 .width-70  { width: 70px; }
-.width-80  { width: 70px; }
+.width-80  { width: 80px; }
 .width-100 { width:100px; }
 .width-110 { width: 110px; }
 .width-130 { width: 130px; }

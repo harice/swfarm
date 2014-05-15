@@ -13,7 +13,7 @@ class TrailerRepository implements TrailerRepositoryInterface {
         {
             $perPage = isset($params['perpage']) ? $params['perpage'] : 10;
             
-            return Trailer::paginate($perPage);
+            return Trailer::with('account')->paginate($perPage);
         }
         catch (Exception $e)
         {
@@ -25,7 +25,7 @@ class TrailerRepository implements TrailerRepositoryInterface {
     {
         try
         {
-            $trailer = Trailer::find($id);
+            $trailer = Trailer::with('account')->find($id);
             
             if (!$trailer) {
                 throw new NotFoundException();
@@ -130,8 +130,7 @@ class TrailerRepository implements TrailerRepositoryInterface {
         
         if ($id) {
             $rules['account_id'] = 'required';
-            $rules['name'] = 'required|unique:scale,name,'.$id;
-            $rules['rate'] = 'required';
+            $rules['number'] = 'required|unique:trailer,number,'.$id;
         }
         
         $validator = Validator::make($data, $rules);

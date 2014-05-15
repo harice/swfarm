@@ -27,7 +27,7 @@ class Stack extends BaseModel {
      * @var array
      */
 	public static $rules = array(
-        'stacknumber' => 'required',
+        'stacknumber' => 'required|unique:stack',
         'product_id' => 'required',
         'location' => 'required'
     );

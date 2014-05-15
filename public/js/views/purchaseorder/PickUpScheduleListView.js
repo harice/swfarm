@@ -1,7 +1,7 @@
 define([
 	'backbone',
 	'views/base/ListView',
-	'models/purchaseorder/POModel',
+	'models/purchaseorder/PurchaseOrderModel',
 	'collections/purchaseorder/POScheduleCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderPickUpScheduleListTemplate.html',
@@ -9,7 +9,7 @@ define([
 	'constant',
 ], function(Backbone,
 			ListView,
-			POModel,
+			PurchaseOrderModel,
 			POScheduleCollection,
 			contentTemplate,
 			purchaseOrderPickUpScheduleListTemplate,
@@ -23,18 +23,21 @@ define([
 		initialize: function(option) {
 			this.extendListEvents();
 			
-			this.poid = option.id;
+			this.poId = option.id;
 			var thisObj = this;
 			
 			this.collection = new POScheduleCollection({id:option.id});
 			this.collection.on('sync', function() {
+				_.each(this.models, function (model) {
+					model.set('scheduledate', thisObj.convertDateFormat(model.get('scheduledate').split(' ')[0], thisObj.dateFormatDB, thisObj.dateFormat, '-'));
+				});
 				thisObj.displayList();
 			});
 			this.collection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
 			
-			this.model = new POModel({id:option.id});
+			this.model = new PurchaseOrderModel({id:option.id});
 			this.model.on('change', function() {
 				thisObj.displayPickUpSchedule();
 				thisObj.renderList(1);
@@ -48,26 +51,27 @@ define([
 		
 		displayPickUpSchedule: function () {
 			var innerTemplateVar = {
-				po_schedule_add_url : '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poid+'/'+Const.CRUD.ADD,
+				po_schedule_add_url : '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId+'/'+Const.CRUD.ADD,
+				status_filters : '',
 			};
 			
 			var innerTemplate = _.template(purchaseOrderPickUpScheduleListTemplate, innerTemplateVar);
 			
 			var variables = {
-				h1_title: 'PO # '+this.model.get('ponumber')+' Pick Up Schedule',
+				h1_title: 'PO # '+this.model.get('order_number')+' Pick Up Schedule',
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
-			this.initCalendars();
+			//this.initCalendars();
 		},
 		
 		displayList: function () {
 			
 			var data = {
-				po_schedule_edit_url: '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poid+'/'+Const.CRUD.EDIT,
-				po_schedule_url: '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poid,
+				po_schedule_edit_url: '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId+'/'+Const.CRUD.EDIT,
+				po_schedule_url: '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId,
 				schedules: this.collection.models,
 				_: _ 
 			};
@@ -94,6 +98,7 @@ define([
 		},
 		
 		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
 		},
 	});
 

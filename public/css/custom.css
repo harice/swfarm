@@ -165,13 +165,11 @@ ul.autocomplete li.active a {
 
   width: 304px;
   outline: 0 none;
-  font-size: 14px;
-  color: #555;
-  color: #252525;
   text-shadow: 0 0 0 #555;
   border: 1px solid #ccc;
   height: 34px;
   padding: 6px 8px;
+  vertical-align: middle;
 }
 .styled-select select option {
   background: #fff;
@@ -196,14 +194,28 @@ ul.autocomplete li.active a {
   width: 160px;
   background-position: 126px 0;
 }
+.styled-select select.width-180 {
+  width: 180px;
+  background-position: 146px 0;
+}
+.styled-select select.width-200 {
+  width: 200px;
+  background-position: 166px 0;
+}
+#accounttype select {
+  background-position: 272px 0;
+  /*Position of the background-image*/
+
+  width: 100%;
+}
 #so-origin input[type="radio"],
 #so-nos input[type="radio"],
 #po-destination input[type="radio"] {
   display: none;
 }
-#so-origin input[type="radio"] + label span,
-#so-nos input[type="radio"] + label span,
-#po-destination input[type="radio"] + label span {
+#so-origin input[type="radio"] + span,
+#so-nos input[type="radio"] + span,
+#po-destination input[type="radio"] + span {
   display: inline-block;
   width: 20px;
   height: 20px;
@@ -212,19 +224,27 @@ ul.autocomplete li.active a {
   background: url(green.png) -132px top no-repeat;
   cursor: pointer;
 }
-#so-origin input[type="radio"]:checked + label span,
-#so-nos input[type="radio"]:checked + label span,
-#po-destination input[type="radio"]:checked + label span {
+#so-origin input[type="radio"]:checked + span,
+#so-nos input[type="radio"]:checked + span,
+#po-destination input[type="radio"]:checked + span {
   background: url(green.png) -110px top no-repeat;
+}
+#so-origin label,
+#so-nos label,
+#po-destination label {
+  padding-left: 0;
 }
 .max-width-80 {
   max-width: 130px;
+}
+.width-40 {
+  width: 40px;
 }
 .width-70 {
   width: 70px;
 }
 .width-80 {
-  width: 70px;
+  width: 80px;
 }
 .width-100 {
   width: 100px;

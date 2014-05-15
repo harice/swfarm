@@ -5,9 +5,7 @@
 			<button id="add-address-field" type="button" class="pull-right btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
 			<button type="button" class="pull-right btn btn-default btn-xs remove-address-fields"><span class="glyphicon glyphicon-minus"></span></button>
 		</legend>
-		<% if (typeof show_id !== "undefined") { %>
-			<input type="hidden" class="id" name="id" value="" />
-		<% } %>
+		<input type="hidden" class="id" name="id" value="" />
 		<div class="form-group">
 			<label for="type" class="col-sm-3 control-label">Address Type</label>
 			<div class="col-sm-5">
@@ -23,7 +21,13 @@
 		<div class="form-group">
 			<label for="street" class="col-sm-3 control-label">Street *</label>
 			<div class="col-sm-5">
-				<input type="text" class="form-control street width-304" name="street" placeholder="" maxlength="250" >
+				<input type="text" class="form-control street width-304" name="street" placeholder="" maxlength="50" >
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="city" class="col-sm-3 control-label">City *</label>
+			<div class="col-sm-5">
+				<input type="text" class="form-control city width-304" name="city" placeholder="" maxlength="50">
 			</div>
 		</div>
 		<div class="form-group">
@@ -40,25 +44,15 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label for="city" class="col-sm-3 control-label">City *</label>
-			<div class="col-sm-5">
-                <div class="styled-select">
-                    <select class="form-control city" name="city" data-zipcodes="">
-                        <option value="">Select a city</option>
-                    </select>
-                </div>
-			</div>
-		</div>
-		<div class="form-group">
 			<label for="zipcode" class="col-sm-3 control-label">Zip Code *</label>
 			<div class="col-sm-2">
-				<input type="number" class="form-control zipcode" name="zipcode" placeholder="" maxlength="250">
+				<input type="text" class="form-control zipcode" name="zipcode" placeholder="" minlength="5" maxlength="5">
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="country" class="col-sm-3 control-label">Country *</label>
 			<div class="col-sm-5">
-				<input type="text" class="form-control" value="United States" readonly>
+				<input type="text" class="form-control width-304" value="United States" onfocus="this.blur()" readonly>
 				<input type="hidden" class="country" name="country" value="1">
 			</div>
 		</div>

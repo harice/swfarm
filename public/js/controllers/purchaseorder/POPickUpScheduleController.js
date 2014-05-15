@@ -9,44 +9,44 @@ define([
 	
 	function PickUpScheduleController () {	
 		
-		this.setAction = function (poid, action, id) {
+		this.setAction = function (poId, action, id) {
 			
 			switch (action) {
 				case Const.CRUD.ADD:
-					if(poid != null && this.IsInt(poid))
-						return this.add(poid);
+					if(poId != null && this.IsInt(poId))
+						return this.add(poId);
 					break;
 					
 				case Const.CRUD.EDIT:
-					if((id != null && this.IsInt(id)) && (poid != null && this.IsInt(poid))) 
-						return this.edit(poid, id);
+					if((id != null && this.IsInt(id)) && (poId != null && this.IsInt(poId))) 
+						return this.edit(poId, id);
 					break;
 				
 				default:
 					if(action != null && this.IsInt(action)) {
-						if((action != null && this.IsInt(action)) && (poid != null && this.IsInt(poid))) 
-							return this.view(poid, action);
+						if((action != null && this.IsInt(action)) && (poId != null && this.IsInt(poId))) 
+							return this.view(poId, action);
 					}
 					else
-						return this.listView(poid);
+						return this.listView(poId);
 					break;
 			}
 		};
 		
-		this.add = function (poid) {
-			return new PickUpScheduleAddView({'poid':poid});
+		this.add = function (poId) {
+			return new PickUpScheduleAddView({'poId':poId});
 		};
 		
-		this.edit = function (poid, id) {
-			return new PickUpScheduleEditView({'poid':poid, 'id':id});
+		this.edit = function (poId, id) {
+			return new PickUpScheduleEditView({'poId':poId, 'id':id});
 		};
 		
-		this.listView = function (poid) {
-			return new PickUpScheduleListView({'id':poid});
+		this.listView = function (poId) {
+			return new PickUpScheduleListView({'id':poId});
 		};
 		
-		this.view = function (poid, id) {
-			return new PickUpScheduleView({'poid':poid, 'id':id});
+		this.view = function (poId, id) {
+			return new PickUpScheduleView({'poId':poId, 'id':id});
 		};
 		
 		this.IsInt = function (i) {
