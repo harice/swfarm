@@ -106,7 +106,8 @@ define([
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								Global.getGlobalVars().app_router.navigate(Const.URL.ACCOUNT, {trigger: true});
+								//Global.getGlobalVars().app_router.navigate(Const.URL.ACCOUNT, {trigger: true});
+								Backbone.history.history.back();
 							},
 							error: function (model, response, options) {
 								if(typeof response.responseJSON.error == 'undefined')
