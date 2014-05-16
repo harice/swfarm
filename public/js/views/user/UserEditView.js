@@ -1,5 +1,6 @@
 define([
 	'backbone',
+    'views/user/UserAddView',
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
@@ -9,9 +10,9 @@ define([
 	'collections/role/RoleCollection',
 	'global',
 	'constant',
-], function(Backbone, Validate, TextFormatter, PhoneNumber, contentTemplate, userAddTemplate, UserModel, RoleCollection, Global, Const){
+], function(Backbone, UserAddView, Validate, TextFormatter, PhoneNumber, contentTemplate, userAddTemplate, UserModel, RoleCollection, Global, Const){
 
-	var UserEditView = Backbone.View.extend({
+	var UserEditView = UserAddView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		options: {
@@ -72,8 +73,9 @@ define([
 			
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
 			this.$el.find('.lowercase').textFormatter({type:'lowercase'});
-			this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
-			this.$el.find('.mobile-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
+			// this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
+			// this.$el.find('.mobile-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
+            this.maskInputs();
 			this.fileFileClone = $("#profile-pic").clone(true);
 			
 			this.$el.find('#firstname').val(this.model.get('firstname'));

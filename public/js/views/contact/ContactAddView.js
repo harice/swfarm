@@ -66,8 +66,9 @@ define([
 			
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
 			this.$el.find('.lowercase').textFormatter({type:'lowercase'});
-			this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
-			this.$el.find('.mobile-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
+			// this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
+			// this.$el.find('.mobile-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
+            this.maskInputs();
 			
             this.initValidateForm();
 			this.initAccountAutocomplete();
