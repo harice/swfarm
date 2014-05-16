@@ -51,6 +51,7 @@ define([
 			this.$el.html(compiledTemplate);
 			
 			this.initValidateForm();
+            // this.maskInputs();
 		},
 		
 		initValidateForm: function () {
