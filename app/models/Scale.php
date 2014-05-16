@@ -32,6 +32,11 @@ class Scale extends BaseModel {
         'rate' => 'required'
     );
     
+    public function account()
+    {
+        return $this->belongsTo('Account');
+    }
+    
     public function fee()
     {
         return $this->morphOne('Fee', 'entity');
