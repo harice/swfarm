@@ -4,10 +4,10 @@ define([
 	'views/scale/ScaleAddView',
 	'jqueryvalidate',
 	'jquerytextformatter',
-	'models/trailer/TrailerModel',
+	'models/scale/ScaleModel',
 	'collections/account/AccountCollection',
 	'text!templates/layout/contentTemplate.html',
-	'text!templates/trailer/trailerAddTemplate.html',
+	'text!templates/scale/scaleAddTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -15,10 +15,10 @@ define([
 			ScaleAddView,
 			Validate,
 			TextFormatter,
-			TrailerModel,
+			ScaleModel,
 			AccountCollection,
 			contentTemplate,
-			trailerAddTemplate,
+			scaleAddTemplate,
 			Global,
 			Const
 ){
@@ -28,23 +28,23 @@ define([
 		
 		initialize: function(option) {
 			var thisObj = this;
-			this.trailerId = option.id;
-			this.h1Title = 'Trailer';
-			this.h1Small = 'add';
+			this.scaleId = option.id;
+			this.h1Title = 'Scale';
+			this.h1Small = 'edit';
 			
-			this.trailerAccountCollection = new AccountCollection();
-			this.trailerAccountCollection.on('sync', function() {
+			this.scalerAccountCollection = new AccountCollection();
+			this.scalerAccountCollection.on('sync', function() {
 				thisObj.displayForm();
-				thisObj.supplyTralerData();
+				thisObj.supplyScaleData();
 				this.off('sync');
 			});
-			this.trailerAccountCollection.on('error', function(collection, response, options) {
+			this.scalerAccountCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
 			
-			this.model = new TrailerModel({id:this.trailerId});
+			this.model = new ScaleModel({id:this.scaleId});
 			this.model.on('change', function() {
-				thisObj.trailerAccountCollection.getTrailerAccounts();
+				thisObj.scalerAccountCollection.getScalerAccounts();
 				this.off('change');
 			});
 		},
@@ -57,14 +57,15 @@ define([
 			this.model.runFetch();
 		},
 		
-		supplyTralerData: function () {
+		supplyScaleData: function () {
 			this.$el.find('#account_id').val(this.model.get('account_id'));
-			this.$el.find('#number').val(this.model.get('number'));
+			this.$el.find('#name').val(this.model.get('name'));
+			this.$el.find('#rate').val(parseFloat(this.model.get('rate')).toFixed(2));
 		},
 		
 		initDeleteConfirmation: function () {
-			this.initConfirmationWindow('Are you sure you want to delete this Trailer?',
-										'confirm-delete-trailer',
+			this.initConfirmationWindow('Are you sure you want to delete this scale?',
+										'confirm-delete-scale',
 										'Delete');
 		},
 	});

@@ -72,7 +72,7 @@ define([
 		
 		events: {
 			'click .delete-scale': 'preShowConfirmationWindow',
-			'click #confirm-delete-scale': 'deleteTrailer'
+			'click #confirm-delete-scale': 'deleteScale'
 		},
 		
 		preShowConfirmationWindow: function (ev) {

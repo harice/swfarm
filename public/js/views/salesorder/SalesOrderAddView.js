@@ -234,12 +234,17 @@ define([
 		},
 		
 		initCalendar: function () {
+			var thisObj = this;
+			
 			this.$el.find('#start-date .input-group.date').datepicker({
 				orientation: "top left",
 				autoclose: true,
 				clearBtn: true,
 				todayHighlight: true,
 				format: this.dateFormat,
+			}).on('changeDate', function (ev) {
+				var selectedDate = $('#start-date .input-group.date input').val();
+				thisObj.$el.find('#end-date .input-group.date').datepicker('setStartDate', selectedDate);
 			});
 			
 			this.$el.find('#end-date .input-group.date').datepicker({
@@ -248,6 +253,9 @@ define([
 				clearBtn: true,
 				todayHighlight: true,
 				format: this.dateFormat,
+			}).on('changeDate', function (ev) {
+				var selectedDate = $('#end-date .input-group.date input').val();
+				thisObj.$el.find('#start-date .input-group.date').datepicker('setEndDate', selectedDate);
 			});
 		},
 		

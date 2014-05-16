@@ -145,7 +145,8 @@ define([
 				todayHighlight: true,
 				format: this.dateFormat,
 			}).on('changeDate', function (ev) {
-				var selectedDate = $('#filter-pickup-start .input-group.date input').val();
+				var selectedDate = $('#filter-pickup-end .input-group.date input').val();
+				thisObj.$el.find('#filter-delivery-end .input-group.date').datepicker('setStartDate', selectedDate);
 				var date = '';
 				if(selectedDate != '' && typeof selectedDate != 'undefined')
 					date = thisObj.convertDateFormat(selectedDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
@@ -162,6 +163,7 @@ define([
 				format: this.dateFormat,
 			}).on('changeDate', function (ev) {
 				var selectedDate = $('#filter-pickup-end .input-group.date input').val();
+				thisObj.$el.find('#filter-pickup-start .input-group.date').datepicker('setEndDate', selectedDate);
 				var date = '';
 				if(selectedDate != '' && typeof selectedDate != 'undefined')
 					date = thisObj.convertDateFormat(selectedDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');

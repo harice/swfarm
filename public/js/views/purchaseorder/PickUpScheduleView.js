@@ -62,7 +62,7 @@ define([
 		displayForm: function () {
 			var thisObj = this;
 			
-			var innerTemplateVariables = {};
+			var innerTemplateVariables = {'schedule_edit_url': '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId+'/'+Const.CRUD.EDIT+'/'+this.schedId};
 			
 			var innerTemplate = _.template(purchaseOrderAddScheduleTemplate, innerTemplateVariables);
 			
