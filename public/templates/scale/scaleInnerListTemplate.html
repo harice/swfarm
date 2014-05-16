@@ -1,13 +1,14 @@
-<% if (!_.isEmpty(trailers)) { %>
-	<% _.each(trailers, function(trailer){ %>
+<% if (!_.isEmpty(scales)) { %>
+	<% _.each(scales, function(scale){ %>
 	<tr>
-		<td><%= trailer.get("account").name %></td>
-		<td><%= trailer.get("number") %></td>
+		<td><%= scale.get("account").name %></td>
+		<td><%= scale.get("name") %></td>
+		<td><%= scale.get("rate") %></td>
 		<td>
-			<a href="<%= trailer_edit_url %>/<%= trailer.get("id") %>" class="btn btn-info btn-xs" title="edit">
+			<a href="<%= scale_edit_url %>/<%= scale.get("id") %>" class="btn btn-info btn-xs" title="edit">
 			  <span class="glyphicon glyphicon-pencil"></span>
 			</a>
-			<a href="#" class="btn btn-danger btn-xs delete-trailer" data-id="<%= trailer.get("id") %>">
+			<a href="#" class="btn btn-danger btn-xs delete-scale" data-id="<%= scale.get("id") %>">
 			  <span class="glyphicon glyphicon-remove"></span>
 			</a>
 		</td>
@@ -15,6 +16,6 @@
 	<% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="3">No result found.</td>
+		<td colspan="4">No result found.</td>
 	</tr>
 <% } %>

@@ -3,7 +3,7 @@
         <div class="block-flat">
             <div class="content">
               
-				<form id="trailerForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+				<form id="scalerForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
 					<% if (typeof scale_id !== "undefined") { %>
 						<input type="hidden" name="id" value="<%= scale_id %>" />
 					<% } %>
@@ -26,11 +26,11 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="scale_rate" class="col-sm-3 control-label">Scale Fee *</label>
+							<label for="rate" class="col-sm-3 control-label">Scale Fee *</label>
 							<div class="col-sm-5">
 								<div class="input-group margin-0">
 									<span class="input-group-addon">$</span>
-									<input type="text" class="form-control text-right" id="scale_rate" name="scale_rate" placeholder="0.00">
+									<input type="text" class="form-control text-right" id="rate" name="rate" placeholder="0.00">
 								</div>
 							</div>
 						</div>

@@ -1,16 +1,16 @@
 define([
 	'backbone',
 	'views/base/ListView',
-	'models/trailer/TrailerModel',
-	'collections/trailer/TrailerCollection',
+	'models/scale/ScaleModel',
+	'collections/scale/ScaleCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/scale/scaleListTemplate.html',
 	'text!templates/scale/scaleInnerListTemplate.html',
 	'constant',
 ], function(Backbone,
 			ListView,
-			TrailerModel,
-			TrailerCollection,
+			ScaleModel,
+			ScaleCollection,
 			contentTemplate,
 			trailerListTemplate,
 			trailerInnerListTemplate,
@@ -24,7 +24,7 @@ define([
 			this.extendListEvents();
 			var thisObj = this;
 			
-			this.collection = new TrailerCollection();
+			this.collection = new ScaleCollection();
 			this.collection.on('sync', function() {
 				thisObj.displayList();
 			});
@@ -34,11 +34,11 @@ define([
 		},
 		
 		render: function(){
-			this.displayStackLocation();
+			this.displayScale();
 			this.renderList(1);
 		},
 		
-		displayStackLocation: function () {
+		displayScale: function () {
 			var innerTemplateVar = {
 				'scale_add_url' : '#/'+Const.URL.SCALE+'/'+Const.CRUD.ADD,
 			};
@@ -52,42 +52,41 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
-			this.initConfirmationWindow('Are you sure you want to delete this Trailer?',
-										'confirm-delete-trailer',
+			this.initConfirmationWindow('Are you sure you want to delete this Scale?',
+										'confirm-delete-scale',
 										'Delete');
 		},
 		
 		displayList: function () {
-			
 			var data = {
-				trailer_edit_url: '#/'+Const.URL.TRAILER+'/'+Const.CRUD.EDIT,
-				trailers: this.collection.models,
+				scale_edit_url: '#/'+Const.URL.SCALE+'/'+Const.CRUD.EDIT,
+				scales: this.collection.models,
 				_: _ 
 			};
 			
 			var innerListTemplate = _.template(trailerInnerListTemplate, data);
-			$("#trailer-list tbody").html(innerListTemplate);
+			$("#scale-list tbody").html(innerListTemplate);
 			
 			this.generatePagination();
 		},
 		
 		events: {
-			'click .delete-trailer': 'preShowConfirmationWindow',
-			'click #confirm-delete-trailer': 'deleteTrailer'
+			'click .delete-scale': 'preShowConfirmationWindow',
+			'click #confirm-delete-scale': 'deleteTrailer'
 		},
 		
 		preShowConfirmationWindow: function (ev) {
-			this.$el.find('#confirm-delete-trailer').attr('data-id', $(ev.currentTarget).attr('data-id'));
+			this.$el.find('#confirm-delete-scale').attr('data-id', $(ev.currentTarget).attr('data-id'));
 			
 			this.showConfirmationWindow();
 			return false;
 		},
 		
-		deleteTrailer: function (ev) {
+		deleteScale: function (ev) {
 			var thisObj = this;
-			var trailerModel = new TrailerModel({id:$(ev.currentTarget).attr('data-id')});
+			var scaleModel = new ScaleModel({id:$(ev.currentTarget).attr('data-id')});
 			
-            trailerModel.destroy({
+            scaleModel.destroy({
                 success: function (model, response, options) {
                     thisObj.displayMessage(response);
                     thisObj.renderList(1);
@@ -96,7 +95,7 @@ define([
                     thisObj.displayMessage(response);
                 },
                 wait: true,
-                headers: trailerModel.getAuth(),
+                headers: scaleModel.getAuth(),
             });
 		},
 	});

@@ -4,7 +4,7 @@ define([
 	'views/base/AppView',
 	'jqueryvalidate',
 	'jquerytextformatter',
-	'models/trailer/TrailerModel',
+	'models/scale/ScaleModel',
 	'collections/account/AccountCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/scale/scaleAddTemplate.html',
@@ -15,10 +15,10 @@ define([
 			AppView,
 			Validate,
 			TextFormatter,
-			TrailerModel,
+			ScaleModel,
 			AccountCollection,
 			contentTemplate,
-			trailerAddTemplate,
+			scaleAddTemplate,
 			Global,
 			Const
 ){
@@ -52,9 +52,9 @@ define([
 			var innerTemplateVariables = {};
 			
 			if(this.scaleId != null)
-				innerTemplateVariables['trailer_id'] = this.scaleId;
+				innerTemplateVariables['scale_id'] = this.scaleId;
 			
-			var innerTemplate = _.template(trailerAddTemplate, innerTemplateVariables);
+			var innerTemplate = _.template(scaleAddTemplate, innerTemplateVariables);
 			
 			var variables = {
 				h1_title: this.h1Title,
@@ -74,19 +74,17 @@ define([
 		initValidateForm: function () {
 			var thisObj = this;
 			
-			var validate = $('#trailerForm').validate({
+			var validate = $('#scalerForm').validate({
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
-					//data['rate'] = '0.00';
-					console.log(data);
-					var trailerModel = new TrailerModel(data);
 					
-					trailerModel.save(
+					var scaleModel = new ScaleModel(data);
+					
+					scaleModel.save(
 						null, 
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								//Global.getGlobalVars().app_router.navigate(Const.URL.TRAILER, {trigger: true});
 								Backbone.history.history.back();
 							},
 							error: function (model, response, options) {
@@ -95,7 +93,7 @@ define([
 								else
 									thisObj.displayMessage(response);
 							},
-							headers: trailerModel.getAuth(),
+							headers: scaleModel.getAuth(),
 						}
 					);
 				},
@@ -113,8 +111,13 @@ define([
 		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
-			'click #delete-trailer': 'showConfirmationWindow',
-			'click #confirm-delete-trailer': 'deleteTrailer'
+			'click #delete-scale': 'showConfirmationWindow',
+			'click #confirm-delete-scale': 'deleteTrailer',
+			'blur #rate': 'onBlurRate',
+		},
+		
+		onBlurRate: function (ev) {
+			this.toFixedValue($(ev.target), 2);
 		},
 		
 		deleteTrailer: function () {

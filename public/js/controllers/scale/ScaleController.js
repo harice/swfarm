@@ -9,7 +9,6 @@ define([
 	function ScaleController () {	
 		
 		this.setAction = function (action, id) {
-			console.log(action+' '+id);
 			switch (action) {
 				case Const.CRUD.ADD:
 					return this.add();
@@ -27,7 +26,6 @@ define([
 		};
 		
 		this.add = function () {
-			console.log('this.add');
 			return new ScaleAddView();
 		};
 		
