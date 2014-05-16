@@ -58,8 +58,8 @@ define([
             $(".phone-number").mask('(000) 000-0000');
             $(".mobile-number").mask('(000) 000-0000');
             
-            $(".unitprice").mask('000.00', {reverse: true});
-            $(".tons").mask('000,000.0099', {reverse: false});
+            $(".unitprice").mask('999.99', {reverse: true});
+            $(".tons").mask('999,999.9999', {reverse: false});
             $(".bales").mask('000,000', {reverse: true});
             $(".unit-price").mask('000,000.0099', {reverse: true});
         },

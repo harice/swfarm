@@ -71,9 +71,16 @@ class OrderRepository implements OrderRepositoryInterface {
           $item['totalPrice'] = 0.00;
           foreach($item['productorder'] as $productorder){
             if($productorder['unitprice'] != null){
-              $item['totalPrice'] += $productorder['unitprice'] * $productorder['tons'];
+              
+              $item['totalPrice'] += (double)$productorder['unitprice'] * (double)$productorder['tons'];
+              Log::debug(array(gettype($productorder['unitprice']), $productorder['unitprice']));
+              Log::debug(gettype($productorder['tons']));
+              Log::debug(array(gettype($productorder['unitprice']), $productorder['unitprice']));
+              Log::debug(array(gettype($item['totalPrice']), $item['totalPrice']));
             }
           }
+          
+          $item['totalPrice'] = (string)number_format($item['totalPrice'],2);
         }
 
         return $result;
@@ -302,6 +309,8 @@ class OrderRepository implements OrderRepositoryInterface {
             
             $product['tons'] = str_replace(',', '', $product['tons']);
             $product['bales'] = str_replace(',', '', $product['bales']);
+            
+            Log::debug($product);
 
             $this->validate($product, 'ProductOrder');
             if(isset($product['id']))

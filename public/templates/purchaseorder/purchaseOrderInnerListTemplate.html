@@ -16,7 +16,7 @@
 		<td><%= po.get("account").name %></td>
 		<td><%= po.get("status").name %></td>
 		<td><%= po.get("location").location %></td>
-		<td class="text-right">$ <%= parseFloat(po.get("totalPrice")).toFixed(2) %></td>
+		<td class="text-right">$ <%= po.get("totalPrice") %></td>
 		<td>
 			<% if (po.get("status").name.toLowerCase() == "open" || po.get("status").name.toLowerCase() == "pending") { %>
 				<a href="<%= po_edit_url %>/<%= po.get("id") %>" class="btn btn-info btn-xs" title="edit">
