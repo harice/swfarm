@@ -30,6 +30,9 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('product/search', 'APIv1\ProductController@search');
     Route::resource('product', 'APIv1\ProductController');
 
+    Route::get('account/trailer', 'APIv1\AccountController@getTrailerAccount');
+    Route::get('account/scaler', 'APIv1\AccountController@getScalerAccount');
+    Route::get('account/loader', 'APIv1\AccountController@getLoaderAccount');
     Route::get('account/search', 'APIv1\AccountController@search');
 	Route::get('account/getFormData', 'APIv1\AccountController@getFormData');
   	Route::get('account/getCitiesByState/{id}', 'APIv1\AccountController@getCitiesByState');
@@ -40,8 +43,6 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 	Route::get('account/getProducerAccount', 'APIv1\AccountController@getProducerAccount');
     Route::get('account/truckerAccountTypes', 'APIv1\AccountController@getTruckerAccountTypes');
     Route::get('account/accountsByType', 'APIv1\AccountController@getAccountsByType');
-    Route::get('account/trailer', 'APIv1\AccountController@getTrailerAccount');
-    Route::get('account/loader', 'APIv1\AccountController@getLoaderAccount');
     Route::get('account/contact', 'APIv1\AccountController@getAllContactOnAccount');
 	Route::resource('account', 'APIv1\AccountController');
 
