@@ -1,59 +1,60 @@
-<div class="row">
+<div class="row margin-top-0">
     <div class="col-md-12">
         <div class="block-flat">
+            <div class="header">              
+              <h3>Schedule Settings</h3>
+            </div>
+
             <div class="content">
-              
-                <div class="row">
-                    <div class="col-md-9">
-                        <form id="sheduleSettingsForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-                          <fieldset>
-                            <legend>Schedule Settings</legend>                  
-                              <div class="form-group">
-                                  <label for="freight_rate" class="col-sm-3 control-label">Freight Rate</label>
-                                  <div class="col-sm-5">
-									<div class="input-group margin-0">
-										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right" id="freight_rate" name="freight_rate" placeholder="0.00">
-									</div>
-                                  </div>
-                              </div>
-							  <div class="form-group">
-                                  <label for="loading_rate" class="col-sm-3 control-label">Loading Rate</label>
-                                  <div class="col-sm-5">
-									  <div class="input-group margin-0">
-										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right" id="loading_rate" name="loading_rate" placeholder="0.00">
-									  </div>
-                                  </div>
-                              </div>
-							  <div class="form-group">
-                                  <label for="unloading_rate" class="col-sm-3 control-label">Unloading Rate</label>
-                                  <div class="col-sm-5">
-									  <div class="input-group margin-0">
-										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right" id="unloading_rate" name="unloading_rate" placeholder="0.00">
-									  </div>
-                                  </div>
-                              </div>
-							  <div class="form-group">
-                                  <label for="trailer_percentage_rate" class="col-sm-3 control-label">Trailer Percentage Rate</label>
-                                  <div class="col-sm-5">
-									  <div class="input-group margin-0">
-										<input type="text" class="form-control text-right" id="trailer_percentage_rate" name="trailer_percentage_rate" placeholder="0.00">
-										<span class="input-group-addon">%</span>
-									  </div>
-                                  </div>
-                              </div>
-                          </fieldset>
-                          <div class="form-group">
-                            <div class="col-md-5 col-md-offset-3">
-                                <button id="save" type="submit" class="save btn btn-primary">Save</button>
-                            </div>
-                          </div>
-                        </form>
+              <form id="sheduleSettingsForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+
+                <div class="form-group">
+                  <label for="freight_rate" class="col-sm-3 control-label">Freight Rate</label>
+                  <div class="col-sm-9">
+                    <div class="input-group input-group-sm margin-0 width-100">
+                      <span class="input-group-addon"><i class="fa fa-dollar"></i></span>
+                      <input type="text" class="form-control text-right" id="freight_rate" name="freight_rate" placeholder="0.00">
                     </div>
+                  </div>
                 </div>
-                        
+
+                <div class="form-group">
+                  <label for="loading_rate" class="col-sm-3 control-label">Loading Rate</label>
+                  <div class="col-sm-9">
+                    <div class="input-group input-group-sm margin-0 width-100">
+                      <span class="input-group-addon"><i class="fa fa-dollar"></i></span>
+                      <input type="text" class="form-control text-right" id="loading_rate" name="loading_rate" placeholder="0.00">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="unloading_rate" class="col-sm-3 control-label">Unloading Rate</label>
+                  <div class="col-sm-9">
+                    <div class="input-group input-group-sm margin-0 width-100">
+                      <span class="input-group-addon"><i class="fa fa-dollar"></i></span>
+                      <input type="text" class="form-control text-right" id="unloading_rate" name="unloading_rate" placeholder="0.00">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="trailer_percentage_rate" class="col-sm-3 control-label">Trailer Percentage Rate</label>
+                  <div class="col-sm-9">
+                    <div class="input-group input-group-sm margin-0 width-100">
+                      <input type="text" class="form-control text-right" id="trailer_percentage_rate" name="trailer_percentage_rate" placeholder="0.00">
+                      <span class="input-group-addon">%</span>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="form-group">
+                  <div class="col-sm-offset-3 col-sm-9">
+                    <button id="save" type="submit" class="save btn btn-primary"><i class="fa fa-save"></i> Save</button>
+                  </div>
+                </div>
+              </form>
               
             </div> <!-- /.content -->
         </div> <!-- /.block-flat -->

@@ -2,6 +2,10 @@
 body {
   font-size: 13px;
 }
+.sidebar-logo {
+  background: url("../images/logo.png") no-repeat scroll 15px 9px #4aa3df;
+  height: 54px;
+}
 input.error {
   border-color: #CC0000 !important;
 }
