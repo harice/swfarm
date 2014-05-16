@@ -99,19 +99,11 @@ class OrderRepository implements OrderRepositoryInterface {
 
         if($order){
           $response = $order->toArray();
-          
-          foreach ($response['productorder'] as $product) {
-              // return $product['bales'] = (double)$product['bales'];
-              // var_dump($product);
-              $product['bales'] = (string)number_format($product['bales'],2);
-          }
         } else {
           $response = array(
             'error' => true,
             'message' => "Order not found");
         }
-        
-        Log::debug($response);
 
         return $response;
     }
@@ -313,8 +305,6 @@ class OrderRepository implements OrderRepositoryInterface {
             
             $product['tons'] = str_replace(',', '', $product['tons']);
             $product['bales'] = str_replace(',', '', $product['bales']);
-            
-            Log::debug($product);
 
             $this->validate($product, 'ProductOrder');
             if(isset($product['id']))
