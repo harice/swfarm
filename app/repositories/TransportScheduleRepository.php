@@ -149,7 +149,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       foreach ($products as $product) {
           $product['transportschedule_id'] = $schedule_id;
 
-          $this->validate($product, 'transportscheduleproduct');
+          $this->validate($product, 'TransportScheduleProduct');
 
           $totalQuantityRemaining = $this->getTotalWeightScheduleForProduct($product['productorder_id']);
 
