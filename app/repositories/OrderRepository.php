@@ -73,10 +73,6 @@ class OrderRepository implements OrderRepositoryInterface {
             if($productorder['unitprice'] != null){
               
               $item['totalPrice'] += (double)$productorder['unitprice'] * (double)$productorder['tons'];
-              Log::debug(array(gettype($productorder['unitprice']), $productorder['unitprice']));
-              Log::debug(gettype($productorder['tons']));
-              Log::debug(array(gettype($productorder['unitprice']), $productorder['unitprice']));
-              Log::debug(array(gettype($item['totalPrice']), $item['totalPrice']));
             }
           }
           
@@ -103,11 +99,19 @@ class OrderRepository implements OrderRepositoryInterface {
 
         if($order){
           $response = $order->toArray();
+          
+          foreach ($response['productorder'] as $product) {
+              // return $product['bales'] = (double)$product['bales'];
+              // var_dump($product);
+              $product['bales'] = (string)number_format($product['bales'],2);
+          }
         } else {
           $response = array(
             'error' => true,
             'message' => "Order not found");
         }
+        
+        Log::debug($response);
 
         return $response;
     }
