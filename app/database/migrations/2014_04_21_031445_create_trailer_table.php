@@ -18,6 +18,7 @@ class CreateTrailerTable extends Migration {
             $table->increments('id');
 			$table->integer('account_id')->unsigned();
             $table->string('number', 20);
+            $table->decimal('rate', 8, 2);
 			$table->timestamps();
             
             $table->foreign('account_id')->references('id')->on('account');
