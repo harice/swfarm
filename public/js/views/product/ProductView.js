@@ -53,7 +53,8 @@ define([
             this.model.destroy({
                 success: function (model, response, options) {
                     thisObj.displayMessage(response);
-                    Global.getGlobalVars().app_router.navigate(Const.URL.PRODUCT, {trigger: true});
+                    //Global.getGlobalVars().app_router.navigate(Const.URL.PRODUCT, {trigger: true});
+					Backbone.history.history.back();
                 },
                 error: function (model, response, options) {
                     thisObj.displayMessage(response);

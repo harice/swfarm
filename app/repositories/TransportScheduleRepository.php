@@ -90,7 +90,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
             $unloadingRateArr = Settings::where('name','=','unloading_rate')->first(array('value'))->toArray();
             $unloadingRate = floatval($unloadingRateArr['value']);
 
-            $totalWeight = $this->getTotalWieghtOfSchedule($data['products']);
+            $totalWeight = $this->getTotalWeightOfSchedule($data['products']);
             $data['truckingrate'] = ($freightRate * $data['distance'] + ($loadingRate + $unloadingRate))/$totalWeight;
           }
 
@@ -102,10 +102,16 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
               $this->deleteProductToSchedule($transportschedule->id, $data['products']);
           }
 
-          $this->addProductToSchedule($transportschedule->id, $data['products']);
-
+          $addProductResult = $this->addProductToSchedule($transportschedule->id, $data['products']);
+          if($addProductResult != false){
+            return $addProductResult;
+          }
           return $transportschedule->id;
       });
+      
+      if(is_array($result)){
+        return $result;
+      }
 
       if($transportScheduleId == null){
           $message = 'Schedule successfully created.';
@@ -118,7 +124,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           'message' => $message);
   }
 
-  private function getTotalWieghtOfSchedule($products){
+  private function getTotalWeightOfSchedule($products){
       $totalWeightInTons = 0;
       foreach ($products as $product) {
             $totalWeightInTons += floatval($product['quantity']);
@@ -127,20 +133,44 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       return $totalWeightInTons;
   }
 
+  private function getTotalWeightScheduleForProduct($productorder_id){
+      $totalWeight = ProductOrder::where('id', '=', $productorder_id)->first()->toArray();
+      $orderproducts = TransportScheduleProduct::where('productorder_id', '=', $productorder_id)->get()->toArray();
+      $totalQuantitySchedule = 0;
+      foreach($orderproducts as $item){
+          $totalQuantitySchedule += $item['quantity'];
+      }
+
+      return floatval($totalWeight['tons']) - $totalQuantitySchedule; //total weight remaining to be scheduled
+  }
+
   private function addProductToSchedule($schedule_id, $products = array())
   {
       foreach ($products as $product) {
           $product['transportschedule_id'] = $schedule_id;
 
-          $this->validate($product, 'transportscheduleproduct');
-          if(isset($product['id']))
-              $transportscheduleproduct = TransportScheduleProduct::find($product['id']);
-          else
-              $transportscheduleproduct = new TransportScheduleProduct();
+          $this->validate($product, 'TransportScheduleProduct');
 
-          $transportscheduleproduct->fill($product);
-          $transportscheduleproduct->save();
+          $totalQuantityRemaining = $this->getTotalWeightScheduleForProduct($product['productorder_id']);
+
+          if(floatval($product['quantity']) > $totalQuantityRemaining){
+              return array(
+                      'error' => true,
+                      'message' => "Quantity Error!");
+          }
+
+          $result = DB::transaction(function() use ($product){
+              if(isset($product['id']))
+                  $transportscheduleproduct = TransportScheduleProduct::find($product['id']);
+              else
+                  $transportscheduleproduct = new TransportScheduleProduct();
+
+              $transportscheduleproduct->fill($product);
+              $transportscheduleproduct->save();
+          });
       }
+
+      return false;
   }
 
   private function deleteProductToSchedule($scheduleId, $products){
@@ -217,7 +247,23 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
 
   public function getProductsOfOrder($order_id){
       $orderproducts = ProductOrder::with('product')->where('order_id', '=', $order_id)->get();
-      return $orderproducts->toArray();
+      $productOrder = $orderproducts->toArray();
+      $result = array();
+
+      foreach($productOrder as $item){
+        $transportProduct = TransportScheduleProduct::where('productorder_id','=',$item['id'])->get();
+        $scheduleQuantity = 0;
+
+        foreach($transportProduct as $product){
+            $scheduleQuantity += $product->quantity;
+        }
+
+        $item['quantityRemaining'] = $item['tons'] - $scheduleQuantity;
+        array_push($result, $item);
+        // var_dump('TOtal: '.$item['tons'].' Remaining: '.$item['quantityRemaining']);
+      }
+
+      return $result;
   }
 
   // public function getTrailerList(){

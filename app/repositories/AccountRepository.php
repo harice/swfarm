@@ -70,7 +70,7 @@ class AccountRepository implements AccountRepositoryInterface {
     $rules = array(
       'name' => 'required|unique:account',
       'accounttype' => 'required',
-      'phone' => 'required|between:1,12'
+      'phone' => 'required|between:14,14'
     );
 
     $this->validate($data, $rules);
@@ -128,7 +128,7 @@ class AccountRepository implements AccountRepositoryInterface {
     $rules = array(
       'name' => 'required|unique:account,name,'.$id,
       'accounttype' => 'required',
-      'phone' => 'required|between:1,12',
+      'phone' => 'required|between:14,14',
     );
 
     $this->validate($data, $rules);
@@ -439,6 +439,18 @@ class AccountRepository implements AccountRepositoryInterface {
   public function getTrailerAccount(){
       $accountIds = array(7); //operator, hauler and Southwest Farms trucker accounts ids
       $truckers = Account::with('accounttype')->with('trailer')->whereHas('accounttype', function ($query) use ($accountIds){
+                    $query->whereIn('id', $accountIds);
+                  })->get(array('id', 'name', 'accounttype'));
+
+    return Response::json(
+          $truckers->toArray(),
+          200
+      );
+  }
+
+  public function getScalerAccount(){
+      $accountIds = array(6); //scale accounts
+      $truckers = Account::with('accounttype')->with('scaler')->whereHas('accounttype', function ($query) use ($accountIds){
                     $query->whereIn('id', $accountIds);
                   })->get(array('id', 'name', 'accounttype'));
 

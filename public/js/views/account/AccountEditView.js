@@ -56,6 +56,7 @@ define([
 			this.model.on("change", function() {
 				thisObj.displayForm();
 				thisObj.supplyAccountData();
+                thisObj.maskInputs();
 				this.off("change");
 			});
 		},

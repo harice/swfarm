@@ -13,7 +13,7 @@ class ScaleRepository implements ScaleRepositoryInterface {
         {
             $perPage = isset($params['perpage']) ? $params['perpage'] : 10;
             
-            return Scale::paginate($perPage);
+            return Scale::with('account')->paginate($perPage);
         }
         catch (Exception $e)
         {
@@ -25,7 +25,7 @@ class ScaleRepository implements ScaleRepositoryInterface {
     {
         try
         {
-            $scale = Scale::find($id);
+            $scale = Scale::with('account')->find($id);
             
             if (!$scale) {
                 throw new NotFoundException();

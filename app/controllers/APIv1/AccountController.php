@@ -118,6 +118,10 @@ class AccountController extends BaseController {
 		return $this->account->getTrailerAccount();
 	}
 
+	public function getScalerAccount(){
+		return $this->account->getScalerAccount();
+	}
+
 	public function getTrailerListByAccount(){
 		return $this->account->getTrailerListByAccount(Input::get('accountId'));
 	}

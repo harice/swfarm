@@ -44,6 +44,7 @@ define([
 			this.model.on("change", function() {
 				thisObj.displayForm();
 				thisObj.supplyContactData();
+                thisObj.maskInputs();
 				this.off("change");
 			});
 		},

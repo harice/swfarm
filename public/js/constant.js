@@ -22,6 +22,7 @@ define(function () {
 			'STACKLOCATION': 'administration/stack',
 			'TRAILER': 'administration/trailer',
 			'SETTINGS': 'administration/settings',
+			'SCALE': 'administration/scale',
 		},
 		'MENU': {
 			'PURCHASES': {
@@ -78,16 +79,22 @@ define(function () {
 				'VIEW'	:33,
 				'ADD'	:34,
 				'EDIT'	:35,
-				'CANCEL':36
+				'DELETE':36
 			},
 			'TRAILER': {
 				'VIEW'	:37,
 				'ADD'	:38,
 				'EDIT'	:39,
-				'CANCEL':40
+				'DELETE':40
 			},
 			'SETTINGS': {
 				'EDIT'  :41,
+			},
+			'SCALE': {
+				'VIEW'	:42,
+				'ADD'	:43,
+				'EDIT'	:44,
+				'DELETE':45
 			},
 		},
 		'CRUD': {

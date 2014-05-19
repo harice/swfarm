@@ -4,10 +4,10 @@ define([
 	'views/base/AppView',
 	'jqueryvalidate',
 	'jquerytextformatter',
-	'models/stack/StackLocationModel',
-	'collections/product/ProductCollection',
+	'models/scale/ScaleModel',
+	'collections/account/AccountCollection',
 	'text!templates/layout/contentTemplate.html',
-	'text!templates/stack/stackLocationAddTemplate.html',
+	'text!templates/scale/scaleAddTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -15,48 +15,46 @@ define([
 			AppView,
 			Validate,
 			TextFormatter,
-			StackLocationModel,
-			ProductCollection,
+			ScaleModel,
+			AccountCollection,
 			contentTemplate,
-			stackLocationAddTemplate,
+			scaleAddTemplate,
 			Global,
 			Const
 ){
 
-	var StackLocationAddView = AppView.extend({
+	var ScaleAddView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
 			var thisObj = this;
-			this.slId = null;
-			this.h1Title = 'Stack Location';
+			this.scaleId = null;
+			this.h1Title = 'Scale';
 			this.h1Small = 'add';
 			
-			this.productCollection = new ProductCollection();
-			this.productCollection.on('sync', function() {
+			this.scalerAccountCollection = new AccountCollection();
+			this.scalerAccountCollection.on('sync', function() {
 				thisObj.displayForm();
 				this.off('sync');
 			});
-			this.productCollection.on('error', function(collection, response, options) {
+			this.scalerAccountCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
 		},
 		
 		render: function(){
-			this.productCollection.getAllModel();
+			this.scalerAccountCollection.getScalerAccounts();
 		},
 		
 		displayForm: function () {
 			var thisObj = this;
 			
-			var innerTemplateVariables = {
-				'sl_url' : '#/'+Const.URL.STACKLOCATION,
-			};
+			var innerTemplateVariables = {};
 			
-			if(this.slId != null)
-				innerTemplateVariables['sl_id'] = this.slId;
+			if(this.scaleId != null)
+				innerTemplateVariables['scale_id'] = this.scaleId;
 			
-			var innerTemplate = _.template(stackLocationAddTemplate, innerTemplateVariables);
+			var innerTemplate = _.template(scaleAddTemplate, innerTemplateVariables);
 			
 			var variables = {
 				h1_title: this.h1Title,
@@ -66,9 +64,8 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
-			this.generateProduct();
+			this.generateScalerAccount();
 			this.focusOnFirstField();
-			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
 			this.initValidateForm();
 			
 			this.otherInitializations();
@@ -77,18 +74,17 @@ define([
 		initValidateForm: function () {
 			var thisObj = this;
 			
-			var validate = $('#soForm').validate({
+			var validate = $('#scalerForm').validate({
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
 					
-					var stackLocationModel = new StackLocationModel(data);
+					var scaleModel = new ScaleModel(data);
 					
-					stackLocationModel.save(
+					scaleModel.save(
 						null, 
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								//Global.getGlobalVars().app_router.navigate(Const.URL.STACKLOCATION, {trigger: true});
 								Backbone.history.history.back();
 							},
 							error: function (model, response, options) {
@@ -97,35 +93,40 @@ define([
 								else
 									thisObj.displayMessage(response);
 							},
-							headers: stackLocationModel.getAuth(),
+							headers: scaleModel.getAuth(),
 						}
 					);
 				},
 			});
 		},
 		
-		generateProduct: function () {
+		generateScalerAccount: function () {
 			var options = '';
-			_.each(this.productCollection.models, function (model) {
+			_.each(this.scalerAccountCollection.models, function (model) {
 				options += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
 			
-			this.$el.find('#product_id').html(options);
+			this.$el.find('#account_id').append(options);
 		},
 		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
-			'click #delete-sl': 'showConfirmationWindow',
-			'click #confirm-delete-sl': 'deleteStockLocation'
+			'click #delete-scale': 'showConfirmationWindow',
+			'click #confirm-delete-scale': 'deleteTrailer',
+			'blur #rate': 'onBlurRate',
 		},
 		
-		deleteStockLocation: function () {
+		onBlurRate: function (ev) {
+			this.toFixedValue($(ev.target), 2);
+		},
+		
+		deleteTrailer: function () {
 			var thisObj = this;
             
             this.model.destroy({
                 success: function (model, response, options) {
                     thisObj.displayMessage(response);
-                    //Global.getGlobalVars().app_router.navigate(Const.URL.STACKLOCATION, {trigger: true});
+                    //Global.getGlobalVars().app_router.navigate(Const.URL.TRAILER, {trigger: true});
 					Backbone.history.history.back();
                 },
                 error: function (model, response, options) {
@@ -139,6 +140,6 @@ define([
 		otherInitializations: function () {},
 	});
 
-	return StackLocationAddView;
+	return ScaleAddView;
   
 });
