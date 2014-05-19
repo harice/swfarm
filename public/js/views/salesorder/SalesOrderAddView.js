@@ -131,6 +131,7 @@ define([
 			this.initCalendar();
 			this.addProduct();
 			
+            this.maskInputs();
 			this.otherInitializations();
 		},
 		

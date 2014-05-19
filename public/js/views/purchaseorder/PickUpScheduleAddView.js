@@ -193,6 +193,7 @@ define([
 			this.addProduct();
 			
 			this.postDisplayForm();
+            this.maskInputs();
 		},
 		
 		initValidateForm: function () {
