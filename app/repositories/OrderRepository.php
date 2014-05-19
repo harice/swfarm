@@ -96,9 +96,16 @@ class OrderRepository implements OrderRepositoryInterface {
             $order = $order->with('natureofsale');
 
         $order = $order->where('ordertype', '=', $orderType)->find($id);
+        
+        $order = $order->toArray();
+        $product_orders = $order['productorder'];
+        foreach ($product_orders as $product) {
+            $product['tons'] = number_format($product['tons'], 4, '.', ',');
+            $product['bales'] = number_format($product['bales'], 0, '.', ',');
+        }
 
         if($order){
-          $response = $order->toArray();
+          $response = $order;
         } else {
           $response = array(
             'error' => true,
@@ -303,8 +310,8 @@ class OrderRepository implements OrderRepositoryInterface {
         foreach ($products as $product) {
             $product['order_id'] = $order_id;
             
-            $product['tons'] = str_replace(',', '', $product['tons']);
-            $product['bales'] = str_replace(',', '', $product['bales']);
+            $product['tons'] = filter_number($product['tons']);
+            $product['bales'] = filter_number($product['bales']);
 
             $this->validate($product, 'ProductOrder');
             if(isset($product['id']))
