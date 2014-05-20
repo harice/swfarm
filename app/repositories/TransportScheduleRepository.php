@@ -212,17 +212,13 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       if($transportschedule){
         $transportschedule->delete();
 
-        $response = Response::json(array(
+        $response = array(
             'error' => false,
-            'message' => 'Schedule successfully deleted.'),
-            200
-        );
+            'message' => 'Schedule successfully deleted.');
       } else {
-        $response = Response::json(array(
+        $response = array(
             'error' => true,
-            'message' => "Schedule not found"),
-            200
-        );
+            'message' => "Schedule not found");
       }
 
       return $response;
