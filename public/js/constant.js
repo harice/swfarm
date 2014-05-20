@@ -19,6 +19,7 @@ define(function () {
 			'PICKUPSCHEDULE': 'purchases/pickupschedule',
             'WEIGHTINFO': 'purchases/weightinfo',
 			'SO': 'sales/so',
+			'DELIVERYSCHEDULE': 'sales/deliveryschedule',
 			'STACKLOCATION': 'administration/stack',
 			'TRAILER': 'administration/trailer',
 			'SETTINGS': 'administration/settings',

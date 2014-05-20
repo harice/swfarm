@@ -1,11 +1,11 @@
 define([
 	'backbone',
 	'collections/base/ListViewCollection',
-	'models/purchaseorder/POScheduleModel',
-], function(Backbone, ListViewCollection, POScheduleModel){
-	var POScheduleCollection = ListViewCollection.extend({
-		url: '/apiv1/transportschedule/getAllPickupSchedules',
-		model: POScheduleModel,
+	'models/salesorder/SOScheduleModel',
+], function(Backbone, ListViewCollection, SOScheduleModel){
+	var SOScheduleCollection = ListViewCollection.extend({
+		url: '/apiv1/transportschedule/getAllDeliverySchedules',
+		model: SOScheduleModel,
 		initialize: function(option){
 			this.runInit();
 			this.setDefaultURL(this.url);
@@ -21,5 +21,5 @@ define([
 		},
 	});
 
-	return POScheduleCollection;
+	return SOScheduleCollection;
 });

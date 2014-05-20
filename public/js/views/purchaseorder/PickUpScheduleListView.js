@@ -2,6 +2,7 @@ define([
 	'backbone',
 	'views/base/ListView',
 	'models/purchaseorder/PurchaseOrderModel',
+	'models/purchaseorder/POScheduleModel',
 	'collections/purchaseorder/POScheduleCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderPickUpScheduleListTemplate.html',
@@ -10,6 +11,7 @@ define([
 ], function(Backbone,
 			ListView,
 			PurchaseOrderModel,
+			POScheduleModel,
 			POScheduleCollection,
 			contentTemplate,
 			purchaseOrderPickUpScheduleListTemplate,
@@ -64,7 +66,9 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
 			
-			//this.initCalendars();
+			this.initConfirmationWindow('Are you sure you want to delete this schedule?',
+										'confirm-delete-schedule',
+										'Delete Schedule');
 		},
 		
 		displayList: function () {
@@ -82,23 +86,36 @@ define([
 			this.generatePagination();
 		},
 		
-		initCalendars: function () {
-			var thisObj = this;
-			
-			this.$el.find('#filter-date .input-group.date').datepicker({
-				orientation: "top left",
-				autoclose: true,
-				clearBtn: true,
-				todayHighlight: true,
-				format: 'yyyy-mm-dd',
-			}).on('changeDate', function (ev) {
-				//thisObj.collection.setDate($('#filter-date-of-purchase .input-group.date input').val());
-				//thisObj.renderList(1);
-			});
-		},
-		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
+			'click .delete-schedule': 'preShowConfirmationWindow',
+			'click #confirm-delete-schedule': 'deleteSchedule',
+		},
+		
+				preShowConfirmationWindow: function (ev) {
+			this.$el.find('#confirm-cancel-so').attr('data-id', $(ev.currentTarget).attr('data-id'));
+			
+			this.showConfirmationWindow();
+			return false;
+		},
+		
+		deleteSchedule: function (ev) {
+			var thisObj = this;
+			var poScheduleModel = new POScheduleModel({id:$(ev.currentTarget).attr('data-id')});
+			
+			poScheduleModel.destroy({
+                success: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                    thisObj.renderList(1);
+                },
+                error: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                },
+                wait: true,
+                headers: poScheduleModel.getAuth(),
+            });
+			
+			return false;
 		},
 	});
 

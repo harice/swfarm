@@ -1,0 +1,176 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="block-flat">
+            <div class="content">
+              
+				<form id="POScheduleForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+					<fieldset>
+						<legend>Schedule</legend>
+						<div class="col-md-4 col-sm-6">
+							<div class="form-group">
+								<label for="scheduledate" class="col-sm-4 control-label small">Date</label>
+								<div class="col-sm-8">
+									<input type="text" id="scheduledate" class="form-control" readonly>
+								</div>				
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label small">Time</label>
+								<div class="col-sm-8">
+                                    <input type="text" id="scheduletimeHour" class="form-control width-80" readonly>
+									<input type="text" id="scheduletimeMin" class="form-control width-80" readonly>
+									<input type="text" id="scheduletimeAmPm" class="form-control width-80" readonly>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="truckerAccountType_id" class="col-sm-4 control-label small">Trucker Type</label>
+								<div class="col-sm-8">
+									<input type="text" id="truckerAccountType_id" class="form-control" readonly>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="truckerAccount_id" class="col-sm-4 control-label small">Trucker</label>
+								<div class="col-sm-8">
+									<input type="text" id="truckerAccount_id" class="form-control" readonly>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="trucker_id" class="col-sm-4 control-label small">Trucker Contact</label>
+								<div class="col-sm-8">
+									<input type="text" id="trucker_id" class="form-control" readonly>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="trailer" class="col-sm-4 control-label small">Trailer</label>
+								<div class="col-sm-8">
+									<input type="text" id="trailer" class="form-control" readonly>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="trailer_id" class="col-sm-4 control-label small">Trailer Number</label>
+								<div class="col-sm-8">
+									<input type="text" id="trailer_id" class="form-control" readonly>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="distance" class="col-sm-4 control-label small">Distance</label>
+								<div class="col-sm-8">
+									<input type="text" id="distance" class="form-control text-right" readonly>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="fuelcharge" class="col-sm-4 control-label small">Fuel Charges</label>
+								<div class="col-sm-8">
+									<div class="input-group margin-0">
+										<span class="input-group-addon">$</span>
+										<input type="text" class="form-control text-right" id="fuelcharge" placeholder="0.00" readonly>
+									</div>	
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="truckingrate" class="col-sm-4 control-label small">Trucking/Hauling Rate</label>
+								<div class="col-sm-8">
+									<div class="input-group margin-0">
+										<span class="input-group-addon">$</span>
+										<input type="text" class="form-control text-right" id="truckingrate" placeholder="0.00" readonly>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="trailerrate" class="col-sm-4 control-label small">Trailer Rent</label>
+								<div class="col-sm-8">
+									<div class="input-group margin-0">
+										<span class="input-group-addon">$</span>
+										<input type="text" class="form-control text-right" id="trailerrate" placeholder="0.00" readonly>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-6">
+							<h4>Origin</h4>
+							<div class="form-group">
+								<label for="originloader" class="col-sm-4 control-label small">Loader</label>
+								<div class="col-sm-8">
+									<input type="text" id="originloader" class="form-control" readonly>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="originloader_id" class="col-sm-4 control-label small">Loader Contact</label>
+								<div class="col-sm-8">
+									<input type="text" id="originloader_id" class="form-control" readonly>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="originloaderfee" class="col-sm-4 control-label small">Loader's Fee</label>
+								<div class="col-sm-8">
+									<div class="input-group margin-0">
+										<span class="input-group-addon">$</span>
+										<input type="text" class="form-control text-right" id="originloaderfee" placeholder="0.00"  readonly>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-6">
+							<h4>Destination</h4>
+							<div class="form-group">
+								<label for="destinationloader" class="col-sm-4 control-label small">Loader</label>
+								<div class="col-sm-8">
+									<input type="text" id="destinationloader" class="form-control" readonly>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="destinationloader_id" class="col-sm-4 control-label small">Loader Contact</label>
+								<div class="col-sm-8">
+									<input type="text" id="destinationloader_id" class="form-control" readonly>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="destinationloaderfee" class="col-sm-4 control-label small">Loader's Fee</label>
+								<div class="col-sm-8">
+									<div class="input-group margin-0">
+										<span class="input-group-addon">$</span>
+										<input type="text" class="form-control text-right" id="destinationloaderfee" placeholder="0.00" readonly>
+									</div>
+								</div>
+							</div>
+						</div>
+					</fieldset>
+					<fieldset>
+						<legend>
+							Products
+						</legend>
+					<div class="table-responsive">
+						<table id="product-list" class="table table-bordered">
+							<thead>
+								<tr>
+									<th>Stack #</th>
+									<th>Product</th>
+									<th class="width-150">Quantity</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<td class="text-right" colspan="2">Total</td>
+									<td>
+										<div class="input-group margin-0">
+											<input id="total-quantity" type="text" class="form-control text-right" placeholder="0.0000" readonly>
+											<span class="input-group-addon">Tons</span>
+										</div>
+									</td>
+								</tr>
+							</tfoot>
+							<tbody></tbody>
+						</table>
+					</div>
+					</fieldset>
+					<div class="form-group form-button-container">
+						<div class="pull-right">
+							<a id="edit-schedule" class="btn btn-primary" href="<%= schedule_edit_url %>">Edit Delivery Schedule</a>
+							<a id="go-to-previous-page" class="btn btn-link" href="#">Cancel</a>
+						</div>
+					</div>
+				</form>
+              
+            </div> <!-- /.content -->
+        </div> <!-- /.block-flat -->
+    </div>
+</div>

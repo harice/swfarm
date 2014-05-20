@@ -117,7 +117,7 @@ define([
 			var data = {
 				so_url: '#/'+Const.URL.SO,
 				so_edit_url: '#/'+Const.URL.SO+'/'+Const.CRUD.EDIT,
-				so_sched_url: '',
+				so_sched_url: '#/'+Const.URL.DELIVERYSCHEDULE,
 				sos: this.collection.models,
 				_: _ 
 			};
@@ -184,7 +184,6 @@ define([
 		
 		events: {
 			'click .sort-date-of-so' : 'sortSODate',
-			'click .cancel-so' : 'cancelSO',
 			'change .location_id' : 'filterByOrigin',
 			'change .natureofsale_id' : 'filterByNatureOfSale',
 			'change .statusFilter' : 'filterByStatus',

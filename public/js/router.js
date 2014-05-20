@@ -20,6 +20,7 @@ define([
 	'controllers/purchaseorder/POPickUpScheduleController',
 	'controllers/purchaseorder/POWeightInfoController',
 	'controllers/salesorder/SalesOrderController',
+	'controllers/salesorder/SODeliveryScheduleController',
 	'controllers/stack/StackLocationController',
 	'controllers/trailer/TrailerController',
 	'controllers/settings/SettingsController',
@@ -47,6 +48,7 @@ define([
 			POPickUpScheduleController,
 			POWeightInfoController,
 			SalesOrderController,
+			SODeliveryScheduleController,
 			StackLocationController,
 			TrailerController,
 			SettingsController,
@@ -129,10 +131,10 @@ define([
 	routerRoutes[Const.URL.PO+'/:action/:id'] = 'showPOPage';
 	
 	//pickup schedule
-	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poid'] = 'showPOPickupSchedulePage';
-	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poid/'] = 'showPOPickupSchedulePage';
-	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poid/:action'] = 'showPOPickupSchedulePage';
-	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poid/:action/:id'] = 'showPOPickupSchedulePage';
+	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poid'] = 'showPickupSchedulePage';
+	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poid/'] = 'showPickupSchedulePage';
+	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poid/:action'] = 'showPickupSchedulePage';
+	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poid/:action/:id'] = 'showPickupSchedulePage';
 	
 	//weight info
 	routerRoutes[Const.URL.WEIGHTINFO+'/:poid/:schedid'] = 'showPOWeightInfoPage';
@@ -145,6 +147,12 @@ define([
 	routerRoutes[Const.URL.SO+'/'] = 'showSOPage';
 	routerRoutes[Const.URL.SO+'/:action'] = 'showSOPage';
 	routerRoutes[Const.URL.SO+'/:action/:id'] = 'showSOPage';
+	
+	//delivery schedule
+	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soid'] = 'showDeliverySchedulePage';
+	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soid/'] = 'showDeliverySchedulePage';
+	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soid/:action'] = 'showDeliverySchedulePage';
+	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soid/:action/:id'] = 'showDeliverySchedulePage';
 	
 	//stack location
 	routerRoutes[Const.URL.STACKLOCATION] = 'showStackPage';
@@ -314,7 +322,7 @@ define([
 			this.currView.render();
 		});
 		
-		app_router.on('route:showPOPickupSchedulePage', function (poid, action, id) {
+		app_router.on('route:showPickupSchedulePage', function (poid, action, id) {
 			this.closeView();
 			var pickUpScheduleController = new POPickUpScheduleController();
 			this.currView = pickUpScheduleController.setAction(poid, action, id);
@@ -332,6 +340,13 @@ define([
 			this.closeView();
 			var salesOrderController = new SalesOrderController();
 			this.currView = salesOrderController.setAction(action, id);
+			this.currView.render();
+		});
+		
+		app_router.on('route:showDeliverySchedulePage', function (soid, action, id) {
+			this.closeView();
+			var deliveryScheduleController = new SODeliveryScheduleController();
+			this.currView = deliveryScheduleController.setAction(soid, action, id);
 			this.currView.render();
 		});
 		
