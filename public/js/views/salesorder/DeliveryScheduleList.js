@@ -2,6 +2,7 @@ define([
 	'backbone',
 	'views/base/ListView',
 	'models/salesorder/SalesOrderModel',
+	'models/salesorder/SOScheduleModel',
 	'collections/salesorder/SOScheduleCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/salesorder/deliveryScheduleListTemplate.html',
@@ -10,6 +11,7 @@ define([
 ], function(Backbone,
 			ListView,
 			SalesOrderModel,
+			SOScheduleModel,
 			SOScheduleCollection,
 			contentTemplate,
 			deliveryScheduleListTemplate,
@@ -39,7 +41,7 @@ define([
 			
 			this.model = new SalesOrderModel({id:option.id});
 			this.model.on('change', function() {
-				thisObj.displayPickUpSchedule();
+				thisObj.displaySchedule();
 				thisObj.renderList(1);
 				this.off('change');
 			});
@@ -49,7 +51,7 @@ define([
 			this.model.runFetch();
 		},
 		
-		displayPickUpSchedule: function () {
+		displaySchedule: function () {
 			var innerTemplateVar = {
 				so_schedule_add_url : '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId+'/'+Const.CRUD.ADD,
 				status_filters : '',
@@ -63,6 +65,10 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+			
+			this.initConfirmationWindow('Are you sure you want to delete this schedule?',
+										'confirm-delete-schedule',
+										'Delete Schedule');
 		},
 		
 		displayList: function () {
@@ -82,6 +88,34 @@ define([
 		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
+			'click .delete-schedule': 'preShowConfirmationWindow',
+			'click #confirm-delete-schedule': 'deleteSchedule',
+		},
+		
+		preShowConfirmationWindow: function (ev) {
+			this.$el.find('#confirm-delete-schedule').attr('data-id', $(ev.currentTarget).attr('data-id'));
+			
+			this.showConfirmationWindow();
+			return false;
+		},
+		
+		deleteSchedule: function (ev) {
+			var thisObj = this;
+			var soScheduleModel = new SOScheduleModel({id:$(ev.currentTarget).attr('data-id')});
+			
+			soScheduleModel.destroy({
+                success: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                    thisObj.renderList(1);
+                },
+                error: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                },
+                wait: true,
+                headers: soScheduleModel.getAuth(),
+            });
+			
+			return false;
 		},
 	});
 

@@ -41,7 +41,7 @@ define([
 			
 			this.model = new PurchaseOrderModel({id:option.id});
 			this.model.on('change', function() {
-				thisObj.displayPickUpSchedule();
+				thisObj.displaySchedule();
 				thisObj.renderList(1);
 				this.off('change');
 			});
@@ -51,7 +51,7 @@ define([
 			this.model.runFetch();
 		},
 		
-		displayPickUpSchedule: function () {
+		displaySchedule: function () {
 			var innerTemplateVar = {
 				po_schedule_add_url : '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId+'/'+Const.CRUD.ADD,
 				status_filters : '',
@@ -92,8 +92,8 @@ define([
 			'click #confirm-delete-schedule': 'deleteSchedule',
 		},
 		
-				preShowConfirmationWindow: function (ev) {
-			this.$el.find('#confirm-cancel-so').attr('data-id', $(ev.currentTarget).attr('data-id'));
+		preShowConfirmationWindow: function (ev) {
+			this.$el.find('#confirm-delete-schedule').attr('data-id', $(ev.currentTarget).attr('data-id'));
 			
 			this.showConfirmationWindow();
 			return false;

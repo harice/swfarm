@@ -73,6 +73,10 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.$el.html(compiledTemplate);
+			
+			this.initConfirmationWindow('Are you sure you want to delete this schedule?',
+										'confirm-delete-schedule',
+										'Delete Schedule');
 		},
 		
 		supplyScheduleData: function () {
@@ -127,6 +131,24 @@ define([
 		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
+			'click #delete-schedule': 'showConfirmationWindow',
+			'click #confirm-delete-schedule': 'deleteAccount',
+		},
+		
+		deleteAccount: function (){
+			var thisObj = this;
+            
+            this.model.destroy({
+                success: function (model, response, options) {
+                    thisObj.displayMessage(response);
+					Backbone.history.history.back();
+                },
+                error: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                },
+                wait: true,
+                headers: thisObj.model.getAuth(),
+            });
 		},
 	});
 
