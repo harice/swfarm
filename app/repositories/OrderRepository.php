@@ -72,11 +72,9 @@ class OrderRepository implements OrderRepositoryInterface {
           foreach($item['productorder'] as $productorder){
             if($productorder['unitprice'] != null){
               
-              $item['totalPrice'] += (double)$productorder['unitprice'] * (double)$productorder['tons'];
+              $item['totalPrice'] += $productorder['unitprice'] * $productorder['tons'];
             }
           }
-          
-          $item['totalPrice'] = (string)number_format($item['totalPrice'],2);
         }
 
         return $result;
@@ -96,16 +94,9 @@ class OrderRepository implements OrderRepositoryInterface {
             $order = $order->with('natureofsale');
 
         $order = $order->where('ordertype', '=', $orderType)->find($id);
-        
-        $order = $order->toArray();
-        $product_orders = $order['productorder'];
-        foreach ($product_orders as $product) {
-            $product['tons'] = number_format($product['tons'], 4, '.', ',');
-            $product['bales'] = number_format($product['bales'], 0, '.', ',');
-        }
 
         if($order){
-          $response = $order;
+          $response = $order->toArray();
         } else {
           $response = array(
             'error' => true,
@@ -309,9 +300,6 @@ class OrderRepository implements OrderRepositoryInterface {
     {
         foreach ($products as $product) {
             $product['order_id'] = $order_id;
-            
-            $product['tons'] = filter_number($product['tons']);
-            $product['bales'] = filter_number($product['bales']);
 
             $this->validate($product, 'ProductOrder');
             if(isset($product['id']))

@@ -368,7 +368,22 @@ define([
 			'keyup .tons': 'onKeyUpTons',
 			'click #cancel-so': 'showConfirmationWindow',
 			'click #confirm-cancel-so': 'cancelSO',
+            
+            'click #save': 'unMask'
 		},
+                
+        unMask: function () {
+            $(".phone-number").cleanVal();
+            $(".mobile-number").cleanVal();
+            
+            $(".mask-unitprice").cleanVal();
+            $(".mask-tons").cleanVal();
+            $(".mask-bales").cleanVal();
+            $(".mask-totalprice").cleanVal();
+            
+            $(".mask-fee").cleanVal();
+            $(".mask-distance").cleanVal();
+        },
 		
 		removeProduct: function (ev) {
 			$(ev.target).closest('tr').remove();

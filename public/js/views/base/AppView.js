@@ -65,7 +65,7 @@ define([
             
             $(".mask-fee").mask('##0.00', {reverse: true});
             $(".mask-distance").mask('##0.00', {reverse: true});
-        },
+        }
 	});
 
 	return AppView;
