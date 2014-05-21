@@ -59,7 +59,7 @@ define([
             $(".mobile-number").mask('(000) 000-0000');
             
             $(".mask-unitprice").mask('##0.00', {reverse: true});
-            $(".mask-tons").mask("###,##0.00##", {reverse: true});
+            $(".mask-tons").mask("#,##0.00##", {reverse: true});
             $(".mask-bales").mask('###,##0', {reverse: true});
             $(".mask-totalprice").mask('###,###,##0.00', {reverse: true});
             

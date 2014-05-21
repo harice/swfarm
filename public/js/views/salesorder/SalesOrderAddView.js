@@ -145,11 +145,13 @@ define([
 					data['transportdateend'] = thisObj.convertDateFormat(data['transportdateend'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					
 					// Remove commas on tons and bales
+                    console.log(data);
                     var index;
                     for (index = 0; index < data['products'].length; ++index) {
                         data['products'][index]['tons'] = data['products'][index]['tons'].replace(/,/g , '');
                         data['products'][index]['bales'] = data['products'][index]['bales'].replace(/,/g , '');
                     }
+                    console.log(data);
 					
 					var salesOrderModel = new SalesOrderModel(data);
 					
