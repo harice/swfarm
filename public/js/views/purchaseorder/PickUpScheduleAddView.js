@@ -204,7 +204,12 @@ define([
 					var data = thisObj.formatFormField($(form).serializeObject());
 					
 					data['scheduledate'] = thisObj.convertDateFormat(data['scheduledate'], thisObj.dateFormat, thisObj.dateFormatDB, '-');
-					//console.log(data);
+					
+                    // Remove commas on tons and bales
+                    var index;
+                    for (index = 0; index < data['products'].length; ++index) {
+                        data['products'][index]['quantity'] = data['products'][index]['quantity'].replace(/,/g , '');
+                    }
 					
 					var poScheduleModel = new POScheduleModel(data);
 					
@@ -468,7 +473,7 @@ define([
 			'blur .loader': 'onBlurLoader',
 			'keyup .quantity': 'onKeyUpQuantity',
 			'blur .quantity': 'onBlurQuantity',
-			'click #delete-schedule': 'deleteSchedule',
+			'click #delete-schedule': 'deleteSchedule'
 		},
 		
 		onChangeProduct: function (ev) {

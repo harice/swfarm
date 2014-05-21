@@ -131,14 +131,19 @@ define([
 			
 			var validate = $('#poForm').validate({
 				submitHandler: function(form) {
-					console.log($(form).serializeObject());
 					var data = thisObj.formatFormField($(form).serializeObject());
-					//console.log(data);
 					
 					if(typeof data['transportdatestart'] != 'undefined')
 						data['transportdatestart'] = thisObj.convertDateFormat(data['transportdatestart'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					if(typeof data['transportdateend'] != 'undefined')
 						data['transportdateend'] = thisObj.convertDateFormat(data['transportdateend'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
+                    
+                    // Remove commas on tons and bales
+                    var index;
+                    for (index = 0; index < data['products'].length; ++index) {
+                        data['products'][index]['tons'] = data['products'][index]['tons'].replace(/,/g , '');
+                        data['products'][index]['bales'] = data['products'][index]['bales'].replace(/,/g , '');
+                    }
 					
 					if(thisObj.isBid)
 						data['isfrombid'] = '1';
@@ -146,7 +151,7 @@ define([
 					if(thisObj.isConvertToPO)
 						data['createPO'] = '1';
 					
-					//console.log(data);
+					// console.log(data);
 					
 					var purchaseOrderModel = new PurchaseOrderModel(data);
 					
@@ -371,7 +376,7 @@ define([
 			'keyup .tons': 'onKeyUpTons',
 			'click #convert-po': 'convertPO',
 			'click #cancel-po': 'showConfirmationWindow',
-			'click #confirm-cancel-po': 'cancelPO',
+			'click #confirm-cancel-po': 'cancelPO'
 		},
 		
 		removeProduct: function (ev) {
