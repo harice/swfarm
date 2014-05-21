@@ -53,6 +53,8 @@ define([
 				thisObj.orderScheduleVariablesModel.runFetch();
 				thisObj.off('change');
 			});
+            
+            this.maskInputs();
 		},
 		
 		render: function(){

@@ -27,6 +27,8 @@ define([
 			this.model.on('change', function() {
 				thisObj.displayForm();
 				thisObj.supplySettingsData();
+                
+                thisObj.maskInputs();
 				this.off('change');
 			});
 		},

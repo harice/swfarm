@@ -82,6 +82,8 @@ define([
 				});
 				thisObj.displayForm();
 				thisObj.supplyPOData();
+                
+                thisObj.maskInputs();
 				this.off('sync');
 			});
 			this.productCollection.on('error', function(collection, response, options) {
