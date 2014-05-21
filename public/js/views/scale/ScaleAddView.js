@@ -67,7 +67,7 @@ define([
 			this.generateScalerAccount();
 			this.focusOnFirstField();
 			this.initValidateForm();
-			
+			this.maskInputs();
 			this.otherInitializations();
 		},
 		
