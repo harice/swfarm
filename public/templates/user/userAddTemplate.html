@@ -50,21 +50,23 @@
                             <div class="form-group">
                               <label for="phone" class="col-sm-3 control-label">Phone</label>
                               <div class="col-sm-5">
-                                <input type="text" class="form-control phone-number" id="phone" name="phone" placeholder="" minlength="12" maxlength="12">
+                                <input type="text" class="form-control phone-number" id="phone" name="phone" placeholder="" minlength="14" maxlength="14">
                               </div>
                             </div>
                             <div class="form-group">
                               <label for="mobile" class="col-sm-3 control-label">Mobile</label>
                               <div class="col-sm-5">
-                                <input type="text" class="form-control mobile-number" id="mobile" name="mobile" placeholder="" minlength="12" maxlength="12">
+                                <input type="text" class="form-control mobile-number" id="mobile" name="mobile" placeholder="" minlength="14" maxlength="14">
                               </div>
                             </div>
                             <div class="form-group">
+                              <!--
                               <label for="profile-pic" class="col-sm-3 control-label">Profile Image</label>
                               <div id="profile-pic-upload" class="col-sm-5">
                                 <input type="file" id="profile-pic" class="profile-pic" name="profile-pic"> <a class="cancel-remove-image" href="#" style="display:none;">cancel remove</a>
                                 <p class="help-block">Example block-level help text here.</p>
                               </div>
+                              -->
                               <div id="profile-pic-preview" class="col-sm-5" style="display:none;">
                                 <div class="pull-left max-width-300">
                                   <div><img src="" /></div>
@@ -90,7 +92,7 @@
                             <label for="" class="col-sm-3 control-label"></label>
                             <div class="col-sm-5">
                                <button id="save" type="submit" class="save btn btn-primary">Save</button>
-                               <a id="cancel-user-save" class="btn btn-link" href="<%= user_url %>">Cancel</a>
+                               <a id="cancel-user-save" class="btn btn-default" href="<%= user_url %>">Cancel</a>
                             </div>
                           </div>
                         </form>

@@ -24,6 +24,11 @@ define([
 			this.resetURL();
 			this.getModels();
 		},
+		
+		getPOProducts: function (poId) {
+			this.url = '/apiv1/transportschedule/getProductsOfOrder?orderId='+poId;
+			this.getModels();
+		},
 	});
 
 	return ProductCollection;

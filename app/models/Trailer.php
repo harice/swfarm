@@ -19,7 +19,7 @@ class Trailer extends BaseModel {
      * 
      * @var array
      */
-    protected $fillable = array('account_id', 'name', 'rate');
+    protected $fillable = array('account_id', 'number', 'rate');
 
     /**
      * Define field validation rules.
@@ -28,8 +28,7 @@ class Trailer extends BaseModel {
      */
 	public static $rules = array(
         'account_id' => 'required',
-        'name' => 'required',
-        'rate' => 'required'
+        'number' => 'required'
     );
     
     public function fee()

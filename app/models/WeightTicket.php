@@ -10,30 +10,38 @@ class WeightTicket extends BaseModel {
 	protected $table = 'weightticket';
 
 	public static $rules = array(
-        'purchaseorder_id' => 'required',
-        'transportschedule_id' => 'required',
-        'bidproduct_id' => 'required'
+        'transportSchedule_id' => 'required'
+    );
+
+    /**
+     * Define fillable attributes in a model.
+     * 
+     * @var array
+     */
+    protected $fillable = array(
+        'transportSchedule_id', 
+        'weightTicketNumber', 
+        'loadingTicketNumber', 
+        'pickup_id', 
+        'dropoff_id'
     );
     
     /**
      * Define the relationship with the weightinfo table
      * @return Collection collection of WeightInfo Models
      */
-    public function weightinfo()
+    public function weightticketscale_pickup()
     {
-        return $this->hasMany('WeightInfo');
+        return $this->hasOne('weightticketscale', 'id', 'pickup_id');
+    }
+
+    public function weightticketscale_dropoff()
+    {
+        return $this->hasOne('weightticketscale', 'id', 'dropoff_id');
     }
 
     public function transportschedule(){
         return $this->belongsTo('transportschedule', 'id', 'transportschedule_id');
-    }
-
-    public function originScalerAccount(){
-        return $this->hasOne('Account', 'id', 'origin_account_id')->select(array('id', 'name'));
-    }
-
-    public function destinationScalerAccount(){
-        return $this->hasOne('Account', 'id', 'destination_account_id')->select(array('id', 'name'));
     }
 
 }

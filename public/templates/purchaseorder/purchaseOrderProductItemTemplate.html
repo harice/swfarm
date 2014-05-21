@@ -4,10 +4,12 @@
 		<input class="form-control productname" type="text" name="productname" maxlength="50"/>
 		<input type="hidden" class="form-control product_id product" name="product_id" value="">-->
 		<input type="hidden" class="id" name="id" value="" />
-		<select class="select2 product_id" name="product_id"><%= product_list %></select>
+        <div class="styled-select">
+            <select class="form-control product_id width-160" name="product_id"><%= product_list %></select>
+        </div>
 	</td>
     <td><input class="form-control description" name="description" maxlength="80"></td>
-	<td><input class="form-control text-right stacknumber" type="text" name="stacknumber" maxlength="20" required></td>
+	<td><input class="form-control stacknumber" type="text" name="stacknumber" maxlength="20" required></td>
 	<td>
 		<div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right price unitprice" type="text" name="unitprice" placeholder="0.00" value="" required></div>
 		<div class="error-msg-cont"></div>
@@ -17,10 +19,12 @@
 	<td><div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right unit-price" type="text" value="0.00" readonly></div></td>
 	<% if (typeof is_bid === "undefined") { %>
 	<td>
-		<select class="select2 ishold" name="ishold">
-			<option value="0">No</option>
-			<option value="1">Yes</option>
-		</select>
+        <div class="styled-select">
+            <select class="select2 ishold width-80" name="ishold">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select>
+        </div>
 	</td>
 	<% } %>
 	<td>

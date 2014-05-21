@@ -121,6 +121,8 @@ define([
 			this.initProducerAutocomplete();
 			this.initCalendar();
 			this.addProduct();
+			
+			this.otherInitializations();
 		},
 		
 		initValidateForm: function () {
@@ -131,6 +133,7 @@ define([
 					console.log($(form).serializeObject());
 					var data = thisObj.formatFormField($(form).serializeObject());
 					//console.log(data);
+					
 					if(typeof data['transportdatestart'] != 'undefined')
 						data['transportdatestart'] = thisObj.convertDateFormat(data['transportdatestart'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					if(typeof data['transportdateend'] != 'undefined')
@@ -206,7 +209,7 @@ define([
 				var address = model.get('address');
 				thisObj.$el.find('#street').val(address[0].street);
 				thisObj.$el.find('#state').val(address[0].address_states[0].state);
-				thisObj.$el.find('#city').val(address[0].address_city[0].city);
+				thisObj.$el.find('#city').val(address[0].city);
 				thisObj.$el.find('#zipcode').val(address[0].zipcode);
 			};
 			
@@ -214,7 +217,7 @@ define([
 				var address = result.address;
 				thisObj.$el.find('#street').val(address[0].street);
 				thisObj.$el.find('#state').val(address[0].address_states[0].state);
-				thisObj.$el.find('#city').val(address[0].address_city[0].city);
+				thisObj.$el.find('#city').val(address[0].city);
 				thisObj.$el.find('#zipcode').val(address[0].zipcode);
 			},
 			
@@ -264,7 +267,7 @@ define([
 				this.options.productFieldClone = productItem.clone();
 				//this.initProductAutocomplete(productItem);
 				this.addIndexToProductFields(productItem);
-				clone = productItem
+				clone = productItem;
 			}
 			else {
 				var clone = this.options.productFieldClone.clone();
@@ -273,35 +276,9 @@ define([
 				this.$el.find('#product-list tbody').append(clone);
 			}
 				
-			this.addValidationToProduct();
-            // this.styleSelect(clone);
-            // this.styleRadio();
-            // this.maskInputs();
+			this.addValidationToProduct(clone);
 			return clone;
 		},
-                
-        maskInputs: function () {
-            $(".unitprice").mask('0,000.00', {reverse: true});
-            $(".tons").mask('0,000.00', {reverse: true});
-            $(".bales").mask('000', {reverse: true});
-            $(".unit-price").mask('000,000.00', {reverse: true});
-        },
-                
-        styleSelect: function (clone) {
-            clone.find(".select2").select2({
-                width: '100%',
-                minimumResultsForSearch: -1
-            });
-        },
-                
-        styleRadio: function () {
-            $('.icheck').iCheck({
-                checkboxClass: 'icheckbox_flat-blue',
-                radioClass: 'iradio_flat-blue'
-            });
-
-            $('.iradio_flat-green').first().addClass('checked');
-        },
 		
 		initProductAutocomplete: function (productItem) {
 			var thisObj = this;
@@ -339,11 +316,11 @@ define([
 			this.options.productFieldCounter++;
 		},
 		
-		addValidationToProduct: function () {
+		addValidationToProduct: function (clone) {
 			var thisObj = this;
 			var productFieldClassRequired = this.options.productFieldClassRequired;
 			for(var i=0; i < productFieldClassRequired.length; i++) {
-				$('.'+productFieldClassRequired[i]).each(function() {
+				clone.find('.'+productFieldClassRequired[i]).each(function() {
 					$(this).rules('add', {required: true});
 				});
 			}
@@ -384,18 +361,20 @@ define([
 		},
 		
 		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #add-product': 'addProduct',
 			'click .remove-product': 'removeProduct',
 			//'blur .productname': 'validateProduct',
 			'blur .unitprice': 'onBlurUnitPrice',
 			'keyup .unitprice': 'onKeyUpUnitPrice',
 			'keyup .tons': 'onKeyUpTons',
-			'click #cancel-po': 'cancelPO',
 			'click #convert-po': 'convertPO',
+			'click #cancel-po': 'showConfirmationWindow',
+			'click #confirm-cancel-po': 'cancelPO',
 		},
 		
 		removeProduct: function (ev) {
-			$(ev.target).closest('tr').remove();
+			$(ev.currentTarget).closest('tr').remove();
 			
 			if(!this.hasProduct())
 				this.addProduct();
@@ -473,12 +452,7 @@ define([
 		cancelPO: function () {
 			if(this.poId != null) {
 				var thisObj = this;
-				
-				var verifyMsg = (!this.isBid)? 'Are you sure you want to cancel this Purchase Order?' : 'Are you sure you want to cancel this Bid?';
-				
-				// var verifyCancel = confirm(verifyMsg);
-				
-                var purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
+				var purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
                 purchaseOrderModel.setCancelURL();
                 purchaseOrderModel.save(
                     null, 
@@ -504,6 +478,8 @@ define([
 			this.isConvertToPO = true;
 			$('#poForm').submit();
 		},
+		
+		otherInitializations: function () {},
 	});
 
   return PurchaseOrderAddView;

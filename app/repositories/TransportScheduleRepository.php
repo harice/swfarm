@@ -80,7 +80,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
             $trailerPercentageRate = floatval($trailerPercentageRateArr['value'])/100; //get trailer perentage and convert it to decimal
             $data['trailerrate'] = $trailerPercentageRate * $data['truckingrate']; //dummy data only because ther is no formula yet
           } else { //
-            $data['trailerrate'] = isset($data['trailerrate']) ? $data['trailerrate'] : null;
+			$data['trailerrate'] = isset($data['trailerrate']) ? $data['trailerrate'] : null;
             $freightRateArr = Settings::where('name','=','freight_rate')->first(array('value'))->toArray();
             $freightRate = floatval($freightRateArr['value']);
 
@@ -149,7 +149,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       foreach ($products as $product) {
           $product['transportschedule_id'] = $schedule_id;
 
-          $this->validate($product, 'transportscheduleproduct');
+          $this->validate($product, 'TransportScheduleProduct');
 
           $totalQuantityRemaining = $this->getTotalWeightScheduleForProduct($product['productorder_id']);
 

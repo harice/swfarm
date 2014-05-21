@@ -33,47 +33,48 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
+			var thisObj = this;
+			this.accountId = null;
+			this.h1Title = 'Account';
+			this.h1Small = 'add';
+		
 			this.options = {
 				addressFieldClone: null,
 				addressFieldCounter: 0,
-				addressFieldClass: ['type', 'street', 'state', 'city', 'zipcode', 'country'],
+				addressFieldClass: ['type', 'street', 'state', 'city', 'zipcode', 'country', 'id'],
 				addressFieldClassRequired: ['street', 'state', 'city', 'zipcode'],
 				addressFieldSeparator: '.',
+				addressTypeUniqueForCustomer: null,
+				addressTypeUniqueForProducer: null,
 			};
 			
-			var thisObj = this;
-			
-			this.model = new AccountExtrasModel();
-			this.model.on("change", function() {
+			this.accountExtrasModel = new AccountExtrasModel();
+			this.accountExtrasModel.on("change", function() {
 				thisObj.displayForm();
 				this.off("change");
 			});
 		},
 		
 		render: function(){
-			this.model.runFetch();
+			this.accountExtrasModel.runFetch();
 		},
 		
 		displayForm: function () {
 			var thisObj = this;
 			
-			var varAccountAddressTemplate = {
-				'address_types': this.model.get('addressTypes'),
-				'address_states' : this.model.get('states'),
-			};
-			
-			var addressTemplate = _.template(accountAddressTemplate, varAccountAddressTemplate);
-			
 			var innerTemplateVariables = {
 				'account_url': '#/'+Const.URL.ACCOUNT,
-				'address_fields': addressTemplate,
-				'account_types': this.model.get('accountTypes'),
+				'account_types': this.accountExtrasModel.get('accountTypes'),
 			};
+			
+			if(this.accountId != null)
+				innerTemplateVariables['account_id'] = this.accountId;
+			
 			var innerTemplate = _.template(accountAddTemplate, innerTemplateVariables);
 			
 			var variables = {
-				h1_title: "Accounts",
-				h1_small: "add",
+				h1_title: this.h1Title,
+				h1_small: this.h1Small,
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
@@ -83,25 +84,21 @@ define([
 			
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
 			this.$el.find('.lowercase').textFormatter({type:'lowercase'});
-			this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
+			// this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
+            this.maskInputs();
 			
-			this.options.addressFieldClone = this.$el.find('.address-fields-container').clone();
-			this.options.addressFieldClone.find('#add-address-field').remove();
-			this.options.addressFieldClone.find('.type option:first-child').remove();
-			
-			var addressTypeField = this.$el.find('.type');
-			addressTypeField.attr('disabled', true);
-			addressTypeField.after('<input class="type" type="hidden" name="'+addressTypeField.attr('name')+'" value="'+addressTypeField.val()+'" />');
-			
-			this.addIndexToAddressFields(this.$el.find('.address-fields-container'));
-			
-			this.$el.find('.remove-address-fields').remove();
+			this.initValidateForm();
+			this.addAddressFields();
 			
 			$('.form-button-container').show();
+		},
+		
+		initValidateForm: function () {
+			var thisObj = this;
 			
 			var validate = $('#addAccountForm').validate({
 				submitHandler: function(form) {
-					var data = thisObj.formatFormField($(form).serializeObject());
+					var data = thisObj.formatFormField($(form).serializeObject()); console.log(data);
 					
 					var accountModel = new AccountModel(data);
 					
@@ -141,98 +138,65 @@ define([
 				},
 				
 			});
-			this.addValidationToAddressFields();
 		},
 		
 		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #add-address-field' : 'addAddressFields',
 			'click .remove-address-fields' : 'removeAddressFields',
-			'change .state' : 'fetchCityList',
-			'change .city' : 'fetchZipCodeList',
 			'change #accounttype': 'onChangeAccountType',
 		},
 		
 		addAddressFields: function () {
-			var multipleAddress = Const.MULTIPLEADDRESS;
+			var clone = null;
+			var multipleAddress = Const.ACCOUNT.MULTIPLEADDRESS;
 			var accountTypeText = $('#accounttype').find('option:selected').text();
-		
-			if(multipleAddress.indexOf(accountTypeText) > -1) {
-				var clone = this.options.addressFieldClone.clone();
-				this.addIndexToAddressFields(clone);
-				$('#account-adresses').append(clone);
-				this.addValidationToAddressFields();
+			
+			if(this.options.addressFieldClone == null) {
+				var varAccountAddressTemplate = {
+					'address_types': this.accountExtrasModel.get('addressTypes'),
+					'address_states' : this.accountExtrasModel.get('states'),
+				};
+				
+				var addressTemplate = _.template(accountAddressTemplate, varAccountAddressTemplate);
+				this.$el.find('#account-adresses').html(addressTemplate);
+				
+				this.options.addressFieldClone = this.$el.find('.address-fields-container').clone();
+				this.options.addressFieldClone.find('#add-address-field').remove();
+				this.options.addressFieldClone.find('.type option:first-child').remove();
+				
+				this.options.addressTypeUniqueForCustomer = this.options.addressFieldClone.find('.type option').filter(function () { return $(this).html() == Const.ACCOUNT.UNIQUEADDRESS.CUSTOMER; }).clone();
+				this.options.addressTypeUniqueForProducer = this.options.addressFieldClone.find('.type option').filter(function () { return $(this).html() == Const.ACCOUNT.UNIQUEADDRESS.PRODUCER; }).clone();
+				
+				var addressTypeField = this.$el.find('.type');
+				addressTypeField.attr('disabled', true);
+				addressTypeField.after('<input class="type" type="hidden" name="'+addressTypeField.attr('name')+'" value="'+addressTypeField.val()+'" />');
+				
+				this.addIndexToAddressFields(this.$el.find('#account-adresses > div:first-child .address-fields-container'));
+				
+				this.$el.find('.remove-address-fields').remove();
+				clone = this.$el.find('#account-adresses > div:first-child');
 			}
+			else {
+				if(multipleAddress.indexOf(accountTypeText) > -1) {
+					var clone = this.options.addressFieldClone.clone();
+					
+					if(accountTypeText == 'Producer')
+						clone.find('.type option').filter(function () { return $(this).html() == Const.ACCOUNT.UNIQUEADDRESS.CUSTOMER; }).remove();
+					else if(accountTypeText == 'Customer')
+						clone.find('.type option').filter(function () { return $(this).html() == Const.ACCOUNT.UNIQUEADDRESS.PRODUCER; }).remove();
+					
+					this.addIndexToAddressFields(clone);
+					$('#account-adresses').append(clone);
+				}
+			}
+			
+			this.addValidationToAddressFields();
+			return clone;
 		},
 		
 		removeAddressFields: function (ev) {
 			$(ev.target).closest('.address-fields-container').remove();
-		},
-		
-		fetchCityList: function (ev) {
-			var thisObj = this;
-			var stateField = $(ev.target);
-			var cityField = stateField.closest('.address-fields-container').find('.city');
-			
-			if(stateField.val() != '') {
-				var cityCollection = new CityCollection();
-				cityCollection.on('sync', function() {
-					thisObj.resetCityField(cityField);
-					
-					_.each(this.models, function (cityModel){
-						cityField.append($('<option></option>').attr('value', cityModel.get('id')).text(cityModel.get('city')));
-					});
-					
-					this.off('sync');
-				});
-				
-				cityCollection.on('error', function(collection, response, options) {
-					this.off('error');
-				});
-				cityCollection.getModels(stateField.val());
-			}
-			else
-				this.resetCityField(cityField);
-		},
-		
-		fetchZipCodeList: function (ev) {
-			var thisObj = this;
-			var cityField = $(ev.target);
-			
-			if(cityField.val() != '') {
-				var zipCodeCollection = new ZipCodeCollection();
-				zipCodeCollection.on('sync', function() {
-					
-					var zipcodes = [];
-					_.each(this.models, function (zipCodeModel){
-						zipcodes.push(zipCodeModel.get('zip'));
-					});
-					cityField.attr('data-zipcodes', zipcodes.join());
-					
-					//console.log(zipcodes);
-					this.off('sync');
-				});
-				
-				zipCodeCollection.on('error', function(collection, response, options) {
-					this.off('error');
-				});
-				zipCodeCollection.getModels(cityField.val());
-			}
-			else {
-				cityField.attr('data-zipcodes', '');
-			}
-			
-			this.emptyZipCodeField(cityField);
-		},
-		
-		resetCityField: function (cityField) {
-			cityField.find('option:gt(0)').remove();
-			cityField.attr('data-zipcodes', '');
-			this.emptyZipCodeField(cityField);
-		},
-		
-		emptyZipCodeField: function (element) {
-			var zipCodeField = element.closest('.address-fields-container').find('.zipcode');
-			zipCodeField.val('');
 		},
 		
 		addValidationToAddressFields: function () {
@@ -287,10 +251,13 @@ define([
 							var index = arrayKey[1];
 							var arrayAddressFields = {};
 							
-							for(var i = 0; i < addressFieldClasses.length; i++)
-								arrayAddressFields[addressFieldClasses[i]] = data[addressFieldClasses[i]+this.options.addressFieldSeparator+index];
+							for(var i = 0; i < addressFieldClasses.length; i++) {
+								var fieldValue = data[addressFieldClasses[i]+this.options.addressFieldSeparator+index];
+								if(!(addressFieldClasses[i] == 'id' && fieldValue == ''))
+									arrayAddressFields[addressFieldClasses[i]] = fieldValue;
+							}
 								
-							formData.address.push(JSON.stringify(arrayAddressFields));
+							formData.address.push(arrayAddressFields);
 						}
 					}
 				}
@@ -300,11 +267,21 @@ define([
 		},
 		
 		onChangeAccountType: function (ev) {
-			var multipleAddress = Const.MULTIPLEADDRESS;
+			var multipleAddress = Const.ACCOUNT.MULTIPLEADDRESS;
 			var accountTypeText = $(ev.target).find('option:selected').text();
 			
 			if(multipleAddress.indexOf(accountTypeText) < 0) {
 				$('#account-adresses').find('.address-fields-container:gt(0)').remove();
+			}
+			else {
+				if(accountTypeText == 'Producer') {
+					$('#account-adresses').find('.type option').filter(function () { return $(this).html() == Const.ACCOUNT.UNIQUEADDRESS.CUSTOMER; }).remove();
+					$('#account-adresses').find('.type').append(this.options.addressTypeUniqueForProducer);
+				}
+				else if(accountTypeText == 'Customer') {
+					$('#account-adresses').find('.type option').filter(function () { return $(this).html() == Const.ACCOUNT.UNIQUEADDRESS.PRODUCER; }).remove();
+					$('#account-adresses').find('.type').append(this.options.addressTypeUniqueForCustomer);
+				}
 			}
 		},
 	});
