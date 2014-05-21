@@ -23,7 +23,7 @@ class CreateWeightticketproductsTable extends Migration {
 			$table->timestamps();
             
             $table->foreign('weightTicketScale_id')->references('id')->on('weightticketscale');
-            $table->foreign('transportScheduleProduct_id')->references('id')->on('transportscheduleproduct');
+            $table->foreign('transportScheduleProduct_id')->references('id')->on('transportscheduleproduct')->onDelete('cascade');
 		});
 	}
 

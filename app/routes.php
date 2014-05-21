@@ -59,6 +59,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // Route::get('weightticket/getWeightTicketOfSchedule', 'APIv1\WeightTicketController@getWeightTicketOfSchedule');
     // Route::get('weightticket/getAllBidProductOnBid', 'APIv1\WeightTicketController@getAllBidProductOnBid');
     // Route::get('weightticket/getAllScaleProviderAccount', 'APIv1\WeightTicketController@getAllScaleProviderAccount');
+    Route::get('weightticket/getScheduleProducts', 'APIv1\WeightTicketController@getScheduleProducts');
     Route::resource('weightticket', 'APIv1\WeightTicketController');
 
     //tranport schedule

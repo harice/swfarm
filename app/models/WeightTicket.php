@@ -30,9 +30,14 @@ class WeightTicket extends BaseModel {
      * Define the relationship with the weightinfo table
      * @return Collection collection of WeightInfo Models
      */
-    public function weightticketscale()
+    public function weightticketscale_pickup()
     {
-        return $this->hasOne('weightticketscale');
+        return $this->hasOne('weightticketscale', 'id', 'pickup_id');
+    }
+
+    public function weightticketscale_dropoff()
+    {
+        return $this->hasOne('weightticketscale', 'id', 'dropoff_id');
     }
 
     public function transportschedule(){

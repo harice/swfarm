@@ -14,19 +14,23 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         // }
     }
     
-    public function findById($id)
+    public function findById($schedule_id)
     {
-        // try
-        // {
-        //     $weightticket = WeightTicket::find($id);
+        try
+        {
+            $weightticket = WeightTicket::with('weightticketscale_dropoff.weightticketproducts')
+                            ->with('weightticketscale_pickup.weightticketproducts')
+                            ->where('transportSchedule_id', '=', $schedule_id)->get();
 
-        //     if(!$weightticket) throw new NotFoundException('Weight Info Not Found');
-        //     return $weightticket;
-        // }
-        // catch (Exception $e)
-        // {
-        //     return $e->getMessage();
-        // }
+            if(!$weightticket) 
+                throw new NotFoundException('Weight Info Not Found');
+
+            return $weightticket;
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
     }
     
     public function store($data)
@@ -99,41 +103,68 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         
         return $prefix.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
     }
+
+    public function getScheduleProducts($transportschedule_id){
+      $orderproducts = TransportScheduleProduct::with('productorder.product')->where('transportschedule_id', '=', $transportschedule_id)->get()->toArray();
+
+      return $orderproducts;
+    } 
     
     public function update($id, $data)
     {
-        // $this->validate($data);
+        $result = DB::transaction(function() use ($id, $data){
+
+            $this->validate($data, 'WeightTicket');
+            $weightticket = WeightTicket::find($id);
+            $weightticket->fill($data);
+            $weightticket->save();
+
+            //for pickup data
+            $this->validate($data['pickup_info'], 'WeightTicketScale');
+            $weightticketscale_pickup = WeightTicketScale::find($weightticket->pickup_id);
+            $weightticketscale_pickup->fill($data['pickup_info']);
+            $weightticketscale_pickup->save();
+
+            foreach($data['pickup_info']['products'] as $product){
+                $product['weightTicketScale_id'] = $weightticketscale_pickup->id;
+                $this->validate($product, 'WeightTicketProducts');
+                $weightticketproduct = WeightTicketProducts::find($product['id']);
+                $weightticketproduct->fill($product);
+                $weightticketproduct->save();
+            }
+
+            //for dropoff data
+            $this->validate($data['dropoff_info'], 'WeightTicketScale');
+            $weightticketscale_dropoff = WeightTicketScale::find($weightticket->dropoff_id);
+            $weightticketscale_dropoff->fill($data['dropoff_info']);
+            $weightticketscale_dropoff->save();
+
+            foreach($data['dropoff_info']['products'] as $product){
+                $product['weightTicketScale_id'] = $weightticketscale_dropoff->id;
+                $this->validate($product, 'WeightTicketProducts');
+                $weightticketproduct = WeightTicketProducts::find($product['id']);
+                $weightticketproduct->fill($product);
+                $weightticketproduct->save();
+            }
+
+            
+            // $data['weightTicketNumber'] = $this->generateWeightTicketNumber();
+            // $data['loadingTicketNumber'] = $this->generateLoadingTicketNumber();
+            // $data['pickup_id'] = $weightticketscale_pickup->id;
+            // $data['dropoff_id'] = $weightticketscale_dropoff->id;
+
+            
+
+            return $weightticket->id;
+        });
         
-        // try
-        // {
-        //     $weightticket = WeightTicket::find($id);
-            
-        //     $weightticket->purchaseorder_id = $data['purchaseorder_id'];
-        //     $weightticket->transportschedule_id = $data['transportschedule_id'];
-        //     $weightticket->bidproduct_id = $data['bidproduct_id'];
-            
-        //     $weightticket->origin_bales = $data['origin_bales'];
-        //     $weightticket->origin_gross = $data['origin_gross'];
-        //     $weightticket->origin_tare = $data['origin_tare'];
-        //     $weightticket->origin_net = $data['origin_net'];
-        //     $weightticket->origin_account_id = $data['origin_account_id'];
-        //     $weightticket->origin_scale_fee = $data['origin_scale_fee'];
-            
-        //     $weightticket->destination_bales = $data['destination_bales'];
-        //     $weightticket->destination_gross = $data['destination_gross'];
-        //     $weightticket->destination_tare = $data['destination_tare'];
-        //     $weightticket->destination_net = $data['destination_net'];
-        //     $weightticket->destination_account_id = $data['destination_account_id'];
-        //     $weightticket->destination_scale_fee = $data['destination_scale_fee'];
-            
-        //     $weightticket->save();
-            
-        //     return $weightticket;
-        // }
-        // catch (Exception $e)
-        // {
-        //     return $e->getMessage();
-        // }
+        if(is_array($result)){
+            return $result;
+        }
+
+        return array(
+              'error' => false,
+              'message' => 'Weight ticket successfully updated');
     }
     
     public function destroy($id)
