@@ -6,5 +6,5 @@ interface WeightTicketRepositoryInterface {
     public function store($data);
     public function update($id, $data);
     public function destroy($id);
-    public function validate($data);
+    public function validate($data, $enitity);
 }

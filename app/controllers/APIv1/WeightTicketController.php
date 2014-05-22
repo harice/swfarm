@@ -20,8 +20,8 @@ class WeightTicketController extends BaseController {
 	 */
 	public function index()
 	{
-		$collection = $this->weightticket->findAll();
-        return Response::json($collection);
+		// $collection = $this->weightticket->findAll();
+  //       return Response::json($collection);
 	}
 
 	/**
@@ -67,22 +67,13 @@ class WeightTicketController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		$this->weightticket->destroy($id);
+		// $this->weightticket->destroy($id);
 	}
 
-	public function getAllScaleProviderAccount(){
-		$result = $this->weightticket->getAllScaleProviderAccount();
-		return Response::json($result);
+	public function getScheduleProducts(){
+		$model = $this->weightticket->getScheduleProducts(Input::get('transportschedule_id'));
+        return Response::json($model);
 	}
 
-	public function getAllBidProductOnBid(){
-		$result = $this->weightticket->getAllBidProductOnBid(Input::get('bidId'));
-		return Response::json($result);
-	}
-
-	public function getWeightTicketOfSchedule(){
-		$result = $this->weightticket->getWeightTicketOfSchedule(Input::get('scheduleId'));
-		return Response::json($result);
-	}
 
 }
