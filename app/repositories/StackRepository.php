@@ -41,9 +41,10 @@ class StackRepository implements StackRepositoryInterface {
     
     public function store($data)
     {
+        $this->validate($data);
+        
         try
         {
-            $this->validate($data);
             $stack = $this->instance();
             $stack->fill($data);
             
@@ -70,9 +71,10 @@ class StackRepository implements StackRepositoryInterface {
     
     public function update($id, $data)
     {
+        $this->validate($data, $id);
+        
         try
         {
-            $this->validate($data, $id);
             $stack = $this->findById($id);
             $stack->fill($data);
             

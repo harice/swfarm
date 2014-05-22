@@ -41,9 +41,10 @@ class ScaleRepository implements ScaleRepositoryInterface {
     
     public function store($data)
     {
+        $this->validate($data);
+        
         try
         {
-            $this->validate($data);
             $scale = $this->instance();
             $scale->fill($data);
             
@@ -57,7 +58,7 @@ class ScaleRepository implements ScaleRepositoryInterface {
             $response = array(
                 'error' => false,
                 'message' => Lang::get('messages.success.created', array('entity' => 'Scale')),
-                'data' => $scale->toArray()
+                200
             );
             
             return $response;
@@ -70,9 +71,10 @@ class ScaleRepository implements ScaleRepositoryInterface {
     
     public function update($id, $data)
     {
+        $this->validate($data, $id);
+        
         try
         {
-            $this->validate($data, $id);
             $scale = $this->findById($id);
             $scale->fill($data);
             
