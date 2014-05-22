@@ -17,7 +17,7 @@ define(function () {
 			'BID': 'purchases/bid',
 			'PO': 'purchases/po',
 			'PICKUPSCHEDULE': 'purchases/pickupschedule',
-            'WEIGHTINFO': 'purchases/weightinfo',
+            'POWEIGHTINFO': 'purchases/weightinfo',
 			'SO': 'sales/so',
 			'DELIVERYSCHEDULE': 'sales/deliveryschedule',
 			'STACKLOCATION': 'administration/stack',

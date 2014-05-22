@@ -27,6 +27,7 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			var thisObj = this;
 			this.slId = option.id;
 			this.h1Title = 'Stack Location';
@@ -34,8 +35,10 @@ define([
 			
 			this.productCollection = new ProductCollection();
 			this.productCollection.on('sync', function() {
-				thisObj.displayForm();
-				thisObj.supplyStackLocationData()
+				if(thisObj.subContainerExist()) {
+					thisObj.displayForm();
+					thisObj.supplyStackLocationData();
+				}
 				this.off('sync');
 			});
 			this.productCollection.on('error', function(collection, response, options) {

@@ -45,6 +45,7 @@ define([
 		customerAutoCompleteView: null,
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			var thisObj = this;
 			this.soId = option.id;
 			this.h1Title = 'Sales Order';
@@ -88,8 +89,12 @@ define([
 						desc:productModels.get('description'),
 					});
 				});
-				thisObj.displayForm();
-				thisObj.supplySOData();
+				
+				if(thisObj.subContainerExist()) {
+					thisObj.displayForm();
+					thisObj.supplySOData();
+				}
+				
 				this.off('sync');
 			});
 			this.productCollection.on('error', function(collection, response, options) {

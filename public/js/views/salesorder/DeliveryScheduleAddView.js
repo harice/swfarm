@@ -45,6 +45,7 @@ define([
 		accountLoaderDestinationAutoCompleteView: null,
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			this.soId = option.soId;
 			this.schedId = null;
 			this.h1Title = 'Delivery Schedule';
@@ -109,7 +110,9 @@ define([
 			
 			this.loaderAccountCollection = new AccountCollection();
 			this.loaderAccountCollection.on('sync', function() {
-				thisObj.displayForm();
+				if(thisObj.subContainerExist())
+					thisObj.displayForm();
+				
 				this.off('sync');
 			});
 			this.loaderAccountCollection.on('error', function(collection, response, options) {
@@ -184,7 +187,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.initValidateForm();
 			

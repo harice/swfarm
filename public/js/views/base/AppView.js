@@ -9,8 +9,21 @@ define([
 		dateFormat: 'mm-dd-yyyy',
 		dateFormatDB: 'yyyy-mm-dd',
 		
+		initSubContainer: function () {
+			this.timestamp = new Date().getTime();
+			this.$el.html('<div id="'+this.timestamp+'"></div>');
+			this.subContainer = this.$el.find('#'+this.timestamp);
+		},
+		
+		subContainerExist: function () {
+			var subContainer = this.$el.find('#'+this.timestamp);
+			if(subContainer.length > 0)
+				return true;
+			else
+				return false;
+		},
+		
 		focusOnFirstField: function () {
-			console.log('focusOnFirstField');
 			this.$el.find('form:first *:input[type!=hidden]:first').focus();
 		},
 		

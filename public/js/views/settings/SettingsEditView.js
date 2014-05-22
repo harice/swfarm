@@ -19,14 +19,17 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
+			this.initSubContainer();
 			var thisObj = this;
 			this.h1Title = 'Settings';
 			this.h1Small = 'edit';
 			
 			this.model = new OrderScheduleVariablesModel();
 			this.model.on('change', function() {
-				thisObj.displayForm();
-				thisObj.supplySettingsData();
+				if(thisObj.subContainerExist()) {
+					thisObj.displayForm();
+					thisObj.supplySettingsData();
+				}
 				this.off('change');
 			});
 		},
@@ -48,7 +51,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.initValidateForm();
             // this.maskInputs();

@@ -43,6 +43,7 @@ define([
 		producerAutoCompleteView: null,
 		
 		initialize: function() {
+			this.initSubContainer();
 			var thisObj = this;
 			this.isBid = true;
 			this.poId = null;
@@ -79,7 +80,10 @@ define([
 						desc:productModels.get('description'),
 					});
 				});
-				thisObj.displayForm();
+				
+				if(thisObj.subContainerExist())
+					thisObj.displayForm();
+				
 				this.off('sync');
 			});
 			this.productCollection.on('error', function(collection, response, options) {

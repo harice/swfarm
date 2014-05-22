@@ -22,11 +22,14 @@ define([
 		
 		initialize: function() {
 			this.extendListEvents();
+			this.initSubContainer();
+			
 			var thisObj = this;
 			
 			this.collection = new StackLocationCollection();
 			this.collection.on('sync', function() {
-				thisObj.displayList();
+				if(thisObj.subContainerExist())
+					thisObj.displayList();
 			});
 			this.collection.on('error', function(collection, response, options) {
 				this.off('error');
@@ -49,7 +52,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.initConfirmationWindow('Are you sure you want to delete this Stock Location?',
 										'confirm-delete-sl',
@@ -65,7 +68,7 @@ define([
 			};
 			
 			var innerListTemplate = _.template(stackLocationInnerListTemplate, data);
-			$("#sl-list tbody").html(innerListTemplate);
+			this.subContainer.find("#sl-list tbody").html(innerListTemplate);
 			
 			this.generatePagination();
 		},

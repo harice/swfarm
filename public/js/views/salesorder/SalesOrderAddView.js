@@ -47,6 +47,7 @@ define([
 		customerAutoCompleteView: null,
 		
 		initialize: function() {
+			this.initSubContainer();
 			var thisObj = this;
 			this.soId = null;
 			this.h1Title = 'Sales Order';
@@ -90,7 +91,10 @@ define([
 						desc:productModels.get('description'),
 					});
 				});
-				thisObj.displayForm();
+				
+				if(thisObj.subContainerExist())
+					thisObj.displayForm();
+				
 				this.off('sync');
 			});
 			this.productCollection.on('error', function(collection, response, options) {
@@ -120,7 +124,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			
 			this.initValidateForm();

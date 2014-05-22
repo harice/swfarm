@@ -41,6 +41,7 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			var thisObj = this;
 			this.soId = option.soId;
 			this.schedId = option.id;
@@ -50,7 +51,8 @@ define([
 			
 			this.model = new SOScheduleModel({id:this.schedId});
 			this.model.on('change', function() {
-				thisObj.orderScheduleVariablesModel.runFetch();
+				if(thisObj.subContainerExist())
+					thisObj.orderScheduleVariablesModel.runFetch();
 				thisObj.off('change');
 			});
 		},
@@ -101,7 +103,8 @@ define([
 		},
 		
 		postDisplayForm: function () {
-			this.supplyScheduleData();
+			if(this.subContainerExist())
+				this.supplyScheduleData();
 		},
 	});
 

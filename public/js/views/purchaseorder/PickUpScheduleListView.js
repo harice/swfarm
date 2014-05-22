@@ -24,6 +24,7 @@ define([
 		
 		initialize: function(option) {
 			this.extendListEvents();
+			this.initSubContainer();
 			
 			this.poId = option.id;
 			var thisObj = this;
@@ -33,7 +34,9 @@ define([
 				_.each(this.models, function (model) {
 					model.set('scheduledate', thisObj.convertDateFormat(model.get('scheduledate').split(' ')[0], thisObj.dateFormatDB, thisObj.dateFormat, '-'));
 				});
-				thisObj.displayList();
+				
+				if(thisObj.subContainerExist())
+					thisObj.displayList();
 			});
 			this.collection.on('error', function(collection, response, options) {
 				this.off('error');
@@ -41,8 +44,10 @@ define([
 			
 			this.model = new PurchaseOrderModel({id:option.id});
 			this.model.on('change', function() {
-				thisObj.displaySchedule();
-				thisObj.renderList(1);
+				if(thisObj.subContainerExist()) {
+					thisObj.displaySchedule();
+					thisObj.renderList(1);
+				}
 				this.off('change');
 			});
 		},
@@ -64,7 +69,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.initConfirmationWindow('Are you sure you want to delete this schedule?',
 										'confirm-delete-schedule',
@@ -76,12 +81,13 @@ define([
 			var data = {
 				po_schedule_edit_url: '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId+'/'+Const.CRUD.EDIT,
 				po_schedule_url: '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId,
+				po_weight_info_url: '#/'+Const.URL.POWEIGHTINFO+'/'+this.poId,
 				schedules: this.collection.models,
 				_: _ 
 			};
 			
 			var innerListTemplate = _.template(purchaseOrderPickUpScheduleInnerListTemplate, data);
-			$("#po-schedule-list tbody").html(innerListTemplate);
+			this.subContainer.find("#po-schedule-list tbody").html(innerListTemplate);
 			
 			this.generatePagination();
 		},

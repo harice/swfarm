@@ -27,6 +27,7 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			var thisObj = this;
 			this.scaleId = option.id;
 			this.h1Title = 'Scale';
@@ -34,8 +35,10 @@ define([
 			
 			this.scalerAccountCollection = new AccountCollection();
 			this.scalerAccountCollection.on('sync', function() {
-				thisObj.displayForm();
-				thisObj.supplyScaleData();
+				if(thisObj.subContainerExist()) {
+					thisObj.displayForm();
+					thisObj.supplyScaleData();
+				}
 				this.off('sync');
 			});
 			this.scalerAccountCollection.on('error', function(collection, response, options) {

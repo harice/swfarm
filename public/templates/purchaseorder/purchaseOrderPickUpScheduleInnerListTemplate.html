@@ -14,6 +14,9 @@
 			<a href="#" data-id="<%= schedule.get("id") %>" class="btn btn-danger btn-xs delete-schedule" title="delete">
 			  <span class="glyphicon glyphicon-off"></span>
 			</a>
+			<a href="<%= po_weight_info_url %>/<%= schedule.get("id") %>" class="btn btn-info btn-xs" title="schedule">
+			  <span class="glyphicon glyphicon-time"></span>
+			</a>
 		</td>
 	</tr>
 	<% }); %>

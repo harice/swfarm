@@ -34,6 +34,8 @@ define([
 		
 		initialize: function() {
 			this.extendListEvents();
+			this.initSubContainer();
+			
 			var thisObj = this;
 			
 			this.collection = new SalesOrderCollection();
@@ -47,7 +49,8 @@ define([
 						model.set('transportdateend', thisObj.convertDateFormat(model.get('transportdateend').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
 				});
 				
-				thisObj.displayList();
+				if(thisObj.subContainerExist())
+					thisObj.displayList();
 			});
 			this.collection.on('error', function(collection, response, options) {
 				this.off('error');
@@ -73,8 +76,10 @@ define([
 			
 			this.soStatusCollection = new SOStatusCollection();
 			this.soStatusCollection.on('sync', function() {
-				thisObj.displaySO();
-				thisObj.renderList(1);
+				if(thisObj.subContainerExist()) {
+					thisObj.displaySO();
+					thisObj.renderList(1);
+				}
 				this.off('sync');
 			});
 			this.soStatusCollection.on('error', function(collection, response, options) {
@@ -103,7 +108,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.initCalendars();
 			
@@ -123,7 +128,7 @@ define([
 			};
 			
 			var innerListTemplate = _.template(salesOrderInnerListTemplate, data);
-			$("#so-list tbody").html(innerListTemplate);
+			this.subContainer.find("#so-list tbody").html(innerListTemplate);
 			
 			this.generatePagination();
 		},

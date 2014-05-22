@@ -131,16 +131,16 @@ define([
 	routerRoutes[Const.URL.PO+'/:action/:id'] = 'showPOPage';
 	
 	//pickup schedule
-	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poid'] = 'showPickupSchedulePage';
-	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poid/'] = 'showPickupSchedulePage';
-	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poid/:action'] = 'showPickupSchedulePage';
-	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poid/:action/:id'] = 'showPickupSchedulePage';
+	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poId'] = 'showPickupSchedulePage';
+	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poId/'] = 'showPickupSchedulePage';
+	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poId/:action'] = 'showPickupSchedulePage';
+	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poId/:action/:id'] = 'showPickupSchedulePage';
 	
-	//weight info
-	routerRoutes[Const.URL.WEIGHTINFO+'/:poid/:schedid'] = 'showPOWeightInfoPage';
-	routerRoutes[Const.URL.WEIGHTINFO+'/:poid/:schedid/'] = 'showPOWeightInfoPage';
-	routerRoutes[Const.URL.WEIGHTINFO+'/:poid/:schedid/:action'] = 'showPOWeightInfoPage';
-	routerRoutes[Const.URL.WEIGHTINFO+'/:poid/:schedid/:action/:id'] = 'showPOWeightInfoPage';
+	//po weight info
+	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId'] = 'showPOWeightInfoPage';
+	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/'] = 'showPOWeightInfoPage';
+	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/:action'] = 'showPOWeightInfoPage';
+	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/:action/'] = 'showPOWeightInfoPage';
 	
 	//so
 	routerRoutes[Const.URL.SO] = 'showSOPage';
@@ -149,10 +149,10 @@ define([
 	routerRoutes[Const.URL.SO+'/:action/:id'] = 'showSOPage';
 	
 	//delivery schedule
-	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soid'] = 'showDeliverySchedulePage';
-	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soid/'] = 'showDeliverySchedulePage';
-	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soid/:action'] = 'showDeliverySchedulePage';
-	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soid/:action/:id'] = 'showDeliverySchedulePage';
+	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soId'] = 'showDeliverySchedulePage';
+	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soId/'] = 'showDeliverySchedulePage';
+	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soId/:action'] = 'showDeliverySchedulePage';
+	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soId/:action/:id'] = 'showDeliverySchedulePage';
 	
 	//stack location
 	routerRoutes[Const.URL.STACKLOCATION] = 'showStackPage';
@@ -322,17 +322,18 @@ define([
 			this.currView.render();
 		});
 		
-		app_router.on('route:showPickupSchedulePage', function (poid, action, id) {
+		app_router.on('route:showPickupSchedulePage', function (poId, action, id) {
 			this.closeView();
 			var pickUpScheduleController = new POPickUpScheduleController();
-			this.currView = pickUpScheduleController.setAction(poid, action, id);
+			this.currView = pickUpScheduleController.setAction(poId, action, id);
 			this.currView.render();
 		});
 		
-		app_router.on('showPOWeightInfoPage', function (poid, schedid, action, id) {
+		app_router.on('route:showPOWeightInfoPage', function (poId, schedId, action) {
+			console.log('showPOWeightInfoPage');
 			this.closeView();
 			var poWeightInfoController = new POWeightInfoController();
-			this.currView = poWeightInfoController.setAction(poid, schedid, action, id);
+			this.currView = poWeightInfoController.setAction(poId, schedId, action);
 			this.currView.render();
 		});
 		
@@ -343,10 +344,10 @@ define([
 			this.currView.render();
 		});
 		
-		app_router.on('route:showDeliverySchedulePage', function (soid, action, id) {
+		app_router.on('route:showDeliverySchedulePage', function (soId, action, id) {
 			this.closeView();
 			var deliveryScheduleController = new SODeliveryScheduleController();
-			this.currView = deliveryScheduleController.setAction(soid, action, id);
+			this.currView = deliveryScheduleController.setAction(soId, action, id);
 			this.currView.render();
 		});
 		

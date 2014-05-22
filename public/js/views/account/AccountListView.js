@@ -16,19 +16,23 @@ define([
 		
 		initialize: function() {
 			this.extendListEvents();
+			this.initSubContainer();
 			
 			var thisObj = this;
 			
 			this.model = new AccountExtrasModel();
 			this.model.on('change', function() {
-				thisObj.displayAccount();
-				thisObj.renderList(1);
+				if(thisObj.subContainerExist()) {
+					thisObj.displayAccount();
+					thisObj.renderList(1);
+				}
 				this.off('change');
 			});
 			
 			this.collection = new AccountCollection();
 			this.collection.on('sync', function() {
-				thisObj.displayList();
+				if(thisObj.subContainerExist())
+					thisObj.displayList();
 			});
 			
 			this.collection.on('error', function(collection, response, options) {
@@ -50,7 +54,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.initConfirmationWindow('Are you sure you want to delete this account?',
 										'confirm-delete-account',
@@ -66,7 +70,7 @@ define([
 			};
 			
 			var innerListTemplate = _.template(accountInnerListTemplate, data);
-			$("#account-list tbody").html(innerListTemplate);
+			this.subContainer.find("#account-list tbody").html(innerListTemplate);
 			
 			this.generatePagination();
 		},

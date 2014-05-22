@@ -43,6 +43,7 @@ define([
 		producerAutoCompleteView: null,
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			var thisObj = this;
 			this.poId = option.id;
 			this.isBid = false;
@@ -79,8 +80,11 @@ define([
 						desc:productModels.get('description'),
 					});
 				});
-				thisObj.displayForm();
-				thisObj.supplyPOData();
+				
+				if(thisObj.subContainerExist()) {
+					thisObj.displayForm();
+					thisObj.supplyPOData();
+				}
 				this.off('sync');
 			});
 			this.productCollection.on('error', function(collection, response, options) {
@@ -127,7 +131,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 		},
 		
 		supplyPOData: function () {

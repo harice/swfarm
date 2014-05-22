@@ -11,15 +11,15 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			var thisObj = this;
 			
 			this.model = new ProductModel({id:option.id});
 			this.model.on("change", function() {
-				console.log('onChange: ProductModel');
-				if(this.hasChanged('name')) {
+				if(thisObj.subContainerExist())
 					thisObj.displayProduct(this);
-					this.off("change");
-				}
+					
+				this.off("change");
 			});
 		},
 		
@@ -40,7 +40,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 		},
 		
 		events: {

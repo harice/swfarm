@@ -24,12 +24,14 @@ define([
 		},
 		
 		initialize: function() {
+			this.initSubContainer();
 			var thisObj = this;
 			
 			this.collection = new RoleCollection();
 			this.collection.on('sync', function() {
 				//console.log('collection.on.sync')
-				thisObj.displayRoles();
+				if(thisObj.subContainerExist())
+					thisObj.displayRoles();
 				this.off('sync');
 			});
 			
@@ -58,7 +60,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
 			this.$el.find('.lowercase').textFormatter({type:'lowercase'});
@@ -88,7 +90,8 @@ define([
                         {
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
+								//Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
+								Backbone.history.history.back();
 							},
 							error: function (model, response, options) {
 								if(typeof response.responseJSON.error == 'undefined')
@@ -128,6 +131,7 @@ define([
 		},
 		
 		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
 			'change .profile-pic' : 'readFile',
 			'click .remove-image' : 'resetImageField',
 		},
