@@ -47,6 +47,7 @@ define([
 		customerAutoCompleteView: null,
 		
 		initialize: function() {
+			this.initSubContainer();
 			var thisObj = this;
 			this.soId = null;
 			this.h1Title = 'Sales Order';
@@ -90,7 +91,10 @@ define([
 						desc:productModels.get('description'),
 					});
 				});
-				thisObj.displayForm();
+				
+				if(thisObj.subContainerExist())
+					thisObj.displayForm();
+				
 				this.off('sync');
 			});
 			this.productCollection.on('error', function(collection, response, options) {
@@ -120,7 +124,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			
 			this.initValidateForm();
@@ -130,7 +134,7 @@ define([
 			this.initCustomerAutocomplete();
 			this.initCalendar();
 			this.addProduct();
-			
+            this.maskInputs();
 			this.otherInitializations();
 		},
 		
@@ -139,13 +143,19 @@ define([
 			
 			var validate = $('#soForm').validate({
 				submitHandler: function(form) {
-					//console.log($(form).serializeObject());
 					var data = thisObj.formatFormField($(form).serializeObject());
-					//console.log(data);
+                    
 					data['transportdatestart'] = thisObj.convertDateFormat(data['transportdatestart'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					data['transportdateend'] = thisObj.convertDateFormat(data['transportdateend'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					
-					//console.log(data);
+					// Remove commas on tons and bales
+                    console.log(data);
+                    var index;
+                    for (index = 0; index < data['products'].length; ++index) {
+                        data['products'][index]['tons'] = data['products'][index]['tons'].replace(/,/g , '');
+                        data['products'][index]['bales'] = data['products'][index]['bales'].replace(/,/g , '');
+                    }
+                    console.log(data);
 					
 					var salesOrderModel = new SalesOrderModel(data);
 					
@@ -154,7 +164,8 @@ define([
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								Global.getGlobalVars().app_router.navigate(Const.URL.SO, {trigger: true});
+								//Global.getGlobalVars().app_router.navigate(Const.URL.SO, {trigger: true});
+								Backbone.history.history.back();
 							},
 							error: function (model, response, options) {
 								if(typeof response.responseJSON.error == 'undefined')
@@ -233,12 +244,17 @@ define([
 		},
 		
 		initCalendar: function () {
+			var thisObj = this;
+			
 			this.$el.find('#start-date .input-group.date').datepicker({
 				orientation: "top left",
 				autoclose: true,
 				clearBtn: true,
 				todayHighlight: true,
 				format: this.dateFormat,
+			}).on('changeDate', function (ev) {
+				var selectedDate = $('#start-date .input-group.date input').val();
+				thisObj.$el.find('#end-date .input-group.date').datepicker('setStartDate', selectedDate);
 			});
 			
 			this.$el.find('#end-date .input-group.date').datepicker({
@@ -247,6 +263,9 @@ define([
 				clearBtn: true,
 				todayHighlight: true,
 				format: this.dateFormat,
+			}).on('changeDate', function (ev) {
+				var selectedDate = $('#end-date .input-group.date input').val();
+				thisObj.$el.find('#start-date .input-group.date').datepicker('setEndDate', selectedDate);
 			});
 		},
 		
@@ -366,7 +385,7 @@ define([
 			'keyup .unitprice': 'onKeyUpUnitPrice',
 			'keyup .tons': 'onKeyUpTons',
 			'click #cancel-so': 'showConfirmationWindow',
-			'click #confirm-cancel-so': 'cancelSO',
+			'click #confirm-cancel-so': 'cancelSO'
 		},
 		
 		removeProduct: function (ev) {
@@ -455,7 +474,8 @@ define([
 					{
 						success: function (model, response, options) {
 							thisObj.displayMessage(response);
-							Global.getGlobalVars().app_router.navigate(Const.URL.SO, {trigger: true});
+							//Global.getGlobalVars().app_router.navigate(Const.URL.SO, {trigger: true});
+							Backbone.history.history.back();
 						},
 						error: function (model, response, options) {
 							if(typeof response.responseJSON.error == 'undefined')

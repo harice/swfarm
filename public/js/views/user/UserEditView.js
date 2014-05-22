@@ -25,20 +25,21 @@ define([
 		},
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			var thisObj = this;
 			
 			this.model = new UserModel({id:option.id});
 			this.model.on("change", function() {
-				if(this.hasChanged('firstname') && this.hasChanged('lastname') && this.hasChanged('email') && this.hasChanged('username')) {
+				if(thisObj.subContainerExist())
 					thisObj.displayUser();
-					this.off("change");
-				}
+				this.off("change");
 			});
 			
 			this.collection = new RoleCollection();
 			this.collection.on('sync', function() {
 				//console.log('collection.on.sync')
-				thisObj.displayRoles();
+				if(thisObj.subContainerExist())
+					thisObj.displayRoles();
 				this.off('sync');
 			});
 			
@@ -69,7 +70,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
 			this.$el.find('.lowercase').textFormatter({type:'lowercase'});
@@ -119,7 +120,8 @@ define([
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
+								//Global.getGlobalVars().app_router.navigate(Const.URL.USER, {trigger: true});
+								Backbone.history.history.back();
 							},
 							error: function (model, response, options) {
 								if(typeof response.responseJSON.error == 'undefined')
@@ -171,6 +173,7 @@ define([
 		},
 		
 		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
 			'change .profile-pic' : 'readFile',
 			'click .remove-image' : 'resetImageField',
 			'click .cancel-remove-image' : 'cancelRemoveImage',

@@ -3,9 +3,8 @@ define([
 	'views/trailer/TrailerListView',
 	'views/trailer/TrailerAddView',
 	'views/trailer/TrailerEditView',
-	'views/salesorder/SalesOrderView',
 	'constant',
-], function(Backbone, TrailerListView, TrailerAddView, TrailerEditView, SalesOrderView, Const){
+], function(Backbone, TrailerListView, TrailerAddView, TrailerEditView, Const){
 	
 	function TrailerController () {	
 		
@@ -19,12 +18,11 @@ define([
 				case Const.CRUD.EDIT:
 					if(id != null && this.IsInt(id))
 						return this.edit(id);
+					break;
 				
 				default:
-					if(action != null && this.IsInt(action))
-						return this.view(action);
-					else
-						return this.listView();
+					return this.listView();
+					break;
 			}
 		};
 		
@@ -38,10 +36,6 @@ define([
 		
 		this.listView = function () {
 			return new TrailerListView();
-		};
-		
-		this.view = function (id) {
-			return new SalesOrderView({'id':id});
 		};
 		
 		this.IsInt = function (i) {

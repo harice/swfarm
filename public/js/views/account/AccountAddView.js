@@ -33,6 +33,7 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
+			this.initSubContainer();
 			var thisObj = this;
 			this.accountId = null;
 			this.h1Title = 'Account';
@@ -50,7 +51,8 @@ define([
 			
 			this.accountExtrasModel = new AccountExtrasModel();
 			this.accountExtrasModel.on("change", function() {
-				thisObj.displayForm();
+				if(thisObj.subContainerExist())
+					thisObj.displayForm();
 				this.off("change");
 			});
 		},
@@ -78,13 +80,13 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.focusOnFirstField();
 			
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
 			this.$el.find('.lowercase').textFormatter({type:'lowercase'});
-			// this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
+			//this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
             this.maskInputs();
 			
 			this.initValidateForm();
@@ -107,7 +109,8 @@ define([
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								Global.getGlobalVars().app_router.navigate(Const.URL.ACCOUNT, {trigger: true});
+								//Global.getGlobalVars().app_router.navigate(Const.URL.ACCOUNT, {trigger: true});
+								Backbone.history.history.back();
 							},
 							error: function (model, response, options) {
 								if(typeof response.responseJSON.error == 'undefined')

@@ -14,6 +14,7 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
+			this.initSubContainer();
 			this.productId = null;
 			this.h1Title = 'Product';
 			this.h1Small = 'add';
@@ -40,7 +41,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
 			
@@ -60,7 +61,8 @@ define([
 							success: function (model, response, options) {
                                 console.log(response);
 								thisObj.displayMessage(response);
-								Global.getGlobalVars().app_router.navigate(Const.URL.PRODUCT, {trigger: true});
+								//Global.getGlobalVars().app_router.navigate(Const.URL.PRODUCT, {trigger: true});
+								Backbone.history.history.back();
 							},
 							error: function (model, response, options) {
 								if(typeof response.responseJSON.error == 'undefined')

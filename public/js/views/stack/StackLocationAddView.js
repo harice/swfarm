@@ -27,6 +27,7 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
+			this.initSubContainer();
 			var thisObj = this;
 			this.slId = null;
 			this.h1Title = 'Stack Location';
@@ -34,7 +35,8 @@ define([
 			
 			this.productCollection = new ProductCollection();
 			this.productCollection.on('sync', function() {
-				thisObj.displayForm();
+				if(thisObj.subContainerExist())
+					thisObj.displayForm();
 				this.off('sync');
 			});
 			this.productCollection.on('error', function(collection, response, options) {
@@ -64,7 +66,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.generateProduct();
 			this.focusOnFirstField();
@@ -88,7 +90,8 @@ define([
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								Global.getGlobalVars().app_router.navigate(Const.URL.STACKLOCATION, {trigger: true});
+								//Global.getGlobalVars().app_router.navigate(Const.URL.STACKLOCATION, {trigger: true});
+								Backbone.history.history.back();
 							},
 							error: function (model, response, options) {
 								if(typeof response.responseJSON.error == 'undefined')
@@ -124,7 +127,8 @@ define([
             this.model.destroy({
                 success: function (model, response, options) {
                     thisObj.displayMessage(response);
-                    Global.getGlobalVars().app_router.navigate(Const.URL.STACKLOCATION, {trigger: true});
+                    //Global.getGlobalVars().app_router.navigate(Const.URL.STACKLOCATION, {trigger: true});
+					Backbone.history.history.back();
                 },
                 error: function (model, response, options) {
                     thisObj.displayMessage(response);

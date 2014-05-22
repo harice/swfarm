@@ -35,6 +35,7 @@ define([
 		accountAutoCompleteView: null,
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			var thisObj = this;
 			this.contactId = option.id;
 			this.h1Title = 'Contacts';
@@ -42,9 +43,11 @@ define([
 			
 			this.model = new ContactModel({id:option.id});
 			this.model.on("change", function() {
-				thisObj.displayForm();
-				thisObj.supplyContactData();
-                thisObj.maskInputs();
+				if(thisObj.subContainerExist()) {
+					thisObj.displayForm();
+					thisObj.supplyContactData();
+					thisObj.maskInputs();
+				}
 				this.off("change");
 			});
 		},

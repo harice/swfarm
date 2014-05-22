@@ -35,6 +35,7 @@ define([
 		accountAutoCompleteView: null,
 		
 		initialize: function() {
+			this.initSubContainer();
 			this.contactId = null;
 			this.h1Title = 'Contacts';
 			this.h1Small = 'add';
@@ -62,7 +63,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
 			this.$el.find('.lowercase').textFormatter({type:'lowercase'});
@@ -86,7 +87,8 @@ define([
                         {
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								Global.getGlobalVars().app_router.navigate(Const.URL.CONTACT, {trigger: true});
+								//Global.getGlobalVars().app_router.navigate(Const.URL.CONTACT, {trigger: true});
+								Backbone.history.history.back();
 							},
 							error: function (model, response, options) {
 								if(typeof response.responseJSON.error == 'undefined')

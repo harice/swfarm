@@ -1,50 +1,44 @@
 define([
 	'backbone',
-	'views/purchaseorder/PickUpScheduleAddView',
-	'views/purchaseorder/PickUpScheduleListView',
-	'views/purchaseorder/PickUpScheduleEditView',
-	'views/purchaseorder/PurchaseOrderView',
+	'views/purchaseorder/WeightInfoAddView',
+	'views/purchaseorder/WeightInfoEditView',
+	'views/purchaseorder/WeightInfoView',
 	'constant',
-], function(Backbone, PickUpScheduleAddView, PickUpScheduleListView, PickUpScheduleEditView, PurchaseOrderView, Const){
+], function(Backbone, WeightInfoAddView, WeightInfoEditView, WeightInfoView, Const){
 	
 	function POWeightInfoController () {	
 		
-		this.setAction = function (poid, action, id) {
+		this.setAction = function (poId, schedId, action) {
+			return this.add(poId, schedId);
 			
-			switch (action) {
+			/*switch (action) {
 				case Const.CRUD.ADD:
-					if(poid != null && this.IsInt(poid))
-						return this.add(poid);
+					if((poId != null && this.IsInt(poId)) && (schedId != null && this.IsInt(schedId))) 
+						return this.add(poId, schedId);
 					break;
 					
 				case Const.CRUD.EDIT:
-					if((id != null && this.IsInt(id)) && (poid != null && this.IsInt(poid))) 
-						return this.edit(poid, id);
+					if((poId != null && this.IsInt(poId)) && (schedId != null && this.IsInt(schedId))) 
+						return this.edit(poId, schedId);
 					break;
 				
 				default:
-					if(action != null && this.IsInt(action))
-						return this.view(action);
-					else
-						return this.listView(poid);
+					if((poId != null && this.IsInt(poId)) && (schedId != null && this.IsInt(schedId)))
+						return this.view(poId, schedId);
 					break;
-			}
+			}*/
 		};
 		
-		this.add = function (poid) {
-			return new PickUpScheduleAddView({'poid':poid});
+		this.add = function (poId, schedId) {
+			return new WeightInfoAddView({'poId':poId, 'schedId':schedId});
 		};
 		
-		this.edit = function (poid, id) {
-			return new PickUpScheduleEditView({'poid':poid, 'id':id});
+		this.edit = function (poId, schedId) {
+			return new WeightInfoEditView({'poId':poId, 'schedId':schedId});
 		};
 		
-		this.listView = function (poid) {
-			return new PickUpScheduleListView({'id':poid});
-		};
-		
-		this.view = function (id) {
-			return new PurchaseOrderView({'id':id});
+		this.view = function (poId, schedId) {
+			return new WeightInfoView({'poId':poId, 'schedId':schedId});
 		};
 		
 		this.IsInt = function (i) {

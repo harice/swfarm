@@ -71,6 +71,7 @@ class OrderRepository implements OrderRepositoryInterface {
           $item['totalPrice'] = 0.00;
           foreach($item['productorder'] as $productorder){
             if($productorder['unitprice'] != null){
+              
               $item['totalPrice'] += $productorder['unitprice'] * $productorder['tons'];
             }
           }

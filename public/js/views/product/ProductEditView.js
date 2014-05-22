@@ -14,6 +14,7 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			var thisObj = this;
 			this.productId = option.id;
 			this.h1Title = 'Product';
@@ -21,11 +22,11 @@ define([
 			
 			this.model = new ProductModel({id:option.id});
 			this.model.on("change", function() {
-				if(this.hasChanged('name')) {
+				if(thisObj.subContainerExist()) {
 					thisObj.displayForm();
 					thisObj.supplyProductData();
-					this.off("change");
 				}
+				this.off("change");
 			});
 		},
 		

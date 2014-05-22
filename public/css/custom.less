@@ -2,6 +2,11 @@ body {
     font-size: 13px;
 }
 
+.sidebar-logo {
+    background:url("../images/logo.png") no-repeat scroll 15px 9px #4AA3DF;
+    height:54px;
+}
+
 input.error { border-color: #CC0000 !important; }
 label.error { color: #CC0000 !important; font-weight: normal; }
 
@@ -171,6 +176,21 @@ ul.autocomplete {
         }
     }
 
+    &.width-60 {
+        width:60px;
+        background-position: 24px 0;
+    }
+
+    &.width-64 {
+        width:64px;
+        background-position: 34px 0;
+    }
+
+    &.width-70 {
+        width:70px;
+        background-position: 34px 0;
+    }
+
     &.width-80 {
         width:80px;
         background-position: 44px 0;
@@ -215,12 +235,12 @@ ul.autocomplete {
         height:20px;
         margin:-1px 4px 0 0;
         vertical-align:middle;
-        background:url(green.png) -132px top no-repeat;
+        background:url(blue.png) -132px top no-repeat;
         cursor:pointer;
     }
 
     input[type="radio"]:checked + span {
-        background:url(green.png) -110px top no-repeat;
+        background:url(blue.png) -110px top no-repeat;
     }
 
     label {
@@ -234,7 +254,13 @@ ul.autocomplete {
 .width-80  { width: 80px; }
 .width-100 { width:100px; }
 .width-110 { width: 110px; }
+.width-120 { width: 120px; }
 .width-130 { width: 130px; }
 .width-150 { width:150px; }
 .width-300 { width: 300px; }
 .width-304 { width: 304px; }
+
+#description,
+#notes {
+    resize: none;
+}

@@ -41,6 +41,7 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			var thisObj = this;
 			this.poId = option.poId;
 			this.schedId = option.id;
@@ -53,6 +54,8 @@ define([
 				thisObj.orderScheduleVariablesModel.runFetch();
 				thisObj.off('change');
 			});
+            
+            this.maskInputs();
 		},
 		
 		render: function(){
@@ -82,7 +85,6 @@ define([
 				productFields.find('.id').val(product.id);
 				productFields.find('.productorder_id').val(product.productorder_id).change();
 				productFields.find('.quantity').val(product.quantity).blur();
-				
 			});
 			
 			this.$el.find('#truckerAccountType_id').val(trucker.accountidandname.accounttype[0].id);
@@ -101,7 +103,8 @@ define([
 		},
 		
 		postDisplayForm: function () {
-			this.supplyScheduleData();
+			if(this.subContainerExist())
+				this.supplyScheduleData();
 		},
 	});
 

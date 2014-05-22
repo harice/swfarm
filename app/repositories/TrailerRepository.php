@@ -41,9 +41,10 @@ class TrailerRepository implements TrailerRepositoryInterface {
     
     public function store($data)
     {
+        $this->validate($data);
+        
         try
         {
-            $this->validate($data);
             $trailer = $this->instance();
             $trailer->fill($data);
             
@@ -70,9 +71,10 @@ class TrailerRepository implements TrailerRepositoryInterface {
     
     public function update($id, $data)
     {
+        $this->validate($data, $id);
+        
         try
         {
-            $this->validate($data, $id);
             $trailer = $this->findById($id);
             $trailer->fill($data);
             

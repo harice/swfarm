@@ -31,7 +31,7 @@ App::error( function(Symfony\Component\HttpKernel\Exception\HttpException $e, $c
 	switch($code)
 	{
 		case 401:
-		  $default_message = 'Invalid API key';
+		  $default_message = 'Unauthorized';
 		  $headers['WWW-Authenticate'] = 'Basic realm="CRM REST API"';
 		break;
 
@@ -97,7 +97,7 @@ Route::filter('basic', function()
 						'status' => true
 					)
 				);
-	if(!$auth) return App::abort(403,'Invalid API key',['WWW-Authenticate' => 'Basic']);
+	if(!$auth) return App::abort(401,'Unauthorized',['WWW-Authenticate' => 'Basic']);
 });
 
 /*
