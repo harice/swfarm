@@ -93,8 +93,8 @@ define([
 				if(thisObj.subContainerExist()) {
 					thisObj.displayForm();
 					thisObj.supplySOData();
+					thisObj.maskInputs();
 				}
-				
 				this.off('sync');
 			});
 			this.productCollection.on('error', function(collection, response, options) {

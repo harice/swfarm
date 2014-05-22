@@ -134,7 +134,7 @@ define([
 			this.initCustomerAutocomplete();
 			this.initCalendar();
 			this.addProduct();
-			
+            this.maskInputs();
 			this.otherInitializations();
 		},
 		
@@ -143,13 +143,19 @@ define([
 			
 			var validate = $('#soForm').validate({
 				submitHandler: function(form) {
-					//console.log($(form).serializeObject());
 					var data = thisObj.formatFormField($(form).serializeObject());
-					//console.log(data);
+                    
 					data['transportdatestart'] = thisObj.convertDateFormat(data['transportdatestart'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					data['transportdateend'] = thisObj.convertDateFormat(data['transportdateend'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					
-					//console.log(data);
+					// Remove commas on tons and bales
+                    console.log(data);
+                    var index;
+                    for (index = 0; index < data['products'].length; ++index) {
+                        data['products'][index]['tons'] = data['products'][index]['tons'].replace(/,/g , '');
+                        data['products'][index]['bales'] = data['products'][index]['bales'].replace(/,/g , '');
+                    }
+                    console.log(data);
 					
 					var salesOrderModel = new SalesOrderModel(data);
 					
@@ -379,7 +385,7 @@ define([
 			'keyup .unitprice': 'onKeyUpUnitPrice',
 			'keyup .tons': 'onKeyUpTons',
 			'click #cancel-so': 'showConfirmationWindow',
-			'click #confirm-cancel-so': 'cancelSO',
+			'click #confirm-cancel-so': 'cancelSO'
 		},
 		
 		removeProduct: function (ev) {

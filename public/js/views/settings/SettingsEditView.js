@@ -29,7 +29,9 @@ define([
 				if(thisObj.subContainerExist()) {
 					thisObj.displayForm();
 					thisObj.supplySettingsData();
+					thisObj.maskInputs();
 				}
+				
 				this.off('change');
 			});
 		},

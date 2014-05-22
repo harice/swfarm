@@ -85,6 +85,7 @@ define([
 				if(thisObj.subContainerExist()) {
 					thisObj.displayForm();
 					thisObj.supplyPOData();
+					thisObj.maskInputs();
 				}
 				this.off('sync');
 			});

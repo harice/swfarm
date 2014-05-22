@@ -70,12 +70,15 @@ define([
         maskInputs: function () {
             $(".phone-number").mask('(000) 000-0000');
             $(".mobile-number").mask('(000) 000-0000');
-            $("#freight_rate").mask('0,000.00', {reverse: true});
-            $(".unitprice").mask('0,000.00', {reverse: true});
-            $(".tons").mask('0,000.00', {reverse: true});
-            $(".bales").mask('000', {reverse: true});
-            $(".unit-price").mask('000,000.00', {reverse: true});
-        },
+            
+            $(".mask-unitprice").mask('##0.00', {reverse: true});
+            $(".mask-tons").mask("#,##0.00##", {reverse: true});
+            $(".mask-bales").mask('###,##0', {reverse: true});
+            $(".mask-totalprice").mask('###,###,##0.00', {reverse: true});
+            
+            $(".mask-fee").mask('##0.00', {reverse: true});
+            $(".mask-distance").mask('##0.00', {reverse: true});
+        }
 	});
 
 	return AppView;
