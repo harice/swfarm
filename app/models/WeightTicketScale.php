@@ -15,8 +15,7 @@ class WeightTicketScale extends BaseModel {
         'fee' => 'required',
         'bales' => 'required',
         'gross' => 'required',
-        'tare' => 'required',
-        'type' => 'required'
+        'tare' => 'required'
     );
 
     /**

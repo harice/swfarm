@@ -43,6 +43,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             //for pickup data
             $this->validate($data['pickup_info'], 'WeightTicketScale');
             $weightticketscale_pickup = new WeightTicketScale;
+            $data['pickup_info']['type'] = 1; //for pickup type
             $weightticketscale_pickup->fill($data['pickup_info']);
             $weightticketscale_pickup->save();
 
@@ -57,6 +58,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             //for dropoff data
             $this->validate($data['dropoff_info'], 'WeightTicketScale');
             $weightticketscale_dropoff = new WeightTicketScale;
+            $data['dropoff_info']['type'] = 2; //for dropoff type
             $weightticketscale_dropoff->fill($data['dropoff_info']);
             $weightticketscale_dropoff->save();
 
@@ -75,6 +77,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             $data['dropoff_id'] = $weightticketscale_dropoff->id;
 
             $weightticket = new WeightTicket;
+            $data['status_id'] = 1; //open status
             $weightticket->fill($data);
             $weightticket->save();
 
