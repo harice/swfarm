@@ -18,6 +18,7 @@ class CreateWeightticketscaleTable extends Migration {
             $table->increments('id');
 			//$table->integer('weightTicket_id')->unsigned();
 			$table->integer('scaleAccount_id')->unsigned();
+			$table->integer('scale_id')->unsigned();
 			$table->decimal('fee', 8, 2);
 			$table->decimal('bales', 8, 2);
 			$table->decimal('gross', 8, 4);
@@ -27,6 +28,7 @@ class CreateWeightticketscaleTable extends Migration {
             
             //$table->foreign('weightTicket_id')->references('id')->on('weightticket');
             $table->foreign('scaleAccount_id')->references('id')->on('account');
+			$table->foreign('scale_id')->references('id')->on('scale');
 		});
 	}
 

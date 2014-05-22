@@ -11,6 +11,7 @@ class WeightTicketScale extends BaseModel {
 
 	public static $rules = array(
         'scaleAccount_id' => 'required',
+        'scale_id' => 'required',
         'fee' => 'required',
         'bales' => 'required',
         'gross' => 'required',
@@ -25,6 +26,7 @@ class WeightTicketScale extends BaseModel {
      */
     protected $fillable = array(
         'scaleAccount_id', 
+        'scale_id',
         'fee', 
         'bales', 
         'gross', 
