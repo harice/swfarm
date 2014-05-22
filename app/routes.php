@@ -32,6 +32,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 
     Route::get('account/trailer', 'APIv1\AccountController@getTrailerAccount');
     Route::get('account/scaler', 'APIv1\AccountController@getScalerAccount');
+    Route::get('account/getScaleList', 'APIv1\AccountController@getScaleList');
     Route::get('account/loader', 'APIv1\AccountController@getLoaderAccount');
     Route::get('account/search', 'APIv1\AccountController@search');
 	Route::get('account/getFormData', 'APIv1\AccountController@getFormData');
