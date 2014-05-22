@@ -5,6 +5,8 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'collections/product/ProductCollection',
+	'collections/account/AccountCollection',
+	'collections/scale/ScaleCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/weightInfoAddTemplate.html',
 	'text!templates/purchaseorder/weightInfoProductItemTemplate.html',
@@ -16,6 +18,8 @@ define([
 			Validate,
 			TextFormatter,
 			ProductCollection,
+			AccountCollection,
+			ScaleCollection,
 			contentTemplate,
 			weightInfoAddTemplate,
 			weightInfoProductItemTemplate,
@@ -43,12 +47,37 @@ define([
 			
 			this.productCollection = new ProductCollection();
 			this.productCollection.on('sync', function() {
-				if(thisObj.subContainerExist())
-					thisObj.displayForm();
+				thisObj.scaleAccountCollection.getScalerAccounts();
 				this.off('sync');
 			});
 			this.productCollection.on('error', function(collection, response, options) {
 				this.off('error');
+			});
+			
+			this.scaleAccountCollection = new AccountCollection();
+			this.scaleAccountCollection.on('sync', function() {
+				if(thisObj.subContainerExist())
+					thisObj.displayForm();
+				this.off('sync');
+			});
+			this.scaleAccountCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
+			
+			this.pickupScaleCollection = new ScaleCollection();
+			this.pickupScaleCollection.on('sync', function() {
+				thisObj.generatePickupScales();
+			});
+			this.pickupScaleCollection.on('error', function(collection, response, options) {
+				//
+			});
+			
+			this.dropoffScaleCollection = new ScaleCollection();
+			this.dropoffScaleCollection.on('sync', function() {
+				thisObj.generateDropoffScales();
+			});
+			this.dropoffScaleCollection.on('error', function(collection, response, options) {
+				//
 			});
 		},
 		
@@ -60,6 +89,7 @@ define([
 			var thisObj = this;
 			
 			var innerTemplateVariables = {
+				scaler_account_list: this.getScalerDropDown(),
 			};
 			
 			var innerTemplate = _.template(weightInfoAddTemplate, innerTemplateVariables);
@@ -86,6 +116,14 @@ define([
 					console.log(data);
 				},
 			});
+		},
+		
+		getScalerDropDown: function () {
+			var dropDown = '';
+			_.each(this.scaleAccountCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
+			});
+			return dropDown;
 		},
 		
 		addProducts: function () {
@@ -120,8 +158,66 @@ define([
 			}
 		},
 		
+		generatePickupScales: function () {
+			var dropDown = '';
+			_.each(this.pickupScaleCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
+			});
+			this.$el.find('#pickup-scales').append(dropDown);
+			
+			if(typeof this.selectedPickupScaleId != 'undefined' && this.selectedPickupScaleId != null) {
+				this.$el.find('#pickup-scales').val(this.selectedPickupScaleId);
+				this.selectedPickupScaleId = null;
+			}
+		},
+		
+		generateDropoffScales: function () {
+			var dropDown = '';
+			_.each(this.dropoffScaleCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
+			});
+			this.$el.find('#dropoff-scales').append(dropDown);
+			
+			if(typeof this.selectedDropoffScaleId != 'undefined' && this.selectedDropoffScaleId != null) {
+				this.$el.find('#dropoff-scales').val(this.selectedDropoffScaleId);
+				this.selectedDropoffScaleId = null;
+			}
+		},
+		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
+			'change #pickup-scaleAccount_id': 'onChangePickupScaleAccount',
+			'change #dropoff-scaleAccount_id': 'onChangeDropoffScaleAccount',
+		},
+		
+		onChangePickupScaleAccount: function (ev) {
+			this.fetchPickupScale($(ev.currentTarget).val());
+		},
+		
+		fetchPickupScale: function (accountId, scaleId) {
+			if(scaleId != null)
+				this.selectedPickupScaleId = scaleId;
+				
+			this.resetSelect($('#pickup-scales'));
+			if(accountId != '')
+				this.pickupScaleCollection.getScalesByAccount(accountId);
+		},
+		
+		onChangeDropoffScaleAccount: function (ev) {
+			this.fetchDropoffScale($(ev.currentTarget).val());
+		},
+		
+		fetchDropoffScale: function (accountId, scaleId) {
+			if(scaleId != null)
+				this.selectedDropoffScaleId = scaleId;
+				
+			this.resetSelect($('#dropoff-scales'));
+			if(accountId != '')
+				this.dropoffScaleCollection.getScalesByAccount(accountId);
+		},
+		
+		resetSelect: function (select) {
+			select.find('option:gt(0)').remove();
 		},
 	});
 

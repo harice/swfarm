@@ -18,6 +18,11 @@ define([
 				}
 			);
 		},
+		
+		getScalesByAccount: function (id) {
+			this.url = '/apiv1/account/getScaleList?accountId='+id;
+			this.getModels();
+		},
 	});
 
 	return ScaleCollection;

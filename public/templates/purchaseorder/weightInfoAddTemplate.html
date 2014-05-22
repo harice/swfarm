@@ -62,14 +62,15 @@
 					    <tr>
 						  <td>
 							<div class="styled-select">
-							  <select class="form-contro width-200 scaleAccount_id" name="pickup-scaleAccount_id" required>
+							  <select id="pickup-scaleAccount_id" class="form-contro width-200 scaleAccount_id" name="pickup-scaleAccount_id" required>
 							    <option value="">Select a scale account</option>
+								<%= scaler_account_list %>
 							  </select>
 							</div>
 						  </td>
 						  <td>
 							<div class="styled-select">
-							  <select class="form-control width-200">
+							  <select id="pickup-scales" class="form-control width-200 scale_id" name="dropoff-scale_id" required>
 							    <option value="">Select a scale name</option>
 							  </select>
 							</div>
@@ -125,14 +126,15 @@
 					    <tr>
 						  <td>
 							<div class="styled-select">
-							  <select class="form-control width-200 scaleAccount_id" name="dropoff-scaleAccount_id" required>
+							  <select id="dropoff-scaleAccount_id" class="form-control width-200 scaleAccount_id" name="dropoff-scaleAccount_id" required>
 							    <option value="">Select a scale account</option>
+								<%= scaler_account_list %>
 							  </select>
 							</div>
 						  </td>
 						  <td>
 							<div class="styled-select">
-							  <select class="form-control width-200">
+							  <select id="dropoff-scales" class="form-control width-200 scale_id" name="dropoff-scale_id" required>
 							    <option value="">Select a scale name</option>
 							  </select>
 							</div>
