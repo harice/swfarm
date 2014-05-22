@@ -39,6 +39,6 @@ class WeightTicketProducts extends BaseModel {
 
     public function transportscheduleproduct()
     {
-        return $this->hasOne('TransportScheduleProduct', 'transportScheduleProduct_id');
+        return $this->hasOne('TransportScheduleProduct','id', 'transportScheduleProduct_id');
     }
 }
