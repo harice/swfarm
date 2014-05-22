@@ -19,7 +19,8 @@ class WeightTicket extends BaseModel {
      * @var array
      */
     protected $fillable = array(
-        'transportSchedule_id', 
+        'transportSchedule_id',
+        'status_id', 
         'weightTicketNumber', 
         'loadingTicketNumber', 
         'pickup_id', 

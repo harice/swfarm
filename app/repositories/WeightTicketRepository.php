@@ -18,8 +18,8 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     {
         try
         {
-            $weightticket = WeightTicket::with('weightticketscale_dropoff.weightticketproducts')
-                            ->with('weightticketscale_pickup.weightticketproducts')
+            $weightticket = WeightTicket::with('weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder.product')
+                            ->with('weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder.product')
                             ->where('transportSchedule_id', '=', $schedule_id)->get();
 
             if(!$weightticket) 
@@ -167,10 +167,23 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
               'message' => 'Weight ticket successfully updated');
     }
     
-    public function destroy($id)
+    public function destroy($transportSchedule_id)
     {
-        // $role = $this->findById($id);
-        // return $role->delete();
+        $weightTicket = WeightTicket::where('transportSchedule_id', '=', $transportSchedule_id);
+
+        if($weightTicket){
+            $weightTicket->delete();
+
+            $response = array(
+                'error' => false,
+                'message' => 'Weight ticket successfully deleted.');
+          } else {
+            $response = array(
+                'error' => true,
+                'message' => "Weight ticket not found");
+          }
+
+        return $response;
     }
     
 

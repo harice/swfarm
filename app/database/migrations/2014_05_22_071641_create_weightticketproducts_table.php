@@ -22,8 +22,8 @@ class CreateWeightticketproductsTable extends Migration {
 			$table->decimal('pounds', 8, 2);
 			$table->timestamps();
             
-            $table->foreign('weightTicketScale_id')->references('id')->on('weightticketscale');
-            $table->foreign('transportScheduleProduct_id')->references('id')->on('transportscheduleproduct')->onDelete('cascade');
+            $table->foreign('weightTicketScale_id')->references('id')->on('weightticketscale')->onDelete('cascade');
+            $table->foreign('transportScheduleProduct_id')->references('id')->on('transportscheduleproduct');
 		});
 	}
 
