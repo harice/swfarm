@@ -25,8 +25,13 @@ define([
 			this.getModels();
 		},
 		
-		getPOProducts: function (poId) {
+		getOrderProducts: function (poId) {
 			this.url = '/apiv1/transportschedule/getProductsOfOrder?orderId='+poId;
+			this.getModels();
+		},
+		
+		getScheduleProducts: function (schedId) {
+			this.url = '/apiv1/weightticket/getScheduleProducts?transportschedule_id='+schedId;
 			this.getModels();
 		},
 	});

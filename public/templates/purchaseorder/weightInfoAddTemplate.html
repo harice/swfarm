@@ -50,19 +50,27 @@
                       <thead>
                         <tr>
                           <th style="width:15%;">Scale</th>
-                          <th style="width:20%;">Scale Fee</th>
+						  <th style="width:15%;">Scale Name</th>
+                          <th style="width:10%;">Scale Fee</th>
                           <th style="width:15%;">Bales</th>
                           <th style="width:15%;">Gross</th>
                           <th style="width:15%;">Tare</th>
-                          <th style="width:20%;">Net</th>
+                          <th style="width:15%;">Net</th>
                         </tr>
                       </thead>
                       <tbody>
 					    <tr>
 						  <td>
 							<div class="styled-select">
-							  <select class="form-control product_id width-200">
+							  <select class="form-contro width-200 scaleAccount_id" name="pickup-scaleAccount_id" required>
 							    <option value="">Select a scale account</option>
+							  </select>
+							</div>
+						  </td>
+						  <td>
+							<div class="styled-select">
+							  <select class="form-control width-200">
+							    <option value="">Select a scale name</option>
 							  </select>
 							</div>
 						  </td>
@@ -94,15 +102,7 @@
 						  <td><span class="total-net-tons">0.00</span></td>
 						</tr>
 					  </tfoot>
-                      <tbody>
-					    <tr>
-						  <td>1</td>
-						  <td>2</td>
-						  <td>3</td>
-						  <td>4</td>
-						  <td>5</td>
-						</tr>
-					  </tbody>
+                      <tbody></tbody>
                     </table>
                   </div>
                 </fieldset>
@@ -113,19 +113,27 @@
                       <thead>
                         <tr>
                           <th style="width:15%;">Scale</th>
-                          <th style="width:20%;">Scale Fee</th>
+						  <th style="width:15%;">Scale Name</th>
+                          <th style="width:10%;">Scale Fee</th>
                           <th style="width:15%;">Bales</th>
                           <th style="width:15%;">Gross</th>
                           <th style="width:15%;">Tare</th>
-                          <th style="width:20%;">Net</th>
+                          <th style="width:15%;">Net</th>
                         </tr>
                       </thead>
                       <tbody>
 					    <tr>
 						  <td>
 							<div class="styled-select">
-							  <select class="form-control product_id width-200">
+							  <select class="form-control width-200 scaleAccount_id" name="dropoff-scaleAccount_id" required>
 							    <option value="">Select a scale account</option>
+							  </select>
+							</div>
+						  </td>
+						  <td>
+							<div class="styled-select">
+							  <select class="form-control width-200">
+							    <option value="">Select a scale name</option>
 							  </select>
 							</div>
 						  </td>
@@ -157,15 +165,7 @@
 						  <td><span class="total-net-tons">0.00</span></td>
 						</tr>
 					  </tfoot>
-                      <tbody>
-					    <tr>
-						  <td>1</td>
-						  <td>2</td>
-						  <td>3</td>
-						  <td>4</td>
-						  <td>5</td>
-						</tr>
-					  </tbody>
+                      <tbody></tbody>
                     </table>
                   </div>
                 </fieldset>

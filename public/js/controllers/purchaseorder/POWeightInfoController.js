@@ -9,6 +9,8 @@ define([
 	function POWeightInfoController () {	
 		
 		this.setAction = function (poId, schedId, action) {
+			var thisObj = this;
+			
 			return this.add(poId, schedId);
 			
 			/*switch (action) {

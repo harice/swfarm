@@ -83,7 +83,7 @@ define([
 			
 			this.accountTypeCollection = new AccountTypeCollection();
 			this.accountTypeCollection.on('sync', function() {
-				thisObj.productCollection.getPOProducts(thisObj.poId);
+				thisObj.productCollection.getOrderProducts(thisObj.poId);
 				this.off('sync');
 			});
 			this.accountTypeCollection.on('error', function(collection, response, options) {
