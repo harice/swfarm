@@ -52,8 +52,12 @@ class WeightTicketScale extends BaseModel {
         return $this->hasMany('WeightTicketProducts', 'weightTicketScale_id', 'id');
     }
 
-    public function scaler(){
-        return $this->hasMany('account', 'scaleAccount_id', 'id');
+    public function scalerAccount(){
+        return $this->hasMany('account', 'id', 'scaleAccount_id');
+    }
+
+    public function scale(){
+        return $this->hasOne('scale', 'id', 'scale_id');
     }
 
 }

@@ -19,7 +19,11 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         try
         {
             $weightticket = WeightTicket::with('weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder.product')
+                            ->with('weightticketscale_dropoff.scalerAccount')
+                            ->with('weightticketscale_dropoff.scale')
                             ->with('weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder.product')
+                            ->with('weightticketscale_pickup.scalerAccount')
+                            ->with('weightticketscale_pickup.scale')
                             ->where('transportSchedule_id', '=', $schedule_id)->get();
 
             if(!$weightticket) 
