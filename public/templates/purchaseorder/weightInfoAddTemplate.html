@@ -51,11 +51,11 @@
                         <tr>
                           <th style="width:15%;">Scale</th>
 						  <th style="width:15%;">Scale Name</th>
-                          <th style="width:10%;">Scale Fee</th>
+                          <th style="width:15%;">Scale Fee</th>
                           <th style="width:15%;">Bales</th>
                           <th style="width:15%;">Gross</th>
                           <th style="width:15%;">Tare</th>
-                          <th style="width:15%;">Net</th>
+                          <th style="width:10%;">Net</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -70,16 +70,16 @@
 						  </td>
 						  <td>
 							<div class="styled-select">
-							  <select id="pickup-scales" class="form-control width-200 scale_id" name="dropoff-scale_id" required>
+							  <select id="pickup-scales" class="form-control width-200 scale_id" name="pickup-scale_id" required>
 							    <option value="">Select a scale name</option>
 							  </select>
 							</div>
 						  </td>
-						  <td><span class="scale-fee"></span></td>
-						  <td><input maxlength="80" name="" class="form-control"></td>
-						  <td><input maxlength="80" name="" class="form-control"></td>
-						  <td><input maxlength="80" name="" class="form-control"></td>
-						  <td><span class="net"></span></td>
+						  <td><input id="pickup-fee" maxlength="80" name="pickup-fee" class="form-control fee" placeholder="0.00" required readonly></td>
+						  <td><input maxlength="80" name="pickup-bales" class="form-control bales mask-bales" placeholder="0" required></td>
+						  <td><input maxlength="80" name="pickup-gross" class="form-control gross" placeholder="0.0000" required></td>
+						  <td><input maxlength="80" name="pickup-tare" class="form-control tare" placeholder="0.0000" required></td>
+						  <td><span class="net">0.0000</span></td>
 						</tr>
 					  </tbody>
                     </table>
@@ -98,9 +98,9 @@
 					  <tfoot>
 						<tr>
 						  <td colspan="2">Total</td>
-						  <td><span class="total-bales">0.00</span></td>
+						  <td><span class="total-bales">0</span></td>
 						  <td><span class="total-pounds">0.00</span></td>
-						  <td><span class="total-net-tons">0.00</span></td>
+						  <td><span class="total-net-tons">0.0000</span></td>
 						</tr>
 					  </tfoot>
                       <tbody></tbody>
@@ -115,11 +115,11 @@
                         <tr>
                           <th style="width:15%;">Scale</th>
 						  <th style="width:15%;">Scale Name</th>
-                          <th style="width:10%;">Scale Fee</th>
+                          <th style="width:15%;">Scale Fee</th>
                           <th style="width:15%;">Bales</th>
                           <th style="width:15%;">Gross</th>
                           <th style="width:15%;">Tare</th>
-                          <th style="width:15%;">Net</th>
+                          <th style="width:10%;">Net</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -139,11 +139,11 @@
 							  </select>
 							</div>
 						  </td>
-						  <td><span class="scale-fee"></span></td>
-						  <td><input maxlength="80" name="" class="form-control"></td>
-						  <td><input maxlength="80" name="" class="form-control"></td>
-						  <td><input maxlength="80" name="" class="form-control"></td>
-						  <td><span class="net"></span></td>
+						  <td><input id="pickup-fee" maxlength="80" name="dropoff-fee" class="form-control fee" placeholder="0.00" required readonly></td>
+						  <td><input maxlength="80" name="dropoff-bales" class="form-control bales mask-bales" placeholder="0" required></td>
+						  <td><input maxlength="80" name="dropoff-gross" class="form-control gross" placeholder="0.0000" required></td>
+						  <td><input maxlength="80" name="dropoff-tare" class="form-control tare" placeholder="0.0000" required></td>
+						  <td><span class="net">0.0000</span></td>
 						</tr>
 					  </tbody>
                     </table>
@@ -162,9 +162,9 @@
 					  <tfoot>
 						<tr>
 						  <td colspan="2">Total</td>
-						  <td><span class="total-bales">0.00</span></td>
+						  <td><span class="total-bales">0</span></td>
 						  <td><span class="total-pounds">0.00</span></td>
-						  <td><span class="total-net-tons">0.00</span></td>
+						  <td><span class="total-net-tons">0.0000</span></td>
 						</tr>
 					  </tfoot>
                       <tbody></tbody>

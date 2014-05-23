@@ -124,6 +124,7 @@ define(function () {
 				},
 			},
 		},
+		'LB2TON': 0.0005,
 	};
 	
 	return constant;
