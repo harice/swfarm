@@ -15,8 +15,7 @@ class WeightTicketScale extends BaseModel {
         'fee' => 'required',
         'bales' => 'required',
         'gross' => 'required',
-        'tare' => 'required',
-        'type' => 'required'
+        'tare' => 'required'
     );
 
     /**
@@ -52,8 +51,17 @@ class WeightTicketScale extends BaseModel {
         return $this->hasMany('WeightTicketProducts', 'weightTicketScale_id', 'id');
     }
 
-    public function scaler(){
-        return $this->hasMany('account', 'scaleAccount_id', 'id');
+    public function scalerAccount(){
+        return $this->hasMany('account', 'id', 'scaleAccount_id');
+    }
+
+    public function scale(){
+        return $this->hasOne('scale', 'id', 'scale_id');
+    }
+
+    public function delete(){
+        $this->weightticketproducts()->delete();
+        return parent::delete();
     }
 
 }
