@@ -59,6 +59,15 @@ label.error {
 .margin-bottom-10 {
   margin-bottom: 10px;
 }
+.margin-right-5 {
+  margin-right: 5px;
+}
+.searchLocal .border-radius-0 {
+  border-radius: 0px;
+}
+.searchLocal .border-radius-tl-3 {
+  border-radius: 3px 0 0 3px;
+}
 .help-block {
   font-size: 11px;
 }
@@ -171,7 +180,7 @@ ul.autocomplete li.active a {
   outline: 0 none;
   text-shadow: 0 0 0 #555;
   border: 1px solid #ccc;
-  height: 34px;
+  height: 30px;
   padding: 6px 8px;
   vertical-align: middle;
 }
@@ -188,7 +197,7 @@ ul.autocomplete li.active a {
 }
 .styled-select select.width-80 {
   width: 80px;
-  background-position: 44px 0;
+  background-position: 47px -3px;
 }
 .styled-select select.width-100 {
   width: 100px;
@@ -200,11 +209,11 @@ ul.autocomplete li.active a {
 }
 .styled-select select.width-180 {
   width: 180px;
-  background-position: 146px 0;
+  background-position: 147px -3px;
 }
 .styled-select select.width-200 {
   width: 200px;
-  background-position: 166px 0;
+  background-position: 167px -3px;
 }
 #accounttype select {
   background-position: 272px 0;
