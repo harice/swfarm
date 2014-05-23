@@ -4,6 +4,7 @@ define([
 	'views/base/AppView',
 	'jqueryvalidate',
 	'jquerytextformatter',
+	'models/purchaseorder/POWeightInfoModel',
 	'text!templates/layout/contentTemplate.html',
 	'global',
 	'constant',
@@ -12,6 +13,7 @@ define([
 			AppView,
 			Validate,
 			TextFormatter,
+			POWeightInfoModel,
 			contentTemplate,
 			Global,
 			Const
@@ -20,10 +22,24 @@ define([
 	var WeightInfoView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
-		initialize: function() {
+		initialize: function(option) {
+			this.initSubContainer();
+			
+			var thisObj = this;
+			this.poId = option.poId;
+			this.schedId = option.schedId;
+			this.h1Title = 'Weight Info';
+			this.h1Small = 'view';
+			
+			this.model = new POWeightInfoModel({id:this.schedId});
+			this.model.on('change', function() {
+				console.log(this);
+				this.off('change');
+			});
 		},
 		
 		render: function(){
+			this.model.runFetch();
 		},
 		
 		displayForm: function () {

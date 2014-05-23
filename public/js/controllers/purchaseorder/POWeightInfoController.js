@@ -9,11 +9,9 @@ define([
 	function POWeightInfoController () {	
 		
 		this.setAction = function (poId, schedId, action) {
-			var thisObj = this;
+			//return this.add(poId, schedId);
 			
-			return this.add(poId, schedId);
-			
-			/*switch (action) {
+			switch (action) {
 				case Const.CRUD.ADD:
 					if((poId != null && this.IsInt(poId)) && (schedId != null && this.IsInt(schedId))) 
 						return this.add(poId, schedId);
@@ -28,7 +26,7 @@ define([
 					if((poId != null && this.IsInt(poId)) && (schedId != null && this.IsInt(schedId)))
 						return this.view(poId, schedId);
 					break;
-			}*/
+			}
 		};
 		
 		this.add = function (poId, schedId) {
