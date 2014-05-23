@@ -116,8 +116,9 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('fee', 'APIv1\FeeController');
 
     // settings
-    Route::get('settings', 'APIv1\SettingsController@settings');
     Route::get('settings/getTransportSettings', 'APIv1\SettingsController@getTransportSettings');
+    Route::put('settings', 'APIv1\SettingsController@updateSettings');
+    Route::resource('settings', 'APIv1\SettingsController');
     
 });
 
