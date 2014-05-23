@@ -76,5 +76,10 @@ class WeightTicketController extends BaseController {
         return Response::json($model);
 	}
 
+	public function closeWeightTicket($transportschedule_id){
+		$model = $this->weightticket->closeWeightTicket($transportschedule_id);
+        return Response::json($model);
+	}
+
 
 }

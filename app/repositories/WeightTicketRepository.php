@@ -40,6 +40,12 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     public function store($data)
     {
         $result = DB::transaction(function() use ($data){
+            $hasExisitingTicket = WeightTicket::where('transportSchedule_id', '=', $data['transportSchedule_id'])->first();
+            if($hasExisitingTicket != null){
+                return array(
+                      'error' => true,
+                      'message' => 'This schedule has already weight ticket.');
+            }
             //for pickup data
             $this->validate($data['pickup_info'], 'WeightTicketScale');
             $weightticketscale_pickup = new WeightTicketScale;
@@ -154,14 +160,6 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                 $weightticketproduct->save();
             }
 
-            
-            // $data['weightTicketNumber'] = $this->generateWeightTicketNumber();
-            // $data['loadingTicketNumber'] = $this->generateLoadingTicketNumber();
-            // $data['pickup_id'] = $weightticketscale_pickup->id;
-            // $data['dropoff_id'] = $weightticketscale_dropoff->id;
-
-            
-
             return $weightticket->id;
         });
         
@@ -176,7 +174,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     
     public function destroy($transportSchedule_id)
     {
-        $weightTicket = WeightTicket::where('transportSchedule_id', '=', $transportSchedule_id);
+        $weightTicket = WeightTicket::where('transportSchedule_id', '=', $transportSchedule_id)->first();
 
         if($weightTicket){
             $weightTicket->delete();
@@ -207,6 +205,27 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     public function instance($data = array())
     {
         return new WeightTicket($data);
+    }
+
+    public function closeWeightTicket($transportSchedule_id){
+        $weightTicket = WeightTicket::where('transportSchedule_id', '=', $transportSchedule_id)->first();
+        
+        if($weightTicket->status_id == 1){ //check if Open
+              $weightTicket->status_id = 2;
+              $weightTicket->save();
+
+              return array(
+                  'error' => false,
+                  'message' => 'Weight ticket closed.');
+        } else if($weightTicket->status_id == 2) {//if close
+              return array(
+                  'error' => false,
+                  'message' => 'Weight ticket is already closed.');
+        } else {
+              return array(
+                  'error' => false,
+                  'message' => 'Weight ticket cannot be cancel if the status is not open or pending.');
+        }       
     }
 
     

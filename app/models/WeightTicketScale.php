@@ -59,4 +59,9 @@ class WeightTicketScale extends BaseModel {
         return $this->hasOne('scale', 'id', 'scale_id');
     }
 
+    public function delete(){
+        $this->weightticketproducts()->delete();
+        return parent::delete();
+    }
+
 }

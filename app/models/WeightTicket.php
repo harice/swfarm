@@ -45,4 +45,10 @@ class WeightTicket extends BaseModel {
         return $this->belongsTo('transportschedule', 'id', 'transportschedule_id');
     }
 
+    public function delete(){
+        $this->weightticketscale_pickup()->delete();
+        $this->weightticketscale_dropoff()->delete();
+        return parent::delete();
+    }
+
 }
