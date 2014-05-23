@@ -16,7 +16,9 @@
 	</td>
 	<td><input class="form-control text-right number tons mask-tons" type="text" name="tons" maxlength="12"></td>
 	<td><input class="form-control text-right number bales mask-bales" type="text" name="bales"></td>
-	<td><div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right unit-price mask-totalprice" type="text" value="0.00" readonly></div></td>
+	<td>
+        <div class="text-right">$ <span class="unit-price"></span></div>
+    </td>
 	<% if (typeof is_bid === "undefined") { %>
 	<td>
         <div class="styled-select">
