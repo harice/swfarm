@@ -24,7 +24,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                             ->with('weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder.product')
                             ->with('weightticketscale_pickup.scalerAccount')
                             ->with('weightticketscale_pickup.scale')
-                            ->where('transportSchedule_id', '=', $schedule_id)->get();
+                            ->where('transportSchedule_id', '=', $schedule_id)->first();
 
             if(!$weightticket) 
                 throw new NotFoundException('Weight Info Not Found');
