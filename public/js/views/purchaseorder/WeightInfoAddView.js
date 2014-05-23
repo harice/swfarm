@@ -95,6 +95,7 @@ define([
 			
 			var innerTemplateVariables = {
 				scaler_account_list: this.getScalerDropDown(),
+				previous_po_sched_url: '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId,
 			};
 			
 			var innerTemplate = _.template(weightInfoAddTemplate, innerTemplateVariables);

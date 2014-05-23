@@ -75,7 +75,7 @@ define([
 		},
                 
         maskInputs: function () {
-            $(".phone-number").mask('(000) 000-0000');
+            /*$(".phone-number").mask('(000) 000-0000');
             $(".mobile-number").mask('(000) 000-0000');
             
             $(".mask-unitprice").mask('##0.00', {reverse: true});
@@ -85,7 +85,7 @@ define([
             
             //$(".mask-fee").mask('##0.00', {reverse: true});
 			$(".mask-fee").mask('#,##0.99', {reverse: true, maxlength: false});
-            $(".mask-distance").mask('##0.00', {reverse: true});
+            $(".mask-distance").mask('##0.00', {reverse: true});*/
         },
 		
 		formatMoney: function (ev) {
