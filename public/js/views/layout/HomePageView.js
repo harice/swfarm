@@ -9,12 +9,12 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
-			
+			this.initSubContainer();
 		},
 		
 		render: function(){
 			var compiledTemplate = _.template(HomePageTemplate, {});
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 		},
 	});
 

@@ -1,19 +1,21 @@
 define([
 	'backbone',
+	'views/base/AppView',
 	'models/role/RoleModel',
 	'collections/permission/PermissionCategoryTypeCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/permission/permissionListTemplate.html',
 	'text!templates/permission/permissionInnerListTemplate.html',
 	'constant',
-], function(Backbone, RoleModel, PermissionCategoryTypeCollection, contentTemplate, permissionListTemplate, permissionInnerListTemplate, Const){
+], function(Backbone, AppView, RoleModel, PermissionCategoryTypeCollection, contentTemplate, permissionListTemplate, permissionInnerListTemplate, Const){
 
-	var PermissionListView = Backbone.View.extend({
+	var PermissionListView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		options: {
 			id: null,
 		},
 		initialize: function(options) {
+			this.initSubContainer();
 			var thisObj = this;
 			
 			this.options.id = options.id;
@@ -35,10 +37,9 @@ define([
 			
 			this.model = new RoleModel();
 			this.model.on('change', function() {
-				if(this.hasChanged('id')) {
+				if(thisObj.subContainerExist())
 					thisObj.displayList();
-					this.off('change');
-				}
+				this.off('change');
 			});
 		},
 		
@@ -56,7 +57,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 		},
 		
 		displayList: function () {
@@ -71,7 +72,7 @@ define([
 			};
 			
 			var innerListTemplate = _.template(permissionInnerListTemplate, data);
-			$("#permission-list tbody").html(innerListTemplate);
+			this.subContainer.find("#permission-list tbody").html(innerListTemplate);
 			
 			$('.form-button-container').show();
 			
@@ -90,6 +91,10 @@ define([
 				}
 			});
 			
+		},
+		
+		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
 		},
 	});
 

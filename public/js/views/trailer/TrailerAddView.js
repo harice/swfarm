@@ -27,6 +27,7 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
+			this.initSubContainer();
 			var thisObj = this;
 			this.trailerId = null;
 			this.h1Title = 'Trailer';
@@ -34,7 +35,8 @@ define([
 			
 			this.trailerAccountCollection = new AccountCollection();
 			this.trailerAccountCollection.on('sync', function() {
-				thisObj.displayForm();
+				if(thisObj.subContainerExist())
+					thisObj.displayForm();
 				this.off('sync');
 			});
 			this.trailerAccountCollection.on('error', function(collection, response, options) {
@@ -62,7 +64,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.generateTrailerAccount();
 			this.focusOnFirstField();
@@ -86,7 +88,8 @@ define([
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								Global.getGlobalVars().app_router.navigate(Const.URL.TRAILER, {trigger: true});
+								//Global.getGlobalVars().app_router.navigate(Const.URL.TRAILER, {trigger: true});
+								Backbone.history.history.back();
 							},
 							error: function (model, response, options) {
 								if(typeof response.responseJSON.error == 'undefined')
@@ -122,7 +125,8 @@ define([
             this.model.destroy({
                 success: function (model, response, options) {
                     thisObj.displayMessage(response);
-                    Global.getGlobalVars().app_router.navigate(Const.URL.TRAILER, {trigger: true});
+                    //Global.getGlobalVars().app_router.navigate(Const.URL.TRAILER, {trigger: true});
+					Backbone.history.history.back();
                 },
                 error: function (model, response, options) {
                     thisObj.displayMessage(response);

@@ -27,6 +27,7 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			var thisObj = this;
 			this.trailerId = option.id;
 			this.h1Title = 'Trailer';
@@ -34,8 +35,10 @@ define([
 			
 			this.trailerAccountCollection = new AccountCollection();
 			this.trailerAccountCollection.on('sync', function() {
-				thisObj.displayForm();
-				thisObj.supplyTralerData();
+				if(thisObj.subContainerExist()) {
+					thisObj.displayForm();
+					thisObj.supplyTralerData();
+				}
 				this.off('sync');
 			});
 			this.trailerAccountCollection.on('error', function(collection, response, options) {

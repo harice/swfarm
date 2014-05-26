@@ -41,6 +41,7 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			var thisObj = this;
 			this.poId = option.poId;
 			this.schedId = option.id;
@@ -49,8 +50,10 @@ define([
 			
 			this.model = new POScheduleModel({id:this.schedId});
 			this.model.on('change', function() {
-				thisObj.displayForm();
-				thisObj.supplyScheduleData();
+				if(thisObj.subContainerExist()) {
+					thisObj.displayForm();
+					thisObj.supplyScheduleData();
+				}
 				thisObj.off('change');
 			});
 		},
@@ -62,7 +65,7 @@ define([
 		displayForm: function () {
 			var thisObj = this;
 			
-			var innerTemplateVariables = {};
+			var innerTemplateVariables = {'schedule_edit_url': '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId+'/'+Const.CRUD.EDIT+'/'+this.schedId};
 			
 			var innerTemplate = _.template(purchaseOrderAddScheduleTemplate, innerTemplateVariables);
 			
@@ -72,7 +75,11 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
+			
+			this.initConfirmationWindow('Are you sure you want to delete this schedule?',
+										'confirm-delete-schedule',
+										'Delete Schedule');
 		},
 		
 		supplyScheduleData: function () {
@@ -127,6 +134,24 @@ define([
 		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
+			'click #delete-schedule': 'showConfirmationWindow',
+			'click #confirm-delete-schedule': 'deleteAccount',
+		},
+		
+		deleteAccount: function (){
+			var thisObj = this;
+            
+            this.model.destroy({
+                success: function (model, response, options) {
+                    thisObj.displayMessage(response);
+					Backbone.history.history.back();
+                },
+                error: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                },
+                wait: true,
+                headers: thisObj.model.getAuth(),
+            });
 		},
 	});
 

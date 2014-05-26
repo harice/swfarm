@@ -14,12 +14,14 @@ define([
 		
 		initialize: function() {
 			this.extendListEvents();
+			this.initSubContainer();
 			
 			var thisObj = this;
 			
 			this.collection = new RoleCollection();
 			this.collection.on('sync', function() {
-				thisObj.displayList();
+				if(thisObj.subContainerExist())
+					thisObj.displayList();
 			});
 			
 			this.collection.on('error', function(collection, response, options) {
@@ -40,7 +42,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 		},
 		
 		displayList: function () {
@@ -53,7 +55,7 @@ define([
 			};
 			
 			var innerListTemplate = _.template( roleInnerListTemplate, data );
-			$("#role-list tbody").html(innerListTemplate);
+			this.subContainer.find("#role-list tbody").html(innerListTemplate);
 			
 			this.generatePagination();
 		},

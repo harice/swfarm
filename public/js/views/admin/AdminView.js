@@ -1,15 +1,16 @@
 define([
 	'backbone',
+	'views/base/AppView',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/admin/adminTemplate.html',
 	'constant',
-], function(Backbone, contentTemplate, adminTemplate, Const){
+], function(Backbone, AppView, contentTemplate, adminTemplate, Const){
 
-	var AdminView = Backbone.View.extend({
+	var AdminView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
-			
+			this.initSubContainer();
 		},
 		
 		render: function(){
@@ -26,7 +27,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 		}
 
 	});

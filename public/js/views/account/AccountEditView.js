@@ -33,6 +33,7 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			var thisObj = this;
 			this.accountId = option.id;
 			this.h1Title = 'Account';
@@ -54,9 +55,11 @@ define([
 			
 			this.model = new AccountModel({id:this.accountId});
 			this.model.on("change", function() {
-				thisObj.displayForm();
-				thisObj.supplyAccountData();
-                thisObj.maskInputs();
+				if(thisObj.subContainerExist()) {
+					thisObj.displayForm();
+					thisObj.supplyAccountData();
+					thisObj.maskInputs();
+				}
 				this.off("change");
 			});
 		},

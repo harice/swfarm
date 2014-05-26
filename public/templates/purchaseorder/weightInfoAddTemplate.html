@@ -1,0 +1,185 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="block-flat">
+            <div class="content">
+              
+              <form id="poWeightInfoFrom" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+                <fieldset>
+                  <legend>Details</legend>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="po-number" class="col-sm-3 control-label">PO No.</label>
+                        <div class="col-sm-7">
+                          <input id="po-number" type="text" class="form-control" maxlength="250" readonly>
+                        </div>
+                      </div>
+					  <div class="form-group">
+                        <label for="producer" class="col-sm-3 control-label">Producer</label>
+                        <div class="col-sm-7">
+                          <input id="producer" type="text" class="form-control" maxlength="250" readonly>
+                        </div>
+                      </div>
+					  <div class="form-group">
+                        <label for="weight-ticket-no" class="col-sm-3 control-label">Weight Ticker No.</label>
+                        <div class="col-sm-7">
+                          <input id="weight-ticket-no" type="text" class="form-control" maxlength="250" readonly>
+                        </div>
+                      </div>
+					  <div class="form-group">
+                        <label for="weight-ticket-no" class="col-sm-3 control-label">Loading Ticket No.</label>
+                        <div class="col-sm-7">
+                          <input id="weight-ticket-no" type="text" class="form-control" maxlength="250" readonly>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="date-and-time" class="col-sm-3 control-label">Date and Time</label>
+                        <div class="col-sm-7">
+                          <input id="date-and-time" type="text" class="form-control" maxlength="250" readonly>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </fieldset>
+                <fieldset>
+                  <legend>Pickup</legend>
+                  <div class="table-responsive">
+                    <table id="pickup-info" class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th style="width:15%;">Scale</th>
+                          <th style="width:20%;">Scale Fee</th>
+                          <th style="width:15%;">Bales</th>
+                          <th style="width:15%;">Gross</th>
+                          <th style="width:15%;">Tare</th>
+                          <th style="width:20%;">Net</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+					    <tr>
+						  <td>
+							<div class="styled-select">
+							  <select class="form-control product_id width-200">
+							    <option value="">Select a scale account</option>
+							  </select>
+							</div>
+						  </td>
+						  <td><span class="scale-fee"></span></td>
+						  <td><input maxlength="80" name="" class="form-control"></td>
+						  <td><input maxlength="80" name="" class="form-control"></td>
+						  <td><input maxlength="80" name="" class="form-control"></td>
+						  <td><span class="net"></span></td>
+						</tr>
+					  </tbody>
+                    </table>
+                  </div>
+				  <div class="table-responsive">
+                    <table id="pickup-product-list" class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th style="width:20%;">Stack No.</th>
+                          <th style="width:20%;">Product</th>
+						  <th style="width:20%;">Bales</th>
+                          <th style="width:20%;">Lbs.</th>
+                          <th style="width:20%;">Net Tons</th>
+                        </tr>
+                      </thead>
+					  <tfoot>
+						<tr>
+						  <td colspan="2">Total</td>
+						  <td><span class="total-bales">0.00</span></td>
+						  <td><span class="total-pounds">0.00</span></td>
+						  <td><span class="total-net-tons">0.00</span></td>
+						</tr>
+					  </tfoot>
+                      <tbody>
+					    <tr>
+						  <td>1</td>
+						  <td>2</td>
+						  <td>3</td>
+						  <td>4</td>
+						  <td>5</td>
+						</tr>
+					  </tbody>
+                    </table>
+                  </div>
+                </fieldset>
+				<fieldset>
+                  <legend>Dropoff</legend>
+                  <div class="table-responsive">
+                    <table id="dropoff-info" class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th style="width:15%;">Scale</th>
+                          <th style="width:20%;">Scale Fee</th>
+                          <th style="width:15%;">Bales</th>
+                          <th style="width:15%;">Gross</th>
+                          <th style="width:15%;">Tare</th>
+                          <th style="width:20%;">Net</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+					    <tr>
+						  <td>
+							<div class="styled-select">
+							  <select class="form-control product_id width-200">
+							    <option value="">Select a scale account</option>
+							  </select>
+							</div>
+						  </td>
+						  <td><span class="scale-fee"></span></td>
+						  <td><input maxlength="80" name="" class="form-control"></td>
+						  <td><input maxlength="80" name="" class="form-control"></td>
+						  <td><input maxlength="80" name="" class="form-control"></td>
+						  <td><span class="net"></span></td>
+						</tr>
+					  </tbody>
+                    </table>
+                  </div>
+				  <div class="table-responsive">
+                    <table id="dropoff-product-list" class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th style="width:20%;">Stack No.</th>
+                          <th style="width:20%;">Product</th>
+                          <th style="width:20%;">Bales</th>
+						  <th style="width:20%;">Lbs.</th>
+                          <th style="width:20%;">Net Tons</th>
+                        </tr>
+                      </thead>
+					  <tfoot>
+						<tr>
+						  <td colspan="2">Total</td>
+						  <td><span class="total-bales">0.00</span></td>
+						  <td><span class="total-pounds">0.00</span></td>
+						  <td><span class="total-net-tons">0.00</span></td>
+						</tr>
+					  </tfoot>
+                      <tbody>
+					    <tr>
+						  <td>1</td>
+						  <td>2</td>
+						  <td>3</td>
+						  <td>4</td>
+						  <td>5</td>
+						</tr>
+					  </tbody>
+                    </table>
+                  </div>
+                </fieldset>
+                <div class="form-group form-button-container">
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            <button id="save" type="submit" class="save btn btn-primary">Save</button>
+                            <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+              </form>
+              
+            </div> <!-- /.content -->
+        </div> <!-- /.block-flat -->
+    </div>
+</div>

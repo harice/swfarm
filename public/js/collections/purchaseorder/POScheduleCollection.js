@@ -2,9 +2,8 @@ define([
 	'backbone',
 	'collections/base/ListViewCollection',
 	'models/purchaseorder/POScheduleModel',
-	'collections/bid/BidCollection',
-], function(Backbone, ListViewCollection, POScheduleModel, BidCollection){
-	var POScheduleCollection = BidCollection.extend({
+], function(Backbone, ListViewCollection, POScheduleModel){
+	var POScheduleCollection = ListViewCollection.extend({
 		url: '/apiv1/transportschedule/getAllPickupSchedules',
 		model: POScheduleModel,
 		initialize: function(option){

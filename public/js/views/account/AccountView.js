@@ -12,11 +12,13 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			var thisObj = this;
 			
 			this.model = new AccountModel({id:option.id});
 			this.model.on("change", function() {
-				thisObj.displayAccount();
+				if(thisObj.subContainerExist())
+					thisObj.displayAccount();
 				this.off("change");
 			});
 		},
@@ -39,7 +41,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.initConfirmationWindow('Are you sure you want to delete this account?',
 										'confirm-delete-account',
@@ -58,7 +60,8 @@ define([
             this.model.destroy({
                 success: function (model, response, options) {
                     thisObj.displayMessage(response);
-                    Global.getGlobalVars().app_router.navigate(Const.URL.ACCOUNT, {trigger: true});
+                    //Global.getGlobalVars().app_router.navigate(Const.URL.ACCOUNT, {trigger: true});
+					Backbone.history.history.back();
                 },
                 error: function (model, response, options) {
                     thisObj.displayMessage(response);

@@ -21,8 +21,8 @@ class SettingsController extends BaseController {
 	 */
 	public function index()
 	{
-        // $result = $this->repo->findAll( Input::all() );
-        // return Response::json($result);
+         $result = $this->repo->findAll( Input::all() );
+         return Response::json($result);
 	}
 
 	/**
@@ -32,8 +32,8 @@ class SettingsController extends BaseController {
 	 */
 	public function store()
 	{
-		// $response = $this->repo->store(Input::all());
-  //       return Response::json($response);
+		 $response = $this->repo->store(Input::all());
+         return Response::json($response);
 	}
 
 	/**
@@ -44,8 +44,8 @@ class SettingsController extends BaseController {
 	 */
 	public function show($id)
 	{
-        // $model = $this->repo->findById($id);
-        // return Response::json($model);
+         $model = $this->repo->findById($id);
+         return Response::json($model);
 	}
 
 	/**
@@ -56,8 +56,8 @@ class SettingsController extends BaseController {
 	 */
 	public function update($id)
 	{
-		// $response = $this->repo->update($id, Input::all());
-  //       return Response::json($response);
+		 $response = $this->repo->update($id, Input::all());
+         return Response::json($response);
 	}
 
 	/**
@@ -68,18 +68,24 @@ class SettingsController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		// $response = $this->repo->destroy($id);
-  //       return Response::json($response);
+		 $response = $this->repo->destroy($id);
+         return Response::json($response);
 	}
 
-	public function settings(){
-		$response = $this->repo->getSettings(Input::get('name'));
-        return Response::json($response);
-	}
-
+    /**
+     * Get Transport settings
+     * 
+     * @return Response
+     */
 	public function getTransportSettings(){
 		$response = $this->repo->getTransportSettings();
         return Response::json($response);
 	}
+    
+    public function updateSettings()
+    {
+        $response = $this->repo->updateSettings( Input::all() );
+        return Response::json($response);
+    }
 
 }

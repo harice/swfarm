@@ -43,6 +43,7 @@ define([
 		producerAutoCompleteView: null,
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			var thisObj = this;
 			this.isBid = false;
 			this.isConvertToPO = false;
@@ -80,8 +81,12 @@ define([
 						desc:productModels.get('description'),
 					});
 				});
-				thisObj.displayForm();
-				thisObj.supplyPOData();
+				
+				if(thisObj.subContainerExist()) {
+					thisObj.displayForm();
+					thisObj.supplyPOData();
+					thisObj.maskInputs();
+				}
 				this.off('sync');
 			});
 			this.productCollection.on('error', function(collection, response, options) {

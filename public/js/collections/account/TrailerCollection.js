@@ -12,7 +12,6 @@ define([
 		
 		getTrailerByAccountId: function (id) {
 			this.url = this.getDefaultURL()+'?accountId='+id;
-			console.log(this.url);
 			this.getModels();
 		},
 	});
