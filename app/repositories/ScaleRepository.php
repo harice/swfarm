@@ -21,6 +21,26 @@ class ScaleRepository implements ScaleRepositoryInterface {
         }
     }
     
+    public function search($_search)
+    {
+        try
+        {
+            $perPage = isset($_search['perpage']) ? $_search['perpage'] : 15;
+            
+            $searchWord = $_search['search'];
+            
+            return Scale::with('account')
+                ->where(function ($query) use ($searchWord) {
+                    $query->where('name','like','%'.$searchWord.'%');
+                })
+                ->paginate($perPage);
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
+    }
+    
     public function findById($id)
     {
         try
