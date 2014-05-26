@@ -112,7 +112,7 @@ define([
 				options += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
 			
-			this.$el.find('#product_id').html(options);
+			this.$el.find('#product_id').append(options);
 		},
 		
 		events: {
