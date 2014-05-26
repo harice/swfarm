@@ -129,7 +129,7 @@ define([
 			
 			this.initValidateForm();
 			
-			this.generateOrigin();
+			// this.generateOrigin();
 			this.generateNatureOfSale();
 			this.initCustomerAutocomplete();
 			this.initCalendar();
