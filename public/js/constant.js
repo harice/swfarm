@@ -120,7 +120,7 @@ define(function () {
 		'PO': {
 			'PICKUPSCHEDULE': {
 				'EDITABLERATE': {
-					'ACCOUNTTYPE': ['hauler'],
+					'ACCOUNTTYPE': ['hauler', 'operator'],
 				},
 			},
 		},

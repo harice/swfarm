@@ -59,6 +59,7 @@ define([
 				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
+				removeComma: ['unitprice', 'tons', 'bales'],
 			};
 			
 			this.destinationCollection = new DestinationCollection();
@@ -85,7 +86,6 @@ define([
 				if(thisObj.subContainerExist()) {
 					thisObj.displayForm();
 					thisObj.supplyPOData();
-					thisObj.maskInputs();
 				}
 				this.off('sync');
 			});
@@ -132,12 +132,15 @@ define([
 			
 			if(!this.isBid) {
 				if(this.model.get('transportdatestart')) {
-					var date = this.convertDateFormat(this.model.get('transportdatestart').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-');
-					this.$el.find('#start-date .input-group.date').datepicker('update', date);
+					var startDate = this.convertDateFormat(this.model.get('transportdatestart').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-');
+					this.$el.find('#start-date .input-group.date').datepicker('update', startDate);
+					this.$el.find('#end-date .input-group.date').datepicker('setStartDate', startDate);
 				}
+				
 				if(this.model.get('transportdateend')) {
-					var date = this.convertDateFormat(this.model.get('transportdateend').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-');
-					this.$el.find('#end-date .input-group.date').datepicker('update', date);
+					var endDate = this.convertDateFormat(this.model.get('transportdateend').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-');
+					this.$el.find('#end-date .input-group.date').datepicker('update', endDate);
+					this.$el.find('#start-date .input-group.date').datepicker('setEndDate', endDate);
 				}
 			}
 			this.$el.find('#notes').val(this.model.get('notes'));
@@ -151,11 +154,12 @@ define([
 				productFields.find('.product_id').val(product.product.id);
 				productFields.find('.description').val(product.description);
 				productFields.find('.stacknumber').val(product.stacknumber);
-				productFields.find('.unitprice').val(product.unitprice);
-				productFields.find('.tons').val(product.tons);
-				productFields.find('.bales').val(product.bales);
+				productFields.find('.unitprice').val(thisObj.addCommaToNumber(parseFloat(product.unitprice).toFixed(2)));
+				productFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(product.tons).toFixed(4)));
+				productFields.find('.bales').val(thisObj.addCommaToNumber(product.bales));
 				productFields.find('.ishold').val(product.ishold);
-				productFields.find('.unitprice').blur();
+				var unitPrice = parseFloat(product.unitprice) * parseFloat(product.tons);
+				productFields.find('.unit-price').val(thisObj.addCommaToNumber(unitPrice.toFixed(2)));
 			});
 		},
 		

@@ -123,6 +123,9 @@ define([
 		},
 		
 		addCommaToNumber: function (number, dLimit) {
+			if(typeof number !== 'string')
+				number = number.toString();
+			
 			var negative = false;
 			if(number.charAt(0) == '-') {
 				negative = true;
@@ -163,6 +166,9 @@ define([
 		},
 		
 		removeCommaFromNumber: function (number) {
+			if(typeof number !== 'string')
+				number = number.toString();
+				
 			return parseFloat(number.replace(/,/g,''));
 		},
 		

@@ -1,8 +1,5 @@
 <tr class="product-item">
 	<td style="width: 150px;">
-		<!--<input type="hidden" class="id" name="id" value="" />
-		<input class="form-control productname" type="text" name="productname" maxlength="50"/>
-		<input type="hidden" class="form-control product_id product" name="product_id" value="">-->
 		<input type="hidden" class="id" name="id" value="" />
         <div class="styled-select">
             <select class="form-control product_id width-160" name="product_id"><%= product_list %></select>
@@ -11,12 +8,12 @@
     <td><input class="form-control description" name="description" maxlength="80"></td>
 	<td><input class="form-control stacknumber" type="text" name="stacknumber" maxlength="20" required></td>
 	<td>
-		<div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right price unitprice mask-unitprice" type="text" name="unitprice" placeholder="0.00" value="" required></div>
+		<div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right price unitprice" type="text" name="unitprice" placeholder="0.00" value="" required></div>
 		<div class="error-msg-cont"></div>
 	</td>
-	<td><input class="form-control text-right number tons mask-tons" type="text" name="tons" maxlength="12"></td>
-	<td><input class="form-control text-right number bales mask-bales" type="text" name="bales"></td>
-	<td><div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right unit-price mask-totalprice" type="text" value="0.00" readonly></div></td>
+	<td><input class="form-control text-right tons" type="text" name="tons" maxlength="12"></td>
+	<td><input class="form-control text-right bales" type="text" name="bales"></td>
+	<td><div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right unit-price" type="text" value="0.00" readonly></div></td>
 	<% if (typeof is_bid === "undefined") { %>
 	<td>
         <div class="styled-select">

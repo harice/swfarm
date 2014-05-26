@@ -4,7 +4,7 @@
             <div class="content">
               
               <form id="poWeightInfoFrom" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-                <fieldset>
+				<fieldset>
                   <legend>Details</legend>
                   <div class="row">
                     <div class="col-md-6">
@@ -20,6 +20,7 @@
                           <input id="producer" type="text" class="form-control" maxlength="250" readonly>
                         </div>
                       </div>
+					  <% if (typeof wiId !== "undefined") { %>
 					  <div class="form-group">
                         <label for="weight-ticket-no" class="col-sm-3 control-label">Weight Ticker No.</label>
                         <div class="col-sm-7">
@@ -27,11 +28,12 @@
                         </div>
                       </div>
 					  <div class="form-group">
-                        <label for="weight-ticket-no" class="col-sm-3 control-label">Loading Ticket No.</label>
+                        <label for="loading-ticket-no" class="col-sm-3 control-label">Loading Ticket No.</label>
                         <div class="col-sm-7">
-                          <input id="weight-ticket-no" type="text" class="form-control" maxlength="250" readonly>
+                          <input id="loading-ticket-no" type="text" class="form-control" maxlength="250" readonly>
                         </div>
                       </div>
+					  <% } %>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
@@ -139,7 +141,7 @@
 							  </select>
 							</div>
 						  </td>
-						  <td><input id="pickup-fee" maxlength="80" name="dropoff-fee" class="form-control fee" placeholder="0.00" required readonly></td>
+						  <td><input id="dropoff-fee" maxlength="80" name="dropoff-fee" class="form-control fee" placeholder="0.00" required readonly></td>
 						  <td><input maxlength="80" name="dropoff-bales" class="form-control bales mask-bales" placeholder="0" required></td>
 						  <td><input maxlength="80" name="dropoff-gross" class="form-control gross" placeholder="0.0000" required></td>
 						  <td><input maxlength="80" name="dropoff-tare" class="form-control tare" placeholder="0.0000" required></td>
@@ -175,7 +177,7 @@
                     <div class="col-md-12">
                         <div class="pull-right">
                             <button id="save" type="submit" class="save btn btn-primary">Save</button>
-                            <a class="btn btn-default" href="<%= previous_po_sched_url %>">Cancel</a>
+                            <a class="btn btn-default" href="<%= cancel_url %>">Cancel</a>
                         </div>
                     </div>
                 </div>

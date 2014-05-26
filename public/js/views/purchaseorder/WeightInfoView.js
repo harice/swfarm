@@ -4,6 +4,8 @@ define([
 	'views/base/AppView',
 	'jqueryvalidate',
 	'jquerytextformatter',
+	'models/purchaseorder/PurchaseOrderModel',
+	'models/purchaseorder/POScheduleModel',
 	'models/purchaseorder/POWeightInfoModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/weightInfoViewTemplate.html',
@@ -15,6 +17,8 @@ define([
 			AppView,
 			Validate,
 			TextFormatter,
+			PurchaseOrderModel,
+			POScheduleModel,
 			POWeightInfoModel,
 			contentTemplate,
 			weightInfoViewTemplate,
@@ -35,13 +39,28 @@ define([
 			this.h1Title = 'Weight Info';
 			this.h1Small = 'view';
 			
+			this.purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
+			this.purchaseOrderModel.on('change', function() {
+				thisObj.poScheduleModel.runFetch();
+				thisObj.off('change');
+			});
+			
+			this.poScheduleModel = new POScheduleModel({id:this.schedId});
+			this.poScheduleModel.on('change', function() {
+				thisObj.model.runFetch();
+				thisObj.off('change');
+			});
+			
 			this.model = new POWeightInfoModel({id:this.schedId});
 			this.model.on('change', function() {
-				if(typeof this.get('weightTicketNumber') === 'undefined')
-					Global.getGlobalVars().app_router.navigate(Const.URL.POWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD, {trigger: true});
-				else {
-					thisObj.displayForm();
-					thisObj.supplyWeightInfoData();
+				if(thisObj.subContainerExist()) {
+					if(typeof this.get('weightTicketNumber') === 'undefined')
+						Global.getGlobalVars().app_router.navigate(Const.URL.POWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD, {trigger: true});
+					else {
+						
+						thisObj.displayForm();
+						thisObj.supplyWeightInfoData();
+					}
 				}
 				
 				this.off('change');
@@ -49,7 +68,7 @@ define([
 		},
 		
 		render: function(){
-			this.model.runFetch();
+			this.purchaseOrderModel.runFetch();
 		},
 		
 		displayForm: function () {
@@ -72,8 +91,20 @@ define([
 		},
 		
 		supplyWeightInfoData: function () {
+			var thisObj = this;
 			var pickupInfo = this.model.get('weightticketscale_pickup');
 			var dropoffInfo = this.model.get('weightticketscale_dropoff');
+			
+			var dateAndTime = this.convertDateFormat(this.poScheduleModel.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-')
+								+' '+this.poScheduleModel.get('scheduletimeHour')
+								+':'+this.poScheduleModel.get('scheduletimeMin')
+								+' '+this.poScheduleModel.get('scheduletimeAmPm');
+			
+			this.$el.find('#po-number').val(this.purchaseOrderModel.get('order_number'));
+			this.$el.find('#producer').val(this.purchaseOrderModel.get('account').name);
+			this.$el.find('#date-and-time').val(dateAndTime);
+			this.$el.find('#weight-ticket-no').val(this.model.get('weightTicketNumber'));
+			this.$el.find('#loading-ticket-no').val(this.model.get('loadingTicketNumber'));
 			
 			this.$el.find('#pickup-info .scale-account').val(pickupInfo.scaler_account[0].name);
 			this.$el.find('#pickup-info .scale-name').val(pickupInfo.scale.name);
@@ -92,6 +123,57 @@ define([
 			this.$el.find('#dropoff-info .tare').val(this.addCommaToNumber(dropoffInfo.tare));
 			var dropffNet = parseFloat(dropoffInfo.gross) - parseFloat(dropoffInfo.tare);
 			this.$el.find('#dropoff-info .net').text(this.addCommaToNumber(dropffNet.toFixed(4)));
+			
+			var pickupProductsBalesTotal = 0;
+			var pickupProductsPoundsTotal = 0;
+			var pickupProductsNetTotal = 0;
+			_.each(pickupInfo.weightticketproducts, function (product) {
+				
+				var net = parseFloat(product.pounds) * Const.LB2TON;
+				pickupProductsNetTotal += net;
+				pickupProductsBalesTotal += parseFloat(product.bales);
+				pickupProductsPoundsTotal += parseFloat(product.pounds);
+				
+				var variables = {
+					stack_number: product.transportscheduleproduct.productorder.stacknumber,
+					name: product.transportscheduleproduct.productorder.product.name,
+					bales: thisObj.addCommaToNumber(product.bales),
+					pounds: thisObj.addCommaToNumber(product.pounds),
+					net: net.toFixed(4),
+				};
+				
+				var productItemTemplate = _.template(weightInfoViewProductItemTemplate, variables);
+				thisObj.$el.find('#pickup-product-list tbody').append(productItemTemplate);
+			});
+			thisObj.$el.find('#pickup-product-list tfoot .total-bales').text(this.addCommaToNumber(pickupProductsBalesTotal.toString()));
+			thisObj.$el.find('#pickup-product-list tfoot .total-pounds').text(this.addCommaToNumber(pickupProductsPoundsTotal.toFixed(2)));
+			thisObj.$el.find('#pickup-product-list tfoot .total-net-tons').text(this.addCommaToNumber(pickupProductsNetTotal.toFixed(4)));
+
+			
+			var dropoffProductsBalesTotal = 0;
+			var dropoffProductsPoundsTotal = 0;
+			var dropoffProductsNetTotal = 0;
+			_.each(dropoffInfo.weightticketproducts, function (product) {
+				
+				var net = parseFloat(product.pounds) * Const.LB2TON;
+				dropoffProductsNetTotal += net;
+				dropoffProductsBalesTotal += parseFloat(product.bales);
+				dropoffProductsPoundsTotal += parseFloat(product.pounds);
+				
+				var variables = {
+					stack_number: product.transportscheduleproduct.productorder.stacknumber,
+					name: product.transportscheduleproduct.productorder.product.name,
+					bales: thisObj.addCommaToNumber(product.bales),
+					pounds: thisObj.addCommaToNumber(product.pounds),
+					net: net.toFixed(4),
+				};
+				
+				var productItemTemplate = _.template(weightInfoViewProductItemTemplate, variables);
+				thisObj.$el.find('#dropoff-product-list tbody').append(productItemTemplate);
+			});
+			thisObj.$el.find('#dropoff-product-list tfoot .total-bales').text(this.addCommaToNumber(dropoffProductsBalesTotal.toString()));
+			thisObj.$el.find('#dropoff-product-list tfoot .total-pounds').text(this.addCommaToNumber(dropoffProductsPoundsTotal.toFixed(2)));
+			thisObj.$el.find('#dropoff-product-list tfoot .total-net-tons').text(this.addCommaToNumber(dropoffProductsNetTotal.toFixed(4)));
 		},
 	});
 
