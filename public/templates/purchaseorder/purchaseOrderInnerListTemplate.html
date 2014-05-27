@@ -16,7 +16,7 @@
 		<td><%= po.get("account").name %></td>
 		<td><label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label></td>
 		<td><%= po.get("location").location %></td>
-		<td class="text-right">$ <%= parseFloat(po.get("totalPrice")).toFixed(2) %></td>
+		<td class="text-right">$ <%= po.get("totalPrice") %></td>
 		<td>
 			<% if (po.get("status").name.toLowerCase() == "open") { %>
 				<a href="<%= po_sched_url %>/<%= po.get("id") %>" class="text-primary" title="schedule">

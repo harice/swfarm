@@ -12,15 +12,14 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			var thisObj = this;
 			
 			this.model = new RoleModel({id:option.id});
 			this.model.on("change", function() {
-				console.log('onChange: RoleModel');
-				if(this.hasChanged('name')) {
+				if(thisObj.subContainerExist())
 					thisObj.displayRole(this);
-					this.off("change");
-				}
+				this.off("change");
 			});
 		},
 		
@@ -41,7 +40,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
             
             this.initConfirmationWindow('Are you sure you want to delete this role?',
 										'confirm-delete-role',
@@ -49,6 +48,7 @@ define([
 		},
 		
 		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
             'click #delete-role': 'showConfirmationWindow',
 			'click #confirm-delete-role': 'deleteRole',
 		},
@@ -59,7 +59,8 @@ define([
             this.model.destroy({
                 success: function (model, response, options) {
                     thisObj.displayMessage(response);
-                    Global.getGlobalVars().app_router.navigate(Const.URL.ROLE, {trigger: true});
+                    //Global.getGlobalVars().app_router.navigate(Const.URL.ROLE, {trigger: true});
+					Backbone.history.history.back();
                 },
                 error: function (model, response, options) {
                     thisObj.displayMessage(response);

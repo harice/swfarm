@@ -34,6 +34,8 @@ define([
 		
 		initialize: function() {
 			this.extendListEvents();
+			this.initSubContainer();
+			
 			var thisObj = this;
 			
 			this.collection = new SalesOrderCollection();
@@ -47,7 +49,8 @@ define([
 						model.set('transportdateend', thisObj.convertDateFormat(model.get('transportdateend').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
 				});
 				
-				thisObj.displayList();
+				if(thisObj.subContainerExist())
+					thisObj.displayList();
 			});
 			this.collection.on('error', function(collection, response, options) {
 				this.off('error');
@@ -73,8 +76,10 @@ define([
 			
 			this.soStatusCollection = new SOStatusCollection();
 			this.soStatusCollection.on('sync', function() {
-				thisObj.displaySO();
-				thisObj.renderList(1);
+				if(thisObj.subContainerExist()) {
+					thisObj.displaySO();
+					thisObj.renderList(1);
+				}
 				this.off('sync');
 			});
 			this.soStatusCollection.on('error', function(collection, response, options) {
@@ -104,7 +109,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.initCalendars();
 			
@@ -118,13 +123,13 @@ define([
 			var data = {
 				so_url: '#/'+Const.URL.SO,
 				so_edit_url: '#/'+Const.URL.SO+'/'+Const.CRUD.EDIT,
-				so_sched_url: '',
+				so_sched_url: '#/'+Const.URL.DELIVERYSCHEDULE,
 				sos: this.collection.models,
 				_: _ 
 			};
 			
 			var innerListTemplate = _.template(salesOrderInnerListTemplate, data);
-			$("#so-list tbody").html(innerListTemplate);
+			this.subContainer.find("#so-list tbody").html(innerListTemplate);
 			
 			this.generatePagination();
 		},
@@ -185,7 +190,6 @@ define([
 		
 		events: {
 			'click .sort-date-of-so' : 'sortSODate',
-			'click .cancel-so' : 'cancelSO',
 			'change .location_id' : 'filterByOrigin',
 			'change .natureofsale_id' : 'filterByNatureOfSale',
 			'change .statusFilter' : 'filterByStatus',

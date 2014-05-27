@@ -32,6 +32,8 @@ define([
 		
 		initialize: function() {
 			this.extendListEvents();
+			this.initSubContainer();
+			
 			var thisObj = this;
 			
 			this.collection = new PurchaseOrderCollection();
@@ -45,7 +47,8 @@ define([
 						model.set('transportdateend', thisObj.convertDateFormat(model.get('transportdateend').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
 				});
 				
-				thisObj.displayList();
+				if(thisObj.subContainerExist())
+					thisObj.displayList();
 			});
 			this.collection.on('error', function(collection, response, options) {
 				this.off('error');
@@ -63,8 +66,11 @@ define([
 			
 			this.poStatusCollection = new POStatusCollection();
 			this.poStatusCollection.on('sync', function() {	
-				thisObj.displayPO();
-				thisObj.renderList(1);
+				if(thisObj.subContainerExist()) {
+					thisObj.displayPO();
+					thisObj.renderList(1);
+				}
+				
 				this.off('sync');
 			});
 			
@@ -94,7 +100,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.initCalendars();
 			
@@ -114,7 +120,7 @@ define([
 			};
 			
 			var innerListTemplate = _.template(purchaseOrderInnerListTemplate, data);
-			$("#po-list tbody").html(innerListTemplate);
+			this.subContainer.find("#po-list tbody").html(innerListTemplate);
 			
 			this.generatePagination();
 		},

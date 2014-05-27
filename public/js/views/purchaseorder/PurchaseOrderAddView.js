@@ -43,6 +43,7 @@ define([
 		producerAutoCompleteView: null,
 		
 		initialize: function() {
+			this.initSubContainer();
 			var thisObj = this;
 			this.isBid = false;
 			this.isConvertToPO = false;
@@ -80,7 +81,10 @@ define([
 						desc:productModels.get('description'),
 					});
 				});
-				thisObj.displayForm();
+				
+				if(thisObj.subContainerExist())
+					thisObj.displayForm();
+				
 				this.off('sync');
 			});
 			this.productCollection.on('error', function(collection, response, options) {
@@ -113,7 +117,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.initValidateForm();
 			
@@ -121,7 +125,8 @@ define([
 			this.initProducerAutocomplete();
 			this.initCalendar();
 			this.addProduct();
-			
+			this.maskInputs();
+            
 			this.otherInitializations();
 		},
 		
@@ -130,14 +135,19 @@ define([
 			
 			var validate = $('#poForm').validate({
 				submitHandler: function(form) {
-					console.log($(form).serializeObject());
 					var data = thisObj.formatFormField($(form).serializeObject());
-					//console.log(data);
 					
 					if(typeof data['transportdatestart'] != 'undefined')
 						data['transportdatestart'] = thisObj.convertDateFormat(data['transportdatestart'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					if(typeof data['transportdateend'] != 'undefined')
 						data['transportdateend'] = thisObj.convertDateFormat(data['transportdateend'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
+                    
+                    // Remove commas on tons and bales
+                    var index;
+                    for (index = 0; index < data['products'].length; ++index) {
+                        data['products'][index]['tons'] = data['products'][index]['tons'].replace(/,/g , '');
+                        data['products'][index]['bales'] = data['products'][index]['bales'].replace(/,/g , '');
+                    }
 					
 					if(thisObj.isBid)
 						data['isfrombid'] = '1';
@@ -145,7 +155,7 @@ define([
 					if(thisObj.isConvertToPO)
 						data['createPO'] = '1';
 					
-					//console.log(data);
+					// console.log(data);
 					
 					var purchaseOrderModel = new PurchaseOrderModel(data);
 					
@@ -379,7 +389,7 @@ define([
 			'keyup .tons': 'onKeyUpTons',
 			'click #convert-po': 'convertPO',
 			'click #cancel-po': 'showConfirmationWindow',
-			'click #confirm-cancel-po': 'cancelPO',
+			'click #confirm-cancel-po': 'cancelPO'
 		},
 		
 		removeProduct: function (ev) {
@@ -429,7 +439,7 @@ define([
 			var tons = (!isNaN(parseFloat(tonsField.val())))? parseFloat(tonsField.val()) : 0;
 			
 			field.val(bidPrice);
-			this.toFixedValue(field, 2)
+			// this.toFixedValue(field, 2);
 			this.computeUnitePrice(bidPrice, tons, field.closest('.product-item').find('.unit-price'));
 		},
 		
@@ -455,7 +465,8 @@ define([
 		computeUnitePrice: function (bidPrice, tonsOrBales, unitePriceField) {
 			var unitPrice = 0;
 			unitPrice = tonsOrBales * bidPrice;
-			unitePriceField.val(unitPrice.toFixed(2));
+            console.log(unitPrice);
+			$(unitePriceField).text(unitPrice);
 		},
 		
 		cancelPO: function () {

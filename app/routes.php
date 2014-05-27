@@ -101,12 +101,15 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('farmlocation', 'APIv1\FarmLocationController');
     
     // Stack
+    Route::get('stack/search', 'APIv1\StackController@search');
     Route::resource('stack', 'APIv1\StackController');
     
     // Scale
+    Route::get('scale/search', 'APIv1\ScaleController@search');
     Route::resource('scale', 'APIv1\ScaleController');
     
     // Trailer
+    Route::get('trailer/search', 'APIv1\TrailerController@search');
     Route::resource('trailer', 'APIv1\TrailerController');
     
     // Truck
@@ -116,8 +119,9 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('fee', 'APIv1\FeeController');
 
     // settings
-    Route::get('settings', 'APIv1\SettingsController@settings');
     Route::get('settings/getTransportSettings', 'APIv1\SettingsController@getTransportSettings');
+    Route::put('settings', 'APIv1\SettingsController@updateSettings');
+    Route::resource('settings', 'APIv1\SettingsController');
     
 });
 

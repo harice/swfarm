@@ -27,6 +27,7 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
+			this.initSubContainer();
 			var thisObj = this;
 			this.scaleId = null;
 			this.h1Title = 'Scale';
@@ -34,7 +35,8 @@ define([
 			
 			this.scalerAccountCollection = new AccountCollection();
 			this.scalerAccountCollection.on('sync', function() {
-				thisObj.displayForm();
+				if(thisObj.subContainerExist())
+					thisObj.displayForm();
 				this.off('sync');
 			});
 			this.scalerAccountCollection.on('error', function(collection, response, options) {
@@ -62,12 +64,12 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.generateScalerAccount();
 			this.focusOnFirstField();
 			this.initValidateForm();
-			
+			this.maskInputs();
 			this.otherInitializations();
 		},
 		

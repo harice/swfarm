@@ -22,6 +22,7 @@
                                 <div class="col-sm-5">
                                     <div class="styled-select">
                                         <select class="form-control" id="accounttype" name="accounttype">
+                                            <option value="">Select an account type</option>
                                             <% _.each(account_types, function(account_type){ %>
                                             <option value="<%= account_type.id %>"><%= account_type.name %></option>
                                             <% }); %>

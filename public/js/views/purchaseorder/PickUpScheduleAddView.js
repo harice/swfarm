@@ -45,6 +45,7 @@ define([
 		accountLoaderDestinationAutoCompleteView: null,
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			this.poId = option.poId;
 			this.schedId = null;
 			this.h1Title = 'Pick Up Schedule';
@@ -109,7 +110,8 @@ define([
 			
 			this.loaderAccountCollection = new AccountCollection();
 			this.loaderAccountCollection.on('sync', function() {
-				thisObj.displayForm();
+				if(thisObj.subContainerExist())
+					thisObj.displayForm();
 				this.off('sync');
 			});
 			this.loaderAccountCollection.on('error', function(collection, response, options) {
@@ -184,7 +186,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.initValidateForm();
 			
@@ -193,6 +195,7 @@ define([
 			this.addProduct();
 			
 			this.postDisplayForm();
+            this.maskInputs();
 		},
 		
 		initValidateForm: function () {
@@ -203,7 +206,12 @@ define([
 					var data = thisObj.formatFormField($(form).serializeObject());
 					
 					data['scheduledate'] = thisObj.convertDateFormat(data['scheduledate'], thisObj.dateFormat, thisObj.dateFormatDB, '-');
-					//console.log(data);
+					
+                    // Remove commas on tons and bales
+                    var index;
+                    for (index = 0; index < data['products'].length; ++index) {
+                        data['products'][index]['quantity'] = data['products'][index]['quantity'].replace(/,/g , '');
+                    }
 					
 					var poScheduleModel = new POScheduleModel(data);
 					
@@ -467,7 +475,7 @@ define([
 			'blur .loader': 'onBlurLoader',
 			'keyup .quantity': 'onKeyUpQuantity',
 			'blur .quantity': 'onBlurQuantity',
-			'click #delete-schedule': 'deleteSchedule',
+			'click #delete-schedule': 'deleteSchedule'
 		},
 		
 		onChangeProduct: function (ev) {

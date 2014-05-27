@@ -12,14 +12,14 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			var thisObj = this;
 			
 			this.model = new ContactModel({id:option.id});
 			this.model.on("change", function() {
-				if(this.hasChanged('lastname')) {
+				if(thisObj.subContainerExist())
 					thisObj.displayContact(this);
-					this.off("change");
-				}
+				this.off("change");
 			});
 		},
 		
@@ -40,7 +40,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.initConfirmationWindow('Are you sure you want to delete this contact?',
 										'confirm-delete-contact',

@@ -17,7 +17,7 @@ class CreateScaleTable extends Migration {
 			$table->engine = 'InnoDB';
             $table->increments('id');
 			$table->integer('account_id')->unsigned();
-            $table->string('name', 20);
+            $table->string('name', 20)->unique();
 			$table->timestamps();
             
             $table->foreign('account_id')->references('id')->on('account');

@@ -1,16 +1,18 @@
 define([
 	'backbone',
+	'views/base/AppView',
 	'collections/audittrail/AuditTrailCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/audittrail/auditTrailListTemplate.html',
 	'text!templates/audittrail/auditTrailInnerListTemplate.html',
 	'constant',
-], function(Backbone, AuditTrailCollection, contentTemplate, auditTrailListTemplate, auditTrailInnerListTemplate, Const){
+], function(Backbone, AppView, AuditTrailCollection, contentTemplate, auditTrailListTemplate, auditTrailInnerListTemplate, Const){
 
-	var AuditTrailListView = Backbone.View.extend({
+	var AuditTrailListView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(options) {
+			this.initSubContainer();
 			var thisObj = this;
 			
 			this.collection = new AuditTrailCollection();
@@ -48,7 +50,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 		},
 		
 		displayList: function () {
@@ -59,7 +61,7 @@ define([
 			};
 			
 			var innerListTemplate = _.template(auditTrailInnerListTemplate, data);
-			$("#audit-trail-list tbody").html(innerListTemplate);
+			this.subContainer.find("#audit-trail-list tbody").html(innerListTemplate);
 			
 			this.generatePagination(this.collection.options.maxItem, Const.MAXITEMPERPAGE);
 		},

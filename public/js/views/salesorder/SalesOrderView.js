@@ -47,14 +47,17 @@ define([
 		customerAutoCompleteView: null,
 		
 		initialize: function(option) {
+			this.initSubContainer();
 			var thisObj = this;
 			
 			this.soId = option.id;
 			
 			this.model = new SalesOrderModel({id:this.soId});
 			this.model.on('change', function() {
-				thisObj.displayForm();
-				thisObj.supplySOData();
+				if(thisObj.subContainerExist()) {
+					thisObj.displayForm();
+					thisObj.supplySOData();
+				}
 				this.off('change');
 			});
 		},
@@ -82,7 +85,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 		},
 		
 		supplySOData: function () {

@@ -1,0 +1,24 @@
+<% if (!_.isEmpty(schedules)) { %>
+	<% _.each(schedules, function(schedule){ %>
+	<tr>
+		<td><a href="<%= so_schedule_url %>/<%= schedule.get("id") %>"><%= schedule.get("scheduledate") %> <%= schedule.get("scheduletimeHour") %>:<%= schedule.get("scheduletimeMin") %> <%= schedule.get("scheduletimeAmPm") %></a></td>
+		<td><%= schedule.get("trucker").accountidandname.accounttype[0].name %></td>
+		<td><%= schedule.get("trucker").lastname %>, <%= schedule.get("trucker").firstname %> <%= schedule.get("trucker").suffix %></td>
+		<td><%= schedule.get("originloader").lastname %>, <%= schedule.get("originloader").firstname %> <%= schedule.get("originloader").suffix %></td>
+		<td><%= schedule.get("destinationloader").lastname %>, <%= schedule.get("destinationloader").firstname %> <%= schedule.get("destinationloader").suffix %></td>
+		<td><%= schedule.get("distance") %> miles</td>
+		<td>
+			<a href="<%= so_schedule_edit_url %>/<%= schedule.get("id") %>" class="btn btn-info btn-xs" title="edit">
+			  <span class="glyphicon glyphicon-pencil"></span>
+			</a>
+			<a href="#" data-id="<%= schedule.get("id") %>" class="btn btn-danger btn-xs delete-schedule" title="delete">
+			  <span class="glyphicon glyphicon-off"></span>
+			</a>
+		</td>
+	</tr>
+	<% }); %>
+<% } else { %>
+	<tr>
+		<td colspan="7">No result found.</td>
+	</tr>
+<% } %>

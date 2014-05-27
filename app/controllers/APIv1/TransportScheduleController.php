@@ -78,12 +78,10 @@ class TransportScheduleController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		return $this->repo->deleteTransportSchedule($id);
+		$collection = $this->repo->deleteTransportSchedule($id);
+        return Response::json($collection);
 	}
 
-	public function getLoaderAccount(){
-		return $this->repo->getLoaderAccount(Input::get('search'));
-	}
 
 	public function getTruckingRate(){
 		return Response::json(array(

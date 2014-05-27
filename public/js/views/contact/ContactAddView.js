@@ -35,6 +35,7 @@ define([
 		accountAutoCompleteView: null,
 		
 		initialize: function() {
+			this.initSubContainer();
 			this.contactId = null;
 			this.h1Title = 'Contacts';
 			this.h1Small = 'add';
@@ -62,7 +63,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.$el.html(compiledTemplate);
+			this.subContainer.html(compiledTemplate);
 			
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
 			this.$el.find('.lowercase').textFormatter({type:'lowercase'});
