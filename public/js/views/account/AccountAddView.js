@@ -100,7 +100,7 @@ define([
 			
 			var validate = $('#addAccountForm').validate({
 				submitHandler: function(form) {
-					var data = thisObj.formatFormField($(form).serializeObject()); console.log(data);
+					var data = thisObj.formatFormField($(form).serializeObject());
 					
 					var accountModel = new AccountModel(data);
 					
