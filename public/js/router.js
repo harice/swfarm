@@ -185,6 +185,9 @@ define([
 		preventAccessWhenAuth : ['#/login'],
 
 		before : function(params, next){
+			//console.log('router.before!!!');
+			//console.log(params);
+			//console.log(next);
 			var isAuth = Session.get('token');
 			var path = Backbone.history.location.hash;
 			var needAuth = _.contains(this.requiresAuthExcept, path);

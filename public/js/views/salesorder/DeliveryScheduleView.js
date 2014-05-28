@@ -95,18 +95,18 @@ define([
 			this.$el.find('#scheduletimeMin').val(this.model.get('scheduletimeMin'));
 			this.$el.find('#scheduletimeAmPm').val(this.model.get('scheduletimeAmPm'));
 			
-			this.$el.find('#distance').val(parseFloat(this.model.get('distance')).toFixed(2));
-			this.$el.find('#fuelcharge').val(parseFloat(this.model.get('fuelcharge')).toFixed(2));
-			this.$el.find('#truckingrate').val(parseFloat(this.model.get('truckingrate')).toFixed(2));
-			this.$el.find('#trailerrate').val(parseFloat(this.model.get('trailerrate')).toFixed(2));
+			this.$el.find('#distance').val(this.addCommaToNumber(this.model.get('distance')));
+			this.$el.find('#fuelcharge').val(this.addCommaToNumber(this.model.get('fuelcharge')));
+			this.$el.find('#truckingrate').val(this.addCommaToNumber(this.model.get('truckingrate')));
+			this.$el.find('#trailerrate').val(this.addCommaToNumber(this.model.get('trailerrate')));
 			
 			this.$el.find('#originloader').val(originloader.accountidandname.name);
 			this.$el.find('#originloader_id').val(originloader.lastname+', '+originloader.firstname+' '+originloader.suffix);
-			this.$el.find('#originloaderfee').val(parseFloat(this.model.get('originloaderfee')).toFixed(2));
+			this.$el.find('#originloaderfee').val(this.addCommaToNumber(this.model.get('originloaderfee')));
 			
 			this.$el.find('#destinationloader').val(destinationloader.accountidandname.name);
 			this.$el.find('#destinationloader_id').val(destinationloader.lastname+', '+destinationloader.firstname+' '+destinationloader.suffix);
-			this.$el.find('#destinationloaderfee').val(parseFloat(this.model.get('destinationloaderfee')).toFixed(2));
+			this.$el.find('#destinationloaderfee').val(this.addCommaToNumber(this.model.get('destinationloaderfee')));
 			
 			this.$el.find('#truckerAccountType_id').val(trucker.accountidandname.accounttype[0].name);
 			this.$el.find('#truckerAccount_id').val(trucker.accountidandname.name);
@@ -117,19 +117,20 @@ define([
 			
 			var totalQuantity = 0;
 			_.each(products, function (product) {
-				totalQuantity += parseFloat(product.quantity);
+				var quantity = parseFloat(product.quantity);
+				totalQuantity += quantity;
 				
 				var variables = {
 					stock_number: product.productorder.stacknumber,
 					product_name: product.productorder.product.name,
-					quantity: parseFloat(product.quantity).toFixed(4),
+					quantity: thisObj.addCommaToNumber(quantity.toFixed(4)),
 				};
 				
 				var template = _.template(deliveryScheduleViewProductItemTemplate, variables);
 				thisObj.$el.find('#product-list tbody').append(template);
 			});
 			
-			this.$el.find('#total-quantity').val(parseFloat(totalQuantity).toFixed(4));
+			this.$el.find('#total-quantity').val(this.addCommaToNumber(totalQuantity.toFixed(4)));
 		},
 		
 		events: {

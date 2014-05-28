@@ -14,34 +14,46 @@
 			<% } %>
 		</td>
 		<td><%= so.get("account").name %></td>
-		<td><%= so.get("status").name %></td>
+		<td><label class="label label-<%= so.get("status").class %>"><%= so.get("status").name %></label></td>
 		<td><%= so.get("natureofsale").name %></td>
 		<td class="text-right">$ <%= so.get("totalPrice") %></td>
 		<td>
-			<% if (so.get("status").name.toLowerCase() == "open" || so.get("status").name.toLowerCase() == "pending") { %>
-				<a href="<%= so_edit_url %>/<%= so.get("id") %>" class="btn btn-info btn-xs" title="edit">
-				  <span class="glyphicon glyphicon-pencil"></span>
-				</a>
-				<a href="#" data-id="<%= so.get("id") %>" class="btn btn-danger btn-xs cancel-so">
-				  <span class="glyphicon glyphicon-off"></span>
-				</a>
-			<% } else {%>
-				<a href="#" class="btn btn-info btn-xs" title="edit" disabled>
-				  <span class="glyphicon glyphicon-pencil"></span>
-				</a>
-				<a href="#" class="btn btn-danger btn-xs" disabled>
-				  <span class="glyphicon glyphicon-off"></span>
-				</a>
-			<% } %>
-			
 			<% if (so.get("status").name.toLowerCase() == "open") { %>
-				<a href="<%= so_sched_url %>/<%= so.get("id") %>" class="btn btn-info btn-xs" title="schedule">
-				  <span class="glyphicon glyphicon-time"></span>
+				<a href="<%= so_sched_url %>/<%= so.get("id") %>" class="text-primary" title="schedule">
+					<span class="fa-stack">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-clock-o fa-stack-1x fa-inverse"></i>
+					</span>
 				</a>
 			<% } else {%>
-				<a href="#" class="btn btn-info btn-xs" title="schedule" disabled>
-				  <span class="glyphicon glyphicon-time"></span>
+			 	<span class="fa-stack">
+					<i class="fa fa-square fa-stack-2x"></i>
+					<i class="fa fa-clock-o fa-stack-1x fa-inverse"></i>
+				</span>
+			<% } %>
+
+			<% if (so.get("status").name.toLowerCase() == "open" || so.get("status").name.toLowerCase() == "pending") { %>
+				<a href="<%= so_edit_url %>/<%= so.get("id") %>" class="text-primary" title="edit">
+				  	<span class="fa-stack">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+					</span>
 				</a>
+				<a href="#" data-id="<%= so.get("id") %>" class="text-primary cancel-so">
+				 	<span class="fa-stack">
+						<i class="fa fa-shopping-cart fa-stack-1x"></i>
+						<i class="fa fa-ban fa-stack-2x text-danger"></i>
+					</span>
+				</a>
+			<% } else {%>
+				<span class="fa-stack">
+					<i class="fa fa-square fa-stack-2x"></i>
+					<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+				</span>
+				<span class="fa-stack">
+					<i class="fa fa-shopping-cart fa-stack-1x"></i>
+					<i class="fa fa-ban fa-stack-2x"></i>
+				</span>
 			<% } %>
 		</td>
 	</tr>

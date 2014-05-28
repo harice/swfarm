@@ -55,7 +55,7 @@ define([
 				thisObj.off('change');
 			});
             
-            this.maskInputs();
+            //this.maskInputs();
 		},
 		
 		render: function(){
@@ -75,17 +75,23 @@ define([
 			this.$el.find('#scheduletimeMin').val(this.model.get('scheduletimeMin'));
 			this.$el.find('#scheduletimeAmPm').val(this.model.get('scheduletimeAmPm'));
 			
-			this.$el.find('#distance').val(this.model.get('distance'));
-			this.$el.find('#fuelcharge').val(this.model.get('fuelcharge')).blur();
+			this.$el.find('#distance').val(this.addCommaToNumber(this.model.get('distance')));
+			this.$el.find('#fuelcharge').val(this.addCommaToNumber(this.model.get('fuelcharge')));
 			
 			var i= 0;
+			var totalQuantity = 0;
 			_.each(products, function (product) {
 				var productFields = (i > 0)? thisObj.addProduct(): thisObj.$el.find('#product-list tbody .product-item:first-child');
 				i++;
+				
+				var quantity = parseFloat(product.quantity);
+				totalQuantity += quantity;
+				
 				productFields.find('.id').val(product.id);
 				productFields.find('.productorder_id').val(product.productorder_id).change();
-				productFields.find('.quantity').val(product.quantity).blur();
+				productFields.find('.quantity').val(thisObj.addCommaToNumber(quantity.toFixed(4)));
 			});
+			this.$el.find('#total-quantity').val(this.addCommaToNumber(totalQuantity.toFixed(4)));
 			
 			this.$el.find('#truckerAccountType_id').val(trucker.accountidandname.accounttype[0].id);
 			this.fetchTruckerAccounts(trucker.accountidandname.accounttype[0].id, trucker.accountidandname.id, trucker.id, this.model.get('truckingrate'));
@@ -95,11 +101,11 @@ define([
 			
 			this.$el.find('#originloader').val(originloader.accountidandname.id);
 			this.fetchOriginLoaderContacts(originloader.accountidandname.id, originloader.id);
-			this.$el.find('#originloaderfee').val(this.model.get('originloaderfee')).blur();
+			this.$el.find('#originloaderfee').val(thisObj.addCommaToNumber(this.model.get('originloaderfee')));
 			
 			this.$el.find('#destinationloader').val(destinationloader.accountidandname.id);
 			this.fetchDestinationLoaderContacts(destinationloader.accountidandname.id, destinationloader.id);
-			this.$el.find('#destinationloaderfee').val(this.model.get('destinationloaderfee')).blur();
+			this.$el.find('#destinationloaderfee').val(thisObj.addCommaToNumber(this.model.get('destinationloaderfee')));
 		},
 		
 		postDisplayForm: function () {
