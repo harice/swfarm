@@ -47,6 +47,10 @@ define([
 						model.set('transportdatestart', thisObj.convertDateFormat(model.get('transportdatestart').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
 					if(model.get('transportdateend'))
 						model.set('transportdateend', thisObj.convertDateFormat(model.get('transportdateend').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
+					console.log(model.get('totalPrice'));
+					if(model.get('totalPrice'))
+						model.set('totalPrice', thisObj.addCommaToNumber(parseFloat(model.get('totalPrice')).toFixed(2)));
+					console.log(model.get('totalPrice'));
 				});
 				
 				if(thisObj.subContainerExist())
@@ -105,6 +109,7 @@ define([
 			
 			var variables = {
 				h1_title: 'Sales Order',
+				h1_small: 'list',
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);

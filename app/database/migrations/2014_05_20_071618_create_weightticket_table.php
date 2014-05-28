@@ -25,8 +25,8 @@ class CreateWeightticketTable extends Migration {
 			$table->timestamps();
             
             $table->foreign('transportSchedule_id')->references('id')->on('transportschedule');
-            $table->foreign('pickup_id')->references('id')->on('weightticketscale');
-            $table->foreign('dropoff_id')->references('id')->on('weightticketscale');
+            $table->foreign('pickup_id')->references('id')->on('weightticketscale')->onDelete('cascade');
+            $table->foreign('dropoff_id')->references('id')->on('weightticketscale')->onDelete('cascade');
             $table->foreign('status_id')->references('id')->on('status');
 		});
 	}

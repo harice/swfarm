@@ -32,6 +32,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 
     Route::get('account/trailer', 'APIv1\AccountController@getTrailerAccount');
     Route::get('account/scaler', 'APIv1\AccountController@getScalerAccount');
+    Route::get('account/getScaleList', 'APIv1\AccountController@getScaleList');
     Route::get('account/loader', 'APIv1\AccountController@getLoaderAccount');
     Route::get('account/search', 'APIv1\AccountController@search');
 	Route::get('account/getFormData', 'APIv1\AccountController@getFormData');
@@ -59,6 +60,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // Route::get('weightticket/getWeightTicketOfSchedule', 'APIv1\WeightTicketController@getWeightTicketOfSchedule');
     // Route::get('weightticket/getAllBidProductOnBid', 'APIv1\WeightTicketController@getAllBidProductOnBid');
     // Route::get('weightticket/getAllScaleProviderAccount', 'APIv1\WeightTicketController@getAllScaleProviderAccount');
+    Route::get('weightticket/closeWeightTicket/{id}', 'APIv1\WeightTicketController@closeWeightTicket');
     Route::get('weightticket/getScheduleProducts', 'APIv1\WeightTicketController@getScheduleProducts');
     Route::resource('weightticket', 'APIv1\WeightTicketController');
 

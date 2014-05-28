@@ -19,7 +19,8 @@ class WeightTicket extends BaseModel {
      * @var array
      */
     protected $fillable = array(
-        'transportSchedule_id', 
+        'transportSchedule_id',
+        'status_id', 
         'weightTicketNumber', 
         'loadingTicketNumber', 
         'pickup_id', 
@@ -42,6 +43,12 @@ class WeightTicket extends BaseModel {
 
     public function transportschedule(){
         return $this->belongsTo('transportschedule', 'id', 'transportschedule_id');
+    }
+
+    public function delete(){
+        $this->weightticketscale_pickup()->delete();
+        $this->weightticketscale_dropoff()->delete();
+        return parent::delete();
     }
 
 }

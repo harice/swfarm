@@ -59,6 +59,7 @@ define([
 				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
+				removeComma: ['unitprice', 'tons', 'bales'],
 			};
 			
 			this.destinationCollection = new DestinationCollection();
@@ -125,7 +126,6 @@ define([
 			this.initProducerAutocomplete();
 			this.initCalendar();
 			this.addProduct();
-			this.maskInputs();
             
 			this.otherInitializations();
 		},
@@ -141,13 +141,6 @@ define([
 						data['transportdatestart'] = thisObj.convertDateFormat(data['transportdatestart'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					if(typeof data['transportdateend'] != 'undefined')
 						data['transportdateend'] = thisObj.convertDateFormat(data['transportdateend'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
-                    
-                    // Remove commas on tons and bales
-                    var index;
-                    for (index = 0; index < data['products'].length; ++index) {
-                        data['products'][index]['tons'] = data['products'][index]['tons'].replace(/,/g , '');
-                        data['products'][index]['bales'] = data['products'][index]['bales'].replace(/,/g , '');
-                    }
 					
 					if(thisObj.isBid)
 						data['isfrombid'] = '1';
@@ -155,7 +148,7 @@ define([
 					if(thisObj.isConvertToPO)
 						data['createPO'] = '1';
 					
-					// console.log(data);
+					//console.log(data);
 					
 					var purchaseOrderModel = new PurchaseOrderModel(data);
 					
@@ -355,22 +348,29 @@ define([
 					var arrayKey = key.split(this.options.productFieldSeparator);
 					
 					if(arrayKey.length < 2)
-						formData[key] = value;
+						if(this.options.removeComma.indexOf(key) < 0)
+							formData[key] = value;
+						else
+							formData[key] = this.removeCommaFromNumber(value);
 					else {
 						if(arrayKey[0] == productFieldClass[0]) {
 							var index = arrayKey[1];
-							var arrayBidProductFields = {};
+							var arrayProductFields = {};
 							
 							for(var i = 0; i < productFieldClass.length; i++) {
 								if(this.options.productFieldExempt.indexOf(productFieldClass[i]) < 0) {
-									
 									var fieldValue = data[productFieldClass[i]+this.options.productFieldSeparator+index];
-									if(!(productFieldClass[i] == 'id' && fieldValue == ''))
-										arrayBidProductFields[productFieldClass[i]] = fieldValue;
+									
+									if(!(productFieldClass[i] == 'id' && fieldValue == '')) {
+										if(this.options.removeComma.indexOf(productFieldClass[i]) < 0)
+											arrayProductFields[productFieldClass[i]] = fieldValue;
+										else
+											arrayProductFields[productFieldClass[i]] = this.removeCommaFromNumber(fieldValue);
+									}
 								}
 							}
 								
-							formData.products.push(arrayBidProductFields);
+							formData.products.push(arrayProductFields);
 						}
 					}
 				}
@@ -384,12 +384,14 @@ define([
 			'click #add-product': 'addProduct',
 			'click .remove-product': 'removeProduct',
 			//'blur .productname': 'validateProduct',
-			'blur .unitprice': 'onBlurUnitPrice',
 			'keyup .unitprice': 'onKeyUpUnitPrice',
+			'blur .unitprice': 'onBlurMoney',
 			'keyup .tons': 'onKeyUpTons',
+			'blur .tons': 'onBlurTon',
+			'keyup .bales': 'formatNumber',
 			'click #convert-po': 'convertPO',
 			'click #cancel-po': 'showConfirmationWindow',
-			'click #confirm-cancel-po': 'cancelPO'
+			'click #confirm-cancel-po': 'cancelPO',
 		},
 		
 		removeProduct: function (ev) {
@@ -444,29 +446,35 @@ define([
 		},
 		
 		onKeyUpUnitPrice: function (ev) {
-			var field = $(ev.target);
-			var bidPrice = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
-			var tonsField = field.closest('.product-item').find('.tons');
-			var tons = (!isNaN(parseFloat(tonsField.val())))? parseFloat(tonsField.val()) : 0;
+			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 2);
 			
-			this.computeUnitePrice(bidPrice, tons, field.closest('.product-item').find('.unit-price'));
+			var bidPricefield = $(ev.target);
+			var bidPricefieldVal = this.removeCommaFromNumber(bidPricefield.val());
+			var bidPrice = (!isNaN(parseFloat(bidPricefieldVal)))? parseFloat(bidPricefieldVal) : 0;
+			var tonsField = bidPricefield.closest('.product-item').find('.tons');
+			var tonsFieldVal = this.removeCommaFromNumber(tonsField.val());
+			var tons = (!isNaN(parseFloat(tonsFieldVal)))? parseFloat(tonsFieldVal) : 0;
+			
+			this.computeUnitePrice(bidPrice, tons, bidPricefield.closest('.product-item').find('.unit-price'));
 		},
 		
 		onKeyUpTons: function (ev) {
-			var field = $(ev.target);
+			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 4);
 			
-			var tons = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
-			var bidPriceField = field.closest('.product-item').find('.unitprice');
-			var bidPrice = (!isNaN(parseFloat(bidPriceField.val())))? parseFloat(bidPriceField.val()) : 0;
+			var tonsfield = $(ev.target);
+			var tonsfieldVal = this.removeCommaFromNumber(tonsfield.val());
+			var tons = (!isNaN(parseFloat(tonsfieldVal)))? parseFloat(tonsfieldVal) : 0;
+			var bidPriceField = tonsfield.closest('.product-item').find('.unitprice');
+			var bidPriceFieldVal = this.removeCommaFromNumber(bidPriceField.val());
+			var bidPrice = (!isNaN(parseFloat(bidPriceFieldVal)))? parseFloat(bidPriceFieldVal) : 0;
 			
-			this.computeUnitePrice(bidPrice, tons, field.closest('.product-item').find('.unit-price'));
+			this.computeUnitePrice(bidPrice, tons, tonsfield.closest('.product-item').find('.unit-price'));
 		},
 		
 		computeUnitePrice: function (bidPrice, tonsOrBales, unitePriceField) {
 			var unitPrice = 0;
 			unitPrice = tonsOrBales * bidPrice;
-            console.log(unitPrice);
-			$(unitePriceField).text(unitPrice);
+			unitePriceField.val(this.addCommaToNumber(unitPrice.toFixed(2)));
 		},
 		
 		cancelPO: function () {

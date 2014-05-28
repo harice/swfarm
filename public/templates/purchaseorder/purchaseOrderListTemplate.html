@@ -4,15 +4,17 @@
             <div class="content padding-top-0">
               <div class="row margin-top-0">
                 <div class="col-md-3 padding-top-10 padding-right-0">
-                  <a href="<%= po_add_url %>" class="btn btn-primary">+ Add Purchase Order</a>
-                  <a href="<%= bid_add_url %>" class="btn btn-success">+ Add Bid</a>
+                  <a href="<%= po_add_url %>" class="btn btn-primary btn-sm">+ Add Purchase Order</a>
+                  <a href="<%= bid_add_url %>" class="btn btn-success btn-sm">+ Add Bid</a>
                 </div>
                 <div class="col-md-2">
                   <div class="form-group">
                     <div id="filter-date-of-purchase" class="search-filter-field calendar-cont">
-                        <div class="input-group date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                        <div class="input-group input-group-sm date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
                           <input class="form-control" size="16" type="text" value="" />
-                          <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                          <div class="input-group-btn">
+                            <button class="btn btn-primary"><span class="glyphicon glyphicon-th"></span></button>
+                          </div>
                         </div>
                         <p class="help-block">Date of Purchase</p>
                     </div>  
@@ -21,9 +23,11 @@
                 <div class="col-md-2">
                   <div class="form-group">
                       <div id="filter-pickup-start" class="search-filter-field calendar-cont">
-                          <div class="input-group date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                          <div class="input-group input-group-sm date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
                             <input class="form-control" size="16" type="text" value="" />
-                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                            <div class="input-group-btn">
+                              <button class="btn btn-primary"><span class="glyphicon glyphicon-th"></span></button>
+                            </div>
                           </div>
                           <p class="help-block">Pick-up Period: Start</p>
                       </div>
@@ -32,9 +36,11 @@
                 <div class="col-md-2">
                   <div class="form-group">
                       <div id="filter-pickup-end" class="search-filter-field calendar-cont">
-                          <div class="input-group date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                          <div class="input-group input-group-sm date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
                             <input class="form-control" size="16" type="text" value="" />
-                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                            <div class="input-group-btn">
+                              <button class="btn btn-primary"><span class="glyphicon glyphicon-th"></span></button>
+                            </div>
                           </div>
                           <p class="help-block">Pick-up Period: End</p>
                       </div>
@@ -42,12 +48,12 @@
                 </div>
                 <div class="col-md-3 padding-top-10">
                   <form id="searchLocal" name="searchLocal" class="form-inline searchLocal" role="form">
-                      <div class="input-group">
+                      <div class="input-group input-group-sm">
                         <label class="sr-only" for="search">Search</label>
-                        <input type="text" class="search form-control" id="search-keyword" placeholder="">
+                        <input type="text" class="search form-control" id="search-keyword" placeholder="" style="border-radius:3px 0 0 3px;">
 
                         <div class="input-group-btn">
-                          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="border-radius:0;">
                             <span class="caret"></span>
                           </button>
                           <ul class="dropdown-menu pull-right filter" role="menu">

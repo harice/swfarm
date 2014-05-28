@@ -65,13 +65,19 @@ class WeightTicketController extends BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function destroy($transportSchedule_id)
 	{
-		// $this->weightticket->destroy($id);
+		$model = $this->weightticket->destroy($transportSchedule_id);
+		return Response::json($model);
 	}
 
 	public function getScheduleProducts(){
 		$model = $this->weightticket->getScheduleProducts(Input::get('transportschedule_id'));
+        return Response::json($model);
+	}
+
+	public function closeWeightTicket($transportschedule_id){
+		$model = $this->weightticket->closeWeightTicket($transportschedule_id);
         return Response::json($model);
 	}
 
