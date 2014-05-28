@@ -194,14 +194,14 @@ define([
 		},
 		
 		filterByDestination: function (ev) {
-			var filter = $(ev.target).val(); console.log(filter);
+			var filter = $(ev.target).val();
 			this.collection.setFilter('location', filter)
 			this.renderList(1);
 			return false;
 		},
 		
 		filterByStatus: function (ev) {
-			var filter = $(ev.target).val(); console.log(filter);
+			var filter = $(ev.target).val();
 			this.collection.setFilter('status', filter)
 			this.renderList(1);
 			return false;

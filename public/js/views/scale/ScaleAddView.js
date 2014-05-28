@@ -80,6 +80,8 @@ define([
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
 					
+					data['rate'] = thisObj.removeCommaFromNumber(data['rate']);
+					
 					var scaleModel = new ScaleModel(data);
 					
 					scaleModel.save(
@@ -115,11 +117,8 @@ define([
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #delete-scale': 'showConfirmationWindow',
 			'click #confirm-delete-scale': 'deleteTrailer',
-			'blur #rate': 'onBlurRate',
-		},
-		
-		onBlurRate: function (ev) {
-			this.toFixedValue($(ev.target), 2);
+			'keyup #rate': 'formatMoney',
+			'blur #rate': 'onBlurMoney',
 		},
 		
 		deleteTrailer: function () {

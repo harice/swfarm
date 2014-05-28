@@ -328,7 +328,6 @@ define([
 		},
 		
 		showViewForm: function (schedId) {
-			console.log('showViewForm');
 			var form = this.resetViewFields();
 			this.populateScheduleData(schedId, form, 'view');
 		},

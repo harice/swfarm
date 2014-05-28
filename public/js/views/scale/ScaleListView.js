@@ -28,6 +28,10 @@ define([
 			
 			this.collection = new ScaleCollection();
 			this.collection.on('sync', function() {
+				_.each(this.models, function (model) {
+					model.set('rate', thisObj.addCommaToNumber(model.get('rate')));
+				});
+			
 				if(thisObj.subContainerExist())
 					thisObj.displayList();
 			});

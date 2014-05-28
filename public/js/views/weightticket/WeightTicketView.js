@@ -67,7 +67,7 @@ define([
 					var data = $(form).serializeObject();
 					data['pickupschedule_id'] = thisObj.schedId;
 					data['purchaseorder_id'] = thisObj.bidId;
-					console.log(data);
+					//console.log(data);
 					var weightTicketModel = new WeightTicketModel(data);
 					
 					weightTicketModel.save(
