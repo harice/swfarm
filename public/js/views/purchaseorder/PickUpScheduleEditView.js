@@ -55,7 +55,7 @@ define([
 				thisObj.off('change');
 			});
             
-            this.maskInputs();
+            //this.maskInputs();
 		},
 		
 		render: function(){

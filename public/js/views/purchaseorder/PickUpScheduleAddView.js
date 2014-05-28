@@ -195,7 +195,7 @@ define([
 			this.addProduct();
 			
 			this.postDisplayForm();
-            this.maskInputs();
+            //this.maskInputs();
 		},
 		
 		initValidateForm: function () {
@@ -470,10 +470,12 @@ define([
 			'blur #truckingrate': 'onBlurTruckingRate',
 			'blur #distance': 'onBlurDistance',
 			'keyup #distance': 'onBlurDistance',
+			'keyup #fuelcharge': 'formatMoney',
 			'blur #fuelcharge': 'onBlurFuelCharge',
-			'blur .loader': 'onBlurLoader',
+			'keyup .loader': 'formatMoney',
+			'blur .loader': 'onBlurMoney',
 			'keyup .quantity': 'onKeyUpQuantity',
-			'blur .quantity': 'onBlurQuantity',
+			'blur .quantity': 'onBlurTon',
 			'click #delete-schedule': 'deleteSchedule'
 		},
 		
@@ -584,29 +586,26 @@ define([
 		},
 		
 		onKeyUpQuantity: function (ev) {
-			this.computeTotalQuantity();
-		},
-		
-		onBlurQuantity: function (ev) {
-			this.toFixedValue($(ev.target), 4);
+			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 4);
 			this.computeTotalQuantity();
 		},
 		
 		computeTotalQuantity: function () {
+			var thisObj = this;
 			var total = 0;
 			this.$el.find('.quantity').each(function (index, element) {
-				var value = $(element).val();
+				var value = thisObj.removeCommaFromNumber($(element).val());
 				if(!isNaN(value) && value != '') {
 					total += parseFloat(value);
 				}
 			});
 			
 			if(total != 0)
-				$('#total-quantity').val(total.toFixed(4));
+				$('#total-quantity').val(this.addCommaToNumber(total.toFixed(4)));
 			else
 				$('#total-quantity').val('');
 				
-			this.computeTruckingRate();
+			//this.computeTruckingRate();
 		},
 		
 		toggleTruckingRate: function (accountTypeId) {
