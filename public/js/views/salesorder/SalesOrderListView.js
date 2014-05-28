@@ -109,6 +109,7 @@ define([
 			
 			var variables = {
 				h1_title: 'Sales Order',
+				h1_small: 'list',
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);

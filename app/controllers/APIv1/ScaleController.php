@@ -30,6 +30,17 @@ class ScaleController extends BaseController {
         $result = $this->repo->findAll( Input::all() );
         return Response::json($result);
 	}
+    
+    /**
+	 * Search for a specfic record.
+	 *
+	 * @return Response
+	 */
+	public function search()
+	{
+        $result = $this->repo->search( Input::all() );
+        return Response::json($result);
+	}
 
 	/**
 	 * Store a newly created resource in storage.

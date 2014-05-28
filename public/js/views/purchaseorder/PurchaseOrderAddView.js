@@ -441,7 +441,7 @@ define([
 			var tons = (!isNaN(parseFloat(tonsField.val())))? parseFloat(tonsField.val()) : 0;
 			
 			field.val(bidPrice);
-			this.toFixedValue(field, 2)
+			// this.toFixedValue(field, 2);
 			this.computeUnitePrice(bidPrice, tons, field.closest('.product-item').find('.unit-price'));
 		},
 		

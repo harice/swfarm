@@ -35,6 +35,13 @@ label.error { color: #CC0000 !important; font-weight: normal; }
 .margin-bottom-0 { margin-bottom: 0; }
 .margin-bottom-10 { margin-bottom: 10px; }
 
+.margin-right-5 { margin-right:5px; }
+
+.searchLocal {
+    .border-radius-0 { border-radius:0px; }
+    .border-radius-tl-3 { border-radius:3px 0 0 3px; }
+}
+
 .help-block { font-size:11px; }
 
 body { 
@@ -159,7 +166,8 @@ ul.autocomplete {
     // color: rgba(37,37,37,1);
     text-shadow: 0 0 0 #555;
     border: 1px solid #ccc;
-    height: 34px;
+    // height: 34px;
+    height: 30px;
     padding: 6px 8px;
     vertical-align: middle;
 
@@ -176,9 +184,24 @@ ul.autocomplete {
         }
     }
 
+    &.width-60 {
+        width:60px;
+        background-position: 24px 0;
+    }
+
+    &.width-64 {
+        width:64px;
+        background-position: 34px 0;
+    }
+
+    &.width-70 {
+        width:70px;
+        background-position: 34px 0;
+    }
+
     &.width-80 {
         width:80px;
-        background-position: 44px 0;
+        background-position: 47px -3px;
     }
 
     &.width-100 {
@@ -193,12 +216,12 @@ ul.autocomplete {
 
     &.width-180 {
         width:180px;
-        background-position: 146px 0;
+        background-position: 147px -3px;
     }
 
     &.width-200 {
         width:200px;
-        background-position: 166px 0;
+        background-position: 167px -3px;
     }
 }
 
@@ -244,3 +267,8 @@ ul.autocomplete {
 .width-150 { width:150px; }
 .width-300 { width: 300px; }
 .width-304 { width: 304px; }
+
+#description,
+#notes {
+    resize: none;
+}

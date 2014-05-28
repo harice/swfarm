@@ -157,7 +157,7 @@ class ProductRepository implements ProductRepositoryInterface {
                 200
             );
         } catch (Exception $e) {
-            echo "Oops! " . $e->getMessage();
+            return $e->getMessage();
         }
     }
 
