@@ -46,6 +46,7 @@ define([
 			this.initSubContainer();
 			var thisObj = this;
 			this.isBid = true;
+			this.isConvertToPO = false;
 			this.poId = null;
 			this.h1Title = 'Bid';
 			this.h1Small = 'add';
@@ -58,6 +59,7 @@ define([
 				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
+				removeComma: ['unitprice', 'tons', 'bales'],
 			};
 			
 			this.destinationCollection = new DestinationCollection();
