@@ -17,7 +17,7 @@ class CreateOrderTable extends Migration {
 			$table->engine = 'InnoDB';
             $table->increments('id');
 			$table->string('order_number', 20)->unique();
-            $table->integer('location_id')->unsigned();
+            $table->integer('location_id')->unsigned()->nullable();
             $table->integer('natureofsale_id')->unsigned()->nullable();
             $table->integer('account_id')->unsigned();
             $table->integer('orderaddress_id')->unsigned();
