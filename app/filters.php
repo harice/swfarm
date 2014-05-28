@@ -97,7 +97,7 @@ Route::filter('basic', function()
 						'status' => true
 					)
 				);
-	if(!$auth) return App::abort(401,'Unauthorized',['WWW-Authenticate' => 'Basic']);
+	if(!$auth) return App::abort(403,'Unauthorized',['WWW-Authenticate' => 'Basic']);
 });
 
 /*

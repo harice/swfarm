@@ -17,6 +17,7 @@ class CreateStatusTable extends Migration {
 			$table->engine = 'InnoDB';
             $table->increments('id');
 			$table->string('name', 20)->unique();
+			$table->string('class',20)->nullable();
 		});
 	}
 

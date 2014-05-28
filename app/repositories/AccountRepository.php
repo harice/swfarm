@@ -460,6 +460,14 @@ class AccountRepository implements AccountRepositoryInterface {
       );
   }
 
+  public function getScaleList($scalerAccount_id){
+      $scaleList = Scale::where('account_id', '=', $scalerAccount_id)->get();
+      return Response::json(
+          $scaleList->toArray(),
+          200
+      );
+  }
+
   public function getLoaderAccount(){
       $accountIds = array(3); //loader id
       $truckers = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($accountIds){

@@ -219,7 +219,7 @@ define([
 		},
 
 		fetchError : function(error){
-			if(error.status === 401){
+			if(error.status === 403){
 				Session.clear();
 				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
 			}
@@ -330,7 +330,6 @@ define([
 		});
 		
 		app_router.on('route:showPOWeightInfoPage', function (poId, schedId, action) {
-			console.log('showPOWeightInfoPage');
 			this.closeView();
 			var poWeightInfoController = new POWeightInfoController();
 			this.currView = poWeightInfoController.setAction(poId, schedId, action);

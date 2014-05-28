@@ -59,6 +59,7 @@ define([
 		displaySchedule: function () {
 			var innerTemplateVar = {
 				po_schedule_add_url : '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId+'/'+Const.CRUD.ADD,
+				po_list_url: '#/'+Const.URL.PO,
 				status_filters : '',
 			};
 			

@@ -83,7 +83,7 @@ define([
 			
 			this.accountTypeCollection = new AccountTypeCollection();
 			this.accountTypeCollection.on('sync', function() {
-				thisObj.productCollection.getPOProducts(thisObj.soId);
+				thisObj.productCollection.getOrderProducts(thisObj.soId);
 				this.off('sync');
 			});
 			this.accountTypeCollection.on('error', function(collection, response, options) {
@@ -475,6 +475,7 @@ define([
 		},
 		
 		onChangeProduct: function (ev) {
+			$(ev.currentTarget).closest('tr').find('.product').text('');
 			var productId = $(ev.currentTarget).val();
 			if(productId != '') {
 				var productModel = this.productCollection.get(productId);
@@ -624,7 +625,6 @@ define([
 					this.truckingRateEditable = false;
 					$('#truckingrate').attr('readonly', true);
 					this.computeTruckingRate();
-					$('#trailerrate').val('0.00');
 				}
 				
 				this.selectedTruckingRate = null;
@@ -644,6 +644,11 @@ define([
 				var totalQuantity = (!isNaN(parseFloat($('#total-quantity').val())))? parseFloat($('#total-quantity').val()) : 0;
 				var truckingRate = (distanceValue > 0 && totalQuantity > 0)? (((this.freightRate * distanceValue) + this.loadingRate + this.unloadingRate) / totalQuantity).toFixed(2) : ''; //divide by tons
 				$('#truckingrate').val(truckingRate);
+				
+				if(truckingRate != '')
+					$('#trailerrate').val((parseFloat(truckingRate) * this.trailerPercentageRate / 100).toFixed(2));
+				else
+					$('#trailerrate').val('0.00');
 			}
 		},
 		
@@ -657,7 +662,7 @@ define([
 					$('#trailerrate').val(trailerRent.toFixed(2))
 				}
 				else
-					$('#trailerrate').val('');
+					$('#trailerrate').val('0.00');
 			}
 		},
 		

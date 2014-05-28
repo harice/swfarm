@@ -6,16 +6,20 @@ class StatusTableSeeder extends Seeder {
 	{
 		$status = array(
             array(
-                'name' => 'Open'
+                'name' => 'Open',
+                'class' => 'success'
             ),
             array(
-                'name' => 'Close'
+                'name' => 'Close',
+                'class' => 'default'
             ),
             array(
-                'name' => 'Cancelled'
+                'name' => 'Cancelled',
+                'class' => 'danger'
             ),
             array(
-                'name' => 'Pending'
+                'name' => 'Pending',
+                'class' => 'warning'
             ),
         );
         

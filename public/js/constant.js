@@ -120,10 +120,11 @@ define(function () {
 		'PO': {
 			'PICKUPSCHEDULE': {
 				'EDITABLERATE': {
-					'ACCOUNTTYPE': ['hauler'],
+					'ACCOUNTTYPE': ['hauler', 'operator'],
 				},
 			},
 		},
+		'LB2TON': 0.0005,
 	};
 	
 	return constant;

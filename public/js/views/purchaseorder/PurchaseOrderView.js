@@ -171,10 +171,10 @@ define([
 					productname: product.product.name,
 					description: product.description,
 					stacknumber: product.stacknumber,
-					unitprice: parseFloat(unitprice).toFixed(2),
-					tons: parseFloat(tons).toFixed(2),
-					bales: product.bales,
-					totalprice: totalprice,
+					unitprice: thisObj.addCommaToNumber(parseFloat(unitprice).toFixed(2)),
+					tons: thisObj.addCommaToNumber(parseFloat(tons).toFixed(4)),
+					bales: thisObj.addCommaToNumber(product.bales),
+					totalprice: thisObj.addCommaToNumber(totalprice),
 					ishold: (parseInt(product.ishold) == 1)? 'Yes' : 'No',
 				};
 				
