@@ -69,6 +69,13 @@ define([
 				productFieldClassRequired: ['productorder_id', 'quantity'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
+				removeComma: ['originloaderfee',
+							'destinationloaderfee', 
+							'distance',
+							'fuelcharge',
+							'truckingrate',
+							'trailerrate',
+							'quantity'],
 			};
 			
 			this.orderScheduleVariablesModel = new OrderScheduleVariablesModel();
@@ -427,8 +434,12 @@ define([
 					var value = data[key];
 					var arrayKey = key.split(this.options.productFieldSeparator);
 					
-					if(arrayKey.length < 2)
-						formData[key] = value;
+					if(arrayKey.length < 2) {
+						if(this.options.removeComma.indexOf(key) < 0)
+							formData[key] = value;
+						else
+							formData[key] = this.removeCommaFromNumber(value);
+					}
 					else {
 						if(arrayKey[0] == productFieldClass[0]) {
 							var index = arrayKey[1];
@@ -436,10 +447,14 @@ define([
 							
 							for(var i = 0; i < productFieldClass.length; i++) {
 								if(this.options.productFieldExempt.indexOf(productFieldClass[i]) < 0) {
-									
 									var fieldValue = data[productFieldClass[i]+this.options.productFieldSeparator+index];
-									if(!(productFieldClass[i] == 'id' && fieldValue == ''))
-										arrayProductFields[productFieldClass[i]] = fieldValue;
+									
+									if(!(productFieldClass[i] == 'id' && fieldValue == '')) {
+										if(this.options.removeComma.indexOf(productFieldClass[i]) < 0)
+											arrayProductFields[productFieldClass[i]] = fieldValue;
+										else
+											arrayProductFields[productFieldClass[i]] = this.removeCommaFromNumber(fieldValue);
+									}
 								}
 							}
 								
@@ -464,10 +479,11 @@ define([
 			'change #destinationloader': 'onChangeDestinationLoader',
 			
 			'keyup #truckingrate': 'onKeyUpTrackingRate',
-			'blur #truckingrate': 'onBlurTruckingRate',
-			'blur #distance': 'onBlurDistance',
-			'keyup #distance': 'onBlurDistance',
-			'blur #fuelcharge': 'onBlurFuelCharge',
+			'blur #truckingrate': 'onBlurMoney',
+			'keyup #distance': 'onKeyUpDistance',
+			'blur #distance': 'onBlurMoney',
+			'keyup #fuelcharge': 'formatMoney',
+			'blur #fuelcharge': 'onBlurMoney',
 			'keyup .loader': 'formatMoney',
 			'blur .loader': 'onBlurMoney',
 			'keyup .quantity': 'onKeyUpQuantity',
@@ -561,7 +577,8 @@ define([
 		},
 		
 		onKeyUpTrackingRate: function (ev) {
-			this.computeTrailerRent(parseFloat($(ev.target).val()));
+			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 2);
+			this.computeTrailerRent(this.removeCommaFromNumber($(ev.target).val()));
 		},
 		
 		onBlurTruckingRate: function (ev) {
@@ -569,16 +586,9 @@ define([
 			this.computeTrailerRent(parseFloat($(ev.target).val()));
 		},
 		
-		onBlurDistance: function () {
+		onKeyUpDistance: function (ev) {
+			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 2);
 			this.computeTruckingRate();
-		},
-		
-		onBlurFuelCharge: function (ev) {
-			this.toFixedValue($(ev.target), 2);
-		},
-		
-		onBlurLoader: function (ev) {
-			this.toFixedValue($(ev.target), 2);
 		},
 		
 		onKeyUpQuantity: function (ev) {
@@ -615,7 +625,7 @@ define([
 					$('#truckingrate').val('');
 					
 					if(typeof this.selectedTruckingRate != 'undefined' && this.selectedTruckingRate != null)
-						$('#truckingrate').val(this.selectedTruckingRate).blur();
+						$('#truckingrate').val(this.addCommaToNumber(this.selectedTruckingRate));
 					
 					this.computeTrailerRent();
 				}
@@ -638,13 +648,18 @@ define([
 		computeTruckingRate: function () {
 			if(!this.truckingRateEditable && $('#truckerAccountType_id').val() != '') {
 				var distanceField = $('#distance');
-				var distanceValue = (!isNaN(parseFloat(distanceField.val())))? parseFloat(distanceField.val()) : 0;
-				var totalQuantity = (!isNaN(parseFloat($('#total-quantity').val())))? parseFloat($('#total-quantity').val()) : 0;
-				var truckingRate = (distanceValue > 0 && totalQuantity > 0)? (((this.freightRate * distanceValue) + this.loadingRate + this.unloadingRate) / totalQuantity).toFixed(2) : ''; //divide by tons
-				$('#truckingrate').val(truckingRate);
+				var distanceFieldValue = this.removeCommaFromNumber(distanceField.val());
+				var distance = (!isNaN(distanceFieldValue))? distanceFieldValue : 0;
+				
+				var totalQuantityField = $('#total-quantity');
+				var totalQuantityFieldValue = this.removeCommaFromNumber(totalQuantityField.val());
+				var totalQuantity = (!isNaN(totalQuantityFieldValue))? totalQuantityFieldValue : 0;
+				
+				var truckingRate = (distance > 0 && totalQuantity > 0)? (((this.freightRate * distance) + this.loadingRate + this.unloadingRate) / totalQuantity).toFixed(2) : ''; //divide by tons
+				$('#truckingrate').val(this.addCommaToNumber(truckingRate));
 				
 				if(truckingRate != '')
-					$('#trailerrate').val((parseFloat(truckingRate) * this.trailerPercentageRate / 100).toFixed(2));
+					$('#trailerrate').val(this.addCommaToNumber((truckingRate * this.trailerPercentageRate / 100).toFixed(2)));
 				else
 					$('#trailerrate').val('0.00');
 			}
@@ -652,12 +667,15 @@ define([
 		
 		computeTrailerRent: function (haulingRate) {
 			if(this.truckingRateEditable) {
-				if(typeof haulingRate == 'undefined')
-					haulingRate = (!isNaN(parseFloat($('#truckingrate').val())))? parseFloat($('#truckingrate').val()) : 0;
+				if(typeof haulingRate == 'undefined') {
+					var haulingRateField = $('#truckingrate');
+					var haulingRateFieldValue = this.removeCommaFromNumber(haulingRateField.val());
+					haulingRate = (!isNaN(haulingRateFieldValue))? haulingRateFieldValue : 0;
+				}
 				
 				if(!isNaN(haulingRate) && haulingRate != 0) {
 					trailerRent = haulingRate * this.trailerPercentageRate / 100;
-					$('#trailerrate').val(trailerRent.toFixed(2))
+					$('#trailerrate').val(this.addCommaToNumber(trailerRent.toFixed(2)));
 				}
 				else
 					$('#trailerrate').val('0.00');

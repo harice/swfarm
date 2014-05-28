@@ -33,6 +33,7 @@ define([
 			this.collection.on('sync', function() {
 				_.each(this.models, function (model) {
 					model.set('scheduledate', thisObj.convertDateFormat(model.get('scheduledate').split(' ')[0], thisObj.dateFormatDB, thisObj.dateFormat, '-'));
+					model.set('distance', thisObj.addCommaToNumber(parseFloat(model.get('distance')).toFixed(2)));
 				});
 				
 				if(thisObj.subContainerExist())
