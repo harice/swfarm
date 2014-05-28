@@ -2,18 +2,7 @@
 
 class WeightTicketRepository implements WeightTicketRepositoryInterface {
     
-    public function findAll()
-    {
-        // try
-        // {
-        //     return WeightTicket::all();
-        // }
-        // catch (Exception $e)
-        // {
-        //     return $e->getMessage();
-        // }
-    }
-    
+
     public function findById($schedule_id)
     {
         try
