@@ -143,7 +143,9 @@ define([
 			
 			this.$el.find('#ponumber').val(this.model.get('order_number'));
 			this.$el.find('#status').val(this.model.get('status').name);
-			this.$el.find('#destination').val(this.model.get('location').location);
+            if (this.model.get('location') !== null) {
+                this.$el.find('#destination').val(this.model.get('location').location);
+            }
 			this.$el.find('#account').val(account.name);
 			this.$el.find('#street').val(address[0].street);
 			this.$el.find('#state').val(address[0].address_states[0].state);

@@ -3,7 +3,7 @@
         <div class="block-flat">
             <div class="content">
               
-				<form id="POScheduleForm" role="form" method="post" enctype="multipart/form-data">
+				<form id="POScheduleForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
 					<% if (typeof sched_id !== "undefined") { %>
 						<input type="hidden" name="id" value="<%= sched_id %>" />
 					<% } %>
@@ -25,8 +25,6 @@
 							</div>				
 						</div>
 
-						<div class="clearfix"></div>
-
 						<div class="form-group">
 							<label for="" class="col-sm-4 control-label">Time</label>
 							<div class="col-sm-8">
@@ -40,7 +38,6 @@
 	                            </div>
 							</div>
 						</div>
-						<div class="clearfix"></div>
 
 						<h4>Origin</h4>
 						<div class="form-group">
@@ -54,8 +51,6 @@
 	                            </div>
 							</div>
 						</div>
-
-						<div class="clearfix"></div>
 						
 						<div class="form-group">
 							<label for="originloader_id" class="col-sm-4 control-label">Loader Contact</label>
@@ -68,8 +63,6 @@
 							</div>
 						</div>
 
-						<div class="clearfix"></div>
-
 						<div class="form-group">
 							<label for="originloaderfee" class="col-sm-4 control-label">Loader's Fee</label>
 							<div class="col-sm-8">
@@ -80,8 +73,6 @@
 								<div class="error-msg-cont"></div>
 							</div>
 						</div>
-
-						<div class="clearfix"></div>
 
 						<h4>Destination</h4>
 						<div class="form-group">
@@ -96,8 +87,6 @@
 							</div>
 						</div>
 
-						<div class="clearfix"></div>
-
 						<div class="form-group">
 							<label for="destinationloader_id" class="col-sm-4 control-label">Loader Contact</label>
 							<div class="col-sm-8">
@@ -109,8 +98,6 @@
 							</div>
 						</div>
 
-						<div class="clearfix"></div>
-
 						<div class="form-group">
 							<label for="destinationloaderfee" class="col-sm-4 control-label">Loader's Fee</label>
 							<div class="col-sm-8">
@@ -121,8 +108,6 @@
 								<div class="error-msg-cont"></div>
 							</div>
 						</div>
-
-						<div class="clearfix"></div>
 					</div>
 
 					<div class="col-md-6">
@@ -139,8 +124,6 @@
 							</div>
 						</div>
 
-						<div class="clearfix"></div>
-
 						<div class="form-group">
 							<label for="truckerAccount_id" class="col-sm-4 control-label">Trucker</label>
 							<div class="col-sm-8">
@@ -152,8 +135,6 @@
 							</div>
 						</div>
 
-						<div class="clearfix"></div>
-
 						<div class="form-group">
 							<label for="trucker_id" class="col-sm-4 control-label">Trucker Contact</label>
 							<div class="col-sm-8">
@@ -164,8 +145,6 @@
 	                            </div>
 							</div>
 						</div>
-
-						<div class="clearfix"></div>
 
 						<div class="form-group">
 							<label for="trailer" class="col-sm-4 control-label">Trailer</label>
@@ -179,8 +158,6 @@
 							</div>
 						</div>
 
-						<div class="clearfix"></div>
-
 						<div class="form-group">
 							<label for="trailer_id" class="col-sm-4 control-label">Trailer Number</label>
 							<div class="col-sm-8">
@@ -192,16 +169,12 @@
 							</div>
 						</div>
 
-						<div class="clearfix"></div>
-
 						<div class="form-group">
 							<label for="distance" class="col-sm-4 control-label">Distance</label>
 							<div class="col-sm-8">
 								<input type="text" class="form-control text-right width-100 input-sm" id="distance" name="distance" required>
 							</div>
 						</div>
-
-						<div class="clearfix"></div>
 
 						<div class="form-group">
 							<label for="fuelcharge" class="col-sm-4 control-label">Fuel Charges</label>
@@ -214,8 +187,6 @@
 							</div>
 						</div>
 
-						<div class="clearfix"></div>
-
 						<div class="form-group">
 							<label for="truckingrate" class="col-sm-4 control-label">Trucking/Hauling Rate</label>
 							<div class="col-sm-8">
@@ -226,8 +197,6 @@
 							</div>
 						</div>
 
-						<div class="clearfix"></div>
-
 						<div class="form-group">
 							<label for="trailerrate" class="col-sm-4 control-label">Trailer Rent</label>
 							<div class="col-sm-8">
@@ -237,8 +206,6 @@
 								</div>
 							</div>
 						</div>
-
-						<div class="clearfix"></div>
 					</div>
 					
 
@@ -247,9 +214,10 @@
 					<div class="col-md-12">
 						<h4>
 							Products
-							<button title="Add Product" id="add-product" type="button" class="pull-right btn btn-info btn-xs">
-								<span class="glyphicon glyphicon-plus"></span>
-							</button>
+							<span title="Add Product" id="add-product" class="pull-right fa-stack text-primary font-size-12 cursor-pointer">
+								<i class="fa fa-square fa-stack-2x"></i>
+								<i class="fa fa-plus fa-stack-1x fa-inverse"></i>
+							</span>
 						</h4>
 
 						<div class="table-responsive">

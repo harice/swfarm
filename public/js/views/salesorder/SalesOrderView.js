@@ -97,7 +97,6 @@ define([
 			
 			this.$el.find('#sonumber').val(this.model.get('order_number'));
 			this.$el.find('#status').val(this.model.get('status').name);
-			this.$el.find('#origin').val(this.model.get('location').location);
 			this.$el.find('#nos').val(this.model.get('natureofsale').name);
 			this.$el.find('#account').val(account.name);
 			this.$el.find('#street').val(address[0].street);

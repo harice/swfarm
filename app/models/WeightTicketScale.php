@@ -52,11 +52,11 @@ class WeightTicketScale extends BaseModel {
     }
 
     public function scalerAccount(){
-        return $this->hasMany('account', 'id', 'scaleAccount_id');
+        return $this->hasMany('Account', 'id', 'scaleAccount_id');
     }
 
     public function scale(){
-        return $this->hasOne('scale', 'id', 'scale_id');
+        return $this->hasOne('Scale', 'id', 'scale_id');
     }
 
     public function delete(){
