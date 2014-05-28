@@ -73,26 +73,31 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           $data['date'] = Date('Y-m-d H:i:s', strtotime($data['scheduledate'].' '.$data['scheduletimeHour'].':'.$data['scheduletimeMin'].' '.$data['scheduletimeAmPm']));
           //$data['truckingrate'] = isset($data['truckingrate']) ? $data['truckingrate'] : Config::get('constants.GLOBAL_PER_LIST');
           $data['type'] = isset($data['type']) ? $data['type'] : 1;
+          // $data['trailerrate'] = isset($data['trailerrate']) ? $data['trailerrate'] : null;
+          
+          $trailerPercentageRateArr = Settings::where('name','=','trailer_percentage_rate')->first(array('value'))->toArray();
+          $trailerPercentageRate = floatval($trailerPercentageRateArr['value'])/100; //get trailer perentage and convert it to decimal
+          $data['trailerrate'] = $trailerPercentageRate * $data['truckingrate'];
 
           //computations
-          if($data['truckerAccountType_id'] == 2){ //for hauler account type only
-            $trailerPercentageRateArr = Settings::where('name','=','trailer_percentage_rate')->first(array('value'))->toArray();
-            $trailerPercentageRate = floatval($trailerPercentageRateArr['value'])/100; //get trailer perentage and convert it to decimal
-            $data['trailerrate'] = $trailerPercentageRate * $data['truckingrate']; //dummy data only because ther is no formula yet
-          } else { //
-			$data['trailerrate'] = isset($data['trailerrate']) ? $data['trailerrate'] : null;
-            $freightRateArr = Settings::where('name','=','freight_rate')->first(array('value'))->toArray();
-            $freightRate = floatval($freightRateArr['value']);
+          // if($data['truckerAccountType_id'] == 2){ //for hauler account type only
+          //     $trailerPercentageRateArr = Settings::where('name','=','trailer_percentage_rate')->first(array('value'))->toArray();
+          //     $trailerPercentageRate = floatval($trailerPercentageRateArr['value'])/100; //get trailer perentage and convert it to decimal
+          //     $data['trailerrate'] = $trailerPercentageRate * $data['truckingrate'];
+          // } else 
+          if($data['truckerAccountType_id'] == 9) { //for SFS account type
+              $freightRateArr = Settings::where('name','=','freight_rate')->first(array('value'))->toArray();
+              $freightRate = floatval($freightRateArr['value']);
 
-            $loadingRateArr = Settings::where('name','=','loading_rate')->first(array('value'))->toArray();
-            $loadingRate = floatval($loadingRateArr['value']);
+              $loadingRateArr = Settings::where('name','=','loading_rate')->first(array('value'))->toArray();
+              $loadingRate = floatval($loadingRateArr['value']);
 
-            $unloadingRateArr = Settings::where('name','=','unloading_rate')->first(array('value'))->toArray();
-            $unloadingRate = floatval($unloadingRateArr['value']);
+              $unloadingRateArr = Settings::where('name','=','unloading_rate')->first(array('value'))->toArray();
+              $unloadingRate = floatval($unloadingRateArr['value']);
 
-            $totalWeight = $this->getTotalWeightOfSchedule($data['products']);
-            $data['truckingrate'] = ($freightRate * $data['distance'] + ($loadingRate + $unloadingRate))/$totalWeight;
-          }
+              $totalWeight = $this->getTotalWeightOfSchedule($data['products']);
+              $data['truckingrate'] = ($freightRate * $data['distance'] + ($loadingRate + $unloadingRate))/$totalWeight;
+          } 
 
           $transportschedule->fill($data);
           $transportschedule->save();

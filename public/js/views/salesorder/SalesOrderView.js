@@ -97,7 +97,6 @@ define([
 			
 			this.$el.find('#sonumber').val(this.model.get('order_number'));
 			this.$el.find('#status').val(this.model.get('status').name);
-			this.$el.find('#origin').val(this.model.get('location').location);
 			this.$el.find('#nos').val(this.model.get('natureofsale').name);
 			this.$el.find('#account').val(account.name);
 			this.$el.find('#street').val(address[0].street);
@@ -118,10 +117,10 @@ define([
 					productname: product.product.name,
 					description: product.description,
 					stacknumber: product.stacknumber,
-					unitprice: parseFloat(unitprice).toFixed(2),
-					tons: parseFloat(tons).toFixed(2),
-					bales: product.bales,
-					totalprice: totalprice,
+					unitprice: thisObj.addCommaToNumber(parseFloat(unitprice).toFixed(2)),
+					tons: thisObj.addCommaToNumber(parseFloat(tons).toFixed(4)),
+					bales: thisObj.addCommaToNumber(product.bales),
+					totalprice: thisObj.addCommaToNumber(totalprice),
 				};
 				
 				var template = _.template(productItemTemplate, variables);

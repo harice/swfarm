@@ -143,7 +143,9 @@ define([
 			
 			this.$el.find('#ponumber').val(this.model.get('order_number'));
 			this.$el.find('#status').val(this.model.get('status').name);
-			this.$el.find('#destination').val(this.model.get('location').location);
+            if (this.model.get('location') !== null) {
+                this.$el.find('#destination').val(this.model.get('location').location);
+            }
 			this.$el.find('#account').val(account.name);
 			this.$el.find('#street').val(address[0].street);
 			this.$el.find('#state').val(address[0].address_states[0].state);
@@ -171,10 +173,10 @@ define([
 					productname: product.product.name,
 					description: product.description,
 					stacknumber: product.stacknumber,
-					unitprice: parseFloat(unitprice).toFixed(2),
-					tons: parseFloat(tons).toFixed(2),
-					bales: product.bales,
-					totalprice: totalprice,
+					unitprice: thisObj.addCommaToNumber(parseFloat(unitprice).toFixed(2)),
+					tons: thisObj.addCommaToNumber(parseFloat(tons).toFixed(4)),
+					bales: thisObj.addCommaToNumber(product.bales),
+					totalprice: thisObj.addCommaToNumber(totalprice),
 					ishold: (parseInt(product.ishold) == 1)? 'Yes' : 'No',
 				};
 				

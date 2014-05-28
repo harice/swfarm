@@ -86,8 +86,8 @@ define([
 			
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
 			this.$el.find('.lowercase').textFormatter({type:'lowercase'});
-			//this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
-            this.maskInputs();
+			this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
+            // this.maskInputs();
 			
 			this.initValidateForm();
 			this.addAddressFields();
@@ -100,7 +100,7 @@ define([
 			
 			var validate = $('#addAccountForm').validate({
 				submitHandler: function(form) {
-					var data = thisObj.formatFormField($(form).serializeObject()); console.log(data);
+					var data = thisObj.formatFormField($(form).serializeObject());
 					
 					var accountModel = new AccountModel(data);
 					

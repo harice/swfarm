@@ -330,7 +330,6 @@ define([
 		});
 		
 		app_router.on('route:showPOWeightInfoPage', function (poId, schedId, action) {
-			console.log('showPOWeightInfoPage');
 			this.closeView();
 			var poWeightInfoController = new POWeightInfoController();
 			this.currView = poWeightInfoController.setAction(poId, schedId, action);

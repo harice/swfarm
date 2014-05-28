@@ -40,13 +40,11 @@ class Order extends BaseModel {
      * @var array
      */
 	public static $so_rules = array(
-        'location_id' => 'required',
         'natureofsale_id' => 'required',
         'account_id' => 'required'
     );
 
     public static $po_rules = array(
-        'location_id' => 'required',
         'account_id' => 'required'
     );
     

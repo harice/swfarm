@@ -25,10 +25,12 @@
                                     </div>
                                 </div>
                                 <% } %>
+                                <% if (typeof is_bid === "undefined") { %>
                                 <div class="form-group">
                                     <label for="location_id" class="col-sm-3 control-label">Destination</label>
                                     <div id="po-destination" class="col-sm-9"></div>
                                 </div>
+                                <% } %>
                                 <div class="form-group">
                                     <label for="account" class="col-sm-3 control-label">Producer *</label>
                                     <div class="col-sm-7">

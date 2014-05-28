@@ -59,6 +59,7 @@ define([
 				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
+				removeComma: ['unitprice', 'tons', 'bales'],
 			};
 			
 			this.originCollection = new OriginCollection();
@@ -93,7 +94,6 @@ define([
 				if(thisObj.subContainerExist()) {
 					thisObj.displayForm();
 					thisObj.supplySOData();
-					thisObj.maskInputs();
 				}
 				this.off('sync');
 			});
@@ -121,7 +121,6 @@ define([
 			
 			this.$el.find('#sonumber').val(this.model.get('order_number'));
 			this.$el.find('#status').val(this.model.get('status').name);
-			this.$el.find('[name="location_id"][value="'+this.model.get('location').id+'"]').attr('checked', true);
 			this.$el.find('[name="natureofsale_id"][value="'+this.model.get('natureofsale').id+'"]').attr('checked', true);
 			this.customerAutoCompleteView.autoCompleteResult = [{name:account.name, id:account.id, address:address}];
 			this.$el.find('#account').val(account.name);
@@ -132,8 +131,13 @@ define([
 			this.$el.find('#zipcode').val(address[0].zipcode);
 			this.$el.find('#dateofsale').val(this.convertDateFormat(this.model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
 			this.$el.find('#notes').val(this.model.get('notes'));
-			this.$el.find('#start-date .input-group.date').datepicker('update', this.convertDateFormat(this.model.get('transportdatestart').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
-			this.$el.find('#end-date .input-group.date').datepicker('update', this.convertDateFormat(this.model.get('transportdateend').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
+			
+			var startDate = this.convertDateFormat(this.model.get('transportdatestart').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-');
+			var endDate = this.convertDateFormat(this.model.get('transportdateend').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-');
+			this.$el.find('#start-date .input-group.date').datepicker('update', startDate);
+			this.$el.find('#start-date .input-group.date').datepicker('setEndDate', endDate);
+			this.$el.find('#end-date .input-group.date').datepicker('update', endDate);
+			this.$el.find('#end-date .input-group.date').datepicker('setStartDate', startDate);
 			
 			var i= 0;
 			_.each(products, function (product) {
@@ -144,10 +148,11 @@ define([
 				productFields.find('.product_id').val(product.product.id);
 				productFields.find('.description').val(product.description);
 				productFields.find('.stacknumber').val(product.stacknumber);
-				productFields.find('.unitprice').val(product.unitprice);
-				productFields.find('.tons').val(product.tons);
-				productFields.find('.bales').val(product.bales);
-				productFields.find('.unitprice').blur();
+				productFields.find('.unitprice').val(thisObj.addCommaToNumber(parseFloat(product.unitprice).toFixed(2)));
+				productFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(product.tons).toFixed(4)));
+				productFields.find('.bales').val(thisObj.addCommaToNumber(product.bales));
+				var unitPrice = parseFloat(product.unitprice) * parseFloat(product.tons);
+				productFields.find('.unit-price').val(thisObj.addCommaToNumber(unitPrice.toFixed(2)));
 			});
 		},
 		
