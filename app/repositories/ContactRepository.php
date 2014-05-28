@@ -62,8 +62,8 @@ class ContactRepository implements ContactRepositoryInterface {
       'suffix' => 'between:2,6',
       'account' => 'required|exists:account,id',
       'email' => 'required|email|unique:contact',
-      'phone' => 'required|between:14,14',
-      'mobile' => 'between:14,14'
+      'phone' => 'required|between:12,12',
+      'mobile' => 'between:12,12'
     );
 
     $this->validate($data, $rules);
@@ -103,8 +103,8 @@ class ContactRepository implements ContactRepositoryInterface {
       'suffix' => 'between:2,6',
       'account' => 'required|exists:account,id',
       'email' => 'required|email|unique:contact,email,'.$id,
-      'phone' => 'required|between:14,14',
-      'mobile' => 'between:14,14'
+      'phone' => 'required|between:12,12',
+      'mobile' => 'between:12,12'
     );
 
     $this->validate($data, $rules);

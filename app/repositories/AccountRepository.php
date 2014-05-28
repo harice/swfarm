@@ -70,7 +70,7 @@ class AccountRepository implements AccountRepositoryInterface {
     $rules = array(
       'name' => 'required|unique:account',
       'accounttype' => 'required',
-      'phone' => 'required|between:14,14'
+      'phone' => 'required|between:12,12'
     );
 
     $this->validate($data, $rules);
@@ -128,7 +128,7 @@ class AccountRepository implements AccountRepositoryInterface {
     $rules = array(
       'name' => 'required|unique:account,name,'.$id,
       'accounttype' => 'required',
-      'phone' => 'required|between:14,14',
+      'phone' => 'required|between:12,12',
     );
 
     $this->validate($data, $rules);
