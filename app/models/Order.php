@@ -45,7 +45,6 @@ class Order extends BaseModel {
     );
 
     public static $po_rules = array(
-        'location_id' => 'required',
         'account_id' => 'required'
     );
     
