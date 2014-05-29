@@ -172,7 +172,6 @@ define([
 					
 					if(thisObj.wiId != null)
 						data['id'] = thisObj.wiId;
-					console.log(data);
 					
 					var poWeightInfoModel = new POWeightInfoModel(data);
 					

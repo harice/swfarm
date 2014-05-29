@@ -59,7 +59,6 @@ define([
                         null,
                         {
 							success: function (model, response, options) {
-                                console.log(response);
 								thisObj.displayMessage(response);
 								//Global.getGlobalVars().app_router.navigate(Const.URL.PRODUCT, {trigger: true});
 								Backbone.history.history.back();

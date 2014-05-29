@@ -64,7 +64,7 @@ define([
 			
 			var validate = $('#sheduleSettingsForm').validate({
 				submitHandler: function(form) {
-					var data = $(form).serializeObject(); console.log(data);
+					var data = $(form).serializeObject(); //console.log(data);
 					
 					/*var trailerModel = new TrailerModel(data);
 					

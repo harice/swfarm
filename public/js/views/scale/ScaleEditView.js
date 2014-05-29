@@ -63,7 +63,7 @@ define([
 		supplyScaleData: function () {
 			this.$el.find('#account_id').val(this.model.get('account_id'));
 			this.$el.find('#name').val(this.model.get('name'));
-			this.$el.find('#rate').val(parseFloat(this.model.get('rate')).toFixed(2));
+			this.$el.find('#rate').val(this.addCommaToNumber(this.model.get('rate')));
 		},
 		
 		initDeleteConfirmation: function () {

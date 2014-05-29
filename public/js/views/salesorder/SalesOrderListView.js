@@ -47,10 +47,8 @@ define([
 						model.set('transportdatestart', thisObj.convertDateFormat(model.get('transportdatestart').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
 					if(model.get('transportdateend'))
 						model.set('transportdateend', thisObj.convertDateFormat(model.get('transportdateend').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
-					console.log(model.get('totalPrice'));
 					if(model.get('totalPrice'))
 						model.set('totalPrice', thisObj.addCommaToNumber(parseFloat(model.get('totalPrice')).toFixed(2)));
-					console.log(model.get('totalPrice'));
 				});
 				
 				if(thisObj.subContainerExist())
@@ -139,7 +137,7 @@ define([
 		},
 		
 		initCalendars: function () {
-			var thisObj = this;console.log('initCalendars');
+			var thisObj = this;
 			
 			this.$el.find('#filter-date-of-sale .input-group.date').datepicker({
 				orientation: "top left",
@@ -220,7 +218,7 @@ define([
 		},
 		
 		filterByStatus: function (ev) {
-			var filter = $(ev.target).val(); console.log(filter);
+			var filter = $(ev.target).val(); //console.log(filter);
 			this.collection.setFilter('status', filter)
 			this.renderList(1);
 			return false;
