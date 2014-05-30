@@ -21,6 +21,7 @@ define([
 	'controllers/purchaseorder/POWeightInfoController',
 	'controllers/salesorder/SalesOrderController',
 	'controllers/salesorder/SODeliveryScheduleController',
+	'controllers/salesorder/SOWeightInfoController',
 	'controllers/stack/StackLocationController',
 	'controllers/trailer/TrailerController',
 	'controllers/settings/SettingsController',
@@ -49,6 +50,7 @@ define([
 			POWeightInfoController,
 			SalesOrderController,
 			SODeliveryScheduleController,
+			SOWeightInfoController,
 			StackLocationController,
 			TrailerController,
 			SettingsController,
@@ -153,6 +155,12 @@ define([
 	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soId/'] = 'showDeliverySchedulePage';
 	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soId/:action'] = 'showDeliverySchedulePage';
 	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soId/:action/:id'] = 'showDeliverySchedulePage';
+	
+	//so weight info
+	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId'] = 'showSOWeightInfoPage';
+	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/'] = 'showSOWeightInfoPage';
+	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/:action'] = 'showSOWeightInfoPage';
+	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/:action/'] = 'showSOWeightInfoPage';
 	
 	//stack location
 	routerRoutes[Const.URL.STACKLOCATION] = 'showStackPage';
@@ -350,6 +358,13 @@ define([
 			this.closeView();
 			var deliveryScheduleController = new SODeliveryScheduleController();
 			this.currView = deliveryScheduleController.setAction(soId, action, id);
+			this.currView.render();
+		});
+		
+		app_router.on('route:showSOWeightInfoPage', function (soId, schedId, action) {
+			this.closeView();
+			var soWeightInfoController = new SOWeightInfoController();
+			this.currView = soWeightInfoController.setAction(soId, schedId, action);
 			this.currView.render();
 		});
 		

@@ -20,6 +20,7 @@ define(function () {
             'POWEIGHTINFO': 'purchases/weightinfo',
 			'SO': 'sales/so',
 			'DELIVERYSCHEDULE': 'sales/deliveryschedule',
+			'SOWEIGHTINFO': 'sales/weightinfo',
 			'STACKLOCATION': 'administration/stack',
 			'TRAILER': 'administration/trailer',
 			'SETTINGS': 'administration/settings',
