@@ -128,14 +128,20 @@ class OrderRepository implements OrderRepositoryInterface {
        
         $result = DB::transaction(function() use ($data)
         {
+            $result = array();
             $data['orderaddress_id'] = $this->addOrderAddress($data['businessaddress']);
 
             $order = $this->instance();
             $order->fill($data);
             $order->save();
 
-            $this->addProductOrder($order->id, $data['products']);
+            $productResult = $this->addProductOrder($order->id, $data['products']);
             
+            if($productResult['hasHoldProduct']){
+                $order->status_id = 7; //Testing status
+                $order->save();
+            }
+
             return $order;
         });
         
@@ -169,17 +175,26 @@ class OrderRepository implements OrderRepositoryInterface {
        
         $result = DB::transaction(function() use ($id, $data)
         {   
+            $productResult = null;
             $order = Order::find($id);
 
             $this->addOrderAddress($data['businessaddress'], $order->orderaddress_id); //just editing the address
 
             $order->fill($data);
             $order->save();
+            
             if(isset($data['products'])){
                 $this->deleteProductOrder($id, $data['products']); //delete product order that is remove by client
-                $this->addProductOrder($order->id, $data['products']);
+                $productResult = $this->addProductOrder($order->id, $data['products']);
             } else {
                 $this->deleteProductOrder($id, null);
+            }
+
+            if($productResult != null){
+                if($productResult['hasHoldProduct']){
+                    $order->status_id = 7; //Testing status
+                    $order->save();
+                }
             }
             return $order;
         });
@@ -257,13 +272,16 @@ class OrderRepository implements OrderRepositoryInterface {
     
     public function validate($data, $entity, $orderType = null)
     {
+        $messages = array(
+            'rfv.required_if' => 'The RFV field is required when product is on hold.',
+        );
         if($orderType == null){
-            $validator = Validator::make($data, $entity::$rules);
+            $validator = Validator::make($data, $entity::$rules, $messages);
         } else {
             if($orderType == 1){ //PO rules need to used
-                $validator = Validator::make($data, $entity::$po_rules);
+                $validator = Validator::make($data, $entity::$po_rules, $messages);
             } else { //SO rules need to used
-                $validator = Validator::make($data, $entity::$so_rules);
+                $validator = Validator::make($data, $entity::$so_rules, $messages);
             }
         }
         
@@ -298,9 +316,13 @@ class OrderRepository implements OrderRepositoryInterface {
     
     private function addProductOrder($order_id, $products = array())
     {
+        $result = array('hasHoldProduct' => false);
+
         foreach ($products as $product) {
             $product['order_id'] = $order_id;
-
+            if(!$result['hasHoldProduct'] && $product['ishold'] == 1){ //has hold product for testing
+                $result['hasHoldProduct'] = true;
+            }
             $this->validate($product, 'ProductOrder');
             if(isset($product['id']))
                 $productorder = ProductOrder::find($product['id']);
@@ -310,6 +332,7 @@ class OrderRepository implements OrderRepositoryInterface {
             $productorder->fill($product);
             $productorder->save();
         }
+        return $result;
     }
    
     private function getBusinessAddress($account_id)
@@ -330,21 +353,36 @@ class OrderRepository implements OrderRepositoryInterface {
 
     public function cancelOrder($id){
         $order = Order::find($id);
-        if($order->status_id == 1 || $order->status_id == 4){ //check if Open or pending
-          $order->status_id = 3;
-          $order->save();
 
-          return array(
-              'error' => false,
-              'message' => 'Order cancelled.');
+        if($order->isfrombid == 1 && $order->status_id == 4 && $order->ordertype == 1){ //PO that is on bid
+            $order->status_id = 5; //Bid Cancelled Status
+            $order->save();
+
+            return array(
+                  'error' => false,
+                  'message' => 'Bid cancelled.');
+        } else if($order->ordertype == 1){ //PO that is not bid
+            $order->status_id = 6; //PO Cancelled Status
+            $order->save();
+
+            return array(
+                  'error' => false,
+                  'message' => 'PO cancelled.');
+        } else if($order->status_id == 1 || $order->status_id == 4){ //check if Open or pending, for sales order
+              $order->status_id = 3;
+              $order->save();
+
+              return array(
+                  'error' => false,
+                  'message' => 'Order cancelled.');
         } else if($order->status_id == 3) {
-          return array(
-              'error' => false,
-              'message' => 'Order is already cancelled');
+              return array(
+                  'error' => false,
+                  'message' => 'Order is already cancelled');
         } else {
-          return array(
-              'error' => false,
-              'message' => 'Order cannot be cancel if the status is not open or pending.');
+              return array(
+                  'error' => false,
+                  'message' => 'Order cannot be cancel if the status is not open or pending.');
         }       
     }
 
