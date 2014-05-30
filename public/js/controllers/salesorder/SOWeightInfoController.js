@@ -1,8 +1,8 @@
 define([
 	'backbone',
-	'views/purchaseorder/WeightInfoAddView',
-	'views/purchaseorder/WeightInfoEditView',
-	'views/purchaseorder/WeightInfoView',
+	'views/salesorder/WeightInfoAddView',
+	'views/salesorder/WeightInfoEditView',
+	'views/salesorder/WeightInfoView',
 	'constant',
 ], function(Backbone, WeightInfoAddView, WeightInfoEditView, WeightInfoView, Const){
 	

@@ -82,6 +82,7 @@ define([
 			var data = {
 				so_schedule_edit_url: '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId+'/'+Const.CRUD.EDIT,
 				so_schedule_url: '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId,
+				so_weight_info_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+this.soId,
 				schedules: this.collection.models,
 				_: _ 
 			};

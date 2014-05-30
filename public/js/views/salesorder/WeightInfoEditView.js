@@ -1,18 +1,18 @@
 define([
 	'backbone',
 	'bootstrapdatepicker',
-	'views/purchaseorder/WeightInfoAddView',
+	'views/salesorder/WeightInfoAddView',
 	'jqueryvalidate',
 	'jquerytextformatter',
-	'models/purchaseorder/PurchaseOrderModel',
-	'models/purchaseorder/POScheduleModel',
-	'models/purchaseorder/POWeightInfoModel',
+	'models/salesorder/SalesOrderModel',
+	'models/salesorder/SOScheduleModel',
+	'models/salesorder/SOWeightInfoModel',
 	'collections/product/ProductCollection',
 	'collections/account/AccountCollection',
 	'collections/scale/ScaleCollection',
 	'text!templates/layout/contentTemplate.html',
-	'text!templates/purchaseorder/weightInfoAddTemplate.html',
-	'text!templates/purchaseorder/weightInfoProductItemTemplate.html',
+	'text!templates/salesorder/weightInfoAddTemplate.html',
+	'text!templates/salesorder/weightInfoProductItemTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -20,9 +20,9 @@ define([
 			WeightInfoAddView,
 			Validate,
 			TextFormatter,
-			PurchaseOrderModel,
-			POScheduleModel,
-			POWeightInfoModel,
+			SalesOrderModel,
+			SOScheduleModel,
+			SOWeightInfoModel,
 			ProductCollection,
 			AccountCollection,
 			ScaleCollection,
@@ -46,11 +46,11 @@ define([
 			this.h1Title = 'Weight Info';
 			this.h1Small = 'edit';
 			
-			this.model = new POWeightInfoModel({id:this.schedId});
+			this.model = new SOWeightInfoModel({id:this.schedId});
 			this.model.on('change', function() {
 				thisObj.wiId = this.get('id');
 				thisObj.inits();
-				thisObj.purchaseOrderModel.runFetch();
+				thisObj.salesOrderModel.runFetch();
 				this.off('change');
 			});
 		},

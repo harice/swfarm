@@ -11,8 +11,8 @@ define([
 	'collections/account/AccountCollection',
 	'collections/scale/ScaleCollection',
 	'text!templates/layout/contentTemplate.html',
-	'text!templates/purchaseorder/weightInfoAddTemplate.html',
-	'text!templates/purchaseorder/weightInfoProductItemTemplate.html',
+	'text!templates/salesorder/weightInfoAddTemplate.html',
+	'text!templates/salesorder/weightInfoProductItemTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -148,7 +148,7 @@ define([
 								+':'+this.soScheduleModel.get('scheduletimeMin')
 								+' '+this.soScheduleModel.get('scheduletimeAmPm');
 			
-			this.$el.find('#po-number').val(this.salesOrderModel.get('order_number'));
+			this.$el.find('#so-number').val(this.salesOrderModel.get('order_number'));
 			this.$el.find('#producer').val(this.salesOrderModel.get('account').name);
 			this.$el.find('#date-and-time').val(dateAndTime);
 			
@@ -161,7 +161,7 @@ define([
 		initValidateForm: function () {
 			var thisObj = this;
 			
-			var validate = $('#poWeightInfoFrom').validate({
+			var validate = $('#soWeightInfoFrom').validate({
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
 					//var data = thisObj.formatFormField($(form).serializeObject());

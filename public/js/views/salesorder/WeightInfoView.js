@@ -4,12 +4,12 @@ define([
 	'views/base/AppView',
 	'jqueryvalidate',
 	'jquerytextformatter',
-	'models/purchaseorder/PurchaseOrderModel',
-	'models/purchaseorder/POScheduleModel',
-	'models/purchaseorder/POWeightInfoModel',
+	'models/salesorder/SalesOrderModel',
+	'models/salesorder/SOScheduleModel',
+	'models/salesorder/SOWeightInfoModel',
 	'text!templates/layout/contentTemplate.html',
-	'text!templates/purchaseorder/weightInfoViewTemplate.html',
-	'text!templates/purchaseorder/weightInfoViewProductItemTemplate.html',
+	'text!templates/salesorder/weightInfoViewTemplate.html',
+	'text!templates/salesorder/weightInfoViewProductItemTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -17,9 +17,9 @@ define([
 			AppView,
 			Validate,
 			TextFormatter,
-			PurchaseOrderModel,
-			POScheduleModel,
-			POWeightInfoModel,
+			SalesOrderModel,
+			SOScheduleModel,
+			SOWeightInfoModel,
 			contentTemplate,
 			weightInfoViewTemplate,
 			weightInfoViewProductItemTemplate,
@@ -39,23 +39,23 @@ define([
 			this.h1Title = 'Weight Info';
 			this.h1Small = 'view';
 			
-			this.purchaseOrderModel = new PurchaseOrderModel({id:this.soId});
-			this.purchaseOrderModel.on('change', function() {
-				thisObj.poScheduleModel.runFetch();
+			this.salesOrderModel = new SalesOrderModel({id:this.soId});
+			this.salesOrderModel.on('change', function() {
+				thisObj.soScheduleModel.runFetch();
 				thisObj.off('change');
 			});
 			
-			this.poScheduleModel = new POScheduleModel({id:this.schedId});
-			this.poScheduleModel.on('change', function() {
+			this.soScheduleModel = new SOScheduleModel({id:this.schedId});
+			this.soScheduleModel.on('change', function() {
 				thisObj.model.runFetch();
 				thisObj.off('change');
 			});
 			
-			this.model = new POWeightInfoModel({id:this.schedId});
+			this.model = new SOWeightInfoModel({id:this.schedId});
 			this.model.on('change', function() {
 				if(thisObj.subContainerExist()) {
-					if(typeof this.get('weightTicketNumber') === 'undefined')
-						Global.getGlobalVars().app_router.navigate(Const.URL.POWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD, {trigger: true});
+					if(typeof this.get('weightTicketNumber') === 'undefined') {console.log('here here');
+						Global.getGlobalVars().app_router.navigate(Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD, {trigger: true});}
 					else {
 						
 						thisObj.displayForm();
@@ -68,15 +68,15 @@ define([
 		},
 		
 		render: function(){
-			this.purchaseOrderModel.runFetch();
+			this.salesOrderModel.runFetch();
 		},
 		
 		displayForm: function () {
 			var thisObj = this;
 			
 			var innerTemplateVariables = {
-				weight_info_edit_url: '#/'+Const.URL.POWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.EDIT,
-				previous_po_sched_url: '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.soId,
+				weight_info_edit_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.EDIT,
+				previous_so_sched_url: '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId,
 			};
 			
 			var innerTemplate = _.template(weightInfoViewTemplate, innerTemplateVariables);
@@ -95,13 +95,13 @@ define([
 			var pickupInfo = this.model.get('weightticketscale_pickup');
 			var dropoffInfo = this.model.get('weightticketscale_dropoff');
 			
-			var dateAndTime = this.convertDateFormat(this.poScheduleModel.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-')
-								+' '+this.poScheduleModel.get('scheduletimeHour')
-								+':'+this.poScheduleModel.get('scheduletimeMin')
-								+' '+this.poScheduleModel.get('scheduletimeAmPm');
+			var dateAndTime = this.convertDateFormat(this.soScheduleModel.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-')
+								+' '+this.soScheduleModel.get('scheduletimeHour')
+								+':'+this.soScheduleModel.get('scheduletimeMin')
+								+' '+this.soScheduleModel.get('scheduletimeAmPm');
 			
-			this.$el.find('#po-number').val(this.purchaseOrderModel.get('order_number'));
-			this.$el.find('#producer').val(this.purchaseOrderModel.get('account').name);
+			this.$el.find('#so-number').val(this.salesOrderModel.get('order_number'));
+			this.$el.find('#producer').val(this.salesOrderModel.get('account').name);
 			this.$el.find('#date-and-time').val(dateAndTime);
 			this.$el.find('#weight-ticket-no').val(this.model.get('weightTicketNumber'));
 			this.$el.find('#loading-ticket-no').val(this.model.get('loadingTicketNumber'));

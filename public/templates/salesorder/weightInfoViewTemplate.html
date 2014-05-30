@@ -4,7 +4,7 @@
             <div class="content">
               
               <form id="soWeightInfoFrom" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-				<fieldset>
+                <fieldset>
                   <legend>Details</legend>
                   <div class="row">
                     <div class="col-md-6">
@@ -20,7 +20,6 @@
                           <input id="producer" type="text" class="form-control" maxlength="250" readonly>
                         </div>
                       </div>
-					  <% if (typeof wiId !== "undefined") { %>
 					  <div class="form-group">
                         <label for="weight-ticket-no" class="col-sm-3 control-label">Weight Ticket No.</label>
                         <div class="col-sm-7">
@@ -33,7 +32,6 @@
                           <input id="loading-ticket-no" type="text" class="form-control" maxlength="250" readonly>
                         </div>
                       </div>
-					  <% } %>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
@@ -62,25 +60,12 @@
                       </thead>
                       <tbody>
 					    <tr>
-						  <td>
-							<div class="styled-select">
-							  <select id="pickup-scaleAccount_id" class="form-contro width-200 scaleAccount_id" name="pickup-scaleAccount_id" required>
-							    <option value="">Select a scale account</option>
-								<%= scaler_account_list %>
-							  </select>
-							</div>
-						  </td>
-						  <td>
-							<div class="styled-select">
-							  <select id="pickup-scales" class="form-control width-200 scale_id" name="pickup-scale_id" required>
-							    <option value="">Select a scale name</option>
-							  </select>
-							</div>
-						  </td>
-						  <td><input id="pickup-fee" maxlength="80" name="pickup-fee" class="form-control fee" placeholder="0.00" required readonly></td>
-						  <td><input maxlength="80" name="pickup-bales" class="form-control bales mask-bales" placeholder="0" required></td>
-						  <td><input maxlength="80" name="pickup-gross" class="form-control gross" placeholder="0.0000" required></td>
-						  <td><input maxlength="80" name="pickup-tare" class="form-control tare" placeholder="0.0000" required></td>
+						  <td><input class="form-control scale-account" placeholder="" readonly></td>
+						  <td><input class="form-control scale-name" placeholder="" readonly></td>
+						  <td><input class="form-control fee" placeholder="0.00" readonly></td>
+						  <td><input class="form-control bales" placeholder="0" readonly></td>
+						  <td><input class="form-control gross" placeholder="0.0000" readonly></td>
+						  <td><input class="form-control tare" placeholder="0.0000" readonly></td>
 						  <td><span class="net">0.0000</span></td>
 						</tr>
 					  </tbody>
@@ -126,25 +111,12 @@
                       </thead>
                       <tbody>
 					    <tr>
-						  <td>
-							<div class="styled-select">
-							  <select id="dropoff-scaleAccount_id" class="form-control width-200 scaleAccount_id" name="dropoff-scaleAccount_id" required>
-							    <option value="">Select a scale account</option>
-								<%= scaler_account_list %>
-							  </select>
-							</div>
-						  </td>
-						  <td>
-							<div class="styled-select">
-							  <select id="dropoff-scales" class="form-control width-200 scale_id" name="dropoff-scale_id" required>
-							    <option value="">Select a scale name</option>
-							  </select>
-							</div>
-						  </td>
-						  <td><input id="dropoff-fee" maxlength="80" name="dropoff-fee" class="form-control fee" placeholder="0.00" required readonly></td>
-						  <td><input maxlength="80" name="dropoff-bales" class="form-control bales mask-bales" placeholder="0" required></td>
-						  <td><input maxlength="80" name="dropoff-gross" class="form-control gross" placeholder="0.0000" required></td>
-						  <td><input maxlength="80" name="dropoff-tare" class="form-control tare" placeholder="0.0000" required></td>
+						  <td><input class="form-control scale-account" placeholder="" readonly></td>
+						  <td><input class="form-control scale-name" placeholder="" readonly></td>
+						  <td><input class="form-control fee" placeholder="0.00" readonly></td>
+						  <td><input class="form-control bales" placeholder="0" readonly></td>
+						  <td><input class="form-control gross" placeholder="0.0000" readonly></td>
+						  <td><input class="form-control tare" placeholder="0.0000" readonly></td>
 						  <td><span class="net">0.0000</span></td>
 						</tr>
 					  </tbody>
@@ -176,8 +148,8 @@
                 <div class="form-group form-button-container">
                     <div class="col-md-12">
                         <div class="pull-right">
-                            <button id="save" type="submit" class="save btn btn-primary">Save</button>
-                            <a class="btn btn-default" href="<%= cancel_url %>">Cancel</a>
+                            <a class="btn btn-primary" href="<%= weight_info_edit_url %>">Edit Weight Ticket</a>
+                            <a class="btn btn-default" href="<%= previous_so_sched_url %>">Cancel</a>
                         </div>
                     </div>
                 </div>
