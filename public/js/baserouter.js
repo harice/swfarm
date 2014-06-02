@@ -6,6 +6,7 @@ define([
   var BaseRouter = Backbone.Router.extend({
       previousFragment: null,
 	  currentFragment: null,
+	  fromNavigateAway: false,
 	  before: function(){},
       after: function(){},
       route : function(route, name, callback){
