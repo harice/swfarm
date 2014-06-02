@@ -11,6 +11,7 @@ define([
 		
 		var headerView;
 		var sideMenu;
+		var overrideNavigateAwayFromForm = false;
 
 		Backbone.View.prototype.close = function () {
 			this.$el.empty();
@@ -159,6 +160,11 @@ define([
 			var arrZipCodes = strZipCodes.split(',');
 			return (arrZipCodes.indexOf(val) > -1)? true : false;
 		}, $.validator.format("Invalid zip code for the selected city"));
+		
+		$.validator.addMethod('require_rfv', function(val, elem) {
+			var holdForTestingField = $(elem).closest('tr').find('.ishold')
+			return (holdForTestingField.val() == '1' && val == '')? false : true;
+		}, $.validator.format("Required if hold for testing"));
 		
 		// Pass in our Router module and call it's initialize function
 		Router.initialize();

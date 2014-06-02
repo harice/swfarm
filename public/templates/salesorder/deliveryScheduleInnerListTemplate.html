@@ -8,6 +8,12 @@
 		<td><%= schedule.get("destinationloader").lastname %>, <%= schedule.get("destinationloader").firstname %> <%= schedule.get("destinationloader").suffix %></td>
 		<td><%= schedule.get("distance") %> miles</td>
 		<td>
+			<a href="<%= so_weight_info_url %>/<%= schedule.get("id") %>" class="text-primary" title="weight info">
+			 	<span class="fa-stack">
+					<i class="fa fa-square fa-stack-2x"></i>
+					<i class="fa fa-clock-o fa-stack-1x fa-inverse"></i>
+				</span>
+			</a>
 			<a href="<%= so_schedule_edit_url %>/<%= schedule.get("id") %>" class="text-primary" title="edit">
 				<span class="fa-stack">
 					<i class="fa fa-square fa-stack-2x"></i>

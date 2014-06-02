@@ -5,6 +5,7 @@ define([
 	'views/layout/HeaderView',
 	'views/layout/SideMenuView',
 	'views/layout/HomePageView',
+	'views/base/AppView',
 	'views/admin/AdminView',
 	'controllers/login/LoginController',
 	'controllers/user/UserController',
@@ -21,6 +22,7 @@ define([
 	'controllers/purchaseorder/POWeightInfoController',
 	'controllers/salesorder/SalesOrderController',
 	'controllers/salesorder/SODeliveryScheduleController',
+	'controllers/salesorder/SOWeightInfoController',
 	'controllers/stack/StackLocationController',
 	'controllers/trailer/TrailerController',
 	'controllers/settings/SettingsController',
@@ -33,6 +35,7 @@ define([
 			HeaderView,
 			SideMenuView,
 			HomePageView,
+			AppView,
 			AdminView,
 			LoginController,
 			UserController,
@@ -49,6 +52,7 @@ define([
 			POWeightInfoController,
 			SalesOrderController,
 			SODeliveryScheduleController,
+			SOWeightInfoController,
 			StackLocationController,
 			TrailerController,
 			SettingsController,
@@ -154,6 +158,12 @@ define([
 	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soId/:action'] = 'showDeliverySchedulePage';
 	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soId/:action/:id'] = 'showDeliverySchedulePage';
 	
+	//so weight info
+	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId'] = 'showSOWeightInfoPage';
+	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/'] = 'showSOWeightInfoPage';
+	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/:action'] = 'showSOWeightInfoPage';
+	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/:action/'] = 'showSOWeightInfoPage';
+	
 	//stack location
 	routerRoutes[Const.URL.STACKLOCATION] = 'showStackPage';
 	routerRoutes[Const.URL.STACKLOCATION+'/'] = 'showStackPage';
@@ -185,36 +195,74 @@ define([
 		preventAccessWhenAuth : ['#/login'],
 
 		before : function(params, next){
-			//console.log('router.before!!!');
+			console.log('router.before!!!');
 			//console.log(params);
 			//console.log(next);
-			var isAuth = Session.get('token');
-			var path = Backbone.history.location.hash;
-			var needAuth = _.contains(this.requiresAuthExcept, path);
-			var cancelAccess = _.contains(this.preventAccessWhenAuth, path);
-
-			if(!isAuth) {
-				Backbone.View.prototype.showLogin();
-			} else {
-				Backbone.View.prototype.showContent();
+			
+			/*var arrayFragment = [];
+			if(this.currentFragment != null)
+				arrayFragment = this.currentFragment.split('/');
+			
+			var previousPrevious = this.previousFragment;
+			this.previousFragment = this.currentFragment;
+			this.currentFragment = Backbone.history.fragment;
+			
+			console.log('this.previousFragment: '+this.previousFragment);
+			console.log('this.currentFragment: '+this.currentFragment);
+			
+			//var arrayFragment = [];
+			//if(this.previousFragment != null)
+				//arrayFragment = this.previousFragment.split('/');
+			
+			var c = true;
+			if(arrayFragment.indexOf('add') >= 0 && !overrideNavigateAwayFromForm) {
+				console.log('with add');
+				//new AppView().showNavigationAwayConfirmationWindow();
+				c = confirm("Are your sure blah blah blah!!!");
 			}
-
-			if(path === '#/'+Const.URL.LOGOUT && isAuth)
-			{
-				Session.clear();
-				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
+			else {
+				//console.log('no add');
 			}
+			
+			if(c) {
+				console.log('continue');
+				overrideNavigateAwayFromForm = false;*/
+			
+				var isAuth = Session.get('token');
+				var path = Backbone.history.location.hash;
+				var needAuth = _.contains(this.requiresAuthExcept, path);
+				var cancelAccess = _.contains(this.preventAccessWhenAuth, path);
 
-			if(!needAuth && !isAuth){
-				if(path != '#/'+Const.URL.LOGOUT)
-					Session.set('redirectFrom', path);
+				if(!isAuth) {
+					Backbone.View.prototype.showLogin();
+				} else {
+					Backbone.View.prototype.showContent();
+				}
 
-				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
-			}else if(isAuth && cancelAccess){
-				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.DASHBOARD, { trigger : true });
-			}else{
-			  	return next();
-			}
+				if(path === '#/'+Const.URL.LOGOUT && isAuth)
+				{
+					Session.clear();
+					Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
+				}
+
+				if(!needAuth && !isAuth){
+					if(path != '#/'+Const.URL.LOGOUT)
+						Session.set('redirectFrom', path);
+
+					Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
+				}else if(isAuth && cancelAccess){
+					Global.getGlobalVars().app_router.navigate('#/'+Const.URL.DASHBOARD, { trigger : true });
+				}else{
+					return next();
+				}
+			
+			/*}
+			else {
+				console.log('not continue');
+				this.currentFragment = this.previousFragment;
+				this.previousFragment = previousPrevious;
+				Global.getGlobalVars().app_router.navigate('#/'+this.currentFragment);
+			}*/
 		},
 
 		after : function(){
@@ -350,6 +398,13 @@ define([
 			this.closeView();
 			var deliveryScheduleController = new SODeliveryScheduleController();
 			this.currView = deliveryScheduleController.setAction(soId, action, id);
+			this.currView.render();
+		});
+		
+		app_router.on('route:showSOWeightInfoPage', function (soId, schedId, action) {
+			this.closeView();
+			var soWeightInfoController = new SOWeightInfoController();
+			this.currView = soWeightInfoController.setAction(soId, schedId, action);
 			this.currView.render();
 		});
 		

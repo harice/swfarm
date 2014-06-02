@@ -55,8 +55,8 @@ define([
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
-				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'ishold', 'id'],
-				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales'],
+				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'ishold', 'id', 'rfv'],
+				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales', 'rfv'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
 				removeComma: ['unitprice', 'tons', 'bales'],
@@ -332,8 +332,15 @@ define([
 			var thisObj = this;
 			var productFieldClassRequired = this.options.productFieldClassRequired;
 			for(var i=0; i < productFieldClassRequired.length; i++) {
+				var rules = {};
+				
+				if(productFieldClassRequired[i] == 'rfv')
+					rules = {require_rfv: true};
+				else
+					rules = {required: true};
+				
 				clone.find('.'+productFieldClassRequired[i]).each(function() {
-					$(this).rules('add', {required: true});
+					$(this).rules('add', rules);
 				});
 			}
 		},
