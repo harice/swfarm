@@ -7,7 +7,11 @@
       <td><%= contact.get("email") %></td>
       <td><%= contact.get("mobile") %></td>
       <td><%= contact.get("phone") %></td>
-      <td><%= contact.get("rate") %></td>
+      <td>
+          <% if(!_.isEmpty(contact.get("rate"))) { %>
+              <%= contact.get("rate") %> %
+          <% } %>
+      </td>
       <td>
         <a href="<%= contact_edit_url %>/<%= contact.get("id") %>" class="btn btn-info btn-xs">
           <span class="glyphicon glyphicon-pencil"></span>
