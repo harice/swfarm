@@ -166,15 +166,17 @@ define([
 			return (holdForTestingField.val() == '1' && val == '')? false : true;
 		}, $.validator.format("Required if hold for testing"));
 		
-		$('#cl-wrapper').on('click', 'a', function () {
+		/*$('#cl-wrapper').on('click', 'a', function () {
 			var a = $(this);
 			
 			console.log('XXX');
+			
+			console.log('id: '+a.attr('id'));
 			if((a.attr('href') != '#' && a.attr('href') != '') || a.attr('id') == 'go-to-previous-page') {
-				console.log(a.attr('href'));
+				console.log('href: '+a.attr('href'));
 				console.log(Backbone.history.fragment);
 			}
-		});
+		});*/
 		
 		
 		// Pass in our Router module and call it's initialize function

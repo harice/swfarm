@@ -5,6 +5,7 @@ define([
 	'collections/purchaseorder/PurchaseOrderCollection',
 	'collections/purchaseorder/DestinationCollection',
 	'collections/purchaseorder/POStatusCollection',
+	'collections/purchaseorder/CancellingReasonCollection',
 	'models/purchaseorder/PurchaseOrderModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderListTemplate.html',
@@ -18,6 +19,7 @@ define([
 			PurchaseOrderCollection,
 			DestinationCollection,
 			POStatusCollection,
+			CancellingReasonCollection,
 			PurchaseOrderModel,
 			contentTemplate,
 			purchaseOrderListTemplate,
@@ -79,10 +81,20 @@ define([
 			this.poStatusCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
+			
+			this.cancellingReasonCollection = new CancellingReasonCollection();
+			this.cancellingReasonCollection.on('sync', function() {	
+				thisObj.destinationCollection.getModels();
+				this.off('sync');
+			});
+			
+			this.cancellingReasonCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 		},
 		
 		render: function(){
-			this.destinationCollection.getModels();
+			this.cancellingReasonCollection.getModels();
 		},
 		
 		displayPO: function () {
