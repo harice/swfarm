@@ -21,7 +21,7 @@ class CreateOrdercancellingreasonTable extends Migration {
             $table->text('others')->nullable();
 
             $table->foreign('order')->references('id')->on('order');
-            $table->foreign('reason')->references('id')->on('reasons');
+            $table->foreign('reason')->references('id')->on('reason');
 		});
 	}
 
