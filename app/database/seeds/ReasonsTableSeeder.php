@@ -36,7 +36,7 @@ class ReasonsTableSeeder extends Seeder {
             )
         );
         
-        DB::table('reasons')->insert($reasons);
+        DB::table('reason')->insert($reasons);
 	}
     
 }
