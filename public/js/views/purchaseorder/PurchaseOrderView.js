@@ -37,7 +37,7 @@ define([
 			Const
 ){
 
-	var PurchaseOrderEditView = PurchaseOrderAddView.extend({
+	var PurchaseOrderView = PurchaseOrderAddView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		producerAutoCompleteView: null,
@@ -178,6 +178,7 @@ define([
 					bales: thisObj.addCommaToNumber(product.bales),
 					totalprice: thisObj.addCommaToNumber(totalprice),
 					ishold: (parseInt(product.ishold) == 1)? 'Yes' : 'No',
+					rfv: product.rfv,
 				};
 				
 				if(thisObj.isBid)
@@ -193,6 +194,6 @@ define([
 		},
 	});
 
-  return PurchaseOrderEditView;
+  return PurchaseOrderView;
   
 });

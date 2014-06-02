@@ -55,8 +55,8 @@ define([
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
-				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'ishold', 'id'],
-				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales'],
+				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'ishold', 'id', 'rfv'],
+				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales', 'rfv'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
 				removeComma: ['unitprice', 'tons', 'bales'],
@@ -160,6 +160,7 @@ define([
 				productFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(product.tons).toFixed(4)));
 				productFields.find('.bales').val(thisObj.addCommaToNumber(product.bales));
 				productFields.find('.ishold').val(product.ishold);
+				productFields.find('.rfv').val(product.rfv);
 				var unitPrice = parseFloat(product.unitprice) * parseFloat(product.tons);
 				productFields.find('.unit-price').val(thisObj.addCommaToNumber(unitPrice.toFixed(2)));
 			});
