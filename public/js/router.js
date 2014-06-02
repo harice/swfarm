@@ -5,6 +5,7 @@ define([
 	'views/layout/HeaderView',
 	'views/layout/SideMenuView',
 	'views/layout/HomePageView',
+	'views/base/AppView',
 	'views/admin/AdminView',
 	'controllers/login/LoginController',
 	'controllers/user/UserController',
@@ -34,6 +35,7 @@ define([
 			HeaderView,
 			SideMenuView,
 			HomePageView,
+			AppView,
 			AdminView,
 			LoginController,
 			UserController,
@@ -193,36 +195,74 @@ define([
 		preventAccessWhenAuth : ['#/login'],
 
 		before : function(params, next){
-			//console.log('router.before!!!');
+			console.log('router.before!!!');
 			//console.log(params);
 			//console.log(next);
-			var isAuth = Session.get('token');
-			var path = Backbone.history.location.hash;
-			var needAuth = _.contains(this.requiresAuthExcept, path);
-			var cancelAccess = _.contains(this.preventAccessWhenAuth, path);
-
-			if(!isAuth) {
-				Backbone.View.prototype.showLogin();
-			} else {
-				Backbone.View.prototype.showContent();
+			
+			/*var arrayFragment = [];
+			if(this.currentFragment != null)
+				arrayFragment = this.currentFragment.split('/');
+			
+			var previousPrevious = this.previousFragment;
+			this.previousFragment = this.currentFragment;
+			this.currentFragment = Backbone.history.fragment;
+			
+			console.log('this.previousFragment: '+this.previousFragment);
+			console.log('this.currentFragment: '+this.currentFragment);
+			
+			//var arrayFragment = [];
+			//if(this.previousFragment != null)
+				//arrayFragment = this.previousFragment.split('/');
+			
+			var c = true;
+			if(arrayFragment.indexOf('add') >= 0 && !overrideNavigateAwayFromForm) {
+				console.log('with add');
+				//new AppView().showNavigationAwayConfirmationWindow();
+				c = confirm("Are your sure blah blah blah!!!");
 			}
-
-			if(path === '#/'+Const.URL.LOGOUT && isAuth)
-			{
-				Session.clear();
-				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
+			else {
+				//console.log('no add');
 			}
+			
+			if(c) {
+				console.log('continue');
+				overrideNavigateAwayFromForm = false;*/
+			
+				var isAuth = Session.get('token');
+				var path = Backbone.history.location.hash;
+				var needAuth = _.contains(this.requiresAuthExcept, path);
+				var cancelAccess = _.contains(this.preventAccessWhenAuth, path);
 
-			if(!needAuth && !isAuth){
-				if(path != '#/'+Const.URL.LOGOUT)
-					Session.set('redirectFrom', path);
+				if(!isAuth) {
+					Backbone.View.prototype.showLogin();
+				} else {
+					Backbone.View.prototype.showContent();
+				}
 
-				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
-			}else if(isAuth && cancelAccess){
-				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.DASHBOARD, { trigger : true });
-			}else{
-			  	return next();
-			}
+				if(path === '#/'+Const.URL.LOGOUT && isAuth)
+				{
+					Session.clear();
+					Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
+				}
+
+				if(!needAuth && !isAuth){
+					if(path != '#/'+Const.URL.LOGOUT)
+						Session.set('redirectFrom', path);
+
+					Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
+				}else if(isAuth && cancelAccess){
+					Global.getGlobalVars().app_router.navigate('#/'+Const.URL.DASHBOARD, { trigger : true });
+				}else{
+					return next();
+				}
+			
+			/*}
+			else {
+				console.log('not continue');
+				this.currentFragment = this.previousFragment;
+				this.previousFragment = previousPrevious;
+				Global.getGlobalVars().app_router.navigate('#/'+this.currentFragment);
+			}*/
 		},
 
 		after : function(){

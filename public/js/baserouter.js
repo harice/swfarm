@@ -4,7 +4,9 @@ define([
 ], function(_, Backbone){
 
   var BaseRouter = Backbone.Router.extend({
-      before: function(){},
+      previousFragment: null,
+	  currentFragment: null,
+	  before: function(){},
       after: function(){},
       route : function(route, name, callback){
           if (!_.isRegExp(route)) route = this._routeToRegExp(route);

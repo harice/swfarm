@@ -1,8 +1,9 @@
 define([
 	'backbone',
 	'text!templates/layout/confirmModalTemplate.html',
+	'text!templates/layout/confirmNavigateAwayFromFormModalTemplate.html',
 	'constant',
-], function(Backbone, confirmModalTemplate, Const){
+], function(Backbone, confirmModalTemplate, confirmNavigateAwayFromFormModalTemplate, Const){
 
 	var AppView = Backbone.View.extend({
 		
@@ -67,6 +68,14 @@ define([
 			$('#modal-confirm').modal('show');
 			
 			return false;
+		},
+		
+		showNavigationAwayConfirmationWindow: function () {
+			console.log('showNavigationAwayConfirmationWindow');
+			var confirmTemplate = _.template(confirmNavigateAwayFromFormModalTemplate, {});
+			$('.modal-alert-cont').html(confirmTemplate);
+			
+			this.showConfirmationWindow();
 		},
 		
 		goToPreviousPage: function () {

@@ -11,6 +11,7 @@ define([
 		
 		var headerView;
 		var sideMenu;
+		var overrideNavigateAwayFromForm = false;
 
 		Backbone.View.prototype.close = function () {
 			this.$el.empty();
