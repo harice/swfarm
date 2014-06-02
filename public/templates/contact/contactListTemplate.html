@@ -4,8 +4,17 @@
             <div class="content padding-top-0">
             
                 <div id="content-top" class="row margin-top-0">
-                    <div class="col-md-9 col-xs-8">
+                    <div class="col-md-7 col-xs-8">
                         <a href="<%= contact_add_url %>" class="btn btn-primary">+ Add Contact</a>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="styled-select pull-right">
+                            <select class="form-control width-100" id="perpage" name="perpage">
+                                <option value="15">15 rows</option>
+                                <option value="25">25 rows</option>
+                                <option value="50">50 rows</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="col-md-3 col-xs-4">
                         <form class="form-inline" role="form">
