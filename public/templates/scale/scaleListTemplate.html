@@ -8,7 +8,15 @@
                 </div>
                 <div class="col-md-2"></div>
                 <div class="col-md-2"></div>
-                <div class="col-md-2"></div>
+                <div class="col-md-2 padding-top-10">
+                    <div class="styled-select pull-right">
+                        <select class="form-control width-100" id="perpage" name="perpage">
+                            <option value="15">15 rows</option>
+                            <option value="25">25 rows</option>
+                            <option value="50">50 rows</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="col-md-3 padding-top-10">
                   <form id="searchLocal" name="searchLocal" class="form-inline searchLocal" role="form">
                       <div class="input-group">
@@ -23,13 +31,6 @@
                 </div>
               </div>
 
-              <div class="clearfix">
-                <ul class="pagination" style="display:none;">
-                  <li><a class="first-page" href="#">&laquo;</a></li>
-                  <li><a class="last-page" href="#">&raquo;</a></li>
-                </ul>
-              </div>
-
               <div class="content-inner table-responsive">
                 <table id="scale-list" class="table table-bordered table-hover">
                   <thead>
@@ -37,19 +38,21 @@
 					  <th>Scaler Account</th>
 					  <th>Scale Name</th>
 					  <th>Scale Fee</th>
-					  <th>Action</th>
+					  <th class="width-110">Action</th>
                     </tr>
                   </thead>
                   <tbody></tbody>
                 </table>
+                  
+                  <div class="clearfix">
+                    <ul class="pagination pagination-sm pull-right margin-none" style="display:none;">
+                        <li><a class="first-page btn" href="#"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
+                        <li><a class="prev-page btn" href="#"><span class="glyphicon glyphicon-step-backward"></span></a></li>
+                        <li><a class="next-page btn" href="#"><span class="glyphicon glyphicon-step-forward"></span></a></li>
+                        <li><a class="last-page btn" href="#"><span class="glyphicon glyphicon-fast-forward"></span></a></li>
+                    </ul>
+                </div>
               </div>
-
-              <!--<div class="clearfix">
-                <ul class="pagination" style="display:none;">
-                  <li><a class="first-page" href="#">&laquo;</a></li>
-                  <li><a class="last-page" href="#">&raquo;</a></li>
-                </ul>
-              </div>-->
 
             </div> <!-- /.content -->
         </div> <!-- /.block-flat -->
