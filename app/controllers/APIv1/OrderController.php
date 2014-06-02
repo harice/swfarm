@@ -72,7 +72,7 @@ class OrderController extends BaseController {
     
     public function cancelOrder($id)
     {
-        $model = $this->repo->cancelOrder($id);
+        $model = $this->repo->cancelOrder($id, Input::all());
     	return Response::json($model);
     }
     
@@ -99,6 +99,16 @@ class OrderController extends BaseController {
     public function getPickupLocationList(){
     	$model = $this->repo->getOrderPickupLocation();
     	return Response::json($model);
+    }
+
+    public function getPOCancellingReasonList(){
+        $model = $this->repo->getPOCancellingReasonList();
+        return Response::json($model);
+    }
+
+    public function getSOCancellingReasonList(){
+        $model = $this->repo->getSOCancellingReasonList();
+        return Response::json($model);
     }
 
     public function getNatureOfSaleList(){

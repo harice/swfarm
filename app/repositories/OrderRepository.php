@@ -88,7 +88,8 @@ class OrderRepository implements OrderRepositoryInterface {
                 ->with('account')
                 ->with('orderaddress', 'orderaddress.addressStates')
                 ->with('location')
-                ->with('status');
+                ->with('status')
+                ->with('ordercancellingreason.reason');
 
         if($orderType == 2) //for SO only
             $order = $order->with('natureofsale');
@@ -182,7 +183,7 @@ class OrderRepository implements OrderRepositoryInterface {
 
             $order->fill($data);
             $order->save();
-            
+
             if(isset($data['products'])){
                 $this->deleteProductOrder($id, $data['products']); //delete product order that is remove by client
                 $productResult = $this->addProductOrder($order->id, $data['products']);
@@ -193,8 +194,10 @@ class OrderRepository implements OrderRepositoryInterface {
             if($productResult != null){
                 if($productResult['hasHoldProduct']){
                     $order->status_id = 7; //Testing status
-                    $order->save();
+                } else {
+                    $order->status_id = 1; //Open Status
                 }
+                $order->save();
             }
             return $order;
         });
@@ -276,7 +279,7 @@ class OrderRepository implements OrderRepositoryInterface {
             'rfv.required_if' => 'The RFV field is required when product is on hold.',
         );
         if($orderType == null){
-            $validator = Validator::make($data, $entity::$rules, $messages);
+            $validator = Validator::make($data, $entity::$rules);
         } else {
             if($orderType == 1){ //PO rules need to used
                 $validator = Validator::make($data, $entity::$po_rules, $messages);
@@ -350,20 +353,36 @@ class OrderRepository implements OrderRepositoryInterface {
     //     $salesorder->save();
     }
 
+    private function insertReasonForCancellingOrder($data){
+        $this->validate($data, 'OrderCancellingReason');
+        $ordercancellingreason =  new OrderCancellingReason;
+        $ordercancellingreason->order = $data['order'];
+        $ordercancellingreason->reason = $data['reason'];
+        if($data['others'] != null && $data['others'] != ''){
+           $ordercancellingreason->others = $data['others']; 
+        }
+        $ordercancellingreason->save();
+    }
 
-    public function cancelOrder($id){
+
+    public function cancelOrder($id, $data){
         $order = Order::find($id);
+        $data['order'] = $id;
 
         if($order->isfrombid == 1 && $order->status_id == 4 && $order->ordertype == 1){ //PO that is on bid
             $order->status_id = 5; //Bid Cancelled Status
             $order->save();
 
+            $this->insertReasonForCancellingOrder($data);
+
             return array(
                   'error' => false,
                   'message' => 'Bid cancelled.');
-        } else if($order->ordertype == 1){ //PO that is not bid
+        } else if($order->ordertype == 1 && $order->status_id != 6 && $order->status_id != 5){ //PO that is not bid
             $order->status_id = 6; //PO Cancelled Status
             $order->save();
+
+            $this->insertReasonForCancellingOrder($data);
 
             return array(
                   'error' => false,
@@ -372,10 +391,12 @@ class OrderRepository implements OrderRepositoryInterface {
               $order->status_id = 3;
               $order->save();
 
+              $this->insertReasonForCancellingOrder($data);
+
               return array(
                   'error' => false,
                   'message' => 'Order cancelled.');
-        } else if($order->status_id == 3) {
+        } else if($order->status_id == 3 || $order->status_id == 5 || $order->status_id == 6) {
               return array(
                   'error' => false,
                   'message' => 'Order is already cancelled');
@@ -405,5 +426,15 @@ class OrderRepository implements OrderRepositoryInterface {
     public function getNatureOfSaleList(){
         return NatureOfSale::all()->toArray(); //return nature of sale for orders
     }
+
+    public function getPOCancellingReasonList(){
+        return Reason::whereIn('id',array(1,2,3,4,6))->get()->toArray(); //return statuses for orders
+    }
+
+    public function getSOCancellingReasonList(){
+        return Reason::whereIn('id',array(1,2,5,6))->get()->toArray(); //return statuses for orders
+    }
+
+    public function getTotalWeightDelivered(){}
     
 }

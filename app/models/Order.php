@@ -86,4 +86,8 @@ class Order extends BaseModel {
         return $this->hasMany('TransportSchedule', 'order_id', 'id');
     }
 
+    public function ordercancellingreason(){
+        return $this->hasOne('OrderCancellingReason', 'order', 'id');
+    }
+
 }

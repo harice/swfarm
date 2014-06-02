@@ -9,5 +9,5 @@ interface OrderRepositoryInterface {
     public function validate($data, $entity);
     public function getNatureOfSaleList();
     public function close($id);
-    public function cancelOrder($id);
+    public function cancelOrder($id, $data);
 }
