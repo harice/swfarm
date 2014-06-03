@@ -20,7 +20,8 @@ class OrderRepository implements OrderRepositoryInterface {
                         ->with('account')
                         ->with('orderaddress', 'orderaddress.addressStates')
                         ->with('location')
-                        ->with('status');
+                        ->with('status')
+                        ->with('ordercancellingreason.reason');;
 
         if($orderType == 2) //for SO only
             $order = $order->with('natureofsale');
