@@ -1,14 +1,14 @@
 <div class="row margin-top-0">
-    <div class="col-md-12">
-        <div class="block-flat">
+    <div class="col-md-12 no-padding">
+        <div class="block-flat padding-top-0 padding-bottom-0">
             <div class="content padding-top-0">
               <div class="row margin-top-0">
                 <div class="col-md-3 padding-top-10 padding-right-0">
-                  <a href="<%= po_add_url %>" class="btn btn-primary btn-sm">+ Add Purchase Order</a>
+                  <a href="<%= po_add_url %>" class="btn btn-primary btn-sm margin-left-0">+ Add Purchase Order</a>
                   <a href="<%= bid_add_url %>" class="btn btn-success btn-sm">+ Add Bid</a>
                 </div>
                 <div class="col-md-2">
-                  <div class="form-group">
+                  <div class="form-group margin-bottom-5">
                     <div id="filter-date-of-purchase" class="search-filter-field calendar-cont">
                         <div class="input-group input-group-sm date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
                           <input class="form-control" size="16" type="text" value="" />
@@ -16,12 +16,12 @@
                             <button class="btn btn-primary"><span class="glyphicon glyphicon-th"></span></button>
                           </div>
                         </div>
-                        <p class="help-block">Date of Purchase</p>
+                        <p class="help-block margin-bottom-0">Purchased Date</p>
                     </div>  
                   </div>
                 </div>
                 <div class="col-md-2">
-                  <div class="form-group">
+                  <div class="form-group margin-bottom-5">
                       <div id="filter-pickup-start" class="search-filter-field calendar-cont">
                           <div class="input-group input-group-sm date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
                             <input class="form-control" size="16" type="text" value="" />
@@ -29,12 +29,12 @@
                               <button class="btn btn-primary"><span class="glyphicon glyphicon-th"></span></button>
                             </div>
                           </div>
-                          <p class="help-block">Pick-up Period: Start</p>
+                          <p class="help-block margin-bottom-0">Pick-up Start</p>
                       </div>
                   </div>
                 </div>
                 <div class="col-md-2">
-                  <div class="form-group">
+                  <div class="form-group margin-bottom-5">
                       <div id="filter-pickup-end" class="search-filter-field calendar-cont">
                           <div class="input-group input-group-sm date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
                             <input class="form-control" size="16" type="text" value="" />
@@ -42,7 +42,7 @@
                               <button class="btn btn-primary"><span class="glyphicon glyphicon-th"></span></button>
                             </div>
                           </div>
-                          <p class="help-block">Pick-up Period: End</p>
+                          <p class="help-block margin-bottom-0">Pick-up End</p>
                       </div>
                   </div>
                 </div>
@@ -72,13 +72,13 @@
               </div>
 
               <div class="content-inner table-responsive">
-                <table id="po-list" class="table table-bordered table-hover">
+                <table id="po-list" class="table-condensed table-bordered table-hover">
                   <thead>
                     <tr>
                       <th>PO No.</th>
-                      <th class="sortable sort-date-of-po"><i class="fa fa-sort"></i> Date of Purchase</span></th>
-                      <th>Start</th>
-                      <th>End</th>
+                      <th class="sortable sort-date-of-po cursor-pointer"><i class="fa fa-sort"></i> Purchased Date</span></th>
+                      <th>Pickup Start</th>
+                      <th>Pickup End</th>
                       <th>Producer</th>
                       <th>Status</th>
                       <th>Destination</th>
@@ -90,7 +90,7 @@
                 </table>
                   
                     <div class="clearfix">
-                      <ul class="pagination pagination-sm pull-right margin-none" style="display:none;">
+                      <ul class="pagination pagination-sm pull-right margin-top-10 margin-bottom-0 margin-left-0 margin-right-0" style="display:none;">
                           <li><a class="first-page btn" href="#"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
                           <li><a class="prev-page btn" href="#"><span class="glyphicon glyphicon-step-backward"></span></a></li>
                           <li><a class="next-page btn" href="#"><span class="glyphicon glyphicon-step-forward"></span></a></li>

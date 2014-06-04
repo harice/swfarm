@@ -18,6 +18,11 @@ define([
 			this.undelegateEvents();
 		};
 
+		Backbone.View.prototype.refreshTitle = function(title,desc) {
+			this.headerView = new HeaderView();
+			this.headerView.render(title,desc);
+		}
+
 		Backbone.View.prototype.refreshHeader = function () {
 			this.headerView = new HeaderView();
 			this.headerView.render();

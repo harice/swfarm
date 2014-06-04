@@ -83,6 +83,7 @@ define([
 		
 		render: function(){
 			this.destinationCollection.getModels();
+			Backbone.View.prototype.refreshTitle('Purchase Order','list');
 		},
 		
 		displayPO: function () {

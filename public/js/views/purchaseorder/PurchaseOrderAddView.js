@@ -95,6 +95,7 @@ define([
 		
 		render: function(){
 			this.destinationCollection.getModels();
+			Backbone.View.prototype.refreshTitle('Purchase Order','add');
 		},
 		
 		displayForm: function () {

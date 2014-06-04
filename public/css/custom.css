@@ -1,10 +1,20 @@
 /* Table  */
 body {
-  font-size: 13px;
+  font-size: 12px;
+}
+p {
+  font-size: 12px;
 }
 .sidebar-logo {
-  background: url("../images/logo.png") no-repeat scroll 15px 9px #4aa3df;
-  height: 54px;
+  background: url("../images/logo.png") no-repeat scroll 5px 5px;
+  height: 45px;
+}
+.navbar {
+  height: 45px;
+  min-height: 45px;
+}
+.profile_menu .dropdown-toggle {
+  padding: 13px 10px;
 }
 input.error {
   border-color: #CC0000 !important;
@@ -20,20 +30,67 @@ label.error {
 }
 @media only screen and (min-width: 768px) {
   .cl-sidebar {
-    width: 200px;
+    width: 150px;
   }
 }
 .cl-sidebar .collapse-button {
-  width: 200px;
+  width: 150px;
 }
 .cl-sidebar .collapse-button .search {
-  width: 180px;
+  width: 150px;
+}
+.cl-sidebar .cl-toggle {
+  top: 5px;
+  right: 5px;
+}
+.cl-vnavigation li a {
+  padding: 5px;
+  font-weight: normal;
+  font-size: 12px;
+}
+.cl-vnavigation .parent ul li a {
+  padding: 5px 18px 5px 30px;
+}
+.navbar-default .navbar-nav > li > a {
+  font-size: 12px;
+}
+.cl-mcont {
+  padding: 5px 20px;
 }
 .cl-mcont .margin-top-0 {
   margin-top: 0;
 }
 .block-flat .padding-top-0 {
   padding-top: 0;
+}
+.block-flat,
+.block-wizard {
+  padding: 5px;
+}
+.pagination-sm > li > a,
+.pagination-sm > li > span {
+  padding: 2px 5px;
+  font-size: 12px;
+}
+.table-condensed > thead > tr > th,
+.table-condensed > tbody > tr > th,
+.table-condensed > tfoot > tr > th,
+.table-condensed > thead > tr > td,
+.table-condensed > tbody > tr > td,
+.table-condensed > tfoot > tr > td {
+  padding: 3px;
+  font-size: 12px;
+}
+.fa-stack {
+  width: 1.7em;
+  height: 1.7em;
+  line-height: 1.7em;
+}
+.fa-stack-2x {
+  font-size: 1.7em;
+}
+.label {
+  padding: .3em .3em .2em;
 }
 .transform-upper {
   text-transform: uppercase;
@@ -62,8 +119,17 @@ label.error {
 .margin-bottom-0 {
   margin-bottom: 0;
 }
+.margin-bottom-5 {
+  margin-bottom: 5px;
+}
 .margin-bottom-10 {
   margin-bottom: 10px;
+}
+.margin-left-0 {
+  margin-left: 0;
+}
+.margin-right-0 {
+  margin-right: 0px;
 }
 .margin-right-5 {
   margin-right: 5px;
@@ -74,14 +140,14 @@ label.error {
 .searchLocal .border-radius-tl-3 {
   border-radius: 3px 0 0 3px;
 }
-.help-block {
-  font-size: 11px;
-}
 body .filter > li {
-  font-size: 10px;
-  padding: 3px 10px;
-  text-transform: uppercase;
-  margin-right: 15px;
+  font-size: 12px;
+  padding: 0 5px;
+  margin-right: 0;
+  cursor: pointer;
+}
+body .filter .dropdown-header {
+  margin-top: 5px;
 }
 #content-wrapper .row {
   margin-top: 0;

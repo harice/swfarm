@@ -1,10 +1,10 @@
 <% if(token) { %>
 <div class="container-fluid">
-  <div class="navbar-collapse">
+  <div class="navbar-collapse no-padding">
     <ul class="nav navbar-nav navbar-right user-nav">
       <li class="dropdown profile_menu">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-          <!-- img alt="Avatar" src="images/avatar6-2.jpg" class="img-circle" / --><span><%= full_name %></span> <b class="caret"></b>
+          <span>Hi, <%= full_name %></span> <b class="caret"></b>
         </a>
         <ul class="dropdown-menu">
           <li><a href="<%= profile_view_url %>">My Profile</a></li>
@@ -12,6 +12,14 @@
           <li><a href="<%= logout_url %>">Sign Out</a></li>
         </ul>
       </li>
+    </ul>
+
+    <ul class="nav navbar-nav not-nav" style="height:45px">    
+      <li>
+        <h4>
+          <% if (typeof(h1_title) != "undefined") { %><%= h1_title %><% } %> <% if (typeof(h1_small) != "undefined") { %> <small class="transform-upper"><%= h1_small %></small><% } %>
+        </h4>
+      </li>        
     </ul>
   </div>
 </div>

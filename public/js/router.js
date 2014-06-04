@@ -196,6 +196,7 @@ define([
 			if(!isAuth) {
 				Backbone.View.prototype.showLogin();
 			} else {
+				Backbone.View.prototype.refreshTitle('','');
 				Backbone.View.prototype.showContent();
 			}
 
