@@ -27,6 +27,7 @@ require.config({
         jqueryselect: 'libs/jquery.select2/select2.min',
         icheck: 'libs/jquery.icheck/icheck.min',
         maskedinput: 'libs/jquery.maskedinput/jquery.maskedinput',
+        throbber: 'libs/jquery.throbber/jquery.throbber.min',
 
 		templates: '../templates'
 	},
@@ -111,6 +112,10 @@ require.config({
         'maskedinput': {
 			deps: ['jquery'],
 			exports: 'MackedInput',
+		},
+        'throbber': {
+			deps: ['jquery'],
+			exports: 'Throbber',
 		},
 		'jquery': {
 			exports: '$'
