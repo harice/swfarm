@@ -107,7 +107,7 @@ define(function () {
 		'CONTAINER': {
 			'MAIN':'cl-mcont',
 		},
-		'MAXITEMPERPAGE': 10,
+		'MAXITEMPERPAGE': 15,
 		'PLACEHOLDER': {
 			'PROFILEPIC': '/images/default_profile.jpg',
 		},
@@ -126,6 +126,9 @@ define(function () {
 			},
 		},
 		'LB2TON': 0.0005,
+		'CANCELLATIONREASON': {
+			'OTHERS': '6'
+		},
 	};
 	
 	return constant;

@@ -195,27 +195,25 @@ define([
 		preventAccessWhenAuth : ['#/login'],
 
 		before : function(params, next){
-			console.log('router.before!!!');
+			/*console.log('router.before!!!');
 			//console.log(params);
 			//console.log(next);
 			
-			/*var arrayFragment = [];
-			if(this.currentFragment != null)
-				arrayFragment = this.currentFragment.split('/');
-			
-			var previousPrevious = this.previousFragment;
 			this.previousFragment = this.currentFragment;
 			this.currentFragment = Backbone.history.fragment;
 			
 			console.log('this.previousFragment: '+this.previousFragment);
 			console.log('this.currentFragment: '+this.currentFragment);
 			
-			//var arrayFragment = [];
-			//if(this.previousFragment != null)
-				//arrayFragment = this.previousFragment.split('/');
+			var arrayFragment = [];
+			if(this.previousFragment != null && !this.fromNavigateAway)
+				arrayFragment = this.previousFragment.split('/');
+			
+			if(this.fromNavigateAway)
+				this.fromNavigateAway = false;
 			
 			var c = true;
-			if(arrayFragment.indexOf('add') >= 0 && !overrideNavigateAwayFromForm) {
+			if((arrayFragment.indexOf(Const.CRUD.ADD) >= 0 || arrayFragment.indexOf(Const.CRUD.EDIT) >= 0) && !overrideNavigateAwayFromForm) {
 				console.log('with add');
 				//new AppView().showNavigationAwayConfirmationWindow();
 				c = confirm("Are your sure blah blah blah!!!");
@@ -260,8 +258,8 @@ define([
 			else {
 				console.log('not continue');
 				this.currentFragment = this.previousFragment;
-				this.previousFragment = previousPrevious;
-				Global.getGlobalVars().app_router.navigate('#/'+this.currentFragment);
+				this.fromNavigateAway = true;
+				Global.getGlobalVars().app_router.navigate('#/'+this.currentFragment,  { trigger : false });
 			}*/
 		},
 

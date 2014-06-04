@@ -2,7 +2,7 @@
     <div class="col-md-12">
         <div class="block-flat">
             <div class="content padding-top-0">
-            
+
                 <div id="content-top" class="row margin-top-0">
                     <div class="col-md-9 col-xs-8">
                         <a href="<%= contact_add_url %>" class="btn btn-primary">+ Add Contact</a>
@@ -24,7 +24,7 @@
                     <div class="col-md-6">
                         <div class="btn-group margin-top-10 display-items" style="display:none;">
                             <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                            Display Items <span class="caret"></span>
+                                Display Items <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu filters">
                                 <li>
@@ -54,13 +54,21 @@
                                 <th>Email Address</th>
                                 <th>Mobile No.</th>
                                 <th>Phone No.</th>
+                                <th>Rate</th>
                                 <th class="width-110">Action</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
-                    
+
                     <div class="clearfix">
+                        <div class="styled-select pull-left">
+                            <select class="form-control width-100" id="perpage" name="perpage">
+                                <option value="15">15 rows</option>
+                                <option value="25">25 rows</option>
+                                <option value="50">50 rows</option>
+                            </select>
+                        </div>
                         <ul class="pagination pagination-sm pull-right margin-none" style="display:none;">
                             <li><a class="first-page btn" href="#"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
                             <li><a class="prev-page btn" href="#"><span class="glyphicon glyphicon-step-backward"></span></a></li>
@@ -74,7 +82,7 @@
                     <div class="col-md-6">
                         <div class="btn-group dropup margin-top-10">
                             <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                            Action <span class="caret"></span>
+                                Action <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
                                 <li>
@@ -84,7 +92,7 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div> <!-- /.content -->
         </div> <!-- /.block-flat -->
     </div>

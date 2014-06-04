@@ -78,6 +78,7 @@ class ContactRepository implements ContactRepositoryInterface {
     $contact->email = $data['email'];
     $contact->phone = $data['phone'];
     $contact->mobile = isset($data['mobile']) ? $data['mobile'] : null;
+    $contact->rate = isset($data['rate']) ? $data['rate'] : null;
 
     try{
       $contact->save();
@@ -119,6 +120,7 @@ class ContactRepository implements ContactRepositoryInterface {
     $contact->email = $data['email'];
     $contact->phone = $data['phone'];
     $contact->mobile = isset($data['mobile']) ? $data['mobile'] : null;
+    $contact->rate = isset($data['rate']) ? $data['rate'] : null;
 
     try{
       $contact->save();

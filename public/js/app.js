@@ -3,10 +3,13 @@ define([
 	'backbone',
 	'bootstrap',
 	'router',
+	'views/base/AppView',
 	'models/session/SessionModel',
 	'views/layout/HeaderView',
 	'views/layout/SideMenuView',
-], function(Backbone, Bootstrap, Router, SessionModel, HeaderView, SideMenuView){
+	'global',
+	'constant',
+], function(Backbone, Bootstrap, Router, AppView, SessionModel, HeaderView, SideMenuView, Global, Const){
 	var initialize = function(){
 		
 		var headerView;
@@ -165,6 +168,38 @@ define([
 			var holdForTestingField = $(elem).closest('tr').find('.ishold')
 			return (holdForTestingField.val() == '1' && val == '')? false : true;
 		}, $.validator.format("Required if hold for testing"));
+		
+		$.validator.addMethod('require_reason_others', function(val, elem) {
+			var reasonField = $(elem).closest('form').find('#reason');
+			return ($(elem).val() == '' && reasonField.val() == Const.CANCELLATIONREASON.OTHERS)? false : true;
+		}, $.validator.format("Please supply a reason"));
+		
+		$('#cl-wrapper').on('click', 'a', function () {
+			var a = $(this);
+			//console.log('XXX');
+			//console.log('id: '+a.attr('id'));
+			if((a.attr('href') != '#' && a.attr('href') != '')) {
+				//console.log('href: '+a.attr('href'));
+				//console.log(Backbone.history.fragment);
+				
+				var fragment = Backbone.history.fragment;
+				var arrayFragment = fragment.split('/');
+				var href = a.attr('href');
+				var searchFor = '#/';
+				var start = href.indexOf(searchFor);
+				var url = href.substring(start, href.length);
+				//console.log('url: '+url);
+				
+				if(arrayFragment.indexOf(Const.CRUD.ADD) >= 0 || arrayFragment.indexOf(Const.CRUD.EDIT) >= 0) {
+					
+					new AppView().showNavigationAwayConfirmationWindow(function () {
+						Global.getGlobalVars().app_router.navigate(url, { trigger : true });
+					});
+					
+					return false;
+				}
+			}
+		});
 		
 		// Pass in our Router module and call it's initialize function
 		Router.initialize();

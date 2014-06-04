@@ -5,12 +5,14 @@ define([
 	'collections/purchaseorder/PurchaseOrderCollection',
 	'collections/purchaseorder/DestinationCollection',
 	'collections/purchaseorder/POStatusCollection',
+	'collections/purchaseorder/CancellingReasonCollection',
 	'models/purchaseorder/PurchaseOrderModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderListTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderInnerListTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderDestinationTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderStatusTemplate.html',
+	'text!templates/purchaseorder/reasonForCancellationOptionTemplate.html',
 	'constant',
 ], function(Backbone,
 			DatePicker,
@@ -18,12 +20,14 @@ define([
 			PurchaseOrderCollection,
 			DestinationCollection,
 			POStatusCollection,
+			CancellingReasonCollection,
 			PurchaseOrderModel,
 			contentTemplate,
 			purchaseOrderListTemplate,
 			purchaseOrderInnerListTemplate,
 			purchaseOrderDestinationTemplate,
 			purchaseOrderStatusTemplate,
+			reasonForCancellationOptionTemplate,
 			Const
 ){
 
@@ -79,10 +83,20 @@ define([
 			this.poStatusCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
+			
+			this.cancellingReasonCollection = new CancellingReasonCollection();
+			this.cancellingReasonCollection.on('sync', function() {	
+				thisObj.destinationCollection.getModels();
+				this.off('sync');
+			});
+			
+			this.cancellingReasonCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 		},
 		
 		render: function(){
-			this.destinationCollection.getModels();
+			this.cancellingReasonCollection.getModels();
 		},
 		
 		displayPO: function () {
@@ -105,10 +119,7 @@ define([
 			this.subContainer.html(compiledTemplate);
 			
 			this.initCalendars();
-			
-			this.initConfirmationWindow('Are you sure you want to cancel this PO?',
-										'confirm-cancel-po',
-										'Cancel Purchase Order');
+			this.initCancelWindow();
 		},
 		
 		displayList: function () {
@@ -181,12 +192,69 @@ define([
 			});
 		},
 		
+		initCancelWindow: function (){
+			var thisObj = this;
+			var options = '';
+			_.each(this.cancellingReasonCollection.models, function (model) {
+				options += '<option value="'+model.get('id')+'">'+model.get('reason')+'</option>';
+			});
+			var form = _.template(reasonForCancellationOptionTemplate, {'reasons': options});
+			
+			this.initConfirmationWindowWithForm('Are you sure you want to cancel this PO?',
+										'confirm-cancel-po',
+										'Cancel Purchase Order',
+										form);
+										
+			var validate = $('#cancellationReasonForm').validate({
+				submitHandler: function(form) {
+					
+					var data = $(form).serializeObject();
+					
+					var purchaseOrderModel = new PurchaseOrderModel(data);
+						
+					purchaseOrderModel.setCancelURL();		
+					purchaseOrderModel.save(
+						null, 
+						{
+							success: function (model, response, options) {
+								thisObj.displayMessage(response);
+								thisObj.renderList(1);
+								thisObj.hideConfirmationWindow();
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: purchaseOrderModel.getAuth(),
+						}
+					);
+				},
+				rules: {
+					others: {
+						require_reason_others: true,
+					},
+				},
+			});
+		},
+		
 		events: {
 			'click .sort-date-of-po' : 'sortPODate',
 			'change .location_id' : 'filterByDestination',
 			'change .statusFilter' : 'filterByStatus',
 			'click .cancel-po': 'preShowConfirmationWindow',
 			'click #confirm-cancel-po': 'cancelPO',
+			'change #reason': 'onChangeReason',
+		},
+		
+		onChangeReason: function (ev) {
+			var field = $(ev.target);
+			
+			if(field.val() == Const.CANCELLATIONREASON.OTHERS)
+				$('#cancellation-others-text').show();
+			else
+				$('#cancellation-others-text').hide();
 		},
 		
 		sortPODate: function () {
@@ -208,34 +276,14 @@ define([
 		},
 		
 		preShowConfirmationWindow: function (ev) {
-			this.$el.find('#confirm-cancel-po').attr('data-id', $(ev.currentTarget).attr('data-id'));
+			this.$el.find('#cancellationReasonForm #cancelled-order-id').val($(ev.currentTarget).attr('data-id'));
 			
 			this.showConfirmationWindow();
 			return false;
 		},
 		
 		cancelPO: function (ev) {
-			var thisObj = this;
-			var purchaseOrderModel = new PurchaseOrderModel({id:$(ev.currentTarget).attr('data-id')});
-				
-			purchaseOrderModel.setCancelURL();		
-			purchaseOrderModel.save(
-				null, 
-				{
-					success: function (model, response, options) {
-						thisObj.displayMessage(response);
-						thisObj.renderList(1);
-					},
-					error: function (model, response, options) {
-						if(typeof response.responseJSON.error == 'undefined')
-							validate.showErrors(response.responseJSON);
-						else
-							thisObj.displayMessage(response);
-					},
-					headers: purchaseOrderModel.getAuth(),
-				}
-			);
-			
+			$('#cancellationReasonForm').submit();
 			return false;
 		},
 	});

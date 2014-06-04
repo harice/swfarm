@@ -21,10 +21,13 @@ define([
 		},
 		
 		generatePagination: function (maxItem, maxItemPerPage) {
+            var perPage = $('#perpage').val();
+            var rows = ((typeof perPage !== 'undefined') ? perPage : Const.MAXITEMPERPAGE);
+            
 			if(maxItem == null)
 				var maxItem = this.collection.getMaxItem();
 			if(maxItemPerPage == null)
-				var maxItemPerPage = Const.MAXITEMPERPAGE;
+				var maxItemPerPage = rows;
 			
 			$('.page-number').remove();
 			
@@ -76,61 +79,80 @@ define([
 			'click .page-number' : 'gotoPage',
 			'click .search-local' : 'searchLocal',
 			'submit #searchLocal' : 'onSubmitSearchLocal',
+            'change #perpage' : 'searchLocal',
 		},
 		
 		gotoFirstPage: function () {
+            var perPage = $('#perpage').val();
+            var rows = ((typeof perPage !== 'undefined') ? perPage : Const.MAXITEMPERPAGE);
+    
 			if(this.collection.getCurrentPage() != 1) {
 				this.collection.setCurrentPage(1);
-				this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
+				this.collection.getModelsPerPage(1 , rows);
 			}
 			
 			return false;
 		},
 
 		gotoPrevPage:function () {
+            var perPage = $('#perpage').val();
+            var rows = ((typeof perPage !== 'undefined') ? perPage : Const.MAXITEMPERPAGE);
+    
 			var currentPage = this.collection.getCurrentPage();
 			if(currentPage != 1 && currentPage > 1) {
 				var calPage = parseInt(currentPage) - parseInt(1);
 				this.collection.setCurrentPage(calPage);
-				this.collection.getModelsPerPage(calPage , Const.MAXITEMPERPAGE);
+				this.collection.getModelsPerPage(calPage , rows);
 			}
 			
 			return false;
 		},
 
 		gotoNextPage:function () {
-			var lastPage = Math.ceil(this.collection.getMaxItem() / Const.MAXITEMPERPAGE);
+            var perPage = $('#perpage').val();
+            var rows = ((typeof perPage !== 'undefined') ? perPage : Const.MAXITEMPERPAGE);
+            
+			var lastPage = Math.ceil(this.collection.getMaxItem() / rows);
 			var currentPage = this.collection.getCurrentPage();
 			if(currentPage < lastPage) {
 				var calPage = parseInt(currentPage) + parseInt(1);
 				this.collection.setCurrentPage(calPage);
-				this.collection.getModelsPerPage(calPage , Const.MAXITEMPERPAGE);
+				this.collection.getModelsPerPage(calPage , rows);
 			}
 			
 			return false;
 		},
 		
 		gotoLastPage: function () {
-			var lastPage = Math.ceil(this.collection.getMaxItem() / Const.MAXITEMPERPAGE);
+            var perPage = $('#perpage').val();
+            var rows = ((typeof perPage !== 'undefined') ? perPage : Const.MAXITEMPERPAGE);
+    
+			var lastPage = Math.ceil(this.collection.getMaxItem() / rows);
 			if(this.collection.getCurrentPage() != lastPage) {
 				this.collection.setCurrentPage(lastPage);
-				this.collection.getModelsPerPage(lastPage , Const.MAXITEMPERPAGE);
+				this.collection.getModelsPerPage(lastPage , rows);
 			}
 			
 			return false;
 		},
 		
 		gotoPage: function (ev) {
+            var perPage = $('#perpage').val();
+            var rows = ((typeof perPage !== 'undefined') ? perPage : Const.MAXITEMPERPAGE);
+            
 			var page = $(ev.target).attr('data-pagenum');
 			if(this.collection.getCurrentPage() != page) {
 				this.collection.setCurrentPage(page);
-				this.collection.getModelsPerPage(page , Const.MAXITEMPERPAGE);
+				this.collection.getModelsPerPage(page , rows);
 			}
 			
 			return false;
 		},
 		
 		sortByField: function (sortField) {
+            var perPage = $('#perpage').val();
+            var rows = ((typeof perPage !== 'undefined') ? perPage : Const.MAXITEMPERPAGE);
+    
 			if(this.collection.getCurrentSort() == sortField) {
 				var option = {};
 				option[sortField] = !this.collection.getSort(sortField);
@@ -139,16 +161,18 @@ define([
 			
 			this.collection.setCurrentSort(sortField);
 			this.collection.setCurrentPage(1);
-			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
+			this.collection.getModelsPerPage(1 , rows);
 			
 			return false;
 		},
 		
 		searchLocal: function () {
 			var keyword = $('#search-keyword').val();
+            var perPage = $('#perpage').val();
+            var rows = ((typeof perPage !== 'undefined') ? perPage : Const.MAXITEMPERPAGE);
 			
 			this.collection.setSearch(keyword);
-			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
+			this.collection.getModelsPerPage(1 , rows);
 			
 			return false;
 		},
