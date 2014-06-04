@@ -71,6 +71,7 @@ define([
             this.$el.find('#phone').val(contact.get('phone'));
             this.$el.find('#mobile').val(contact.get('mobile'));
             this.$el.find('#account_id').val(contact.get('account').id);
+            this.$el.find('#rate').val(contact.get('rate'));
 		},
 	});
 

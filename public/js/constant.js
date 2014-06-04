@@ -107,7 +107,7 @@ define(function () {
 		'CONTAINER': {
 			'MAIN':'cl-mcont',
 		},
-		'MAXITEMPERPAGE': 10,
+		'MAXITEMPERPAGE': 15,
 		'PLACEHOLDER': {
 			'PROFILEPIC': '/images/default_profile.jpg',
 		},
