@@ -11,7 +11,7 @@ class ScaleRepository implements ScaleRepositoryInterface {
     {
         try
         {
-            $perPage = isset($params['perpage']) ? $params['perpage'] : 10;
+            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
             
             return Scale::with('account')->paginate($perPage);
         }

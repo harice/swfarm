@@ -5,6 +5,7 @@ define([
 	'collections/salesorder/OriginCollection',
 	'collections/salesorder/NatureOfSaleCollection',
 	'collections/salesorder/SOStatusCollection',
+	'collections/salesorder/CancellingReasonCollection',
 	'models/salesorder/SalesOrderModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/salesorder/salesOrderListTemplate.html',
@@ -12,6 +13,7 @@ define([
 	'text!templates/salesorder/salesOrderOriginTemplate.html',
 	'text!templates/salesorder/salesOrderNatureOfSaleTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderStatusTemplate.html',
+	'text!templates/purchaseorder/reasonForCancellationOptionTemplate.html',
 	'constant',
 ], function(Backbone,
 			ListView,
@@ -19,6 +21,7 @@ define([
 			OriginCollection,
 			NatureOfSaleCollection,
 			SOStatusCollection,
+			CancellingReasonCollection,
 			SalesOrderModel,
 			contentTemplate,
 			salesOrderListTemplate,
@@ -26,6 +29,7 @@ define([
 			salesOrderOriginTemplate,
 			salesOrderNatureOfSaleTemplate,
 			salesOrderStatusTemplate,
+			reasonForCancellationOptionTemplate,
 			Const
 ){
 
@@ -87,10 +91,20 @@ define([
 			this.soStatusCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
+			
+			this.cancellingReasonCollection = new CancellingReasonCollection();
+			this.cancellingReasonCollection.on('sync', function() {	
+				thisObj.originCollection.getModels();
+				this.off('sync');
+			});
+			
+			this.cancellingReasonCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 		},
 		
 		render: function(){
-			this.originCollection.getModels();
+			this.cancellingReasonCollection.getModels();
 		},
 		
 		displaySO: function () {
@@ -114,10 +128,7 @@ define([
 			this.subContainer.html(compiledTemplate);
 			
 			this.initCalendars();
-			
-			this.initConfirmationWindow('Are you sure you want to cancel this SO?',
-										'confirm-cancel-so',
-										'Cancel Sales Order');
+			this.initCancelWindow();
 		},
 		
 		displayList: function () {
@@ -190,6 +201,53 @@ define([
 			});
 		},
 		
+		initCancelWindow: function (){
+			var thisObj = this;
+			var options = '';
+			_.each(this.cancellingReasonCollection.models, function (model) {
+				options += '<option value="'+model.get('id')+'">'+model.get('reason')+'</option>';
+			});
+			var form = _.template(reasonForCancellationOptionTemplate, {'reasons': options});
+			
+			this.initConfirmationWindowWithForm('Are you sure you want to cancel this SO?',
+										'confirm-cancel-so',
+										'Cancel Sales Order',
+										form);
+										
+			var validate = $('#cancellationReasonForm').validate({
+				submitHandler: function(form) {
+					
+					var data = $(form).serializeObject();
+					
+					var salesOrderModel = new SalesOrderModel(data);
+						
+					salesOrderModel.setCancelURL();		
+					salesOrderModel.save(
+						null, 
+						{
+							success: function (model, response, options) {
+								thisObj.displayMessage(response);
+								thisObj.renderList(1);
+								thisObj.hideConfirmationWindow();
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: salesOrderModel.getAuth(),
+						}
+					);
+				},
+				rules: {
+					others: {
+						require_reason_others: true,
+					},
+				},
+			});
+		},
+		
 		events: {
 			'click .sort-date-of-so' : 'sortSODate',
 			'change .location_id' : 'filterByOrigin',
@@ -197,6 +255,16 @@ define([
 			'change .statusFilter' : 'filterByStatus',
 			'click .cancel-so': 'preShowConfirmationWindow',
 			'click #confirm-cancel-so': 'cancelSO',
+			'change #reason': 'onChangeReason',
+		},
+		
+		onChangeReason: function (ev) {
+			var field = $(ev.target);
+			
+			if(field.val() == Const.CANCELLATIONREASON.OTHERS)
+				$('#cancellation-others-text').show();
+			else
+				$('#cancellation-others-text').hide();
 		},
 		
 		sortSODate: function () {
@@ -225,34 +293,14 @@ define([
 		},
 		
 		preShowConfirmationWindow: function (ev) {
-			this.$el.find('#confirm-cancel-so').attr('data-id', $(ev.currentTarget).attr('data-id'));
+			this.$el.find('#cancellationReasonForm #cancelled-order-id').val($(ev.currentTarget).attr('data-id'));
 			
 			this.showConfirmationWindow();
 			return false;
 		},
 		
 		cancelSO: function (ev) {
-			var thisObj = this;
-			var salesOrderModel = new SalesOrderModel({id:$(ev.currentTarget).attr('data-id')});
-				
-			salesOrderModel.setCancelURL();		
-			salesOrderModel.save(
-				null, 
-				{
-					success: function (model, response, options) {
-						thisObj.displayMessage(response);
-						thisObj.renderList(thisObj.collection.getCurrentPage());
-					},
-					error: function (model, response, options) {
-						if(typeof response.responseJSON.error == 'undefined')
-							validate.showErrors(response.responseJSON);
-						else
-							thisObj.displayMessage(response);
-					},
-					headers: salesOrderModel.getAuth(),
-				}
-			);
-			
+			$('#cancellationReasonForm').submit();
 			return false;
 		},
 	});

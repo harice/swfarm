@@ -3,129 +3,172 @@
         <div class="block-flat">
             <div class="content">
               
-              <form id="soForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-                <% if (typeof so_id !== "undefined") { %>
-                  <input type="hidden" name="id" value="<%= so_id %>" />
-                <% } %>
-                <fieldset>
+              <form id="soWeightInfoFrom" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+				<fieldset>
                   <legend>Details</legend>
                   <div class="row">
                     <div class="col-md-6">
-                      <% if (typeof so_id !== "undefined") { %>
-                        <div class="form-group">
-                          <label for="sonumber" class="col-sm-3 control-label">SO Number</label>
-                          <div class="col-sm-9">
-                            <input id="sonumber" type="text" class="form-control sonumber" placeholder="" maxlength="250" readonly>
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <label for="status" class="col-sm-3 control-label">Status</label>
-                          <div class="col-sm-9">
-                            <input id="status" type="text" class="form-control status" placeholder="" maxlength="250" readonly>
-                          </div>
-                        </div>
-                      <% } %>
                       <div class="form-group">
-						<label for="location_id" class="col-sm-3 control-label">Origin</label>
-						<div id="so-origin" class="col-sm-9"></div>
-					  </div>
+                        <label for="so-number" class="col-sm-3 control-label">SO No.</label>
+                        <div class="col-sm-7">
+                          <input id="so-number" type="text" class="form-control" maxlength="250" readonly>
+                        </div>
+                      </div>
 					  <div class="form-group">
-						<label for="natureofsale_id" class="col-sm-3 control-label">Nature of Sales</label>
-						<div id="so-nos" class="col-sm-9"></div>
-					  </div>
+                        <label for="producer" class="col-sm-3 control-label">Producer</label>
+                        <div class="col-sm-7">
+                          <input id="producer" type="text" class="form-control" maxlength="250" readonly>
+                        </div>
+                      </div>
+					  <% if (typeof wiId !== "undefined") { %>
 					  <div class="form-group">
-						<label for="account" class="col-sm-3 control-label">Customer *</label>
-						<div class="col-sm-7">
-						  <input type="text" class="form-control capitalize" id="account" name="account" maxlength="50" required>
-						  <input type="hidden" class="form-control" id="account_id" name="account_id" value="" required>
-						</div>
-					  </div>
-                      <div class="form-group">
-                        <label for="street" class="col-sm-3 control-label">Street</label>
+                        <label for="weight-ticket-no" class="col-sm-3 control-label">Weight Ticket No.</label>
                         <div class="col-sm-7">
-                          <input id="street" type="text" class="form-control street" placeholder="" maxlength="250" readonly>
+                          <input id="weight-ticket-no" type="text" class="form-control" maxlength="250" readonly>
                         </div>
                       </div>
-                      <div class="form-group">
-                        <label for="state" class="col-sm-3 control-label">State/Province</label>
+					  <div class="form-group">
+                        <label for="loading-ticket-no" class="col-sm-3 control-label">Loading Ticket No.</label>
                         <div class="col-sm-7">
-                          <input id="state" type="text" class="form-control state" placeholder="" maxlength="250" readonly>
+                          <input id="loading-ticket-no" type="text" class="form-control" maxlength="250" readonly>
                         </div>
                       </div>
-                      <div class="form-group">
-                        <label for="city" class="col-sm-3 control-label">City</label>
-                        <div class="col-sm-7">
-                          <input id="city" type="text" class="form-control city" placeholder="" maxlength="250" readonly>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="zipcode" class="col-sm-3 control-label">Zip Code</label>
-                        <div class="col-sm-3">
-                          <input id="zipcode" type="text" class="form-control zipcode" placeholder="" minlength="5" maxlength="10" readonly>
-                        </div>
-                      </div>
+					  <% } %>
                     </div>
                     <div class="col-md-6">
-                      <% if (typeof so_id !== "undefined") { %>
-                        <div class="form-group">
-                          <label for="dateofsale" class="col-sm-3 control-label">Date of Sale</label>
-                          <div class="col-sm-9">
-                            <input id="dateofsale" type="text" class="form-control dateofsale" placeholder="" maxlength="250" readonly>
-                          </div>
-                        </div>
-                      <% } %>
-                      <div class="form-group"><label for="" class="col-sm-12">Delivery Period:</label></div>
                       <div class="form-group">
-                        <label for="transportdatestart" class="col-sm-3 control-label">Start</label>
-                        <div class="col-sm-4">
-                          <div id="start-date" class="calendar-cont">
-                            <div class="input-group date datetime margin-bottom-0">
-                              <input id="transportdatestart" class="form-control form-date" name="transportdatestart" size="16" type="text" value="" required/>
-                              <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
-                            </div>
-                          </div>
-                          <div class="error-msg-cont"></div>
-                        </div>
-                        <label for="transportdateend" class="col-sm-1 control-label">End</label>
-                        <div class="col-sm-4">
-                          <div id="end-date" class="calendar-cont">
-                            <div class="input-group date datetime margin-bottom-0">
-                              <input id="transportdateend" class="form-control form-date" name="transportdateend" size="16" type="text" value="" required/>
-                              <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
-                            </div>
-                          </div>
-                          <div class="error-msg-cont"></div>
+                        <label for="date-and-time" class="col-sm-3 control-label">Date and Time</label>
+                        <div class="col-sm-7">
+                          <input id="date-and-time" type="text" class="form-control" maxlength="250" readonly>
                         </div>
                       </div>
-                      <div class="form-group">
-                        <label for="notes" class="col-sm-3 control-label">Notes</label>
-                        <div class="col-sm-9">
-                          <textarea class="form-control notes" id="notes" name="notes"></textarea>
-                        </div>
-                      </div>
-                      
                     </div>
                   </div>
                 </fieldset>
                 <fieldset>
-                  <legend>
-                    Products
-                    <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
-                  </legend>
+                  <legend>Pickup</legend>
                   <div class="table-responsive">
-                    <table id="product-list" class="table table-bordered">
+                    <table id="pickup-info" class="table table-bordered">
                       <thead>
                         <tr>
-                          <th>Product</th>
-                          <th>Description</th>
-                          <th>Stack No.</th>
-                          <th class="width-130">Unit Price</th>
-                          <th>Est Tons</th>
-                          <th>Bales</th>
-                          <th class="width-130">Total Price</th>
-                          <th></th>
+                          <th style="width:15%;">Scale</th>
+						  <th style="width:15%;">Scale Name</th>
+                          <th style="width:15%;">Scale Fee</th>
+                          <th style="width:15%;">Bales</th>
+                          <th style="width:15%;">Gross</th>
+                          <th style="width:15%;">Tare</th>
+                          <th style="width:10%;">Net</th>
                         </tr>
                       </thead>
+                      <tbody>
+					    <tr>
+						  <td>
+							<div class="styled-select">
+							  <select id="pickup-scaleAccount_id" class="form-contro width-200 scaleAccount_id" name="pickup-scaleAccount_id" required>
+							    <option value="">Select a scale account</option>
+								<%= scaler_account_list %>
+							  </select>
+							</div>
+						  </td>
+						  <td>
+							<div class="styled-select">
+							  <select id="pickup-scales" class="form-control width-200 scale_id" name="pickup-scale_id" required>
+							    <option value="">Select a scale name</option>
+							  </select>
+							</div>
+						  </td>
+						  <td><input id="pickup-fee" maxlength="80" name="pickup-fee" class="form-control fee" placeholder="0.00" required readonly></td>
+						  <td><input maxlength="80" name="pickup-bales" class="form-control bales mask-bales" placeholder="0" required></td>
+						  <td><input maxlength="80" name="pickup-gross" class="form-control gross" placeholder="0.0000" required></td>
+						  <td><input maxlength="80" name="pickup-tare" class="form-control tare" placeholder="0.0000" required></td>
+						  <td><span class="net">0.0000</span></td>
+						</tr>
+					  </tbody>
+                    </table>
+                  </div>
+				  <div class="table-responsive">
+                    <table id="pickup-product-list" class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th style="width:20%;">Stack No.</th>
+                          <th style="width:20%;">Product</th>
+						  <th style="width:20%;">Bales</th>
+                          <th style="width:20%;">Lbs.</th>
+                          <th style="width:20%;">Net Tons</th>
+                        </tr>
+                      </thead>
+					  <tfoot>
+						<tr>
+						  <td colspan="2">Total</td>
+						  <td><span class="total-bales">0</span></td>
+						  <td><span class="total-pounds">0.00</span></td>
+						  <td><span class="total-net-tons">0.0000</span></td>
+						</tr>
+					  </tfoot>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                </fieldset>
+				<fieldset>
+                  <legend>Dropoff</legend>
+                  <div class="table-responsive">
+                    <table id="dropoff-info" class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th style="width:15%;">Scale</th>
+						  <th style="width:15%;">Scale Name</th>
+                          <th style="width:15%;">Scale Fee</th>
+                          <th style="width:15%;">Bales</th>
+                          <th style="width:15%;">Gross</th>
+                          <th style="width:15%;">Tare</th>
+                          <th style="width:10%;">Net</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+					    <tr>
+						  <td>
+							<div class="styled-select">
+							  <select id="dropoff-scaleAccount_id" class="form-control width-200 scaleAccount_id" name="dropoff-scaleAccount_id" required>
+							    <option value="">Select a scale account</option>
+								<%= scaler_account_list %>
+							  </select>
+							</div>
+						  </td>
+						  <td>
+							<div class="styled-select">
+							  <select id="dropoff-scales" class="form-control width-200 scale_id" name="dropoff-scale_id" required>
+							    <option value="">Select a scale name</option>
+							  </select>
+							</div>
+						  </td>
+						  <td><input id="dropoff-fee" maxlength="80" name="dropoff-fee" class="form-control fee" placeholder="0.00" required readonly></td>
+						  <td><input maxlength="80" name="dropoff-bales" class="form-control bales mask-bales" placeholder="0" required></td>
+						  <td><input maxlength="80" name="dropoff-gross" class="form-control gross" placeholder="0.0000" required></td>
+						  <td><input maxlength="80" name="dropoff-tare" class="form-control tare" placeholder="0.0000" required></td>
+						  <td><span class="net">0.0000</span></td>
+						</tr>
+					  </tbody>
+                    </table>
+                  </div>
+				  <div class="table-responsive">
+                    <table id="dropoff-product-list" class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th style="width:20%;">Stack No.</th>
+                          <th style="width:20%;">Product</th>
+                          <th style="width:20%;">Bales</th>
+						  <th style="width:20%;">Lbs.</th>
+                          <th style="width:20%;">Net Tons</th>
+                        </tr>
+                      </thead>
+					  <tfoot>
+						<tr>
+						  <td colspan="2">Total</td>
+						  <td><span class="total-bales">0</span></td>
+						  <td><span class="total-pounds">0.00</span></td>
+						  <td><span class="total-net-tons">0.0000</span></td>
+						</tr>
+					  </tfoot>
                       <tbody></tbody>
                     </table>
                   </div>
@@ -133,11 +176,8 @@
                 <div class="form-group form-button-container">
                     <div class="col-md-12">
                         <div class="pull-right">
-                            <% if (typeof so_id !== "undefined") { %>
-                            <!-- a id="cancel-so" class="btn btn-danger" href="#">Cancel Sales Order</a -->
-                            <% } %>
                             <button id="save" type="submit" class="save btn btn-primary">Save</button>
-                            <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
+                            <a class="btn btn-default" href="<%= cancel_url %>">Cancel</a>
                         </div>
                     </div>
                 </div>

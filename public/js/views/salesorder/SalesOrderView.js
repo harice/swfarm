@@ -97,6 +97,15 @@ define([
 			
 			this.$el.find('#sonumber').val(this.model.get('order_number'));
 			this.$el.find('#status').val(this.model.get('status').name);
+			
+			if(this.model.get('status').id == 3) {
+				this.$el.find('#cancel-reason-cont').show();
+				if(parseInt(this.model.get('ordercancellingreason').reason.id) != parseInt(Const.CANCELLATIONREASON.OTHERS))
+					this.$el.find('#cancel-reason-cont input').val(this.model.get('ordercancellingreason').reason.reason).show();
+				else
+					this.$el.find('#cancel-reason-cont textarea').val(this.model.get('ordercancellingreason').others).show();
+			}
+			
 			this.$el.find('#nos').val(this.model.get('natureofsale').name);
 			this.$el.find('#account').val(account.name);
 			this.$el.find('#street').val(address[0].street);

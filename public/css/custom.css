@@ -285,7 +285,7 @@ ul.autocomplete li.active a {
 }
 .styled-select select.width-100 {
   width: 100px;
-  background-position: 64px 0;
+  background-position: 68px -3px;
 }
 .styled-select select.width-160 {
   width: 160px;
@@ -367,4 +367,7 @@ ul.autocomplete li.active a {
 #description,
 #notes {
   resize: none;
+}
+.ui-tooltip {
+  z-index: 99 !important;
 }

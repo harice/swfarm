@@ -37,7 +37,7 @@ define([
 			Const
 ){
 
-	var PurchaseOrderEditView = PurchaseOrderAddView.extend({
+	var PurchaseOrderView = PurchaseOrderAddView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		producerAutoCompleteView: null,
@@ -143,6 +143,15 @@ define([
 			
 			this.$el.find('#ponumber').val(this.model.get('order_number'));
 			this.$el.find('#status').val(this.model.get('status').name);
+			
+			if(this.model.get('status').id == 5 || this.model.get('status').id == 6) {
+				this.$el.find('#cancel-reason-cont').show();
+				if(parseInt(this.model.get('ordercancellingreason').reason.id) != parseInt(Const.CANCELLATIONREASON.OTHERS))
+					this.$el.find('#cancel-reason-cont input').val(this.model.get('ordercancellingreason').reason.reason).show();
+				else
+					this.$el.find('#cancel-reason-cont textarea').val(this.model.get('ordercancellingreason').others).show();
+			}
+			
             if (this.model.get('location') !== null) {
                 this.$el.find('#destination').val(this.model.get('location').location);
             }
@@ -178,6 +187,7 @@ define([
 					bales: thisObj.addCommaToNumber(product.bales),
 					totalprice: thisObj.addCommaToNumber(totalprice),
 					ishold: (parseInt(product.ishold) == 1)? 'Yes' : 'No',
+					rfv: product.rfv,
 				};
 				
 				if(thisObj.isBid)
@@ -193,6 +203,6 @@ define([
 		},
 	});
 
-  return PurchaseOrderEditView;
+  return PurchaseOrderView;
   
 });
