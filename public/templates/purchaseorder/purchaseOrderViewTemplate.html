@@ -19,6 +19,13 @@
                             <input id="status" type="text" class="form-control status" placeholder="" maxlength="250" readonly>
                           </div>
                         </div>
+						<div id="cancel-reason-cont" class="form-group" style="display:none;">
+                          <label for="" class="col-sm-3 control-label">Cancellation Reason</label>
+                          <div class="col-sm-7">
+                            <input style="display:none;" type="text" class="form-control" placeholder="" maxlength="250" readonly>
+							<textarea style="display:none;" class="form-control" readonly></textarea>
+                          </div>
+                        </div>
                         <% if (typeof is_bid === "undefined") { %>
                         <div class="form-group">
                           <label for="destination" class="col-sm-3 control-label">Destination</label>

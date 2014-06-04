@@ -14,7 +14,9 @@
 			<% } %>
 		</td>
 		<td><%= po.get("account").name %></td>
-		<td><label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label></td>
+		<td>
+			<label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label>
+		</td>
 		<td>
             <% if (!_.isNull(po.get("location"))) { %>
                 <%= po.get("location").location %>

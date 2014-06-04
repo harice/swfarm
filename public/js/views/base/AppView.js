@@ -2,8 +2,9 @@ define([
 	'backbone',
 	'text!templates/layout/confirmModalTemplate.html',
 	'text!templates/layout/confirmNavigateAwayFromFormModalTemplate.html',
+	'text!templates/layout/confirmModalWithFormTemplate.html',
 	'constant',
-], function(Backbone, confirmModalTemplate, confirmNavigateAwayFromFormModalTemplate, Const){
+], function(Backbone, confirmModalTemplate, confirmNavigateAwayFromFormModalTemplate, confirmModalWithFormTemplate, Const){
 
 	var AppView = Backbone.View.extend({
 		
@@ -60,7 +61,20 @@ define([
 				confirm_button_id: buttonId,
 				confirm_button_label: buttonLabel,
 			};
+			
 			var confirmTemplate = _.template(confirmModalTemplate, confirmTemplateVariables);
+			this.$el.find('.modal-alert-cont').html(confirmTemplate);
+		},
+		
+		initConfirmationWindowWithForm: function (content, buttonId, buttonLabel, contentForm) {
+			var confirmTemplateVariables = {
+				confirm_content: content,
+				confirm_button_id: buttonId,
+				confirm_button_label: buttonLabel,
+				confirm_content_form: contentForm,
+			};
+			
+			var confirmTemplate = _.template(confirmModalWithFormTemplate, confirmTemplateVariables);
 			this.$el.find('.modal-alert-cont').html(confirmTemplate);
 		},
 		
@@ -70,19 +84,55 @@ define([
 			return false;
 		},
 		
-		showNavigationAwayConfirmationWindow: function () {
-			console.log('showNavigationAwayConfirmationWindow');
-			var confirmTemplate = _.template(confirmNavigateAwayFromFormModalTemplate, {});
-			$('.modal-alert-cont').html(confirmTemplate);
+		hideConfirmationWindow: function () {
+			$('#modal-confirm').modal('hide');
 			
-			this.showConfirmationWindow();
+			return false;
+		},
+		
+		showNavigationAwayConfirmationWindow: function (callback) {
+			//console.log('showNavigationAwayConfirmationWindow');
+			var runCallback = false;
+			
+			if($('.modal-alert-cont').find('#modal-confirm-navigate-away').length)
+				$('.modal-alert-cont').find('#modal-confirm-navigate-away').remove();
+			
+			var confirmTemplate = _.template(confirmNavigateAwayFromFormModalTemplate, {});
+			$('.modal-alert-cont').append(confirmTemplate);
+			
+			$('#confirm-navigate').on('click', function () {
+				runCallback = true;
+			});
+			
+			$('#modal-confirm-navigate-away').on('hidden.bs.modal', function (e) {
+				$('.close-navigate-away-window').off('click');
+				$('#confirm-navigate').off('click');
+				$('#modal-confirm-navigate-away').remove();
+				
+				if(runCallback)
+					callback();
+			});
+			
+			$('#modal-confirm-navigate-away').modal('show');
+			return false;
 		},
 		
 		goToPreviousPage: function () {
-			Backbone.history.history.back();
+			var fragment = Backbone.history.fragment;
+			var arrayFragment = fragment.split('/');
+			
+			if(arrayFragment.indexOf(Const.CRUD.ADD) >= 0 || arrayFragment.indexOf(Const.CRUD.EDIT) >= 0) {
+					
+				new AppView().showNavigationAwayConfirmationWindow(function () {
+					Backbone.history.history.back();
+				});
+			}
+			else
+				Backbone.history.history.back();
+			
 			return false;
 		},
-                
+		
         maskInputs: function () {
             $(".phone-number").mask('(000) 000-0000');
             $(".mobile-number").mask('(000) 000-0000');
@@ -198,7 +248,7 @@ define([
 
 		setCaretToPos: function (input, pos) {
 			this.setSelectionRange(input, pos, pos);
-		}
+		},
 	});
 
 	return AppView;

@@ -126,6 +126,9 @@ define(function () {
 			},
 		},
 		'LB2TON': 0.0005,
+		'CANCELLATIONREASON': {
+			'OTHERS': '6'
+		},
 	};
 	
 	return constant;
