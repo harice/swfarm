@@ -27,3 +27,5 @@ App::bind('ScaleRepositoryInterface', 'ScaleRepository');
 App::bind('TruckRepositoryInterface', 'TruckRepository');
 App::bind('FeeRepositoryInterface', 'FeeRepository');
 App::bind('SettingsRepositoryInterface', 'SettingsRepository');
+App::bind('FileRepositoryInterface', 'FileRepository');
+

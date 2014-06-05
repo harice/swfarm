@@ -20,7 +20,8 @@ class OrderRepository implements OrderRepositoryInterface {
                         ->with('account')
                         ->with('orderaddress', 'orderaddress.addressStates')
                         ->with('location')
-                        ->with('status');
+                        ->with('status')
+                        ->with('ordercancellingreason.reason');
 
         if($orderType == 2) //for SO only
             $order = $order->with('natureofsale');
@@ -89,7 +90,8 @@ class OrderRepository implements OrderRepositoryInterface {
                 ->with('orderaddress', 'orderaddress.addressStates')
                 ->with('location')
                 ->with('status')
-                ->with('ordercancellingreason.reason');
+                ->with('ordercancellingreason.reason')
+                ->with('productorder.upload.files');
 
         if($orderType == 2) //for SO only
             $order = $order->with('natureofsale');
@@ -274,7 +276,7 @@ class OrderRepository implements OrderRepositoryInterface {
     }
     
     public function validate($data, $entity, $orderType = null)
-    {
+    {   
         $messages = array(
             'rfv.required_if' => 'The RFV field is required when product is on hold.',
         );
@@ -323,8 +325,10 @@ class OrderRepository implements OrderRepositoryInterface {
 
         foreach ($products as $product) {
             $product['order_id'] = $order_id;
-            if(!$result['hasHoldProduct'] && $product['ishold'] == 1){ //has hold product for testing
-                $result['hasHoldProduct'] = true;
+            if(isset($product['ishold'])){
+                if(!$result['hasHoldProduct'] && $product['ishold'] == 1){ //has hold product for testing
+                    $result['hasHoldProduct'] = true;
+                }
             }
             $this->validate($product, 'ProductOrder');
             if(isset($product['id']))
@@ -334,8 +338,42 @@ class OrderRepository implements OrderRepositoryInterface {
 
             $productorder->fill($product);
             $productorder->save();
+
+            if(isset($product['uploadedfile'])){
+                $this->linkUploadFilesToProductOrder($product['uploadedfile'], $productorder->id);
+            }
         }
         return $result;
+    }
+
+    private function linkUploadFilesToProductOrder($uploadedfile, $productorderid){
+        $oldFileUploaded = Upload::where('entityname', '=', 'productorder')->where('entity_id', '=', $productorderid)->first();
+        if($oldFileUploaded){
+            if($uploadedfile != $oldFileUploaded->file_id){ //new file to be uploaded but there is old file already uploaded
+                $oldFileUploaded->delete();
+
+                $upload = new Upload;
+                $upload->file_id = $uploadedfile;
+                $upload->entityname = 'productorder';
+                $upload->entity_id = $productorderid;
+                $upload->save();
+
+                $file = Files::find($uploadedfile);
+                $file->issave = 1;
+                $file->save();
+            }
+        } else { //upload file for the first time
+            $upload = new Upload;
+            $upload->file_id = $uploadedfile;
+            $upload->entityname = 'productorder';
+            $upload->entity_id = $productorderid;
+            $upload->save();
+            // var_dump($upload);
+            $file = Files::find($uploadedfile);
+            $file->issave = 1;
+            $file->save();
+        }
+
     }
    
     private function getBusinessAddress($account_id)
@@ -406,7 +444,58 @@ class OrderRepository implements OrderRepositoryInterface {
                   'message' => 'Order cannot be cancel if the status is not open or pending.');
         }       
     }
+/*
+    public function uploadFile($data, $entityname){
+          // var_dump($data);
+          //$this->validate($data, 'File');
 
+          $rules = array(
+            'name' => 'required',
+            'type' => 'required',
+            'size' => 'required',
+            'content' => 'required'
+          );
+
+          $validator = Validator::make($data,$rules);
+        
+          if($validator->fails()) { 
+            throw new ValidationException($validator); 
+          }
+
+          if(!(strstr($data['type'], 'application/pdf'))){
+            return  array(
+              'error' => true,
+              'message' => 'file extension must be in pdf'
+              );
+          } else if(intval($data['size']) > 3145728) { //3mb max file size
+            return array(
+              'error' => true,
+              'message' => 'file size exceeded(3MB).'
+              );
+          }
+          
+          // $file = new File;
+          // $file->fill($data);
+          // $file->save();
+
+          $file = new Files;
+          $file->name = $data['name'];
+          $file->type = $data['type'];
+          $file->size = $data['size'];
+          $file->content = $data['content'];
+          $file->save();
+
+          // $user->profileimg = $this->saveImage($data['imagedata'], $data['imagetype'], $data['username']);
+          //define('UPLOAD_DIR', 'images/profile/');
+          // $base64img = str_replace('data:'.$data['imagetype'].';base64,', '', $data['imagedata']);
+          // $filedecode = base64_decode($base64img);
+          // $file = UPLOAD_DIR . $data['username'] . '.jpg';
+          // file_put_contents($file, $filedecode);
+
+          return $file->id;
+ 
+   }
+*/
     public function getPOStatus(){
         return Status::whereIn('id',array(1,2,3,4))->get()->toArray(); //return statuses for orders
     }
