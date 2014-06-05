@@ -3,8 +3,9 @@ define([
 	'text!templates/layout/confirmModalTemplate.html',
 	'text!templates/layout/confirmNavigateAwayFromFormModalTemplate.html',
 	'text!templates/layout/confirmModalWithFormTemplate.html',
+	'text!templates/layout/attachPDFTemplate.html',
 	'constant',
-], function(Backbone, confirmModalTemplate, confirmNavigateAwayFromFormModalTemplate, confirmModalWithFormTemplate, Const){
+], function(Backbone, confirmModalTemplate, confirmNavigateAwayFromFormModalTemplate, confirmModalWithFormTemplate, attachPDFTemplate, Const){
 
 	var AppView = Backbone.View.extend({
 		
@@ -78,14 +79,27 @@ define([
 			this.$el.find('.modal-alert-cont').html(confirmTemplate);
 		},
 		
-		showConfirmationWindow: function () {
-			$('#modal-confirm').modal('show');
+		initAttachPDFWindow: function () {
+			var confirmTemplate = _.template(attachPDFTemplate, {});
+			this.$el.find('.modal-alert-cont').append(confirmTemplate);
+		},
+		
+		showConfirmationWindow: function (id) {
+			
+			if(id == null)
+				id = 'modal-confirm';
+				
+			$('#'+id).modal('show');
 			
 			return false;
 		},
 		
-		hideConfirmationWindow: function () {
-			$('#modal-confirm').modal('hide');
+		hideConfirmationWindow: function (id) {
+			
+			if(id == null)
+				id = 'modal-confirm';
+			
+			$('#'+id).modal('hide');
 			
 			return false;
 		},
