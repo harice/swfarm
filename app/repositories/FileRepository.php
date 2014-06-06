@@ -41,8 +41,9 @@ class FileRepository implements FileRepositoryInterface {
     public function displayFile($fileId){
         $file = Files::where('issave', '=', 1)->where('id', '=', $fileId)->first();
         if($file){
-            header('Content-Type: '.$file->type);
-            readfile($file->content);
+            // header('Content-Type: '.$file->type);
+            return $file->content;
+            //readfile($file->content);
         } else {
             return array(
               'error' => true,
