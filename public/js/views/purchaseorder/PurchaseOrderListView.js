@@ -278,7 +278,7 @@ define([
 		preShowConfirmationWindow: function (ev) {
 			this.$el.find('#cancellationReasonForm #cancelled-order-id').val($(ev.currentTarget).attr('data-id'));
 			
-			this.showConfirmationWindow();
+			this.showConfirmationWindow('modal-with-form-confirm');
 			return false;
 		},
 		

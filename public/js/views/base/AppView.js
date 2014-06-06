@@ -57,6 +57,9 @@ define([
 		},
 		
 		initConfirmationWindow: function (content, buttonId, buttonLabel) {
+			if($('.modal-alert-cont').find('#modal-confirm').length)
+				$('.modal-alert-cont').find('#modal-confirm').remove();
+			
 			var confirmTemplateVariables = {
 				confirm_content: content,
 				confirm_button_id: buttonId,
@@ -64,10 +67,13 @@ define([
 			};
 			
 			var confirmTemplate = _.template(confirmModalTemplate, confirmTemplateVariables);
-			this.$el.find('.modal-alert-cont').html(confirmTemplate);
+			this.$el.find('.modal-alert-cont').append(confirmTemplate);
 		},
 		
 		initConfirmationWindowWithForm: function (content, buttonId, buttonLabel, contentForm) {
+			if($('.modal-alert-cont').find('#modal-with-form-confirm').length)
+				$('.modal-alert-cont').find('#modal-with-form-confirm').remove();
+			
 			var confirmTemplateVariables = {
 				confirm_content: content,
 				confirm_button_id: buttonId,
@@ -76,12 +82,21 @@ define([
 			};
 			
 			var confirmTemplate = _.template(confirmModalWithFormTemplate, confirmTemplateVariables);
-			this.$el.find('.modal-alert-cont').html(confirmTemplate);
+			this.$el.find('.modal-alert-cont').append(confirmTemplate);
 		},
 		
 		initAttachPDFWindow: function () {
 			var confirmTemplate = _.template(attachPDFTemplate, {});
 			this.$el.find('.modal-alert-cont').append(confirmTemplate);
+		},
+		
+		disableCloseButton: function (id) {
+			console.log('disableCloseButton: '+id);
+			this.$el.find('#'+id+' .close-window').attr('disabled', true);
+		},
+		
+		enableCloseButton: function (id) {
+			this.$el.find('#'+id+' .close-window').attr('disabled', false);
 		},
 		
 		showConfirmationWindow: function (id) {

@@ -3,26 +3,27 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<button type="button" class="close close-window" data-dismiss="modal" aria-hidden="true">&times;</button>
 				<h4 class="modal-title">Upload a PDF</h4>
 			</div>
 			<div class="modal-body">
-				<form id="addUserForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+				<form id="uploadPDFForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+					<input type="hidden" id="pdf-field" name="pdf-field" value="" />
 					<div class="row">
 						<div class="col-sm-10 col-sm-offset-1">
 							<div id="upload-field-cont" style="display:none;">
-								<input type="file" id="pdf-file" class="pdf-file" name="pdf-file">
+								<input type="file" id="pdf-file" class="pdf-file" name="pdf-file"><a id="undo-remove" href="#">undo remove</a>
 							</div>
 							<div id="pdf-icon-cont">
 								<img class="pdf-icon-small" src="/images/pdf-icon-small.png" />
-								<span id="pdf-filename">filename.pdf</span> <a id="remove-pdf-filename" href="#">remove</a>
+								<span id="pdf-filename" data-id="">filename.pdf</span> <a id="remove-pdf-filename" href="#">remove</a>
 							</div>
 						</div>
 					</div>
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-default btn-flat close-window" data-dismiss="modal">Close</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->

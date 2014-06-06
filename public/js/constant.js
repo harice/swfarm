@@ -129,6 +129,9 @@ define(function () {
 		'CANCELLATIONREASON': {
 			'OTHERS': '6'
 		},
+		'MIMETYPE': {
+			'PDF': 'application/pdf',
+		},
 	};
 	
 	return constant;

@@ -11,6 +11,7 @@ define([
 	'collections/purchaseorder/DestinationCollection',
 	'collections/product/ProductCollection',
 	'models/purchaseorder/PurchaseOrderModel',
+	'models/file/FileModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderProductItemTemplate.html',
@@ -29,6 +30,7 @@ define([
 			DestinationCollection,
 			ProductCollection,
 			PurchaseOrderModel,
+			FileModel,
 			contentTemplate,
 			purchaseOrderAddTemplate,
 			productItemTemplate,
@@ -44,19 +46,24 @@ define([
 		
 		initialize: function() {
 			this.initSubContainer();
-			var thisObj = this;
 			this.isBid = false;
 			this.isConvertToPO = false;
 			this.poId = null;
 			this.h1Title = 'Purchase Order';
 			this.h1Small = 'add';
 			
+			this.inits();
+		},
+		
+		inits: function () {
+			var thisObj = this;
+			
 			this.productAutoCompletePool = [];
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
-				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'ishold', 'id', 'rfv'],
-				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales', 'rfv'],
+				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'ishold', 'id', 'rfv', 'uploadedfile'],
+				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
 				removeComma: ['unitprice', 'tons', 'bales'],
@@ -127,10 +134,11 @@ define([
 			this.initProducerAutocomplete();
 			this.initCalendar();
 			this.addProduct();
-            this.initAttachPDFWindow();
+            this.initPDFUpload();
 			this.options.fileFileClone = $('#pdf-file').clone(true);
 			
 			this.otherInitializations();
+			this.postDisplayForm();
 		},
 		
 		initValidateForm: function () {
@@ -406,6 +414,7 @@ define([
 			
 			'change #pdf-file': 'readFile',
 			'click #remove-pdf-filename': 'resetImageField',
+			'click #undo-remove': 'undoRemove',
 		},
 		
 		removeProduct: function (ev) {
@@ -522,9 +531,49 @@ define([
 			$('#poForm').submit();
 		},
 		
-		attachPDF: function () {
-			$('#pdf-icon-cont').hide();
-			$('#upload-field-cont').show();
+		initPDFUpload: function () {
+			var thisObj = this;
+			this.initAttachPDFWindow();
+			
+			this.$el.find('#modal-attach-pdf').on('hidden.bs.modal', function (e) {
+				var fieldName = thisObj.$el.find('#pdf-field').val();
+				var field = thisObj.$el.find('[name="'+fieldName+'"]');
+				
+				if(thisObj.$el.find('#upload-field-cont').css('display') != 'none') {
+					console.log('empty');
+					field.val('');
+					field.attr('data-filename', '');
+					field.closest('td').find('.attach-pdf').addClass('no-attachment');
+				}
+				else {
+					console.log('not empty');
+					var pdfFilenameElement = thisObj.$el.find('#pdf-filename');
+					field.val(pdfFilenameElement.attr('data-id'));
+					field.attr('data-filename', pdfFilenameElement.text());
+					field.closest('td').find('.attach-pdf').removeClass('no-attachment');
+				}
+			});
+		},
+		
+		attachPDF: function (ev) {
+			var field = $(ev.target).closest('td').find('.uploadedfile');
+			this.$el.find('#pdf-field').val(field.attr('name'));
+			
+			var clone = this.options.fileFileClone.clone(true);
+			this.$el.find("#pdf-file").replaceWith(clone);
+			
+			if(field.val() == '') {
+				this.$el.find('#pdf-icon-cont').hide();
+				this.$el.find('#undo-remove').hide();
+				this.$el.find('#upload-field-cont').show();
+			}
+			else {
+				this.$el.find('#upload-field-cont').hide();
+				this.$el.find('#pdf-icon-cont').show();
+				this.$el.find('#pdf-filename').text(field.attr('data-filename'));
+				this.$el.find('#pdf-filename').attr('data-id', field.val());
+			}
+			
 			this.showConfirmationWindow('modal-attach-pdf');
 			return false;
 		},
@@ -534,60 +583,90 @@ define([
 			
 			var file = ev.target.files[0]; console.log(file);
 			
-			var reader = new FileReader();
-			reader.onload = function (event) {
-				console.log('onload');
-				console.log(event);
-				
-				thisObj.uploadFile({
-					type: file.type,
-					size: file.size,
-					name: file.name,
-					data: event.target.result
-				});
-				/*thisObj.options.imagetype =  file.type;
-				thisObj.options.imagesize = file.size; 
-				thisObj.options.imagename = file.name;
-				thisObj.options.imagedata = event.target.result;*/
-				
-				//$('#profile-pic-preview img').attr('src', event.target.result); 
-				//$('#profile-pic-upload').hide();
-				//$('#profile-pic-preview').show();
-				//console.log(thisObj.options);
-			};
-			console.log('11111');
-			reader.readAsDataURL(file);
+			if(file.type == Const.MIMETYPE.PDF) {
+			
+				var reader = new FileReader();
+				reader.onload = function (event) {
+					console.log('onload');
+					console.log(event);
+					
+					thisObj.uploadFile({
+						type: file.type,
+						size: file.size,
+						name: file.name,
+						content: event.target.result
+					});
+				};
+				reader.readAsDataURL(file);
+			}
+			else {
+				var clone = this.options.fileFileClone.clone(true);
+				this.$el.find("#pdf-file").replaceWith(clone);
+			}
 		},
 		
 		uploadFile: function (data) {
-			this.generatePDFIcon(data);
+			this.disableCloseButton('modal-attach-pdf');
+			
+			var thisObj = this;
+			var fileModel = new FileModel(data);
+			fileModel.save(
+				null, 
+				{
+					success: function (model, response, options) {
+						data['id'] = response;
+						console.log(response);
+						thisObj.generatePDFIcon(data);
+						thisObj.enableCloseButton('modal-attach-pdf');
+					},
+					error: function (model, response, options) {
+						thisObj.enableCloseButton('modal-attach-pdf');
+						if(typeof response.responseJSON.error == 'undefined')
+							validate.showErrors(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: fileModel.getAuth(),
+				}
+			);
 		},
 		
 		generatePDFIcon: function (data) {
 			var clone = this.options.fileFileClone.clone(true);
-			$('#pdf-filename').text(data.name);
+			this.$el.find("#pdf-file").replaceWith(clone);
+			this.$el.find('#pdf-filename').text(data.name);
+			this.$el.find('#pdf-filename').attr('data-id', data.id);
 			
-			$('#upload-field-cont').hide();
-			$('#pdf-icon-cont').show();
+			this.$el.find('#upload-field-cont').hide();
+			this.$el.find('#pdf-icon-cont').show();
 		},
 		
 		resetImageField: function () {
 			var clone = this.options.fileFileClone.clone(true);
-			$("#pdf-file").replaceWith(clone);
+			this.$el.find("#pdf-file").replaceWith(clone);
 			
-			/*this.options.imagetype = '';
-			this.options.imagesize = ''; 
-			this.options.imagename = '';
-			this.options.imagedata = '';
-			this.options.imageremove = true;*/
+			this.$el.find('#pdf-icon-cont').hide();
+			this.$el.find('#undo-remove').show();
+			this.$el.find('#upload-field-cont').show();
 			
-			$('#pdf-icon-cont').hide();
-			$('#upload-field-cont').show();
+			return false;
+		},
+		
+		undoRemove: function () {
+			var fieldName = this.$el.find('#pdf-field').val();
+			var field = this.$el.find('[name="'+fieldName+'"]');
+			
+			this.$el.find('#pdf-filename').text(field.attr('data-filename'));
+			this.$el.find('#pdf-filename').attr(field.val());
+			
+			this.$el.find('#upload-field-cont').hide();
+			this.$el.find('#pdf-icon-cont').show();
 			
 			return false;
 		},
 		
 		otherInitializations: function () {},
+		postDisplayForm: function () {},
 	});
 
   return PurchaseOrderAddView;

@@ -50,48 +50,7 @@ define([
 			this.poId = option.id;
 			this.h1Title = 'Purchase Order';
 			this.h1Small = 'edit';
-			
-			this.productAutoCompletePool = [];
-			this.options = {
-				productFieldClone: null,
-				productFieldCounter: 0,
-				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'ishold', 'id', 'rfv'],
-				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales', 'rfv'],
-				productFieldExempt: [],
-				productFieldSeparator: '.',
-				removeComma: ['unitprice', 'tons', 'bales'],
-			};
-			
-			this.destinationCollection = new DestinationCollection();
-			this.destinationCollection.on('sync', function() {	
-				thisObj.productCollection.getModels();
-				this.off('sync');
-			});
-			
-			this.destinationCollection.on('error', function(collection, response, options) {
-				this.off('error');
-			});
-			
-			this.productCollection = new ProductCollection();
-			this.productCollection.on('sync', function() {
-				_.each(this.models, function (productModels) {
-					thisObj.productAutoCompletePool.push({
-						label:productModels.get('name'),
-						value:productModels.get('name'),
-						id:productModels.get('id'),
-						desc:productModels.get('description'),
-					});
-				});
-				
-				if(thisObj.subContainerExist()) {
-					thisObj.displayForm();
-					thisObj.supplyPOData();
-				}
-				this.off('sync');
-			});
-			this.productCollection.on('error', function(collection, response, options) {
-				this.off('error');
-			});
+			this.inits();
 			
 			this.model = new PurchaseOrderModel({id:this.poId});
 			this.model.on('change', function() {
@@ -161,6 +120,13 @@ define([
 				productFields.find('.bales').val(thisObj.addCommaToNumber(product.bales));
 				productFields.find('.ishold').val(product.ishold);
 				productFields.find('.rfv').val(product.rfv);
+				
+				if(product.upload.length > 0) {
+					productFields.find('.uploadedfile').val(product.upload[0].file_id);
+					productFields.find('.uploadedfile').attr('data-filename', product.upload[0].files[0].name);
+					productFields.find('.attach-pdf').removeClass('no-attachment');
+				}
+				
 				var unitPrice = parseFloat(product.unitprice) * parseFloat(product.tons);
 				productFields.find('.unit-price').val(thisObj.addCommaToNumber(unitPrice.toFixed(2)));
 			});
@@ -176,6 +142,11 @@ define([
 			this.initConfirmationWindow(verifyMsg,
 										'confirm-cancel-po',
 										verifyButtonLabel);
+		},
+		
+		postDisplayForm: function () {
+			if(this.subContainerExist())
+				this.supplyPOData();
 		},
 	});
 
