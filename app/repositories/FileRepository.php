@@ -50,6 +50,16 @@ class FileRepository implements FileRepositoryInterface {
               );
         }
     }
+
+    public function filesCleanUp(){
+        $files = Files::where('issave', '=', 0)->where('created_at', '<', 'NOW() - INTERVAL 1 DAY')->get();
+
+        if($files != null){
+            foreach($files as $file){
+                $file->delete();
+            }
+        }
+    }
    
     public function store($data)
     {
