@@ -1,21 +1,21 @@
 <div class="row margin-top-0">
-    <div class="col-md-12">
-        <div class="block-flat">
+    <div class="col-md-12 no-padding">
+        <div class="block-flat padding-top-0 padding-bottom-0">
             <div class="content padding-top-0">
-            
-                <div id="content-top" class="row margin-top-0">
-                    <div class="col-md-9 col-xs-9">
-                        <a href="<%= account_add_url %>" class="btn btn-primary">+ Add Account</a>
+
+                <div class="row margin-top-0">
+                    <div class="col-md-9 col-xs-9 padding-top-10 padding-right-0">
+                        <a href="<%= account_add_url %>" class="btn btn-primary btn-sm margin-left-0">+ Add Account</a>
                     </div>
-                    <div class="col-md-3 col-xs-3">
+                    <div class="col-md-3 col-xs-3 padding-top-10">
                         <form class="form-inline" role="form">
                             <div class="pull-right">
-                                <div class="input-group">
+                                <div class="input-group input-group-sm">
                                     <label class="sr-only" for="search">Search</label>
-                                    <input type="text" class="search form-control" id="search-keyword" placeholder="">
+                                    <input type="text" class="search form-control" id="search-keyword" placeholder="" style="border-radius:3px 0 0 3px;">
 
                                     <div class="input-group-btn">
-                                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="border-radius:0;">
                                             <span class="caret"></span>
                                         </button>
                                         <%= type_filters %>
@@ -28,11 +28,11 @@
                 </div>
 
                 <div class="content-inner table-responsive">
-                    <table id="account-list" class="table table-bordered table-hover">
+                    <table id="account-list" class="table-condensed table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th class="sortable sort-name"><i class="fa fa-sort"></i> Account Name</th>
-                                <th class="sortable sort-type"><i class="fa fa-sort"></i> Type</th>
+                                <th class="sortable sort-name cursor-pointer"><i class="fa fa-sort"></i> Account Name</th>
+                                <th class="sortable sort-type cursor-pointer"><i class="fa fa-sort"></i> Type</th>
                                 <th>Website</th>
                                 <th class="width-110">Phone</th>
                                 <th class="width-110">Action</th>
@@ -42,7 +42,7 @@
                     </table>
                     
                     <div class="clearfix">
-                        <div class="styled-select pull-left">
+                        <div class="styled-select pull-left margin-top-10 margin-bottom-0 margin-left-0 margin-right-0 display-items" style="display:none;">
                             <select class="form-control width-100" id="perpage" name="perpage">
                                 <option value="15">15 rows</option>
                                 <option value="25">25 rows</option>
