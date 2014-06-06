@@ -11,6 +11,7 @@ define([
 	'collections/purchaseorder/DestinationCollection',
 	'collections/product/ProductCollection',
 	'models/purchaseorder/PurchaseOrderModel',
+	'models/file/FileModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderViewTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderViewProductItemTemplate.html',
@@ -29,6 +30,7 @@ define([
 			DestinationCollection,
 			ProductCollection,
 			PurchaseOrderModel,
+			FileModel,
 			contentTemplate,
 			purchaseOrderAddTemplate,
 			productItemTemplate,
@@ -188,6 +190,8 @@ define([
 					totalprice: thisObj.addCommaToNumber(totalprice),
 					ishold: (parseInt(product.ishold) == 1)? 'Yes' : 'No',
 					rfv: product.rfv,
+					file_id: product.upload[0].file_id,
+					file_name: product.upload[0].files[0].name,
 				};
 				
 				if(thisObj.isBid)
@@ -200,6 +204,18 @@ define([
 		
 		events:{
 			'click #go-to-previous-page': 'goToPreviousPage',
+			'click .attach-pdf': 'showPDF',
+		},
+		
+		showPDF: function (ev) {
+			console.log('showPDF');
+			this.model = new FileModel({id:$(ev.currentTarget).attr('data-id')});
+			this.model.on('change', function() {
+				
+			});
+			this.model.runFetch();
+			
+			return false;
 		},
 	});
 

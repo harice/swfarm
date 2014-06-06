@@ -16,9 +16,12 @@ define([
 						//Global.getGlobalVars().app_router.navigate(Const.URL.PO, {trigger: true});
 						Backbone.history.history.back();
 					}
+					console.log('success');
+					window.location = response;
 				},
 				error: function(model, response, options) {
-					
+					console.log('error');
+					window.location = response;
 				},
 				headers: thisObj.getAuth(),
 			});
