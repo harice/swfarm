@@ -27,7 +27,7 @@ require.config({
         jqueryselect: 'libs/jquery.select2/select2.min',
         icheck: 'libs/jquery.icheck/icheck.min',
         maskedinput: 'libs/jquery.maskedinput/jquery.maskedinput',
-        throbber: 'libs/jquery.throbber/jquery.throbber.min',
+        throbber: 'libs/jquery.throbber/jquery.throbber',
 
 		templates: '../templates'
 	},

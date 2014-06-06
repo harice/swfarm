@@ -22,7 +22,7 @@
 	var defaultOptions = {
 			ajax: true,
 			delay: 0,
-			image: "../img/throbber.gif",
+			image: "throbber.gif",
 			parent: "",
 			wrap: ""
 		};
@@ -47,7 +47,8 @@
 			window.clearTimeout(jparent.data("throbber_timeout"));
 			jparent.data("throbber_timeout", window.setTimeout(function() {
 				// Create throbber
-				var throbber = $('<img src="'+options.image+'" class="throbber" />');
+				// var throbber = $('<img src="'+options.image+'" class="throbber" />');
+                var throbber = $('<i class="fa fa-refresh fa-spin"></i>');
 				if (options.ajax) {
 					throbber.addClass("throbber_ajax");
 				}
@@ -60,7 +61,8 @@
 				} else {
 					// Show attached throbber
 					jparent
-						.children().hide().end()
+						// .children().hide().end()
+                        .children().end()
 						.append(throbber);
 				}
 				if (options.wrap!="") {

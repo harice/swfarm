@@ -510,8 +510,10 @@ define([
 			
 			this.resetSelect($('#truckerAccount_id'));
 			this.resetSelect($('#trucker_id'));
+            this.showFieldThrobber('#truckerAccount_id');
 			this.truckerAccountCollection.getTruckerAccountsByAccountType(accountTypeId);
 			this.toggleTruckingRate(accountTypeId);
+            this.hideFieldThrobber();
 			
 			if(contactId != null)
 				this.fetchTruckerContacts(accountId, contactId);
@@ -526,8 +528,10 @@ define([
 				this.selectedTruckerContactId = contactId;
 		
 			this.resetSelect($('#trucker_id'));
+            this.showFieldThrobber('#trucker_id');
 			if(accountId != '')
 				this.truckerContactCollection.getContactsByAccountId(accountId);
+            this.hideFieldThrobber();
 		},
 		
 		onChangeTrailer: function (ev) {
@@ -539,8 +543,10 @@ define([
 				this.selectedTrailerId = trailerId;
 				
 			this.resetSelect($('#trailer_id'));
+            this.showFieldThrobber('#trailer_id');
 			if(accountId != '')
 				this.trailerCollection.getTrailerByAccountId(accountId);
+            this.hideFieldThrobber();
 		},
 		
 		onChangeOriginLoader: function (ev) {
@@ -552,8 +558,10 @@ define([
 				this.selectedOriginLoaderContactId = contactId;
 		
 			this.resetSelect($('#originloader_id'));
+            this.showFieldThrobber('#originloader_id');
 			if(accountId != '')
 				this.originLoaderContactCollection.getContactsByAccountId(accountId);
+            this.hideFieldThrobber();
 		},
 		
 		onChangeDestinationLoader: function (ev) {
@@ -565,8 +573,10 @@ define([
 				this.selectedDestinationLoaderContactId = contactId;
 			
 			this.resetSelect($('#destinationloader_id'));
+            this.showFieldThrobber('#destinationloader_id');
 			if(accountId != '')
 				this.destinationLoaderContactCollection.getContactsByAccountId(accountId);
+            this.hideFieldThrobber();
 		},
 		
 		resetSelect: function (select) {
