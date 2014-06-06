@@ -348,8 +348,13 @@ class OrderRepository implements OrderRepositoryInterface {
 
     private function linkUploadFilesToProductOrder($uploadedfile, $productorderid){
         $oldFileUploaded = Upload::where('entityname', '=', 'productorder')->where('entity_id', '=', $productorderid)->first();
-        if($oldFileUploaded){
-            if($uploadedfile != $oldFileUploaded->file_id){ //new file to be uploaded but there is old file already uploaded
+        
+        if($oldFileUploaded){ //if has existing file uploaded
+            if($uploadedfile == ""){ //pass empty value, need to delete existing file
+                if($oldFileUploaded != null) {
+                    $oldFileUploaded->delete();
+                }
+            } else if($uploadedfile != $oldFileUploaded->file_id){ //new file to be uploaded but there is old file already uploaded
                 $oldFileUploaded->delete();
 
                 $upload = new Upload;
@@ -362,16 +367,18 @@ class OrderRepository implements OrderRepositoryInterface {
                 $file->issave = 1;
                 $file->save();
             }
-        } else { //upload file for the first time
-            $upload = new Upload;
-            $upload->file_id = $uploadedfile;
-            $upload->entityname = 'productorder';
-            $upload->entity_id = $productorderid;
-            $upload->save();
-            // var_dump($upload);
-            $file = Files::find($uploadedfile);
-            $file->issave = 1;
-            $file->save();
+        } else { 
+            if($uploadedfile != ""){ //pass empty value
+                $upload = new Upload;
+                $upload->file_id = $uploadedfile;
+                $upload->entityname = 'productorder';
+                $upload->entity_id = $productorderid;
+                $upload->save();
+                // var_dump($upload);
+                $file = Files::find($uploadedfile);
+                $file->issave = 1;
+                $file->save();    
+            }
         }
 
     }
