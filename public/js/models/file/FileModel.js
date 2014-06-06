@@ -17,11 +17,13 @@ define([
 						Backbone.history.history.back();
 					}
 					console.log('success');
-					window.location = response;
+					//window.location = response;
+					window.open(response, '_blank');
 				},
 				error: function(model, response, options) {
 					console.log('error');
-					window.location = response;
+					//window.location = response;
+					window.open(response, '_blank');
 				},
 				headers: thisObj.getAuth(),
 			});
