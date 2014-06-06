@@ -21,7 +21,7 @@ class CreateUploadTable extends Migration {
             $table->integer('entity_id')->unsigned();
 			$table->timestamps();
             
-            $table->foreign('file_id')->references('id')->on('file');
+            $table->foreign('file_id')->references('id')->on('file')->onDelete('cascade');
 		});
 	}
 

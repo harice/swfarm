@@ -39,4 +39,9 @@ class Upload extends BaseModel {
     {
         return $this->belongsTo('ProductOrder','entity_id', 'id');
     }
+
+    public function delete(){
+        $this->files()->delete();
+        return parent::delete();
+    }
 }

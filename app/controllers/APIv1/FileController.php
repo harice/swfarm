@@ -78,10 +78,9 @@ class FileController extends BaseController {
   //       return Response::json($response);
 	}
 
-	// public function displayFile(){
-	// 	$response = $this->repo->uploadFile( Input::get('fileid') );
- //        return Response::json($response);
-	// }
+	public function filesCleanUp(){
+		$this->repo->filesCleanUp();
+	}
 
 
 }
