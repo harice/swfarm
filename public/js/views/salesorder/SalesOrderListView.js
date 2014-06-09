@@ -105,6 +105,7 @@ define([
 		
 		render: function(){
 			this.cancellingReasonCollection.getModels();
+			Backbone.View.prototype.refreshTitle('Sales Order','list');
 		},
 		
 		displaySO: function () {

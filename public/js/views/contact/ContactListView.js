@@ -32,6 +32,7 @@ define([
 		render: function(){
 			this.displayContact();
 			this.renderList(1);
+			Backbone.View.prototype.refreshTitle('Contacts','list');
 		},
 		
 		displayContact: function () {
