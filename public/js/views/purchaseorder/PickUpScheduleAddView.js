@@ -128,6 +128,7 @@ define([
 			this.truckerAccountCollection = new AccountCollection();
 			this.truckerAccountCollection.on('sync', function() {
 				thisObj.generateTruckerDropdown();
+				thisObj.hideFieldThrobber();
 			});
 			this.truckerAccountCollection.on('error', function(collection, response, options) {
 				//this.off('error');
@@ -513,7 +514,6 @@ define([
             this.showFieldThrobber('#truckerAccount_id');
 			this.truckerAccountCollection.getTruckerAccountsByAccountType(accountTypeId);
 			this.toggleTruckingRate(accountTypeId);
-            this.hideFieldThrobber();
 			
 			if(contactId != null)
 				this.fetchTruckerContacts(accountId, contactId);

@@ -608,6 +608,7 @@ define([
 		
 		uploadFile: function (data) {
 			this.disableCloseButton('modal-attach-pdf');
+			this.showFieldThrobber('#truckerAccount_id');
 			
 			var thisObj = this;
 			var fileModel = new FileModel(data);
@@ -619,6 +620,7 @@ define([
 						console.log(response);
 						thisObj.generatePDFIcon(data);
 						thisObj.enableCloseButton('modal-attach-pdf');
+						thisObj.hideFieldThrobber();
 					},
 					error: function (model, response, options) {
 						thisObj.enableCloseButton('modal-attach-pdf');
@@ -626,6 +628,7 @@ define([
 							validate.showErrors(response.responseJSON);
 						else
 							thisObj.displayMessage(response);
+						thisObj.hideFieldThrobber();
 					},
 					headers: fileModel.getAuth(),
 				}
