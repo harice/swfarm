@@ -105,7 +105,7 @@ class OrderRepository implements OrderRepositoryInterface {
             array_walk($response['productorder'], function(&$productorder) {
                 array_walk($productorder['upload'], function (&$upload){
                     array_walk($upload['files'], function (&$files){
-                        $userEmail = Request::header('php-auth-user');
+                        $userEmail = Auth::user()->email;
                         $userPassword = Request::header('php-auth-pw');
                         $files['auth'] = base64_encode($files['id'].','.$userEmail.','.$userPassword);
                     });
