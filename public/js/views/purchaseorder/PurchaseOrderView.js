@@ -194,10 +194,11 @@ define([
 					//file_name: product.upload[0].files[0].name,
 				};
 				
-				if(typeof product.upload != 'undefined' && product.upload.length > 0)
+				if(typeof product.upload != 'undefined' && product.upload.length > 0) {
 					variables['file_id'] = product.upload[0].file_id;
-				if(typeof product.upload[0].files != 'undefined' && product.upload[0].files > 0)
-					variables['file_name'] = product.upload[0].files[0].name;
+					if(typeof product.upload[0].files != 'undefined' && product.upload[0].files > 0)
+						variables['file_name'] = product.upload[0].files[0].name;
+				}
 				
 				if(thisObj.isBid)
 					variables['is_bid'] = true;
