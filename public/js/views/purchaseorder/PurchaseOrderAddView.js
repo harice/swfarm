@@ -557,7 +557,7 @@ define([
 		},
 		
 		attachPDF: function (ev) {
-			var field = $(ev.target).closest('td').find('.uploadedfile');
+			var field = $(ev.currentTarget).closest('td').find('.uploadedfile');
 			this.$el.find('#pdf-field').val(field.attr('name'));
 			
 			var clone = this.options.fileFileClone.clone(true);
@@ -573,19 +573,28 @@ define([
 				this.$el.find('#pdf-icon-cont').show();
 				this.$el.find('#pdf-filename').text(field.attr('data-filename'));
 				this.$el.find('#pdf-filename').attr('data-id', field.val());
+				
+				this.$el.find('#previous-upload').val(field.attr('data-filename'));
+				this.$el.find('#previous-upload').attr('data-id', field.val());
 			}
 			
+			this.$el.find('#upload-error').hide();
 			this.showConfirmationWindow('modal-attach-pdf');
 			return false;
 		},
 		
 		readFile: function (ev) {
+			this.$el.find('#upload-error').hide();
+			
 			var thisObj = this;
+			var file = ev.target.files[0];
 			
-			var file = ev.target.files[0]; console.log(file);
-			
-			if(file.type == Const.MIMETYPE.PDF) {
-			
+			if(file.type != Const.MIMETYPE.PDF) {
+				var clone = this.options.fileFileClone.clone(true);
+				this.$el.find('#pdf-file').replaceWith(clone);
+				this.$el.find('#upload-error').text('only upload a PDF file').show();
+			}
+			else {
 				var reader = new FileReader();
 				reader.onload = function (event) {
 					console.log('onload');
@@ -599,10 +608,6 @@ define([
 					});
 				};
 				reader.readAsDataURL(file);
-			}
-			else {
-				var clone = this.options.fileFileClone.clone(true);
-				this.$el.find("#pdf-file").replaceWith(clone);
 			}
 		},
 		
@@ -641,6 +646,9 @@ define([
 			this.$el.find('#pdf-filename').text(data.name);
 			this.$el.find('#pdf-filename').attr('data-id', data.id);
 			
+			this.$el.find('#previous-upload').val(data.name);
+			this.$el.find('#previous-upload').attr('data-id', data.id);
+			
 			this.$el.find('#upload-field-cont').hide();
 			this.$el.find('#pdf-icon-cont').show();
 		},
@@ -657,11 +665,10 @@ define([
 		},
 		
 		undoRemove: function () {
-			var fieldName = this.$el.find('#pdf-field').val();
-			var field = this.$el.find('[name="'+fieldName+'"]');
+			var field = this.$el.find('#previous-upload');
 			
-			this.$el.find('#pdf-filename').text(field.attr('data-filename'));
-			this.$el.find('#pdf-filename').attr(field.val());
+			this.$el.find('#pdf-filename').text(field.val());
+			this.$el.find('#pdf-filename').attr(field.attr('data-id'));
 			
 			this.$el.find('#upload-field-cont').hide();
 			this.$el.find('#pdf-icon-cont').show();

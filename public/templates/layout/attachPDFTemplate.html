@@ -12,9 +12,13 @@
 					<div class="row">
 						<div class="col-sm-10 col-sm-offset-1">
 							<div id="upload-field-cont" style="display:none;">
-								<input type="file" id="pdf-file" class="pdf-file" name="pdf-file"><span class="field-throbber throbber_wrap" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span><a id="undo-remove" href="#">undo remove</a>
+								<input type="file" id="pdf-file" class="pdf-file" name="pdf-file">
+								<span class="field-throbber throbber_wrap" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
+								<a id="undo-remove" href="#">undo remove</a>
+								<span id="upload-error" style="display:none;">error here!!!</span>
 							</div>
 							<div id="pdf-icon-cont">
+								<input type="hidden" id="previous-upload" name="previous-upload" data-id="" value="" />
 								<img class="pdf-icon-small" src="/images/pdf-icon-small.png" />
 								<span id="pdf-filename" data-id="">filename.pdf</span> <a id="remove-pdf-filename" href="#">remove</a>
 							</div>
