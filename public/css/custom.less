@@ -184,76 +184,80 @@ ul.autocomplete {
     }
 }
 
-.styled-select select {
-    -webkit-appearance: none;  /*Removes default chrome and safari style*/
-    -moz-appearance: none; /* Removes Default Firefox style*/
-    background: url('select2.png') no-repeat #fff;  /*Adds background-image*/
-    background-position: 272px 0;  /*Position of the background-image*/
-    text-indent: 0.01px; /* Removes default arrow from firefox*/
-    text-overflow: "";  /*Removes default arrow from firefox*/
-    width: 304px;
-    outline: 0 none;
-    // font-size: 14px;
-    // color: #555;
-    // color: rgba(37,37,37,1);
-    text-shadow: 0 0 0 #555;
-    border: 1px solid #ccc;
-    // height: 34px;
-    height: 30px;
-    padding: 6px 8px;
-    vertical-align: middle;
+.styled-select {
+    position: relative;
 
-    option {
-        background: #fff;
-        height: 34px;
+    select {
+        -webkit-appearance: none;  /*Removes default chrome and safari style*/
+        -moz-appearance: none; /* Removes Default Firefox style*/
+        background: url('select2.png') no-repeat #fff;  /*Adds background-image*/
+        background-position: 272px 0;  /*Position of the background-image*/
+        text-indent: 0.01px; /* Removes default arrow from firefox*/
+        text-overflow: "";  /*Removes default arrow from firefox*/
+        width: 304px;
+        outline: 0 none;
+        // font-size: 14px;
+        // color: #555;
+        // color: rgba(37,37,37,1);
+        text-shadow: 0 0 0 #555;
+        border: 1px solid #ccc;
+        // height: 34px;
+        height: 30px;
         padding: 6px 8px;
-        -webkit-appearance: button;
-        
-        &:hover,
-        &:focus {
-            background-color: #19B698;
-            color: #555;
+        vertical-align: middle;
+
+        option {
+            background: #fff;
+            height: 34px;
+            padding: 6px 8px;
+            -webkit-appearance: button;
+
+            &:hover,
+            &:focus {
+                background-color: #19B698;
+                color: #555;
+            }
         }
-    }
 
-    &.width-60 {
-        width:60px;
-        background-position: 24px 0;
-    }
+        &.width-60 {
+            width:60px;
+            background-position: 24px 0;
+        }
 
-    &.width-64 {
-        width:64px;
-        background-position: 34px 0;
-    }
+        &.width-64 {
+            width:64px;
+            background-position: 34px 0;
+        }
 
-    &.width-70 {
-        width:70px;
-        background-position: 34px 0;
-    }
+        &.width-70 {
+            width:70px;
+            background-position: 34px 0;
+        }
 
-    &.width-80 {
-        width:80px;
-        background-position: 47px -3px;
-    }
+        &.width-80 {
+            width:80px;
+            background-position: 47px -3px;
+        }
 
-    &.width-100 {
-        width:100px;
-        background-position: 68px -3px;
-    }
+        &.width-100 {
+            width:100px;
+            background-position: 68px -3px;
+        }
 
-    &.width-160 {
-        width:160px;
-        background-position: 126px 0;
-    }
+        &.width-160 {
+            width:160px;
+            background-position: 126px 0;
+        }
 
-    &.width-180 {
-        width:180px;
-        background-position: 147px -3px;
-    }
+        &.width-180 {
+            width:180px;
+            background-position: 147px -3px;
+        }
 
-    &.width-200 {
-        width:200px;
-        background-position: 167px -3px;
+        &.width-200 {
+            width:200px;
+            background-position: 167px -3px;
+        }
     }
 }
 
@@ -307,4 +311,57 @@ ul.autocomplete {
 
 .ui-tooltip {
 	z-index:99 !important;
+}
+
+/***start upload pdf window ***/
+.pdf-icon-small {
+	padding:5px;
+}
+
+#pdf-filename {
+	padding-left:5px;
+}
+
+#remove-pdf-filename {
+	padding-left:10px;
+}
+
+.no-attachment {
+	color:#555555 !important;
+}
+/***end upload pdf window ***/
+
+.backdrop {
+    background-color: #000000;
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 1040;
+    opacity: 0.5;
+}
+
+.lightbox {
+    bottom: 0;
+    display: block;
+    left: 0;
+    outline: 0 none;
+    overflow-x: auto;
+    overflow-y: scroll;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 1050;
+}
+
+.lightbox-inner {
+    margin: 200px auto;
+    width: 32px;
+}
+
+.field-throbber {
+    position: absolute;
+    left: 205px;
+    top: 4px;
 }

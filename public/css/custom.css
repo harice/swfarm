@@ -232,6 +232,9 @@ ul.autocomplete li.active a {
   background-color: #19B698;
   color: #fff;
 }
+.styled-select {
+  position: relative;
+}
 .styled-select select {
   -webkit-appearance: none;
   /*Removes default chrome and safari style*/
@@ -373,4 +376,49 @@ ul.autocomplete li.active a {
 }
 .ui-tooltip {
   z-index: 99 !important;
+}
+/***start upload pdf window ***/
+.pdf-icon-small {
+  padding: 5px;
+}
+#pdf-filename {
+  padding-left: 5px;
+}
+#remove-pdf-filename {
+  padding-left: 10px;
+}
+.no-attachment {
+  color: #555555 !important;
+}
+/***end upload pdf window ***/
+.backdrop {
+  background-color: #000000;
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1040;
+  opacity: 0.5;
+}
+.lightbox {
+  bottom: 0;
+  display: block;
+  left: 0;
+  outline: 0 none;
+  overflow-x: auto;
+  overflow-y: scroll;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1050;
+}
+.lightbox-inner {
+  margin: 200px auto;
+  width: 32px;
+}
+.field-throbber {
+  position: absolute;
+  left: 205px;
+  top: 4px;
 }

@@ -15,5 +15,12 @@
 		<input class="form-control ishold" type="text" value="<%= ishold %>" readonly>
 	</td>
 	<td><input class="form-control text-right number rfv" type="text" value="<%= rfv %>" readonly></td>
+	<td>
+		<% if (typeof file_id !== "undefined") { %>
+			<a class="attach-pdf" title="<%= file_name %>" data-id="<%= file_id %>" href="#"><i class="fa fa-book"></i></a>
+		<% } else { %>
+			<i class="fa fa-book"></i>
+		<% } %>
+	</td>
 	<% } %>
 </tr>
