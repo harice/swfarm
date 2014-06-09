@@ -22,6 +22,8 @@ define([
 			this.collection.on('sync', function() {
 				if(thisObj.subContainerExist())
 					thisObj.displayList();
+                
+                thisObj.throbberHide();
 			});
 			
 			this.collection.on('error', function(collection, response, options) {
@@ -31,6 +33,10 @@ define([
 		
 		render: function(){
 			this.displayContact();
+            this.throbberShow({
+                parent: '.throbber-inner',
+                wrap: '<div class="lightbox"><div class="lightbox-inner"></div></div>'
+            });
 			this.renderList(1);
 		},
 		

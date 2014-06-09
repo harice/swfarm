@@ -13,7 +13,7 @@ define([
 			_.bindAll(this,'profileMenuHandler');
 		},
 		
-		render: function(){
+		render: function(title,desc){
 			var innerTemplateVariables = {
 
 				'logout_url'	: '#/'+Const.URL.LOGOUT,
@@ -25,7 +25,9 @@ define([
 				'token'			: Session.get('token'),
 				'permission'	: Session.get('permission'),
 				'su'			: Session.get('su'),
-				'full_name'		: Session.get('firstname') + ' ' + Session.get('lastname'),
+				'full_name'		: Session.get('firstname'),
+				'h1_title'		: title,
+				'h1_small'		: desc
 			};
 
 			var compiledTemplate = _.template(headerTemplate, innerTemplateVariables);

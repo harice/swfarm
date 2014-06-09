@@ -9,6 +9,7 @@ define([
 	'views/layout/SideMenuView',
 	'global',
 	'constant',
+    'throbber'
 ], function(Backbone, Bootstrap, Router, AppView, SessionModel, HeaderView, SideMenuView, Global, Const){
 	var initialize = function(){
 		
@@ -21,6 +22,11 @@ define([
 			this.unbind();
 			this.undelegateEvents();
 		};
+
+		Backbone.View.prototype.refreshTitle = function(title,desc) {
+			this.headerView = new HeaderView();
+			this.headerView.render(title,desc);
+		}
 
 		Backbone.View.prototype.refreshHeader = function () {
 			this.headerView = new HeaderView();
@@ -40,7 +46,7 @@ define([
 			$('#cl-wrapper').addClass('login-container');
 			$('.cl-sidebar').hide();
 			$('#pcont').hide();
-		}
+		};
 
 		Backbone.View.prototype.showContent = function () {
 			if($('body').hasClass('texture')) {
@@ -53,7 +59,7 @@ define([
 				$('.cl-sidebar').removeAttr('style');
 				$('#pcont').removeAttr('style');
 			}
-		}
+		};
 		
 		Backbone.View.prototype.displayGrowl = function (message, type) {
 			if(type == null)
@@ -103,6 +109,26 @@ define([
 					alert(message);
 			}
 		};
+        
+        Backbone.View.prototype.throbberShow = function (options) {
+            $('body').append('<div class="throbber-wrapper"><div class="backdrop"></div><div class="throbber-inner"></div></div>');
+            $.throbberShow(options);
+        };
+        
+        Backbone.View.prototype.throbberHide = function () {
+            $('.throbber-wrapper').remove();
+            $.throbberHide();
+        };
+        
+        Backbone.View.prototype.showFieldThrobber = function (element) {
+            $(element).parent().children('.throbber_wrap').show();
+        };
+        
+        Backbone.View.prototype.hideFieldThrobber = function () {
+            $('.throbber_wrap').each(function () {
+                $(this).hide();
+            });
+        };
 		
 		Backbone.View.prototype.nlToBr = function (str) {
 			var replaced = '';
