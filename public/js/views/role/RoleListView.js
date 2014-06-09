@@ -32,6 +32,7 @@ define([
 		render: function(){
 			this.displayRole();
 			this.renderList(1);
+			Backbone.View.prototype.refreshTitle('Roles','list');
 		},
 		
 		displayRole: function () {

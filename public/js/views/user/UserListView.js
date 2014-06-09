@@ -32,6 +32,7 @@ define([
 		render: function(){
 			this.displayUser();
 			this.renderList(1);
+			Backbone.View.prototype.refreshTitle('Users','list');
 		},
 		
 		displayUser: function () {
