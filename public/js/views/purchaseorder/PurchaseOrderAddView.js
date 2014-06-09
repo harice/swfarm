@@ -608,7 +608,7 @@ define([
 		
 		uploadFile: function (data) {
 			this.disableCloseButton('modal-attach-pdf');
-			this.showFieldThrobber('#truckerAccount_id');
+			this.showFieldThrobber('#pdf-file');
 			
 			var thisObj = this;
 			var fileModel = new FileModel(data);

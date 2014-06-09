@@ -137,6 +137,7 @@ define([
 			this.trailerCollection = new TrailerCollection();
 			this.trailerCollection.on('sync', function() {
 				thisObj.generateTrailers();
+                thisObj.hideFieldThrobber();
 			});
 			this.trailerCollection.on('error', function(collection, response, options) {
 				//this.off('error');
@@ -145,6 +146,7 @@ define([
 			this.destinationLoaderContactCollection = new ContactCollection();
 			this.destinationLoaderContactCollection.on('sync', function() {
 				thisObj.generateDestinationLoaderAccountContacts();
+                thisObj.hideFieldThrobber();
 			});
 			this.destinationLoaderContactCollection.on('error', function(collection, response, options) {
 				//this.off('error');
@@ -153,6 +155,7 @@ define([
 			this.originLoaderContactCollection = new ContactCollection();
 			this.originLoaderContactCollection.on('sync', function() {
 				thisObj.generateOriginLoaderAccountContacts();
+                thisObj.hideFieldThrobber();
 			});
 			this.originLoaderContactCollection.on('error', function(collection, response, options) {
 				//this.off('error');
@@ -161,6 +164,7 @@ define([
 			this.truckerContactCollection = new ContactCollection();
 			this.truckerContactCollection.on('sync', function() {
 				thisObj.generateTruckerAccountContacts();
+                thisObj.hideFieldThrobber();
 			});
 			this.truckerContactCollection.on('error', function(collection, response, options) {
 				//this.off('error');
@@ -531,7 +535,6 @@ define([
             this.showFieldThrobber('#trucker_id');
 			if(accountId != '')
 				this.truckerContactCollection.getContactsByAccountId(accountId);
-            this.hideFieldThrobber();
 		},
 		
 		onChangeTrailer: function (ev) {
@@ -546,7 +549,6 @@ define([
             this.showFieldThrobber('#trailer_id');
 			if(accountId != '')
 				this.trailerCollection.getTrailerByAccountId(accountId);
-            this.hideFieldThrobber();
 		},
 		
 		onChangeOriginLoader: function (ev) {
@@ -561,7 +563,6 @@ define([
             this.showFieldThrobber('#originloader_id');
 			if(accountId != '')
 				this.originLoaderContactCollection.getContactsByAccountId(accountId);
-            this.hideFieldThrobber();
 		},
 		
 		onChangeDestinationLoader: function (ev) {
@@ -576,7 +577,6 @@ define([
             this.showFieldThrobber('#destinationloader_id');
 			if(accountId != '')
 				this.destinationLoaderContactCollection.getContactsByAccountId(accountId);
-            this.hideFieldThrobber();
 		},
 		
 		resetSelect: function (select) {

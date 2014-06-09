@@ -24,7 +24,6 @@ define([
 		getTruckerAccountsByAccountType: function (id) {
 			this.url = '/apiv1/account/accountsByType?accountTypeId='+id;
 			this.getModels();
-            $('.field_throbber').hide();
 		},
 		
 		getTrailerAccounts: function () {

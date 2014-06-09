@@ -278,6 +278,16 @@ define([
 		setCaretToPos: function (input, pos) {
 			this.setSelectionRange(input, pos, pos);
 		},
+                
+        showFieldThrobber: function (element) {
+            $(element).parent().children('.throbber_wrap').show();
+        },
+        
+        hideFieldThrobber: function () {
+            $('.throbber_wrap').each(function () {
+                $(this).hide();
+            });
+        }
 	});
 
 	return AppView;
