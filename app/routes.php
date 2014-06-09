@@ -17,6 +17,7 @@ Route::group(array('prefix' => 'apiv1'), function()
 {
     Route::get('verifyAccount', 'APIv1\UsersController@verifyAccount');
     Route::get('file/filesCleanUp', 'APIv1\FileController@filesCleanUp');
+    Route::get('file/{data}', 'APIv1\FileController@show');
     
 });
 
