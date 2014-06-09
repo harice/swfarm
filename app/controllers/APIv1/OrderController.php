@@ -116,5 +116,10 @@ class OrderController extends BaseController {
     	return Response::json($model);
     }
 
+    public function uploadFileToProductOrder(){
+        $model = $this->repo->uploadFile(Input::all(), 'productorder');
+        return Response::json($model);
+    }
+
 
 }
