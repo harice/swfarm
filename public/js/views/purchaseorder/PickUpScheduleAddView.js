@@ -128,7 +128,7 @@ define([
 			this.truckerAccountCollection = new AccountCollection();
 			this.truckerAccountCollection.on('sync', function() {
 				thisObj.generateTruckerDropdown();
-                thisObj.hideFieldThrobber();
+				thisObj.hideFieldThrobber();
 			});
 			this.truckerAccountCollection.on('error', function(collection, response, options) {
 				//this.off('error');

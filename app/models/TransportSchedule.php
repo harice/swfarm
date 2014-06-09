@@ -28,6 +28,7 @@ class TransportSchedule extends Eloquent {
         'truckingrate',
         'trailerrate',
         'type',
+        'status_id',
         'created_at',
         'updated_at'
     );
