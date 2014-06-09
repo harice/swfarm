@@ -12,7 +12,7 @@ class StatusTableSeeder extends Seeder {
             ),
             array(
                 'id' => 2,
-                'name' => 'Close',
+                'name' => 'Closed',
                 'class' => 'default'
             ),
             array(
@@ -38,7 +38,7 @@ class StatusTableSeeder extends Seeder {
             array(
                 'id' => 7,
                 'name' => 'Testing',
-                'class' => 'warning'
+                'class' => 'primary'
             ),
         );
         
