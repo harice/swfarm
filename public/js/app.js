@@ -119,16 +119,6 @@ define([
             $('.throbber-wrapper').remove();
             $.throbberHide();
         };
-        
-        Backbone.View.prototype.showFieldThrobber = function (element) {
-            $(element).parent().children('.throbber_wrap').show();
-        };
-        
-        Backbone.View.prototype.hideFieldThrobber = function () {
-            $('.throbber_wrap').each(function () {
-                $(this).hide();
-            });
-        };
 		
 		Backbone.View.prototype.nlToBr = function (str) {
 			var replaced = '';
