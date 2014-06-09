@@ -74,7 +74,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           //$data['truckingrate'] = isset($data['truckingrate']) ? $data['truckingrate'] : Config::get('constants.GLOBAL_PER_LIST');
           $data['type'] = isset($data['type']) ? $data['type'] : 1;
           // $data['trailerrate'] = isset($data['trailerrate']) ? $data['trailerrate'] : null;
-          
+          $data['status_id'] = 1; //open status - default
           $trailerPercentageRateArr = Settings::where('name','=','trailer_percentage_rate')->first(array('value'))->toArray();
           $trailerPercentageRate = floatval($trailerPercentageRateArr['value'])/100; //get trailer perentage and convert it to decimal
           $data['trailerrate'] = $trailerPercentageRate * $data['truckingrate'];
@@ -278,6 +278,32 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
                   })->get(array('id','account_id','number','rate'));
     
     return $trailerList->toArray();
+  }
+
+  public function closeTransportSchedule($transportSchedule_id){
+    // $transportSchedule = TransportSchedule::whereHas('weightticket', function ($query) use (){
+      
+    // });
+
+
+    //   $weightTicket = WeightTicket::where('transportSchedule_id', '=', $transportSchedule_id)->first();
+      
+    //   if($weightTicket->status_id == 1){ //check if Open
+    //         $weightTicket->status_id = 2;
+    //         $weightTicket->save();
+
+    //         return array(
+    //             'error' => false,
+    //             'message' => 'Weight ticket closed.');
+    //   } else if($weightTicket->status_id == 2) {//if close
+    //         return array(
+    //             'error' => false,
+    //             'message' => 'Weight ticket is already closed.');
+    //   } else {
+    //         return array(
+    //             'error' => false,
+    //             'message' => 'Weight ticket cannot be cancel if the status is not open or pending.');
+    //   }       
   }
 
   private function displayLastQuery(){
