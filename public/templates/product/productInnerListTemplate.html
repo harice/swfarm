@@ -1,15 +1,21 @@
 <% if (!_.isEmpty(products)) { %>
   <% _.each(products, function(product){ %>
     <tr>
-      <td><%= product.get("name") %></td>
+      <td valign="top"><%= product.get("name") %></td>
       <td style="word-wrap: break-word;"><%= product.get("description") %></td>
-      <td>
-        <a href="<%= product_edit_url %>/<%= product.get("id") %>" class="btn btn-info btn-xs">
-			<span class="glyphicon glyphicon-pencil"></span>
+      <td valign="top">
+        <a href="<%= product_edit_url %>/<%= product.get("id") %>" class="text-primary">
+		      <span class="fa-stack">
+            <i class="fa fa-square fa-stack-2x"></i>
+            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+          </span>
         </a>
-        <a href="#" class="btn btn-danger btn-xs delete-product" data-id="<%= product.get("id") %>">
-			<span class="glyphicon glyphicon-remove"></span>
-		</a>
+        <a href="#" class="text-danger delete-product" data-id="<%= product.get("id") %>">
+    			<span class="fa-stack">
+            <i class="fa fa-square fa-stack-2x"></i>
+            <i class="fa fa-times fa-stack-1x fa-inverse"></i>
+          </span>
+    		</a>
       </td>
     </tr>
   <% }); %>

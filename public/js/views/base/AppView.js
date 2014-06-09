@@ -283,10 +283,14 @@ define([
             $(element).parent().children('.throbber_wrap').show();
         },
         
-        hideFieldThrobber: function () {
-            $('.throbber_wrap').each(function () {
-                $(this).hide();
-            });
+        hideFieldThrobber: function (element) {
+            if (typeof element !== "undefined") {
+                $(element).parent().children('.throbber_wrap').show();
+            } else {
+                $('.throbber_wrap').each(function () {
+                    $(this).hide();
+                });
+            }
         }
 	});
 

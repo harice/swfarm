@@ -38,6 +38,7 @@ define([
                 wrap: '<div class="lightbox"><div class="lightbox-inner"></div></div>'
             });
 			this.renderList(1);
+			Backbone.View.prototype.refreshTitle('Contacts','list');
 		},
 		
 		displayContact: function () {
