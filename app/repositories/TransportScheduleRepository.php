@@ -281,29 +281,29 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
   }
 
   public function closeTransportSchedule($transportSchedule_id){
-    $transportSchedule = TransportSchedule::whereHas('weightticket', function ($query) use (){
+    // $transportSchedule = TransportSchedule::whereHas('weightticket', function ($query) use (){
       
-    });
+    // });
 
 
-      $weightTicket = WeightTicket::where('transportSchedule_id', '=', $transportSchedule_id)->first();
+    //   $weightTicket = WeightTicket::where('transportSchedule_id', '=', $transportSchedule_id)->first();
       
-      if($weightTicket->status_id == 1){ //check if Open
-            $weightTicket->status_id = 2;
-            $weightTicket->save();
+    //   if($weightTicket->status_id == 1){ //check if Open
+    //         $weightTicket->status_id = 2;
+    //         $weightTicket->save();
 
-            return array(
-                'error' => false,
-                'message' => 'Weight ticket closed.');
-      } else if($weightTicket->status_id == 2) {//if close
-            return array(
-                'error' => false,
-                'message' => 'Weight ticket is already closed.');
-      } else {
-            return array(
-                'error' => false,
-                'message' => 'Weight ticket cannot be cancel if the status is not open or pending.');
-      }       
+    //         return array(
+    //             'error' => false,
+    //             'message' => 'Weight ticket closed.');
+    //   } else if($weightTicket->status_id == 2) {//if close
+    //         return array(
+    //             'error' => false,
+    //             'message' => 'Weight ticket is already closed.');
+    //   } else {
+    //         return array(
+    //             'error' => false,
+    //             'message' => 'Weight ticket cannot be cancel if the status is not open or pending.');
+    //   }       
   }
 
   private function displayLastQuery(){
