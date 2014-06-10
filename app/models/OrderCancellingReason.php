@@ -35,7 +35,7 @@ class OrderCancellingReason extends BaseModel {
     }
 
     public function reason(){
-        return $this->hasOne('reason', 'id','reason');
+        return $this->hasOne('Reason', 'id','reason');
     }
 
 }

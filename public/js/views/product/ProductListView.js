@@ -32,6 +32,7 @@ define([
 		render: function(){
 			this.displayProduct();
 			this.renderList(1);
+			Backbone.View.prototype.refreshTitle('Products','list');
 		},
 		
 		displayProduct: function () {
