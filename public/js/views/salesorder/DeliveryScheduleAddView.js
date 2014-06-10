@@ -129,6 +129,7 @@ define([
 			this.truckerAccountCollection = new AccountCollection();
 			this.truckerAccountCollection.on('sync', function() {
 				thisObj.generateTruckerDropdown();
+                thisObj.hideFieldThrobber();
 			});
 			this.truckerAccountCollection.on('error', function(collection, response, options) {
 				//this.off('error');
@@ -137,6 +138,7 @@ define([
 			this.trailerCollection = new TrailerCollection();
 			this.trailerCollection.on('sync', function() {
 				thisObj.generateTrailers();
+                thisObj.hideFieldThrobber();
 			});
 			this.trailerCollection.on('error', function(collection, response, options) {
 				//this.off('error');
@@ -145,6 +147,7 @@ define([
 			this.destinationLoaderContactCollection = new ContactCollection();
 			this.destinationLoaderContactCollection.on('sync', function() {
 				thisObj.generateDestinationLoaderAccountContacts();
+                thisObj.hideFieldThrobber();
 			});
 			this.destinationLoaderContactCollection.on('error', function(collection, response, options) {
 				//this.off('error');
@@ -153,6 +156,7 @@ define([
 			this.originLoaderContactCollection = new ContactCollection();
 			this.originLoaderContactCollection.on('sync', function() {
 				thisObj.generateOriginLoaderAccountContacts();
+                thisObj.hideFieldThrobber();
 			});
 			this.originLoaderContactCollection.on('error', function(collection, response, options) {
 				//this.off('error');
@@ -161,6 +165,7 @@ define([
 			this.truckerContactCollection = new ContactCollection();
 			this.truckerContactCollection.on('sync', function() {
 				thisObj.generateTruckerAccountContacts();
+                thisObj.hideFieldThrobber();
 			});
 			this.truckerContactCollection.on('error', function(collection, response, options) {
 				//this.off('error');
@@ -513,6 +518,7 @@ define([
 			
 			this.resetSelect($('#truckerAccount_id'));
 			this.resetSelect($('#trucker_id'));
+            this.showFieldThrobber('#truckerAccount_id');
 			this.truckerAccountCollection.getTruckerAccountsByAccountType(accountTypeId);
 			this.toggleTruckingRate(accountTypeId);
 			
@@ -530,6 +536,7 @@ define([
 		
 			this.resetSelect($('#trucker_id'));
 			if(accountId != '')
+                this.showFieldThrobber('#trucker_id');
 				this.truckerContactCollection.getContactsByAccountId(accountId);
 		},
 		
@@ -543,6 +550,7 @@ define([
 				
 			this.resetSelect($('#trailer_id'));
 			if(accountId != '')
+                this.showFieldThrobber('#trailer_id');
 				this.trailerCollection.getTrailerByAccountId(accountId);
 		},
 		
@@ -556,6 +564,7 @@ define([
 		
 			this.resetSelect($('#originloader_id'));
 			if(accountId != '')
+                this.showFieldThrobber('#originloader_id');
 				this.originLoaderContactCollection.getContactsByAccountId(accountId);
 		},
 		
@@ -569,6 +578,7 @@ define([
 			
 			this.resetSelect($('#destinationloader_id'));
 			if(accountId != '')
+                this.showFieldThrobber('#destinationloader_id');
 				this.destinationLoaderContactCollection.getContactsByAccountId(accountId);
 		},
 		
