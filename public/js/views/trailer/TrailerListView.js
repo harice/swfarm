@@ -39,6 +39,7 @@ define([
 		render: function(){
 			this.displayStackLocation();
 			this.renderList(1);
+			Backbone.View.prototype.refreshTitle('Trailer','list');
 		},
 		
 		displayStackLocation: function () {

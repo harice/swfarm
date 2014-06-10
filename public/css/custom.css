@@ -57,6 +57,13 @@ label.error {
 .navbar-default .navbar-nav > li > a {
   font-size: 12px;
 }
+.not-nav > li > h1 {
+  font-size: 18px;
+  margin: 12px 0;
+}
+.not-nav > li > h1 small {
+  font-size: 75%;
+}
 .cl-mcont {
   padding: 5px 20px;
 }
@@ -104,6 +111,17 @@ label.error {
 .cursor-pointer {
   cursor: pointer;
 }
+h3,
+.h3 {
+  font-size: 16px;
+}
+label {
+  font-size: 12px;
+  font-weight: normal;
+}
+.form-group {
+  margin-bottom: 5px;
+}
 .padding-top-0 {
   padding-top: 0;
 }
@@ -115,6 +133,9 @@ label.error {
 }
 .margin-top-0 {
   margin-top: 0;
+}
+.margin-top-5 {
+  margin-top: 5px;
 }
 .margin-top-10 {
   margin-top: 10px;

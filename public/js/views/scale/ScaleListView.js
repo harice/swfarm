@@ -43,6 +43,7 @@ define([
 		render: function(){
 			this.displayScale();
 			this.renderList(1);
+			Backbone.View.prototype.refreshTitle('Scale','list');
 		},
 		
 		displayScale: function () {
