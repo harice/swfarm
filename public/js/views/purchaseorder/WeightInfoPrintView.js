@@ -33,7 +33,7 @@ define([
 			Const
 ){
 
-	var WeightInfoEditView = WeightInfoAddView.extend({
+	var WeightInfoPrintView = WeightInfoAddView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
@@ -144,5 +144,5 @@ define([
 		},
 	});
 
-	return WeightInfoEditView;
+	return WeightInfoPrintView;
 });
