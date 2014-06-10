@@ -532,8 +532,8 @@ define([
 				this.selectedTruckerContactId = contactId;
 		
 			this.resetSelect($('#trucker_id'));
-            this.showFieldThrobber('#trucker_id');
 			if(accountId != '')
+                this.showFieldThrobber('#trucker_id');
 				this.truckerContactCollection.getContactsByAccountId(accountId);
 		},
 		
@@ -546,8 +546,8 @@ define([
 				this.selectedTrailerId = trailerId;
 				
 			this.resetSelect($('#trailer_id'));
-            this.showFieldThrobber('#trailer_id');
 			if(accountId != '')
+                this.showFieldThrobber('#trailer_id');
 				this.trailerCollection.getTrailerByAccountId(accountId);
 		},
 		
@@ -560,8 +560,8 @@ define([
 				this.selectedOriginLoaderContactId = contactId;
 		
 			this.resetSelect($('#originloader_id'));
-            this.showFieldThrobber('#originloader_id');
 			if(accountId != '')
+                this.showFieldThrobber('#originloader_id');
 				this.originLoaderContactCollection.getContactsByAccountId(accountId);
 		},
 		
@@ -574,8 +574,8 @@ define([
 				this.selectedDestinationLoaderContactId = contactId;
 			
 			this.resetSelect($('#destinationloader_id'));
-            this.showFieldThrobber('#destinationloader_id');
 			if(accountId != '')
+                this.showFieldThrobber('#destinationloader_id');
 				this.destinationLoaderContactCollection.getContactsByAccountId(accountId);
 		},
 		
