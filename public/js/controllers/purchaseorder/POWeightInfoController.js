@@ -2,9 +2,10 @@ define([
 	'backbone',
 	'views/purchaseorder/WeightInfoAddView',
 	'views/purchaseorder/WeightInfoEditView',
+    'views/purchaseorder/WeightInfoPrintView',
 	'views/purchaseorder/WeightInfoView',
 	'constant',
-], function(Backbone, WeightInfoAddView, WeightInfoEditView, WeightInfoView, Const){
+], function(Backbone, WeightInfoAddView, WeightInfoEditView, WeightInfoPrintView, WeightInfoView, Const){
 	
 	function POWeightInfoController () {	
 		
@@ -21,6 +22,11 @@ define([
 					if((poId != null && this.IsInt(poId)) && (schedId != null && this.IsInt(schedId))) 
 						return this.edit(poId, schedId);
 					break;
+                    
+                case Const.CRUD.PRINT:
+                    if((poId != null && this.IsInt(poId)) && (schedId != null && this.IsInt(schedId))) 
+						return this.print(poId, schedId);
+					break;
 				
 				default:
 					if((poId != null && this.IsInt(poId)) && (schedId != null && this.IsInt(schedId)))
@@ -35,6 +41,10 @@ define([
 		
 		this.edit = function (poId, schedId) {
 			return new WeightInfoEditView({'poId':poId, 'schedId':schedId});
+		};
+        
+        this.print = function (poId, schedId) {
+			return new WeightInfoPrintView({'poId':poId, 'schedId':schedId});
 		};
 		
 		this.view = function (poId, schedId) {
