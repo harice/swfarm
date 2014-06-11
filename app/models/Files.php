@@ -27,6 +27,13 @@ class Files extends BaseModel {
         'size', 
         'content'
     );
+
+    protected $visible = array(
+        'id',
+        'name', 
+        'type', 
+        'size'
+    );
     
     /**
      * Define the relationship with the weightinfo table

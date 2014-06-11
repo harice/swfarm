@@ -22,8 +22,6 @@ define([
 			this.collection.on('sync', function() {
 				if(thisObj.subContainerExist())
 					thisObj.displayList();
-                
-                thisObj.throbberHide();
 			});
 			
 			this.collection.on('error', function(collection, response, options) {

@@ -32,8 +32,8 @@ class ProductOrder extends Eloquent {
         'description' => 'max:250',
         'stacknumber' => 'required',
         'tons' => 'required',
-        'bales' => 'required',
-        'rfv' => 'required_if:ishold,1'
+        'bales' => 'required'
+        // ,'rfv' => 'required_if:ishold,1'
     );
     
     public function salesOrder()

@@ -99,7 +99,19 @@ class OrderRepository implements OrderRepositoryInterface {
         $order = $order->where('ordertype', '=', $orderType)->find($id);
 
         if($order){
-          $response = $order->toArray();
+            $response = array();
+            $response = $order->toArray();
+            //adding new index in file array for passing auth
+            array_walk($response['productorder'], function(&$productorder) {
+                array_walk($productorder['upload'], function (&$upload){
+                    array_walk($upload['files'], function (&$files){
+                        $userEmail = Auth::user()->email;
+                        $userPassword = Request::header('php-auth-pw');
+                        $files['auth'] = base64_encode($files['id'].','.$userEmail.','.$userPassword);
+                    });
+                });
+            });
+          
         } else {
           $response = array(
             'error' => true,
@@ -374,7 +386,7 @@ class OrderRepository implements OrderRepositoryInterface {
                 $upload->entityname = 'productorder';
                 $upload->entity_id = $productorderid;
                 $upload->save();
-                // var_dump($upload);
+                
                 $file = Files::find($uploadedfile);
                 $file->issave = 1;
                 $file->save();    

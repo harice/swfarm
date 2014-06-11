@@ -195,10 +195,11 @@ define([
 				};
 				
 				if(typeof product.upload != 'undefined' && product.upload.length > 0) {
-					variables['file_id'] = product.upload[0].file_id;
-					if(typeof product.upload[0].files != 'undefined' && product.upload[0].files > 0)
-						variables['file_name'] = product.upload[0].files[0].name;
+					if(typeof product.upload[0].files != 'undefined' && product.upload[0].files.length > 0)
+						variables['file_path'] = '/apiv1/file/'+product.upload[0].files[0].auth;
 				}
+				
+				console.log(variables);
 				
 				if(thisObj.isBid)
 					variables['is_bid'] = true;
@@ -210,7 +211,7 @@ define([
 		
 		events:{
 			'click #go-to-previous-page': 'goToPreviousPage',
-			'click .attach-pdf': 'showPDF',
+			//'click .attach-pdf': 'showPDF',
 		},
 		
 		showPDF: function (ev) {

@@ -38,12 +38,40 @@ class FileRepository implements FileRepositoryInterface {
  
     }
 
-    public function displayFile($fileId){
+    public function displayFile($dataEncrypted){
+        $data = base64_decode($dataEncrypted);
+        
+        $data = explode(',', $data);
+        if(count($data) != 3){
+            return array(
+              'error' => true,
+              'message' => 'You are not allowed here.'
+              );
+        }
+        
+        $fileId = $data[0];
+        $email = $data[1];
+        $password = $data[2];
+
+        $auth = Auth::once(
+                array(  'email' => $email, 
+                        'password' => $password,
+                        'status' => true
+                    )
+                );
+
+        if(!$auth){
+            return array(
+              'error' => true,
+              'message' => 'Unauthorized.'
+              );
+        }
+      
         $file = Files::where('issave', '=', 1)->where('id', '=', $fileId)->first();
         if($file){
-            // header('Content-Type: '.$file->type);
-            return $file->content;
-            //readfile($file->content);
+            header('Content-Type: '.$file->type);
+            // return $file->content;
+            readfile($file->content);
         } else {
             return array(
               'error' => true,
