@@ -103,6 +103,7 @@ define(function () {
 			'ADD': 'add',
 			'EDIT': 'edit',
 			'DELETE': 'delete',
+            'PRINT': 'print',
 		},
 		'CONTAINER': {
 			'MAIN':'cl-mcont',
