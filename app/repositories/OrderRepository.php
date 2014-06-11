@@ -152,7 +152,7 @@ class OrderRepository implements OrderRepositoryInterface {
 
             $productResult = $this->addProductOrder($order->id, $data['products']);
             
-            if($productResult['hasHoldProduct']){
+            if($productResult['hasHoldProduct'] && $data['ordertype'] == 1){ //for purchase order only
                 $order->status_id = 7; //Testing status
                 $order->save();
             }
@@ -205,7 +205,7 @@ class OrderRepository implements OrderRepositoryInterface {
                 $this->deleteProductOrder($id, null);
             }
 
-            if($productResult != null){
+            if($productResult != null && $data['ordertype'] == 1){ //for purchase order only
                 if($productResult['hasHoldProduct']){
                     $order->status_id = 7; //Testing status
                 } else {
@@ -337,11 +337,18 @@ class OrderRepository implements OrderRepositoryInterface {
 
         foreach ($products as $product) {
             $product['order_id'] = $order_id;
-            if(isset($product['ishold'])){
-                if(!$result['hasHoldProduct'] && $product['ishold'] == 1){ //has hold product for testing
-                    $result['hasHoldProduct'] = true;
+            
+            //set order status to testing when it has product hold with no rfv and file set
+            if(isset($product['ishold']) && $result['hasHoldProduct'] == false){
+                if($product['ishold'] == 1){
+                    if(isset($product['rfv']) && isset($product['uploadedfile'])) {
+                        if($product['rfv'] == '' || $product['uploadedfile'] == ''){
+                            $result['hasHoldProduct'] = true;
+                        }
+                    } 
                 }
             }
+           
             $this->validate($product, 'ProductOrder');
             if(isset($product['id']))
                 $productorder = ProductOrder::find($product['id']);
