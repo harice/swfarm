@@ -33,10 +33,6 @@ define([
 		
 		render: function(){
 			this.displayContact();
-            this.throbberShow({
-                parent: '.throbber-inner',
-                wrap: '<div class="lightbox"><div class="lightbox-inner"></div></div>'
-            });
 			this.renderList(1);
 			Backbone.View.prototype.refreshTitle('Contacts','list');
 		},

@@ -43,6 +43,7 @@ define([
 		
 		render: function(){
             this.displayForm();
+            Backbone.View.prototype.refreshTitle('Contacts','add');
 		},
 		
 		displayForm: function(){
