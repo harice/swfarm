@@ -247,6 +247,10 @@ define([
 				this.$el.find('#pickup-scales').val(this.selectedPickupScaleId).change();
 				this.selectedPickupScaleId = null;
 			}
+			else {
+				if(this.pickupScaleCollection.models.length == 1)
+					this.$el.find('#pickup-scales').val(this.pickupScaleCollection.models[0].get('id')).change();
+			}
 		},
 		
 		generateDropoffScales: function () {
@@ -259,6 +263,10 @@ define([
 			if(typeof this.selectedDropoffScaleId != 'undefined' && this.selectedDropoffScaleId != null) {
 				this.$el.find('#dropoff-scales').val(this.selectedDropoffScaleId);
 				this.selectedDropoffScaleId = null;
+			}
+			else {
+				if(this.dropoffScaleCollection.models.length == 1)
+					this.$el.find('#dropoff-scales').val(this.dropoffScaleCollection.models[0].get('id')).change();
 			}
 		},
 		

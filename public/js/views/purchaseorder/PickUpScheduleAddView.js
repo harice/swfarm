@@ -307,6 +307,7 @@ define([
 		
 		generateTruckerDropdown: function () {
 			var dropDown = '';
+			
 			_.each(this.truckerAccountCollection.models, function (model) {
 				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
@@ -315,6 +316,10 @@ define([
 			if(typeof this.selectedTruckerAccountId != 'undefined' && this.selectedTruckerAccountId != null) {
 				this.$el.find('#truckerAccount_id').val(this.selectedTruckerAccountId);
 				this.selectedTruckerAccountId = null;
+			}
+			else {
+				if(this.truckerAccountCollection.models.length == 1)
+					this.$el.find('#truckerAccount_id').val(this.truckerAccountCollection.models[0].get('id')).change();
 			}
 		},
 		
@@ -329,6 +334,10 @@ define([
 				this.$el.find('#trucker_id').val(this.selectedTruckerContactId);
 				this.selectedTruckerContactId = null;
 			}
+			else {
+				if(this.truckerContactCollection.models.length == 1)
+					this.$el.find('#trucker_id').val(this.truckerContactCollection.models[0].get('id')).change();
+			}
 		},
 		
 		generateTrailers: function () {
@@ -341,6 +350,10 @@ define([
 			if(typeof this.selectedTrailerId != 'undefined' && this.selectedTrailerId != null) {
 				this.$el.find('#trailer_id').val(this.selectedTrailerId);
 				this.selectedTrailerId = null;
+			}
+			else {
+				if(this.trailerCollection.models.length == 1)
+					this.$el.find('#trailer_id').val(this.trailerCollection.models[0].get('id')).change();
 			}
 		},
 		
@@ -355,6 +368,10 @@ define([
 				this.$el.find('#originloader_id').val(this.selectedOriginLoaderContactId);
 				this.selectedOriginLoaderContactId = null;
 			}
+			else {
+				if(this.originLoaderContactCollection.models.length == 1)
+					this.$el.find('#originloader_id').val(this.originLoaderContactCollection.models[0].get('id')).change();
+			}
 		},
 		
 		generateDestinationLoaderAccountContacts: function () {
@@ -367,6 +384,10 @@ define([
 			if(typeof this.selectedDestinationLoaderContactId != 'undefined' && this.selectedDestinationLoaderContactId != null) {
 				this.$el.find('#destinationloader_id').val(this.selectedDestinationLoaderContactId);
 				this.selectedDestinationLoaderContactId = null;
+			}
+			else {
+				if(this.destinationLoaderContactCollection.models.length == 1)
+					this.$el.find('#destinationloader_id').val(this.destinationLoaderContactCollection.models[0].get('id')).change();
 			}
 		},
 		
@@ -516,7 +537,10 @@ define([
 			this.resetSelect($('#truckerAccount_id'));
 			this.resetSelect($('#trucker_id'));
             this.showFieldThrobber('#truckerAccount_id');
-			this.truckerAccountCollection.getTruckerAccountsByAccountType(accountTypeId);
+			
+			if(accountTypeId != '')
+				this.truckerAccountCollection.getTruckerAccountsByAccountType(accountTypeId);
+			
 			this.toggleTruckingRate(accountTypeId);
 			
 			if(contactId != null)
