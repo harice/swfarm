@@ -32,8 +32,7 @@ class Files extends BaseModel {
         'id',
         'name', 
         'type', 
-        'size', 
-        'content'
+        'size'
     );
     
     /**

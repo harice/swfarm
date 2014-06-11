@@ -20,7 +20,7 @@ class CreateWeightticketscaleTable extends Migration {
 			$table->integer('scaleAccount_id')->unsigned();
 			$table->integer('scale_id')->unsigned();
 			$table->decimal('fee', 8, 2);
-			$table->decimal('bales', 8, 2);
+			$table->integer('bales');
 			$table->decimal('gross', 8, 4);
 			$table->decimal('tare', 8, 4);
 			$table->smallInteger('type'); //1 for pickup, 2 for dropoff
