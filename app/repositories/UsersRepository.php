@@ -74,8 +74,8 @@ class UsersRepository implements UsersRepositoryInterface {
       'lastname' => 'required|between:2,50',
       'emp_no' => 'required|unique:users',
       'suffix' => 'between:2,6',
-      'phone' => 'between:12,12',
-      'mobile' => 'between:12,12',
+      'phone' => 'between:14,14',
+      'mobile' => 'between:14,14',
       'position' => 'between:2,50',
       'profileimg' => 'image|max:3000'
     );
@@ -138,8 +138,8 @@ class UsersRepository implements UsersRepositoryInterface {
       'lastname' => 'required|between:2,50',
       'emp_no' => 'required|unique:users,emp_no,'.$id,
       'suffix' => 'between:2,6',
-      'phone' => 'between:12,12',
-      'mobile' => 'between:12,12',
+      'phone' => 'between:14,14',
+      'mobile' => 'between:14,14',
       'position' => 'between:2,50'
     );
 
@@ -380,8 +380,8 @@ class UsersRepository implements UsersRepositoryInterface {
       'lastname' => 'required|between:2,50',
       'emp_no' => 'required|unique:users,emp_no,'.$id,
       'suffix' => 'between:2,6',
-      'phone' => 'between:12,12',
-      'mobile' => 'between:12,12',
+      'phone' => 'between:14,14',
+      'mobile' => 'between:14,14',
       'position' => 'between:2,50'
     );
 
