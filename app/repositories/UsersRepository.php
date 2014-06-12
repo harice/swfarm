@@ -128,7 +128,6 @@ class UsersRepository implements UsersRepositoryInterface {
 
   public function update($id, $data){
     $rules = array(
-      'username' => 'required|unique:users,username,'.$id,
       //'password' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|between:8,15|confirmed',
       //'password_confirmation' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|between:8,15',
       'email' => 'required|email|unique:users,email,'.$id,
@@ -146,8 +145,7 @@ class UsersRepository implements UsersRepositoryInterface {
 
     if($user) {
       $this->validate($data, $rules);
-
-      $user->username = $data['username'];
+      
       //$user->password = $data['password'];
       $user->email = $data['email'];
       $user->firstname = $data['firstname'];
