@@ -59,7 +59,7 @@ define([
 		
 		render: function(){
 			this.accountExtrasModel.runFetch();
-			Backbone.View.prototype.refreshTitle('Account','add');
+			Backbone.View.prototype.refreshTitle('Accounts','add');
 		},
 		
 		displayForm: function () {

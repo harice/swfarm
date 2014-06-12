@@ -43,6 +43,7 @@ define([
 		producerAutoCompleteView: null,
 		
 		initialize: function() {
+			Backbone.View.prototype.refreshTitle('Bid','add');
 			this.initSubContainer();
 			var thisObj = this;
 			this.isBid = true;

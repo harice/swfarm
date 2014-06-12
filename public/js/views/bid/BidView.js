@@ -30,6 +30,7 @@ define([
 		
 		render: function(){
 			this.model.runFetch();
+			Backbone.View.prototype.refreshTitle('Bid','view');
 		},
 		
 		displayForm: function () {

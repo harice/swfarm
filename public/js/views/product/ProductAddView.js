@@ -22,6 +22,7 @@ define([
 		
 		render: function(){
             this.displayForm();
+            Backbone.View.prototype.refreshTitle('Products','add');
 		},
 		
 		displayForm: function(){

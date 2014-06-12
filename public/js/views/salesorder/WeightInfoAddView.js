@@ -110,6 +110,7 @@ define([
 		
 		render: function(){
 			this.salesOrderModel.runFetch();
+			Backbone.View.prototype.refreshTitle('Weight Info','add');
 		},
 		
 		displayForm: function () {

@@ -69,6 +69,7 @@ define([
 		
 		render: function(){
 			this.purchaseOrderModel.runFetch();
+			Backbone.View.prototype.refreshTitle('Weight Info','print');
 		},
 		
 		displayForm: function () {

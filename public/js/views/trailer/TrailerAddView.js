@@ -46,6 +46,7 @@ define([
 		
 		render: function(){
 			this.trailerAccountCollection.getTrailerAccounts();
+			Backbone.View.prototype.refreshTitle('Trailer','add');
 		},
 		
 		displayForm: function () {

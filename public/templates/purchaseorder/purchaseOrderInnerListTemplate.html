@@ -18,6 +18,11 @@
 			<label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label>
 		</td>
 		<td>
+			<div class="progress">
+				<div style="width: 73%" class="progress-bar progress-bar-<%= po.get("status").class %>">73%</div>
+			</div>
+		</td>
+		<td>
             <% if (!_.isNull(po.get("location"))) { %>
                 <%= po.get("location").location %>
             <% } %>

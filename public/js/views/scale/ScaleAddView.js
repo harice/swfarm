@@ -46,6 +46,7 @@ define([
 		
 		render: function(){
 			this.scalerAccountCollection.getScalerAccounts();
+			Backbone.View.prototype.refreshTitle('Scale','add');
 		},
 		
 		displayForm: function () {

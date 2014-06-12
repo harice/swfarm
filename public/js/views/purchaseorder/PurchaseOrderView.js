@@ -109,6 +109,7 @@ define([
 		
 		render: function(){
 			this.model.runFetch();
+			Backbone.View.prototype.refreshTitle('Purchase Order','view');
 		},
 		
 		displayForm: function () {

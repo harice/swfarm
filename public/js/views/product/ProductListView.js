@@ -48,7 +48,8 @@ define([
 			
 			this.initConfirmationWindow('Are you sure you want to delete this product?',
 										'confirm-delete-product',
-										'Delete');
+										'Delete',
+										'Delete Product');
 		},
 		
 		displayList: function () {

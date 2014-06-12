@@ -204,8 +204,9 @@ define([
 			
 			this.initConfirmationWindowWithForm('Are you sure you want to cancel this PO?',
 										'confirm-cancel-po',
-										'Cancel Purchase Order',
-										form);
+										'Yes',
+										form,
+										'Cancel Purchase Order');
 										
 			var validate = $('#cancellationReasonForm').validate({
 				submitHandler: function(form) {

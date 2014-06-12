@@ -58,7 +58,8 @@ define([
 			
 			this.initConfirmationWindow('Are you sure you want to delete this Trailer?',
 										'confirm-delete-trailer',
-										'Delete');
+										'Delete',
+										'Delete Trailer');
 		},
 		
 		displayList: function () {

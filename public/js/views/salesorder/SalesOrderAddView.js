@@ -105,6 +105,7 @@ define([
 		
 		render: function(){
 			this.originCollection.getModels();
+			Backbone.View.prototype.refreshTitle('Sales Order','add');
 		},
 		
 		displayForm: function () {

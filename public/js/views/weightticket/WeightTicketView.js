@@ -50,6 +50,7 @@ define([
 		
 		render: function(){
 			this.model.runFetch();
+			Backbone.View.prototype.refreshTitle('Weight Ticket','view');
 		},
 		
 		displayWeightTicket: function () {

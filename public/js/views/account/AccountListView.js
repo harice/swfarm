@@ -59,7 +59,8 @@ define([
 			
 			this.initConfirmationWindow('Are you sure you want to delete this account?',
 										'confirm-delete-account',
-										'Delete');
+										'Delete',
+										'Delete Account');
 		},
 		
 		displayList: function () {
