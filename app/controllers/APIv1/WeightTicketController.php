@@ -81,5 +81,8 @@ class WeightTicketController extends BaseController {
         return Response::json($model);
 	}
 
+    public function mailWeightTicket($id) {
+        return $this->weightticket->mailWeightTicket($id, Input::all());
+    }
 
 }

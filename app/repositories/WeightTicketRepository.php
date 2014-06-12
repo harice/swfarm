@@ -217,5 +217,43 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         }       
     }
 
+    public function mailWeightTicket($id, $data)
+    {
+        try
+        {
+            // Contact
+            $contact_id = $data['contact_id'];
+            $contact = Contact::find($contact_id);
+
+            // Weight Ticket
+            $weight_ticket = WeightTicket::find($id);
+            
+            $data = array(
+                'name' => $contact['firtname'] .' ' .$contact['lastname'],
+                'body' => 'Here is the details of the weight ticket.'
+            );
+            
+            $header = array(
+                'recipient_name' => $contact['firtname'] .' ' .$contact['lastname'],
+                'recipient_email' => $contact['email']
+            );
+
+            $sent = Mail::send('emails.weightticket', $data, function($message) use ($header)
+            {
+                $message->to($header['recipient_email'], $header['recipient_name'])
+                        ->subject('Weight Ticket');
+            });
+            
+            if (!$sent) {
+                return 'Email was not sent.';
+            }
+
+            return 'Email has been sent to ' .$contact['firstname'] .' ' .$contact['lastname'] .'.';
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
+    }
     
 }
