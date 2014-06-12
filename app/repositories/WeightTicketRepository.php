@@ -217,38 +217,51 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         }       
     }
 
-    public function mailWeightTicket($id, $data)
+    public function mailWeightTicket($id, $recipients)
     {
         try
         {
-            // Contact
-            $contact_id = $data['contact_id'];
-            $contact = Contact::find($contact_id);
+            // Transport Schedule
+            $_weightticket = WeightTicket::find($id);
+            $transportSchedule_id = $_weightticket['transportSchedule_id'];
+            
+            $weightticket = WeightTicket::with('weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder.product')
+                            ->with('weightticketscale_dropoff.scalerAccount')
+                            ->with('weightticketscale_dropoff.scale')
+                            ->with('weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder.product')
+                            ->with('weightticketscale_pickup.scalerAccount')
+                            ->with('weightticketscale_pickup.scale')
+                            ->where('transportSchedule_id', '=', $transportSchedule_id)->first();
+            
+            foreach ($recipients as $recipient) {
+                $data = array(
+                    'name' => $recipient['name'],
+                    'body' => 'Please see details of the Weight Ticket below.',
+                    'weightticket' => $weightticket
+                );
+                
+                return View::make('emails.weightticket', $data);
+                
+                $header = array(
+                    'subject' => 'Weight Ticket',
+                    'recipient_name' => $recipient['name'],
+                    'recipient_email' => $recipient['email'],
+                    'sender_name' => '',
+                    'sender_email' => ''
+                );
 
-            // Weight Ticket
-            $weight_ticket = WeightTicket::find($id);
-            
-            $data = array(
-                'name' => $contact['firtname'] .' ' .$contact['lastname'],
-                'body' => 'Here is the details of the weight ticket.'
-            );
-            
-            $header = array(
-                'recipient_name' => $contact['firtname'] .' ' .$contact['lastname'],
-                'recipient_email' => $contact['email']
-            );
+                $sent = Mail::send('emails.weightticket', $data, function($message) use ($header)
+                {
+                    $message->to($header['recipient_email'], $header['recipient_name'])
+                            ->subject($header['subject']);
+                });
 
-            $sent = Mail::send('emails.weightticket', $data, function($message) use ($header)
-            {
-                $message->to($header['recipient_email'], $header['recipient_name'])
-                        ->subject('Weight Ticket');
-            });
-            
-            if (!$sent) {
-                return 'Email was not sent.';
+                if (!$sent) {
+                    return 'Email was not sent.';
+                }
             }
-
-            return 'Email has been sent to ' .$contact['firstname'] .' ' .$contact['lastname'] .'.';
+            
+            return 'Email has been sent.';
         }
         catch (Exception $e)
         {
