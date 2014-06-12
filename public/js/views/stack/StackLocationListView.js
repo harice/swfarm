@@ -57,7 +57,8 @@ define([
 			
 			this.initConfirmationWindow('Are you sure you want to delete this Stock Location?',
 										'confirm-delete-sl',
-										'Delete');
+										'Delete',
+										'Delete Stack Location');
 		},
 		
 		displayList: function () {

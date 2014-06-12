@@ -14,7 +14,8 @@ define([
 		},
 		
 		render: function(){
-			
+			Backbone.View.prototype.refreshTitle('Admin','dashboard');
+
 			var innerTemplateVariables = {
 				'user_url': '#/'+Const.URL.USER,
 				'role_url': '#/'+Const.URL.ROLE,

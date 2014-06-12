@@ -66,7 +66,6 @@ class UsersRepository implements UsersRepositoryInterface {
   public function store($data){
 
     $rules = array(
-      'username' => 'required|unique:users',
       //'password' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|between:8,15|confirmed',
       //'password_confirmation' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|between:8,15',
       'email' => 'required|email|unique:users',
@@ -83,7 +82,6 @@ class UsersRepository implements UsersRepositoryInterface {
   	$this->validate($data, $rules);
    
   	$user = new User;
-  	$user->username = $data['username'];
   	$user->email = $data['email'];
   	$user->firstname = $data['firstname'];
   	$user->lastname = $data['lastname'];
@@ -305,7 +303,7 @@ class UsersRepository implements UsersRepositoryInterface {
      
     // the data that will be passed into the mail view blade template
     $data = array(
-        'username' => $userObj->username,
+        'username' => $userObj->email,
         'password' => $password,
         'verifyUrl' => url('apiv1/verifyAccount?passkey='.urlencode($userObj->confirmcode))
     );

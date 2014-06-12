@@ -48,6 +48,8 @@ define([
 		},
 		
 		render: function(){
+			Backbone.View.prototype.refreshTitle('Users','add');
+
 			var thisObj = this;
 			
 			var innerTemplateVariables = {

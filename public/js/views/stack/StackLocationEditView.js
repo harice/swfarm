@@ -58,6 +58,7 @@ define([
 		
 		render: function(){
 			this.model.runFetch();
+			Backbone.View.prototype.refreshTitle('Stack Location','edit');
 		},
 		
 		supplyStackLocationData: function () {

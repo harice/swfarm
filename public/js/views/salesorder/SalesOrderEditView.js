@@ -110,6 +110,7 @@ define([
 		
 		render: function(){
 			this.model.runFetch();
+			Backbone.View.prototype.refreshTitle('Sales Order','edit');
 		},
 		
 		supplySOData: function () {

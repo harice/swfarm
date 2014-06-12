@@ -40,6 +40,7 @@ define([
 			this.displayAuditTrail();
 			this.collection.options.currentPage = 1;
 			this.collection.getModelsPerPage(this.collection.options.currentPage , Const.MAXITEMPERPAGE);
+			Backbone.View.prototype.refreshTitle('Audit Trail','list');
 		},
 		
 		displayAuditTrail: function () {

@@ -56,11 +56,12 @@ define([
 			return arrFormattedDate.join(separator);
 		},
 		
-		initConfirmationWindow: function (content, buttonId, buttonLabel) {
+		initConfirmationWindow: function (content, buttonId, buttonLabel, title) {
 			if($('.modal-alert-cont').find('#modal-confirm').length)
 				$('.modal-alert-cont').find('#modal-confirm').remove();
 			
 			var confirmTemplateVariables = {
+				confirm_title: title,
 				confirm_content: content,
 				confirm_button_id: buttonId,
 				confirm_button_label: buttonLabel,
@@ -70,11 +71,12 @@ define([
 			this.$el.find('.modal-alert-cont').append(confirmTemplate);
 		},
 		
-		initConfirmationWindowWithForm: function (content, buttonId, buttonLabel, contentForm) {
+		initConfirmationWindowWithForm: function (content, buttonId, buttonLabel, contentForm, title) {
 			if($('.modal-alert-cont').find('#modal-with-form-confirm').length)
 				$('.modal-alert-cont').find('#modal-with-form-confirm').remove();
 			
 			var confirmTemplateVariables = {
+				confirm_title: title,
 				confirm_content: content,
 				confirm_button_id: buttonId,
 				confirm_button_label: buttonLabel,

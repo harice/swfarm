@@ -60,6 +60,7 @@ define([
 		
 		render: function(){
 			this.model.runFetch();
+			Backbone.View.prototype.refreshTitle('Pickup Schedule','view');
 		},
 		
 		displayForm: function () {

@@ -92,7 +92,7 @@ Route::filter('auth.basic', function()
 Route::filter('basic', function()
 {
 	$auth = Auth::once(
-				array(  'username' => Request::header('php-auth-user'), 
+				array(  'email' => Request::header('php-auth-user'), 
 						'password' => Request::header('php-auth-pw'),
 						'status' => true
 					)

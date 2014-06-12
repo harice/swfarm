@@ -47,6 +47,7 @@ define([
 			var thisObj = this;
 			this.displayPermission();
 			this.collection.getAllModels();
+			Backbone.View.prototype.refreshTitle('Permissions','edit');
 		},
 		
 		displayPermission: function () {

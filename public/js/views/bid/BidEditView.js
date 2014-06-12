@@ -101,6 +101,7 @@ define([
 		
 		render: function(){
 			this.bidDestinationCollection.getModels();
+			Backbone.View.prototype.refreshTitle('Bid','edit');
 		},
 		
 		displayForm: function () {

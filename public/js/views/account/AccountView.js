@@ -25,6 +25,7 @@ define([
 		
 		render: function(){
 			this.model.runFetch();
+			Backbone.View.prototype.refreshTitle('Accounts','view');
 		},
 		
 		displayAccount: function () {

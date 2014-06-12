@@ -55,6 +55,7 @@ define([
 		
 		render: function(){
 			this.model.runFetch();
+			Backbone.View.prototype.refreshTitle('Delivery Schedule','list');
 		},
 		
 		displaySchedule: function () {

@@ -11,7 +11,6 @@ define([
             lastname: '',
 			email:'',
             emp_no: '',
-			username: '',
 			roles: '',
         },
 		runFetch: function () {

@@ -58,6 +58,7 @@ define([
 		
 		render: function(){
 			this.model.runFetch();
+			Backbone.View.prototype.refreshTitle('Trailer','edit');
 		},
 		
 		supplyTralerData: function () {

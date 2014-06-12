@@ -48,7 +48,8 @@ define([
 			
 			this.initConfirmationWindow('Are you sure you want to delete this contact?',
 										'confirm-delete-contact',
-										'Delete');
+										'Delete',
+										'Delete Contact');
 		},
 		
 		displayList: function () {

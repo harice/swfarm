@@ -46,6 +46,7 @@ define([
 		
 		render: function(){
 			this.productCollection.getAllModel();
+			Backbone.View.prototype.refreshTitle('Stack Location','add');
 		},
 		
 		displayForm: function () {

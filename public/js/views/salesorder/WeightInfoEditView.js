@@ -57,6 +57,7 @@ define([
 		
 		render: function(){
 			this.model.runFetch();
+			Backbone.View.prototype.refreshTitle('Weight Info','edit');
 		},
 		
 		supplyWeightInfoData: function () {
