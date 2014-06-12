@@ -472,11 +472,11 @@
                                                 <table>
                                                     <tr>
                                                         <td class="label">PO No.:</td>
-                                                        <td style="padding-left: 20px;">{{ $weightticket["weightTicketNumber"] }}</td>
+                                                        <td style="padding-left: 20px;">{{ $order_number }}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="label">Producer:</td>
-                                                        <td style="padding-left: 20px;">{{ $weightticket["weightTicketNumber"] }}</td>
+                                                        <td style="padding-left: 20px;">{{ $account_name }}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="label">Weight Ticket Number:</td>
@@ -498,18 +498,18 @@
                                         <tr>
                                             <td valign="top" class="bodyContent" mc:edit="body_content01">
                                                 <h3>Pickup</h3>
-                                                <table>
+                                                <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                                     <tr>
                                                         <td class="label">Scale:</td>
                                                         <td style="padding-left: 20px;">{{ $weightticket["weightticketscale_pickup"]["scaler_account"][0]["name"] }}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="label">Scale Name:</td>
-                                                        <td style="padding-left: 20px;">{{ $weightticket["weightticketscale_pickup"]["scaler"]["name"] }}</td>
+                                                        <td style="padding-left: 20px;">{{ $weightticket["weightticketscale_pickup"]["scale"]["name"] }}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="label">Scale Fee:</td>
-                                                        <td style="padding-left: 20px;">{{ $weightticket["weightticketscale_pickup"]["scaler"]["rate"] }}</td>
+                                                        <td style="padding-left: 20px;">{{ $weightticket["weightticketscale_pickup"]["scale"]["rate"] }}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="label">Bales:</td>
@@ -530,6 +530,33 @@
                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateBody">
                                         <tr>
                                             <td valign="top" class="bodyContent" mc:edit="body_content02">
+                                                <h4>Products</h4>
+                                                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 400px;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Stack No.</th>
+                                                            <th>Product</th>
+                                                            <th>Bales</th>
+                                                            <th>Lbs.</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                        @foreach ($weightticket["weightticketscale_pickup"]["weightticketproducts"] as $product)
+                                                            <td>{{ $product["transportscheduleproduct"]["productorder"]["stacknumber"] }}</td>
+                                                            <td>{{ $product["transportscheduleproduct"]["productorder"]["product"]["name"] }}</td>
+                                                            <td>{{ $product["bales"] }}</td>
+                                                            <td>{{ $product["pounds"] }}</td>
+                                                        @endforeach
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateBody">
+                                        <tr>
+                                            <td valign="top" class="bodyContent" mc:edit="body_content03">
                                                 <h3>Dropoff</h3>
                                                 <table>
                                                     <tr>
@@ -538,11 +565,11 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="label">Scale Name:</td>
-                                                        <td style="padding-left: 20px;">{{ $weightticket["weightticketscale_dropoff"]["scaler"]["name"] }}</td>
+                                                        <td style="padding-left: 20px;">{{ $weightticket["weightticketscale_dropoff"]["scale"]["name"] }}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="label">Scale Fee:</td>
-                                                        <td style="padding-left: 20px;">{{ $weightticket["weightticketscale_dropoff"]["scaler"]["rate"] }}</td>
+                                                        <td style="padding-left: 20px;">{{ $weightticket["weightticketscale_dropoff"]["scale"]["rate"] }}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="label">Bales:</td>
@@ -556,6 +583,33 @@
                                                         <td class="label">Tare:</td>
                                                         <td style="padding-left: 20px;">{{ $weightticket["weightticketscale_dropoff"]["tare"] }}</td>
                                                     </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateBody">
+                                        <tr>
+                                            <td valign="top" class="bodyContent" mc:edit="body_content04">
+                                                <h4>Products</h4>
+                                                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 400px;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Stack No.</th>
+                                                            <th>Product</th>
+                                                            <th>Bales</th>
+                                                            <th>Lbs.</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                        @foreach ($weightticket["weightticketscale_dropoff"]["weightticketproducts"] as $product)
+                                                            <td>{{ $product["transportscheduleproduct"]["productorder"]["stacknumber"] }}</td>
+                                                            <td>{{ $product["transportscheduleproduct"]["productorder"]["product"]["name"] }}</td>
+                                                            <td>{{ $product["bales"] }}</td>
+                                                            <td>{{ $product["pounds"] }}</td>
+                                                        @endforeach
+                                                        </tr>
+                                                    </tbody>
                                                 </table>
                                             </td>
                                         </tr>

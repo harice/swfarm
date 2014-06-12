@@ -225,6 +225,15 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             $_weightticket = WeightTicket::find($id);
             $transportSchedule_id = $_weightticket['transportSchedule_id'];
             
+            $transportSchedule = TransportSchedule::find($transportSchedule_id);
+            Log::debug($transportSchedule);
+            
+            $order = Order::find($transportSchedule["order_id"]);
+            Log::debug($order);
+            
+            $account = Account::find($order['account_id']);
+            Log::debug($account);
+            
             $weightticket = WeightTicket::with('weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder.product')
                             ->with('weightticketscale_dropoff.scalerAccount')
                             ->with('weightticketscale_dropoff.scale')
@@ -237,7 +246,9 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                 $data = array(
                     'name' => $recipient['name'],
                     'body' => 'Please see details of the Weight Ticket below.',
-                    'weightticket' => $weightticket
+                    'weightticket' => $weightticket,
+                    'order_number' => $order['order_number'],
+                    'account_name' => $account['name']
                 );
                 
                 return View::make('emails.weightticket', $data);
