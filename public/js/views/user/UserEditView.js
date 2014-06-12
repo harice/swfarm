@@ -57,6 +57,8 @@ define([
 		},
 		
 		displayUser: function() {
+			Backbone.View.prototype.refreshTitle('Users','edit');
+
 			var thisObj = this;
 			
 			var innerTemplateVariables = {
@@ -87,7 +89,6 @@ define([
 			this.$el.find('#emp_no').val(this.model.get('emp_no'));
 			this.$el.find('#phone').val(this.model.get('phone'));
 			this.$el.find('#mobile').val(this.model.get('mobile'));
-			this.$el.find('#username').val(this.model.get('username'));
 			
 			if(this.model.get('profileimg') != null && this.model.get('profileimg') != '') {
 				$('#profile-pic-preview img').attr('src', this.model.get('profileimg')+"?qwert="+(new Date().getTime())); 

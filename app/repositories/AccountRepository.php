@@ -68,7 +68,8 @@ class AccountRepository implements AccountRepositoryInterface {
 
   public function store($data){
     $rules = array(
-      'name' => 'required|unique:account',
+      //'name' => 'required|unique:account',
+      'name' => 'required',
       'accounttype' => 'required',
       'phone' => 'required|between:14,14'
     );
@@ -126,7 +127,8 @@ class AccountRepository implements AccountRepositoryInterface {
 
   public function update($id, $data){
     $rules = array(
-      'name' => 'required|unique:account,name,'.$id,
+      //'name' => 'required|unique:account,name,'.$id,
+      'name' => 'required',
       'accounttype' => 'required',
       'phone' => 'required|between:14,14',
     );

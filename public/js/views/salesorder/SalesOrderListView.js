@@ -212,8 +212,9 @@ define([
 			
 			this.initConfirmationWindowWithForm('Are you sure you want to cancel this SO?',
 										'confirm-cancel-so',
-										'Cancel Sales Order',
-										form);
+										'Yes',
+										form,
+										'Cancel Sales Order');
 										
 			var validate = $('#cancellationReasonForm').validate({
 				submitHandler: function(form) {

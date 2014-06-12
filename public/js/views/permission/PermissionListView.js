@@ -14,6 +14,7 @@ define([
 		
 		render: function(){
 			this.displayPermission();
+			Backbone.View.prototype.refreshTitle('Permissions','list');
 		},
 		
 		displayPermission: function () {

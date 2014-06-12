@@ -84,7 +84,7 @@ define([
           });
           
           login.fail(function(response,textStatus){
-              Backbone.View.prototype.displayGritter('Login failed. Either username or password is incorrect. ', 'danger');
+              Backbone.View.prototype.displayGritter('Login failed. Invalid Email Address and Password.', 'danger');
               Backbone.history.navigate('#/'+Const.URL.LOGIN, { trigger : true });
           });
       }

@@ -66,6 +66,7 @@ define([
 		
 		render: function(){
 			this.accountExtrasModel.runFetch();
+			Backbone.View.prototype.refreshTitle('Accounts','edit');
 		},
 		
 		supplyAccountData: function () {

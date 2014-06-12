@@ -18,6 +18,7 @@ define([
 		},
 		
 		render: function(){
+			Backbone.View.prototype.refreshTitle('Roles','add');
 			this.initSubContainer();
 			var thisObj = this;
 			

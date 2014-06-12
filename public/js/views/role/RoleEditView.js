@@ -27,6 +27,7 @@ define([
 		
 		render: function(){
 			this.model.runFetch();
+			Backbone.View.prototype.refreshTitle('Roles','edit');
 		},
 		
 		displayRole: function(roleModel) {
