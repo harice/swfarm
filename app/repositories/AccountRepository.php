@@ -76,7 +76,12 @@ class AccountRepository implements AccountRepositoryInterface {
 
     $this->validate($data, $rules);
 
-    DB::transaction(function() use ($data){
+    $result = DB::transaction(function() use ($data){
+
+      if(!$this->checkAccountNameExistAndAccountType($data['name'], $data['accounttype'])){ //account name with the same type exist
+          return array(
+              'name' => "Account name with the same type exist.");
+      }
 
       $account = new Account;
       $account->name = $data['name'];
@@ -118,6 +123,10 @@ class AccountRepository implements AccountRepositoryInterface {
 
     });
 
+    if(is_array($result)){
+      return Response::json($result, 500);
+    }
+
     return Response::json(array(
         'error' => false,
         'message' => Lang::get('messages.success.created', array('entity' => 'Account'))),
@@ -135,7 +144,14 @@ class AccountRepository implements AccountRepositoryInterface {
 
     $this->validate($data, $rules);
 
-    DB::transaction(function() use ($id, $data){
+    if(!$this->checkAccountNameExistAndAccountType($data['name'], $data['accounttype'], $id)){ //account name with the same type exist
+          return Response::json(array(
+              'name' => "Account name with the same type exist."), 500);
+    }
+
+    $result = DB::transaction(function() use ($id, $data){
+      
+
       $account = Account::find($id);
       $account->name = $data['name'];
       $account->website = isset($data['website']) ? $data['website'] : '';
@@ -522,6 +538,22 @@ class AccountRepository implements AccountRepositoryInterface {
     return Response::json(
         $truckerList->toArray(),
         200);
+  }
+
+  private function checkAccountNameExistAndAccountType($accountName, $accountType, $id = null){
+      if($id == null) {
+        $result = Account::where('name', 'like', $accountName)->where('accounttype', '=', $accountType)->count();
+        if($result > 0){ //account name with the same account type exist
+            return false;
+        } 
+     } else { //when update
+        $result = Account::where('name', 'like', $accountName)->where('accounttype', '=', $accountType)->where('id', '!=', $id)->count();
+        if($result == 1){ //account name with the same account type exist
+            return false;
+        }
+     }
+
+     return true;
   }
 
 }
