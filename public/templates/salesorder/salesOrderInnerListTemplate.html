@@ -15,6 +15,11 @@
 		</td>
 		<td><%= so.get("account").name %></td>
 		<td><label class="label label-<%= so.get("status").class %>"><%= so.get("status").name %></label></td>
+		<td>
+			<div class="progress">
+				<div style="width: 73%" class="progress-bar progress-bar-<%= so.get("status").class %>">73%</div>
+			</div>
+		</td>
 		<td><%= so.get("natureofsale").name %></td>
 		<td class="text-right">$ <%= so.get("totalPrice") %></td>
 		<td>

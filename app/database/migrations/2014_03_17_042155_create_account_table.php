@@ -16,7 +16,7 @@ class CreateAccountTable extends Migration {
 		{
 			$table->engine = 'InnoDB';
 			$table->increments('id');
-			$table->string('name')->unique();
+			$table->string('name');
 			$table->string('website')->nullable();
 			$table->string('description')->nullable();
 			$table->string('phone',20)->nullable();
