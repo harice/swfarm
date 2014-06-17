@@ -243,7 +243,6 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                             ->where('transportSchedule_id', '=', $transportSchedule_id)->first();
             
             foreach ($recipients as $recipient) {
-                Log::debug($recipient);
                 $data = array(
                     'name' => $recipient['name'],
                     'body' => 'Please see details of the Weight Ticket below.',
@@ -252,9 +251,8 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                     'account_name' => $account['name']
                 );
                 
-                Log::debug($data);
-                $result = View::make('emails.weightticket', $data);
-                return $result;
+                // $result = View::make('emails.weightticket', $data);
+                // return $result;
                 
                 $header = array(
                     'subject' => 'Weight Ticket',
