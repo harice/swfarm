@@ -143,6 +143,8 @@ define([
 	//po weight info
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId'] = 'showPOWeightInfoPage';
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/'] = 'showPOWeightInfoPage';
+    routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/mail'] = 'mailWeightInfo';
+    routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/mail/'] = 'mailWeightInfo';
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/:action'] = 'showPOWeightInfoPage';
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/:action/'] = 'showPOWeightInfoPage';
 	
@@ -385,6 +387,10 @@ define([
 			this.currView = poWeightInfoController.setAction(poId, schedId, action);
 			this.currView.render();
 		});
+        
+        app_router.on('route:mailWeightInfo', function() {
+            console.log('Email weight info.');
+        });
 		
 		app_router.on('route:showSOPage', function (action, id) {
 			this.closeView();

@@ -104,6 +104,7 @@ define(function () {
 			'EDIT': 'edit',
 			'DELETE': 'delete',
             'PRINT': 'print',
+            'MAIL': 'mail'
 		},
 		'CONTAINER': {
 			'MAIN':'cl-mcont',
