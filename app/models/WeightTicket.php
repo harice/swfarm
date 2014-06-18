@@ -22,7 +22,8 @@ class WeightTicket extends BaseModel {
         'transportSchedule_id',
         'status_id', 
         'weightTicketNumber', 
-        'loadingTicketNumber', 
+        'loadingTicketNumber',
+        'unloadingTicketNumber', 
         'pickup_id', 
         'dropoff_id'
     );

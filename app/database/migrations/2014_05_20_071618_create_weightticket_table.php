@@ -19,8 +19,8 @@ class CreateWeightticketTable extends Migration {
 			$table->integer('transportSchedule_id')->unsigned();
             $table->string('weightTicketNumber', 20)->unique();
             $table->string('loadingTicketNumber', 20)->unique();
-            $table->integer('pickup_id')->unsigned();
-            $table->integer('dropoff_id')->unsigned();
+            $table->integer('pickup_id')->unsigned()->nullable();
+            $table->integer('dropoff_id')->unsigned()->nullable();
             $table->integer('status_id')->unsigned();
 			$table->timestamps();
             
