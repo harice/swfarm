@@ -44,11 +44,13 @@ class ContractProductsRepository implements ContractProductsRepositoryInterface 
         }
     }
     
-    public function findById($id)
+    public function findById($contract_id, $product_id)
     {
         try
         {
-            $contract_product = ContractProducts::find($id);
+            $contract_product = ContractProducts::where('contract_id', '=', $contract_id)
+                ->where('product_id', '=', $product_id)
+                ->first();
             
             if (!$contract_product) {
                 throw new NotFoundException();
@@ -79,22 +81,29 @@ class ContractProductsRepository implements ContractProductsRepositoryInterface 
         }
     }
     
-    public function update($id, $data)
+    public function update($contract_id, $data)
     {
-        $this->validate($data, $id);
+        $data['contract_id'] = $contract_id;
+        $this->validate($data);
+        
+        Log::debug($data);
+        
+        $existing_products = ContractProducts::where('contract_id', '=', $contract_id)
+            ->where('product_id', '=', $data['product_id'])
+            ->get(array('product_id'));
+        Log::debug($existing_products);
         
         try
         {
-            $contract_product = $this->findById($id);
-            
-            $contract_product->fill($data);
-            
-            if (!$contract_product->update()) {
-                return array(
-                    'error' => true,
-                    'message' => 'ContractProducts was not updated.'
-                );
-            }
+            // Update all existing products in contract
+            DB::table('contract_products')
+                ->where('contract_id', '=', $data['contract_id'])
+                ->where('product_id', '=', $data['product_id'])
+                ->update(
+                    array(
+                        'tons' => $data['tons'],
+                        'bales' => $data['bales']
+                    ));
             
             $response = array(
                 'error' => false,

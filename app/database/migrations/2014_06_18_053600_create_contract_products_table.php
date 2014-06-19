@@ -19,10 +19,11 @@ class CreateContractProductsTable extends Migration {
             $table->integer('product_id')->unsigned();
             $table->decimal('tons', 8, 4);
 			$table->integer('bales');
-            $table->timestamps();
             
-            $table->foreign('contract_id')->references('id')->on('contract');
-            $table->foreign('product_id')->references('id')->on('products');
+            $table->primary(array('contract_id', 'product_id'));
+            
+            $table->foreign('contract_id')->references('id')->on('contract')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
 		});
 	}
 

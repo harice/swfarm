@@ -22,7 +22,6 @@ class ContractRepository implements ContractRepositoryInterface {
             
             return Contract::with('products')
                 ->with('account', 'account.address')
-                ->with('user')
                 ->paginate($perPage);
         }
         catch (Exception $e)
@@ -55,7 +54,9 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         try
         {
-            $contract = Contract::find($id);
+            $contract = Contract::with('products')
+                ->with('account', 'account.address')
+                ->find($id);
             
             if (!$contract) {
                 throw new NotFoundException();
@@ -71,6 +72,8 @@ class ContractRepository implements ContractRepositoryInterface {
     
     public function store($data)
     {
+        $data['contract_number'] = generateControlNumber('Contract', 'C');
+        $data['user_id'] = Auth::user()->id;
         $this->validate($data);
         
         try
@@ -106,12 +109,12 @@ class ContractRepository implements ContractRepositoryInterface {
         {
             $contract = $this->findById($id);
             $contract->fill($data);
+            $contract->update();
             
-            if (!$contract->update()) {
-                return array(
-                    'error' => true,
-                    'message' => 'Contract was not updated.'
-                );
+            $contract_id = $contract['id'];
+            foreach ($data['products'] as $product)
+            {
+                $this->product->update($contract_id, $product);
             }
             
             $response = array(
@@ -158,7 +161,8 @@ class ContractRepository implements ContractRepositoryInterface {
         $rules = Contract::$rules;
         
         if ($id) {
-            $rules['contract_number'] = 'required|unique:contract,contract_number,'.$id;
+            $rules['contract_number'] = 'sometimes|required|unique:contract,contract_number,'.$id;
+            $rules['user_id'] = 'sometimes|required';
         }
         
         $validator = Validator::make($data, $rules);

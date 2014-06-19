@@ -31,7 +31,7 @@ class Contract extends BaseModel {
         'contract_number' => 'required|unique:contract,contract_number',
         'account_id' => 'required',
         'contract_date_start' => 'required',
-        'contract_date_end' => 'required',
+        'contract_date_end' => 'required|after:contract_date_start',
         'user_id' => 'required'
     );
     

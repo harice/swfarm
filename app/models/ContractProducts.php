@@ -21,6 +21,8 @@ class ContractProducts extends BaseModel {
         'bales'
     );
     
+    public $timestamps = false;
+    
     /**
      * Define field validation rules.
      * 
