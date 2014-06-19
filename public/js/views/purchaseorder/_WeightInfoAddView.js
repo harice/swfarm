@@ -42,7 +42,6 @@ define([
 			this.poId = option.poId;
 			this.schedId = option.schedId;
 			this.wiId = null;
-			this.type = option.type;
 			this.h1Title = 'Weight Info';
 			this.h1Small = 'add';
 			this.inits();
@@ -92,11 +91,19 @@ define([
 				this.off('error');
 			});
 			
-			this.scaleCollection = new ScaleCollection();
-			this.scaleCollection.on('sync', function() {
-				thisObj.generateScales();
+			this.pickupScaleCollection = new ScaleCollection();
+			this.pickupScaleCollection.on('sync', function() {
+				thisObj.generatePickupScales();
 			});
-			this.scaleCollection.on('error', function(collection, response, options) {
+			this.pickupScaleCollection.on('error', function(collection, response, options) {
+				//
+			});
+			
+			this.dropoffScaleCollection = new ScaleCollection();
+			this.dropoffScaleCollection.on('sync', function() {
+				thisObj.generateDropoffScales();
+			});
+			this.dropoffScaleCollection.on('error', function(collection, response, options) {
 				//
 			});
 		},
@@ -116,9 +123,6 @@ define([
 			
 			if(this.wiId != null)
 				innerTemplateVariables['wiId'] = this.wiId;
-			
-			if(this.type == Const.WEIGHTINFO.PICKUP || this.type == Const.WEIGHTINFO.DROPOFF)
-				innerTemplateVariables['wiType'] = this.type.charAt(0).toUpperCase() + this.type.slice(1);;
 			
 			var innerTemplate = _.template(weightInfoAddTemplate, innerTemplateVariables);
 			
@@ -160,21 +164,15 @@ define([
 			
 			var validate = $('#poWeightInfoFrom').validate({
 				submitHandler: function(form) {
+					var data = $(form).serializeObject();
+					//var data = thisObj.formatFormField($(form).serializeObject());
+					//console.log(data);
 					
-					var dataTemp = thisObj.formatFormField($(form).serializeObject());
-					var type = dataTemp.weightinfo_type;
-					delete dataTemp.weightinfo_type;
-					
-					var data = {};
-					data[type+'_info'] = dataTemp;
-					
-					//data = thisObj.segregateFormField(data);
+					data = thisObj.segregateFormField(data);
 					data['transportSchedule_id'] = thisObj.schedId;
 					
 					if(thisObj.wiId != null)
 						data['id'] = thisObj.wiId;
-					
-					console.log(data);
 					
 					var poWeightInfoModel = new POWeightInfoModel(data);
 					
@@ -209,19 +207,21 @@ define([
 		
 		addProducts: function () {
 			var thisObj = this;
-			var ctr = 0;
 			
-			_.each(thisObj.productCollection.models, function (model) {
-				var templateVariables = {
-					schedule_product_id: model.get('id'),
-					stock_number: model.get('productorder').stacknumber,
-					name: model.get('productorder').product.name,
-					net: '0.00',
-					route_type: '',
-					number: '.'+ctr++,
-				};
-				var productItemTemplate = _.template(weightInfoProductItemTemplate, templateVariables);
-				thisObj.$el.find('#product-list tbody').append(productItemTemplate);
+			_.each(this.options.routeType, function (type) {
+				var ctr = 0;
+				_.each(thisObj.productCollection.models, function (model) {
+					var templateVariables = {
+						schedule_product_id: model.get('id'),
+						stock_number: model.get('productorder').stacknumber,
+						name: model.get('productorder').product.name,
+						net: '0.00',
+						route_type: type+thisObj.options.separator,
+						number: '.'+ctr++,
+					};
+					var productItemTemplate = _.template(weightInfoProductItemTemplate, templateVariables);
+					thisObj.$el.find('#'+type+'-product-list tbody').append(productItemTemplate);
+				});
 			});
 			
 			this.addValidationToProduct();
@@ -237,21 +237,73 @@ define([
 			}
 		},
 		
-		generateScales: function () {
+		generatePickupScales: function () {
 			var dropDown = '';
-			_.each(this.scaleCollection.models, function (model) {
+			_.each(this.pickupScaleCollection.models, function (model) {
 				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
-			this.$el.find('#scales').append(dropDown);
+			this.$el.find('#pickup-scales').append(dropDown);
 			
-			if(typeof this.selectedScaleId != 'undefined' && this.selectedScaleId != null) {
-				this.$el.find('#scales').val(this.selectedScaleId).change();
-				this.selectedScaleId = null;
+			if(typeof this.selectedPickupScaleId != 'undefined' && this.selectedPickupScaleId != null) {
+				this.$el.find('#pickup-scales').val(this.selectedPickupScaleId).change();
+				this.selectedPickupScaleId = null;
 			}
 			else {
-				if(this.scaleCollection.models.length == 1)
-					this.$el.find('#scales').val(this.scaleCollection.models[0].get('id')).change();
+				if(this.pickupScaleCollection.models.length == 1)
+					this.$el.find('#pickup-scales').val(this.pickupScaleCollection.models[0].get('id')).change();
 			}
+		},
+		
+		generateDropoffScales: function () {
+			var dropDown = '';
+			_.each(this.dropoffScaleCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
+			});
+			this.$el.find('#dropoff-scales').append(dropDown);
+			
+			if(typeof this.selectedDropoffScaleId != 'undefined' && this.selectedDropoffScaleId != null) {
+				this.$el.find('#dropoff-scales').val(this.selectedDropoffScaleId);
+				this.selectedDropoffScaleId = null;
+			}
+			else {
+				if(this.dropoffScaleCollection.models.length == 1)
+					this.$el.find('#dropoff-scales').val(this.dropoffScaleCollection.models[0].get('id')).change();
+			}
+		},
+		
+		segregateFormField: function (data) {
+			var formData = {};
+			
+			var segregatedData = [];
+			for(var i = 0; i < this.options.routeType.length; i++) {
+				var obj = {};
+				segregatedData.push(obj);
+			}
+			
+			//console.log(segregatedData);
+			
+			for(var key in data) {
+				if(typeof data[key] !== 'function'){
+					var value = data[key];
+					var arrayKey = key.split(this.options.separator);
+					var typeIndex = this.options.routeType.indexOf(arrayKey[0])
+					
+					//console.log('type:'+arrayKey[0]);
+					//console.log('typeIndex:'+typeIndex);
+					
+					if(typeIndex !== -1 && arrayKey.length > 1) {
+						arrayKey.shift();
+						var k = arrayKey.join(this.options.separator); //console.log(k);
+						segregatedData[typeIndex][k] = value; //console.log(value);
+					}
+				}
+			}
+			
+			for(var i = 0; i < this.options.routeType.length; i++) {
+				formData[this.options.routeType[i]+'_info'] = this.formatFormField(segregatedData[i]);
+			}
+			
+			return formData;
 		},
 		
 		formatFormField: function (data) {
@@ -298,8 +350,10 @@ define([
 		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
-			'change #scaleAccount_id': 'onChangeScaleAccount',
-			'change #scales': 'onChangeScales',
+			'change #pickup-scaleAccount_id': 'onChangePickupScaleAccount',
+			'change #dropoff-scaleAccount_id': 'onChangeDropoffScaleAccount',
+			'change #pickup-scales': 'onChangePickupScales',
+			'change #dropoff-scales': 'onChangeDropoffScales',
 			'keyup .mask-bales': 'formatNumber',
 			'keyup .gross': 'onKeyUpGross',
 			'blur .gross': 'onBlurTon',
@@ -310,25 +364,48 @@ define([
 			'blur .product-pounds': 'onBlurPound',
 		},
 		
-		onChangeScaleAccount: function (ev) {
-			this.fetchScale($(ev.currentTarget).val());
+		onChangePickupScaleAccount: function (ev) {
+			this.fetchPickupScale($(ev.currentTarget).val());
 		},
 		
-		fetchScale: function (accountId, scaleId) {
+		fetchPickupScale: function (accountId, scaleId) {
 			if(scaleId != null)
-				this.selectedScaleId = scaleId;
+				this.selectedPickupScaleId = scaleId;
 				
-			this.resetSelect($('#scales'));
-			this.$el.find('#fee').val('');
+			this.resetSelect($('#pickup-scales'));
+			this.$el.find('#pickup-fee').val('');
 			if(accountId != '')
-				this.scaleCollection.getScalesByAccount(accountId);
+				this.pickupScaleCollection.getScalesByAccount(accountId);
 		},
 		
-		onChangeScales: function (ev) {
-			this.$el.find('#fee').val('');
+		onChangeDropoffScaleAccount: function (ev) {
+			this.fetchDropoffScale($(ev.currentTarget).val());
+		},
+		
+		fetchDropoffScale: function (accountId, scaleId) {
+			if(scaleId != null)
+				this.selectedDropoffScaleId = scaleId;
+				
+			this.resetSelect($('#dropoff-scales'));
+			this.$el.find('#dropoff-fee').val('');
+			if(accountId != '')
+				this.dropoffScaleCollection.getScalesByAccount(accountId);
+		},
+		
+		onChangePickupScales: function (ev) {
+			this.$el.find('#pickup-fee').val('');
 			var scaleId = $(ev.currentTarget).val();
 			if(scaleId != '') {
-				var scaleModel = this.scaleCollection.get(scaleId);
+				var scaleModel = this.pickupScaleCollection.get(scaleId);
+				$(ev.currentTarget).closest('tr').find('.fee').val(this.addCommaToNumber(scaleModel.get('rate')));
+			}
+		},
+		
+		onChangeDropoffScales: function (ev) {
+			this.$el.find('#dropoff-fee').val('');
+			var scaleId = $(ev.currentTarget).val();
+			if(scaleId != '') {
+				var scaleModel = this.dropoffScaleCollection.get(scaleId);
 				$(ev.currentTarget).closest('tr').find('.fee').val(this.addCommaToNumber(scaleModel.get('rate')));
 			}
 		},

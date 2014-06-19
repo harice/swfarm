@@ -45,111 +45,136 @@
                 </fieldset>
                 <fieldset>
                   <legend>Pickup</legend>
-                  <div class="table-responsive">
-                    <table id="pickup-info" class="table table-bordered">
-                      <thead>
-                        <tr>
-                          <th style="width:15%;">Scale</th>
-						  <th style="width:15%;">Scale Name</th>
-                          <th style="width:15%;">Scale Fee</th>
-                          <th style="width:15%;">Bales</th>
-                          <th style="width:15%;">Gross</th>
-                          <th style="width:15%;">Tare</th>
-                          <th style="width:10%;">Net</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-					    <tr>
-						  <td><input class="form-control scale-account" placeholder="" readonly></td>
-						  <td><input class="form-control scale-name" placeholder="" readonly></td>
-						  <td><input class="form-control fee" placeholder="0.00" readonly></td>
-						  <td><input class="form-control bales" placeholder="0" readonly></td>
-						  <td><input class="form-control gross" placeholder="0.0000" readonly></td>
-						  <td><input class="form-control tare" placeholder="0.0000" readonly></td>
-						  <td><span class="net">0.0000</span></td>
-						</tr>
-					  </tbody>
-                    </table>
-                  </div>
-				  <div class="table-responsive">
-                    <table id="pickup-product-list" class="table table-bordered">
-                      <thead>
-                        <tr>
-                          <th style="width:20%;">Stack No.</th>
-                          <th style="width:20%;">Product</th>
-						  <th style="width:20%;">Bales</th>
-                          <th style="width:20%;">Lbs.</th>
-                          <th style="width:20%;">Net Tons</th>
-                        </tr>
-                      </thead>
-					  <tfoot>
-						<tr>
-						  <td colspan="2">Total</td>
-						  <td><span class="total-bales">0</span></td>
-						  <td><span class="total-pounds">0.00</span></td>
-						  <td><span class="total-net-tons">0.0000</span></td>
-						</tr>
-					  </tfoot>
-                      <tbody></tbody>
-                    </table>
-                  </div>
+                  <div id="pickup-fields" style="display:none;">
+					  <div class="table-responsive">
+						<table id="pickup-info" class="table table-bordered">
+						  <thead>
+							<tr>
+							  <th style="width:15%;">Scale</th>
+							  <th style="width:15%;">Scale Name</th>
+							  <th style="width:15%;">Scale Fee</th>
+							  <th style="width:15%;">Bales</th>
+							  <th style="width:15%;">Gross</th>
+							  <th style="width:15%;">Tare</th>
+							  <th style="width:10%;">Net</th>
+							</tr>
+						  </thead>
+						  <tbody>
+							<tr>
+							  <td><input class="form-control scale-account" placeholder="" readonly></td>
+							  <td><input class="form-control scale-name" placeholder="" readonly></td>
+							  <td><input class="form-control fee" placeholder="0.00" readonly></td>
+							  <td><input class="form-control bales" placeholder="0" readonly></td>
+							  <td><input class="form-control gross" placeholder="0.0000" readonly></td>
+							  <td><input class="form-control tare" placeholder="0.0000" readonly></td>
+							  <td><span class="net">0.0000</span></td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <div class="table-responsive">
+						<table id="pickup-product-list" class="table table-bordered">
+						  <thead>
+							<tr>
+							  <th style="width:20%;">Stack No.</th>
+							  <th style="width:20%;">Product</th>
+							  <th style="width:20%;">Bales</th>
+							  <th style="width:20%;">Lbs.</th>
+							  <th style="width:20%;">Net Tons</th>
+							</tr>
+						  </thead>
+						  <tfoot>
+							<tr>
+							  <td colspan="2">Total</td>
+							  <td><span class="total-bales">0</span></td>
+							  <td><span class="total-pounds">0.00</span></td>
+							  <td><span class="total-net-tons">0.0000</span></td>
+							</tr>
+						  </tfoot>
+						  <tbody></tbody>
+						</table>
+					  </div>
+				  </div>
                 </fieldset>
+				<div class="form-group form-button-container">
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            <% if (typeof has_pickup_info !== "undefined") { %>
+								<a class="btn btn-primary" href="<%= pickup_weight_info_edit_url %>">Edit Pickup Weight Ticket</a>
+							<% } else { %>
+								<a class="btn btn-primary" href="<%= pickup_weight_info_add_url %>">Add Pickup Weight Ticket</a>
+							<% } %>
+                        </div>
+                    </div>
+                </div>
 				<fieldset>
                   <legend>Dropoff</legend>
-                  <div class="table-responsive">
-                    <table id="dropoff-info" class="table table-bordered">
-                      <thead>
-                        <tr>
-                          <th style="width:15%;">Scale</th>
-						  <th style="width:15%;">Scale Name</th>
-                          <th style="width:15%;">Scale Fee</th>
-                          <th style="width:15%;">Bales</th>
-                          <th style="width:15%;">Gross</th>
-                          <th style="width:15%;">Tare</th>
-                          <th style="width:10%;">Net</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-					    <tr>
-						  <td><input class="form-control scale-account" placeholder="" readonly></td>
-						  <td><input class="form-control scale-name" placeholder="" readonly></td>
-						  <td><input class="form-control fee" placeholder="0.00" readonly></td>
-						  <td><input class="form-control bales" placeholder="0" readonly></td>
-						  <td><input class="form-control gross" placeholder="0.0000" readonly></td>
-						  <td><input class="form-control tare" placeholder="0.0000" readonly></td>
-						  <td><span class="net">0.0000</span></td>
-						</tr>
-					  </tbody>
-                    </table>
-                  </div>
-				  <div class="table-responsive">
-                    <table id="dropoff-product-list" class="table table-bordered">
-                      <thead>
-                        <tr>
-                          <th style="width:20%;">Stack No.</th>
-                          <th style="width:20%;">Product</th>
-                          <th style="width:20%;">Bales</th>
-						  <th style="width:20%;">Lbs.</th>
-                          <th style="width:20%;">Net Tons</th>
-                        </tr>
-                      </thead>
-					  <tfoot>
-						<tr>
-						  <td colspan="2">Total</td>
-						  <td><span class="total-bales">0</span></td>
-						  <td><span class="total-pounds">0.00</span></td>
-						  <td><span class="total-net-tons">0.0000</span></td>
-						</tr>
-					  </tfoot>
-                      <tbody></tbody>
-                    </table>
-                  </div>
+				  <div id="dropoff-fields" style="display:none;">
+					  <div class="table-responsive">
+						<table id="dropoff-info" class="table table-bordered">
+						  <thead>
+							<tr>
+							  <th style="width:15%;">Scale</th>
+							  <th style="width:15%;">Scale Name</th>
+							  <th style="width:15%;">Scale Fee</th>
+							  <th style="width:15%;">Bales</th>
+							  <th style="width:15%;">Gross</th>
+							  <th style="width:15%;">Tare</th>
+							  <th style="width:10%;">Net</th>
+							</tr>
+						  </thead>
+						  <tbody>
+							<tr>
+							  <td><input class="form-control scale-account" placeholder="" readonly></td>
+							  <td><input class="form-control scale-name" placeholder="" readonly></td>
+							  <td><input class="form-control fee" placeholder="0.00" readonly></td>
+							  <td><input class="form-control bales" placeholder="0" readonly></td>
+							  <td><input class="form-control gross" placeholder="0.0000" readonly></td>
+							  <td><input class="form-control tare" placeholder="0.0000" readonly></td>
+							  <td><span class="net">0.0000</span></td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <div class="table-responsive">
+						<table id="dropoff-product-list" class="table table-bordered">
+						  <thead>
+							<tr>
+							  <th style="width:20%;">Stack No.</th>
+							  <th style="width:20%;">Product</th>
+							  <th style="width:20%;">Bales</th>
+							  <th style="width:20%;">Lbs.</th>
+							  <th style="width:20%;">Net Tons</th>
+							</tr>
+						  </thead>
+						  <tfoot>
+							<tr>
+							  <td colspan="2">Total</td>
+							  <td><span class="total-bales">0</span></td>
+							  <td><span class="total-pounds">0.00</span></td>
+							  <td><span class="total-net-tons">0.0000</span></td>
+							</tr>
+						  </tfoot>
+						  <tbody></tbody>
+						</table>
+					  </div>
+				  </div>
                 </fieldset>
+				<div class="form-group form-button-container">
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            <% if (typeof has_dropoff_info !== "undefined") { %>
+								<a class="btn btn-primary" href="<%= dropoff_weight_info_edit_url %>">Edit Dropoff Weight Ticket</a>
+							<% } else { %>
+								<a class="btn btn-primary" href="<%= dropoff_weight_info_add_url %>">Add Dropoff Weight Ticket</a>
+							<% } %>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group form-button-container">
                     <div class="col-md-12">
                         <div class="pull-right">
                             <a href="<%= weight_info_print_url %>" id="print-weight-ticket" class="btn btn-link">Print Weight Ticket</a>
-                            <a class="btn btn-primary" href="<%= weight_info_edit_url %>">Edit Weight Ticket</a>
                             <a class="btn btn-default" href="<%= previous_po_sched_url %>">Cancel</a>
                         </div>
                     </div>

@@ -145,6 +145,8 @@ define([
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/'] = 'showPOWeightInfoPage';
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/:action'] = 'showPOWeightInfoPage';
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/:action/'] = 'showPOWeightInfoPage';
+	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/:action/:type'] = 'showPOWeightInfoPage';
+	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/:action/:type/'] = 'showPOWeightInfoPage';
 	
 	//so
 	routerRoutes[Const.URL.SO] = 'showSOPage';
@@ -379,10 +381,10 @@ define([
 			this.currView.render();
 		});
 		
-		app_router.on('route:showPOWeightInfoPage', function (poId, schedId, action) {
+		app_router.on('route:showPOWeightInfoPage', function (poId, schedId, action, type) {
 			this.closeView();
 			var poWeightInfoController = new POWeightInfoController();
-			this.currView = poWeightInfoController.setAction(poId, schedId, action);
+			this.currView = poWeightInfoController.setAction(poId, schedId, action, type);
 			this.currView.render();
 		});
 		
