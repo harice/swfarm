@@ -551,5 +551,15 @@ class OrderRepository implements OrderRepositoryInterface {
     }
 
     public function getTotalWeightDelivered(){}
+
+    public function getOrderWeightDetailsByStack($orderId){
+        // $productOrder = ProductOrder::with('Order')
+        //                     ->with('transportscheduleproduct')
+        //                     ->where('order_id', '=', $orderId)->get();
+
+        $productOrder = Order::with('productorder.transportscheduleproduct.weightticketproducts')->find($orderId);
+
+        return $productOrder->toArray();
+    }   
     
 }

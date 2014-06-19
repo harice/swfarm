@@ -28,15 +28,37 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     
     public function store($data)
     {
+        $hasExisitingTicket = WeightTicket::where('transportSchedule_id', '=', $data['transportSchedule_id'])->first();
+        if($hasExisitingTicket != null){
+            if(isset($data['dropoff_info'])){
+                if($hasExisitingTicket->dropoff_id != null){
+                    return array(
+                      'error' => true,
+                      'message' => 'This schedule already has dropoff weight ticket.');
+                }
+            }
+            else if(isset($data['pickup_info'])){
+                if($hasExisitingTicket->pickup_id != null){
+                    return array(
+                      'error' => true,
+                      'message' => 'This schedule already has pickup weight ticket.');
+                }
+            }
+
+            $result = $this->update($data['transportSchedule_id'], $data);
+            if(is_array($result)){
+                return array(
+                  'error' => false,
+                  'message' => 'Weight ticket successfully created');
+            }
+
+            
+        }
+
         $result = DB::transaction(function() use ($data){
             $isPickup = false;
             $isDropoff = false;
-            $hasExisitingTicket = WeightTicket::where('transportSchedule_id', '=', $data['transportSchedule_id'])->first();
-            if($hasExisitingTicket != null){
-                return array(
-                      'error' => true,
-                      'message' => 'This schedule has already weight ticket.');
-            }
+            
             if(isset($data['pickup_info'])){
                 //for pickup data
                 $this->validate($data['pickup_info'], 'WeightTicketScale');
@@ -133,7 +155,8 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         $result = DB::transaction(function() use ($id, $data){
 
             $this->validate($data, 'WeightTicket');
-            $weightticket = WeightTicket::find($id);
+            // $weightticket = WeightTicket::find($id);
+            $weightticket = WeightTicket::where('transportSchedule_id', '=', $id)->first();
             $weightticket->fill($data);
             $weightticket->save();
             if(isset($data['pickup_info'])){

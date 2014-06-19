@@ -21,4 +21,8 @@ class TransportScheduleProduct extends Eloquent {
         return $this->hasOne('ProductOrder', 'id', 'productorder_id');
     }
 
+    public function weightticketproducts(){
+        return $this->hasMany('WeightTicketProducts', 'transportScheduleProduct_id', 'id');
+    }
+
 }
