@@ -105,9 +105,6 @@ define([
 			var pickupInfo = this.model.get('weightticketscale_pickup');
 			var dropoffInfo = this.model.get('weightticketscale_dropoff');
 			
-			console.log(pickupInfo);
-			console.log(dropoffInfo);
-			
 			var dateAndTime = this.convertDateFormat(this.poScheduleModel.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-')
 								+' '+this.poScheduleModel.get('scheduletimeHour')
 								+':'+this.poScheduleModel.get('scheduletimeMin')

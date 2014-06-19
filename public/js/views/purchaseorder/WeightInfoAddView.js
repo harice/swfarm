@@ -111,14 +111,14 @@ define([
 			
 			var innerTemplateVariables = {
 				scaler_account_list: this.getScalerDropDown(),
-				cancel_url: (this.wiId != null)? '#/'+Const.URL.POWEIGHTINFO+'/'+this.poId+'/'+this.schedId :'#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId,
+				cancel_url: (this.wiId == null && this.type != Const.WEIGHTINFO.PICKUP && this.type != Const.WEIGHTINFO.DROPOFF)? '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId : '#/'+Const.URL.POWEIGHTINFO+'/'+this.poId+'/'+this.schedId,
 			};
 			
 			if(this.wiId != null)
 				innerTemplateVariables['wiId'] = this.wiId;
 			
 			if(this.type == Const.WEIGHTINFO.PICKUP || this.type == Const.WEIGHTINFO.DROPOFF)
-				innerTemplateVariables['wiType'] = this.type.charAt(0).toUpperCase() + this.type.slice(1);;
+				innerTemplateVariables['wiType'] = this.type.charAt(0).toUpperCase() + this.type.slice(1);
 			
 			var innerTemplate = _.template(weightInfoAddTemplate, innerTemplateVariables);
 			
@@ -166,13 +166,11 @@ define([
 					delete dataTemp.weightinfo_type;
 					
 					var data = {};
-					data[type+'_info'] = dataTemp;
-					
-					//data = thisObj.segregateFormField(data);
+					data[type.toLowerCase()+'_info'] = dataTemp;
 					data['transportSchedule_id'] = thisObj.schedId;
 					
 					if(thisObj.wiId != null)
-						data['id'] = thisObj.wiId;
+						data['id'] = thisObj.schedId;
 					
 					console.log(data);
 					
@@ -217,7 +215,6 @@ define([
 					stock_number: model.get('productorder').stacknumber,
 					name: model.get('productorder').product.name,
 					net: '0.00',
-					route_type: '',
 					number: '.'+ctr++,
 				};
 				var productItemTemplate = _.template(weightInfoProductItemTemplate, templateVariables);

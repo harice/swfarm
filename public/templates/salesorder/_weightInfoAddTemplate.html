@@ -34,22 +34,6 @@
                         </div>
                       </div>
 					  <% } %>
-					  <div class="form-group">
-                        <label for="weightinfo_type" class="col-sm-3 control-label">Type</label>
-                        <div class="col-sm-7">
-                          <% if (typeof wiType !== "undefined") { %>
-							<input id="weightinfo_type" type="text" class="form-control width-200 weightinfo_type" maxlength="250" name="weightinfo_type" value="<%= wiType %>" readonly>
-						  <% } else { %>
-						  <div class="styled-select">
-							<select id="weightinfo_type" class="form-contro width-200 weightinfo_type" name="weightinfo_type" required>
-							  <option value="">Select a type</option>
-							  <option value="pickup">Pickup</option>
-							  <option value="dropoff">Dropoff</option>
-							</select>
-						  </div>
-						  <% } %>
-                        </div>
-                      </div>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
@@ -62,8 +46,9 @@
                   </div>
                 </fieldset>
                 <fieldset>
+                  <legend>Pickup</legend>
                   <div class="table-responsive">
-                    <table id="weight-info" class="table table-bordered">
+                    <table id="pickup-info" class="table table-bordered">
                       <thead>
                         <tr>
                           <th style="width:15%;">Scale</th>
@@ -79,7 +64,7 @@
 					    <tr>
 						  <td>
 							<div class="styled-select">
-							  <select id="scaleAccount_id" class="form-contro width-200 scaleAccount_id" name="scaleAccount_id" required>
+							  <select id="pickup-scaleAccount_id" class="form-contro width-200 scaleAccount_id" name="pickup-scaleAccount_id" required>
 							    <option value="">Select a scale account</option>
 								<%= scaler_account_list %>
 							  </select>
@@ -87,28 +72,92 @@
 						  </td>
 						  <td>
 							<div class="styled-select">
-							  <select id="scales" class="form-control width-200 scale_id" name="scale_id" required>
+							  <select id="pickup-scales" class="form-control width-200 scale_id" name="pickup-scale_id" required>
 							    <option value="">Select a scale name</option>
 							  </select>
 							</div>
 						  </td>
-						  <td><input id="fee" maxlength="80" name="fee" class="form-control fee" placeholder="0.00" required readonly></td>
-						  <td><input maxlength="80" name="bales" class="form-control bales mask-bales" placeholder="0" required></td>
-						  <td><input maxlength="80" name="gross" class="form-control gross" placeholder="0.0000" required></td>
-						  <td><input maxlength="80" name="tare" class="form-control tare" placeholder="0.0000" required></td>
+						  <td><input id="pickup-fee" maxlength="80" name="pickup-fee" class="form-control fee" placeholder="0.00" required readonly></td>
+						  <td><input maxlength="80" name="pickup-bales" class="form-control bales mask-bales" placeholder="0" required></td>
+						  <td><input maxlength="80" name="pickup-gross" class="form-control gross" placeholder="0.0000" required></td>
+						  <td><input maxlength="80" name="pickup-tare" class="form-control tare" placeholder="0.0000" required></td>
 						  <td><span class="net">0.0000</span></td>
 						</tr>
 					  </tbody>
                     </table>
                   </div>
 				  <div class="table-responsive">
-                    <table id="product-list" class="table table-bordered">
+                    <table id="pickup-product-list" class="table table-bordered">
                       <thead>
                         <tr>
                           <th style="width:20%;">Stack No.</th>
                           <th style="width:20%;">Product</th>
 						  <th style="width:20%;">Bales</th>
                           <th style="width:20%;">Lbs.</th>
+                          <th style="width:20%;">Net Tons</th>
+                        </tr>
+                      </thead>
+					  <tfoot>
+						<tr>
+						  <td colspan="2">Total</td>
+						  <td><span class="total-bales">0</span></td>
+						  <td><span class="total-pounds">0.00</span></td>
+						  <td><span class="total-net-tons">0.0000</span></td>
+						</tr>
+					  </tfoot>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                </fieldset>
+				<fieldset>
+                  <legend>Dropoff</legend>
+                  <div class="table-responsive">
+                    <table id="dropoff-info" class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th style="width:15%;">Scale</th>
+						  <th style="width:15%;">Scale Name</th>
+                          <th style="width:15%;">Scale Fee</th>
+                          <th style="width:15%;">Bales</th>
+                          <th style="width:15%;">Gross</th>
+                          <th style="width:15%;">Tare</th>
+                          <th style="width:10%;">Net</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+					    <tr>
+						  <td>
+							<div class="styled-select">
+							  <select id="dropoff-scaleAccount_id" class="form-control width-200 scaleAccount_id" name="dropoff-scaleAccount_id" required>
+							    <option value="">Select a scale account</option>
+								<%= scaler_account_list %>
+							  </select>
+							</div>
+						  </td>
+						  <td>
+							<div class="styled-select">
+							  <select id="dropoff-scales" class="form-control width-200 scale_id" name="dropoff-scale_id" required>
+							    <option value="">Select a scale name</option>
+							  </select>
+							</div>
+						  </td>
+						  <td><input id="dropoff-fee" maxlength="80" name="dropoff-fee" class="form-control fee" placeholder="0.00" required readonly></td>
+						  <td><input maxlength="80" name="dropoff-bales" class="form-control bales mask-bales" placeholder="0" required></td>
+						  <td><input maxlength="80" name="dropoff-gross" class="form-control gross" placeholder="0.0000" required></td>
+						  <td><input maxlength="80" name="dropoff-tare" class="form-control tare" placeholder="0.0000" required></td>
+						  <td><span class="net">0.0000</span></td>
+						</tr>
+					  </tbody>
+                    </table>
+                  </div>
+				  <div class="table-responsive">
+                    <table id="dropoff-product-list" class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th style="width:20%;">Stack No.</th>
+                          <th style="width:20%;">Product</th>
+                          <th style="width:20%;">Bales</th>
+						  <th style="width:20%;">Lbs.</th>
                           <th style="width:20%;">Net Tons</th>
                         </tr>
                       </thead>

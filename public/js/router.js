@@ -165,6 +165,8 @@ define([
 	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/'] = 'showSOWeightInfoPage';
 	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/:action'] = 'showSOWeightInfoPage';
 	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/:action/'] = 'showSOWeightInfoPage';
+	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/:action/:type'] = 'showSOWeightInfoPage';
+	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/:action/:type/'] = 'showSOWeightInfoPage';
 	
 	//stack location
 	routerRoutes[Const.URL.STACKLOCATION] = 'showStackPage';
@@ -402,10 +404,10 @@ define([
 			this.currView.render();
 		});
 		
-		app_router.on('route:showSOWeightInfoPage', function (soId, schedId, action) {
+		app_router.on('route:showSOWeightInfoPage', function (soId, schedId, action, type) {
 			this.closeView();
 			var soWeightInfoController = new SOWeightInfoController();
-			this.currView = soWeightInfoController.setAction(soId, schedId, action);
+			this.currView = soWeightInfoController.setAction(soId, schedId, action, type);
 			this.currView.render();
 		});
 		

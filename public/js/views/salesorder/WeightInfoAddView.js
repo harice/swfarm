@@ -42,6 +42,7 @@ define([
 			this.soId = option.soId;
 			this.schedId = option.schedId;
 			this.wiId = null;
+			this.type = option.type;
 			this.h1Title = 'Weight Info';
 			this.h1Small = 'add';
 			this.inits();
@@ -91,19 +92,11 @@ define([
 				this.off('error');
 			});
 			
-			this.pickupScaleCollection = new ScaleCollection();
-			this.pickupScaleCollection.on('sync', function() {
-				thisObj.generatePickupScales();
+			this.scaleCollection = new ScaleCollection();
+			this.scaleCollection.on('sync', function() {
+				thisObj.generateScales();
 			});
-			this.pickupScaleCollection.on('error', function(collection, response, options) {
-				//
-			});
-			
-			this.dropoffScaleCollection = new ScaleCollection();
-			this.dropoffScaleCollection.on('sync', function() {
-				thisObj.generateDropoffScales();
-			});
-			this.dropoffScaleCollection.on('error', function(collection, response, options) {
+			this.scaleCollection.on('error', function(collection, response, options) {
 				//
 			});
 		},
@@ -118,11 +111,14 @@ define([
 			
 			var innerTemplateVariables = {
 				scaler_account_list: this.getScalerDropDown(),
-				cancel_url: (this.wiId != null)? '#/'+Const.URL.SOWEIGHTINFO+'/'+this.soId+'/'+this.schedId :'#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId,
+				cancel_url: (this.wiId == null && this.type != Const.WEIGHTINFO.PICKUP && this.type != Const.WEIGHTINFO.DROPOFF)? '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId : '#/'+Const.URL.SOWEIGHTINFO+'/'+this.soId+'/'+this.schedId,
 			};
 			
 			if(this.wiId != null)
 				innerTemplateVariables['wiId'] = this.wiId;
+			
+			if(this.type == Const.WEIGHTINFO.PICKUP || this.type == Const.WEIGHTINFO.DROPOFF)
+				innerTemplateVariables['wiType'] = this.type.charAt(0).toUpperCase() + this.type.slice(1);
 			
 			var innerTemplate = _.template(weightInfoAddTemplate, innerTemplateVariables);
 			
@@ -164,15 +160,19 @@ define([
 			
 			var validate = $('#soWeightInfoFrom').validate({
 				submitHandler: function(form) {
-					var data = $(form).serializeObject();
-					//var data = thisObj.formatFormField($(form).serializeObject());
-					//console.log(data);
 					
-					data = thisObj.segregateFormField(data);
+					var dataTemp = thisObj.formatFormField($(form).serializeObject());
+					var type = dataTemp.weightinfo_type;
+					delete dataTemp.weightinfo_type;
+					
+					var data = {};
+					data[type.toLowerCase()+'_info'] = dataTemp;
 					data['transportSchedule_id'] = thisObj.schedId;
 					
 					if(thisObj.wiId != null)
-						data['id'] = thisObj.wiId;
+						data['id'] = thisObj.schedId;
+						
+					console.log(data);
 					
 					var soWeightInfoModel = new SOWeightInfoModel(data);
 					
@@ -207,21 +207,18 @@ define([
 		
 		addProducts: function () {
 			var thisObj = this;
+			var ctr = 0;
 			
-			_.each(this.options.routeType, function (type) {
-				var ctr = 0;
-				_.each(thisObj.productCollection.models, function (model) {
-					var templateVariables = {
-						schedule_product_id: model.get('id'),
-						stock_number: model.get('productorder').stacknumber,
-						name: model.get('productorder').product.name,
-						net: '0.00',
-						route_type: type+thisObj.options.separator,
-						number: '.'+ctr++,
-					};
-					var productItemTemplate = _.template(weightInfoProductItemTemplate, templateVariables);
-					thisObj.$el.find('#'+type+'-product-list tbody').append(productItemTemplate);
-				});
+			_.each(thisObj.productCollection.models, function (model) {
+				var templateVariables = {
+					schedule_product_id: model.get('id'),
+					stock_number: model.get('productorder').stacknumber,
+					name: model.get('productorder').product.name,
+					net: '0.00',
+					number: '.'+ctr++,
+				};
+				var productItemTemplate = _.template(weightInfoProductItemTemplate, templateVariables);
+				thisObj.$el.find('#product-list tbody').append(productItemTemplate);
 			});
 			
 			this.addValidationToProduct();
@@ -237,37 +234,20 @@ define([
 			}
 		},
 		
-		generatePickupScales: function () {
+		generateScales: function () {
 			var dropDown = '';
-			_.each(this.pickupScaleCollection.models, function (model) {
+			_.each(this.scaleCollection.models, function (model) {
 				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
-			this.$el.find('#pickup-scales').append(dropDown);
+			this.$el.find('#scales').append(dropDown);
 			
-			if(typeof this.selectedPickupScaleId != 'undefined' && this.selectedPickupScaleId != null) {
-				this.$el.find('#pickup-scales').val(this.selectedPickupScaleId).change();
-				this.selectedPickupScaleId = null;
+			if(typeof this.selectedScaleId != 'undefined' && this.selectedScaleId != null) {
+				this.$el.find('#scales').val(this.selectedScaleId).change();
+				this.selectedScaleId = null;
 			}
 			else {
-				if(this.pickupScaleCollection.models.length == 1)
-					this.$el.find('#pickup-scales').val(this.pickupScaleCollection.models[0].get('id')).change();
-			}
-		},
-		
-		generateDropoffScales: function () {
-			var dropDown = '';
-			_.each(this.dropoffScaleCollection.models, function (model) {
-				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
-			});
-			this.$el.find('#dropoff-scales').append(dropDown);
-			
-			if(typeof this.selectedDropoffScaleId != 'undefined' && this.selectedDropoffScaleId != null) {
-				this.$el.find('#dropoff-scales').val(this.selectedDropoffScaleId);
-				this.selectedDropoffScaleId = null;
-			}
-			else {
-				if(this.dropoffScaleCollection.models.length == 1)
-					this.$el.find('#dropoff-scales').val(this.dropoffScaleCollection.models[0].get('id')).change();
+				if(this.scaleCollection.models.length == 1)
+					this.$el.find('#scales').val(this.scaleCollection.models[0].get('id')).change();
 			}
 		},
 		
@@ -350,10 +330,8 @@ define([
 		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
-			'change #pickup-scaleAccount_id': 'onChangePickupScaleAccount',
-			'change #dropoff-scaleAccount_id': 'onChangeDropoffScaleAccount',
-			'change #pickup-scales': 'onChangePickupScales',
-			'change #dropoff-scales': 'onChangeDropoffScales',
+			'change #scaleAccount_id': 'onChangeScaleAccount',
+			'change #scales': 'onChangeScales',
 			'keyup .mask-bales': 'formatNumber',
 			'keyup .gross': 'onKeyUpGross',
 			'blur .gross': 'onBlurTon',
@@ -364,48 +342,25 @@ define([
 			'blur .product-pounds': 'onBlurPound',
 		},
 		
-		onChangePickupScaleAccount: function (ev) {
-			this.fetchPickupScale($(ev.currentTarget).val());
+		onChangeScaleAccount: function (ev) {
+			this.fetchScale($(ev.currentTarget).val());
 		},
 		
-		fetchPickupScale: function (accountId, scaleId) {
+		fetchScale: function (accountId, scaleId) {
 			if(scaleId != null)
-				this.selectedPickupScaleId = scaleId;
+				this.selectedScaleId = scaleId;
 				
-			this.resetSelect($('#pickup-scales'));
-			this.$el.find('#pickup-fee').val('');
+			this.resetSelect($('#scales'));
+			this.$el.find('#fee').val('');
 			if(accountId != '')
-				this.pickupScaleCollection.getScalesByAccount(accountId);
+				this.scaleCollection.getScalesByAccount(accountId);
 		},
 		
-		onChangeDropoffScaleAccount: function (ev) {
-			this.fetchDropoffScale($(ev.currentTarget).val());
-		},
-		
-		fetchDropoffScale: function (accountId, scaleId) {
-			if(scaleId != null)
-				this.selectedDropoffScaleId = scaleId;
-				
-			this.resetSelect($('#dropoff-scales'));
-			this.$el.find('#dropoff-fee').val('');
-			if(accountId != '')
-				this.dropoffScaleCollection.getScalesByAccount(accountId);
-		},
-		
-		onChangePickupScales: function (ev) {
-			this.$el.find('#pickup-fee').val('');
+		onChangeScales: function (ev) {
+			this.$el.find('#fee').val('');
 			var scaleId = $(ev.currentTarget).val();
 			if(scaleId != '') {
-				var scaleModel = this.pickupScaleCollection.get(scaleId);
-				$(ev.currentTarget).closest('tr').find('.fee').val(this.addCommaToNumber(scaleModel.get('rate')));
-			}
-		},
-		
-		onChangeDropoffScales: function (ev) {
-			this.$el.find('#dropoff-fee').val('');
-			var scaleId = $(ev.currentTarget).val();
-			if(scaleId != '') {
-				var scaleModel = this.dropoffScaleCollection.get(scaleId);
+				var scaleModel = this.scaleCollection.get(scaleId);
 				$(ev.currentTarget).closest('tr').find('.fee').val(this.addCommaToNumber(scaleModel.get('rate')));
 			}
 		},
