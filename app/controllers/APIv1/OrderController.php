@@ -121,5 +121,10 @@ class OrderController extends BaseController {
         return Response::json($model);
     }
 
+    public function getOrderWeightDetailsByStack($id){
+        $model = $this->repo->getOrderWeightDetailsByStack($id);
+        return Response::json($model);
+    }
+
 
 }

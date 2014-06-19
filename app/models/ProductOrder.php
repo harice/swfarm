@@ -54,4 +54,8 @@ class ProductOrder extends Eloquent {
         return $this->hasMany('Upload', 'entity_id', 'id');
     }
 
+    public function transportscheduleproduct(){
+        return $this->belongsTo('TransportScheduleProduct', 'id', 'productorder_id');
+    }
+
 }
