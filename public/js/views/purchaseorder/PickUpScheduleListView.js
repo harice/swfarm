@@ -5,6 +5,7 @@ define([
 	'models/purchaseorder/POScheduleModel',
 	'collections/purchaseorder/POScheduleCollection',
 	'text!templates/layout/contentTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderPickUpScheduleListTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderPickUpScheduleInnerListTemplate.html',
 	'constant',
@@ -14,6 +15,7 @@ define([
 			POScheduleModel,
 			POScheduleCollection,
 			contentTemplate,
+			purchaseOrderTabbingTemplate,
 			purchaseOrderPickUpScheduleListTemplate,
 			purchaseOrderPickUpScheduleInnerListTemplate,
 			Const
@@ -28,6 +30,8 @@ define([
 			
 			this.poId = option.id;
 			var thisObj = this;
+			
+			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generatePOTabs(this.poId, 2)}));
 			
 			this.collection = new POScheduleCollection({id:option.id});
 			this.collection.on('sync', function() {
@@ -72,7 +76,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.subContainer.html(compiledTemplate);
+			this.subContainer.find('#with-tab-content').html(compiledTemplate);
 			
 			this.initConfirmationWindow('Are you sure you want to delete this schedule?',
 										'confirm-delete-schedule',
