@@ -1,6 +1,6 @@
 <!-- Modal -->
 <div class="modal fade" id="modal-confirm" tabindex="-1" role="dialog">
-	<div class="modal-dialog full-color warning custom-width">
+	<div class="modal-dialog custom-width">
 		<div class="modal-content">
 			<div class="modal-header">
 				<% if(typeof(confirm_title) != "undefined") { %><h3><%= confirm_title %></h3><% } %>
@@ -8,14 +8,14 @@
 			</div>
 			<div class="modal-body">
 				<div class="text-center">
-					<div class="i-circle"><i class="fa fa-warning"></i></div>
+					<div class="i-circle warning"><i class="fa fa-warning"></i></div>
 					<h4>Warning!</h4>
 					<p class="confirm-content margin-bottom-0"><%= confirm_content %></p>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-warning btn-mono1 btn-flat close-window" data-dismiss="modal">Cancel</button>
-				<button type="button" class="btn btn-warning btn-mono3 btn-flat" data-dismiss="modal" data-id="" id="<%= confirm_button_id %>"><%= confirm_button_label %></button>
+				<button type="button" class="btn btn-default btn-sm btn-flat close-window" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-warning btn-sm btn-flat" data-dismiss="modal" data-id="" id="<%= confirm_button_id %>"><%= confirm_button_label %></button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
