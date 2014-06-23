@@ -13,9 +13,11 @@ class ContractRepository implements ContractRepositoryInterface {
         {
             $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
             
-            return Contract::with('products')
+            $result = Contract::with('products')
                 ->with('account', 'account.address')
                 ->paginate($perPage);
+            
+            return $result;
         }
         catch (Exception $e)
         {
