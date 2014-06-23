@@ -101,7 +101,7 @@ define([
 		},
 		
 		disableCloseButton: function (id) {
-			console.log('disableCloseButton: '+id);
+			//console.log('disableCloseButton: '+id);
 			this.$el.find('#'+id+' .close-window').attr('disabled', true);
 		},
 		
@@ -318,7 +318,7 @@ define([
 				if((i+1) == selectedIndex)
 					tabs[i]['active'] = true;
 			}
-			console.log(tabs);
+			//console.log(tabs);
 			return this.generateTabs(tabs, '#/'+Const.URL.PO, 'Back To PO List');
 		},
 		

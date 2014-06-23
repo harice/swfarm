@@ -4,7 +4,7 @@ define([
 	'models/purchaseorder/POWeightInfoModel',
 ], function(Backbone, ListViewCollection, POWeightInfoModel){
 	var POWeightInfoCollection = ListViewCollection.extend({
-		url: '/apiv1/transportschedule/getAllPickupSchedules',
+		url: '/apiv1/weightticket/getAllWeightticketOfOrder',
 		model: POWeightInfoModel,
 		initialize: function(option){
 			this.runInit();

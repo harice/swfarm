@@ -16,8 +16,8 @@ define([
 			POWeightInfoCollection,
 			contentTemplate,
 			purchaseOrderTabbingTemplate,
-			purchaseOrderPickUpScheduleListTemplate,
-			purchaseOrderPickUpScheduleInnerListTemplate,
+			weightInfoListTemplate,
+			weightInfoInnerListTemplate,
 			Const
 ){
 
@@ -36,8 +36,11 @@ define([
 			this.collection = new POWeightInfoCollection({id:this.poId});
 			this.collection.on('sync', function() {
 				_.each(this.models, function (model) {
-					model.set('scheduledate', thisObj.convertDateFormat(model.get('scheduledate').split(' ')[0], thisObj.dateFormatDB, thisObj.dateFormat, '-'));
-					model.set('distance', thisObj.addCommaToNumber(parseFloat(model.get('distance')).toFixed(2)));
+					var transportScheduleDate = model.get('transportScheduleDate').split(' ');
+					model.set('transportScheduleDate', thisObj.convertDateFormat(transportScheduleDate[0], thisObj.dateFormatDB, thisObj.dateFormat, '-')+' '+transportScheduleDate[1]);
+					model.set('gross', thisObj.addCommaToNumber(parseFloat(model.get('gross')).toFixed(4)));
+					model.set('tare', thisObj.addCommaToNumber(parseFloat(model.get('tare')).toFixed(4)));
+					model.set('netWeight', thisObj.addCommaToNumber(parseFloat(model.get('netWeight')).toFixed(4)));
 				});
 				
 				if(thisObj.subContainerExist())
@@ -51,7 +54,7 @@ define([
 			this.model.on('change', function() {
 				if(thisObj.subContainerExist()) {
 					thisObj.displaySchedule();
-					//thisObj.renderList(1);
+					thisObj.renderList(1);
 				}
 				this.off('change');
 			});
@@ -69,7 +72,7 @@ define([
 				status_filters : '',
 			};
 			
-			var innerTemplate = _.template(purchaseOrderPickUpScheduleListTemplate, innerTemplateVar);
+			var innerTemplate = _.template(weightInfoListTemplate, innerTemplateVar);
 			
 			var variables = {
 				h1_title: 'PO # '+this.model.get('order_number')+' Weight Information',
@@ -80,18 +83,16 @@ define([
 		},
 		
 		displayList: function () {
-			/*
 			var data = {
-				po_schedule_edit_url: '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId+'/'+Const.CRUD.EDIT,
-				po_schedule_url: '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId,
-				schedules: this.collection.models,
+				weightInfo_url: '/#/'+Const.URL.POWEIGHTINFO,
+				weightInfo: this.collection.models,
 				_: _ 
 			};
 			
-			var innerListTemplate = _.template(purchaseOrderPickUpScheduleInnerListTemplate, data);
+			var innerListTemplate = _.template(weightInfoInnerListTemplate, data);
 			this.subContainer.find("#po-weight-info-list tbody").html(innerListTemplate);
 			
-			this.generatePagination();*/
+			this.generatePagination();
 		},
 		
 		events: {
