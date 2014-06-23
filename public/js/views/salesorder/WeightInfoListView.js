@@ -1,19 +1,19 @@
 define([
 	'backbone',
 	'views/base/ListView',
-	'models/purchaseorder/PurchaseOrderModel',
-	'models/purchaseorder/POWeightInfoModel',
-	'collections/purchaseorder/POWeightInfoCollection',
+	'models/salesorder/SalesOrderModel',
+	'models/salesorder/SOWeightInfoModel',
+	'collections/salesorder/SOWeightInfoCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
-	'text!templates/purchaseorder/weightInfoListTemplate.html',
-	'text!templates/purchaseorder/weightInfoInnerListTemplate.html',
+	'text!templates/salesorder/weightInfoListTemplate.html',
+	'text!templates/salesorder/weightInfoInnerListTemplate.html',
 	'constant',
 ], function(Backbone,
 			ListView,
-			PurchaseOrderModel,
-			POWeightInfoModel,
-			POWeightInfoCollection,
+			SalesOrderModel,
+			SOWeightInfoModel,
+			SOWeightInfoCollection,
 			contentTemplate,
 			purchaseOrderTabbingTemplate,
 			weightInfoListTemplate,
@@ -29,11 +29,11 @@ define([
 			this.initSubContainer();
 			
 			var thisObj = this;
-			this.poId = option.poId;
+			this.soId = option.soId;
 			
-			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generatePOTabs(this.poId, 3)}));
+			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generateSOTabs(this.soId, 3)}));
 			
-			this.collection = new POWeightInfoCollection({id:this.poId});
+			this.collection = new SOWeightInfoCollection({id:this.soId});
 			this.collection.on('sync', function() {
 				_.each(this.models, function (model) {
 					var transportScheduleDate = model.get('transportScheduleDate').split(' ');
@@ -50,7 +50,7 @@ define([
 				this.off('error');
 			});
 			
-			this.model = new PurchaseOrderModel({id:option.id});
+			this.model = new SalesOrderModel({id:option.id});
 			this.model.on('change', function() {
 				if(thisObj.subContainerExist()) {
 					thisObj.displaySchedule();
@@ -71,7 +71,7 @@ define([
 			var innerTemplate = _.template(weightInfoListTemplate, innerTemplateVar);
 			
 			var variables = {
-				h1_title: 'PO # '+this.model.get('order_number')+' Weight Information',
+				h1_title: 'SO # '+this.model.get('order_number')+' Weight Information',
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
@@ -80,13 +80,13 @@ define([
 		
 		displayList: function () {
 			var data = {
-				weightInfo_url: '/#/'+Const.URL.POWEIGHTINFO+'/'+this.poId,
+				weightInfo_url: '/#/'+Const.URL.SOWEIGHTINFO+'/'+this.soId,
 				weightInfo: this.collection.models,
 				_: _ 
 			};
 			
 			var innerListTemplate = _.template(weightInfoInnerListTemplate, data);
-			this.subContainer.find("#po-weight-info-list tbody").html(innerListTemplate);
+			this.subContainer.find("#so-weight-info-list tbody").html(innerListTemplate);
 			
 			this.generatePagination();
 		},

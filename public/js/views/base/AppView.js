@@ -330,7 +330,7 @@ define([
 			var tabs = [
 				{'url':'/#/'+Const.URL.SO+'/'+soId, 'label':'Sales Order'},
 				{'url':'/#/'+Const.URL.DELIVERYSCHEDULE+'/'+soId, 'label':'Schedule'},
-				{'url':'/#/', 'label':'Weight Details'},
+				{'url':'/#/'+Const.URL.SOWEIGHTINFO+'/'+soId, 'label':'Weight Details'},
 			];
 			
 			for(var i = 0; i < tabs.length; i++) {

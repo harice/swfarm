@@ -163,6 +163,8 @@ define([
 	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soId/:action/:id'] = 'showDeliverySchedulePage';
 	
 	//so weight info
+	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId'] = 'showSOWeightInfoPage';
+	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/'] = 'showSOWeightInfoPage';
 	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId'] = 'showSOWeightInfoPage';
 	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/'] = 'showSOWeightInfoPage';
 	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/:action'] = 'showSOWeightInfoPage';
