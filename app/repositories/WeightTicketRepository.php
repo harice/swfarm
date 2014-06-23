@@ -26,6 +26,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         }
     }
 
+    //get all weight ticket (dropoff or pickup) of order
     public function getAllWeightticketOfOrder($orderId){
         $orderDetails = Order::with('transportschedule.weightticket.weightticketscale_pickup')
                                 ->with('transportschedule.weightticket.weightticketscale_dropoff')

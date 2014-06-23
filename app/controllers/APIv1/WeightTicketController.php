@@ -85,8 +85,8 @@ class WeightTicketController extends BaseController {
         return $this->weightticket->mailWeightTicket($id, Input::all());
     }
 
-    public function getAllWeightticketOfOrder($orderId){
-		$model = $this->weightticket->getAllWeightticketOfOrder($orderId);
+    public function getAllWeightticketOfOrder(){
+		$model = $this->weightticket->getAllWeightticketOfOrder(Input::get('order_id'));
         return Response::json($model);
 	}
 
