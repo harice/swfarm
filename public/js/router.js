@@ -141,6 +141,8 @@ define([
 	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poId/:action/:id'] = 'showPickupSchedulePage';
 	
 	//po weight info
+	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId'] = 'showPOWeightInfoPage';
+	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/'] = 'showPOWeightInfoPage';
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId'] = 'showPOWeightInfoPage';
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/'] = 'showPOWeightInfoPage';
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/:action'] = 'showPOWeightInfoPage';

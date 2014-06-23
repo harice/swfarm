@@ -311,7 +311,7 @@ define([
 			var tabs = [
 				{'url':'/#/'+Const.URL.PO+'/'+poId, 'label':'Purchase Order'},
 				{'url':'/#/'+Const.URL.PICKUPSCHEDULE+'/'+poId, 'label':'Schedule'},
-				{'url':'/#/', 'label':'Weight Details'},
+				{'url':'/#/'+Const.URL.POWEIGHTINFO+'/'+poId, 'label':'Weight Details'},
 			];
 			
 			for(var i = 0; i < tabs.length; i++) {
