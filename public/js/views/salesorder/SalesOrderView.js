@@ -13,6 +13,7 @@ define([
 	'collections/product/ProductCollection',
 	'models/salesorder/SalesOrderModel',
 	'text!templates/layout/contentTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/salesorder/salesOrderViewTemplate.html',
 	'text!templates/salesorder/salesOrderViewProductItemTemplate.html',
 	'text!templates/salesorder/salesOrderOriginTemplate.html',
@@ -33,6 +34,7 @@ define([
 			ProductCollection,
 			SalesOrderModel,
 			contentTemplate,
+			purchaseOrderTabbingTemplate,
 			salesOrderViewTemplate,
 			productItemTemplate,
 			salesOrderOriginTemplate,
@@ -48,9 +50,11 @@ define([
 		
 		initialize: function(option) {
 			this.initSubContainer();
-			var thisObj = this;
 			
+			var thisObj = this;
 			this.soId = option.id;
+			
+			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generateSOTabs(this.soId, 1)}));
 			
 			this.model = new SalesOrderModel({id:this.soId});
 			this.model.on('change', function() {
@@ -86,7 +90,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.subContainer.html(compiledTemplate);
+			this.subContainer.find('#with-tab-content').html(compiledTemplate);
 		},
 		
 		supplySOData: function () {

@@ -145,6 +145,8 @@ define([
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/'] = 'showPOWeightInfoPage';
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/:action'] = 'showPOWeightInfoPage';
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/:action/'] = 'showPOWeightInfoPage';
+	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/:action/:type'] = 'showPOWeightInfoPage';
+	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/:action/:type/'] = 'showPOWeightInfoPage';
 	
 	//so
 	routerRoutes[Const.URL.SO] = 'showSOPage';
@@ -163,6 +165,8 @@ define([
 	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/'] = 'showSOWeightInfoPage';
 	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/:action'] = 'showSOWeightInfoPage';
 	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/:action/'] = 'showSOWeightInfoPage';
+	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/:action/:type'] = 'showSOWeightInfoPage';
+	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/:action/:type/'] = 'showSOWeightInfoPage';
 	
 	//stack location
 	routerRoutes[Const.URL.STACKLOCATION] = 'showStackPage';
@@ -379,10 +383,10 @@ define([
 			this.currView.render();
 		});
 		
-		app_router.on('route:showPOWeightInfoPage', function (poId, schedId, action) {
+		app_router.on('route:showPOWeightInfoPage', function (poId, schedId, action, type) {
 			this.closeView();
 			var poWeightInfoController = new POWeightInfoController();
-			this.currView = poWeightInfoController.setAction(poId, schedId, action);
+			this.currView = poWeightInfoController.setAction(poId, schedId, action, type);
 			this.currView.render();
 		});
 		
@@ -400,10 +404,10 @@ define([
 			this.currView.render();
 		});
 		
-		app_router.on('route:showSOWeightInfoPage', function (soId, schedId, action) {
+		app_router.on('route:showSOWeightInfoPage', function (soId, schedId, action, type) {
 			this.closeView();
 			var soWeightInfoController = new SOWeightInfoController();
-			this.currView = soWeightInfoController.setAction(soId, schedId, action);
+			this.currView = soWeightInfoController.setAction(soId, schedId, action, type);
 			this.currView.render();
 		});
 		

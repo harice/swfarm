@@ -3,24 +3,23 @@
         <div class="block-flat">
             <div class="content">
               
-              <form id="soWeightInfoFrom" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-				<fieldset>
+              <form id="poWeightInfoFrom" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+                <fieldset>
                   <legend>Details</legend>
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
-                        <label for="so-number" class="col-sm-3 control-label">SO No.</label>
+                        <label for="po-number" class="col-sm-3 control-label">PO No.</label>
                         <div class="col-sm-7">
-                          <input id="so-number" type="text" class="form-control" maxlength="250" readonly>
+                          <input id="po-number" type="text" class="form-control" maxlength="250" readonly>
                         </div>
                       </div>
 					  <div class="form-group">
-                        <label for="producer" class="col-sm-3 control-label">Customer</label>
+                        <label for="producer" class="col-sm-3 control-label">Producer</label>
                         <div class="col-sm-7">
                           <input id="producer" type="text" class="form-control" maxlength="250" readonly>
                         </div>
                       </div>
-					  <% if (typeof wiId !== "undefined") { %>
 					  <div class="form-group">
                         <label for="weight-ticket-no" class="col-sm-3 control-label">Weight Ticket No.</label>
                         <div class="col-sm-7">
@@ -31,23 +30,6 @@
                         <label for="loading-ticket-no" class="col-sm-3 control-label">Loading Ticket No.</label>
                         <div class="col-sm-7">
                           <input id="loading-ticket-no" type="text" class="form-control" maxlength="250" readonly>
-                        </div>
-                      </div>
-					  <% } %>
-					  <div class="form-group">
-                        <label for="weightinfo_type" class="col-sm-3 control-label">Type</label>
-                        <div class="col-sm-7">
-                          <% if (typeof wiType !== "undefined") { %>
-							<input id="weightinfo_type" type="text" class="form-control width-200 weightinfo_type" maxlength="250" name="weightinfo_type" value="<%= wiType %>" readonly>
-						  <% } else { %>
-						  <div class="styled-select">
-							<select id="weightinfo_type" class="form-contro width-200 weightinfo_type" name="weightinfo_type" required>
-							  <option value="">Select a type</option>
-							  <option value="pickup">Pickup</option>
-							  <option value="dropoff">Dropoff</option>
-							</select>
-						  </div>
-						  <% } %>
                         </div>
                       </div>
                     </div>
@@ -62,8 +44,9 @@
                   </div>
                 </fieldset>
                 <fieldset>
+                  <legend>Pickup</legend>
                   <div class="table-responsive">
-                    <table id="weight-info" class="table table-bordered">
+                    <table id="pickup-info" class="table table-bordered">
                       <thead>
                         <tr>
                           <th style="width:15%;">Scale</th>
@@ -77,32 +60,19 @@
                       </thead>
                       <tbody>
 					    <tr>
-						  <td>
-							<div class="styled-select">
-							  <select id="scaleAccount_id" class="form-contro width-200 scaleAccount_id" name="scaleAccount_id" required>
-							    <option value="">Select a scale account</option>
-								<%= scaler_account_list %>
-							  </select>
-							</div>
-						  </td>
-						  <td>
-							<div class="styled-select">
-							  <select id="scales" class="form-control width-200 scale_id" name="scale_id" required>
-							    <option value="">Select a scale name</option>
-							  </select>
-							</div>
-						  </td>
-						  <td><input id="fee" maxlength="80" name="fee" class="form-control fee" placeholder="0.00" required readonly></td>
-						  <td><input maxlength="80" name="bales" class="form-control bales mask-bales" placeholder="0" required></td>
-						  <td><input maxlength="80" name="gross" class="form-control gross" placeholder="0.0000" required></td>
-						  <td><input maxlength="80" name="tare" class="form-control tare" placeholder="0.0000" required></td>
+						  <td><input class="form-control scale-account" placeholder="" readonly></td>
+						  <td><input class="form-control scale-name" placeholder="" readonly></td>
+						  <td><input class="form-control fee" placeholder="0.00" readonly></td>
+						  <td><input class="form-control bales" placeholder="0" readonly></td>
+						  <td><input class="form-control gross" placeholder="0.0000" readonly></td>
+						  <td><input class="form-control tare" placeholder="0.0000" readonly></td>
 						  <td><span class="net">0.0000</span></td>
 						</tr>
 					  </tbody>
                     </table>
                   </div>
 				  <div class="table-responsive">
-                    <table id="product-list" class="table table-bordered">
+                    <table id="pickup-product-list" class="table table-bordered">
                       <thead>
                         <tr>
                           <th style="width:20%;">Stack No.</th>
@@ -124,11 +94,63 @@
                     </table>
                   </div>
                 </fieldset>
+				<fieldset>
+                  <legend>Dropoff</legend>
+                  <div class="table-responsive">
+                    <table id="dropoff-info" class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th style="width:15%;">Scale</th>
+						  <th style="width:15%;">Scale Name</th>
+                          <th style="width:15%;">Scale Fee</th>
+                          <th style="width:15%;">Bales</th>
+                          <th style="width:15%;">Gross</th>
+                          <th style="width:15%;">Tare</th>
+                          <th style="width:10%;">Net</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+					    <tr>
+						  <td><input class="form-control scale-account" placeholder="" readonly></td>
+						  <td><input class="form-control scale-name" placeholder="" readonly></td>
+						  <td><input class="form-control fee" placeholder="0.00" readonly></td>
+						  <td><input class="form-control bales" placeholder="0" readonly></td>
+						  <td><input class="form-control gross" placeholder="0.0000" readonly></td>
+						  <td><input class="form-control tare" placeholder="0.0000" readonly></td>
+						  <td><span class="net">0.0000</span></td>
+						</tr>
+					  </tbody>
+                    </table>
+                  </div>
+				  <div class="table-responsive">
+                    <table id="dropoff-product-list" class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th style="width:20%;">Stack No.</th>
+                          <th style="width:20%;">Product</th>
+                          <th style="width:20%;">Bales</th>
+						  <th style="width:20%;">Lbs.</th>
+                          <th style="width:20%;">Net Tons</th>
+                        </tr>
+                      </thead>
+					  <tfoot>
+						<tr>
+						  <td colspan="2">Total</td>
+						  <td><span class="total-bales">0</span></td>
+						  <td><span class="total-pounds">0.00</span></td>
+						  <td><span class="total-net-tons">0.0000</span></td>
+						</tr>
+					  </tfoot>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                </fieldset>
                 <div class="form-group form-button-container">
                     <div class="col-md-12">
                         <div class="pull-right">
-                            <button id="save" type="submit" class="save btn btn-primary">Save</button>
-                            <a class="btn btn-default" href="<%= cancel_url %>">Cancel</a>
+                            <a href="<%= weight_info_print_url %>" id="print-weight-ticket" class="btn btn-link">Print Weight Ticket</a>
+                            <a class="btn btn-primary" href="<%= weight_info_edit_url %>">Edit Weight Ticket</a>
+                            <a class="btn btn-default" href="<%= previous_po_sched_url %>">Cancel</a>
                         </div>
                     </div>
                 </div>
