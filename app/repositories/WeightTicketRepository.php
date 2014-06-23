@@ -25,6 +25,56 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             return $e->getMessage();
         }
     }
+
+    //get all weight ticket (dropoff or pickup) of order
+    public function getAllWeightticketOfOrder($orderId){
+        $orderDetails = Order::with('transportschedule.weightticket.weightticketscale_pickup')
+                                ->with('transportschedule.weightticket.weightticketscale_dropoff')
+                                ->where('id', '=', $orderId)->first()->toArray();
+
+        $weightTicketList = array();
+        $index = 0;
+
+        //identify which detail to be used, dropoff or pickup weightticket
+        foreach($orderDetails['transportschedule'] as $transportScheduleDetails){
+            if($transportScheduleDetails['weightticket']['pickup_id'] != null){
+                $pickupNetWeight = $this->getNetWeight($transportScheduleDetails['weightticket']['weightticketscale_pickup']['gross'], $transportScheduleDetails['weightticket']['weightticketscale_pickup']['tare']);
+            }
+
+            if($transportScheduleDetails['weightticket']['dropoff_id'] != null){
+                $dropoffNetWeight = $this->getNetWeight($transportScheduleDetails['weightticket']['weightticketscale_dropoff']['gross'], $transportScheduleDetails['weightticket']['weightticketscale_dropoff']['tare']);
+            }
+            
+            if($transportScheduleDetails['weightticket']['pickup_id'] != null && $transportScheduleDetails['weightticket']['dropoff_id'] != null){
+                if($pickupNetWeight >= $dropoffNetWeight){
+                    $weightTicketList[$index] = $transportScheduleDetails['weightticket']['weightticketscale_pickup'];
+                    $netWeight = $pickupNetWeight;
+                    
+                } else {
+                    $weightTicketList[$index] = $transportScheduleDetails['weightticket']['weightticketscale_dropoff'];
+                    $netWeight = $dropoffNetWeight;
+                    
+                }
+            } else if($transportScheduleDetails['weightticket']['pickup_id'] != null){
+                $weightTicketList[$index] = $transportScheduleDetails['weightticket']['weightticketscale_pickup'];
+                $netWeight = $pickupNetWeight;
+            } else {
+                $weightTicketList[$index] = $transportScheduleDetails['weightticket']['weightticketscale_dropoff'];
+                $netWeight = $dropoffNetWeight;
+            }
+
+            $weightTicketList[$index]['transportScheduleDate'] = $transportScheduleDetails['date'];
+            $weightTicketList[$index]['weightTicketNumber'] = $transportScheduleDetails['weightticket']['weightTicketNumber'];
+            $weightTicketList[$index]['netWeight'] = number_format($netWeight, 4); //format to 4 decimal places
+            $index++;
+        }
+
+        return $weightTicketList;             
+    }
+
+    private function getNetWeight($gross, $tare){
+        return $gross-$tare;
+    }
     
     public function store($data)
     {

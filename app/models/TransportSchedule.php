@@ -82,7 +82,7 @@ class TransportSchedule extends Eloquent {
     }
 
     public function weightticket(){
-        return $this->hasOne('WeightTicket', 'pickupschedule_id', 'id');
+        return $this->hasOne('WeightTicket', 'transportSchedule_id', 'id');
     }
 
     public function trailer(){
