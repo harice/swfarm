@@ -62,7 +62,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                 $weightTicketList[$index] = $transportScheduleDetails['weightticket']['weightticketscale_dropoff'];
                 $netWeight = $dropoffNetWeight;
             }
-
+            $weightTicketList[$index]['transportScheduleId'] = $transportScheduleDetails['id'];
             $weightTicketList[$index]['transportScheduleDate'] = $transportScheduleDetails['date'];
             $weightTicketList[$index]['weightTicketNumber'] = $transportScheduleDetails['weightticket']['weightTicketNumber'];
             $weightTicketList[$index]['netWeight'] = number_format($netWeight, 4); //format to 4 decimal places
