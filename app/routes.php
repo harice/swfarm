@@ -147,7 +147,6 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     
     // Contract
     Route::resource('contract', 'APIv1\ContractController');
-    Route::resource('contractproducts', 'APIv1\ContractProductsController');
     
 });
 

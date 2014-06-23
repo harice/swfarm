@@ -1,18 +1,11 @@
 <?php
 
-use ContractProductsRepositoryInterface as ContractP;
-
 /**
  * Description of ContractRepository
  *
  * @author Das
  */
 class ContractRepository implements ContractRepositoryInterface {
-    
-    public function __construct(ContractP $product)
-    {
-        $this->product = $product;
-    }
     
     public function findAll($params)
     {
@@ -78,15 +71,22 @@ class ContractRepository implements ContractRepositoryInterface {
         
         try
         {
-            $contract = $this->instance();
-            $contract->fill($data);
-            $contract->save();
-            
-            $contract_id = $contract['id'];
-            foreach ($data['products'] as $product)
-            {
-                $this->product->store($contract_id, $product);
-            }
+            DB::transaction(function() use ($data){
+                $contract = $this->instance();
+                $contract->fill($data);
+                $contract->save();
+
+                $new_products = array();
+                foreach ($data['products'] as $product)
+                {
+                    $new_products[$product['product_id']] = array(
+                        'tons' => $product['tons'],
+                        'bales' => $product['bales']
+                    );
+                }
+                
+                $contract->products()->sync($new_products);
+            });
             
             $response = array(
                 'error' => false,
@@ -107,15 +107,22 @@ class ContractRepository implements ContractRepositoryInterface {
         
         try
         {
-            $contract = $this->findById($id);
-            $contract->fill($data);
-            $contract->update();
-            
-            $contract_id = $contract['id'];
-            foreach ($data['products'] as $product)
-            {
-                $this->product->update($contract_id, $product);
-            }
+            DB::transaction(function() use ($data, $id){
+                $contract = $this->findById($id);
+                $contract->fill($data);
+                $contract->update();
+                
+                $new_products = array();
+                foreach ($data['products'] as $product)
+                {
+                    $new_products[$product['product_id']] = array(
+                        'tons' => $product['tons'],
+                        'bales' => $product['bales']
+                    );
+                }
+                
+                $contract->products()->sync($new_products);
+            });
             
             $response = array(
                 'error' => false,
