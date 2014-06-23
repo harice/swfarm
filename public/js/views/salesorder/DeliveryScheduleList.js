@@ -5,6 +5,7 @@ define([
 	'models/salesorder/SOScheduleModel',
 	'collections/salesorder/SOScheduleCollection',
 	'text!templates/layout/contentTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/salesorder/deliveryScheduleListTemplate.html',
 	'text!templates/salesorder/deliveryScheduleInnerListTemplate.html',
 	'constant',
@@ -14,6 +15,7 @@ define([
 			SOScheduleModel,
 			SOScheduleCollection,
 			contentTemplate,
+			purchaseOrderTabbingTemplate,
 			deliveryScheduleListTemplate,
 			deliveryScheduleInnerListTemplate,
 			Const
@@ -28,6 +30,8 @@ define([
 			
 			this.soId = option.id;
 			var thisObj = this;
+			
+			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generateSOTabs(this.soId, 2)}));
 			
 			this.collection = new SOScheduleCollection({id:option.id});
 			this.collection.on('sync', function() {
@@ -71,7 +75,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.subContainer.html(compiledTemplate);
+			this.subContainer.find('#with-tab-content').html(compiledTemplate);
 			
 			this.initConfirmationWindow('Are you sure you want to delete this schedule?',
 										'confirm-delete-schedule',

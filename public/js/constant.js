@@ -133,6 +133,10 @@ define(function () {
 		'MIMETYPE': {
 			'PDF': 'application/pdf',
 		},
+		'WEIGHTINFO':{
+			'PICKUP' : 'pickup',
+			'DROPOFF' : 'dropoff',
+		},
 	};
 	
 	return constant;

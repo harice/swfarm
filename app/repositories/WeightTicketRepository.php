@@ -28,48 +28,82 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     
     public function store($data)
     {
-        $result = DB::transaction(function() use ($data){
-            $hasExisitingTicket = WeightTicket::where('transportSchedule_id', '=', $data['transportSchedule_id'])->first();
-            if($hasExisitingTicket != null){
-                return array(
+        $hasExisitingTicket = WeightTicket::where('transportSchedule_id', '=', $data['transportSchedule_id'])->first();
+        if($hasExisitingTicket != null){
+            if(isset($data['dropoff_info'])){
+                if($hasExisitingTicket->dropoff_id != null){
+                    return array(
                       'error' => true,
-                      'message' => 'This schedule has already weight ticket.');
+                      'message' => 'This schedule already has dropoff weight ticket.');
+                }
             }
-            //for pickup data
-            $this->validate($data['pickup_info'], 'WeightTicketScale');
-            $weightticketscale_pickup = new WeightTicketScale;
-            $data['pickup_info']['type'] = 1; //for pickup type
-            $weightticketscale_pickup->fill($data['pickup_info']);
-            $weightticketscale_pickup->save();
-
-            foreach($data['pickup_info']['products'] as $product){
-                $product['weightTicketScale_id'] = $weightticketscale_pickup->id;
-                $this->validate($product, 'WeightTicketProducts');
-                $weightticketproduct = new WeightTicketProducts;
-                $weightticketproduct->fill($product);
-                $weightticketproduct->save();
+            else if(isset($data['pickup_info'])){
+                if($hasExisitingTicket->pickup_id != null){
+                    return array(
+                      'error' => true,
+                      'message' => 'This schedule already has pickup weight ticket.');
+                }
             }
 
-            //for dropoff data
-            $this->validate($data['dropoff_info'], 'WeightTicketScale');
-            $weightticketscale_dropoff = new WeightTicketScale;
-            $data['dropoff_info']['type'] = 2; //for dropoff type
-            $weightticketscale_dropoff->fill($data['dropoff_info']);
-            $weightticketscale_dropoff->save();
+            $result = $this->update($data['transportSchedule_id'], $data);
+            if(is_array($result)){
+                return array(
+                  'error' => false,
+                  'message' => 'Weight ticket successfully created');
+            }
 
-            foreach($data['dropoff_info']['products'] as $product){
-                $product['weightTicketScale_id'] = $weightticketscale_dropoff->id;
-                $this->validate($product, 'WeightTicketProducts');
-                $weightticketproduct = new WeightTicketProducts;
-                $weightticketproduct->fill($product);
-                $weightticketproduct->save();
+            
+        }
+
+        $result = DB::transaction(function() use ($data){
+            $isPickup = false;
+            $isDropoff = false;
+            
+            if(isset($data['pickup_info'])){
+                //for pickup data
+                $this->validate($data['pickup_info'], 'WeightTicketScale');
+                $weightticketscale_pickup = new WeightTicketScale;
+                $data['pickup_info']['type'] = 1; //for pickup type
+                $weightticketscale_pickup->fill($data['pickup_info']);
+                $weightticketscale_pickup->save();
+
+                foreach($data['pickup_info']['products'] as $product){
+                    $product['weightTicketScale_id'] = $weightticketscale_pickup->id;
+                    $this->validate($product, 'WeightTicketProducts');
+                    $weightticketproduct = new WeightTicketProducts;
+                    $weightticketproduct->fill($product);
+                    $weightticketproduct->save();
+                }
+                $isPickup = true;
+            }
+
+            if(isset($data['dropoff_info'])){
+                //for dropoff data
+                $this->validate($data['dropoff_info'], 'WeightTicketScale');
+                $weightticketscale_dropoff = new WeightTicketScale;
+                $data['dropoff_info']['type'] = 2; //for dropoff type
+                $weightticketscale_dropoff->fill($data['dropoff_info']);
+                $weightticketscale_dropoff->save();
+
+                foreach($data['dropoff_info']['products'] as $product){
+                    $product['weightTicketScale_id'] = $weightticketscale_dropoff->id;
+                    $this->validate($product, 'WeightTicketProducts');
+                    $weightticketproduct = new WeightTicketProducts;
+                    $weightticketproduct->fill($product);
+                    $weightticketproduct->save();
+                }
+                $isDropoff = true;
             }
 
             $this->validate($data, 'WeightTicket');
             $data['weightTicketNumber'] = $this->generateWeightTicketNumber();
-            $data['loadingTicketNumber'] = $this->generateLoadingTicketNumber();
-            $data['pickup_id'] = $weightticketscale_pickup->id;
-            $data['dropoff_id'] = $weightticketscale_dropoff->id;
+            $tickets = $this->generateLoadingTicketNumber();
+            $data['loadingTicketNumber'] = $tickets['loadingTicket'];
+            $data['unloadingTicketNumber'] = $tickets['unloadingTicket'];
+            if($isPickup)
+                $data['pickup_id'] = $weightticketscale_pickup->id;
+            if($isDropoff)
+                $data['dropoff_id'] = $weightticketscale_dropoff->id;
 
             $weightticket = new WeightTicket;
             $data['status_id'] = 1; //open status
@@ -88,7 +122,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
               'message' => 'Weight ticket successfully created');
     }
 
-    private function generateWeightTicketNumber(){ //type default is PO
+    private function generateWeightTicketNumber(){
         $prefix = 'W';
 
         $dateToday = date('Y-m-d');
@@ -97,13 +131,17 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         return $prefix.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
     }
 
-    private function generateLoadingTicketNumber(){ //type default is PO
-        $prefix = 'L';
-
+    private function generateLoadingTicketNumber(){
         $dateToday = date('Y-m-d');
         $count = WeightTicket::where('created_at', 'like', $dateToday.'%')->count()+1;
-        
-        return $prefix.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
+        $loadingTicket = 'L'.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
+        $unloadingTicket = 'U'.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
+        $tickets = array(
+            'loadingTicket' => $loadingTicket,
+            'unloadingTicket' => $unloadingTicket,
+            );
+
+        return $tickets;
     }
 
     public function getScheduleProducts($transportschedule_id){
@@ -117,36 +155,78 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         $result = DB::transaction(function() use ($id, $data){
 
             $this->validate($data, 'WeightTicket');
-            $weightticket = WeightTicket::find($id);
+            // $weightticket = WeightTicket::find($id);
+            $weightticket = WeightTicket::where('transportSchedule_id', '=', $id)->first();
             $weightticket->fill($data);
             $weightticket->save();
+            if(isset($data['pickup_info'])){
+                //for pickup data
+                $this->validate($data['pickup_info'], 'WeightTicketScale');
+                if($weightticket->pickup_id == null){ //no pickup info yet, insert new pickup info for this weight ticket
+                    $weightticketscale_pickup = new WeightTicketScale;
+                    $data['pickup_info']['type'] = 1; //for pickup type
+                    $weightticketscale_pickup->fill($data['pickup_info']);
+                    $weightticketscale_pickup->save();
 
-            //for pickup data
-            $this->validate($data['pickup_info'], 'WeightTicketScale');
-            $weightticketscale_pickup = WeightTicketScale::find($weightticket->pickup_id);
-            $weightticketscale_pickup->fill($data['pickup_info']);
-            $weightticketscale_pickup->save();
+                    foreach($data['pickup_info']['products'] as $product){
+                        $product['weightTicketScale_id'] = $weightticketscale_pickup->id;
+                        $this->validate($product, 'WeightTicketProducts');
+                        $weightticketproduct = new WeightTicketProducts;
+                        $weightticketproduct->fill($product);
+                        $weightticketproduct->save();
+                    }
 
-            foreach($data['pickup_info']['products'] as $product){
-                $product['weightTicketScale_id'] = $weightticketscale_pickup->id;
-                $this->validate($product, 'WeightTicketProducts');
-                $weightticketproduct = WeightTicketProducts::find($product['id']);
-                $weightticketproduct->fill($product);
-                $weightticketproduct->save();
+                    $weightticket->pickup_id = $weightticketscale_pickup->id;
+                    $weightticket->save();
+                } else {
+                    $weightticketscale_pickup = WeightTicketScale::find($weightticket->pickup_id);
+                    $weightticketscale_pickup->fill($data['pickup_info']);
+                    $weightticketscale_pickup->save();
+
+                    foreach($data['pickup_info']['products'] as $product){
+                        $product['weightTicketScale_id'] = $weightticketscale_pickup->id;
+                        $this->validate($product, 'WeightTicketProducts');
+                        $weightticketproduct = WeightTicketProducts::find($product['id']);
+                        $weightticketproduct->fill($product);
+                        $weightticketproduct->save();
+                    }
+                }
+
+                
             }
 
-            //for dropoff data
-            $this->validate($data['dropoff_info'], 'WeightTicketScale');
-            $weightticketscale_dropoff = WeightTicketScale::find($weightticket->dropoff_id);
-            $weightticketscale_dropoff->fill($data['dropoff_info']);
-            $weightticketscale_dropoff->save();
+            if(isset($data['dropoff_info'])){
+                //for dropoff data
+                $this->validate($data['dropoff_info'], 'WeightTicketScale');
+                if($weightticket->dropoff_id == null){ //no dropoff info yet, insert new dropoff info for this weight ticket
+                    $weightticketscale_dropoff = new WeightTicketScale;
+                    $data['dropoff_info']['type'] = 2; //for dropoff type
+                    $weightticketscale_dropoff->fill($data['dropoff_info']);
+                    $weightticketscale_dropoff->save();
 
-            foreach($data['dropoff_info']['products'] as $product){
-                $product['weightTicketScale_id'] = $weightticketscale_dropoff->id;
-                $this->validate($product, 'WeightTicketProducts');
-                $weightticketproduct = WeightTicketProducts::find($product['id']);
-                $weightticketproduct->fill($product);
-                $weightticketproduct->save();
+                    foreach($data['dropoff_info']['products'] as $product){
+                        $product['weightTicketScale_id'] = $weightticketscale_dropoff->id;
+                        $this->validate($product, 'WeightTicketProducts');
+                        $weightticketproduct = new WeightTicketProducts;
+                        $weightticketproduct->fill($product);
+                        $weightticketproduct->save();
+                    }
+
+                    $weightticket->dropoff_id = $weightticketscale_dropoff->id;
+                    $weightticket->save();
+                } else {
+                    $weightticketscale_dropoff = WeightTicketScale::find($weightticket->dropoff_id);
+                    $weightticketscale_dropoff->fill($data['dropoff_info']);
+                    $weightticketscale_dropoff->save();
+
+                    foreach($data['dropoff_info']['products'] as $product){
+                        $product['weightTicketScale_id'] = $weightticketscale_dropoff->id;
+                        $this->validate($product, 'WeightTicketProducts');
+                        $weightticketproduct = WeightTicketProducts::find($product['id']);
+                        $weightticketproduct->fill($product);
+                        $weightticketproduct->save();
+                    }
+                }
             }
 
             return $weightticket->id;

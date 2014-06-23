@@ -13,6 +13,7 @@ define([
 	'models/purchaseorder/PurchaseOrderModel',
 	'models/file/FileModel',
 	'text!templates/layout/contentTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderViewTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderViewProductItemTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderDestinationTemplate.html',
@@ -32,6 +33,7 @@ define([
 			PurchaseOrderModel,
 			FileModel,
 			contentTemplate,
+			purchaseOrderTabbingTemplate,
 			purchaseOrderAddTemplate,
 			productItemTemplate,
 			purchaseOrderDestinationTemplate,
@@ -46,11 +48,14 @@ define([
 		
 		initialize: function(option) {
 			this.initSubContainer();
+			
 			var thisObj = this;
 			this.poId = option.id;
 			this.isBid = false;
 			this.h1Title = 'Purchase Order';
 			this.h1Small = 'view';
+			
+			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generatePOTabs(this.poId, 1)}));
 			
 			this.productAutoCompletePool = [];
 			this.options = {
@@ -134,7 +139,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.subContainer.html(compiledTemplate);
+			this.subContainer.find('#with-tab-content').html(compiledTemplate);
 		},
 		
 		supplyPOData: function () {
@@ -200,7 +205,7 @@ define([
 						variables['file_path'] = '/apiv1/file/'+product.upload[0].files[0].auth;
 				}
 				
-				console.log(variables);
+				//console.log(variables);
 				
 				if(thisObj.isBid)
 					variables['is_bid'] = true;
