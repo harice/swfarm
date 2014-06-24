@@ -1,0 +1,29 @@
+<% if (!_.isEmpty(contracts)) { %>
+	<% _.each(contracts, function(contract){ %>
+	<tr>
+        <td><%= contract.get("contract_number") %></td>
+		<td><%= contract.get("account").name %></td>
+		<td><%= contract.get("contract_date_start") %></td>
+		<td><%= contract.get("contract_date_end") %></td>
+        <td>Estimated Tons</td>
+		<td>
+			<a href="<%= contract_edit_url %>/<%= contract.get("id") %>" class="text-primary" title="edit">
+			  <span class="fa-stack">
+	            <i class="fa fa-square fa-stack-2x"></i>
+	            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+	          </span>
+			</a>
+			<a href="#" class="text-danger delete-contract" data-id="<%= contract.get("id") %>">
+			  <span class="fa-stack">
+		          <i class="fa fa-square fa-stack-2x"></i>
+		          <i class="fa fa-times fa-stack-1x fa-inverse"></i>
+		        </span>
+			</a>
+		</td>
+	</tr>
+	<% }); %>
+<% } else { %>
+	<tr>
+		<td colspan="6">No result found.</td>
+	</tr>
+<% } %>

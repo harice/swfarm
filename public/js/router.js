@@ -27,6 +27,7 @@ define([
 	'controllers/trailer/TrailerController',
 	'controllers/settings/SettingsController',
 	'controllers/scale/ScaleController',
+    'controllers/contract/ContractController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
@@ -57,6 +58,7 @@ define([
 			TrailerController,
 			SettingsController,
 			ScaleController,
+            ContractController,
 			Global,
 			Const,
 			Session) {
@@ -188,6 +190,12 @@ define([
 	routerRoutes[Const.URL.SCALE+'/'] = 'showScalePage';
 	routerRoutes[Const.URL.SCALE+'/:action'] = 'showScalePage';
 	routerRoutes[Const.URL.SCALE+'/:action/:id'] = 'showScalePage';
+    
+    //contracts
+    routerRoutes[Const.URL.CONTRACT] = 'showContractPage';
+	routerRoutes[Const.URL.CONTRACT+'/'] = 'showContractPage';
+	routerRoutes[Const.URL.CONTRACT+'/:action'] = 'showContractPage';
+	routerRoutes[Const.URL.CONTRACT+'/:action/:id'] = 'showContractPage';
 	
 	routerRoutes['*actions'] = 'defaultAction';
 
@@ -436,6 +444,13 @@ define([
 			this.closeView();
 			var scaleController = new ScaleController();
 			this.currView = scaleController.setAction(action, id);
+			this.currView.render();
+		});
+        
+        app_router.on('route:showContractPage', function (action, id) {
+			this.closeView();
+			var contractController = new ContractController();
+			this.currView = contractController.setAction(action, id);
 			this.currView.render();
 		});
 		

@@ -25,6 +25,7 @@ define(function () {
 			'TRAILER': 'administration/trailer',
 			'SETTINGS': 'administration/settings',
 			'SCALE': 'administration/scale',
+            'CONTRACT': 'administration/contract',
 		},
 		'MENU': {
 			'PURCHASES': {
