@@ -34,7 +34,12 @@ class WeightTicketProducts extends BaseModel {
      */
     public function weightticketscale()
     {
-        return $this->belongsTo('WeightTicketScale', 'id', 'weightTicketScale_id');
+        return $this->belongsTo('WeightTicketScale', 'weightTicketScale_id', 'id');
+    }
+
+    public function weightticketscale_type()
+    {
+        return $this->belongsTo('WeightTicketScale', 'weightTicketScale_id', 'id')->select(array('id', 'type'));
     }
 
     public function transportscheduleproduct()
