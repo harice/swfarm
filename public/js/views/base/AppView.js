@@ -349,6 +349,10 @@ define([
 			}
 			return _.template(tabsTemplate, variables);
 		},
+		
+		linkStopPropagation: function (ev) {
+			ev.stopPropagation();
+		},
 	});
 
 	return AppView;

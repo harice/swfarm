@@ -1,7 +1,7 @@
 <% if (!_.isEmpty(pos)) { %>
 	<% _.each(pos, function(po){ %>
-	<tr>
-		<td><a href="<%= po_url %>/<%= po.get("id") %>"><%= po.get("order_number") %></a></td>
+	<tr data-id="collapsible-<%= po.get("id") %>">
+		<td><a class="stop-propagation" href="<%= po_url %>/<%= po.get("id") %>"><%= po.get("order_number") %></a></td>
 		<td><%= po.get("created_at").split(" ")[0] %></td>
 		<td>
 			<% if (po.get("transportdatestart")) { %>
@@ -66,8 +66,11 @@
 					<i class="fa fa-ban fa-stack-2x"></i>
 				</span>
 			<% } %>
-			
-			
+		</td>
+	</tr>
+	<tr>
+		<td colspan="10" style="padding:0;">
+			<div class="order-collapsible-item collapse" id="collapsible-<%= po.get("id") %>">qwerty</div>
 		</td>
 	</tr>
 	<% }); %>

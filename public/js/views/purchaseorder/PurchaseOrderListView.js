@@ -137,7 +137,21 @@ define([
 			var innerListTemplate = _.template(purchaseOrderInnerListTemplate, data);
 			this.subContainer.find("#po-list tbody").html(innerListTemplate);
 			
+			if(this.collection.models.length > 0)
+				this.addCollapsible(this.collection.models);
+			
 			this.generatePagination();
+		},
+		
+		addCollapsible: function (models) {
+			/*_.each(models, function (model) {
+				console.log('#collapsible-'+model.get('id'));
+				$('#collapsible-'+model.get('id')).collapse();
+				$('#collapsible-'+model.get('id')).on('show.bs.collapse', function () {
+					$(this).closest('tbody').find('.order-collapsible-item.collapse.in').collapse('toggle');
+				});
+				$('#collapsible-'+model.get('id')).collapse('toggle');
+			});*/
 		},
 		
 		initCalendars: function () {
@@ -249,6 +263,8 @@ define([
 			'click .cancel-po': 'preShowConfirmationWindow',
 			'click #confirm-cancel-po': 'cancelPO',
 			'change #reason': 'onChangeReason',
+			'click #po-accordion tr': 'toggleAccordion',
+			'click .stop-propagation': 'linkStopPropagation',
 		},
 		
 		onChangeReason: function (ev) {
@@ -288,6 +304,15 @@ define([
 		cancelPO: function (ev) {
 			$('#cancellationReasonForm').submit();
 			return false;
+		},
+		
+		toggleAccordion: function (ev) {
+			var id = $(ev.currentTarget).attr('data-id');
+			
+			if(!$('#'+id).hasClass('in'))
+				$('#'+id).closest('tbody').find('.order-collapsible-item.collapse.in').collapse('toggle');
+			
+			$('#'+id).collapse('toggle');
 		},
 	});
 
