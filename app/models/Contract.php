@@ -68,5 +68,10 @@ class Contract extends BaseModel {
     {
         return $this->belongsTo('User');
     }
+    
+    public function getDates()
+    {
+        return array('created_at', 'updated_at', 'contract_date_start', 'contract_date_end');
+    }
 
 }

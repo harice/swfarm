@@ -31,42 +31,40 @@ class ContractRepository implements ContractRepositoryInterface {
         }
     }
     
-    public function search($_search)
+    public function search($params)
     {
         try
         {
-            $perPage = isset($_search['perpage']) ? $_search['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
-            $page     = isset($_search['page']) ? $_search['page'] : 1;
-            $sortby   = isset($_search['sortby']) ? $_search['sortby'] : 'contract_number';
-            $orderby  = isset($_search['orderby']) ? $_search['orderby'] :'DSC';
+            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+            $page     = isset($params['page']) ? $params['page'] : 1;
+            $sortby   = isset($params['sortby']) ? $params['sortby'] : 'contract_number';
+            $orderby  = isset($params['orderby']) ? $params['orderby'] :'DSC';
             $offset   = $page * $perPage - $perPage;
-            $searchWord = $_search['search'];
+            $searchWord = $params['search'];
             
-//            $date_range = array(
-//                'start' => isset($_search['date_start']) ? $_search['date_start'] : 1,
-//                'end' => isset($_search['date_end']) ? $_search['date_end'] : 1
-//            );
-//            Log::debug($date_range);
-            
+            // Set date filters
+            $filter = FALSE;
+            if (isset($params['date_start']) && isset($params['date_end'])) {
+                $filter = TRUE;
+            }
+                
             $result = Contract::with('products', 'account', 'account.address')
                 ->whereHas('account', function($query) use ($searchWord) {
                     $query->where('name', 'like', '%'.$searchWord.'%');
-                })
+                });
                 
-                // TODO: Filter by date
-//                ->where(function ($query) use ( $date_range ) {
-//                    $query->where('contract_date_start', '>=', $date_range['start'])
-//                        ->where('contract_date_end', '<=', $date_range['end']);
-//                })
-//                ->whereBetween('contract_date_start', [$date_range['start'], $date_range['end']])
+            // Filter by date
+            if ($filter) {
+                $result = $result->whereBetween('contract_date_start', array($params['date_start'], $params['date_end']));
+            }
                 
-                ->orWhere(function ($query) use ($searchWord) {
-                    $query->orWhere('contract_number','like','%'.$searchWord.'%');
-                })
-                ->take($perPage)
-                ->offset($offset)
-                ->orderBy($sortby, $orderby)
-                ->paginate($perPage);
+            $result = $result->orWhere(function ($query) use ($searchWord) {
+                        $query->where('contract_number','like','%'.$searchWord.'%');
+                    })
+                    ->take($perPage)
+                    ->offset($offset)
+                    ->orderBy($sortby, $orderby)
+                    ->paginate($perPage);
             
             return $result;
         }
