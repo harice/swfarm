@@ -146,6 +146,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('file', 'APIv1\FileController');
     
     // Contract
+    Route::get('contract/search', 'APIv1\ContractController@search');
     Route::resource('contract', 'APIv1\ContractController');
     
 });

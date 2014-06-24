@@ -12,9 +12,15 @@ class ContractRepository implements ContractRepositoryInterface {
         try
         {
             $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+            $page     = isset($params['page']) ? $params['page'] : 1;
+            $sortby   = isset($params['sortby']) ? $params['sortby'] : 'contract_number';
+            $orderby  = isset($params['orderby']) ? $params['orderby'] :'DSC';
+            $offset   = $page * $perPage - $perPage;
             
-            $result = Contract::with('products')
-                ->with('account', 'account.address')
+            $result = Contract::with('products', 'account', 'account.address')
+                ->take($perPage)
+                ->offset($offset)
+                ->orderBy($sortby, $orderby)
                 ->paginate($perPage);
             
             return $result;
@@ -30,14 +36,35 @@ class ContractRepository implements ContractRepositoryInterface {
         try
         {
             $perPage = isset($_search['perpage']) ? $_search['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
-            
+            $page     = isset($_search['page']) ? $_search['page'] : 1;
+            $sortby   = isset($_search['sortby']) ? $_search['sortby'] : 'contract_number';
+            $orderby  = isset($_search['orderby']) ? $_search['orderby'] :'DSC';
+            $offset   = $page * $perPage - $perPage;
             $searchWord = $_search['search'];
             
-            return Contract::where(function ($query) use ($searchWord)
-                {
-                    $query->where('contract_number','like','%'.$searchWord.'%');
+//            $date_range = array(
+//                'start' => isset($_search['date_start']) ? $_search['date_start'] : 1,
+//                'end' => isset($_search['date_end']) ? $_search['date_end'] : 1
+//            );
+            
+            $result = Contract::with('products', 'account', 'account.address')
+                ->whereHas('account', function($query) use ($searchWord) {
+                    $query->where('name', 'like', '%'.$searchWord.'%');
                 })
+                // TODO: Filter by date
+//                ->where(function ($query) use ( $date_range ) {
+//                    $query->where('contract_date_start', '>=', $date_range['start'])
+//                        ->where('contract_date_end', '<=', $date_range['end']);
+//                })
+                ->orWhere(function ($query) use ($searchWord) {
+                    $query->orWhere('contract_number','like','%'.$searchWord.'%');
+                })
+                ->take($perPage)
+                ->offset($offset)
+                ->orderBy($sortby, $orderby)
                 ->paginate($perPage);
+            
+            return $result;
         }
         catch (Exception $e)
         {
@@ -49,9 +76,7 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         try
         {
-            $contract = Contract::with('products')
-                ->with('account', 'account.address')
-                ->find($id);
+            $contract = Contract::with('products', 'account', 'account.address')->find($id);
             
             if (!$contract) {
                 throw new NotFoundException();
