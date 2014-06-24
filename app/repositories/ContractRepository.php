@@ -46,16 +46,20 @@ class ContractRepository implements ContractRepositoryInterface {
 //                'start' => isset($_search['date_start']) ? $_search['date_start'] : 1,
 //                'end' => isset($_search['date_end']) ? $_search['date_end'] : 1
 //            );
+//            Log::debug($date_range);
             
             $result = Contract::with('products', 'account', 'account.address')
                 ->whereHas('account', function($query) use ($searchWord) {
                     $query->where('name', 'like', '%'.$searchWord.'%');
                 })
+                
                 // TODO: Filter by date
 //                ->where(function ($query) use ( $date_range ) {
 //                    $query->where('contract_date_start', '>=', $date_range['start'])
 //                        ->where('contract_date_end', '<=', $date_range['end']);
 //                })
+//                ->whereBetween('contract_date_start', [$date_range['start'], $date_range['end']])
+                
                 ->orWhere(function ($query) use ($searchWord) {
                     $query->orWhere('contract_number','like','%'.$searchWord.'%');
                 })
