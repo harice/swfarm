@@ -558,6 +558,7 @@ class OrderRepository implements OrderRepositoryInterface {
                         ->with('productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_dropoff')
                         ->with('productorder.transportscheduleproduct.weightticketproducts.weightticketscale_type')
                         ->find($orderId);  
+        // return $order->toArray();
         if($order == null){
             return array(
                 'error' => true,
@@ -575,7 +576,9 @@ class OrderRepository implements OrderRepositoryInterface {
             $i = 0;
             foreach($productOrder['transportscheduleproduct'] as $transportscheduleproduct){
                 $weightTypeToBeUsed = 1; //pickup weight ticket default
+
                 $stackList[$index]['schedule'][$i]['transportschedule_id'] = $transportscheduleproduct['transportschedule_id'];
+                $stackList[$index]['schedule'][$i]['transportscheduledate'] = $transportscheduleproduct['transportschedule']['date'];
                 $stackList[$index]['schedule'][$i]['expected'] = $transportscheduleproduct['quantity'];
                 $weightTicket = $transportscheduleproduct['transportschedule']['weightticket'];
                 $stackList[$index]['schedule'][$i]['weightTicketNumber'] = $weightTicket['weightTicketNumber'];
