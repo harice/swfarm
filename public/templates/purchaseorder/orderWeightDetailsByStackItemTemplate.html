@@ -17,12 +17,12 @@
 							</tr>
 						</thead>
 						<tbody>
-							<% _.each(stack.get("productName"), function(stack){ %>
+							<% _.each(stack.get("schedule"), function(schedule){ %>
 							<tr>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
+								<td><%= schedule.weightTicketNumber %></td>
+								<td><%= schedule.weightTicketNumber %></td>
+								<td><%= schedule.expected %></td>
+								<td><%= schedule.delivered %></td>
 							</tr>
 							<% }); %>
 						</tbody>
