@@ -557,8 +557,13 @@ class OrderRepository implements OrderRepositoryInterface {
                         ->with('productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_pickup')
                         ->with('productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_dropoff')
                         ->with('productorder.transportscheduleproduct.weightticketproducts.weightticketscale_type')
-                        ->find($orderId);
-        // return $order->toArray();             
+                        ->find($orderId);  
+        if($order == null){
+            return array(
+                'error' => true,
+                'message' => "Order not found");
+        }
+        
         $stackList = array();
         $index = 0;
         foreach($order['productorder'] as $productOrder){
