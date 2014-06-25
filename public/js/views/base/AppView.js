@@ -4,8 +4,16 @@ define([
 	'text!templates/layout/confirmNavigateAwayFromFormModalTemplate.html',
 	'text!templates/layout/confirmModalWithFormTemplate.html',
 	'text!templates/layout/attachPDFTemplate.html',
+	'text!templates/layout/tabsTemplate.html',
 	'constant',
-], function(Backbone, confirmModalTemplate, confirmNavigateAwayFromFormModalTemplate, confirmModalWithFormTemplate, attachPDFTemplate, Const){
+], function(Backbone,
+			confirmModalTemplate,
+			confirmNavigateAwayFromFormModalTemplate,
+			confirmModalWithFormTemplate,
+			attachPDFTemplate,
+			tabsTemplate,
+			Const
+){
 
 	var AppView = Backbone.View.extend({
 		
@@ -93,7 +101,7 @@ define([
 		},
 		
 		disableCloseButton: function (id) {
-			console.log('disableCloseButton: '+id);
+			//console.log('disableCloseButton: '+id);
 			this.$el.find('#'+id+' .close-window').attr('disabled', true);
 		},
 		
@@ -293,7 +301,58 @@ define([
                     $(this).hide();
                 });
             }
-        }
+        },
+		
+		generatePOTabs: function (poId, selectedIndex) {
+			if(selectedIndex == null || typeof selectedIndex == 'undefined')
+				selectedIndex = 1;
+			
+			var thisObj = this;
+			var tabs = [
+				{'url':'/#/'+Const.URL.PO+'/'+poId, 'label':'Purchase Order'},
+				{'url':'/#/'+Const.URL.PICKUPSCHEDULE+'/'+poId, 'label':'Schedule'},
+				{'url':'/#/'+Const.URL.POWEIGHTINFO+'/'+poId, 'label':'Weight Details'},
+			];
+			
+			for(var i = 0; i < tabs.length; i++) {
+				if((i+1) == selectedIndex)
+					tabs[i]['active'] = true;
+			}
+			//console.log(tabs);
+			return this.generateTabs(tabs, '#/'+Const.URL.PO, 'Back To PO List');
+		},
+		
+		generateSOTabs: function (soId, selectedIndex) {
+			if(selectedIndex == null || typeof selectedIndex == 'undefined')
+				selectedIndex = 1;
+			
+			var thisObj = this;
+			var tabs = [
+				{'url':'/#/'+Const.URL.SO+'/'+soId, 'label':'Sales Order'},
+				{'url':'/#/'+Const.URL.DELIVERYSCHEDULE+'/'+soId, 'label':'Schedule'},
+				{'url':'/#/'+Const.URL.SOWEIGHTINFO+'/'+soId, 'label':'Weight Details'},
+			];
+			
+			for(var i = 0; i < tabs.length; i++) {
+				if((i+1) == selectedIndex)
+					tabs[i]['active'] = true;
+			}
+			
+			return this.generateTabs(tabs, '#/'+Const.URL.SO, 'Back To SO List');
+		},
+		
+		generateTabs: function (tabsAttr, backURL, backLabel) {
+			var variables = {tabs:tabsAttr};
+			if(backURL != null && backLabel != null) {
+				variables['back_url'] = backURL;
+				variables['back_label'] = backLabel;
+			}
+			return _.template(tabsTemplate, variables);
+		},
+		
+		linkStopPropagation: function (ev) {
+			ev.stopPropagation();
+		},
 	});
 
 	return AppView;
