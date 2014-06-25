@@ -6,6 +6,7 @@ define([
 	'collections/purchaseorder/DestinationCollection',
 	'collections/purchaseorder/POStatusCollection',
 	'collections/purchaseorder/CancellingReasonCollection',
+	'collections/purchaseorder/OrderWeightDetailsByStackCollection',
 	'models/purchaseorder/PurchaseOrderModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderListTemplate.html',
@@ -21,6 +22,7 @@ define([
 			DestinationCollection,
 			POStatusCollection,
 			CancellingReasonCollection,
+			OrderWeightDetailsByStackCollection,
 			PurchaseOrderModel,
 			contentTemplate,
 			purchaseOrderListTemplate,
@@ -131,6 +133,7 @@ define([
 				po_edit_url: '#/'+Const.URL.PO+'/'+Const.CRUD.EDIT,
 				po_sched_url: '#/'+Const.URL.PICKUPSCHEDULE,
 				pos: this.collection.models,
+				collapsible_id: Const.PO.COLLAPSIBLE.ID,
 				_: _ 
 			};
 			
@@ -308,11 +311,25 @@ define([
 		
 		toggleAccordion: function (ev) {
 			var id = $(ev.currentTarget).attr('data-id');
+			var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
 			
-			if(!$('#'+id).hasClass('in'))
-				$('#'+id).closest('tbody').find('.order-collapsible-item.collapse.in').collapse('toggle');
+			if(!$('#'+collapsibleId).hasClass('in')) {
+				var orderWeightDetailsByStackCollection = new OrderWeightDetailsByStackCollection(id);
+				orderWeightDetailsByStackCollection.on('sync', function() {	
+					
+					this.off('sync');
+				});
+				
+				orderWeightDetailsByStackCollection.on('error', function(collection, response, options) {
+					this.off('error');
+				});
+				orderWeightDetailsByStackCollection.getModels();
+			}
 			
-			$('#'+id).collapse('toggle');
+			if(!$('#'+collapsibleId).hasClass('in'))
+				$('#'+collapsibleId).closest('tbody').find('.order-collapsible-item.collapse.in').collapse('toggle');
+			
+			$('#'+collapsibleId).collapse('toggle');
 		},
 	});
 

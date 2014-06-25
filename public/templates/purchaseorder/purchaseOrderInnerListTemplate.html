@@ -1,6 +1,6 @@
 <% if (!_.isEmpty(pos)) { %>
 	<% _.each(pos, function(po){ %>
-	<tr data-id="collapsible-<%= po.get("id") %>">
+	<tr data-id="<%= po.get("id") %>">
 		<td><a class="stop-propagation" href="<%= po_url %>/<%= po.get("id") %>"><%= po.get("order_number") %></a></td>
 		<td><%= po.get("created_at").split(" ")[0] %></td>
 		<td>
@@ -70,7 +70,7 @@
 	</tr>
 	<tr>
 		<td colspan="10" style="padding:0;">
-			<div class="order-collapsible-item collapse" id="collapsible-<%= po.get("id") %>">
+			<div class="order-collapsible-item collapse" id="<%= collapsible_id %><%= po.get("id") %>">
 				<div class="container" style="width:100%;">
 					<div class="row">
 						<div class="col-md-12">
