@@ -14,6 +14,7 @@ define([
 	'text!templates/purchaseorder/purchaseOrderDestinationTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderStatusTemplate.html',
 	'text!templates/purchaseorder/reasonForCancellationOptionTemplate.html',
+	'text!templates/purchaseorder/orderWeightDetailsByStackItemTemplate.html',
 	'constant',
 ], function(Backbone,
 			DatePicker,
@@ -30,6 +31,7 @@ define([
 			purchaseOrderDestinationTemplate,
 			purchaseOrderStatusTemplate,
 			reasonForCancellationOptionTemplate,
+			orderWeightDetailsByStackItemTemplate,
 			Const
 ){
 
@@ -266,7 +268,7 @@ define([
 			'click .cancel-po': 'preShowConfirmationWindow',
 			'click #confirm-cancel-po': 'cancelPO',
 			'change #reason': 'onChangeReason',
-			'click #po-accordion tr': 'toggleAccordion',
+			'click #po-accordion tr.collapse-trigger': 'toggleAccordion',
 			'click .stop-propagation': 'linkStopPropagation',
 		},
 		
@@ -310,26 +312,39 @@ define([
 		},
 		
 		toggleAccordion: function (ev) {
+			var thisObj = this;
 			var id = $(ev.currentTarget).attr('data-id');
 			var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
 			
 			if(!$('#'+collapsibleId).hasClass('in')) {
+				
+				$(ev.currentTarget).find('.throbber_wrap').show();
 				var orderWeightDetailsByStackCollection = new OrderWeightDetailsByStackCollection(id);
-				orderWeightDetailsByStackCollection.on('sync', function() {	
-					
+				orderWeightDetailsByStackCollection.on('sync', function() {
+					$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(this.models));
+					$(ev.currentTarget).find('.throbber_wrap').hide();
+					$('#'+collapsibleId).closest('tbody').find('.order-collapsible-item.collapse.in').collapse('toggle');
+					$('#'+collapsibleId).collapse('toggle');
 					this.off('sync');
 				});
 				
 				orderWeightDetailsByStackCollection.on('error', function(collection, response, options) {
+					$(ev.currentTarget).find('.throbber_wrap').hide();
 					this.off('error');
 				});
 				orderWeightDetailsByStackCollection.getModels();
 			}
-			
-			if(!$('#'+collapsibleId).hasClass('in'))
-				$('#'+collapsibleId).closest('tbody').find('.order-collapsible-item.collapse.in').collapse('toggle');
-			
-			$('#'+collapsibleId).collapse('toggle');
+			else {
+				$('#'+collapsibleId).collapse('toggle');
+			}
+		},
+		
+		generateOrderWeightDetailsByStack: function (models) {
+			var data = {
+				stacks: models,
+				_: _ 
+			};
+			return _.template(orderWeightDetailsByStackItemTemplate, data);
 		},
 	});
 

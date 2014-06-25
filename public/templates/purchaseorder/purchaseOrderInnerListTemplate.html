@@ -1,6 +1,6 @@
 <% if (!_.isEmpty(pos)) { %>
 	<% _.each(pos, function(po){ %>
-	<tr data-id="<%= po.get("id") %>">
+	<tr class="collapse-trigger" data-id="<%= po.get("id") %>">
 		<td><a class="stop-propagation" href="<%= po_url %>/<%= po.get("id") %>"><%= po.get("order_number") %></a></td>
 		<td><%= po.get("created_at").split(" ")[0] %></td>
 		<td>
@@ -66,6 +66,7 @@
 					<i class="fa fa-ban fa-stack-2x"></i>
 				</span>
 			<% } %>
+			<span class="throbber_wrap" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
 		</td>
 	</tr>
 	<tr>
@@ -83,14 +84,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-md-9">
-							9
-						</div>
-						<div class="col-md-3">
-							3
-						</div>
-					</div>
+					<div class="order-weight-details-by-stack"></div>
 				</div>
 			</div>
 		</td>
