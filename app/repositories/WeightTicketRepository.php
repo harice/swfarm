@@ -31,6 +31,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         $orderDetails = Order::with('transportschedule.weightticket.weightticketscale_pickup')
                                 ->with('transportschedule.weightticket.weightticketscale_dropoff')
                                 ->where('id', '=', $orderId)->first()->toArray();
+        // return $orderDetails;
 
         $weightTicketList = array();
         $index = 0;
@@ -58,9 +59,11 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             } else if($transportScheduleDetails['weightticket']['pickup_id'] != null){
                 $weightTicketList[$index] = $transportScheduleDetails['weightticket']['weightticketscale_pickup'];
                 $netWeight = $pickupNetWeight;
-            } else {
+            } else if($transportScheduleDetails['weightticket']['dropoff_id'] != null){
                 $weightTicketList[$index] = $transportScheduleDetails['weightticket']['weightticketscale_dropoff'];
                 $netWeight = $dropoffNetWeight;
+            } else {
+                $netWeight = 0;
             }
             $weightTicketList[$index]['transportScheduleId'] = $transportScheduleDetails['id'];
             $weightTicketList[$index]['transportScheduleDate'] = $transportScheduleDetails['date'];
