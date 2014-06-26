@@ -5,7 +5,13 @@
 		<td><%= contract.get("account").name %></td>
 		<td><%= contract.get("contract_date_start") %></td>
 		<td><%= contract.get("contract_date_end") %></td>
-        <td>Estimated Tons</td>
+        
+        <% var total_tons = 0.0 %>
+        <% _.each(contract.get("products"), function(product) { %>
+            <% total_tons = total_tons + parseFloat(product.pivot.tons) %>
+        <% }); %>
+        <td><%= total_tons %></td>
+        
 		<td>
 			<a href="<%= contract_edit_url %>/<%= contract.get("id") %>" class="text-primary" title="edit">
 			  <span class="fa-stack">

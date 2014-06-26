@@ -1,79 +1,138 @@
 define([
 	'backbone',
-	'bootstrapdatepicker',
-	'views/scale/ScaleAddView',
+	'views/contract/ContractAddView',
+	'jqueryui',
 	'jqueryvalidate',
 	'jquerytextformatter',
-	'models/scale/ScaleModel',
-	'collections/account/AccountCollection',
+	'jqueryphonenumber',
+	'views/autocomplete/CustomAutoCompleteView',
+	'collections/account/AccountCustomerCollection',
+	'collections/product/ProductCollection',
+	'models/contract/ContractModel',
 	'text!templates/layout/contentTemplate.html',
-	'text!templates/scale/scaleAddTemplate.html',
+	'text!templates/contract/salesOrderAddTemplate.html',
+	'text!templates/contract/salesOrderProductItemTemplate.html',
 	'global',
-	'constant',
+	'constant'
 ], function(Backbone,
-			DatePicker,
-			ScaleAddView,
+			ContractAddView,
+			JqueryUI,
 			Validate,
 			TextFormatter,
-			ScaleModel,
-			AccountCollection,
+			PhoneNumber,
+			CustomAutoCompleteView,
+			AccountCustomerCollection,
+			ProductCollection,
+			ContractModel,
 			contentTemplate,
-			scaleAddTemplate,
+			salesOrderAddTemplate,
+			productItemTemplate,
 			Global,
 			Const
 ){
 
-	var ScaleEditView = ScaleAddView.extend({
+	var SalesOrderEditView = ContractAddView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
+		
+		customerAutoCompleteView: null,
 		
 		initialize: function(option) {
 			this.initSubContainer();
 			var thisObj = this;
-			this.scaleId = option.id;
-			this.h1Title = 'Scale';
+			this.soId = option.id;
+			this.h1Title = 'Contract';
 			this.h1Small = 'edit';
 			
-			this.scalerAccountCollection = new AccountCollection();
-			this.scalerAccountCollection.on('sync', function() {
+			this.productAutoCompletePool = [];
+			this.options = {
+				productFieldClone: null,
+				productFieldCounter: 0,
+				productFieldClass: ['product_id', 'tons', 'bales', 'id'],
+				productFieldClassRequired: ['product_id', 'tons', 'bales'],
+				productFieldExempt: [],
+				productFieldSeparator: '.',
+				removeComma: ['unitprice', 'tons', 'bales']
+			};
+			
+			this.productCollection = new ProductCollection();
+			this.productCollection.on('sync', function() {
+				_.each(this.models, function (productModels) {
+					thisObj.productAutoCompletePool.push({
+						label:productModels.get('name'),
+						value:productModels.get('name'),
+						id:productModels.get('id')
+					});
+				});
+				
 				if(thisObj.subContainerExist()) {
 					thisObj.displayForm();
-					thisObj.supplyScaleData();
+					thisObj.supplySOData();
 				}
 				this.off('sync');
 			});
-			this.scalerAccountCollection.on('error', function(collection, response, options) {
+			this.productCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
 			
-			this.model = new ScaleModel({id:this.scaleId});
+			this.model = new ContractModel({id:this.soId});
 			this.model.on('change', function() {
-				thisObj.scalerAccountCollection.getScalerAccounts();
+				thisObj.productCollection.getModels();
 				this.off('change');
 			});
 		},
 		
-		otherInitializations: function () {
-			this.initDeleteConfirmation();
-		},
-		
 		render: function(){
 			this.model.runFetch();
-			Backbone.View.prototype.refreshTitle('Scale','edit');
+			Backbone.View.prototype.refreshTitle('Contract','edit');
 		},
 		
-		supplyScaleData: function () {
-			this.$el.find('#account_id').val(this.model.get('account_id'));
-			this.$el.find('#name').val(this.model.get('name'));
-			this.$el.find('#rate').val(this.addCommaToNumber(this.model.get('rate')));
+		supplySOData: function () {
+			var thisObj = this;
+			
+			var account = this.model.get('account');
+            var address = this.model.get('account').address;
+			var products = this.model.get('products');
+			
+			this.$el.find('#sonumber').val(this.model.get('contract_number'));
+			this.customerAutoCompleteView.autoCompleteResult = [{name:account.name, id:account.id, address:address}];
+			this.$el.find('#account').val(account.name);
+			this.$el.find('#account_id').val(account.id);
+			this.$el.find('#street').val(address[0].street);
+			this.$el.find('#state').val(address[0].address_states[0].state);
+			this.$el.find('#city').val(address[0].city);
+			this.$el.find('#zipcode').val(address[0].zipcode);
+			this.$el.find('#dateofsale').val(this.convertDateFormat(this.model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
+			
+			var startDate = this.convertDateFormat(this.model.get('contract_date_start').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-');
+			var endDate = this.convertDateFormat(this.model.get('contract_date_end').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-');
+			this.$el.find('#start-date .input-group.date').datepicker('update', startDate);
+			this.$el.find('#start-date .input-group.date').datepicker('setEndDate', endDate);
+			this.$el.find('#end-date .input-group.date').datepicker('update', endDate);
+			this.$el.find('#end-date .input-group.date').datepicker('setStartDate', startDate);
+			
+			var i= 0;
+			_.each(products, function (product) {
+				var productFields = (i > 0)? thisObj.addProduct(): thisObj.$el.find('#product-list tbody .product-item:first-child');
+				i++;
+				
+				productFields.find('.id').val(product.id);
+				productFields.find('.product_id').val(product.id);
+				productFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(product.pivot.tons).toFixed(4)));
+				productFields.find('.bales').val(thisObj.addCommaToNumber(product.pivot.bales));
+			});
 		},
 		
-		initDeleteConfirmation: function () {
-			this.initConfirmationWindow('Are you sure you want to delete this scale?',
-										'confirm-delete-scale',
-										'Delete');
+		otherInitializations: function () {
+			this.initCancelConfirmation();
 		},
+		
+		initCancelConfirmation: function () {
+			this.initConfirmationWindow('Are you sure you want to cancel this Sales Order?',
+										'confirm-cancel-so',
+										'Cancel Sales Order');
+		}
 	});
 
-	return ScaleEditView;
+  return SalesOrderEditView;
   
 });

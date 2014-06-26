@@ -40,6 +40,11 @@ define([
 			this.url = '/apiv1/account/scaler';
 			this.getModels();
 		},
+                
+        getCustomerAccounts: function () {
+            this.url = '/apiv1/account?type=customer';
+            this.getModels();
+        }
 	});
 
 	return AccountCollection;

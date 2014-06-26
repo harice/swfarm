@@ -63,6 +63,8 @@ define([
 		},
 		
 		displayList: function () {
+            var contracts = this.collection.models;
+    
 			var data = {
 				contract_edit_url: '#/'+Const.URL.CONTRACT+'/'+Const.CRUD.EDIT,
 				contracts: this.collection.models,

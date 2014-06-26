@@ -99,6 +99,12 @@ define(function () {
 				'EDIT'	:44,
 				'DELETE':45
 			},
+            'CONTRACT': {
+				'VIEW'	:46,
+				'ADD'	:47,
+				'EDIT'	:48,
+				'DELETE':49
+			},
 		},
 		'CRUD': {
 			'ADD': 'add',

@@ -78,7 +78,7 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         try
         {
-            $contract = Contract::with('products', 'account', 'account.address')->find($id);
+            $contract = Contract::with('products', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType')->find($id);
             
             if (!$contract) {
                 throw new NotFoundException();
