@@ -11,8 +11,8 @@ define([
 	'collections/product/ProductCollection',
 	'models/contract/ContractModel',
 	'text!templates/layout/contentTemplate.html',
-	'text!templates/contract/salesOrderAddTemplate.html',
-	'text!templates/contract/salesOrderProductItemTemplate.html',
+	'text!templates/contract/contractAddTemplate.html',
+	'text!templates/contract/contractProductItemTemplate.html',
 	'global',
 	'constant'
 ], function(Backbone,
@@ -27,7 +27,7 @@ define([
 			ProductCollection,
 			ContractModel,
 			contentTemplate,
-			salesOrderAddTemplate,
+			contractAddTemplate,
 			productItemTemplate,
 			Global,
 			Const
@@ -89,9 +89,9 @@ define([
 			};
 			
 			if(this.soId !== null)
-				innerTemplateVariables['so_id'] = this.soId;
+				innerTemplateVariables['contract_id'] = this.soId;
 			
-			var innerTemplate = _.template(salesOrderAddTemplate, innerTemplateVariables);
+			var innerTemplate = _.template(contractAddTemplate, innerTemplateVariables);
 			
 			var variables = {
 				h1_title: this.h1Title,
@@ -112,16 +112,16 @@ define([
 		initValidateForm: function () {
 			var thisObj = this;
 			
-			var validate = $('#soForm').validate({
+			var validate = $('#contractForm').validate({
 				submitHandler: function(form) {
 					var data = thisObj.formatFormField($(form).serializeObject());
                     
 					data['contract_date_start'] = thisObj.convertDateFormat(data['contract_date_start'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					data['contract_date_end'] = thisObj.convertDateFormat(data['contract_date_end'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					
-					var salesOrderModel = new ContractModel(data);
+					var contractModel = new ContractModel(data);
 					
-					salesOrderModel.save(
+					contractModel.save(
 						null, 
 						{
 							success: function (model, response, options) {
@@ -135,7 +135,7 @@ define([
 								else
 									thisObj.displayMessage(response);
 							},
-							headers: salesOrderModel.getAuth()
+							headers: contractModel.getAuth()
 						}
 					);
 				},
@@ -336,14 +336,9 @@ define([
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #add-product': 'addProduct',
 			'click .remove-product': 'removeProduct',
-			//'blur .productname': 'validateProduct',
-			'keyup .unitprice': 'onKeyUpUnitPrice',
-			'blur .unitprice': 'onBlurMoney',
 			'keyup .tons': 'onKeyUpTons',
-			'blur .tons': 'onBlurTon',
 			'keyup .bales': 'formatNumber',
-			'click #cancel-so': 'showConfirmationWindow',
-			'click #confirm-cancel-so': 'cancelCONTRACT'
+			'click #cancel-so': 'showConfirmationWindow'
 		},
 		
 		removeProduct: function (ev) {
@@ -412,15 +407,6 @@ define([
 		
 		onKeyUpTons: function (ev) {
 			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 4);
-			
-			var tonsfield = $(ev.target);
-			var tonsfieldVal = this.removeCommaFromNumber(tonsfield.val());
-			var tons = (!isNaN(parseFloat(tonsfieldVal)))? parseFloat(tonsfieldVal) : 0;
-			var bidPriceField = tonsfield.closest('.product-item').find('.unitprice');
-			var bidPriceFieldVal = this.removeCommaFromNumber(bidPriceField.val());
-			var bidPrice = (!isNaN(parseFloat(bidPriceFieldVal)))? parseFloat(bidPriceFieldVal) : 0;
-			
-			this.computeUnitePrice(bidPrice, tons, tonsfield.closest('.product-item').find('.unit-price'));
 		},
 		
 		computeUnitePrice: function (bidPrice, tonsOrBales, unitePriceField) {
@@ -432,9 +418,9 @@ define([
 		cancelCONTRACT: function () {
 			if(this.soId !== null) {
 				var thisObj = this;
-				var salesOrderModel = new ContractModel({id:this.soId});
-				salesOrderModel.setCancelURL();
-				salesOrderModel.save(
+				var contractModel = new ContractModel({id:this.soId});
+				contractModel.setCancelURL();
+				contractModel.save(
 					null, 
 					{
 						success: function (model, response, options) {
@@ -447,7 +433,7 @@ define([
 							else
 								thisObj.displayMessage(response);
 						},
-						headers: salesOrderModel.getAuth()
+						headers: contractModel.getAuth()
 					}
 				);
 			}

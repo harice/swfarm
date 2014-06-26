@@ -10,8 +10,8 @@ define([
 	'collections/product/ProductCollection',
 	'models/contract/ContractModel',
 	'text!templates/layout/contentTemplate.html',
-	'text!templates/contract/salesOrderAddTemplate.html',
-	'text!templates/contract/salesOrderProductItemTemplate.html',
+	'text!templates/contract/contractAddTemplate.html',
+	'text!templates/contract/contractProductItemTemplate.html',
 	'global',
 	'constant'
 ], function(Backbone,
@@ -25,7 +25,7 @@ define([
 			ProductCollection,
 			ContractModel,
 			contentTemplate,
-			salesOrderAddTemplate,
+			contractAddTemplate,
 			productItemTemplate,
 			Global,
 			Const
@@ -66,7 +66,7 @@ define([
 				
 				if(thisObj.subContainerExist()) {
 					thisObj.displayForm();
-					thisObj.supplySOData();
+					thisObj.supplyContractData();
 				}
 				this.off('sync');
 			});
@@ -86,14 +86,14 @@ define([
 			Backbone.View.prototype.refreshTitle('Contract','edit');
 		},
 		
-		supplySOData: function () {
+		supplyContractData: function () {
 			var thisObj = this;
 			
 			var account = this.model.get('account');
             var address = this.model.get('account').address;
 			var products = this.model.get('products');
 			
-			this.$el.find('#sonumber').val(this.model.get('contract_number'));
+			this.$el.find('#contract_number').val(this.model.get('contract_number'));
 			this.customerAutoCompleteView.autoCompleteResult = [{name:account.name, id:account.id, address:address}];
 			this.$el.find('#account').val(account.name);
 			this.$el.find('#account_id').val(account.id);
