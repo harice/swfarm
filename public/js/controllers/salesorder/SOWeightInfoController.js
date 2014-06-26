@@ -46,7 +46,7 @@ define([
 			return new WeightInfoView({'soId':soId, 'schedId':schedId});
 		};
 		
-		this.list = function (poId) {
+		this.list = function (soId) {
 			return new WeightInfoListView({'soId':soId});
 		};
 		

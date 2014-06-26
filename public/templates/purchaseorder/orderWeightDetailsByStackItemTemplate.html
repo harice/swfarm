@@ -17,20 +17,61 @@
 							</tr>
 						</thead>
 						<tbody>
-							<% _.each(stack.get("schedule"), function(schedule){ %>
-							<tr>
-								<td><%= schedule.weightTicketNumber %></td>
-								<td><%= schedule.weightTicketNumber %></td>
-								<td><%= schedule.expected %></td>
-								<td><%= schedule.delivered %></td>
-							</tr>
-							<% }); %>
+							<% if (!_.isEmpty(stack.get("schedule"))) { %>
+								<% _.each(stack.get("schedule"), function(schedule){ %>
+								<tr>
+									<td>
+										<%= schedule.transportscheduledate %>&nbsp;&nbsp;
+										<a href="<%= schedule_url %>/<%= schedule.transportschedule_id %>" class="text-primary" title="edit">
+											<span class="fa-stack">
+												<i class="fa fa-square fa-stack-2x"></i>
+												<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+											</span>
+										</a>
+									</td>
+									<td>
+										<% if (schedule.weightTicketNumber) { %>
+											<%= schedule.weightTicketNumber %>&nbsp;&nbsp;
+											<a href="<%= weight_info_url %>/<%= schedule.transportschedule_id %>" class="text-primary" title="edit">
+												<span class="fa-stack">
+													<i class="fa fa-square fa-stack-2x"></i>
+													<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+												</span>
+											</a>
+										<% } %>
+									</td>
+									<td><%= schedule.expected %></td>
+									<td><%= schedule.delivered %></td>
+								</tr>
+								<% }); %>
+							<% } else { %>
+								<tr>
+									<td colspan="4">No results found.</td>
+								</tr>
+							<% } %>
 						</tbody>
 					</table>
 				</div>
 			</div>
 			<div class="col-md-3">
-				3
+				<div class="content-inner table-responsive">
+					<table class="table-condensed table-bordered table-hover">
+						<tbody>
+							<tr>
+								<td>Expected</td>
+								<td><%= stack.get("totalExpected") %></td>
+							</tr>
+							<tr>
+								<td>Total Deliveries</td>
+								<td><%= stack.get("totalDeliveries") %></td>
+							</tr>
+							<tr>
+								<td>Remaining</td>
+								<td><%= (parseFloat(stack.get("totalExpected")) - parseFloat(stack.get("totalDeliveries"))).toFixed(4) %></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	<% }); %>

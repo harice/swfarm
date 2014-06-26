@@ -78,7 +78,7 @@ define([
 			this.poStatusCollection.on('sync', function() {	
 				if(thisObj.subContainerExist()) {
 					thisObj.displayPO();
-					thisObj.renderList(1);
+					thisObj.renderList(thisObj.collection.listView.currentPage);
 				}
 				
 				this.off('sync');
@@ -126,6 +126,7 @@ define([
 			
 			this.initCalendars();
 			this.initCancelWindow();
+			this.setListOptions();
 		},
 		
 		displayList: function () {
@@ -135,28 +136,45 @@ define([
 				po_edit_url: '#/'+Const.URL.PO+'/'+Const.CRUD.EDIT,
 				po_sched_url: '#/'+Const.URL.PICKUPSCHEDULE,
 				pos: this.collection.models,
+				schedule_url: '#/'+Const.URL.PICKUPSCHEDULE,
+				add: Const.CRUD.ADD,
 				collapsible_id: Const.PO.COLLAPSIBLE.ID,
 				_: _ 
 			};
 			
 			var innerListTemplate = _.template(purchaseOrderInnerListTemplate, data);
 			this.subContainer.find("#po-list tbody").html(innerListTemplate);
-			
-			if(this.collection.models.length > 0)
-				this.addCollapsible(this.collection.models);
-			
+			this.collapseSelected();
 			this.generatePagination();
 		},
 		
-		addCollapsible: function (models) {
-			/*_.each(models, function (model) {
-				console.log('#collapsible-'+model.get('id'));
-				$('#collapsible-'+model.get('id')).collapse();
-				$('#collapsible-'+model.get('id')).on('show.bs.collapse', function () {
-					$(this).closest('tbody').find('.order-collapsible-item.collapse.in').collapse('toggle');
-				});
-				$('#collapsible-'+model.get('id')).collapse('toggle');
-			});*/
+		collapseSelected: function () {
+			var id = this.collection.getCollapseId();
+			if(id)
+				this.$el.find('.collapse-trigger[data-id="'+id+'"]').trigger('click');
+		},
+		
+		setListOptions: function () {
+			var options = this.collection.listView;
+			//console.log(options);
+			
+			if(options.search != '')
+				this.$el.find('#search-keyword').val(options.search);
+			
+			if(options.filters.status != '')
+				this.$el.find('[name="statusFilter"][value="'+options.filters.status+'"]').attr('checked', true);
+				
+			if(options.filters.location != '')
+				this.$el.find('[name="location_id"][value="'+options.filters.location+'"]').attr('checked', true);
+				
+			if(options.date != '')
+				this.$el.find('#filter-date-of-purchase .input-group.date').datepicker('update', this.convertDateFormat(options.date, 'yyyy-mm-dd', this.dateFormat, '-'));
+			
+			if(options.filters.transportstart != '')
+				this.$el.find('#filter-pickup-start .input-group.date').datepicker('update', this.convertDateFormat(options.filters.transportstart, 'yyyy-mm-dd', this.dateFormat, '-'));
+				
+			if(options.filters.transportend != '')
+				this.$el.find('#filter-pickup-end .input-group.date').datepicker('update', this.convertDateFormat(options.filters.transportend, 'yyyy-mm-dd', this.dateFormat, '-'));
 		},
 		
 		initCalendars: function () {
@@ -185,8 +203,8 @@ define([
 				todayHighlight: true,
 				format: this.dateFormat,
 			}).on('changeDate', function (ev) {
-				var selectedDate = $('#filter-pickup-end .input-group.date input').val();
-				thisObj.$el.find('#filter-delivery-end .input-group.date').datepicker('setStartDate', selectedDate);
+				var selectedDate = $('#filter-pickup-start .input-group.date input').val();
+				thisObj.$el.find('#filter-pickup-end .input-group.date').datepicker('setStartDate', selectedDate);
 				var date = '';
 				if(selectedDate != '' && typeof selectedDate != 'undefined')
 					date = thisObj.convertDateFormat(selectedDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
@@ -317,14 +335,31 @@ define([
 			var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
 			
 			if(!$('#'+collapsibleId).hasClass('in')) {
+				var thisId = id;
+				this.collection.setCollapseLatestId(id);
 				
 				$(ev.currentTarget).find('.throbber_wrap').show();
 				var orderWeightDetailsByStackCollection = new OrderWeightDetailsByStackCollection(id);
 				orderWeightDetailsByStackCollection.on('sync', function() {
-					$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(this.models));
+					thisObj.collection.setCollapseId(id);
 					$(ev.currentTarget).find('.throbber_wrap').hide();
-					$('#'+collapsibleId).closest('tbody').find('.order-collapsible-item.collapse.in').collapse('toggle');
-					$('#'+collapsibleId).collapse('toggle');
+					//console.log(thisId+' == '+thisObj.collection.getCollapseLatestId());
+					if(thisId == thisObj.collection.getCollapseLatestId() && thisObj.subContainerExist()) {
+						_.each(this.models, function (model) {
+							var schedules = model.get('schedule');
+							if(schedules.length > 0) {
+								for(var i=0; i<schedules.length; i++) {
+									var s = schedules[i].transportscheduledate.split(' ');
+									schedules[i].transportscheduledate = thisObj.convertDateFormat(s[0], 'yyyy-mm-dd', thisObj.dateFormat, '-')+' '+s[1];			
+								}
+								model.set('schedule', schedules);
+							}
+						});
+						
+						$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(this.models, id));
+						$('#'+collapsibleId).closest('tbody').find('.order-collapsible-item.collapse.in').collapse('toggle');
+						$('#'+collapsibleId).collapse('toggle');
+					}
 					this.off('sync');
 				});
 				
@@ -335,13 +370,16 @@ define([
 				orderWeightDetailsByStackCollection.getModels();
 			}
 			else {
+				this.collection.setCollapseId(null);
 				$('#'+collapsibleId).collapse('toggle');
 			}
 		},
 		
-		generateOrderWeightDetailsByStack: function (models) {
+		generateOrderWeightDetailsByStack: function (models, poId) {
 			var data = {
 				stacks: models,
+				schedule_url: '/#/'+Const.URL.PICKUPSCHEDULE+'/'+poId,
+				weight_info_url: '/#/'+Const.URL.POWEIGHTINFO+'/'+poId,
 				_: _ 
 			};
 			return _.template(orderWeightDetailsByStackItemTemplate, data);

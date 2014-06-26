@@ -71,16 +71,16 @@
 	</tr>
 	<tr>
 		<td colspan="10" style="padding:0;">
-			<div class="order-collapsible-item collapse" id="<%= collapsible_id %><%= po.get("id") %>">
-				<div class="container" style="width:100%;">
+			<div class="order-collapsible-item list-view-collapse collapse" id="<%= collapsible_id %><%= po.get("id") %>">
+				<div class="container" style="width:100%; padding-bottom:20px;">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="pull-right">
-								<a href="#" class="btn btn-primary btn-sm">View PO</a>
-								<a href="#" class="btn btn-primary btn-sm">Edit PO</a>
+								<a href="<%= po_url %>/<%= po.get("id") %>" class="btn btn-primary btn-sm">View PO</a>
+								<a href="<%= po_edit_url %>/<%= po.get("id") %>" class="btn btn-primary btn-sm">Edit PO</a>
 								<a href="#" class="btn btn-primary btn-sm">Close PO</a>
-								<a href="#" class="btn btn-primary btn-sm">Cancel PO</a>
-								<a href="#" class="btn btn-primary btn-sm">Add Schedule</a>
+								<a href="#" data-id="<%= po.get("id") %>" class="btn btn-primary btn-sm cancel-po">Cancel PO</a>
+								<a href="<%= schedule_url %>/<%= po.get("id") %>/<%= add %>" class="btn btn-primary btn-sm">Add Schedule</a>
 							</div>
 						</div>
 					</div>
