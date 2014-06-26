@@ -12,7 +12,7 @@ define([
 		},
 		formatURL: function (data) {
 			this.url = this.getDefaultURL() + '?search=' + data;
-		},
+		}
 	});
 
 	return AccountCustomerCollection;
