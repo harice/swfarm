@@ -12,8 +12,10 @@ define([
 			currentPage: 1,
 			maxItem: 0,
 			search: '',
-			currentSort: '',
-			sort: {},
+			currentSort: 'created_at',
+			sort: {
+				created_at: false,
+			},
 			filters: {
 				location: '',
 				status: '',
@@ -29,14 +31,14 @@ define([
 		initialize: function(option){
 			//this.runInit();
 			this.setDefaultURL(this.url);
-			this.setSortOptions(
+			/*this.setSortOptions(
 				{
 					currentSort: 'created_at',
 					sort: {
 						created_at: false,
 					},
 				}
-			);
+			);*/
 			
 			/*this.listView.filters.location = '';
 			this.listView.filters.status = '';

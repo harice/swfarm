@@ -286,7 +286,7 @@ define([
 			'click .cancel-po': 'preShowConfirmationWindow',
 			'click #confirm-cancel-po': 'cancelPO',
 			'change #reason': 'onChangeReason',
-			'click #po-accordion tr.collapse-trigger': 'toggleAccordion',
+			'click #order-accordion tr.collapse-trigger': 'toggleAccordion',
 			'click .stop-propagation': 'linkStopPropagation',
 		},
 		

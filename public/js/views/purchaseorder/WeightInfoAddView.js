@@ -305,7 +305,6 @@ define([
 			'keyup .product-bales': 'onKeyUpProductBales',
 			'keyup .product-pounds': 'onKeyUpPounds',
 			'blur .product-pounds': 'onBlurPound',
-			'click #go-to-previous-page': 'goToPreviousPage',
 		},
 		
 		onChangeScaleAccount: function (ev) {
