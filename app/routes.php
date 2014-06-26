@@ -88,7 +88,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 
     //Purchase Order
     // Route::post('purchaseorder/product/upload', 'APIv1\OrderController@uploadFileToProductOrder');
-    Route::get('purchaseorder/getOrderWeightDetailsByStack/{id}', 'APIv1\OrderController@getOrderWeightDetailsByStack');
+    Route::get('purchaseorder/getOrderWeightDetailsByStack', 'APIv1\OrderController@getOrderWeightDetailsByStack');
     Route::get('purchaseorder/getStatuses', 'APIv1\OrderController@getPOStatus');
     Route::get('purchaseorder/getDestinationList', 'APIv1\OrderController@getDestinationList');
     Route::get('purchaseorder/getCancellingReasonList', 'APIv1\OrderController@getPOCancellingReasonList');
@@ -145,6 +145,10 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // File
     // Route::get('file/displayFile', 'APIv1\FileController@displayFile');
     Route::resource('file', 'APIv1\FileController');
+    
+    // Contract
+    Route::get('contract/search', 'APIv1\ContractController@search');
+    Route::resource('contract', 'APIv1\ContractController');
     
 });
 

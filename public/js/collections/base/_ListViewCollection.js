@@ -18,15 +18,11 @@ define([
 				filter: '',
 				date: '',
 				lookUpIds: {},
-				collapseId: null,
-				collapseLatestId: null,
 			};
 		},
 		
-		getModelsPerPage: function(page) {
-			if($('.list-view-collapse.collapse.in').length > 0)
-				this.setCollapseId(null);
-			this.setPaginationURL(page);
+		getModelsPerPage: function(page, numPerPage) {
+			this.setPaginationURL(page, numPerPage);
 			this.getModels();
 		},
 		
@@ -144,27 +140,11 @@ define([
 			return this.listView.filters[type];
 		},
 		
-		setCollapseId: function (collapseId) {
-			this.listView.collapseId = collapseId;
-		},
-		
-		getCollapseId: function () {
-			return this.listView.collapseId;
-		},
-		
-		setCollapseLatestId: function (collapseLatestId) {
-			this.listView.collapseLatestId = collapseLatestId;
-		},
-		
-		getCollapseLatestId: function () {
-			return this.listView.collapseLatestId;
-		},
-		
-		setPaginationURL: function (page) {
+		setPaginationURL: function (page, numPerPage) {
 			var searchURL = '';
 			var orderBy = (this.listView.sort[this.listView.currentSort])? 'asc' : 'desc';
 			var params = {
-				perpage: this.getNumPerPage(),
+				perpage: numPerPage,
 				page: page,
 			};
 			

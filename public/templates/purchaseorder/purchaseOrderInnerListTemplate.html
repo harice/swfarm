@@ -1,6 +1,6 @@
 <% if (!_.isEmpty(pos)) { %>
 	<% _.each(pos, function(po){ %>
-	<tr data-id="collapsible-<%= po.get("id") %>">
+	<tr class="collapse-trigger" data-id="<%= po.get("id") %>">
 		<td><a class="stop-propagation" href="<%= po_url %>/<%= po.get("id") %>"><%= po.get("order_number") %></a></td>
 		<td><%= po.get("created_at").split(" ")[0] %></td>
 		<td>
@@ -66,31 +66,25 @@
 					<i class="fa fa-ban fa-stack-2x"></i>
 				</span>
 			<% } %>
+			<span class="throbber_wrap" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
 		</td>
 	</tr>
 	<tr>
 		<td colspan="10" style="padding:0;">
-			<div class="order-collapsible-item collapse" id="collapsible-<%= po.get("id") %>">
-				<div class="container" style="width:100%;">
+			<div class="order-collapsible-item list-view-collapse collapse" id="<%= collapsible_id %><%= po.get("id") %>">
+				<div class="container" style="width:100%; padding-bottom:20px;">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="pull-right">
-								<a href="#" class="btn btn-primary btn-sm">View PO</a>
-								<a href="#" class="btn btn-primary btn-sm">Edit PO</a>
+								<a href="<%= po_url %>/<%= po.get("id") %>" class="btn btn-primary btn-sm">View PO</a>
+								<a href="<%= po_edit_url %>/<%= po.get("id") %>" class="btn btn-primary btn-sm">Edit PO</a>
 								<a href="#" class="btn btn-primary btn-sm">Close PO</a>
-								<a href="#" class="btn btn-primary btn-sm">Cancel PO</a>
-								<a href="#" class="btn btn-primary btn-sm">Add Schedule</a>
+								<a href="#" data-id="<%= po.get("id") %>" class="btn btn-primary btn-sm cancel-po">Cancel PO</a>
+								<a href="<%= schedule_url %>/<%= po.get("id") %>/<%= add %>" class="btn btn-primary btn-sm">Add Schedule</a>
 							</div>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-md-9">
-							9
-						</div>
-						<div class="col-md-3">
-							3
-						</div>
-					</div>
+					<div class="order-weight-details-by-stack"></div>
 				</div>
 			</div>
 		</td>

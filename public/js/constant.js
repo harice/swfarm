@@ -25,6 +25,7 @@ define(function () {
 			'TRAILER': 'administration/trailer',
 			'SETTINGS': 'administration/settings',
 			'SCALE': 'administration/scale',
+            'CONTRACT': 'administration/contract',
 		},
 		'MENU': {
 			'PURCHASES': {
@@ -98,6 +99,12 @@ define(function () {
 				'EDIT'	:44,
 				'DELETE':45
 			},
+            'CONTRACT': {
+				'VIEW'	:46,
+				'ADD'	:47,
+				'EDIT'	:48,
+				'DELETE':49
+			},
 		},
 		'CRUD': {
 			'ADD': 'add',
@@ -125,6 +132,9 @@ define(function () {
 					'ACCOUNTTYPE': ['hauler', 'operator'],
 				},
 			},
+			'COLLAPSIBLE': {
+				'ID': 'order-list-collapsible-',
+			},
 		},
 		'LB2TON': 0.0005,
 		'CANCELLATIONREASON': {
@@ -137,6 +147,7 @@ define(function () {
 			'PICKUP' : 'pickup',
 			'DROPOFF' : 'dropoff',
 		},
+		
 	};
 	
 	return constant;
