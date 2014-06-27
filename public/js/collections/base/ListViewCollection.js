@@ -1,12 +1,14 @@
 define([
 	'backbone',
 	'collections/base/AppCollection',
-], function(Backbone, AppCollection){
+	'constant',
+], function(Backbone, AppCollection, Const){
 	var ListViewCollection = AppCollection.extend({
 		
 		runInit: function () {
 			this.defaultURL = '';
 			this.listView = {
+				numPerPage: Const.MAXITEMPERPAGE,
 				currentPage: 1,
 				maxItem: 0,
 				search: '',
@@ -16,11 +18,15 @@ define([
 				filter: '',
 				date: '',
 				lookUpIds: {},
+				collapseId: null,
+				collapseLatestId: null,
 			};
 		},
 		
-		getModelsPerPage: function(page, numPerPage) {
-			this.setPaginationURL(page, numPerPage);
+		getModelsPerPage: function(page) {
+			if($('.list-view-collapse.collapse.in').length > 0)
+				this.setCollapseId(null);
+			this.setPaginationURL(page);
 			this.getModels();
 		},
 		
@@ -64,6 +70,14 @@ define([
 				this.listView.currentSort = options.currentSort;
 			if(typeof options.sort != 'undefined')
 				this.listView.sort = options.sort;
+		},
+		
+		setNumPerPage: function (numPerPage) {
+			this.listView.numPerPage = numPerPage;
+		},
+		
+		getNumPerPage: function () {
+			return this.listView.numPerPage;
 		},
 		
 		setCurrentPage: function (currentPage) {
@@ -130,11 +144,27 @@ define([
 			return this.listView.filters[type];
 		},
 		
-		setPaginationURL: function (page, numPerPage) {
+		setCollapseId: function (collapseId) {
+			this.listView.collapseId = collapseId;
+		},
+		
+		getCollapseId: function () {
+			return this.listView.collapseId;
+		},
+		
+		setCollapseLatestId: function (collapseLatestId) {
+			this.listView.collapseLatestId = collapseLatestId;
+		},
+		
+		getCollapseLatestId: function () {
+			return this.listView.collapseLatestId;
+		},
+		
+		setPaginationURL: function (page) {
 			var searchURL = '';
 			var orderBy = (this.listView.sort[this.listView.currentSort])? 'asc' : 'desc';
 			var params = {
-				perpage: numPerPage,
+				perpage: this.getNumPerPage(),
 				page: page,
 			};
 			

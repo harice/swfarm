@@ -8,6 +8,7 @@ define([
 	'models/salesorder/SOScheduleModel',
 	'models/salesorder/SOWeightInfoModel',
 	'text!templates/layout/contentTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/salesorder/weightInfoViewTemplate.html',
 	'text!templates/salesorder/weightInfoViewProductItemTemplate.html',
 	'global',
@@ -21,6 +22,7 @@ define([
 			SOScheduleModel,
 			SOWeightInfoModel,
 			contentTemplate,
+			purchaseOrderTabbingTemplate,
 			weightInfoViewTemplate,
 			weightInfoViewProductItemTemplate,
 			Global,
@@ -39,6 +41,8 @@ define([
 			this.h1Title = 'Weight Info';
 			this.h1Small = 'view';
 			
+			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generateSOTabs(this.soId, 3)}));
+			
 			this.salesOrderModel = new SalesOrderModel({id:this.soId});
 			this.salesOrderModel.on('change', function() {
 				thisObj.soScheduleModel.runFetch();
@@ -54,13 +58,16 @@ define([
 			this.model = new SOWeightInfoModel({id:this.schedId});
 			this.model.on('change', function() {
 				if(thisObj.subContainerExist()) {
-					if(typeof this.get('weightTicketNumber') === 'undefined') {console.log('here here');
+					/*if(typeof this.get('weightTicketNumber') === 'undefined') {console.log('here here');
 						Global.getGlobalVars().app_router.navigate(Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD, {trigger: true});}
 					else {
 						
 						thisObj.displayForm();
 						thisObj.supplyWeightInfoData();
-					}
+					}*/
+					
+					thisObj.displayForm();
+					thisObj.supplyWeightInfoData();
 				}
 				
 				this.off('change');
@@ -96,7 +103,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.subContainer.html(compiledTemplate);
+			this.subContainer.find('#with-tab-content').html(compiledTemplate);
 		},
 		
 		supplyWeightInfoData: function () {
@@ -188,6 +195,10 @@ define([
 				thisObj.$el.find('#dropoff-product-list tfoot .total-pounds').text(this.addCommaToNumber(dropoffProductsPoundsTotal.toFixed(2)));
 				thisObj.$el.find('#dropoff-product-list tfoot .total-net-tons').text(this.addCommaToNumber(dropoffProductsNetTotal.toFixed(4)));
 			}
+		},
+		
+		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
 		},
 	});
 

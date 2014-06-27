@@ -8,6 +8,7 @@ define([
 	'models/purchaseorder/POScheduleModel',
 	'models/purchaseorder/POWeightInfoModel',
 	'text!templates/layout/contentTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/purchaseorder/weightInfoViewTemplate.html',
 	'text!templates/purchaseorder/weightInfoViewProductItemTemplate.html',
 	'global',
@@ -21,6 +22,7 @@ define([
 			POScheduleModel,
 			POWeightInfoModel,
 			contentTemplate,
+			purchaseOrderTabbingTemplate,
 			weightInfoViewTemplate,
 			weightInfoViewProductItemTemplate,
 			Global,
@@ -39,6 +41,8 @@ define([
 			this.h1Title = 'Weight Info';
 			this.h1Small = 'view';
 			
+			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generatePOTabs(this.poId, 3)}));
+			
 			this.purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
 			this.purchaseOrderModel.on('change', function() {
 				thisObj.poScheduleModel.runFetch();
@@ -54,13 +58,16 @@ define([
 			this.model = new POWeightInfoModel({id:this.schedId});
 			this.model.on('change', function() {
 				if(thisObj.subContainerExist()) {
-					if(typeof this.get('weightTicketNumber') === 'undefined')
+					/*if(typeof this.get('weightTicketNumber') === 'undefined')
 						Global.getGlobalVars().app_router.navigate(Const.URL.POWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD, {trigger: true});
 					else {
 						
 						thisObj.displayForm();
 						thisObj.supplyWeightInfoData();
-					}
+					}*/
+					
+					thisObj.displayForm();
+					thisObj.supplyWeightInfoData();
 				}
 				
 				this.off('change');
@@ -81,6 +88,7 @@ define([
 				dropoff_weight_info_edit_url: '#/'+Const.URL.POWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+Const.CRUD.EDIT+'/'+Const.WEIGHTINFO.DROPOFF,
 				dropoff_weight_info_add_url: '#/'+Const.URL.POWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD+'/'+Const.WEIGHTINFO.DROPOFF,
                 weight_info_print_url: '#/'+Const.URL.POWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+'print',
+                weight_info_mail_url: '#/'+Const.URL.POWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+'mail',
 				previous_po_sched_url: '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId,
 			};
 			
@@ -97,7 +105,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.subContainer.html(compiledTemplate);
+			this.subContainer.find('#with-tab-content').html(compiledTemplate);
 		},
 		
 		supplyWeightInfoData: function () {
@@ -189,6 +197,10 @@ define([
 				thisObj.$el.find('#dropoff-product-list tfoot .total-pounds').text(this.addCommaToNumber(dropoffProductsPoundsTotal.toFixed(2)));
 				thisObj.$el.find('#dropoff-product-list tfoot .total-net-tons').text(this.addCommaToNumber(dropoffProductsNetTotal.toFixed(4)));
 			}
+		},
+		
+		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
 		},
 	});
 

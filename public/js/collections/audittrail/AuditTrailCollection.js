@@ -22,8 +22,8 @@ define([
 			this.options.show.id = null;
 		},
 		
-		getModelsPerPage: function(page, numPerPage) {
-			this.setPaginationURL(page, numPerPage);
+		getModelsPerPage: function(page) {
+			this.setPaginationURL(page);
 			this.getModels();
 		},
 		

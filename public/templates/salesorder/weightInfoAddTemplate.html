@@ -41,7 +41,7 @@
 							<input id="weightinfo_type" type="text" class="form-control width-200 weightinfo_type" maxlength="250" name="weightinfo_type" value="<%= wiType %>" readonly>
 						  <% } else { %>
 						  <div class="styled-select">
-							<select id="weightinfo_type" class="form-contro width-200 weightinfo_type" name="weightinfo_type" required>
+							<select id="weightinfo_type" class="form-contro width-200 weightinfo_type" name="weightinfo_type" value="">
 							  <option value="">Select a type</option>
 							  <option value="pickup">Pickup</option>
 							  <option value="dropoff">Dropoff</option>
@@ -79,7 +79,7 @@
 					    <tr>
 						  <td>
 							<div class="styled-select">
-							  <select id="scaleAccount_id" class="form-contro width-200 scaleAccount_id" name="scaleAccount_id" required>
+							  <select id="scaleAccount_id" class="form-contro width-200 scaleAccount_id" name="scaleAccount_id" value="">
 							    <option value="">Select a scale account</option>
 								<%= scaler_account_list %>
 							  </select>
@@ -87,15 +87,15 @@
 						  </td>
 						  <td>
 							<div class="styled-select">
-							  <select id="scales" class="form-control width-200 scale_id" name="scale_id" required>
+							  <select id="scales" class="form-control width-200 scale_id" name="scale_id" value="">
 							    <option value="">Select a scale name</option>
 							  </select>
 							</div>
 						  </td>
-						  <td><input id="fee" maxlength="80" name="fee" class="form-control fee" placeholder="0.00" required readonly></td>
-						  <td><input maxlength="80" name="bales" class="form-control bales mask-bales" placeholder="0" required></td>
-						  <td><input maxlength="80" name="gross" class="form-control gross" placeholder="0.0000" required></td>
-						  <td><input maxlength="80" name="tare" class="form-control tare" placeholder="0.0000" required></td>
+						  <td><input id="fee" maxlength="80" name="fee" class="form-control fee" placeholder="0.00" value="" readonly></td>
+						  <td><input maxlength="80" name="bales" class="form-control bales mask-bales" placeholder="0" value=""></td>
+						  <td><input maxlength="80" name="gross" class="form-control gross" placeholder="0.0000" value=""></td>
+						  <td><input maxlength="80" name="tare" class="form-control tare" placeholder="0.0000" value=""></td>
 						  <td><span class="net">0.0000</span></td>
 						</tr>
 					  </tbody>
@@ -128,7 +128,7 @@
                     <div class="col-md-12">
                         <div class="pull-right">
                             <button id="save" type="submit" class="save btn btn-primary">Save</button>
-                            <a class="btn btn-default" href="<%= cancel_url %>">Cancel</a>
+                            <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
                         </div>
                     </div>
                 </div>

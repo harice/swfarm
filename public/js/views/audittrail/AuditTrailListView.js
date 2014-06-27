@@ -39,7 +39,7 @@ define([
 		render: function(){
 			this.displayAuditTrail();
 			this.collection.options.currentPage = 1;
-			this.collection.getModelsPerPage(this.collection.options.currentPage , Const.MAXITEMPERPAGE);
+			this.collection.getModelsPerPage(this.collection.options.currentPage);
 			Backbone.View.prototype.refreshTitle('Audit Trail','list');
 		},
 		
@@ -102,7 +102,7 @@ define([
 		gotoFirstPage: function () {
 			if(this.collection.options.currentPage != 1) {
 				this.collection.options.currentPage = 1;
-				this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
+				this.collection.getModelsPerPage(1);
 			}
 			
 			return false;
@@ -112,7 +112,7 @@ define([
 			var lastPage = Math.ceil(this.collection.options.maxItem / Const.MAXITEMPERPAGE);
 			if(this.collection.options.currentPage != lastPage) {
 				this.collection.options.currentPage = lastPage;
-				this.collection.getModelsPerPage(lastPage , Const.MAXITEMPERPAGE);
+				this.collection.getModelsPerPage(lastPage);
 			}
 			
 			return false;
@@ -122,7 +122,7 @@ define([
 			var page = $(ev.target).attr('data-pagenum');
 			if(this.collection.options.currentPage != page) {
 				this.collection.options.currentPage = page;
-				this.collection.getModelsPerPage(page , Const.MAXITEMPERPAGE);
+				this.collection.getModelsPerPage(page);
 			}
 			
 			return false;
@@ -138,7 +138,7 @@ define([
 			
 			this.collection.options.currentSort = sortField;
 			this.collection.options.currentPage = 1;
-			this.collection.getModelsPerPage(1 , Const.MAXITEMPERPAGE);
+			this.collection.getModelsPerPage(1);
 		},
 	});
 

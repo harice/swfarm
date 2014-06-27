@@ -1,0 +1,35 @@
+<% if (!_.isEmpty(contracts)) { %>
+	<% _.each(contracts, function(contract){ %>
+	<tr>
+        <td><%= contract.get("contract_number") %></td>
+		<td><%= contract.get("account").name %></td>
+		<td><%= contract.get("contract_date_start") %></td>
+		<td><%= contract.get("contract_date_end") %></td>
+        
+        <% var total_tons = 0.0 %>
+        <% _.each(contract.get("products"), function(product) { %>
+            <% total_tons = total_tons + parseFloat(product.pivot.tons) %>
+        <% }); %>
+        <td><%= total_tons %></td>
+        
+		<td>
+			<a href="<%= contract_edit_url %>/<%= contract.get("id") %>" class="text-primary" title="edit">
+			  <span class="fa-stack">
+	            <i class="fa fa-square fa-stack-2x"></i>
+	            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+	          </span>
+			</a>
+			<a href="#" class="text-danger delete-contract" data-id="<%= contract.get("id") %>">
+			  <span class="fa-stack">
+		          <i class="fa fa-square fa-stack-2x"></i>
+		          <i class="fa fa-times fa-stack-1x fa-inverse"></i>
+		        </span>
+			</a>
+		</td>
+	</tr>
+	<% }); %>
+<% } else { %>
+	<tr>
+		<td colspan="6">No result found.</td>
+	</tr>
+<% } %>

@@ -27,6 +27,7 @@ define([
 	'controllers/trailer/TrailerController',
 	'controllers/settings/SettingsController',
 	'controllers/scale/ScaleController',
+    'controllers/contract/ContractController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
@@ -57,6 +58,7 @@ define([
 			TrailerController,
 			SettingsController,
 			ScaleController,
+            ContractController,
 			Global,
 			Const,
 			Session) {
@@ -141,8 +143,12 @@ define([
 	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poId/:action/:id'] = 'showPickupSchedulePage';
 	
 	//po weight info
+	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId'] = 'showPOWeightInfoPage';
+	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/'] = 'showPOWeightInfoPage';
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId'] = 'showPOWeightInfoPage';
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/'] = 'showPOWeightInfoPage';
+    routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/mail'] = 'mailWeightInfo';
+    routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/mail/'] = 'mailWeightInfo';
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/:action'] = 'showPOWeightInfoPage';
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/:action/'] = 'showPOWeightInfoPage';
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/:action/:type'] = 'showPOWeightInfoPage';
@@ -161,6 +167,8 @@ define([
 	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soId/:action/:id'] = 'showDeliverySchedulePage';
 	
 	//so weight info
+	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId'] = 'showSOWeightInfoPage';
+	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/'] = 'showSOWeightInfoPage';
 	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId'] = 'showSOWeightInfoPage';
 	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/'] = 'showSOWeightInfoPage';
 	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/:action'] = 'showSOWeightInfoPage';
@@ -188,6 +196,12 @@ define([
 	routerRoutes[Const.URL.SCALE+'/'] = 'showScalePage';
 	routerRoutes[Const.URL.SCALE+'/:action'] = 'showScalePage';
 	routerRoutes[Const.URL.SCALE+'/:action/:id'] = 'showScalePage';
+    
+    //contracts
+    routerRoutes[Const.URL.CONTRACT] = 'showContractPage';
+	routerRoutes[Const.URL.CONTRACT+'/'] = 'showContractPage';
+	routerRoutes[Const.URL.CONTRACT+'/:action'] = 'showContractPage';
+	routerRoutes[Const.URL.CONTRACT+'/:action/:id'] = 'showContractPage';
 	
 	routerRoutes['*actions'] = 'defaultAction';
 
@@ -389,6 +403,10 @@ define([
 			this.currView = poWeightInfoController.setAction(poId, schedId, action, type);
 			this.currView.render();
 		});
+        
+        app_router.on('route:mailWeightInfo', function() {
+            console.log('Email weight info.');
+        });
 		
 		app_router.on('route:showSOPage', function (action, id) {
 			this.closeView();
@@ -436,6 +454,13 @@ define([
 			this.closeView();
 			var scaleController = new ScaleController();
 			this.currView = scaleController.setAction(action, id);
+			this.currView.render();
+		});
+        
+        app_router.on('route:showContractPage', function (action, id) {
+			this.closeView();
+			var contractController = new ContractController();
+			this.currView = contractController.setAction(action, id);
 			this.currView.render();
 		});
 		

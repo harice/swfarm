@@ -1,8 +1,7 @@
-<div class="row">
+<!--<div class="row">
     <div class="col-md-12">
-        <div class="block-flat">
+        <div class="block-flat">-->
             <div class="content">
-              
               <form id="poWeightInfoFrom" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
                 <fieldset>
                   <legend>Details</legend>
@@ -174,14 +173,16 @@
                 <div class="form-group form-button-container">
                     <div class="col-md-12">
                         <div class="pull-right">
-                            <a href="<%= weight_info_print_url %>" id="print-weight-ticket" class="btn btn-link">Print Weight Ticket</a>
-                            <a class="btn btn-default" href="<%= previous_po_sched_url %>">Cancel</a>
+                            <a href="<%= weight_info_mail_url %>" id="email-weight-ticket" class="btn btn-link">Email</a>
+                            <a href="<%= weight_info_print_url %>" id="print-weight-ticket" class="btn btn-link">Print</a>
+                            <a class="btn btn-primary" href="<%= weight_info_edit_url %>">Edit Weight Ticket</a>
+                            <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
                         </div>
                     </div>
                 </div>
               </form>
               
             </div> <!-- /.content -->
-        </div> <!-- /.block-flat -->
+        <!--</div>
     </div>
-</div>
+</div>-->

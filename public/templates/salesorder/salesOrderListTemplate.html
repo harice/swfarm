@@ -56,9 +56,9 @@
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu pull-right filter" role="menu">
-                                        <li class="dropdown-header"><i class="fa fa-truck"></i>Filter By Origin</li>
+                                        <!--<li class="dropdown-header"><i class="fa fa-truck"></i>Filter By Origin</li>
                                         <li><input class="location_id" type="radio" name="location_id" value="" checked> All</li>
-                                        <%= origin_filters %>
+                                        %= origin_filters %-->
                                         <li class="dropdown-header"><i class="fa fa-truck"></i>Filter By Nature Of Sale</li>
                                         <li><input class="natureofsale_id" type="radio" name="natureofsale_id" value="" checked> All</li>
                                         <%= nos_filters %>
@@ -89,7 +89,7 @@
                                 <th class="width-110">Action</th>
                             </tr>
                         </thead>
-                        <tbody></tbody>
+                        <tbody id="order-accordion"></tbody>
                     </table>
 
                     <div class="clearfix">
