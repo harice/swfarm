@@ -11,6 +11,7 @@ define([
 	'collections/salesorder/OriginCollection',
 	'collections/salesorder/NatureOfSaleCollection',
 	'collections/product/ProductCollection',
+    'collections/contract/ContractCollection',
 	'models/salesorder/SalesOrderModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/salesorder/salesOrderAddTemplate.html',
@@ -31,6 +32,7 @@ define([
 			OriginCollection,
 			NatureOfSaleCollection,
 			ProductCollection,
+            ContractCollection,
 			SalesOrderModel,
 			contentTemplate,
 			salesOrderAddTemplate,
@@ -101,11 +103,24 @@ define([
 			this.productCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
+            
+            this.contractCollection = new ContractCollection();
 		},
 		
 		render: function(){
 			this.originCollection.getModels();
 			Backbone.View.prototype.refreshTitle('Sales Order','add');
+		},
+                
+        // Contracts
+        getContractDropdown: function () {
+			var dropDown = '<option value="">Select a contract</option>';
+            console.log(this.contractCollection.models);
+			_.each(this.contractCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('contract_number')+'">'+model.get('contract_number')+'</option>';
+			});
+			
+			return dropDown;
 		},
 		
 		displayForm: function () {
@@ -113,6 +128,7 @@ define([
 			
 			var innerTemplateVariables = {
 				'so_url' : '#/'+Const.URL.SO,
+                'contract_list': this.getContractDropdown()
 			};
 			
 			if(this.soId != null)
@@ -277,7 +293,7 @@ define([
 				this.options.productFieldClone = productItem.clone();
 				//this.initProductAutocomplete(productItem);
 				this.addIndexToProductFields(productItem);
-				clone = productItem
+				clone = productItem;
 			}
 			else {
 				var clone = this.options.productFieldClone.clone();
