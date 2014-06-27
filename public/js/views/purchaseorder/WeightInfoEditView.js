@@ -74,13 +74,20 @@ define([
 					weightInfo = pickupInfo;
 				else
 					weightInfo = dropoffInfo;
-					
-				this.$el.find('#scaleAccount_id').val(weightInfo.scaler_account[0].id);
-				this.fetchScale(weightInfo.scaler_account[0].id, weightInfo.scale.id);
-				this.$el.find('#weight-info .bales').val(this.addCommaToNumber(weightInfo.bales));
-				this.$el.find('#weight-info .gross').val(this.addCommaToNumber(weightInfo.gross));
-				this.$el.find('#weight-info .tare').val(this.addCommaToNumber(weightInfo.tare));
-				var wiNet = parseFloat(weightInfo.gross) - parseFloat(weightInfo.tare);
+				
+				if(typeof weightInfo.scaler_account[0] != 'undefined' && typeof weightInfo.scaler_account[0].id != 'undefined' && weightInfo.scaler_account[0].id != null) {
+					this.$el.find('#scaleAccount_id').val(weightInfo.scaler_account[0].id);
+					var scaleId = (typeof weightInfo.scale != 'undefined' && typeof weightInfo.scale.id != 'undefined' && weightInfo.scale.id != null)? weightInfo.scale.id : '';
+					this.fetchScale(weightInfo.scaler_account[0].id, scaleId);
+				}
+				
+				var weightInfoBales = (typeof weightInfo.bales != 'undefined' && weightInfo.bales != null)? this.addCommaToNumber(weightInfo.bales) : '';
+				this.$el.find('#weight-info .bales').val(weightInfoBales);
+				var weightInfoGross = (typeof weightInfo.gross != 'undefined' && weightInfo.gross != null)? this.addCommaToNumber(weightInfo.gross) : '';
+				this.$el.find('#weight-info .gross').val(weightInfoGross);
+				var weightInfoTare = (typeof weightInfo.tare != 'undefined' && weightInfo.tare != null)? this.addCommaToNumber(weightInfo.tare) : '';
+				this.$el.find('#weight-info .tare').val(weightInfoTare);
+				var wiNet = (typeof weightInfo.gross != 'undefined' && weightInfo.gross != null && typeof weightInfo.tare != 'undefined' && weightInfo.tare != null)? parseFloat(weightInfo.gross) - parseFloat(weightInfo.tare) : 0;
 				this.$el.find('#weight-info .net').text(this.addCommaToNumber(wiNet.toFixed(4)));
 				
 				var productsBalesTotal = 0;
@@ -89,20 +96,21 @@ define([
 				var piCtr = 0;
 				_.each(weightInfo.weightticketproducts, function (product) {
 					
-					var net = parseFloat(product.pounds) * Const.LB2TON;
+					var net = (typeof product.pounds != 'undefined' && product.pounds != null)? parseFloat(product.pounds) * Const.LB2TON : 0;
 					productsNetTotal += net;
-					productsBalesTotal += parseFloat(product.bales);
-					productsPoundsTotal += parseFloat(product.pounds);
+					var bales = (typeof product.bales != 'undefined' && product.bales != null)? parseFloat(product.bales) : 0;
+					productsBalesTotal += bales;
+					var pounds = (typeof product.pounds != 'undefined' && product.pounds != null)? parseFloat(product.pounds) : 0;
+					productsPoundsTotal += pounds;
 					
 					var variables = {
 						id: product.id,
 						schedule_product_id: product.transportscheduleproduct.id,
 						stock_number: product.transportscheduleproduct.productorder.stacknumber,
 						name: product.transportscheduleproduct.productorder.product.name,
-						route_type: thisObj.options.routeType[0]+thisObj.options.separator,
 						number: '.'+piCtr++,
-						bales: thisObj.addCommaToNumber(product.bales),
-						pounds: thisObj.addCommaToNumber(product.pounds),
+						bales: thisObj.addCommaToNumber(bales),
+						pounds: thisObj.addCommaToNumber(pounds),
 						net: net.toFixed(4),
 					};
 					

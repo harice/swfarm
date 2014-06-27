@@ -124,30 +124,41 @@ define([
 			
 			if(pickupInfo != null) {
 				this.$el.find('#pickup-fields').show();
-				this.$el.find('#pickup-info .scale-account').val(pickupInfo.scaler_account[0].name);
-				this.$el.find('#pickup-info .scale-name').val(pickupInfo.scale.name);
-				this.$el.find('#pickup-info .fee').val(this.addCommaToNumber(pickupInfo.fee));
-				this.$el.find('#pickup-info .bales').val(this.addCommaToNumber(pickupInfo.bales));
-				this.$el.find('#pickup-info .gross').val(this.addCommaToNumber(pickupInfo.gross));
-				this.$el.find('#pickup-info .tare').val(this.addCommaToNumber(pickupInfo.tare));
-				var pickupNet = parseFloat(pickupInfo.gross) - parseFloat(pickupInfo.tare);
-				this.$el.find('#pickup-info .net').text(this.addCommaToNumber(pickupNet.toFixed(4)));
+				if(typeof pickupInfo.scaler_account[0] != 'undefined' && typeof pickupInfo.scaler_account[0].name != 'undefined' && pickupInfo.scaler_account[0].name != null)
+					this.$el.find('#pickup-info .scale-account').val(pickupInfo.scaler_account[0].name);
+				if(typeof pickupInfo.scale != 'undefined' && pickupInfo.scale != null && typeof pickupInfo.scale.name != 'undefined' && pickupInfo.scale.name != null)
+					this.$el.find('#pickup-info .scale-name').val(pickupInfo.scale.name);
+				if(typeof pickupInfo.fee != 'undefined' && pickupInfo.fee != null)
+					this.$el.find('#pickup-info .fee').val(this.addCommaToNumber(pickupInfo.fee));
+				if(typeof pickupInfo.bales != 'undefined' && pickupInfo.bales != null)
+					this.$el.find('#pickup-info .bales').val(this.addCommaToNumber(pickupInfo.bales));
+				if(typeof pickupInfo.gross != 'undefined' && pickupInfo.gross != null)
+					this.$el.find('#pickup-info .gross').val(this.addCommaToNumber(pickupInfo.gross));
+				if(typeof pickupInfo.tare != 'undefined' && pickupInfo.tare != null)
+					this.$el.find('#pickup-info .tare').val(this.addCommaToNumber(pickupInfo.tare));
+					
+				if(typeof pickupInfo.gross != 'undefined' && pickupInfo.gross != null && typeof pickupInfo.tare != 'undefined' && pickupInfo.tare != null) {
+					var pickupNet = parseFloat(pickupInfo.gross) - parseFloat(pickupInfo.tare);
+					this.$el.find('#pickup-info .net').text(this.addCommaToNumber(pickupNet.toFixed(4)));
+				}
 				
 				var pickupProductsBalesTotal = 0;
 				var pickupProductsPoundsTotal = 0;
 				var pickupProductsNetTotal = 0;
 				_.each(pickupInfo.weightticketproducts, function (product) {
 					
-					var net = parseFloat(product.pounds) * Const.LB2TON;
+					var net = (typeof product.pounds != 'undefined' && product.pounds != null)? parseFloat(product.pounds) * Const.LB2TON : 0;
 					pickupProductsNetTotal += net;
-					pickupProductsBalesTotal += parseFloat(product.bales);
-					pickupProductsPoundsTotal += parseFloat(product.pounds);
+					var bales = (typeof product.bales != 'undefined' && product.bales != null)? parseFloat(product.bales) : 0;
+					pickupProductsBalesTotal += parseFloat(bales);
+					var pounds = (typeof product.pounds != 'undefined' && product.pounds != null)? parseFloat(product.pounds) : 0;
+					pickupProductsPoundsTotal += pounds;
 					
 					var variables = {
-						stack_number: product.transportscheduleproduct.productorder.stacknumber,
-						name: product.transportscheduleproduct.productorder.product.name,
-						bales: thisObj.addCommaToNumber(product.bales),
-						pounds: thisObj.addCommaToNumber(product.pounds),
+						stack_number: (typeof product.transportscheduleproduct.productorder.stacknumber != 'undefined' && product.transportscheduleproduct.productorder.stacknumber != null)? product.transportscheduleproduct.productorder.stacknumber : '',
+						name: (typeof product.transportscheduleproduct.productorder.product.name != 'undefined' && product.transportscheduleproduct.productorder.product.name != null)? product.transportscheduleproduct.productorder.product.name : 0,
+						bales: thisObj.addCommaToNumber(bales),
+						pounds: thisObj.addCommaToNumber(pounds),
 						net: net.toFixed(4),
 					};
 					
@@ -161,30 +172,41 @@ define([
 			
 			if(dropoffInfo != null) {
 				this.$el.find('#dropoff-fields').show();
-				this.$el.find('#dropoff-info .scale-account').val(dropoffInfo.scaler_account[0].name);
-				this.$el.find('#dropoff-info .scale-name').val(dropoffInfo.scale.name);
-				this.$el.find('#dropoff-info .fee').val(this.addCommaToNumber(dropoffInfo.fee));
-				this.$el.find('#dropoff-info .bales').val(this.addCommaToNumber(dropoffInfo.bales));
-				this.$el.find('#dropoff-info .gross').val(this.addCommaToNumber(dropoffInfo.gross));
-				this.$el.find('#dropoff-info .tare').val(this.addCommaToNumber(dropoffInfo.tare));
-				var dropffNet = parseFloat(dropoffInfo.gross) - parseFloat(dropoffInfo.tare);
-				this.$el.find('#dropoff-info .net').text(this.addCommaToNumber(dropffNet.toFixed(4)));
+				if(typeof dropoffInfo.scaler_account[0] != 'undefined' && typeof dropoffInfo.scaler_account[0].name != 'undefined' && dropoffInfo.scaler_account[0].name != null)
+					this.$el.find('#pickup-info .scale-account').val(dropoffInfo.scaler_account[0].name);
+				if(typeof dropoffInfo.scale != 'undefined' && dropoffInfo.scale != null && typeof dropoffInfo.scale.name != 'undefined' && dropoffInfo.scale.name != null)
+					this.$el.find('#pickup-info .scale-name').val(dropoffInfo.scale.name);
+				if(typeof dropoffInfo.fee != 'undefined' && dropoffInfo.fee != null)
+					this.$el.find('#pickup-info .fee').val(this.addCommaToNumber(dropoffInfo.fee));
+				if(typeof dropoffInfo.bales != 'undefined' && dropoffInfo.bales != null)
+					this.$el.find('#pickup-info .bales').val(this.addCommaToNumber(dropoffInfo.bales));
+				if(typeof dropoffInfo.gross != 'undefined' && dropoffInfo.gross != null)
+					this.$el.find('#pickup-info .gross').val(this.addCommaToNumber(dropoffInfo.gross));
+				if(typeof dropoffInfo.tare != 'undefined' && dropoffInfo.tare != null)
+					this.$el.find('#pickup-info .tare').val(this.addCommaToNumber(dropoffInfo.tare));
+					
+				if(typeof dropoffInfo.gross != 'undefined' && dropoffInfo.gross != null && typeof dropoffInfo.tare != 'undefined' && dropoffInfo.tare != null) {
+					var pickupNet = parseFloat(dropoffInfo.gross) - parseFloat(dropoffInfo.tare);
+					this.$el.find('#pickup-info .net').text(this.addCommaToNumber(pickupNet.toFixed(4)));
+				}
 				
 				var dropoffProductsBalesTotal = 0;
 				var dropoffProductsPoundsTotal = 0;
 				var dropoffProductsNetTotal = 0;
 				_.each(dropoffInfo.weightticketproducts, function (product) {
 					
-					var net = parseFloat(product.pounds) * Const.LB2TON;
+					var net = (typeof product.pounds != 'undefined' && product.pounds != null)? parseFloat(product.pounds) * Const.LB2TON : 0;
 					dropoffProductsNetTotal += net;
-					dropoffProductsBalesTotal += parseFloat(product.bales);
-					dropoffProductsPoundsTotal += parseFloat(product.pounds);
+					var bales = (typeof product.bales != 'undefined' && product.bales != null)? parseFloat(product.bales) : 0;
+					dropoffProductsBalesTotal += parseFloat(bales);
+					var pounds = (typeof product.pounds != 'undefined' && product.pounds != null)? parseFloat(product.pounds) : 0;
+					dropoffProductsPoundsTotal += pounds;
 					
 					var variables = {
-						stack_number: product.transportscheduleproduct.productorder.stacknumber,
-						name: product.transportscheduleproduct.productorder.product.name,
-						bales: thisObj.addCommaToNumber(product.bales),
-						pounds: thisObj.addCommaToNumber(product.pounds),
+						stack_number: (typeof product.transportscheduleproduct.productorder.stacknumber != 'undefined' && product.transportscheduleproduct.productorder.stacknumber != null)? product.transportscheduleproduct.productorder.stacknumber : '',
+						name: (typeof product.transportscheduleproduct.productorder.product.name != 'undefined' && product.transportscheduleproduct.productorder.product.name != null)? product.transportscheduleproduct.productorder.product.name : 0,
+						bales: thisObj.addCommaToNumber(bales),
+						pounds: thisObj.addCommaToNumber(pounds),
 						net: net.toFixed(4),
 					};
 					

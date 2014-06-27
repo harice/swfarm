@@ -87,6 +87,8 @@ define([
 			
 			var innerListTemplate = _.template(weightInfoInnerListTemplate, data);
 			this.subContainer.find("#so-weight-info-list tbody").html(innerListTemplate);
+			if(this.subContainer.find("#so-weight-info-list tbody").find('tr').length == 0)
+				this.subContainer.find("#so-weight-info-list tbody").html('<tr><td colspan="6">No result found.</td></tr>');
 			
 			this.generatePagination();
 		},
