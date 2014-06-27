@@ -576,19 +576,23 @@ class OrderRepository implements OrderRepositoryInterface {
             $i = 0;
             foreach($productOrder['transportscheduleproduct'] as $transportscheduleproduct){
                 $weightTypeToBeUsed = 1; //pickup weight ticket default
-
+                $weightTicket = $transportscheduleproduct['transportschedule']['weightticket'];
                 $stackList[$index]['schedule'][$i]['transportschedule_id'] = $transportscheduleproduct['transportschedule_id'];
                 $stackList[$index]['schedule'][$i]['transportscheduledate'] = $transportscheduleproduct['transportschedule']['date'];
                 $stackList[$index]['schedule'][$i]['expected'] = $transportscheduleproduct['quantity'];
-                $weightTicket = $transportscheduleproduct['transportschedule']['weightticket'];
                 $stackList[$index]['schedule'][$i]['weightTicketNumber'] = $weightTicket['weightTicketNumber'];
 
                 if($weightTicket['pickup_id'] != null && $weightTicket['dropoff_id'] != null){ //with both pickup and dropoff weight ticket
                     $weightTicketPickup = $weightTicket['weightticketscale_pickup'];
                     $weightTicketDropoff = $weightTicket['weightticketscale_dropoff'];
                     //compute net weight
-                    $pickupNetWeight = $weightTicketPickup['gross'] - $weightTicketPickup['tare'];
-                    $dropoffNetWeight = $weightTicketDropoff['gross'] - $weightTicketDropoff['tare'];
+                    if($weightTicketPickup['gross'] != null && $weightTicketPickup['tare'] != null){
+                        $pickupNetWeight = number_format($weightTicketPickup['gross'] - $weightTicketPickup['tare'], 4);
+                        $dropoffNetWeight = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 4);
+                    } else {
+                        $pickupNetWeight = 0;
+                        $dropoffNetWeight = 0;
+                    }
 
                     //check if weightticket has more than one product
                     if(count($weightTicketPickup['weightticketproducts']) > 1 || count($weightTicketDropoff['weightticketproducts']) > 1){ //if weight ticket product is more than 1
@@ -605,10 +609,10 @@ class OrderRepository implements OrderRepositoryInterface {
                         
                     } else {
                         if($pickupNetWeight <= $dropoffNetWeight){
-                            $stackList[$index]['schedule'][$i]['delivered'] = $pickupNetWeight;
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($pickupNetWeight, 4);
                             $stackList[$index]['schedule'][$i]['weighttickettype'] = 1;
                         } else {
-                            $stackList[$index]['schedule'][$i]['delivered'] = $dropoffNetWeight;
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($dropoffNetWeight, 4);
                             $stackList[$index]['schedule'][$i]['weighttickettype'] = 2;
                         }
                     }
@@ -618,7 +622,11 @@ class OrderRepository implements OrderRepositoryInterface {
                     if(count($weightTicketPickup['weightticketproducts']) > 1){
                         $stackList[$index]['schedule'][$i]['delivered'] = $this->getWeightTicketProductTobeUsed(1, $transportscheduleproduct['weightticketproducts']);
                     } else {
-                        $stackList[$index]['schedule'][$i]['delivered'] = number_format($weightTicketPickup['gross'] - $weightTicketPickup['tare'], 4);
+                        if($weightTicketPickup['gross'] != null && $weightTicketPickup['tare'] != null){
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($weightTicketPickup['gross'] - $weightTicketPickup['tare'], 4);
+                        } else {
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format(0, 4);
+                        }
                     }
                     $stackList[$index]['schedule'][$i]['weighttickettype'] = 1;
                 } else { //dropoff weight ticket only
@@ -627,7 +635,11 @@ class OrderRepository implements OrderRepositoryInterface {
                     if(count($weightTicketDropoff['weightticketproducts']) > 1){ //if product on weight ticket is more than 1
                         $stackList[$index]['schedule'][$i]['delivered'] = $this->getWeightTicketProductTobeUsed(2, $transportscheduleproduct['weightticketproducts']);
                     } else {
-                        $stackList[$index]['schedule'][$i]['delivered'] = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 4);
+                        if($weightTicketPickup['gross'] != null && $weightTicketPickup['tare'] != null){
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 4);
+                        } else {
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format(0, 4);
+                        }
                     }
                     $stackList[$index]['schedule'][$i]['weighttickettype'] = 2;
                 }
