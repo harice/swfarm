@@ -504,57 +504,62 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             $weightticket['status_id'] = '2'; //close
             //rename array to fit in update function
             if(isset($weightticket['weightticketscale_pickup'])){
-                $weightticket['pickup_info'] = $weightticket['weightticketscale_pickup'];
-                unset($weightticket['weightticketscale_pickup']);
-                if(isset($weightticket['pickup_info']['weightticketproducts'])){
-                    $weightticket['pickup_info']['products'] = $weightticket['pickup_info']['weightticketproducts'];
-                    unset($weightticket['pickup_info']['weightticketproducts']);
-                }
+                // $weightticket['pickup_info'] = $weightticket['weightticketscale_pickup'];
+                // unset($weightticket['weightticketscale_pickup']);
+                // if(isset($weightticket['pickup_info']['weightticketproducts'])){
+                //     $weightticket['pickup_info']['products'] = $weightticket['pickup_info']['weightticketproducts'];
+                //     unset($weightticket['pickup_info']['weightticketproducts']);
+                // }
 
-                if($weightticket['pickup_info']['scaleAccount_id'] == null ||
-                   $weightticket['pickup_info']['scale_id'] == null || 
-                   $weightticket['pickup_info']['fee'] == null ||
-                   $weightticket['pickup_info']['bales'] == null ||
-                   $weightticket['pickup_info']['gross'] ==  null ||
-                   $weightticket['pickup_info']['tare'] == null){
+                if($weightticket['weightticketscale_pickup']['scaleAccount_id'] == null ||
+                   $weightticket['weightticketscale_pickup']['scale_id'] == null || 
+                   $weightticket['weightticketscale_pickup']['fee'] == null ||
+                   $weightticket['weightticketscale_pickup']['bales'] == null ||
+                   $weightticket['weightticketscale_pickup']['gross'] ==  null ||
+                   $weightticket['weightticketscale_pickup']['tare'] == null){
                     return array(
                       'error' => true,
                       'message' => 'Please complete all the details of pickup weight ticket before changing the status to close.');
                 }
 
-                foreach($weightticket['pickup_info']['products'] as $product){
-                    if($product['bales'] == null || $product['pounds'] == null){
-                        return array(
-                          'error' => true,
-                          'message' => 'Please complete all the details of pickup weight ticket product details before you can change the status to close.');
+                if(count($weightticket['weightticketscale_pickup']['weightticketproducts']) > 1){ //require only if more than 1 product is in weight ticket
+                    foreach($weightticket['weightticketscale_pickup']['weightticketproducts'] as $product){
+                        if($product['bales'] == null || $product['pounds'] == null){
+                            return array(
+                              'error' => true,
+                              'message' => 'Please complete all the details of pickup weight ticket product details before you can change the status to close.');
+                        }
                     }
                 }
+                
             }
 
             if(isset($weightticket['weightticketscale_dropoff'])){
-                $weightticket['dropoff_info'] = $weightticket['weightticketscale_dropoff'];
-                unset($weightticket['weightticketscale_dropoff']);
-                if(isset($weightticket['dropoff_info']['weightticketproducts'])){
-                    $weightticket['dropoff_info']['products'] = $weightticket['dropoff_info']['weightticketproducts'];
-                    unset($weightticket['dropoff_info']['weightticketproducts']);
-                }
+                // $weightticket['dropoff_info'] = $weightticket['weightticketscale_dropoff'];
+                // unset($weightticket['weightticketscale_dropoff']);
+                // if(isset($weightticket['dropoff_info']['weightticketproducts'])){
+                //     $weightticket['dropoff_info']['products'] = $weightticket['dropoff_info']['weightticketproducts'];
+                //     unset($weightticket['dropoff_info']['weightticketproducts']);
+                // }
 
-                if($weightticket['dropoff_info']['scaleAccount_id'] == null ||
-                   $weightticket['dropoff_info']['scale_id'] == null || 
-                   $weightticket['dropoff_info']['fee'] == null ||
-                   $weightticket['dropoff_info']['bales'] == null ||
-                   $weightticket['dropoff_info']['gross'] ==  null ||
-                   $weightticket['dropoff_info']['tare'] == null){
+                if($weightticket['weightticketscale_dropoff']['scaleAccount_id'] == null ||
+                   $weightticket['weightticketscale_dropoff']['scale_id'] == null || 
+                   $weightticket['weightticketscale_dropoff']['fee'] == null ||
+                   $weightticket['weightticketscale_dropoff']['bales'] == null ||
+                   $weightticket['weightticketscale_dropoff']['gross'] ==  null ||
+                   $weightticket['weightticketscale_dropoff']['tare'] == null){
                     return array(
                       'error' => true,
                       'message' => 'Please complete all the details of dropoff weight ticket before changing the status to close.');
                 }
 
-                foreach($weightticket['dropoff_info']['products'] as $product){
-                    if($product['bales'] == null || $product['pounds'] == null){
-                        return array(
-                          'error' => true,
-                          'message' => 'Please complete all the details of dropoff weight ticket product details before you can change the status to close.');
+                if(count($weightticket['weightticketscale_dropoff']['weightticketproducts']) > 1){ //require only if more than 1 product is in weight ticket
+                    foreach($weightticket['weightticketscale_dropoff']['weightticketproducts'] as $product){
+                        if($product['bales'] == null || $product['pounds'] == null){
+                            return array(
+                              'error' => true,
+                              'message' => 'Please complete all the details of dropoff weight ticket product details before you can change the status to close.');
+                        }
                     }
                 }
             }
