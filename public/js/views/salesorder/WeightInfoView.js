@@ -8,6 +8,7 @@ define([
 	'models/salesorder/SOScheduleModel',
 	'models/salesorder/SOWeightInfoModel',
 	'text!templates/layout/contentTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/salesorder/weightInfoViewTemplate.html',
 	'text!templates/salesorder/weightInfoViewProductItemTemplate.html',
 	'global',
@@ -21,6 +22,7 @@ define([
 			SOScheduleModel,
 			SOWeightInfoModel,
 			contentTemplate,
+			purchaseOrderTabbingTemplate,
 			weightInfoViewTemplate,
 			weightInfoViewProductItemTemplate,
 			Global,
@@ -38,6 +40,8 @@ define([
 			this.schedId = option.schedId;
 			this.h1Title = 'Weight Info';
 			this.h1Small = 'view';
+			
+			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generateSOTabs(this.soId, 3)}));
 			
 			this.salesOrderModel = new SalesOrderModel({id:this.soId});
 			this.salesOrderModel.on('change', function() {
@@ -99,7 +103,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.subContainer.html(compiledTemplate);
+			this.subContainer.find('#with-tab-content').html(compiledTemplate);
 		},
 		
 		supplyWeightInfoData: function () {
