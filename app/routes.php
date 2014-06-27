@@ -70,6 +70,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // Route::get('weightticket/getWeightTicketOfSchedule', 'APIv1\WeightTicketController@getWeightTicketOfSchedule');
     // Route::get('weightticket/getAllBidProductOnBid', 'APIv1\WeightTicketController@getAllBidProductOnBid');
     // Route::get('weightticket/getAllScaleProviderAccount', 'APIv1\WeightTicketController@getAllScaleProviderAccount');
+    Route::get('weightticket/getAllWeightticketOfOrder', 'APIv1\WeightTicketController@getAllWeightticketOfOrder');
     Route::get('weightticket/closeWeightTicket/{id}', 'APIv1\WeightTicketController@closeWeightTicket');
     Route::get('weightticket/getScheduleProducts', 'APIv1\WeightTicketController@getScheduleProducts');
     Route::post('weightticket/{id}/mail', 'APIv1\WeightTicketController@mailWeightTicket');
@@ -87,7 +88,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 
     //Purchase Order
     // Route::post('purchaseorder/product/upload', 'APIv1\OrderController@uploadFileToProductOrder');
-    Route::get('purchaseorder/getOrderWeightDetailsByStack/{id}', 'APIv1\OrderController@getOrderWeightDetailsByStack');
+    Route::get('purchaseorder/getOrderWeightDetailsByStack', 'APIv1\OrderController@getOrderWeightDetailsByStack');
     Route::get('purchaseorder/getStatuses', 'APIv1\OrderController@getPOStatus');
     Route::get('purchaseorder/getDestinationList', 'APIv1\OrderController@getDestinationList');
     Route::get('purchaseorder/getCancellingReasonList', 'APIv1\OrderController@getPOCancellingReasonList');

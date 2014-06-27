@@ -12,7 +12,7 @@ define([
 				this.collection.setCurrentPage(page);
 			else
 				page = this.collection.getCurrentPage();
-			this.collection.getModelsPerPage(page, Const.MAXITEMPERPAGE);
+			this.collection.getModelsPerPage(page);
 		},
 		
 		extendListEvents: function () {
@@ -21,21 +21,22 @@ define([
 		},
 		
 		generatePagination: function (maxItem, maxItemPerPage) {
-            var perPage = $('#perpage').val();
-            var rows = ((typeof perPage !== 'undefined') ? perPage : Const.MAXITEMPERPAGE);
             
 			if(maxItem == null)
 				var maxItem = this.collection.getMaxItem();
 			if(maxItemPerPage == null)
-				var maxItemPerPage = rows;
+				var maxItemPerPage = this.collection.getNumPerPage();
 			
 			$('.page-number').remove();
 			
 			var lastPage = Math.ceil(maxItem / maxItemPerPage);
 			
+			$('#perpage').val(this.collection.listView.numPerPage);
+			$('.display-items').show();
+			
 			if(lastPage > 1) {
 				$('.pagination').show();
-				$('.display-items').show();
+				//$('.display-items').show();
 				
 				for(var i=1; i <= lastPage; i++) {
 					var active = '';
@@ -67,7 +68,7 @@ define([
 			}
 			else {
 				$('.pagination').hide();
-				$('.display-items').hide();
+				//$('.display-items').hide();
 			}
 		},
 		
@@ -79,79 +80,67 @@ define([
 			'click .page-number' : 'gotoPage',
 			'click .search-local' : 'searchLocal',
 			'submit #searchLocal' : 'onSubmitSearchLocal',
-            'change #perpage' : 'searchLocal',
+            'change #perpage' : 'setNumPerPage',
 		},
 		
 		gotoFirstPage: function () {
-            var perPage = $('#perpage').val();
-            var rows = ((typeof perPage !== 'undefined') ? perPage : Const.MAXITEMPERPAGE);
     
 			if(this.collection.getCurrentPage() != 1) {
 				this.collection.setCurrentPage(1);
-				this.collection.getModelsPerPage(1 , rows);
+				this.collection.getModelsPerPage(1);
 			}
 			
 			return false;
 		},
 
 		gotoPrevPage:function () {
-            var perPage = $('#perpage').val();
-            var rows = ((typeof perPage !== 'undefined') ? perPage : Const.MAXITEMPERPAGE);
     
 			var currentPage = this.collection.getCurrentPage();
 			if(currentPage != 1 && currentPage > 1) {
 				var calPage = parseInt(currentPage) - parseInt(1);
 				this.collection.setCurrentPage(calPage);
-				this.collection.getModelsPerPage(calPage , rows);
+				this.collection.getModelsPerPage(calPage);
 			}
 			
 			return false;
 		},
 
 		gotoNextPage:function () {
-            var perPage = $('#perpage').val();
-            var rows = ((typeof perPage !== 'undefined') ? perPage : Const.MAXITEMPERPAGE);
             
 			var lastPage = Math.ceil(this.collection.getMaxItem() / rows);
 			var currentPage = this.collection.getCurrentPage();
 			if(currentPage < lastPage) {
 				var calPage = parseInt(currentPage) + parseInt(1);
 				this.collection.setCurrentPage(calPage);
-				this.collection.getModelsPerPage(calPage , rows);
+				this.collection.getModelsPerPage(calPage);
 			}
 			
 			return false;
 		},
 		
 		gotoLastPage: function () {
-            var perPage = $('#perpage').val();
-            var rows = ((typeof perPage !== 'undefined') ? perPage : Const.MAXITEMPERPAGE);
     
-			var lastPage = Math.ceil(this.collection.getMaxItem() / rows);
+			var lastPage = Math.ceil(this.collection.getMaxItem() / this.collection.getNumPerPage());
 			if(this.collection.getCurrentPage() != lastPage) {
 				this.collection.setCurrentPage(lastPage);
-				this.collection.getModelsPerPage(lastPage , rows);
+				this.collection.getModelsPerPage(lastPage);
 			}
 			
 			return false;
 		},
 		
 		gotoPage: function (ev) {
-            var perPage = $('#perpage').val();
-            var rows = ((typeof perPage !== 'undefined') ? perPage : Const.MAXITEMPERPAGE);
             
 			var page = $(ev.target).attr('data-pagenum');
 			if(this.collection.getCurrentPage() != page) {
 				this.collection.setCurrentPage(page);
-				this.collection.getModelsPerPage(page , rows);
+				this.collection.getModelsPerPage(page);
 			}
 			
 			return false;
 		},
 		
 		sortByField: function (sortField) {
-            var perPage = $('#perpage').val();
-            var rows = ((typeof perPage !== 'undefined') ? perPage : Const.MAXITEMPERPAGE);
     
 			if(this.collection.getCurrentSort() == sortField) {
 				var option = {};
@@ -161,18 +150,16 @@ define([
 			
 			this.collection.setCurrentSort(sortField);
 			this.collection.setCurrentPage(1);
-			this.collection.getModelsPerPage(1 , rows);
+			this.collection.getModelsPerPage(1);
 			
 			return false;
 		},
 		
 		searchLocal: function () {
 			var keyword = $('#search-keyword').val();
-            var perPage = $('#perpage').val();
-            var rows = ((typeof perPage !== 'undefined') ? perPage : Const.MAXITEMPERPAGE);
 			
 			this.collection.setSearch(keyword);
-			this.collection.getModelsPerPage(1 , rows);
+			this.collection.getModelsPerPage(1);
 			
 			return false;
 		},
@@ -181,6 +168,11 @@ define([
 			this.searchLocal();
 			return false;
 		},
+		
+		setNumPerPage: function (ev) {
+			this.collection.setNumPerPage($(ev.target).val());
+			this.renderList(1);
+		}
 	});
 
   return ListView;

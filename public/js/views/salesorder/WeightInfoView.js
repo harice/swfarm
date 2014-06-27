@@ -54,13 +54,16 @@ define([
 			this.model = new SOWeightInfoModel({id:this.schedId});
 			this.model.on('change', function() {
 				if(thisObj.subContainerExist()) {
-					if(typeof this.get('weightTicketNumber') === 'undefined') {console.log('here here');
+					/*if(typeof this.get('weightTicketNumber') === 'undefined') {console.log('here here');
 						Global.getGlobalVars().app_router.navigate(Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD, {trigger: true});}
 					else {
 						
 						thisObj.displayForm();
 						thisObj.supplyWeightInfoData();
-					}
+					}*/
+					
+					thisObj.displayForm();
+					thisObj.supplyWeightInfoData();
 				}
 				
 				this.off('change');
@@ -188,6 +191,10 @@ define([
 				thisObj.$el.find('#dropoff-product-list tfoot .total-pounds').text(this.addCommaToNumber(dropoffProductsPoundsTotal.toFixed(2)));
 				thisObj.$el.find('#dropoff-product-list tfoot .total-net-tons').text(this.addCommaToNumber(dropoffProductsNetTotal.toFixed(4)));
 			}
+		},
+		
+		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
 		},
 	});
 

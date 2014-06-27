@@ -143,6 +143,8 @@ define([
 	routerRoutes[Const.URL.PICKUPSCHEDULE+'/:poId/:action/:id'] = 'showPickupSchedulePage';
 	
 	//po weight info
+	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId'] = 'showPOWeightInfoPage';
+	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/'] = 'showPOWeightInfoPage';
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId'] = 'showPOWeightInfoPage';
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/'] = 'showPOWeightInfoPage';
 	routerRoutes[Const.URL.POWEIGHTINFO+'/:poId/:schedId/:action'] = 'showPOWeightInfoPage';
@@ -163,6 +165,8 @@ define([
 	routerRoutes[Const.URL.DELIVERYSCHEDULE+'/:soId/:action/:id'] = 'showDeliverySchedulePage';
 	
 	//so weight info
+	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId'] = 'showSOWeightInfoPage';
+	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/'] = 'showSOWeightInfoPage';
 	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId'] = 'showSOWeightInfoPage';
 	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/'] = 'showSOWeightInfoPage';
 	routerRoutes[Const.URL.SOWEIGHTINFO+'/:soId/:schedId/:action'] = 'showSOWeightInfoPage';

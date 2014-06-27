@@ -132,6 +132,9 @@ define(function () {
 					'ACCOUNTTYPE': ['hauler', 'operator'],
 				},
 			},
+			'COLLAPSIBLE': {
+				'ID': 'order-list-collapsible-',
+			},
 		},
 		'LB2TON': 0.0005,
 		'CANCELLATIONREASON': {
@@ -144,6 +147,7 @@ define(function () {
 			'PICKUP' : 'pickup',
 			'DROPOFF' : 'dropoff',
 		},
+		
 	};
 	
 	return constant;

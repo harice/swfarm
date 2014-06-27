@@ -101,7 +101,7 @@ define([
 		},
 		
 		disableCloseButton: function (id) {
-			console.log('disableCloseButton: '+id);
+			//console.log('disableCloseButton: '+id);
 			this.$el.find('#'+id+' .close-window').attr('disabled', true);
 		},
 		
@@ -311,14 +311,14 @@ define([
 			var tabs = [
 				{'url':'/#/'+Const.URL.PO+'/'+poId, 'label':'Purchase Order'},
 				{'url':'/#/'+Const.URL.PICKUPSCHEDULE+'/'+poId, 'label':'Schedule'},
-				{'url':'/#/', 'label':'Weight Details'},
+				{'url':'/#/'+Const.URL.POWEIGHTINFO+'/'+poId, 'label':'Weight Details'},
 			];
 			
 			for(var i = 0; i < tabs.length; i++) {
 				if((i+1) == selectedIndex)
 					tabs[i]['active'] = true;
 			}
-			console.log(tabs);
+			//console.log(tabs);
 			return this.generateTabs(tabs, '#/'+Const.URL.PO, 'Back To PO List');
 		},
 		
@@ -330,7 +330,7 @@ define([
 			var tabs = [
 				{'url':'/#/'+Const.URL.SO+'/'+soId, 'label':'Sales Order'},
 				{'url':'/#/'+Const.URL.DELIVERYSCHEDULE+'/'+soId, 'label':'Schedule'},
-				{'url':'/#/', 'label':'Weight Details'},
+				{'url':'/#/'+Const.URL.SOWEIGHTINFO+'/'+soId, 'label':'Weight Details'},
 			];
 			
 			for(var i = 0; i < tabs.length; i++) {
@@ -348,6 +348,10 @@ define([
 				variables['back_label'] = backLabel;
 			}
 			return _.template(tabsTemplate, variables);
+		},
+		
+		linkStopPropagation: function (ev) {
+			ev.stopPropagation();
 		},
 	});
 
