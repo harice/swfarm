@@ -21,11 +21,11 @@ define(function () {
 			'SO': 'sales/so',
 			'DELIVERYSCHEDULE': 'sales/deliveryschedule',
 			'SOWEIGHTINFO': 'sales/weightinfo',
+            'CONTRACT': 'contract',
 			'STACKLOCATION': 'administration/stack',
 			'TRAILER': 'administration/trailer',
 			'SETTINGS': 'administration/settings',
-			'SCALE': 'administration/scale',
-            'CONTRACT': 'administration/contract',
+			'SCALE': 'administration/scale'
 		},
 		'MENU': {
 			'PURCHASES': {

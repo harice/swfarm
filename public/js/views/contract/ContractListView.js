@@ -28,6 +28,15 @@ define([
 			
 			this.collection = new ContractCollection();
 			this.collection.on('sync', function() {
+                _.each(this.models, function (model) {
+					if(model.get('contract_date_start'))
+						model.set('contract_date_start', thisObj.convertDateFormat(model.get('contract_date_start').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
+					if(model.get('contract_date_end'))
+						model.set('contract_date_end', thisObj.convertDateFormat(model.get('contract_date_end').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
+//					if(model.get('totalPrice'))
+//						model.set('totalPrice', thisObj.addCommaToNumber(parseFloat(model.get('totalPrice')).toFixed(2)));
+				});
+                
 				if(thisObj.subContainerExist())
 					thisObj.displayList();
 			});
@@ -64,6 +73,7 @@ define([
 		
 		displayList: function () {
             var contracts = this.collection.models;
+            console.log(contracts);
     
 			var data = {
 				contract_edit_url: '#/'+Const.URL.CONTRACT+'/'+Const.CRUD.EDIT,
