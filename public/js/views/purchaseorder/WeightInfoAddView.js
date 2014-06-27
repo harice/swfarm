@@ -55,7 +55,7 @@ define([
 				routeType: ['pickup', 'dropoff'],
 				separator: '-',
 				productFieldClass: ['transportScheduleProduct_id', 'bales', 'pounds', 'id'],
-				productFieldClassRequired: ['bales', 'pounds'],
+				productFieldClassRequired: [],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
 				removeComma: ['fee', 'bales', 'gross', 'tare', 'pounds'],

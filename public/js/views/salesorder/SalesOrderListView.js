@@ -268,7 +268,7 @@ define([
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
 								thisObj.renderList(1);
-								thisObj.hideConfirmationWindow();
+								thisObj.hideConfirmationWindow('modal-with-form-confirm');
 							},
 							error: function (model, response, options) {
 								if(typeof response.responseJSON.error == 'undefined')
