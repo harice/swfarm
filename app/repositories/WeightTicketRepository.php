@@ -111,8 +111,10 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             $isDropoff = false;
             //do not required fields if not to be close
             $toBeClose = false;
-            if($data['status_id'] == 2){ //close status
-                $toBeClose =  true;
+            if(isset($data['status_id'])){
+                if($data['status_id'] == 2){ //close status
+                    $toBeClose =  true;
+                }
             }
             
             if(isset($data['pickup_info'])){
@@ -245,8 +247,10 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         $result = DB::transaction(function() use ($id, $data){
 
             $toBeClose = false;
-            if($data['status_id'] == 2){ //close status
-                $toBeClose =  true;
+            if(isset($data['status_id'])){
+                if($data['status_id'] == 2){ //close status
+                    $toBeClose =  true;
+                }
             }
             
             $this->validate($data, 'WeightTicket');
@@ -467,7 +471,8 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
                 $sent = Mail::send('emails.weightticket', $data, function($message) use ($header)
                 {
-                    $message->to($header['recipient_email'], $header['recipient_name'])
+                    $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator')
+                            ->to($header['recipient_email'], $header['recipient_name'])
                             ->subject($header['subject']);
                 });
 
