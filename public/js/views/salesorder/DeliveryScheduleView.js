@@ -13,6 +13,7 @@ define([
 	'collections/contact/ContactCollection',
 	'collections/account/TrailerCollection',
 	'text!templates/layout/contentTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/salesorder/deliveryScheduleViewTemplate.html',
 	'text!templates/salesorder/deliveryScheduleViewProductItemTemplate.html',
 	'global',
@@ -31,6 +32,7 @@ define([
 			ContactCollection,
 			TrailerCollection,
 			contentTemplate,
+			purchaseOrderTabbingTemplate,
 			deliveryScheduleViewTemplate,
 			deliveryScheduleViewProductItemTemplate,
 			Global,
@@ -47,6 +49,8 @@ define([
 			this.schedId = option.id;
 			this.h1Title = 'Delivery Schedule';
 			this.h1Small = 'view';
+			
+			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generateSOTabs(this.soId, 2)}));
 			
 			this.model = new SOScheduleModel({id:this.schedId});
 			this.model.on('change', function() {
@@ -76,7 +80,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.subContainer.html(compiledTemplate);
+			this.subContainer.find('#with-tab-content').html(compiledTemplate);
 			
 			this.initConfirmationWindow('Are you sure you want to delete this schedule?',
 										'confirm-delete-schedule',
