@@ -99,6 +99,7 @@
                     <div class="col-md-12">
                         <div class="pull-right">
                             <% if (typeof has_pickup_info !== "undefined") { %>
+								<a class="btn btn-primary close-weight-ticket" href="#">Close Pickup Weight Ticket</a>
 								<a class="btn btn-primary" href="<%= pickup_weight_info_edit_url %>">Edit Pickup Weight Ticket</a>
 							<% } else { %>
 								<a class="btn btn-primary" href="<%= pickup_weight_info_add_url %>">Add Pickup Weight Ticket</a>
@@ -163,6 +164,7 @@
                     <div class="col-md-12">
                         <div class="pull-right">
                             <% if (typeof has_dropoff_info !== "undefined") { %>
+								<a class="btn btn-primary close-weight-ticket" href="#">Close Dropoff Weight Ticket</a>
 								<a class="btn btn-primary" href="<%= dropoff_weight_info_edit_url %>">Edit Dropoff Weight Ticket</a>
 							<% } else { %>
 								<a class="btn btn-primary" href="<%= dropoff_weight_info_add_url %>">Add Dropoff Weight Ticket</a>

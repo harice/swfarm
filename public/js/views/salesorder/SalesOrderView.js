@@ -144,6 +144,18 @@ define([
 		
 		events:{
 			'click #go-to-previous-page': 'goToPreviousPage',
+			'click #close-order': 'showCloseOrderConfirmationWindow',
+		},
+		
+		showCloseOrderConfirmationWindow: function () {
+			this.initConfirmationWindow('Are you sure you want to close this sales order?',
+										'confirm-close-order',
+										'Close Sales Order',
+										'Close Sales Order',
+										false);
+			this.showConfirmationWindow();
+			
+			return false;
 		},
 	});
 

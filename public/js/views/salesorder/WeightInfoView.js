@@ -199,6 +199,18 @@ define([
 		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
+			'click .close-weight-ticket': 'showCloseWeightTicketConfirmationWindow',
+		},
+		
+		showCloseWeightTicketConfirmationWindow: function (ev) {
+			this.initConfirmationWindow('Are you sure you want to close this weight ticket?',
+										'confirm-close-wt',
+										'Close Weight Ticket',
+										'Close Weight Ticket',
+										false);
+			this.showConfirmationWindow();
+			
+			return false;
 		},
 	});
 

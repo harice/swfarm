@@ -217,7 +217,19 @@ define([
 		
 		events:{
 			'click #go-to-previous-page': 'goToPreviousPage',
+			'click #close-order': 'showCloseOrderConfirmationWindow',
 			//'click .attach-pdf': 'showPDF',
+		},
+		
+		showCloseOrderConfirmationWindow: function () {
+			this.initConfirmationWindow('Are you sure you want to close this purchase order?',
+										'confirm-close-order',
+										'Close Purchase Order',
+										'Close Purchase Order',
+										false);
+			this.showConfirmationWindow();
+			
+			return false;
 		},
 		
 		showPDF: function (ev) {

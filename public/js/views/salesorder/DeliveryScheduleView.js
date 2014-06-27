@@ -81,10 +81,6 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.find('#with-tab-content').html(compiledTemplate);
-			
-			this.initConfirmationWindow('Are you sure you want to delete this schedule?',
-										'confirm-delete-schedule',
-										'Delete Schedule');
 		},
 		
 		supplyScheduleData: function () {
@@ -140,8 +136,20 @@ define([
 		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
-			'click #delete-schedule': 'showConfirmationWindow',
+			'click #delete-schedule': 'showDeleteConfirmationWindow',
 			'click #confirm-delete-schedule': 'deleteAccount',
+			'click #close-schedule': 'showCloseScheduleConfirmationWindow',
+		},
+		
+		showDeleteConfirmationWindow: function () {
+			this.initConfirmationWindow('Are you sure you want to delete this schedule?',
+										'confirm-delete-schedule',
+										'Delete Schedule',
+										'Delete Schedule',
+										false);
+			this.showConfirmationWindow();
+			
+			return false;
 		},
 		
 		deleteAccount: function (){
@@ -149,15 +157,27 @@ define([
             
             this.model.destroy({
                 success: function (model, response, options) {
-                    thisObj.displayMessage(response);
-					Backbone.history.history.back();
+                    thisObj.hideConfirmationWindow('modal-confirm', function () { Backbone.history.history.back(); });
+					thisObj.displayMessage(response);
                 },
                 error: function (model, response, options) {
-                    thisObj.displayMessage(response);
+                    thisObj.hideConfirmationWindow();
+					thisObj.displayMessage(response);
                 },
                 wait: true,
                 headers: thisObj.model.getAuth(),
             });
+		},
+		
+		showCloseScheduleConfirmationWindow: function () {
+			this.initConfirmationWindow('Are you sure you want to close this schedule?',
+										'confirm-close-schedule',
+										'Close Schedule',
+										'Close Schedule',
+										false);
+			this.showConfirmationWindow();
+			
+			return false;
 		},
 	});
 
