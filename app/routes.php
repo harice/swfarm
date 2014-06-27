@@ -77,6 +77,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('weightticket', 'APIv1\WeightTicketController');
 
     //tranport schedule
+    Route::get('transportschedule/closeSchedule', 'APIv1\TransportScheduleController@closeSchedule');
     Route::get('transportschedule/trailer', 'APIv1\TransportScheduleController@getTrailerList');
     Route::get('transportschedule/getTrailerList', 'APIv1\TransportScheduleController@getTrailerList');
     Route::get('transportschedule/getAllPickupSchedules', 'APIv1\TransportScheduleController@getAllPickupSchedules');

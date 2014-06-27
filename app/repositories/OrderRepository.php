@@ -635,7 +635,7 @@ class OrderRepository implements OrderRepositoryInterface {
                     if(count($weightTicketDropoff['weightticketproducts']) > 1){ //if product on weight ticket is more than 1
                         $stackList[$index]['schedule'][$i]['delivered'] = $this->getWeightTicketProductTobeUsed(2, $transportscheduleproduct['weightticketproducts']);
                     } else {
-                        if($weightTicketPickup['gross'] != null && $weightTicketPickup['tare'] != null){
+                        if($weightTicketDropoff['gross'] != null && $weightTicketDropoff['tare'] != null){
                             $stackList[$index]['schedule'][$i]['delivered'] = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 4);
                         } else {
                             $stackList[$index]['schedule'][$i]['delivered'] = number_format(0, 4);
