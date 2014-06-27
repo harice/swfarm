@@ -131,6 +131,8 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                     $product['weightTicketScale_id'] = $weightticketscale_pickup->id;
                     if($toBeClose){
                         $this->validate($product, 'WeightTicketProducts');
+                    } else {
+                        $this->setEmptyValuesToNullForProducts($product);
                     }
                     $weightticketproduct = new WeightTicketProducts;
                     $weightticketproduct->fill($product);
@@ -155,6 +157,8 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                     $product['weightTicketScale_id'] = $weightticketscale_dropoff->id;
                     if($toBeClose){
                         $this->validate($product, 'WeightTicketProducts');
+                    } else {
+                        $this->setEmptyValuesToNullForProducts($product);
                     }
                     $weightticketproduct = new WeightTicketProducts;
                     $weightticketproduct->fill($product);
@@ -204,12 +208,17 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     }
 
     private function setEmptyValuesToNull(&$weightScaleDetails){
-        if($weightScaleDetails['scaleAccount_id'] == ''){
-            $weightScaleDetails['scaleAccount_id'] = NULL;
-        }
-        if($weightScaleDetails['scale_id'] == ''){
-            $weightScaleDetails['scale_id'] = NULL;
-        }
+        $weightScaleDetails['scaleAccount_id'] = $weightScaleDetails['scaleAccount_id'] != '' ? $weightScaleDetails['scaleAccount_id'] : null;
+        $weightScaleDetails['scale_id'] = $weightScaleDetails['scale_id'] != '' ? $weightScaleDetails['scale_id'] : null;
+        $weightScaleDetails['fee'] = $weightScaleDetails['fee'] != '' ? $weightScaleDetails['fee'] : null;
+        $weightScaleDetails['bales'] = $weightScaleDetails['bales'] != '' ? $weightScaleDetails['bales'] : null;
+        $weightScaleDetails['gross'] = $weightScaleDetails['gross'] != '' ? $weightScaleDetails['gross'] : null;
+        $weightScaleDetails['tare'] = $weightScaleDetails['tare'] != '' ? $weightScaleDetails['tare'] : null;
+    }
+
+    private function setEmptyValuesToNullForProducts(&$weightScaleProduct){
+        $weightScaleProduct['bales'] = $weightScaleProduct['bales'] != '' ? $weightScaleProduct['bales'] : null;
+        $weightScaleProduct['pounds'] = $weightScaleProduct['pounds'] != '' ? $weightScaleProduct['pounds'] : null;
     }
 
     private function generateLoadingTicketNumber(){
@@ -267,6 +276,8 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                         $product['weightTicketScale_id'] = $weightticketscale_pickup->id;
                         if($toBeClose){
                             $this->validate($product, 'WeightTicketProducts');
+                        } else {
+                            $this->setEmptyValuesToNullForProducts($product);
                         }
                         $weightticketproduct = new WeightTicketProducts;
                         $weightticketproduct->fill($product);
@@ -284,6 +295,8 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                         $product['weightTicketScale_id'] = $weightticketscale_pickup->id;
                         if($toBeClose){
                             $this->validate($product, 'WeightTicketProducts');
+                        } else {
+                            $this->setEmptyValuesToNullForProducts($product);
                         }
                         $weightticketproduct = WeightTicketProducts::find($product['id']);
                         $weightticketproduct->fill($product);
@@ -309,6 +322,8 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                         $product['weightTicketScale_id'] = $weightticketscale_dropoff->id;
                         if($toBeClose){
                             $this->validate($product, 'WeightTicketProducts');
+                        } else {
+                            $this->setEmptyValuesToNullForProducts($product);
                         }
                         $weightticketproduct = new WeightTicketProducts;
                         $weightticketproduct->fill($product);
@@ -326,6 +341,8 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                         $product['weightTicketScale_id'] = $weightticketscale_dropoff->id;
                         if($toBeClose){
                             $this->validate($product, 'WeightTicketProducts');
+                        } else {
+                            $this->setEmptyValuesToNullForProducts($product);
                         }
                         $weightticketproduct = WeightTicketProducts::find($product['id']);
                         $weightticketproduct->fill($product);
@@ -381,27 +398,27 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         return new WeightTicket($data);
     }
 
-    public function closeWeightTicket($transportSchedule_id){
-        $weightTicket = WeightTicket::where('transportSchedule_id', '=', $transportSchedule_id)->first();
+    // public function closeWeightTicket($transportSchedule_id){
+    //     $weightTicket = WeightTicket::where('transportSchedule_id', '=', $transportSchedule_id)->first();
         
-        if($weightTicket->status_id == 1){ //check if Open
-            $this->validate($data['pickup_info'], 'WeightTicketScale');
-            $weightTicket->status_id = 2;
-            $weightTicket->save();
+    //     if($weightTicket->status_id == 1){ //check if Open
+    //         $this->validate($data['pickup_info'], 'WeightTicketScale');
+    //         $weightTicket->status_id = 2;
+    //         $weightTicket->save();
 
-            return array(
-                'error' => false,
-                'message' => 'Weight ticket closed.');
-        } else if($weightTicket->status_id == 2) {//if close
-              return array(
-                  'error' => false,
-                  'message' => 'Weight ticket is already closed.');
-        } else {
-              return array(
-                  'error' => false,
-                  'message' => 'Weight ticket cannot be cancel if the status is not open or pending.');
-        }       
-    }
+    //         return array(
+    //             'error' => false,
+    //             'message' => 'Weight ticket closed.');
+    //     } else if($weightTicket->status_id == 2) {//if close
+    //           return array(
+    //               'error' => false,
+    //               'message' => 'Weight ticket is already closed.');
+    //     } else {
+    //           return array(
+    //               'error' => false,
+    //               'message' => 'Weight ticket cannot be cancel if the status is not open or pending.');
+    //     }       
+    // }
 
     public function mailWeightTicket($id, $recipients)
     {
@@ -460,6 +477,95 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             }
             
             return 'Email has been sent.';
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
+    }
+
+    public function closeWeightTicket($schedule_id)
+    {
+        try
+        {
+            $weightticketObj = WeightTicket::with('weightticketscale_dropoff.weightticketproducts')
+                            ->with('weightticketscale_pickup.weightticketproducts')
+                            ->where('transportSchedule_id', '=', $schedule_id)->first();
+
+            if(!$weightticketObj) {
+                throw new NotFoundException('Weight Info Not Found');
+            } else if($weightticketObj->status_id == 2){ //already close
+                return array(
+                      'error' => true,
+                      'message' => 'This weight ticket is already close.');
+            }
+                
+            $weightticket = $weightticketObj->toArray();
+            $weightticket['status_id'] = '2'; //close
+            //rename array to fit in update function
+            if(isset($weightticket['weightticketscale_pickup'])){
+                $weightticket['pickup_info'] = $weightticket['weightticketscale_pickup'];
+                unset($weightticket['weightticketscale_pickup']);
+                if(isset($weightticket['pickup_info']['weightticketproducts'])){
+                    $weightticket['pickup_info']['products'] = $weightticket['pickup_info']['weightticketproducts'];
+                    unset($weightticket['pickup_info']['weightticketproducts']);
+                }
+
+                if($weightticket['pickup_info']['scaleAccount_id'] == null ||
+                   $weightticket['pickup_info']['scale_id'] == null || 
+                   $weightticket['pickup_info']['fee'] == null ||
+                   $weightticket['pickup_info']['bales'] == null ||
+                   $weightticket['pickup_info']['gross'] ==  null ||
+                   $weightticket['pickup_info']['tare'] == null){
+                    return array(
+                      'error' => true,
+                      'message' => 'Please complete all the details of pickup weight ticket before changing the status to close.');
+                }
+
+                foreach($weightticket['pickup_info']['products'] as $product){
+                    if($product['bales'] == null || $product['pounds'] == null){
+                        return array(
+                          'error' => true,
+                          'message' => 'Please complete all the details of pickup weight ticket product details before you can change the status to close.');
+                    }
+                }
+            }
+
+            if(isset($weightticket['weightticketscale_dropoff'])){
+                $weightticket['dropoff_info'] = $weightticket['weightticketscale_dropoff'];
+                unset($weightticket['weightticketscale_dropoff']);
+                if(isset($weightticket['dropoff_info']['weightticketproducts'])){
+                    $weightticket['dropoff_info']['products'] = $weightticket['dropoff_info']['weightticketproducts'];
+                    unset($weightticket['dropoff_info']['weightticketproducts']);
+                }
+
+                if($weightticket['dropoff_info']['scaleAccount_id'] == null ||
+                   $weightticket['dropoff_info']['scale_id'] == null || 
+                   $weightticket['dropoff_info']['fee'] == null ||
+                   $weightticket['dropoff_info']['bales'] == null ||
+                   $weightticket['dropoff_info']['gross'] ==  null ||
+                   $weightticket['dropoff_info']['tare'] == null){
+                    return array(
+                      'error' => true,
+                      'message' => 'Please complete all the details of dropoff weight ticket before changing the status to close.');
+                }
+
+                foreach($weightticket['dropoff_info']['products'] as $product){
+                    if($product['bales'] == null || $product['pounds'] == null){
+                        return array(
+                          'error' => true,
+                          'message' => 'Please complete all the details of dropoff weight ticket product details before you can change the status to close.');
+                    }
+                }
+            }
+            
+            //change the status
+            $weightticketObj->status_id = 2; //close status
+            $weightticketObj->save();
+            return array(
+              'error' => false,
+              'message' => 'Weighticket successfully close.');
+            // return $weightticket;
         }
         catch (Exception $e)
         {
