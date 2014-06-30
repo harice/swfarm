@@ -24,7 +24,7 @@ class OrderRepository implements OrderRepositoryInterface {
                         ->with('ordercancellingreason.reason');
 
         if($orderType == 2) //for SO only
-            $order = $order->with('natureofsale');
+            $order = $order->with('natureofsale', 'contract');
 
         $order = $order->where('ordertype', '=', $orderType)
                        ->orderBy($sortby, $orderby);
@@ -94,7 +94,7 @@ class OrderRepository implements OrderRepositoryInterface {
                 ->with('productorder.upload.files');
 
         if($orderType == 2) //for SO only
-            $order = $order->with('natureofsale');
+            $order = $order->with('natureofsale', 'contract');
 
         $order = $order->where('ordertype', '=', $orderType)->find($id);
 

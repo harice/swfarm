@@ -10,6 +10,7 @@ define([
 	'collections/salesorder/OriginCollection',
 	'collections/salesorder/NatureOfSaleCollection',
 	'collections/product/ProductCollection',
+    'collections/contract/ContractCollection',
 	'models/salesorder/SalesOrderModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/salesorder/salesOrderAddTemplate.html',
@@ -29,6 +30,7 @@ define([
 			OriginCollection,
 			NatureOfSaleCollection,
 			ProductCollection,
+            ContractCollection,
 			SalesOrderModel,
 			contentTemplate,
 			salesOrderAddTemplate,
@@ -73,10 +75,19 @@ define([
 			
 			this.natureOfSaleCollection = new NatureOfSaleCollection();
 			this.natureOfSaleCollection.on('sync', function() {
-				thisObj.productCollection.getAllModel();
+				thisObj.contractCollection.getModels();
 				this.off('sync');
 			});
 			this.natureOfSaleCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
+            
+            this.contractCollection = new ContractCollection();
+            this.contractCollection.on('sync', function() {
+				thisObj.productCollection.getAllModel();
+				this.off('sync');
+			});
+			this.contractCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
 			
@@ -131,6 +142,7 @@ define([
 			this.$el.find('#city').val(address[0].city);
 			this.$el.find('#zipcode').val(address[0].zipcode);
 			this.$el.find('#dateofsale').val(this.convertDateFormat(this.model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
+            this.$el.find('select[name="contract_id"] option[value="'+this.model.get('contract').id+'"]').attr('selected', 'selected');
 			this.$el.find('#notes').val(this.model.get('notes'));
 			
 			var startDate = this.convertDateFormat(this.model.get('transportdatestart').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-');

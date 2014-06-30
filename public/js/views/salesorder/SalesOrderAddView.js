@@ -18,6 +18,7 @@ define([
 	'text!templates/salesorder/salesOrderProductItemTemplate.html',
 	'text!templates/salesorder/salesOrderOriginTemplate.html',
 	'text!templates/salesorder/salesOrderNatureOfSaleTemplate.html',
+    'text!templates/salesorder/salesOrderContractTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -39,6 +40,7 @@ define([
 			productItemTemplate,
 			salesOrderOriginTemplate,
 			salesOrderNatureOfSaleTemplate,
+            contractTemplate,
 			Global,
 			Const
 ){
@@ -77,10 +79,19 @@ define([
 			
 			this.natureOfSaleCollection = new NatureOfSaleCollection();
 			this.natureOfSaleCollection.on('sync', function() {
-				thisObj.productCollection.getAllModel();
+				thisObj.contractCollection.getModels();
 				this.off('sync');
 			});
 			this.natureOfSaleCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
+            
+            this.contractCollection = new ContractCollection();
+            this.contractCollection.on('sync', function() {
+				thisObj.productCollection.getAllModel();
+				this.off('sync');
+			});
+			this.contractCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
 			
@@ -103,32 +114,18 @@ define([
 			this.productCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
-            
-            this.contractCollection = new ContractCollection();
 		},
 		
 		render: function(){
 			this.originCollection.getModels();
 			Backbone.View.prototype.refreshTitle('Sales Order','add');
 		},
-                
-        // Contracts
-        getContractDropdown: function () {
-			var dropDown = '<option value="">Select a contract</option>';
-            console.log(this.contractCollection.models);
-			_.each(this.contractCollection.models, function (model) {
-				dropDown += '<option value="'+model.get('contract_number')+'">'+model.get('contract_number')+'</option>';
-			});
-			
-			return dropDown;
-		},
 		
 		displayForm: function () {
 			var thisObj = this;
 			
 			var innerTemplateVariables = {
-				'so_url' : '#/'+Const.URL.SO,
-                'contract_list': this.getContractDropdown()
+				'so_url' : '#/'+Const.URL.SO
 			};
 			
 			if(this.soId != null)
@@ -149,6 +146,7 @@ define([
 			
 			// this.generateOrigin();
 			this.generateNatureOfSale();
+            this.generateContract();
 			this.initCustomerAutocomplete();
 			this.initCalendar();
 			this.addProduct();
@@ -211,6 +209,12 @@ define([
 			var NOSTemplate = _.template(salesOrderNatureOfSaleTemplate, {'natureOfSales': this.natureOfSaleCollection.models});
 			this.$el.find('#so-nos').html(NOSTemplate);
 			this.$el.find('#so-nos .radio-inline:first-child input[type="radio"]').attr('checked', true);
+		},
+                
+        // Contracts
+        generateContract: function () {
+			var contract_list = _.template(contractTemplate, {'contracts': this.contractCollection.models});
+			this.$el.find('#contract select').append(contract_list);
 		},
 		
 		initCustomerAutocomplete: function () {
