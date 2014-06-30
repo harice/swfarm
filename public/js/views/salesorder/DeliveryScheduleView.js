@@ -5,6 +5,7 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
+	'models/salesorder/SalesOrderModel',
 	'models/order/OrderScheduleVariablesModel',
 	'models/salesorder/SOScheduleModel',
 	'collections/product/ProductCollection',
@@ -24,6 +25,7 @@ define([
 			Validate,
 			TextFormatter,
 			PhoneNumber,
+			SalesOrderModel,
 			OrderScheduleVariablesModel,
 			SOScheduleModel,
 			ProductCollection,
@@ -52,6 +54,12 @@ define([
 			
 			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generateSOTabs(this.soId, 2)}));
 			
+			this.salesOrderModel = new SalesOrderModel({id:this.soId});
+			this.salesOrderModel.on('change', function() {
+				thisObj.model.runFetch();
+				thisObj.off('change');
+			});
+			
 			this.model = new SOScheduleModel({id:this.schedId});
 			this.model.on('change', function() {
 				if(thisObj.subContainerExist()) {
@@ -63,7 +71,7 @@ define([
 		},
 		
 		render: function(){
-			this.model.runFetch();
+			this.salesOrderModel.runFetch();
 			Backbone.View.prototype.refreshTitle('Delivery Schedule','view');
 		},
 		
@@ -75,7 +83,7 @@ define([
 				'weight_info_url': '#/'+Const.URL.SOWEIGHTINFO+'/'+this.soId+'/'+this.schedId,
 			};
 			
-			if(this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)
+			if(this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED && this.salesOrderModel.get('status').name.toLowerCase() == Const.STATUS.OPEN)
 				innerTemplateVariables['editable'] = true;
 			
 			var innerTemplate = _.template(deliveryScheduleViewTemplate, innerTemplateVariables);

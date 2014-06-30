@@ -90,7 +90,8 @@ define([
 				previous_so_sched_url: '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId,
 			};
 			
-			if(this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)
+			if((!this.model.get('status') || (this.model.get('status') && this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)) && 
+				this.salesOrderModel.get('status').name.toLowerCase() == Const.STATUS.OPEN)
 				innerTemplateVariables['editable'] = true;
 			
 			if(this.model.get('weightticketscale_pickup') != null)

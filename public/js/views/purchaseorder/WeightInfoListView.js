@@ -50,7 +50,7 @@ define([
 				this.off('error');
 			});
 			
-			this.model = new PurchaseOrderModel({id:option.id});
+			this.model = new PurchaseOrderModel({id:this.poId});
 			this.model.on('change', function() {
 				if(thisObj.subContainerExist()) {
 					thisObj.displaySchedule();
@@ -84,6 +84,9 @@ define([
 				weightInfo: this.collection.models,
 				_: _ 
 			};
+			
+			if(this.model.get('status').name.toLowerCase() == Const.STATUS.OPEN)
+				data['editable'] = true;
 			
 			var innerListTemplate = _.template(weightInfoInnerListTemplate, data);
 			this.subContainer.find("#po-weight-info-list tbody").html(innerListTemplate);

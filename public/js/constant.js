@@ -149,7 +149,13 @@ define(function () {
 			'DROPOFF' : 'dropoff',
 		},
 		'STATUS': {
+			'OPEN' : 'open',
 			'CLOSED' : 'closed',
+			'CANCELLED' : 'cancelled',
+			'PENDING' : 'pending',
+			'BIDCANCELLED' : 'bid cancelled',
+			'POCANCELLED' : 'po cancelled',
+			'TESTING' : 'testing',
 		},
 		
 	};

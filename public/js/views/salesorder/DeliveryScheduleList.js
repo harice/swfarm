@@ -68,6 +68,9 @@ define([
 				status_filters : '',
 			};
 			
+			if(this.isEditable())
+				innerTemplateVar['editable'] = true;
+			
 			var innerTemplate = _.template(deliveryScheduleListTemplate, innerTemplateVar);
 			
 			var variables = {
@@ -91,6 +94,9 @@ define([
 				schedules: this.collection.models,
 				_: _ 
 			};
+			
+			if(this.isEditable())
+				data['editable'] = true;
 			
 			var innerListTemplate = _.template(deliveryScheduleInnerListTemplate, data);
 			this.subContainer.find("#so-schedule-list tbody").html(innerListTemplate);
@@ -128,6 +134,13 @@ define([
             });
 			
 			return false;
+		},
+		
+		isEditable: function () {
+			if(this.model.get('status').name.toLowerCase() == Const.STATUS.OPEN)
+				return true;
+			else
+				return false;
 		},
 	});
 

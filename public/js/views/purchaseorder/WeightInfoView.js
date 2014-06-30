@@ -92,7 +92,8 @@ define([
 				previous_po_sched_url: '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId,
 			};
 			
-			if(this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)
+			if((!this.model.get('status') || (this.model.get('status') && this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)) && 
+				this.purchaseOrderModel.get('status').name.toLowerCase() == Const.STATUS.OPEN)
 				innerTemplateVariables['editable'] = true;
 			
 			if(this.model.get('weightticketscale_pickup') != null)
