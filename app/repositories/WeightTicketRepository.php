@@ -2,6 +2,28 @@
 
 class WeightTicketRepository implements WeightTicketRepositoryInterface {
     
+    public function findAll($params = array())
+    {
+        try
+        {
+            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+            $page     = isset($params['page']) ? $params['page'] : 1;
+            $sortby   = isset($params['sortby']) ? $params['sortby'] : 'id';
+            $orderby  = isset($params['orderby']) ? $params['orderby'] :'DSC';
+            $offset   = $page * $perPage - $perPage;
+            
+            $result = WeightTicket::take($perPage)
+                ->offset($offset)
+                ->orderBy($sortby, $orderby)
+                ->paginate($perPage);
+            
+            return $result;
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
+    }
 
     public function findById($schedule_id)
     {

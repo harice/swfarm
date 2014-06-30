@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="block-flat">
+            <dl class="dl-horizontal">
+                <dt>Contract Number</dt>
+                <dd><%= contract.get("contract_number") %></dd>
+                <dt>Customer</dt>
+                <dd><%= contract.get("account").name %>&nbsp</dd>
+                <dt>Start Date</dt>
+                <dd><%= contract.get("contract_date_start") %>&nbsp</dd>
+                <dt>End Date</dt>
+                <dd><%= contract.get("contract_date_end") %>&nbsp</dd>
+                <dt>Total Est Tons</dt>
+                <dd><%= total_tons %> tons &nbsp</dd>
+                <dt>Total Est Bales</dt>
+                <dd><%= total_bales %> bales &nbsp</dd>
+                <dd>
+                    <div class="clearfix"></div>
+                    <a href="<%= contract_edit_url %>/<%= contract.get('id') %>" class="btn btn-primary">Edit</a>
+                    <button id="close-contract" type="button" class="btn btn-danger">Cancel Contract</button>
+                    <a id="go-to-previous-page" href="#" class="btn btn-default">Cancel</a>
+                </dd>
+            </dl>
+        </div>
+    </div>
+</div>

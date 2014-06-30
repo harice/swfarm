@@ -5,6 +5,7 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
+	'models/salesorder/SalesOrderModel',
 	'models/order/OrderScheduleVariablesModel',
 	'models/salesorder/SOScheduleModel',
 	'collections/product/ProductCollection',
@@ -24,6 +25,7 @@ define([
 			Validate,
 			TextFormatter,
 			PhoneNumber,
+			SalesOrderModel,
 			OrderScheduleVariablesModel,
 			SOScheduleModel,
 			ProductCollection,
@@ -52,6 +54,12 @@ define([
 			
 			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generateSOTabs(this.soId, 2)}));
 			
+			this.salesOrderModel = new SalesOrderModel({id:this.soId});
+			this.salesOrderModel.on('change', function() {
+				thisObj.model.runFetch();
+				thisObj.off('change');
+			});
+			
 			this.model = new SOScheduleModel({id:this.schedId});
 			this.model.on('change', function() {
 				if(thisObj.subContainerExist()) {
@@ -63,14 +71,20 @@ define([
 		},
 		
 		render: function(){
-			this.model.runFetch();
+			this.salesOrderModel.runFetch();
 			Backbone.View.prototype.refreshTitle('Delivery Schedule','view');
 		},
 		
 		displayForm: function () {
 			var thisObj = this;
 			
-			var innerTemplateVariables = {'schedule_edit_url': '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId+'/'+Const.CRUD.EDIT+'/'+this.schedId};
+			var innerTemplateVariables = {
+				'schedule_edit_url': '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId+'/'+Const.CRUD.EDIT+'/'+this.schedId,
+				'weight_info_url': '#/'+Const.URL.SOWEIGHTINFO+'/'+this.soId+'/'+this.schedId,
+			};
+			
+			if(this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED && this.salesOrderModel.get('status').name.toLowerCase() == Const.STATUS.OPEN)
+				innerTemplateVariables['editable'] = true;
 			
 			var innerTemplate = _.template(deliveryScheduleViewTemplate, innerTemplateVariables);
 			
@@ -81,10 +95,6 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.find('#with-tab-content').html(compiledTemplate);
-			
-			this.initConfirmationWindow('Are you sure you want to delete this schedule?',
-										'confirm-delete-schedule',
-										'Delete Schedule');
 		},
 		
 		supplyScheduleData: function () {
@@ -140,8 +150,21 @@ define([
 		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
-			'click #delete-schedule': 'showConfirmationWindow',
+			'click #delete-schedule': 'showDeleteConfirmationWindow',
 			'click #confirm-delete-schedule': 'deleteAccount',
+			'click #close-schedule': 'showCloseScheduleConfirmationWindow',
+			'click #confirm-close-schedule': 'closeSchedule',
+		},
+		
+		showDeleteConfirmationWindow: function () {
+			this.initConfirmationWindow('Are you sure you want to delete this schedule?',
+										'confirm-delete-schedule',
+										'Delete Schedule',
+										'Delete Schedule',
+										false);
+			this.showConfirmationWindow();
+			
+			return false;
 		},
 		
 		deleteAccount: function (){
@@ -149,15 +172,55 @@ define([
             
             this.model.destroy({
                 success: function (model, response, options) {
-                    thisObj.displayMessage(response);
-					Backbone.history.history.back();
+                    thisObj.hideConfirmationWindow('modal-confirm', function () { Backbone.history.history.back(); });
+					thisObj.displayMessage(response);
                 },
                 error: function (model, response, options) {
-                    thisObj.displayMessage(response);
+                    thisObj.hideConfirmationWindow();
+					thisObj.displayMessage(response);
                 },
                 wait: true,
                 headers: thisObj.model.getAuth(),
             });
+		},
+		
+		showCloseScheduleConfirmationWindow: function () {
+			this.initConfirmationWindow('Are you sure you want to close this schedule?',
+										'confirm-close-schedule',
+										'Close Schedule',
+										'Close Schedule',
+										false);
+			this.showConfirmationWindow();
+			
+			return false;
+		},
+		
+		closeSchedule: function (ev) {
+			var thisObj = this;
+			
+			var scheduleModel = new SOScheduleModel({id:this.schedId});
+			scheduleModel.setCloseURL();
+			scheduleModel.save(
+				null,
+				{
+					success: function (model, response, options) {
+						thisObj.hideConfirmationWindow('modal-confirm', function () {
+							thisObj.subContainer.find('.editable-button').remove();
+						});
+						thisObj.displayMessage(response);
+					},
+					error: function (model, response, options) {
+						thisObj.hideConfirmationWindow();
+						if(typeof response.responseJSON.error == 'undefined')
+							alert(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: scheduleModel.getAuth(),
+				}
+			);
+			
+			return false;
 		},
 	});
 

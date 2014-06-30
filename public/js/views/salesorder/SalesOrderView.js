@@ -112,6 +112,7 @@ define([
 			}
 			
 			this.$el.find('#nos').val(this.model.get('natureofsale').name);
+            this.$el.find('#contract').val(this.model.get('contract').contract_number);
 			this.$el.find('#account').val(account.name);
 			this.$el.find('#street').val(address[0].street);
 			this.$el.find('#state').val(address[0].address_states[0].state);
@@ -144,6 +145,18 @@ define([
 		
 		events:{
 			'click #go-to-previous-page': 'goToPreviousPage',
+			'click #close-order': 'showCloseOrderConfirmationWindow',
+		},
+		
+		showCloseOrderConfirmationWindow: function () {
+			this.initConfirmationWindow('Are you sure you want to close this sales order?',
+										'confirm-close-order',
+										'Close Sales Order',
+										'Close Sales Order',
+										false);
+			this.showConfirmationWindow();
+			
+			return false;
 		},
 	});
 
