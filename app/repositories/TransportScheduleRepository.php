@@ -4,6 +4,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
 
   public function getSchedule($id){ //default sked is pickup
       $transportSchedule = TransportSchedule::with('trucker')
+                        ->with('status')
                         ->with('originloader')
                         ->with('destinationloader')
                         ->with('trucker.accountidandname.accounttype')

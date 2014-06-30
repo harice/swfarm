@@ -70,6 +70,7 @@ class OrderRepository implements OrderRepositoryInterface {
         //get the total price of products (unit price x tons)
         foreach($result as $item){
           $item['totalPrice'] = 0.00;
+          $item['ExpectedVsDelivered'] = $this->getExpectedDeliveredData($item['id']);
           foreach($item['productorder'] as $productorder){
             if($productorder['unitprice'] != null){
               
@@ -80,6 +81,106 @@ class OrderRepository implements OrderRepositoryInterface {
 
         return $result;
         
+    }
+
+    private function getExpectedDeliveredData($orderId){
+        $order = Order::with('productorder.product')
+                        ->with('productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_pickup')
+                        ->with('productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_dropoff')
+                        ->with('productorder.transportscheduleproduct.weightticketproducts.weightticketscale_type')
+                        ->find($orderId);  
+        // return $order->toArray();
+        if($order == null){
+            return array(
+                'error' => true,
+                'message' => "Order not found");
+        }
+        
+        $stackList = array();
+        $index = 0;
+        $result = array();
+        $result['totalExpected'] = 0;
+        $result['totalDeliveries'] = 0;
+
+        foreach($order['productorder'] as $productOrder){
+ 
+            $totalDeliveries = 0;
+            $stackList[$index]['schedule'] = array();
+            $i = 0;
+            $deliveredWeight = 0;
+            foreach($productOrder['transportscheduleproduct'] as $transportscheduleproduct){
+                $weightTypeToBeUsed = 1; //pickup weight ticket default
+                $weightTicket = $transportscheduleproduct['transportschedule']['weightticket'];
+
+                if($weightTicket['pickup_id'] != null && $weightTicket['dropoff_id'] != null){ //with both pickup and dropoff weight ticket
+                    $weightTicketPickup = $weightTicket['weightticketscale_pickup'];
+                    $weightTicketDropoff = $weightTicket['weightticketscale_dropoff'];
+                    //compute net weight
+                    if($weightTicketPickup['gross'] != null && $weightTicketPickup['tare'] != null){
+                        $pickupNetWeight = number_format($weightTicketPickup['gross'] - $weightTicketPickup['tare'], 4);
+                        $dropoffNetWeight = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 4);
+                    } else {
+                        $pickupNetWeight = 0;
+                        $dropoffNetWeight = 0;
+                    }
+
+                    //check if weightticket has more than one product
+                    if(count($weightTicketPickup['weightticketproducts']) > 1 || count($weightTicketDropoff['weightticketproducts']) > 1){ //if weight ticket product is more than 1
+                        
+                        if($pickupNetWeight <= $dropoffNetWeight){
+                            $weightTypeToBeUsed = 1; //use pickup weight ticket
+                        } else {
+                            $weightTypeToBeUsed = 2; //use dropoff weight ticket
+                        }
+
+                        $deliveredWeight = $this->getWeightTicketProductTobeUsed($weightTypeToBeUsed, $transportscheduleproduct['weightticketproducts']);
+                        
+                    } else {
+                        if($pickupNetWeight <= $dropoffNetWeight){
+                            $deliveredWeight = number_format($pickupNetWeight, 4);
+                        } else {
+                            $deliveredWeight = number_format($dropoffNetWeight, 4);
+                        }
+                    }
+                } else if($weightTicket['pickup_id'] != null){ //pickup weighticket only
+                    $weightTicketPickup = $weightTicket['weightticketscale_pickup'];
+                   
+                    if(count($weightTicketPickup['weightticketproducts']) > 1){
+                        $deliveredWeight = $this->getWeightTicketProductTobeUsed(1, $transportscheduleproduct['weightticketproducts']);
+                    } else {
+                        if($weightTicketPickup['gross'] != null && $weightTicketPickup['tare'] != null){
+                            $deliveredWeight = number_format($weightTicketPickup['gross'] - $weightTicketPickup['tare'], 4);
+                        } else {
+                            $deliveredWeight = number_format(0, 4);
+                        }
+                    }
+                } else { //dropoff weight ticket only
+                    $weightTicketDropoff = $weightTicket['weightticketscale_dropoff'];
+    
+                    if(count($weightTicketDropoff['weightticketproducts']) > 1){ //if product on weight ticket is more than 1
+                        $deliveredWeight = $this->getWeightTicketProductTobeUsed(2, $transportscheduleproduct['weightticketproducts']);
+                    } else {
+                        if($weightTicketDropoff['gross'] != null && $weightTicketDropoff['tare'] != null){
+                            $deliveredWeight = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 4);
+                        } else {
+                            $deliveredWeight = number_format(0, 4);
+                        }
+                    }
+                }
+
+                $totalDeliveries += $deliveredWeight;
+                $i++;
+
+            }
+            
+
+            $result['totalDeliveries'] += $totalDeliveries;
+            $result['totalExpected'] += $productOrder['tons'];
+
+            $index++;
+        }
+
+        return $result;
     }
     
     public function getOrder($id, $orderType = 1)
