@@ -241,8 +241,10 @@ define([
 		closeWeightTicket: function (ev) {
 			
 			var thisObj = this;
-			this.model.setCloseURL();
-			this.model.save(
+			
+			var weightInfoModel = new POWeightInfoModel({id:this.schedId});
+			weightInfoModel.setCloseURL();
+			weightInfoModel.save(
 				null,
 				{
 					success: function (model, response, options) {
@@ -256,7 +258,7 @@ define([
 						else
 							thisObj.displayMessage(response);
 					},
-					headers: this.model.getAuth(),
+					headers: weightInfoModel.getAuth(),
 				}
 			);
 			
