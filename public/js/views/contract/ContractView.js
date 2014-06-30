@@ -72,11 +72,11 @@ define([
 		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
-			'click #delete-contract': 'showConfirmationWindow',
-			'click #confirm-delete-contract': 'deleteContract'
+			'click #close-contract': 'showConfirmationWindow',
+			'click #confirm-close-contract': 'closeContract'
 		},
 		
-		deleteContract: function (){
+		closeContract: function (){
 			var thisObj = this;
             
             this.model.destroy({

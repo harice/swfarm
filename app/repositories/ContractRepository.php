@@ -17,7 +17,7 @@ class ContractRepository implements ContractRepositoryInterface {
             $orderby  = isset($params['orderby']) ? $params['orderby'] :'DSC';
             $offset   = $page * $perPage - $perPage;
             
-            $result = Contract::with('salesorders', 'products', 'account', 'account.address')
+            $result = Contract::with('salesorders', 'products', 'account', 'account.address', 'status')
                 ->take($perPage)
                 ->offset($offset)
                 ->orderBy($sortby, $orderby)
@@ -78,7 +78,7 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         try
         {
-            $contract = Contract::with('products', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType')->find($id);
+            $contract = Contract::with('products', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')->find($id);
             
             if (!$contract) {
                 throw new NotFoundException();
