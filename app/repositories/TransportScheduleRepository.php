@@ -284,22 +284,22 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
     $transportSchedule = TransportSchedule::with('weightticket')->find($transportSchedule_id);
     $transportScheduleArr = $transportSchedule->toArray();
     if($transportSchedule->status_id == 2){
-        return array(
-          'error' => false,
-          'message' => 'Schedule is already closed.');
+        return Response::json(array(
+          'error' => true,
+          'message' => 'Schedule is already closed.'), 500);
     }
 
     if($transportScheduleArr['weightticket']['status_id'] == 2){ //check if Open
           $transportSchedule->status_id = 2; //close the schedule
           $transportSchedule->save();
 
-          return array(
+          return Response::json(array(
               'error' => false,
-              'message' => 'Schedule successfully closed.');
+              'message' => 'Schedule successfully closed.'), 200);
     } else {
-          return array(
+          return Response::json(array(
               'error' => false,
-              'message' => 'Schedule cannot be close because its weight ticket is not in close status.');
+              'message' => 'Schedule cannot be close because its weight ticket is not in close status.'), 500);
     }       
   }
 

@@ -500,9 +500,9 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             if(!$weightticketObj) {
                 throw new NotFoundException('Weight Info Not Found');
             } else if($weightticketObj->status_id == 2){ //already close
-                return array(
+                return Response::json(array(
                       'error' => true,
-                      'message' => 'This weight ticket is already close.');
+                      'message' => 'This weight ticket is already close.'), 500);
             }
                 
             $weightticket = $weightticketObj->toArray();
@@ -522,17 +522,17 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                    $weightticket['weightticketscale_pickup']['bales'] == null ||
                    $weightticket['weightticketscale_pickup']['gross'] ==  null ||
                    $weightticket['weightticketscale_pickup']['tare'] == null){
-                    return array(
+                    return Response::json(array(
                       'error' => true,
-                      'message' => 'Please complete all the details of pickup weight ticket before changing the status to close.');
+                      'message' => 'Please complete all the details of pickup weight ticket before changing the status to close.'), 500);
                 }
 
                 if(count($weightticket['weightticketscale_pickup']['weightticketproducts']) > 1){ //require only if more than 1 product is in weight ticket
                     foreach($weightticket['weightticketscale_pickup']['weightticketproducts'] as $product){
                         if($product['bales'] == null || $product['pounds'] == null){
-                            return array(
+                            return Response::json(array(
                               'error' => true,
-                              'message' => 'Please complete all the details of pickup weight ticket product details before you can change the status to close.');
+                              'message' => 'Please complete all the details of pickup weight ticket product details before you can change the status to close.'), 500);
                         }
                     }
                 }
@@ -553,17 +553,17 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                    $weightticket['weightticketscale_dropoff']['bales'] == null ||
                    $weightticket['weightticketscale_dropoff']['gross'] ==  null ||
                    $weightticket['weightticketscale_dropoff']['tare'] == null){
-                    return array(
+                    return Response::json(array(
                       'error' => true,
-                      'message' => 'Please complete all the details of dropoff weight ticket before changing the status to close.');
+                      'message' => 'Please complete all the details of dropoff weight ticket before changing the status to close.'), 500);
                 }
 
                 if(count($weightticket['weightticketscale_dropoff']['weightticketproducts']) > 1){ //require only if more than 1 product is in weight ticket
                     foreach($weightticket['weightticketscale_dropoff']['weightticketproducts'] as $product){
                         if($product['bales'] == null || $product['pounds'] == null){
-                            return array(
+                            return Response::json(array(
                               'error' => true,
-                              'message' => 'Please complete all the details of dropoff weight ticket product details before you can change the status to close.');
+                              'message' => 'Please complete all the details of dropoff weight ticket product details before you can change the status to close.'), 500);
                         }
                     }
                 }
@@ -572,9 +572,9 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             //change the status
             $weightticketObj->status_id = 2; //close status
             $weightticketObj->save();
-            return array(
+            return Response::json(array(
               'error' => false,
-              'message' => 'Weighticket successfully close.');
+              'message' => 'Weighticket successfully close.'), 200);
             // return $weightticket;
         }
         catch (Exception $e)
