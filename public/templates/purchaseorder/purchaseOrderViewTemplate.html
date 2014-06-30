@@ -145,8 +145,8 @@
                           <div class="pull-right">
                           <% if (typeof editable !== "undefined") { %>
                             <% if (typeof is_bid === "undefined") { %>
-							  <a id="close-order" class="btn btn-primary" href="#">Close Purchase Order</a>
-                              <a id="edit-po" class="btn btn-primary" href="<%= po_edit_url %>">Edit Purchase Order</a>
+							  <a id="close-order" class="btn btn-primary editable-button" href="#">Close Purchase Order</a>
+                              <a id="edit-po" class="btn btn-primary editable-button" href="<%= po_edit_url %>">Edit Purchase Order</a>
                             <% } else {%>
                               <a id="edit-po" class="btn btn-primary" href="<%= po_edit_url %>">Edit Bid</a>
                             <% } %>

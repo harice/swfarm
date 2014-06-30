@@ -25,6 +25,9 @@ define([
 		setCancelURL: function () {
 			this.urlRoot = '/apiv1/salesorder/cancel';
 		},
+		setCloseURL: function () {
+			this.urlRoot = '/apiv1/salesorder/close';
+		},
 	});
 	return SalesOrderModel;
 });
