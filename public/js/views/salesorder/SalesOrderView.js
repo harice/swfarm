@@ -147,6 +147,7 @@ define([
 		events:{
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #close-order': 'showCloseOrderConfirmationWindow',
+			'click #confirm-close-order': 'closeOrder'
 		},
 		
 		showCloseOrderConfirmationWindow: function () {
@@ -156,6 +157,34 @@ define([
 										'Close Sales Order',
 										false);
 			this.showConfirmationWindow();
+			
+			return false;
+		},
+		
+		closeOrder: function (ev) {
+			var thisObj = this;
+			
+			var salesOrderModel = new SalesOrderModel({id:this.soId});
+			salesOrderModel.setCloseURL();
+			salesOrderModel.save(
+				null,
+				{
+					success: function (model, response, options) {
+						thisObj.hideConfirmationWindow('modal-confirm', function () {
+							thisObj.subContainer.find('.editable-button').remove();
+						});
+						thisObj.displayMessage(response);
+					},
+					error: function (model, response, options) {
+						thisObj.hideConfirmationWindow();
+						if(typeof response.responseJSON.error == 'undefined')
+							alert(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: salesOrderModel.getAuth(),
+				}
+			);
 			
 			return false;
 		},
