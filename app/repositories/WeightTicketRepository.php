@@ -7,7 +7,8 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     {
         try
         {
-            $weightticket = WeightTicket::with('weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder.product')
+            $weightticket = WeightTicket::with('status')
+                            ->with('weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder.product')
                             ->with('weightticketscale_dropoff.scalerAccount')
                             ->with('weightticketscale_dropoff.scale')
                             ->with('weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder.product')

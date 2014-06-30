@@ -46,6 +46,11 @@ class WeightTicket extends BaseModel {
         return $this->belongsTo('TransportSchedule', 'id', 'transportschedule_id');
     }
 
+    public function status()
+    {
+        return $this->hasOne('Status', 'id', 'status_id');
+    }
+
     public function delete(){
         $this->weightticketscale_pickup()->delete();
         $this->weightticketscale_dropoff()->delete();
