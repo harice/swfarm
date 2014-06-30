@@ -93,6 +93,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('purchaseorder/getStatuses', 'APIv1\OrderController@getPOStatus');
     Route::get('purchaseorder/getDestinationList', 'APIv1\OrderController@getDestinationList');
     Route::get('purchaseorder/getCancellingReasonList', 'APIv1\OrderController@getPOCancellingReasonList');
+    Route::put('purchaseorder/close/{id}', 'APIv1\OrderController@closeOrder');
     Route::put('purchaseorder/cancel/{id}', 'APIv1\OrderController@cancelOrder');
     Route::get('purchaseorder', 'APIv1\OrderController@getPurchaseOrders');
     Route::get('purchaseorder/search', 'APIv1\OrderController@getPurchaseOrders');
@@ -109,6 +110,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('salesorder/getPickupLocationList', 'APIv1\OrderController@getPickupLocationList');
     Route::get('salesorder/getCancellingReasonList', 'APIv1\OrderController@getSOCancellingReasonList');
     Route::get('salesorder/getNatureOfSaleList', 'APIv1\OrderController@getNatureOfSaleList');
+    Route::put('salesorder/close/{id}', 'APIv1\OrderController@closeOrder');
     Route::put('salesorder/cancel/{id}', 'APIv1\OrderController@cancelOrder');
     Route::get('salesorder/search', 'APIv1\OrderController@getSalesOrders');
     Route::get('salesorder/{id}', 'APIv1\OrderController@getSalesOrder');

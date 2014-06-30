@@ -76,9 +76,9 @@ class OrderController extends BaseController {
     	return Response::json($model);
     }
     
-    public function close($id)
+    public function closeOrder($id)
     {
-        // $this->repo->close($id);
+        return $this->repo->closeOrder($id);
     }
 
     public function getPOStatus(){
