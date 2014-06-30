@@ -199,8 +199,8 @@ define([
 					
 					var net = (typeof product.pounds != 'undefined' && product.pounds != null)? parseFloat(product.pounds) * Const.LB2TON : 0;
 					dropoffProductsNetTotal += net;
-					var bales = (typeof product.bales != 'undefined' && product.bales != null)? parseFloat(product.bales) : 0;
-					dropoffProductsBalesTotal += parseFloat(bales);
+					var bales = (typeof product.bales != 'undefined' && product.bales != null)? parseInt(product.bales) : 0;
+					dropoffProductsBalesTotal += bales;
 					var pounds = (typeof product.pounds != 'undefined' && product.pounds != null)? parseFloat(product.pounds) : 0;
 					dropoffProductsPoundsTotal += pounds;
 					
@@ -208,7 +208,7 @@ define([
 						stack_number: (typeof product.transportscheduleproduct.productorder.stacknumber != 'undefined' && product.transportscheduleproduct.productorder.stacknumber != null)? product.transportscheduleproduct.productorder.stacknumber : '',
 						name: (typeof product.transportscheduleproduct.productorder.product.name != 'undefined' && product.transportscheduleproduct.productorder.product.name != null)? product.transportscheduleproduct.productorder.product.name : 0,
 						bales: thisObj.addCommaToNumber(bales),
-						pounds: thisObj.addCommaToNumber(pounds),
+						pounds: thisObj.addCommaToNumber(pounds.toFixed(2)),
 						net: net.toFixed(4),
 					};
 					
@@ -224,6 +224,7 @@ define([
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click .close-weight-ticket': 'showCloseWeightTicketConfirmationWindow',
+			'click #confirm-close-wt': 'closeWeightTicket',
 		},
 		
 		showCloseWeightTicketConfirmationWindow: function (ev) {
@@ -233,6 +234,31 @@ define([
 										'Close Weight Ticket',
 										false);
 			this.showConfirmationWindow();
+			
+			return false;
+		},
+		
+		closeWeightTicket: function (ev) {
+			
+			var thisObj = this;
+			this.model.setCloseURL();
+			this.model.save(
+				null,
+				{
+					success: function (model, response, options) {
+						thisObj.hideConfirmationWindow('modal-confirm', function () { Backbone.history.history.back(); });
+						thisObj.displayMessage(response);
+					},
+					error: function (model, response, options) {
+						thisObj.hideConfirmationWindow();
+						if(typeof response.responseJSON.error == 'undefined')
+							alert(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: this.model.getAuth(),
+				}
+			);
 			
 			return false;
 		},

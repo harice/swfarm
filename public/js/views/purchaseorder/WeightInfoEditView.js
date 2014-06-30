@@ -98,7 +98,7 @@ define([
 					
 					var net = (typeof product.pounds != 'undefined' && product.pounds != null)? parseFloat(product.pounds) * Const.LB2TON : 0;
 					productsNetTotal += net;
-					var bales = (typeof product.bales != 'undefined' && product.bales != null)? parseFloat(product.bales) : 0;
+					var bales = (typeof product.bales != 'undefined' && product.bales != null)? parseInt(product.bales) : 0;
 					productsBalesTotal += bales;
 					var pounds = (typeof product.pounds != 'undefined' && product.pounds != null)? parseFloat(product.pounds) : 0;
 					productsPoundsTotal += pounds;
@@ -109,8 +109,8 @@ define([
 						stock_number: product.transportscheduleproduct.productorder.stacknumber,
 						name: product.transportscheduleproduct.productorder.product.name,
 						number: '.'+piCtr++,
-						bales: thisObj.addCommaToNumber(bales),
-						pounds: thisObj.addCommaToNumber(pounds),
+						bales: (parseInt(thisObj.addCommaToNumber(bales)) != 0)? thisObj.addCommaToNumber(bales) : '',
+						pounds: (parseFloat(thisObj.addCommaToNumber(pounds)) != 0)? thisObj.addCommaToNumber(pounds.toFixed(2)) : '',
 						net: net.toFixed(4),
 					};
 					
