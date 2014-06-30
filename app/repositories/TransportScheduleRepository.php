@@ -117,7 +117,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       });
       
       if(is_array($result)){
-        return $result;
+        return Response::json($result, 500);
       }
 
       if($transportScheduleId == null){
@@ -126,9 +126,9 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           $message = 'Schedule successfully updated.';
       }
 
-      return array(
+      return Response::json(array(
           'error' => false,
-          'message' => $message);
+          'message' => $message), 200);
   }
 
   private function getTotalWeightOfSchedule($products){
