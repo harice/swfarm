@@ -142,7 +142,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
 
   private function getTotalWeightScheduleForProduct($productorder_id, $transportscheduleproduct_id){
       $totalWeight = ProductOrder::where('id', '=', $productorder_id)->first()->toArray();
-      $orderproducts = TransportScheduleProduct::where('productorder_id', '=', $productorder_id)->andWhere('id', '!=', $transportscheduleproduct_id)->get()->toArray();
+      $orderproducts = TransportScheduleProduct::where('productorder_id', '=', $productorder_id)->where('id', '!=', $transportscheduleproduct_id)->get()->toArray();
       $totalQuantitySchedule = 0;
       foreach($orderproducts as $item){
           $totalQuantitySchedule += $item['quantity'];
