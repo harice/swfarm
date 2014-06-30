@@ -70,7 +70,13 @@ define([
 		displayForm: function () {
 			var thisObj = this;
 			
-			var innerTemplateVariables = {'schedule_edit_url': '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId+'/'+Const.CRUD.EDIT+'/'+this.schedId};
+			var innerTemplateVariables = {
+				'schedule_edit_url': '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId+'/'+Const.CRUD.EDIT+'/'+this.schedId,
+				'weight_info_url': '#/'+Const.URL.SOWEIGHTINFO+'/'+this.soId+'/'+this.schedId,
+			};
+			
+			if(this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)
+				innerTemplateVariables['editable'] = true;
 			
 			var innerTemplate = _.template(deliveryScheduleViewTemplate, innerTemplateVariables);
 			
@@ -139,6 +145,7 @@ define([
 			'click #delete-schedule': 'showDeleteConfirmationWindow',
 			'click #confirm-delete-schedule': 'deleteAccount',
 			'click #close-schedule': 'showCloseScheduleConfirmationWindow',
+			'click #confirm-close-schedule': 'closeSchedule',
 		},
 		
 		showDeleteConfirmationWindow: function () {
@@ -176,6 +183,34 @@ define([
 										'Close Schedule',
 										false);
 			this.showConfirmationWindow();
+			
+			return false;
+		},
+		
+		closeSchedule: function (ev) {
+			var thisObj = this;
+			
+			var scheduleModel = new SOScheduleModel({id:this.schedId});
+			scheduleModel.setCloseURL();
+			scheduleModel.save(
+				null,
+				{
+					success: function (model, response, options) {
+						thisObj.hideConfirmationWindow('modal-confirm', function () {
+							thisObj.subContainer.find('.editable-button').remove();
+						});
+						thisObj.displayMessage(response);
+					},
+					error: function (model, response, options) {
+						thisObj.hideConfirmationWindow();
+						if(typeof response.responseJSON.error == 'undefined')
+							alert(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: scheduleModel.getAuth(),
+				}
+			);
 			
 			return false;
 		},

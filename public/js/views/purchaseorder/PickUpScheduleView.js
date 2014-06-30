@@ -70,7 +70,13 @@ define([
 		displayForm: function () {
 			var thisObj = this;
 			
-			var innerTemplateVariables = {'schedule_edit_url': '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId+'/'+Const.CRUD.EDIT+'/'+this.schedId};
+			var innerTemplateVariables = {
+				'schedule_edit_url': '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId+'/'+Const.CRUD.EDIT+'/'+this.schedId,
+				'weight_info_url': '#/'+Const.URL.POWEIGHTINFO+'/'+this.poId+'/'+this.schedId,
+			};
+			
+			if(this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)
+				innerTemplateVariables['editable'] = true;
 			
 			var innerTemplate = _.template(purchaseOrderAddScheduleTemplate, innerTemplateVariables);
 			
@@ -183,9 +189,10 @@ define([
 		
 		closeSchedule: function (ev) {
 			var thisObj = this;
-			thisObj.hideConfirmationWindow();
-			/*this.model.setCloseURL();
-			this.model.save(
+			
+			var scheduleModel = new POScheduleModel({id:this.schedId});
+			scheduleModel.setCloseURL();
+			scheduleModel.save(
 				null,
 				{
 					success: function (model, response, options) {
@@ -201,9 +208,9 @@ define([
 						else
 							thisObj.displayMessage(response);
 					},
-					headers: this.model.getAuth(),
+					headers: scheduleModel.getAuth(),
 				}
-			);*/
+			);
 			
 			return false;
 		},
