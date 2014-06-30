@@ -217,7 +217,48 @@ define([
 		
 		events:{
 			'click #go-to-previous-page': 'goToPreviousPage',
+			'click #close-order': 'showCloseOrderConfirmationWindow',
+			'click #confirm-close-order': 'closeOrder'
 			//'click .attach-pdf': 'showPDF',
+		},
+		
+		showCloseOrderConfirmationWindow: function () {
+			this.initConfirmationWindow('Are you sure you want to close this purchase order?',
+										'confirm-close-order',
+										'Close Purchase Order',
+										'Close Purchase Order',
+										false);
+			this.showConfirmationWindow();
+			
+			return false;
+		},
+		
+		closeOrder: function (ev) {
+			var thisObj = this;
+			
+			var purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
+			purchaseOrderModel.setCloseURL();
+			purchaseOrderModel.save(
+				null,
+				{
+					success: function (model, response, options) {
+						thisObj.hideConfirmationWindow('modal-confirm', function () {
+							thisObj.subContainer.find('.editable-button').remove();
+						});
+						thisObj.displayMessage(response);
+					},
+					error: function (model, response, options) {
+						thisObj.hideConfirmationWindow();
+						if(typeof response.responseJSON.error == 'undefined')
+							alert(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: purchaseOrderModel.getAuth(),
+				}
+			);
+			
+			return false;
 		},
 		
 		showPDF: function (ev) {

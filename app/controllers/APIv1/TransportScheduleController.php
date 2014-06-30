@@ -55,7 +55,8 @@ class TransportScheduleController extends BaseController {
 	public function store()
 	{
 		$collection = $this->repo->addOrUpdateTransportSchedule(Input::all());
-        return Response::json($collection);
+        // return Response::json($collection);
+        return $collection;
 	}
 
 	/**
@@ -67,7 +68,8 @@ class TransportScheduleController extends BaseController {
 	public function update($transportScheduleId)
 	{
 		$collection = $this->repo->addOrUpdateTransportSchedule(Input::all(), $transportScheduleId);
-        return Response::json($collection);
+        // return Response::json($collection);
+        return $collection;
 	}
 
 	/**
@@ -97,6 +99,11 @@ class TransportScheduleController extends BaseController {
 	public function getTrailerList(){
 		$model = $this->repo->getTrailerList(Input::get('accountId'));
         return Response::json($model);
+	}
+
+	public function closeSchedule($transportScheduleId){
+		$result = $this->repo->closeTransportSchedule($transportScheduleId);
+        return $result;
 	}
 
 }

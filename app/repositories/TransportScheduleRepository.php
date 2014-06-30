@@ -4,6 +4,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
 
   public function getSchedule($id){ //default sked is pickup
       $transportSchedule = TransportSchedule::with('trucker')
+                        ->with('status')
                         ->with('originloader')
                         ->with('destinationloader')
                         ->with('trucker.accountidandname.accounttype')
@@ -38,6 +39,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       $orderId = $params['order_id'];
       //pulling of data    
       $transportSchedules = TransportSchedule::with('trucker')
+                      ->with('status')
                       ->with('originloader')
                       ->with('destinationloader')
                       ->with('trucker.accountidandname.accounttype')
@@ -115,7 +117,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       });
       
       if(is_array($result)){
-        return $result;
+        return Response::json($result, 500);
       }
 
       if($transportScheduleId == null){
@@ -124,9 +126,9 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           $message = 'Schedule successfully updated.';
       }
 
-      return array(
+      return Response::json(array(
           'error' => false,
-          'message' => $message);
+          'message' => $message), 200);
   }
 
   private function getTotalWeightOfSchedule($products){
@@ -138,15 +140,22 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       return $totalWeightInTons;
   }
 
-  private function getTotalWeightScheduleForProduct($productorder_id){
+  private function getTotalWeightScheduleForProduct($productorder_id, $transportscheduleproduct_id = null){
+      $result = array();
       $totalWeight = ProductOrder::where('id', '=', $productorder_id)->first()->toArray();
-      $orderproducts = TransportScheduleProduct::where('productorder_id', '=', $productorder_id)->get()->toArray();
+      $orderproducts = TransportScheduleProduct::where('productorder_id', '=', $productorder_id);
+      if($transportscheduleproduct_id != null){
+        $orderproducts = $orderproducts->where('id', '!=', $transportscheduleproduct_id);
+      }                    
+      $orderproducts = $orderproducts->get()->toArray();
       $totalQuantitySchedule = 0;
       foreach($orderproducts as $item){
           $totalQuantitySchedule += $item['quantity'];
       }
-
-      return floatval($totalWeight['tons']) - $totalQuantitySchedule; //total weight remaining to be scheduled
+      $result['totalQuantitySchedule'] = $totalQuantitySchedule;
+      $result['quantityRemaining'] = floatval($totalWeight['tons']) - $totalQuantitySchedule;
+      // return floatval($totalWeight['tons']) - $totalQuantitySchedule; //total weight remaining to be scheduled
+      return $result; //total weight remaining to be scheduled
   }
 
   private function addProductToSchedule($schedule_id, $products = array())
@@ -155,13 +164,18 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           $product['transportschedule_id'] = $schedule_id;
 
           $this->validate($product, 'TransportScheduleProduct');
+          if(isset($product['id'])){
+            $result = $this->getTotalWeightScheduleForProduct($product['productorder_id'], $product['id']);  
+          } else {
+            $result = $this->getTotalWeightScheduleForProduct($product['productorder_id']);
+          }
+          
 
-          $totalQuantityRemaining = $this->getTotalWeightScheduleForProduct($product['productorder_id']);
-
-          if(floatval($product['quantity']) > $totalQuantityRemaining){
+          if(floatval($product['quantity']) > $result['quantityRemaining']){
+              $productOrderDetails = ProductOrder::find($product['productorder_id']);
               return array(
                       'error' => true,
-                      'message' => "Quantity Error!");
+                      'message' => "Weight inputed exceeded for product: ".$productOrderDetails['stacknumber'].". <br />Weight already scheduled: ".$result['totalQuantitySchedule']." <br />Weight remaining: ".$result['quantityRemaining']." <br />Total weight allowed for this product: ".$productOrderDetails['tons']);
           }
 
           $result = DB::transaction(function() use ($product){
@@ -281,29 +295,26 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
   }
 
   public function closeTransportSchedule($transportSchedule_id){
-    // $transportSchedule = TransportSchedule::whereHas('weightticket', function ($query) use (){
-      
-    // });
+    $transportSchedule = TransportSchedule::with('weightticket')->find($transportSchedule_id);
+    $transportScheduleArr = $transportSchedule->toArray();
+    if($transportSchedule->status_id == 2){
+        return Response::json(array(
+          'error' => true,
+          'message' => 'Schedule is already closed.'), 500);
+    }
 
+    if($transportScheduleArr['weightticket']['status_id'] == 2){ //check if Open
+          $transportSchedule->status_id = 2; //close the schedule
+          $transportSchedule->save();
 
-    //   $weightTicket = WeightTicket::where('transportSchedule_id', '=', $transportSchedule_id)->first();
-      
-    //   if($weightTicket->status_id == 1){ //check if Open
-    //         $weightTicket->status_id = 2;
-    //         $weightTicket->save();
-
-    //         return array(
-    //             'error' => false,
-    //             'message' => 'Weight ticket closed.');
-    //   } else if($weightTicket->status_id == 2) {//if close
-    //         return array(
-    //             'error' => false,
-    //             'message' => 'Weight ticket is already closed.');
-    //   } else {
-    //         return array(
-    //             'error' => false,
-    //             'message' => 'Weight ticket cannot be cancel if the status is not open or pending.');
-    //   }       
+          return Response::json(array(
+              'error' => false,
+              'message' => 'Schedule successfully closed.'), 200);
+    } else {
+          return Response::json(array(
+              'error' => false,
+              'message' => 'Schedule cannot be close because its weight ticket is not in close status.'), 500);
+    }       
   }
 
   private function displayLastQuery(){

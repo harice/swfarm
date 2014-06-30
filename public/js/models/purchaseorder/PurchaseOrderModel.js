@@ -26,6 +26,9 @@ define([
 		setCancelURL: function () {
 			this.urlRoot = '/apiv1/purchaseorder/cancel';
 		},
+		setCloseURL: function () {
+			this.urlRoot = '/apiv1/purchaseorder/close';
+		},
 	});
 	return PurchaseOrderModel;
 });

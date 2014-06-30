@@ -395,7 +395,7 @@ define([
 		generateOrderWeightDetailsByStack: function (models, soId) {
 			var data = {
 				stacks: models,
-				schedule_url: '/#/'+Const.URL.PICKUPSCHEDULE+'/'+soId,
+				schedule_url: '/#/'+Const.URL.DELIVERYSCHEDULE+'/'+soId,
 				weight_info_url: '/#/'+Const.URL.SOWEIGHTINFO+'/'+soId,
 				_: _ 
 			};

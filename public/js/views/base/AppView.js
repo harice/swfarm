@@ -64,7 +64,7 @@ define([
 			return arrFormattedDate.join(separator);
 		},
 		
-		initConfirmationWindow: function (content, buttonId, buttonLabel, title) {
+		initConfirmationWindow: function (content, buttonId, buttonLabel, title, dismissModal) {
 			if($('.modal-alert-cont').find('#modal-confirm').length)
 				$('.modal-alert-cont').find('#modal-confirm').remove();
 			
@@ -75,6 +75,9 @@ define([
 				confirm_button_label: buttonLabel,
 			};
 			
+			if(dismissModal == null || typeof dismissModal == 'undefined' || dismissModal == true)
+				confirmTemplateVariables['confirm_dismiss_modal'] = 1;
+			
 			var confirmTemplate = _.template(confirmModalTemplate, confirmTemplateVariables);
 			this.$el.find('.modal-alert-cont').append(confirmTemplate);
 		},
@@ -82,7 +85,7 @@ define([
 		initConfirmationWindowWithForm: function (content, buttonId, buttonLabel, contentForm, title) {
 			if($('.modal-alert-cont').find('#modal-with-form-confirm').length)
 				$('.modal-alert-cont').find('#modal-with-form-confirm').remove();
-			
+				
 			var confirmTemplateVariables = {
 				confirm_title: title,
 				confirm_content: content,
@@ -119,10 +122,16 @@ define([
 			return false;
 		},
 		
-		hideConfirmationWindow: function (id) {
+		hideConfirmationWindow: function (id, callback) {
 			
 			if(id == null)
 				id = 'modal-confirm';
+			
+			$('#'+id).on('hidden.bs.modal', function (e) {
+				var getType = {};
+				if(callback && getType.toString.call(callback) === '[object Function]')
+					callback();
+			});
 			
 			$('#'+id).modal('hide');
 			

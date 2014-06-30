@@ -4,7 +4,9 @@
             <div class="content padding-top-0">
                 <div class="row margin-top-0">
                     <div class="col-md-3 padding-top-10 padding-right-0">
-                        <a href="<%= po_schedule_add_url %>" class="btn btn-primary btn-sm">+ Add Pick Up Schedule</a>
+                        <% if (typeof editable !== "undefined") { %>
+							<a href="<%= po_schedule_add_url %>" class="btn btn-primary btn-sm">+ Add Pick Up Schedule</a>
+						<% } %>
                     </div>
                     <div class="col-md-2 col-md-offset-4"></div>
                     <div class="col-md-3 padding-top-10"></div>

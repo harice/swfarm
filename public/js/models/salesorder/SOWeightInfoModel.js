@@ -18,6 +18,9 @@ define([
 				headers: thisObj.getAuth(),
 			});
 		},
+		setCloseURL: function () {
+			this.urlRoot = '/apiv1/weightticket/closeWeightTicket';
+		},
 	});
 
 	return SOWeightInfoModel;
