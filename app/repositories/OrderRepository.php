@@ -99,14 +99,12 @@ class OrderRepository implements OrderRepositoryInterface {
         $stackList = array();
         $index = 0;
         $result = array();
-        $result['totalExpected'] = 0;
-        $result['totalDeliveries'] = 0;
+        $result['expected'] = 0;
+        $result['delivered'] = 0;
 
         foreach($order['productorder'] as $productOrder){
  
             $totalDeliveries = 0;
-            $stackList[$index]['schedule'] = array();
-            $i = 0;
             $deliveredWeight = 0;
             foreach($productOrder['transportscheduleproduct'] as $transportscheduleproduct){
                 $weightTypeToBeUsed = 1; //pickup weight ticket default
@@ -169,17 +167,16 @@ class OrderRepository implements OrderRepositoryInterface {
                 }
 
                 $totalDeliveries += $deliveredWeight;
-                $i++;
 
             }
             
 
-            $result['totalDeliveries'] += $totalDeliveries;
-            $result['totalExpected'] += $productOrder['tons'];
-
-            $index++;
+            $result['delivered'] += $totalDeliveries;
+            $result['expected'] += $productOrder['tons'];
         }
 
+        $result['delivered'] = number_format($result['delivered'], 4);
+        $result['expected'] = number_format($result['expected'], 4);
         return $result;
     }
     
