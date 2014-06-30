@@ -87,9 +87,11 @@ define([
 				pickup_weight_info_add_url: '#/'+Const.URL.POWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD+'/'+Const.WEIGHTINFO.PICKUP,
 				dropoff_weight_info_edit_url: '#/'+Const.URL.POWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+Const.CRUD.EDIT+'/'+Const.WEIGHTINFO.DROPOFF,
 				dropoff_weight_info_add_url: '#/'+Const.URL.POWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD+'/'+Const.WEIGHTINFO.DROPOFF,
+                weight_info_edit_url: '#/'+Const.URL.POWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+Const.CRUD.EDIT,
                 weight_info_print_url: '#/'+Const.URL.POWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+'print',
-                weight_info_mail_url: '#/'+Const.URL.POWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+'mail',
+                weight_info_mail_url: '#/'+Const.URL.POWEIGHTINFO+'/'+thisObj.model.id+'/'+'mail',
 				previous_po_sched_url: '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId,
+                weight_info_id: thisObj.model.id
 			};
 			
 			if((!this.model.get('status') || (this.model.get('status') && this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)) && 
@@ -229,6 +231,7 @@ define([
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click .close-weight-ticket': 'showCloseWeightTicketConfirmationWindow',
 			'click #confirm-close-wt': 'closeWeightTicket',
+			'click #email-weight-ticket': 'mailWeightTicket'
 		},
 		
 		showCloseWeightTicketConfirmationWindow: function (ev) {
@@ -270,6 +273,10 @@ define([
 			
 			return false;
 		},
+                
+        mailWeightTicket: function(ev) {
+            console.log(ev);
+        }
 	});
 
 	return WeightInfoView;

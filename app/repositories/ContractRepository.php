@@ -17,7 +17,7 @@ class ContractRepository implements ContractRepositoryInterface {
             $orderby  = isset($params['orderby']) ? $params['orderby'] :'DSC';
             $offset   = $page * $perPage - $perPage;
             
-            $result = Contract::with('products', 'account', 'account.address')
+            $result = Contract::with('salesorders', 'products', 'account', 'account.address')
                 ->take($perPage)
                 ->offset($offset)
                 ->orderBy($sortby, $orderby)

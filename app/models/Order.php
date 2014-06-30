@@ -26,6 +26,7 @@ class Order extends BaseModel {
         'transportdateend',
         'status_id',
         'user_id',
+        'contract_id',
         'notes',
         'isfrombid',
         'ordertype',
@@ -88,6 +89,11 @@ class Order extends BaseModel {
 
     public function ordercancellingreason(){
         return $this->hasOne('OrderCancellingReason', 'order', 'id');
+    }
+    
+    public function contract()
+    {
+        return $this->belongsTo('Contract');
     }
 
 }

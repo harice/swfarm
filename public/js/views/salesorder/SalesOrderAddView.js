@@ -11,12 +11,14 @@ define([
 	'collections/salesorder/OriginCollection',
 	'collections/salesorder/NatureOfSaleCollection',
 	'collections/product/ProductCollection',
+    'collections/contract/ContractCollection',
 	'models/salesorder/SalesOrderModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/salesorder/salesOrderAddTemplate.html',
 	'text!templates/salesorder/salesOrderProductItemTemplate.html',
 	'text!templates/salesorder/salesOrderOriginTemplate.html',
 	'text!templates/salesorder/salesOrderNatureOfSaleTemplate.html',
+    'text!templates/salesorder/salesOrderContractTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -31,12 +33,14 @@ define([
 			OriginCollection,
 			NatureOfSaleCollection,
 			ProductCollection,
+            ContractCollection,
 			SalesOrderModel,
 			contentTemplate,
 			salesOrderAddTemplate,
 			productItemTemplate,
 			salesOrderOriginTemplate,
 			salesOrderNatureOfSaleTemplate,
+            contractTemplate,
 			Global,
 			Const
 ){
@@ -75,10 +79,19 @@ define([
 			
 			this.natureOfSaleCollection = new NatureOfSaleCollection();
 			this.natureOfSaleCollection.on('sync', function() {
-				thisObj.productCollection.getAllModel();
+				thisObj.contractCollection.getModels();
 				this.off('sync');
 			});
 			this.natureOfSaleCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
+            
+            this.contractCollection = new ContractCollection();
+            this.contractCollection.on('sync', function() {
+				thisObj.productCollection.getAllModel();
+				this.off('sync');
+			});
+			this.contractCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
 			
@@ -112,7 +125,7 @@ define([
 			var thisObj = this;
 			
 			var innerTemplateVariables = {
-				'so_url' : '#/'+Const.URL.SO,
+				'so_url' : '#/'+Const.URL.SO
 			};
 			
 			if(this.soId != null)
@@ -133,6 +146,7 @@ define([
 			
 			// this.generateOrigin();
 			this.generateNatureOfSale();
+            this.generateContract();
 			this.initCustomerAutocomplete();
 			this.initCalendar();
 			this.addProduct();
@@ -195,6 +209,12 @@ define([
 			var NOSTemplate = _.template(salesOrderNatureOfSaleTemplate, {'natureOfSales': this.natureOfSaleCollection.models});
 			this.$el.find('#so-nos').html(NOSTemplate);
 			this.$el.find('#so-nos .radio-inline:first-child input[type="radio"]').attr('checked', true);
+		},
+                
+        // Contracts
+        generateContract: function () {
+			var contract_list = _.template(contractTemplate, {'contracts': this.contractCollection.models});
+			this.$el.find('#contract select').append(contract_list);
 		},
 		
 		initCustomerAutocomplete: function () {
@@ -277,7 +297,7 @@ define([
 				this.options.productFieldClone = productItem.clone();
 				//this.initProductAutocomplete(productItem);
 				this.addIndexToProductFields(productItem);
-				clone = productItem
+				clone = productItem;
 			}
 			else {
 				var clone = this.options.productFieldClone.clone();

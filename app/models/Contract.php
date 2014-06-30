@@ -69,6 +69,23 @@ class Contract extends BaseModel {
         return $this->belongsTo('User');
     }
     
+    /**
+     * Define a One to Manu Relationship
+     * 
+     * Each contract can have multiple Sales Orders.
+     * 
+     * @return Model
+     */
+    public function salesorders()
+    {
+        return $this->hasMany('Order');
+    }
+    
+    /**
+     * Make dates compatible with Carbon
+     * 
+     * @return array
+     */
     public function getDates()
     {
         return array('created_at', 'updated_at', 'contract_date_start', 'contract_date_end');
