@@ -22,6 +22,10 @@
         <% if(_.contains(permission,constant.MENU.ACCOUNTS.VIEW) || _.isEqual(su,constant.SU)) { %>
         <li><a href="#/<%= constant.URL.ACCOUNT %>"><i class="fa fa-building-o"></i><span>Accounts</span></a></li>
         <% } %>
+        
+        <% if(_.contains(permission,constant.MENU.CONTRACT.VIEW) || _.isEqual(su,constant.SU)) { %>
+        <li><a href="#/<%= constant.URL.CONTRACT %>"><i class="fa fa-folder-o"></i><span>Contract</span></a></li>
+        <% } %>
 
         <% if(_.contains(permission,constant.MENU.PURCHASES.VIEW) || _.isEqual(su,constant.SU)) { %>
         <li><a href="#/<%= constant.URL.PO %>"><i class="fa fa-file"></i><span>Purchases</span></a></li>
@@ -29,10 +33,6 @@
 
         <% if(_.contains(permission,constant.MENU.SALES.VIEW) || _.isEqual(su,constant.SU)) { %>
         <li><a href="#/<%= constant.URL.SO %>"><i class="fa fa-folder-o"></i><span>Sales</span></a></li>
-        <% } %>
-        
-        <% if(_.contains(permission,constant.MENU.CONTRACT.VIEW) || _.isEqual(su,constant.SU)) { %>
-        <li><a href="#/<%= constant.URL.CONTRACT %>"><i class="fa fa-folder-o"></i><span>Contract</span></a></li>
         <% } %>
 
         <li><a href="#/"><i class="fa fa-archive"></i><span>Inventory</span></a></li>
