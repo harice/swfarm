@@ -172,7 +172,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           
 
           if(floatval($product['quantity']) > $result['quantityRemaining']){
-              $productOrderDetails = ProductOrder::find($product['id']);
+              $productOrderDetails = ProductOrder::find($product['productorder_id']);
               return array(
                       'error' => true,
                       'message' => "Weight inputed exceeded for product: ".$productOrderDetails['stacknumber'].". <br />Weight already scheduled: ".$result['totalQuantitySchedule']." <br />Weight remaining: ".$result['quantityRemaining']." <br />Total weight allowed for this product: ".$productOrderDetails['tons']);
