@@ -70,10 +70,9 @@ class OrderRepository implements OrderRepositoryInterface {
         //get the total price of products (unit price x tons)
         foreach($result as $item){
           $item['totalPrice'] = 0.00;
-          $item['ExpectedVsDelivered'] = $this->getExpectedDeliveredData($item['id']);
+          $item['weightPercentageDelivered'] = $this->getExpectedDeliveredData($item['id']);
           foreach($item['productorder'] as $productorder){
             if($productorder['unitprice'] != null){
-              
               $item['totalPrice'] += $productorder['unitprice'] * $productorder['tons'];
             }
           }
@@ -99,14 +98,12 @@ class OrderRepository implements OrderRepositoryInterface {
         $stackList = array();
         $index = 0;
         $result = array();
-        $result['totalExpected'] = 0;
-        $result['totalDeliveries'] = 0;
+        $result['expected'] = 0;
+        $result['delivered'] = 0;
 
         foreach($order['productorder'] as $productOrder){
  
             $totalDeliveries = 0;
-            $stackList[$index]['schedule'] = array();
-            $i = 0;
             $deliveredWeight = 0;
             foreach($productOrder['transportscheduleproduct'] as $transportscheduleproduct){
                 $weightTypeToBeUsed = 1; //pickup weight ticket default
@@ -169,18 +166,23 @@ class OrderRepository implements OrderRepositoryInterface {
                 }
 
                 $totalDeliveries += $deliveredWeight;
-                $i++;
 
             }
             
 
-            $result['totalDeliveries'] += $totalDeliveries;
-            $result['totalExpected'] += $productOrder['tons'];
-
-            $index++;
+            $result['delivered'] += $totalDeliveries;
+            $result['expected'] += $productOrder['tons'];
         }
 
-        return $result;
+        $result['delivered'] = $result['delivered'];
+        $result['expected'] = $result['expected'];
+
+        $result['percentage'] = intval(($result['delivered']/$result['expected']) * 100);
+
+        if($result['percentage'] > 100){
+            $result['percentage'] = 100;
+        }
+        return $result['percentage'];
     }
     
     public function getOrder($id, $orderType = 1)

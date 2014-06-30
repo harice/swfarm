@@ -39,6 +39,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       $orderId = $params['order_id'];
       //pulling of data    
       $transportSchedules = TransportSchedule::with('trucker')
+                      ->with('status')
                       ->with('originloader')
                       ->with('destinationloader')
                       ->with('trucker.accountidandname.accounttype')
