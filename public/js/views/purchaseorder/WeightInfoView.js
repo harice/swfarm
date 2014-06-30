@@ -92,6 +92,9 @@ define([
 				previous_po_sched_url: '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId,
 			};
 			
+			if(this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)
+				innerTemplateVariables['editable'] = true;
+			
 			if(this.model.get('weightticketscale_pickup') != null)
 				innerTemplateVariables['has_pickup_info'] = true;
 			if(this.model.get('weightticketscale_dropoff') != null)
@@ -175,21 +178,21 @@ define([
 			if(dropoffInfo != null) {
 				this.$el.find('#dropoff-fields').show();
 				if(typeof dropoffInfo.scaler_account[0] != 'undefined' && typeof dropoffInfo.scaler_account[0].name != 'undefined' && dropoffInfo.scaler_account[0].name != null)
-					this.$el.find('#pickup-info .scale-account').val(dropoffInfo.scaler_account[0].name);
+					this.$el.find('#dropoff-info .scale-account').val(dropoffInfo.scaler_account[0].name);
 				if(typeof dropoffInfo.scale != 'undefined' && dropoffInfo.scale != null && typeof dropoffInfo.scale.name != 'undefined' && dropoffInfo.scale.name != null)
-					this.$el.find('#pickup-info .scale-name').val(dropoffInfo.scale.name);
+					this.$el.find('#dropoff-info .scale-name').val(dropoffInfo.scale.name);
 				if(typeof dropoffInfo.fee != 'undefined' && dropoffInfo.fee != null)
-					this.$el.find('#pickup-info .fee').val(this.addCommaToNumber(dropoffInfo.fee));
+					this.$el.find('#dropoff-info .fee').val(this.addCommaToNumber(dropoffInfo.fee));
 				if(typeof dropoffInfo.bales != 'undefined' && dropoffInfo.bales != null)
-					this.$el.find('#pickup-info .bales').val(this.addCommaToNumber(dropoffInfo.bales));
+					this.$el.find('#dropoff-info .bales').val(this.addCommaToNumber(dropoffInfo.bales));
 				if(typeof dropoffInfo.gross != 'undefined' && dropoffInfo.gross != null)
-					this.$el.find('#pickup-info .gross').val(this.addCommaToNumber(dropoffInfo.gross));
+					this.$el.find('#dropoff-info .gross').val(this.addCommaToNumber(dropoffInfo.gross));
 				if(typeof dropoffInfo.tare != 'undefined' && dropoffInfo.tare != null)
-					this.$el.find('#pickup-info .tare').val(this.addCommaToNumber(dropoffInfo.tare));
+					this.$el.find('#dropoff-info .tare').val(this.addCommaToNumber(dropoffInfo.tare));
 					
 				if(typeof dropoffInfo.gross != 'undefined' && dropoffInfo.gross != null && typeof dropoffInfo.tare != 'undefined' && dropoffInfo.tare != null) {
 					var pickupNet = parseFloat(dropoffInfo.gross) - parseFloat(dropoffInfo.tare);
-					this.$el.find('#pickup-info .net').text(this.addCommaToNumber(pickupNet.toFixed(4)));
+					this.$el.find('#dropoff-info .net').text(this.addCommaToNumber(pickupNet.toFixed(4)));
 				}
 				
 				var dropoffProductsBalesTotal = 0;
@@ -248,7 +251,9 @@ define([
 				null,
 				{
 					success: function (model, response, options) {
-						thisObj.hideConfirmationWindow('modal-confirm', function () { Backbone.history.history.back(); });
+						thisObj.hideConfirmationWindow('modal-confirm', function () {
+							thisObj.subContainer.find('.editable-button').remove();
+						});
 						thisObj.displayMessage(response);
 					},
 					error: function (model, response, options) {

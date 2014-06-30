@@ -139,6 +139,7 @@ define([
 			'click #delete-schedule': 'showDeleteConfirmationWindow',
 			'click #confirm-delete-schedule': 'deleteAccount',
 			'click #close-schedule': 'showCloseScheduleConfirmationWindow',
+			'click #confirm-close-schedule': 'closeSchedule',
 		},
 		
 		showDeleteConfirmationWindow: function () {
@@ -176,6 +177,33 @@ define([
 										'Close Schedule',
 										false);
 			this.showConfirmationWindow();
+			
+			return false;
+		},
+		
+		closeSchedule: function (ev) {
+			var thisObj = this;
+			thisObj.hideConfirmationWindow();
+			/*this.model.setCloseURL();
+			this.model.save(
+				null,
+				{
+					success: function (model, response, options) {
+						thisObj.hideConfirmationWindow('modal-confirm', function () {
+							thisObj.subContainer.find('.editable-button').remove();
+						});
+						thisObj.displayMessage(response);
+					},
+					error: function (model, response, options) {
+						thisObj.hideConfirmationWindow();
+						if(typeof response.responseJSON.error == 'undefined')
+							alert(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: this.model.getAuth(),
+				}
+			);*/
 			
 			return false;
 		},

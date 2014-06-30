@@ -148,6 +148,9 @@ define(function () {
 			'PICKUP' : 'pickup',
 			'DROPOFF' : 'dropoff',
 		},
+		'STATUS': {
+			'CLOSED' : 'closed',
+		},
 		
 	};
 	
