@@ -112,7 +112,8 @@ define([
 			}
 			
 			this.$el.find('#nos').val(this.model.get('natureofsale').name);
-            this.$el.find('#contract').val(this.model.get('contract').contract_number);
+			if(this.model.get('contract') && typeof this.model.get('contract').contract_number != 'undefined')
+				this.$el.find('#contract').val(this.model.get('contract').contract_number);
 			this.$el.find('#account').val(account.name);
 			this.$el.find('#street').val(address[0].street);
 			this.$el.find('#state').val(address[0].address_states[0].state);

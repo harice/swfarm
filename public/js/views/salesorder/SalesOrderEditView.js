@@ -142,7 +142,8 @@ define([
 			this.$el.find('#city').val(address[0].city);
 			this.$el.find('#zipcode').val(address[0].zipcode);
 			this.$el.find('#dateofsale').val(this.convertDateFormat(this.model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
-            this.$el.find('select[name="contract_id"] option[value="'+this.model.get('contract').id+'"]').attr('selected', 'selected');
+            if(this.model.get('contract') && typeof this.model.get('contract').id != 'undefined')
+				this.$el.find('select[name="contract_id"] option[value="'+this.model.get('contract').id+'"]').attr('selected', 'selected');
 			this.$el.find('#notes').val(this.model.get('notes'));
 			
 			var startDate = this.convertDateFormat(this.model.get('transportdatestart').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-');
