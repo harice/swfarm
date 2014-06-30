@@ -161,9 +161,10 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           $totalQuantityRemaining = $this->getTotalWeightScheduleForProduct($product['productorder_id'], $product['id']);
 
           if(floatval($product['quantity']) > $totalQuantityRemaining){
+              $productOrderDetails = ProductOrder::find($product['id']);
               return array(
                       'error' => true,
-                      'message' => "Quantity Error!");
+                      'message' => "Weight inputed exceeded for product: ".$productOrderDetails['stacknumber'].". <br />Total weight on this product: ".$totalQuantityRemaining." <br />Total weight allowed for this product: ".$productOrderDetails['tons']);
           }
 
           $result = DB::transaction(function() use ($product){
