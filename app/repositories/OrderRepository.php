@@ -70,10 +70,9 @@ class OrderRepository implements OrderRepositoryInterface {
         //get the total price of products (unit price x tons)
         foreach($result as $item){
           $item['totalPrice'] = 0.00;
-          $item['ExpectedVsDelivered'] = $this->getExpectedDeliveredData($item['id']);
+          $item['weightPercentageDelivered'] = $this->getExpectedDeliveredData($item['id']);
           foreach($item['productorder'] as $productorder){
             if($productorder['unitprice'] != null){
-              
               $item['totalPrice'] += $productorder['unitprice'] * $productorder['tons'];
             }
           }
@@ -175,9 +174,15 @@ class OrderRepository implements OrderRepositoryInterface {
             $result['expected'] += $productOrder['tons'];
         }
 
-        $result['delivered'] = number_format($result['delivered'], 4);
-        $result['expected'] = number_format($result['expected'], 4);
-        return $result;
+        $result['delivered'] = $result['delivered'];
+        $result['expected'] = $result['expected'];
+
+        $result['percentage'] = intval(($result['delivered']/$result['expected']) * 100);
+
+        if($result['percentage'] > 100){
+            $result['percentage'] = 100;
+        }
+        return $result['percentage'];
     }
     
     public function getOrder($id, $orderType = 1)

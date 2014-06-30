@@ -31,6 +31,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     public function getAllWeightticketOfOrder($orderId){
         $orderDetails = Order::with('transportschedule.weightticket.weightticketscale_pickup')
                                 ->with('transportschedule.weightticket.weightticketscale_dropoff')
+                                ->with('transportschedule.weightticket.status')
                                 ->where('id', '=', $orderId)->first()->toArray();
         // return $orderDetails;
 
@@ -69,6 +70,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             $weightTicketList[$index]['transportScheduleId'] = $transportScheduleDetails['id'];
             $weightTicketList[$index]['transportScheduleDate'] = $transportScheduleDetails['date'];
             $weightTicketList[$index]['weightTicketNumber'] = $transportScheduleDetails['weightticket']['weightTicketNumber'];
+            $weightTicketList[$index]['status'] = $transportScheduleDetails['weightticket']['status'];
             $weightTicketList[$index]['netWeight'] = number_format($netWeight, 4); //format to 4 decimal places
             $index++;
         }
