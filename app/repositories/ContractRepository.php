@@ -166,6 +166,31 @@ class ContractRepository implements ContractRepositoryInterface {
         }
     }
     
+    public function updateStatus($id, $data)
+    {
+        if(!isset($data['status_id'])) {
+            throw new Exception('Status was not set.', 203);
+        }
+        
+        try
+        {
+            $contract = $this->findById($id);
+            $contract->status_id = $data['status_id'];
+            $contract->update();
+            
+            $response = array(
+                'error' => false,
+                'message' => Lang::get('messages.success.updated', array('entity' => 'Contract'))
+            );
+            
+            return $response;
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
+    }
+    
     public function destroy($id)
     {
         try
