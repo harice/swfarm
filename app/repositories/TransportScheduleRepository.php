@@ -140,10 +140,14 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       return $totalWeightInTons;
   }
 
-  private function getTotalWeightScheduleForProduct($productorder_id, $transportscheduleproduct_id){
+  private function getTotalWeightScheduleForProduct($productorder_id, $transportscheduleproduct_id = null){
       $result = array();
       $totalWeight = ProductOrder::where('id', '=', $productorder_id)->first()->toArray();
-      $orderproducts = TransportScheduleProduct::where('productorder_id', '=', $productorder_id)->where('id', '!=', $transportscheduleproduct_id)->get()->toArray();
+      $orderproducts = TransportScheduleProduct::where('productorder_id', '=', $productorder_id);
+      if($transportscheduleproduct_id != null){
+        $orderproducts = $orderproducts->where('id', '!=', $transportscheduleproduct_id);
+      }                    
+      $orderproducts = $orderproducts->get()->toArray();
       $totalQuantitySchedule = 0;
       foreach($orderproducts as $item){
           $totalQuantitySchedule += $item['quantity'];
@@ -160,8 +164,12 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           $product['transportschedule_id'] = $schedule_id;
 
           $this->validate($product, 'TransportScheduleProduct');
-
-          $result = $this->getTotalWeightScheduleForProduct($product['productorder_id'], $product['id']);
+          if(isset($product['id'])){
+            $result = $this->getTotalWeightScheduleForProduct($product['productorder_id'], $product['id']);  
+          } else {
+            $result = $this->getTotalWeightScheduleForProduct($product['productorder_id']);
+          }
+          
 
           if(floatval($product['quantity']) > $result['quantityRemaining']){
               $productOrderDetails = ProductOrder::find($product['id']);
