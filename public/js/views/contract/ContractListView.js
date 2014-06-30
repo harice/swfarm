@@ -73,9 +73,9 @@ define([
 		
 		displayList: function () {
             var contracts = this.collection.models;
-            console.log(contracts);
     
 			var data = {
+                contract_url: '#/'+Const.URL.CONTRACT,
 				contract_edit_url: '#/'+Const.URL.CONTRACT+'/'+Const.CRUD.EDIT,
 				contracts: this.collection.models,
 				_: _ 

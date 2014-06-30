@@ -1,9 +1,10 @@
 define([
-	'views/contract/ContractListView',
+	'views/contract/ContractView',
+    'views/contract/ContractListView',
 	'views/contract/ContractAddView',
 	'views/contract/ContractEditView',
-	'constant',
-], function(ContractListView, ContractAddView, ContractEditView, Const){
+	'constant'
+], function(ContractView, ContractListView, ContractAddView, ContractEditView, Const){
 	
 	function ContractController () {	
 		
@@ -14,13 +15,15 @@ define([
 					break;
 				
 				case Const.CRUD.EDIT:
-					if(id != null && this.IsInt(id))
+					if(id !== null && this.IsInt(id))
 						return this.edit(id);
 					break;
-				
-				default:
-					return this.listView();
-					break;
+                    
+                default:
+					if(action !== null && this.IsInt(action))
+						return this.view(action);
+					else
+						return this.listView();
 			}
 		};
 		
@@ -34,6 +37,10 @@ define([
 		
 		this.listView = function () {
 			return new ContractListView();
+		};
+        
+        this.view = function (id) {
+			return new ContractView({'id':id});
 		};
 		
 		this.IsInt = function (i) {

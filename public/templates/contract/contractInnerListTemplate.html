@@ -1,7 +1,7 @@
 <% if (!_.isEmpty(contracts)) { %>
 	<% _.each(contracts, function(contract){ %>
 	<tr>
-        <td><%= contract.get("contract_number") %></td>
+        <td><a href="<%= contract_url %>/<%= contract.get('id') %>"><%= contract.get("contract_number") %></a></td>
 		<td><%= contract.get("account").name %></td>
 		<td><%= contract.get("contract_date_start") %></td>
 		<td><%= contract.get("contract_date_end") %></td>
