@@ -4,6 +4,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
 
   public function getSchedule($id){ //default sked is pickup
       $transportSchedule = TransportSchedule::with('trucker')
+                        ->with('status')
                         ->with('originloader')
                         ->with('destinationloader')
                         ->with('trucker.accountidandname.accounttype')
@@ -38,6 +39,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       $orderId = $params['order_id'];
       //pulling of data    
       $transportSchedules = TransportSchedule::with('trucker')
+                      ->with('status')
                       ->with('originloader')
                       ->with('destinationloader')
                       ->with('trucker.accountidandname.accounttype')
@@ -138,9 +140,9 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       return $totalWeightInTons;
   }
 
-  private function getTotalWeightScheduleForProduct($productorder_id){
+  private function getTotalWeightScheduleForProduct($productorder_id, $transportscheduleproduct_id){
       $totalWeight = ProductOrder::where('id', '=', $productorder_id)->first()->toArray();
-      $orderproducts = TransportScheduleProduct::where('productorder_id', '=', $productorder_id)->get()->toArray();
+      $orderproducts = TransportScheduleProduct::where('productorder_id', '=', $productorder_id)->where('id', '!=', $transportscheduleproduct_id)->get()->toArray();
       $totalQuantitySchedule = 0;
       foreach($orderproducts as $item){
           $totalQuantitySchedule += $item['quantity'];
@@ -156,7 +158,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
 
           $this->validate($product, 'TransportScheduleProduct');
 
-          $totalQuantityRemaining = $this->getTotalWeightScheduleForProduct($product['productorder_id']);
+          $totalQuantityRemaining = $this->getTotalWeightScheduleForProduct($product['productorder_id'], $product['id']);
 
           if(floatval($product['quantity']) > $totalQuantityRemaining){
               return array(
@@ -281,29 +283,26 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
   }
 
   public function closeTransportSchedule($transportSchedule_id){
-    // $transportSchedule = TransportSchedule::whereHas('weightticket', function ($query) use (){
-      
-    // });
+    $transportSchedule = TransportSchedule::with('weightticket')->find($transportSchedule_id);
+    $transportScheduleArr = $transportSchedule->toArray();
+    if($transportSchedule->status_id == 2){
+        return Response::json(array(
+          'error' => true,
+          'message' => 'Schedule is already closed.'), 500);
+    }
 
+    if($transportScheduleArr['weightticket']['status_id'] == 2){ //check if Open
+          $transportSchedule->status_id = 2; //close the schedule
+          $transportSchedule->save();
 
-    //   $weightTicket = WeightTicket::where('transportSchedule_id', '=', $transportSchedule_id)->first();
-      
-    //   if($weightTicket->status_id == 1){ //check if Open
-    //         $weightTicket->status_id = 2;
-    //         $weightTicket->save();
-
-    //         return array(
-    //             'error' => false,
-    //             'message' => 'Weight ticket closed.');
-    //   } else if($weightTicket->status_id == 2) {//if close
-    //         return array(
-    //             'error' => false,
-    //             'message' => 'Weight ticket is already closed.');
-    //   } else {
-    //         return array(
-    //             'error' => false,
-    //             'message' => 'Weight ticket cannot be cancel if the status is not open or pending.');
-    //   }       
+          return Response::json(array(
+              'error' => false,
+              'message' => 'Schedule successfully closed.'), 200);
+    } else {
+          return Response::json(array(
+              'error' => false,
+              'message' => 'Schedule cannot be close because its weight ticket is not in close status.'), 500);
+    }       
   }
 
   private function displayLastQuery(){

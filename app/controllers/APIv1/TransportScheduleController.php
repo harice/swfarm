@@ -99,4 +99,9 @@ class TransportScheduleController extends BaseController {
         return Response::json($model);
 	}
 
+	public function closeSchedule($transportScheduleId){
+		$result = $this->repo->closeTransportSchedule($transportScheduleId);
+        return $result;
+	}
+
 }

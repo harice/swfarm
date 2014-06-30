@@ -19,7 +19,7 @@
 		</td>
 		<td>
 			<div class="progress">
-				<div style="width: 73%" class="progress-bar progress-bar-<%= po.get("status").class %>">73%</div>
+				<div style="width: <%= po.get("weightPercentageDelivered") %>%" class="progress-bar progress-bar-<%= po.get("status").class %>"><%= po.get("weightPercentageDelivered") %>%</div>
 			</div>
 		</td>
 		<td>

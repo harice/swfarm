@@ -17,12 +17,12 @@ class CreateWeightticketscaleTable extends Migration {
 			$table->engine = 'InnoDB';
             $table->increments('id');
 			//$table->integer('weightTicket_id')->unsigned();
-			$table->integer('scaleAccount_id')->unsigned();
-			$table->integer('scale_id')->unsigned();
-			$table->decimal('fee', 8, 2);
-			$table->integer('bales');
-			$table->decimal('gross', 8, 4);
-			$table->decimal('tare', 8, 4);
+			$table->integer('scaleAccount_id')->unsigned()->nullable();
+			$table->integer('scale_id')->unsigned()->nullable();
+			$table->decimal('fee', 8, 2)->nullable();
+			$table->integer('bales')->nullable();
+			$table->decimal('gross', 8, 4)->nullable();
+			$table->decimal('tare', 8, 4)->nullable();
 			$table->smallInteger('type'); //1 for pickup, 2 for dropoff
 			$table->timestamps();
             

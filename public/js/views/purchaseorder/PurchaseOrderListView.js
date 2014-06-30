@@ -259,7 +259,7 @@ define([
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
 								thisObj.renderList(1);
-								thisObj.hideConfirmationWindow();
+								thisObj.hideConfirmationWindow('modal-with-form-confirm');
 							},
 							error: function (model, response, options) {
 								if(typeof response.responseJSON.error == 'undefined')
@@ -286,7 +286,7 @@ define([
 			'click .cancel-po': 'preShowConfirmationWindow',
 			'click #confirm-cancel-po': 'cancelPO',
 			'change #reason': 'onChangeReason',
-			'click #po-accordion tr.collapse-trigger': 'toggleAccordion',
+			'click #order-accordion tr.collapse-trigger': 'toggleAccordion',
 			'click .stop-propagation': 'linkStopPropagation',
 		},
 		

@@ -5,6 +5,7 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
+	'models/purchaseorder/PurchaseOrderModel',
 	'models/order/OrderScheduleVariablesModel',
 	'models/purchaseorder/POScheduleModel',
 	'collections/product/ProductCollection',
@@ -13,6 +14,7 @@ define([
 	'collections/contact/ContactCollection',
 	'collections/account/TrailerCollection',
 	'text!templates/layout/contentTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderViewScheduleTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderViewScheduleProductItemTemplate.html',
 	'global',
@@ -23,6 +25,7 @@ define([
 			Validate,
 			TextFormatter,
 			PhoneNumber,
+			PurchaseOrderModel,
 			OrderScheduleVariablesModel,
 			POScheduleModel,
 			ProductCollection,
@@ -31,6 +34,7 @@ define([
 			ContactCollection,
 			TrailerCollection,
 			contentTemplate,
+			purchaseOrderTabbingTemplate,
 			purchaseOrderAddScheduleTemplate,
 			purchaseOrderPickUpScheduleProductItemTemplate,
 			Global,
@@ -48,6 +52,14 @@ define([
 			this.h1Title = 'Pick Up Schedule';
 			this.h1Small = 'view';
 			
+			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generatePOTabs(this.poId, 2)}));
+			
+			this.purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
+			this.purchaseOrderModel.on('change', function() {
+				thisObj.model.runFetch();
+				thisObj.off('change');
+			});
+			
 			this.model = new POScheduleModel({id:this.schedId});
 			this.model.on('change', function() {
 				if(thisObj.subContainerExist()) {
@@ -59,14 +71,20 @@ define([
 		},
 		
 		render: function(){
-			this.model.runFetch();
+			this.purchaseOrderModel.runFetch();
 			Backbone.View.prototype.refreshTitle('Pickup Schedule','view');
 		},
 		
 		displayForm: function () {
 			var thisObj = this;
 			
-			var innerTemplateVariables = {'schedule_edit_url': '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId+'/'+Const.CRUD.EDIT+'/'+this.schedId};
+			var innerTemplateVariables = {
+				'schedule_edit_url': '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId+'/'+Const.CRUD.EDIT+'/'+this.schedId,
+				'weight_info_url': '#/'+Const.URL.POWEIGHTINFO+'/'+this.poId+'/'+this.schedId,
+			};
+			
+			if(this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED && this.purchaseOrderModel.get('status').name.toLowerCase() == Const.STATUS.OPEN)
+				innerTemplateVariables['editable'] = true;
 			
 			var innerTemplate = _.template(purchaseOrderAddScheduleTemplate, innerTemplateVariables);
 			
@@ -76,11 +94,7 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.subContainer.html(compiledTemplate);
-			
-			this.initConfirmationWindow('Are you sure you want to delete this schedule?',
-										'confirm-delete-schedule',
-										'Delete Schedule');
+			this.subContainer.find('#with-tab-content').html(compiledTemplate);
 		},
 		
 		supplyScheduleData: function () {
@@ -136,8 +150,21 @@ define([
 		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
-			'click #delete-schedule': 'showConfirmationWindow',
+			'click #delete-schedule': 'showDeleteConfirmationWindow',
 			'click #confirm-delete-schedule': 'deleteAccount',
+			'click #close-schedule': 'showCloseScheduleConfirmationWindow',
+			'click #confirm-close-schedule': 'closeSchedule',
+		},
+		
+		showDeleteConfirmationWindow: function () {
+			this.initConfirmationWindow('Are you sure you want to delete this schedule?',
+										'confirm-delete-schedule',
+										'Delete Schedule',
+										'Delete Schedule',
+										false);
+			this.showConfirmationWindow();
+			
+			return false;
 		},
 		
 		deleteAccount: function (){
@@ -145,15 +172,55 @@ define([
             
             this.model.destroy({
                 success: function (model, response, options) {
-                    thisObj.displayMessage(response);
-					Backbone.history.history.back();
+					thisObj.hideConfirmationWindow('modal-confirm', function () { Backbone.history.history.back(); });
+					thisObj.displayMessage(response);
                 },
                 error: function (model, response, options) {
-                    thisObj.displayMessage(response);
+                    thisObj.hideConfirmationWindow();
+					thisObj.displayMessage(response);
                 },
                 wait: true,
                 headers: thisObj.model.getAuth(),
             });
+		},
+		
+		showCloseScheduleConfirmationWindow: function () {
+			this.initConfirmationWindow('Are you sure you want to close this schedule?',
+										'confirm-close-schedule',
+										'Close Schedule',
+										'Close Schedule',
+										false);
+			this.showConfirmationWindow();
+			
+			return false;
+		},
+		
+		closeSchedule: function (ev) {
+			var thisObj = this;
+			
+			var scheduleModel = new POScheduleModel({id:this.schedId});
+			scheduleModel.setCloseURL();
+			scheduleModel.save(
+				null,
+				{
+					success: function (model, response, options) {
+						thisObj.hideConfirmationWindow('modal-confirm', function () {
+							thisObj.subContainer.find('.editable-button').remove();
+						});
+						thisObj.displayMessage(response);
+					},
+					error: function (model, response, options) {
+						thisObj.hideConfirmationWindow();
+						if(typeof response.responseJSON.error == 'undefined')
+							alert(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: scheduleModel.getAuth(),
+				}
+			);
+			
+			return false;
 		},
 	});
 

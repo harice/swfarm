@@ -21,11 +21,11 @@ define(function () {
 			'SO': 'sales/so',
 			'DELIVERYSCHEDULE': 'sales/deliveryschedule',
 			'SOWEIGHTINFO': 'sales/weightinfo',
+            'CONTRACT': 'contract',
 			'STACKLOCATION': 'administration/stack',
 			'TRAILER': 'administration/trailer',
 			'SETTINGS': 'administration/settings',
-			'SCALE': 'administration/scale',
-            'CONTRACT': 'administration/contract',
+			'SCALE': 'administration/scale'
 		},
 		'MENU': {
 			'PURCHASES': {
@@ -111,6 +111,7 @@ define(function () {
 			'EDIT': 'edit',
 			'DELETE': 'delete',
             'PRINT': 'print',
+            'MAIL': 'mail'
 		},
 		'CONTAINER': {
 			'MAIN':'cl-mcont',
@@ -146,6 +147,15 @@ define(function () {
 		'WEIGHTINFO':{
 			'PICKUP' : 'pickup',
 			'DROPOFF' : 'dropoff',
+		},
+		'STATUS': {
+			'OPEN' : 'open',
+			'CLOSED' : 'closed',
+			'CANCELLED' : 'cancelled',
+			'PENDING' : 'pending',
+			'BIDCANCELLED' : 'bid cancelled',
+			'POCANCELLED' : 'po cancelled',
+			'TESTING' : 'testing',
 		},
 		
 	};

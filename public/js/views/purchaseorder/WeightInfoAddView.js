@@ -55,7 +55,7 @@ define([
 				routeType: ['pickup', 'dropoff'],
 				separator: '-',
 				productFieldClass: ['transportScheduleProduct_id', 'bales', 'pounds', 'id'],
-				productFieldClassRequired: ['bales', 'pounds'],
+				productFieldClassRequired: [],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
 				removeComma: ['fee', 'bales', 'gross', 'tare', 'pounds'],
@@ -160,8 +160,9 @@ define([
 			
 			var validate = $('#poWeightInfoFrom').validate({
 				submitHandler: function(form) {
-					
+					//console.log($(form).serializeObject());
 					var dataTemp = thisObj.formatFormField($(form).serializeObject());
+					//console.log(dataTemp);
 					var type = dataTemp.weightinfo_type;
 					delete dataTemp.weightinfo_type;
 					
@@ -172,7 +173,7 @@ define([
 					if(thisObj.wiId != null)
 						data['id'] = thisObj.schedId;
 					
-					console.log(data);
+					//console.log(data);
 					
 					var poWeightInfoModel = new POWeightInfoModel(data);
 					
@@ -261,7 +262,7 @@ define([
 					var arrayKey = key.split(this.options.productFieldSeparator);
 					
 					if(arrayKey.length < 2) {
-						if(this.options.removeComma.indexOf(key) < 0)
+						if(this.options.removeComma.indexOf(key) < 0 || value == '')
 							formData[key] = value;
 						else
 							formData[key] = this.removeCommaFromNumber(value);
@@ -276,7 +277,7 @@ define([
 									var fieldValue = data[productFieldClass[i]+this.options.productFieldSeparator+index];
 									
 									if(!(productFieldClass[i] == 'id' && fieldValue == '')) {
-										if(this.options.removeComma.indexOf(productFieldClass[i]) < 0)
+										if(this.options.removeComma.indexOf(productFieldClass[i]) < 0 || fieldValue == '')
 											arrayProductFields[productFieldClass[i]] = fieldValue;
 										else
 											arrayProductFields[productFieldClass[i]] = this.removeCommaFromNumber(fieldValue);
@@ -305,7 +306,6 @@ define([
 			'keyup .product-bales': 'onKeyUpProductBales',
 			'keyup .product-pounds': 'onKeyUpPounds',
 			'blur .product-pounds': 'onBlurPound',
-			'click #go-to-previous-page': 'goToPreviousPage',
 		},
 		
 		onChangeScaleAccount: function (ev) {

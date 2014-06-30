@@ -93,13 +93,19 @@ define([
         };
 		
 		Backbone.View.prototype.displayMessage = function (data) {
-			if(data.error != 'undefined') {
-				var error = data.error;
+			var responseJSON = null;
+			if(typeof data.responseJSON != 'undefined')
+				responseJSON = data.responseJSON;
+			else
+				responseJSON = data;
+			
+			if(responseJSON.error != 'undefined') {
+				var error = responseJSON.error;
 				var type = (error == false)? 'success' : 'error';
 				var message = type;
 				
-				if(typeof data.message != 'undefined')
-					message = data.message;
+				if(typeof responseJSON.message != 'undefined')
+					message = responseJSON.message;
 				
 				if(typeof message == 'string') {
                     message = '<p>' + message + '</p>';

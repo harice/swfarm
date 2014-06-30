@@ -6,6 +6,7 @@ define([
 	'collections/salesorder/NatureOfSaleCollection',
 	'collections/salesorder/SOStatusCollection',
 	'collections/salesorder/CancellingReasonCollection',
+	'collections/purchaseorder/OrderWeightDetailsByStackCollection',
 	'models/salesorder/SalesOrderModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/salesorder/salesOrderListTemplate.html',
@@ -14,6 +15,7 @@ define([
 	'text!templates/salesorder/salesOrderNatureOfSaleTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderStatusTemplate.html',
 	'text!templates/purchaseorder/reasonForCancellationOptionTemplate.html',
+	'text!templates/purchaseorder/orderWeightDetailsByStackItemTemplate.html',
 	'constant',
 ], function(Backbone,
 			ListView,
@@ -22,6 +24,7 @@ define([
 			NatureOfSaleCollection,
 			SOStatusCollection,
 			CancellingReasonCollection,
+			OrderWeightDetailsByStackCollection,
 			SalesOrderModel,
 			contentTemplate,
 			salesOrderListTemplate,
@@ -30,6 +33,7 @@ define([
 			salesOrderNatureOfSaleTemplate,
 			salesOrderStatusTemplate,
 			reasonForCancellationOptionTemplate,
+			orderWeightDetailsByStackItemTemplate,
 			Const
 ){
 
@@ -62,14 +66,14 @@ define([
 				this.off('error');
 			});
 			
-			this.originCollection = new OriginCollection();
+			/*this.originCollection = new OriginCollection();
 			this.originCollection.on('sync', function() {	
 				thisObj.natureOfSaleCollection.getModels();
 				this.off('sync');
 			});
 			this.originCollection.on('error', function(collection, response, options) {
 				this.off('error');
-			});
+			});*/
 			
 			this.natureOfSaleCollection = new NatureOfSaleCollection();
 			this.natureOfSaleCollection.on('sync', function() {
@@ -84,7 +88,7 @@ define([
 			this.soStatusCollection.on('sync', function() {
 				if(thisObj.subContainerExist()) {
 					thisObj.displaySO();
-					thisObj.renderList(1);
+					thisObj.renderList(thisObj.collection.listView.currentPage);
 				}
 				this.off('sync');
 			});
@@ -94,7 +98,8 @@ define([
 			
 			this.cancellingReasonCollection = new CancellingReasonCollection();
 			this.cancellingReasonCollection.on('sync', function() {	
-				thisObj.originCollection.getModels();
+				//thisObj.originCollection.getModels();
+				thisObj.natureOfSaleCollection.getModels();
 				this.off('sync');
 			});
 			
@@ -110,11 +115,11 @@ define([
 		
 		displaySO: function () {
 			var statusTemplate = _.template(salesOrderStatusTemplate, {'statuses': this.soStatusCollection.models});
-			var originTemplate = _.template(salesOrderOriginTemplate, {'origins': this.originCollection.models});
+			//var originTemplate = _.template(salesOrderOriginTemplate, {'origins': this.originCollection.models});
 			var nosTemplate = _.template(salesOrderNatureOfSaleTemplate, {'natureOfSales': this.natureOfSaleCollection.models});
 			var innerTemplateVar = {
 				'so_add_url' : '#/'+Const.URL.SO+'/'+Const.CRUD.ADD,
-				'origin_filters' : originTemplate.replace(/<label class="radio-inline">/g, '<li>').replace(/<\/label>/g, '</li>'),
+				//'origin_filters' : originTemplate.replace(/<label class="radio-inline">/g, '<li>').replace(/<\/label>/g, '</li>'),
 				'nos_filters' : nosTemplate.replace(/<label class="radio-inline">/g, '<li>').replace(/<\/label>/g, '</li>'),
 				'status_filters': statusTemplate,
 			};
@@ -130,6 +135,7 @@ define([
 			
 			this.initCalendars();
 			this.initCancelWindow();
+			this.setListOptions();
 		},
 		
 		displayList: function () {
@@ -139,13 +145,45 @@ define([
 				so_edit_url: '#/'+Const.URL.SO+'/'+Const.CRUD.EDIT,
 				so_sched_url: '#/'+Const.URL.DELIVERYSCHEDULE,
 				sos: this.collection.models,
+				schedule_url: '#/'+Const.URL.DELIVERYSCHEDULE,
+				add: Const.CRUD.ADD,
+				collapsible_id: Const.PO.COLLAPSIBLE.ID,
 				_: _ 
 			};
 			
 			var innerListTemplate = _.template(salesOrderInnerListTemplate, data);
 			this.subContainer.find("#so-list tbody").html(innerListTemplate);
-			
+			this.collapseSelected();
 			this.generatePagination();
+		},
+		
+		collapseSelected: function () {
+			var id = this.collection.getCollapseId();
+			if(id)
+				this.$el.find('.collapse-trigger[data-id="'+id+'"]').trigger('click');
+		},
+		
+		setListOptions: function () {
+			var options = this.collection.listView;
+			//console.log(options);
+			
+			if(options.search != '')
+				this.$el.find('#search-keyword').val(options.search);
+			
+			if(options.filters.status != '')
+				this.$el.find('[name="statusFilter"][value="'+options.filters.status+'"]').attr('checked', true);
+				
+			if(options.filters.location != '')
+				this.$el.find('[name="location_id"][value="'+options.filters.location+'"]').attr('checked', true);
+				
+			if(options.date != '')
+				this.$el.find('#filter-date-of-sale .input-group.date').datepicker('update', this.convertDateFormat(options.date, 'yyyy-mm-dd', this.dateFormat, '-'));
+			
+			if(options.filters.transportstart != '')
+				this.$el.find('#filter-delivery-start .input-group.date').datepicker('update', this.convertDateFormat(options.filters.transportstart, 'yyyy-mm-dd', this.dateFormat, '-'));
+				
+			if(options.filters.transportend != '')
+				this.$el.find('#filter-delivery-end .input-group.date').datepicker('update', this.convertDateFormat(options.filters.transportend, 'yyyy-mm-dd', this.dateFormat, '-'));
 		},
 		
 		initCalendars: function () {
@@ -230,7 +268,7 @@ define([
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
 								thisObj.renderList(1);
-								thisObj.hideConfirmationWindow();
+								thisObj.hideConfirmationWindow('modal-with-form-confirm');
 							},
 							error: function (model, response, options) {
 								if(typeof response.responseJSON.error == 'undefined')
@@ -258,6 +296,8 @@ define([
 			'click .cancel-so': 'preShowConfirmationWindow',
 			'click #confirm-cancel-so': 'cancelSO',
 			'change #reason': 'onChangeReason',
+			'click #order-accordion tr.collapse-trigger': 'toggleAccordion',
+			'click .stop-propagation': 'linkStopPropagation',
 		},
 		
 		onChangeReason: function (ev) {
@@ -304,6 +344,62 @@ define([
 		cancelSO: function (ev) {
 			$('#cancellationReasonForm').submit();
 			return false;
+		},
+		
+		toggleAccordion: function (ev) {
+			var thisObj = this;
+			var id = $(ev.currentTarget).attr('data-id');
+			var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
+			
+			if(!$('#'+collapsibleId).hasClass('in')) {
+				var thisId = id;
+				this.collection.setCollapseLatestId(id);
+				
+				$(ev.currentTarget).find('.throbber_wrap').show();
+				var orderWeightDetailsByStackCollection = new OrderWeightDetailsByStackCollection(id);
+				orderWeightDetailsByStackCollection.on('sync', function() {
+					thisObj.collection.setCollapseId(id);
+					$(ev.currentTarget).find('.throbber_wrap').hide();
+					//console.log(thisId+' == '+thisObj.collection.getCollapseLatestId());
+					if(thisId == thisObj.collection.getCollapseLatestId() && thisObj.subContainerExist()) {
+						_.each(this.models, function (model) {
+							var schedules = model.get('schedule');
+							if(schedules.length > 0) {
+								for(var i=0; i<schedules.length; i++) {
+									var s = schedules[i].transportscheduledate.split(' ');
+									schedules[i].transportscheduledate = thisObj.convertDateFormat(s[0], 'yyyy-mm-dd', thisObj.dateFormat, '-')+' '+s[1];			
+								}
+								model.set('schedule', schedules);
+							}
+						});
+						
+						$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(this.models, id));
+						$('#'+collapsibleId).closest('tbody').find('.order-collapsible-item.collapse.in').collapse('toggle');
+						$('#'+collapsibleId).collapse('toggle');
+					}
+					this.off('sync');
+				});
+				
+				orderWeightDetailsByStackCollection.on('error', function(collection, response, options) {
+					$(ev.currentTarget).find('.throbber_wrap').hide();
+					this.off('error');
+				});
+				orderWeightDetailsByStackCollection.getModels();
+			}
+			else {
+				this.collection.setCollapseId(null);
+				$('#'+collapsibleId).collapse('toggle');
+			}
+		},
+		
+		generateOrderWeightDetailsByStack: function (models, soId) {
+			var data = {
+				stacks: models,
+				schedule_url: '/#/'+Const.URL.DELIVERYSCHEDULE+'/'+soId,
+				weight_info_url: '/#/'+Const.URL.SOWEIGHTINFO+'/'+soId,
+				_: _ 
+			};
+			return _.template(orderWeightDetailsByStackItemTemplate, data);
 		},
 	});
 
