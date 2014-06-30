@@ -71,13 +71,13 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // Route::get('weightticket/getAllBidProductOnBid', 'APIv1\WeightTicketController@getAllBidProductOnBid');
     // Route::get('weightticket/getAllScaleProviderAccount', 'APIv1\WeightTicketController@getAllScaleProviderAccount');
     Route::get('weightticket/getAllWeightticketOfOrder', 'APIv1\WeightTicketController@getAllWeightticketOfOrder');
-    Route::get('weightticket/closeWeightTicket/{id}', 'APIv1\WeightTicketController@closeWeightTicket');
+    Route::put('weightticket/closeWeightTicket/{id}', 'APIv1\WeightTicketController@closeWeightTicket');
     Route::get('weightticket/getScheduleProducts', 'APIv1\WeightTicketController@getScheduleProducts');
     Route::post('weightticket/{id}/mail', 'APIv1\WeightTicketController@mailWeightTicket');
     Route::resource('weightticket', 'APIv1\WeightTicketController');
 
     //tranport schedule
-    Route::get('transportschedule/closeSchedule', 'APIv1\TransportScheduleController@closeSchedule');
+    Route::put('transportschedule/closeSchedule/{id}', 'APIv1\TransportScheduleController@closeSchedule');
     Route::get('transportschedule/trailer', 'APIv1\TransportScheduleController@getTrailerList');
     Route::get('transportschedule/getTrailerList', 'APIv1\TransportScheduleController@getTrailerList');
     Route::get('transportschedule/getAllPickupSchedules', 'APIv1\TransportScheduleController@getAllPickupSchedules');
