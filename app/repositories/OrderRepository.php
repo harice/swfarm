@@ -513,11 +513,41 @@ class OrderRepository implements OrderRepositoryInterface {
         return $result;
     }
     
-    public function close($id)
+    public function closeOrder($id)
     {
-    //     $salesorder = SalesOrder::find($id);
-    //     $salesorder->status = "Close";
-    //     $salesorder->save();
+        $order = Order::find($id);
+       
+        if($order->status_id != 2){
+            $transportSchedules = TransportSchedule::where('order_id', '=', $id)->get()->toArray();
+            $allScheduleIsClose = true;
+            foreach($transportSchedules as $schedule){
+                if($schedule['status_id'] != 2){ //if schedule is not in close status
+                    $allScheduleIsClose = false;
+                    break;
+                }
+            }
+
+            if($allScheduleIsClose){
+               
+                $order->status_id = 2;
+                $order->save();
+                // echo "CLOSING";
+                return Response::json(array(
+                        'error' => false,
+                        'message' => 'Order successfully closed')
+                , 200);
+            } else {
+                return Response::json(array(
+                        'error' => true,
+                        'message' => 'Order has open schedule(s).')
+                , 500);
+            }
+        } else {
+            return Response::json(array(
+                        'error' => true,
+                        'message' => 'Order status is already closed.')
+                , 500);
+        }
     }
 
     private function insertReasonForCancellingOrder($data){
