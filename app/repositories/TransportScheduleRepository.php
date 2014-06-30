@@ -141,14 +141,17 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
   }
 
   private function getTotalWeightScheduleForProduct($productorder_id, $transportscheduleproduct_id){
+      $result = array();
       $totalWeight = ProductOrder::where('id', '=', $productorder_id)->first()->toArray();
-      $orderproducts = TransportScheduleProduct::where('productorder_id', '=', $productorder_id)->andWhere('id', '!=', $transportscheduleproduct_id)->get()->toArray();
+      $orderproducts = TransportScheduleProduct::where('productorder_id', '=', $productorder_id)->where('id', '!=', $transportscheduleproduct_id)->get()->toArray();
       $totalQuantitySchedule = 0;
       foreach($orderproducts as $item){
           $totalQuantitySchedule += $item['quantity'];
       }
-
-      return floatval($totalWeight['tons']) - $totalQuantitySchedule; //total weight remaining to be scheduled
+      $result['totalQuantitySchedule'] = $totalQuantitySchedule;
+      $result['quantityRemaining'] = floatval($totalWeight['tons']) - $totalQuantitySchedule;
+      // return floatval($totalWeight['tons']) - $totalQuantitySchedule; //total weight remaining to be scheduled
+      return $result; //total weight remaining to be scheduled
   }
 
   private function addProductToSchedule($schedule_id, $products = array())
@@ -158,12 +161,13 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
 
           $this->validate($product, 'TransportScheduleProduct');
 
-          $totalQuantityRemaining = $this->getTotalWeightScheduleForProduct($product['productorder_id'], $product['id']);
+          $result = $this->getTotalWeightScheduleForProduct($product['productorder_id'], $product['id']);
 
-          if(floatval($product['quantity']) > $totalQuantityRemaining){
+          if(floatval($product['quantity']) > $result['quantityRemaining']){
+              $productOrderDetails = ProductOrder::find($product['id']);
               return array(
                       'error' => true,
-                      'message' => "Quantity Error!");
+                      'message' => "Weight inputed exceeded for product: ".$productOrderDetails['stacknumber'].". <br />Weight already scheduled: ".$result['totalQuantitySchedule']." <br />Weight remaining: ".$result['quantityRemaining']." <br />Total weight allowed for this product: ".$productOrderDetails['tons']);
           }
 
           $result = DB::transaction(function() use ($product){
