@@ -21,23 +21,11 @@
 								<% _.each(stack.get("schedule"), function(schedule){ %>
 								<tr>
 									<td>
-										<%= schedule.transportscheduledate %>&nbsp;&nbsp;
-										<a href="<%= schedule_url %>/<%= schedule.transportschedule_id %>" class="text-primary" title="edit">
-											<span class="fa-stack">
-												<i class="fa fa-square fa-stack-2x"></i>
-												<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-											</span>
-										</a>
+										<a href="<%= schedule_url %>/<%= schedule.transportschedule_id %>" title="view"><%= schedule.transportscheduledate %></a>
 									</td>
 									<td>
 										<% if (schedule.weightTicketNumber) { %>
-											<%= schedule.weightTicketNumber %>&nbsp;&nbsp;
-											<a href="<%= weight_info_url %>/<%= schedule.transportschedule_id %>" class="text-primary" title="edit">
-												<span class="fa-stack">
-													<i class="fa fa-square fa-stack-2x"></i>
-													<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-												</span>
-											</a>
+											<a href="<%= weight_info_url %>/<%= schedule.transportschedule_id %>" title="view"><%= schedule.weightTicketNumber %></a>
 										<% } %>
 									</td>
 									<td><%= schedule.expected %></td>
