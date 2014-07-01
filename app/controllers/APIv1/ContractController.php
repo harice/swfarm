@@ -77,9 +77,23 @@ class ContractController extends BaseController {
      * @param type $id
      * @return type
      */
-    public function updateStatus($id)
+    public function closeContract($id)
     {
-        $response = $this->repo->updateStatus($id, Input::all());
+        $data['status_id'] = 2;
+        $response = $this->repo->updateStatus($id, $data);
+        return Response::json($response);
+    }
+    
+    /**
+     * Update status
+     * 
+     * @param type $id
+     * @return type
+     */
+    public function openContract($id)
+    {
+        $data['status_id'] = 1;
+        $response = $this->repo->updateStatus($id, $data);
         return Response::json($response);
     }
 

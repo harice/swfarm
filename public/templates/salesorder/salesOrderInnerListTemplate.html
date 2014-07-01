@@ -14,7 +14,7 @@
 			<% } %>
 		</td>
 		<td><%= so.get("account").name %></td>
-		<td><label class="label label-<%= so.get("status").class %>"><%= so.get("status").name %></label></td>
+		<td class="td-status"><label class="label label-<%= so.get("status").class %>"><%= so.get("status").name %></label></td>
 		<td>
 			<div class="progress">
 				<div style="width: <%= so.get("weightPercentageDelivered") %>%" class="progress-bar progress-bar-<%= so.get("status").class %>"><%= so.get("weightPercentageDelivered") %>%</div>
@@ -71,10 +71,12 @@
 						<div class="col-md-12">
 							<div class="pull-right">
 								<a href="<%= so_url %>/<%= so.get("id") %>" class="btn btn-primary btn-sm">View SO</a>
-								<a href="<%= so_edit_url %>/<%= so.get("id") %>" class="btn btn-primary btn-sm">Edit SO</a>
-								<a href="#" class="btn btn-primary btn-sm">Close SO</a>
-								<a href="#" data-id="<%= so.get("id") %>" class="btn btn-primary btn-sm cancel-so">Cancel SO</a>
-								<a href="<%= schedule_url %>/<%= so.get("id") %>/<%= add %>" class="btn btn-primary btn-sm">Add Schedule</a>
+								<% if (so.get("status").name.toLowerCase() == so_status_open) { %>
+									<a href="<%= so_edit_url %>/<%= so.get("id") %>" class="btn btn-primary btn-sm editable-button">Edit SO</a>
+									<a href="#" class="btn btn-primary btn-sm close-so editable-button editable-button" data-id="<%= so.get("id") %>">Close SO</a>
+									<a href="#" data-id="<%= so.get("id") %>" class="btn btn-primary btn-sm cancel-so editable-button">Cancel SO</a>
+									<a href="<%= schedule_url %>/<%= so.get("id") %>/<%= add %>" class="btn btn-primary btn-sm editable-button">Add Schedule</a>
+								<% } %>
 							</div>
 						</div>
 					</div>
