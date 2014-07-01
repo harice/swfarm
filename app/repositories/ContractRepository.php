@@ -17,7 +17,7 @@ class ContractRepository implements ContractRepositoryInterface {
             $orderby  = isset($params['orderby']) ? $params['orderby'] :'DSC';
             $offset   = $page * $perPage - $perPage;
             
-            $result = Contract::with('salesorders', 'products', 'account', 'account.address')
+            $result = Contract::with('salesorders', 'products', 'account', 'account.address', 'status')
                 ->take($perPage)
                 ->offset($offset)
                 ->orderBy($sortby, $orderby)
@@ -78,7 +78,7 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         try
         {
-            $contract = Contract::with('products', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType')->find($id);
+            $contract = Contract::with('products', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')->find($id);
             
             if (!$contract) {
                 throw new NotFoundException();
@@ -152,6 +152,31 @@ class ContractRepository implements ContractRepositoryInterface {
                 
                 $contract->products()->sync($new_products);
             });
+            
+            $response = array(
+                'error' => false,
+                'message' => Lang::get('messages.success.updated', array('entity' => 'Contract'))
+            );
+            
+            return $response;
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
+    }
+    
+    public function updateStatus($id, $data)
+    {
+        if(!isset($data['status_id'])) {
+            throw new Exception('Status was not set.', 203);
+        }
+        
+        try
+        {
+            $contract = $this->findById($id);
+            $contract->status_id = $data['status_id'];
+            $contract->update();
             
             $response = array(
                 'error' => false,

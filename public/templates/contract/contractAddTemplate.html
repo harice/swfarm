@@ -2,111 +2,118 @@
     <div class="col-md-12">
         <div class="block-flat">
             <div class="content">
-              
-              <form id="contractForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-                <% if (typeof contract_id !== "undefined") { %>
-                  <input type="hidden" name="id" value="<%= contract_id %>" />
-                <% } %>
-                <fieldset>
-                  <legend>Details</legend>
-                  <div class="row">
-                    <div class="col-md-6">
-                      <% if (typeof contract_id !== "undefined") { %>
-                        <div class="form-group">
-                          <label for="contract_number" class="col-sm-3 control-label">Contract Number</label>
-                          <div class="col-sm-7">
-                            <input id="contract_number" type="text" class="form-control contract_number" placeholder="" maxlength="250" readonly>
-                          </div>
-                        </div>
-                      <% } %>
-					  <div class="form-group">
-						<label for="account" class="col-sm-3 control-label">Customer *</label>
-						<div class="col-sm-7">
-						  <input type="text" class="form-control capitalize" id="account" name="account" maxlength="50" required>
-						  <input type="hidden" class="form-control" id="account_id" name="account_id" value="" required>
-						</div>
-					  </div>
-                      <div class="form-group">
-                        <label for="street" class="col-sm-3 control-label">Street</label>
-                        <div class="col-sm-7">
-                          <input id="street" type="text" class="form-control street" placeholder="" maxlength="250" readonly>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="city" class="col-sm-3 control-label">City</label>
-                        <div class="col-sm-7">
-                          <input id="city" type="text" class="form-control city" placeholder="" maxlength="250" readonly>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="state" class="col-sm-3 control-label">State/Province</label>
-                        <div class="col-sm-7">
-                          <input id="state" type="text" class="form-control state" placeholder="" maxlength="250" readonly>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="zipcode" class="col-sm-3 control-label">Zip Code</label>
-                        <div class="col-sm-3">
-                          <input id="zipcode" type="text" class="form-control zipcode" placeholder="" minlength="5" maxlength="10" readonly>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group"><label for="" class="col-sm-12">Contract Period:</label></div>
-                      <div class="form-group">
-                        <label for="contract_date_start" class="col-sm-3 control-label">Start</label>
-                        <div class="col-sm-4">
-                          <div id="start-date" class="calendar-cont">
-                            <div class="input-group date datetime margin-bottom-0">
-                              <input id="contract_date_start" class="form-control form-date" name="contract_date_start" size="16" type="text" value="" required/>
-                              <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+
+                <form id="contractForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+                    <% if (typeof contract_id !== "undefined") { %>
+                    <input type="hidden" name="id" value="<%= contract_id %>" />
+                    <% } %>
+                    <fieldset>
+                        <legend>Details</legend>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <% if (typeof contract_id !== "undefined") { %>
+                                <div class="form-group">
+                                    <label for="contract_number" class="col-sm-3 control-label">Contract Number</label>
+                                    <div class="col-sm-7">
+                                        <input id="contract_number" type="text" class="form-control contract_number" placeholder="" maxlength="250" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="status" class="col-sm-3 control-label">Status</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control capitalize" id="status" name="status" maxlength="50" readonly>
+                                        <input type="hidden" class="form-control" id="status_id" name="status_id" value="" readonly>
+                                    </div>
+                                </div>
+                                <% } %>
+                                <div class="form-group">
+                                    <label for="account" class="col-sm-3 control-label">Customer *</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control capitalize" id="account" name="account" maxlength="50" required>
+                                        <input type="hidden" class="form-control" id="account_id" name="account_id" value="" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="street" class="col-sm-3 control-label">Street</label>
+                                    <div class="col-sm-7">
+                                        <input id="street" type="text" class="form-control street" placeholder="" maxlength="250" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="city" class="col-sm-3 control-label">City</label>
+                                    <div class="col-sm-7">
+                                        <input id="city" type="text" class="form-control city" placeholder="" maxlength="250" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="state" class="col-sm-3 control-label">State/Province</label>
+                                    <div class="col-sm-7">
+                                        <input id="state" type="text" class="form-control state" placeholder="" maxlength="250" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="zipcode" class="col-sm-3 control-label">Zip Code</label>
+                                    <div class="col-sm-3">
+                                        <input id="zipcode" type="text" class="form-control zipcode" placeholder="" minlength="5" maxlength="10" readonly>
+                                    </div>
+                                </div>
                             </div>
-                          </div>
-                          <div class="error-msg-cont"></div>
-                        </div>
-                        <label for="contract_date_end" class="col-sm-1 control-label">End</label>
-                        <div class="col-sm-4">
-                          <div id="end-date" class="calendar-cont">
-                            <div class="input-group date datetime margin-bottom-0">
-                              <input id="contract_date_end" class="form-control form-date" name="contract_date_end" size="16" type="text" value="" required/>
-                              <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                            <div class="col-md-6">
+                                <div class="form-group"><label for="" class="col-sm-12">Contract Period:</label></div>
+                                <div class="form-group">
+                                    <label for="contract_date_start" class="col-sm-3 control-label">Start</label>
+                                    <div class="col-sm-4">
+                                        <div id="start-date" class="calendar-cont">
+                                            <div class="input-group date datetime margin-bottom-0">
+                                                <input id="contract_date_start" class="form-control form-date" name="contract_date_start" size="16" type="text" value="" required/>
+                                                <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                            </div>
+                                        </div>
+                                        <div class="error-msg-cont"></div>
+                                    </div>
+                                    <label for="contract_date_end" class="col-sm-1 control-label">End</label>
+                                    <div class="col-sm-4">
+                                        <div id="end-date" class="calendar-cont">
+                                            <div class="input-group date datetime margin-bottom-0">
+                                                <input id="contract_date_end" class="form-control form-date" name="contract_date_end" size="16" type="text" value="" required/>
+                                                <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                            </div>
+                                        </div>
+                                        <div class="error-msg-cont"></div>
+                                    </div>
+                                </div>
                             </div>
-                          </div>
-                          <div class="error-msg-cont"></div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </fieldset>
-                <fieldset>
-                  <legend>
-                    Products
-                    <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
-                  </legend>
-                  <div class="table-responsive">
-                    <table id="product-list" class="table table-bordered">
-                      <thead>
-                        <tr>
-                          <th>Product</th>
-                          <th>Est Tons</th>
-                          <th>Est Bales</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody></tbody>
-                    </table>
-                  </div>
-                </fieldset>
-                <div class="form-group form-button-container">
-                    <div class="col-md-12">
-                        <div class="pull-right">
-                            <button id="save" type="submit" class="save btn btn-primary">Save</button>
-                            <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
+                    </fieldset>
+                    <fieldset>
+                        <legend>
+                            Products
+                            <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
+                        </legend>
+                        <div class="table-responsive">
+                            <table id="product-list" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Est Tons</th>
+                                        <th>Est Bales</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </fieldset>
+                    <div class="form-group form-button-container">
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <button id="save" type="submit" class="save btn btn-primary">Save</button>
+                                <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-              </form>
-              
+                </form>
+
             </div> <!-- /.content -->
         </div> <!-- /.block-flat -->
     </div>

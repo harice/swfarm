@@ -19,6 +19,11 @@ define([
 						return this.edit(id);
 					break;
                     
+//                case 'status':
+//                    if(id !== null && this.IsInt(id))
+//						return this.status(id);
+//					break;
+                    
                 default:
 					if(action !== null && this.IsInt(action))
 						return this.view(action);
@@ -34,6 +39,10 @@ define([
 		this.edit = function (id) {
 			return new ContractEditView({'id':id});
 		};
+        
+//        this.status = function (id) {
+//            Console.log('Update Status');
+//        };
 		
 		this.listView = function () {
 			return new ContractListView();
