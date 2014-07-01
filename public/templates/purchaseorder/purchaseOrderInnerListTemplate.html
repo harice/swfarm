@@ -14,7 +14,7 @@
 			<% } %>
 		</td>
 		<td><%= po.get("account").name %></td>
-		<td>
+		<td class="td-status">
 			<label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label>
 		</td>
 		<td>
@@ -79,13 +79,13 @@
 								<a href="<%= po_url %>/<%= po.get("id") %>" class="btn btn-primary btn-sm">View PO</a>
 								<% var postatus = po.get("status").name.toLowerCase() %>
 								<% if (postatus == po_status_pending || postatus == po_status_open || postatus == po_status_testing) { %>
-									<a href="<%= po_edit_url %>/<%= po.get("id") %>" class="btn btn-primary btn-sm">Edit PO</a>
+									<a href="<%= po_edit_url %>/<%= po.get("id") %>" class="btn btn-primary btn-sm editable-button">Edit PO</a>
 									<% if (postatus != po_status_pending) { %>
-										<a href="#" class="btn btn-primary btn-sm">Close PO</a>
+										<a href="#" class="btn btn-primary btn-sm close-po editable-button" data-id="<%= po.get("id") %>">Close PO</a>
 									<% } %>
-									<a href="#" data-id="<%= po.get("id") %>" class="btn btn-primary btn-sm cancel-po">Cancel PO</a>
+									<a href="#" data-id="<%= po.get("id") %>" class="btn btn-primary btn-sm cancel-po editable-button">Cancel PO</a>
 									<% if (postatus != po_status_pending) { %>
-										<a href="<%= schedule_url %>/<%= po.get("id") %>/<%= add %>" class="btn btn-primary btn-sm">Add Schedule</a>
+										<a href="<%= schedule_url %>/<%= po.get("id") %>/<%= add %>" class="btn btn-primary btn-sm editable-button">Add Schedule</a>
 									<% } %>
 								<% } %>
 							</div>
