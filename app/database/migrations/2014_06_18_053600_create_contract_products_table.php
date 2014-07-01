@@ -17,7 +17,7 @@ class CreateContractProductsTable extends Migration {
 			$table->engine = 'InnoDB';
             $table->integer('contract_id')->unsigned();
             $table->integer('product_id')->unsigned();
-            $table->decimal('tons', 8, 4);
+            $table->decimal('tons', 15, 4);
 			$table->integer('bales');
             
             $table->primary(array('contract_id', 'product_id'));
