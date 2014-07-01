@@ -72,25 +72,27 @@ define([
 		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
-			'click #delete-contract': 'showConfirmationWindow',
-			'click #confirm-delete-contract': 'deleteContract'
+			'click #close-contract': 'closeContract',
+			'click #confirm-close-contract': 'closeContract'
 		},
 		
-		deleteContract: function (){
+		closeContract: function (){
 			var thisObj = this;
             
-            this.model.destroy({
-                success: function (model, response, options) {
-                    thisObj.displayMessage(response);
-                    //Global.getGlobalVars().app_router.navigate(Const.URL.CONTRACT, {trigger: true});
-					Backbone.history.history.back();
-                },
-                error: function (model, response, options) {
-                    thisObj.displayMessage(response);
-                },
-                wait: true,
-                headers: thisObj.model.getAuth()
-            });
+            console.log(this.model);
+            
+//            this.model.destroy({
+//                success: function (model, response, options) {
+//                    thisObj.displayMessage(response);
+//                    //Global.getGlobalVars().app_router.navigate(Const.URL.CONTRACT, {trigger: true});
+//					Backbone.history.history.back();
+//                },
+//                error: function (model, response, options) {
+//                    thisObj.displayMessage(response);
+//                },
+//                wait: true,
+//                headers: thisObj.model.getAuth()
+//            });
 		}
 	});
 

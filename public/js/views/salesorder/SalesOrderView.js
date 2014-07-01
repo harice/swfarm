@@ -112,7 +112,8 @@ define([
 			}
 			
 			this.$el.find('#nos').val(this.model.get('natureofsale').name);
-            this.$el.find('#contract').val(this.model.get('contract').contract_number);
+			if(this.model.get('contract') && typeof this.model.get('contract').contract_number != 'undefined')
+				this.$el.find('#contract').val(this.model.get('contract').contract_number);
 			this.$el.find('#account').val(account.name);
 			this.$el.find('#street').val(address[0].street);
 			this.$el.find('#state').val(address[0].address_states[0].state);
@@ -146,6 +147,7 @@ define([
 		events:{
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #close-order': 'showCloseOrderConfirmationWindow',
+			'click #confirm-close-order': 'closeOrder'
 		},
 		
 		showCloseOrderConfirmationWindow: function () {
@@ -155,6 +157,34 @@ define([
 										'Close Sales Order',
 										false);
 			this.showConfirmationWindow();
+			
+			return false;
+		},
+		
+		closeOrder: function (ev) {
+			var thisObj = this;
+			
+			var salesOrderModel = new SalesOrderModel({id:this.soId});
+			salesOrderModel.setCloseURL();
+			salesOrderModel.save(
+				null,
+				{
+					success: function (model, response, options) {
+						thisObj.hideConfirmationWindow('modal-confirm', function () {
+							thisObj.subContainer.find('.editable-button').remove();
+						});
+						thisObj.displayMessage(response);
+					},
+					error: function (model, response, options) {
+						thisObj.hideConfirmationWindow();
+						if(typeof response.responseJSON.error == 'undefined')
+							alert(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: salesOrderModel.getAuth(),
+				}
+			);
 			
 			return false;
 		},

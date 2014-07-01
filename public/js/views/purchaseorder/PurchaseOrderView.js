@@ -125,7 +125,9 @@ define([
 				'po_edit_url' : '#/'+Const.URL.PO+'/'+Const.CRUD.EDIT+'/'+this.poId,
 			};
 			
-			if(this.model.get('status').name.toLowerCase() == 'pending' || this.model.get('status').name.toLowerCase() == 'open')
+			if(this.model.get('status').name.toLowerCase() == Const.STATUS.PENDING ||
+				this.model.get('status').name.toLowerCase() == Const.STATUS.OPEN ||
+				this.model.get('status').name.toLowerCase() == Const.STATUS.TESTING)
 				innerTemplateVariables['editable'] = true;
 				
 			if(this.isBid)
@@ -218,6 +220,7 @@ define([
 		events:{
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #close-order': 'showCloseOrderConfirmationWindow',
+			'click #confirm-close-order': 'closeOrder'
 			//'click .attach-pdf': 'showPDF',
 		},
 		
@@ -228,6 +231,34 @@ define([
 										'Close Purchase Order',
 										false);
 			this.showConfirmationWindow();
+			
+			return false;
+		},
+		
+		closeOrder: function (ev) {
+			var thisObj = this;
+			
+			var purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
+			purchaseOrderModel.setCloseURL();
+			purchaseOrderModel.save(
+				null,
+				{
+					success: function (model, response, options) {
+						thisObj.hideConfirmationWindow('modal-confirm', function () {
+							thisObj.subContainer.find('.editable-button').remove();
+						});
+						thisObj.displayMessage(response);
+					},
+					error: function (model, response, options) {
+						thisObj.hideConfirmationWindow();
+						if(typeof response.responseJSON.error == 'undefined')
+							alert(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: purchaseOrderModel.getAuth(),
+				}
+			);
 			
 			return false;
 		},

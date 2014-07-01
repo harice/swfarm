@@ -19,7 +19,8 @@ class Contract extends BaseModel {
         'account_id',
         'contract_date_start',
         'contract_date_end',
-        'user_id'
+        'user_id',
+        'status_id'
     );
     
     /**
@@ -32,7 +33,8 @@ class Contract extends BaseModel {
         'account_id' => 'required',
         'contract_date_start' => 'required',
         'contract_date_end' => 'required|after:contract_date_start',
-        'user_id' => 'required'
+        'user_id' => 'required',
+        'status_id' => 'required'
     );
     
     /**
@@ -70,7 +72,7 @@ class Contract extends BaseModel {
     }
     
     /**
-     * Define a One to Manu Relationship
+     * Define a One to Many Relationship
      * 
      * Each contract can have multiple Sales Orders.
      * 
@@ -79,6 +81,18 @@ class Contract extends BaseModel {
     public function salesorders()
     {
         return $this->hasMany('Order');
+    }
+    
+    /**
+     * Define a One-to-One Relationship
+     * 
+     * Contract status (Open/Closed)
+     * 
+     * @return Model
+     */
+    public function status()
+    {
+        return $this->belongsTo('Status');
     }
     
     /**

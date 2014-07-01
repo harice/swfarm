@@ -89,6 +89,7 @@ define([
 		supplyContractData: function () {
 			var thisObj = this;
 			
+            var status = this.model.get('status');
 			var account = this.model.get('account');
             var address = this.model.get('account').address;
 			var products = this.model.get('products');
@@ -97,6 +98,8 @@ define([
 			this.customerAutoCompleteView.autoCompleteResult = [{name:account.name, id:account.id, address:address}];
 			this.$el.find('#account').val(account.name);
 			this.$el.find('#account_id').val(account.id);
+            this.$el.find('#status').val(status.name);
+			this.$el.find('#status_id').val(status.id);
 			this.$el.find('#street').val(address[0].street);
 			this.$el.find('#state').val(address[0].address_states[0].state);
 			this.$el.find('#city').val(address[0].city);

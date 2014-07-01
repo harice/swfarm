@@ -70,6 +70,18 @@ class ContractController extends BaseController {
 		$response = $this->repo->update($id, Input::all());
         return Response::json($response);
 	}
+    
+    /**
+     * Update status
+     * 
+     * @param type $id
+     * @return type
+     */
+    public function updateStatus($id)
+    {
+        $response = $this->repo->updateStatus($id, Input::all());
+        return Response::json($response);
+    }
 
 	/**
 	 * Remove the specified resource from storage.
