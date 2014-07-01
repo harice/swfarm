@@ -148,6 +148,7 @@ define([
 				schedule_url: '#/'+Const.URL.DELIVERYSCHEDULE,
 				add: Const.CRUD.ADD,
 				collapsible_id: Const.PO.COLLAPSIBLE.ID,
+				so_status_open: Const.STATUS.OPEN,
 				_: _ 
 			};
 			
@@ -298,6 +299,8 @@ define([
 			'change #reason': 'onChangeReason',
 			'click #order-accordion tr.collapse-trigger': 'toggleAccordion',
 			'click .stop-propagation': 'linkStopPropagation',
+			'click .close-so': 'showCloseConfirmationWindow',
+			'click #confirm-close-order': 'closeOrder',
 		},
 		
 		onChangeReason: function (ev) {
@@ -400,6 +403,48 @@ define([
 				_: _ 
 			};
 			return _.template(orderWeightDetailsByStackItemTemplate, data);
+		},
+		
+		showCloseConfirmationWindow: function (ev) {
+			var id = $(ev.currentTarget).attr('data-id');
+			this.initConfirmationWindow('Are you sure you want to close this sales order?',
+										'confirm-close-order',
+										'Close Sales Order',
+										'Close Sales Order',
+										false);
+			this.showConfirmationWindow();
+			this.$el.find('#modal-confirm #confirm-close-order').attr('data-id', id);
+			return false;
+		},
+		
+		closeOrder: function (ev) {
+			var thisObj = this;
+			var id = $(ev.currentTarget).attr('data-id');
+			
+			var salesOrderModel = new SalesOrderModel({id:id});
+			salesOrderModel.setCloseURL();
+			salesOrderModel.save(
+				null,
+				{
+					success: function (model, response, options) {
+						thisObj.hideConfirmationWindow('modal-confirm', function () {
+							thisObj.subContainer.find('#'+Const.PO.COLLAPSIBLE.ID+id+' .editable-button').remove();
+							thisObj.subContainer.find('.collapse-trigger[data-id="'+id+'"] .td-status').html('<label class="label label-default">Closed</label>');
+						});
+						thisObj.displayMessage(response);
+					},
+					error: function (model, response, options) {
+						thisObj.hideConfirmationWindow();
+						if(typeof response.responseJSON.error == 'undefined')
+							alert(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: salesOrderModel.getAuth(),
+				}
+			);
+			
+			return false;
 		},
 	});
 
