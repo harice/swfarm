@@ -153,6 +153,7 @@ define([
 		
 		collapseSelected: function () {
 			var id = this.collection.getCollapseId();
+			// console.log(id);
 			if(id)
 				this.$el.find('.collapse-trigger[data-id="'+id+'"]').trigger('click');
 		},
@@ -346,7 +347,7 @@ define([
 				orderWeightDetailsByStackCollection.on('sync', function() {
 					thisObj.collection.setCollapseId(id);
 					$(ev.currentTarget).find('.throbber_wrap').hide();
-					//console.log(thisId+' == '+thisObj.collection.getCollapseLatestId());
+					// console.log(thisId+' == '+thisObj.collection.getCollapseLatestId());
 					if(thisId == thisObj.collection.getCollapseLatestId() && thisObj.subContainerExist()) {
 						_.each(this.models, function (model) {
 							var schedules = model.get('schedule');
@@ -361,7 +362,9 @@ define([
 						
 						$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(this.models, id));
 						$('#'+collapsibleId).closest('tbody').find('.order-collapsible-item.collapse.in').collapse('toggle');
+						$('#order-accordion tr').find('.accordion-carret').removeClass('fa-angle-down').addClass('fa-angle-right');
 						$('#'+collapsibleId).collapse('toggle');
+						$('#order-accordion tr.collapse-trigger[data-id="'+id+'"]').find('.accordion-carret').removeClass('fa-angle-right').addClass('fa-angle-down');
 					}
 					this.off('sync');
 				});
@@ -375,6 +378,8 @@ define([
 			else {
 				this.collection.setCollapseId(null);
 				$('#'+collapsibleId).collapse('toggle');
+				// console.log(collapsibleId);
+				$(ev.currentTarget).find('.accordion-carret').removeClass('fa-angle-down').addClass('fa-angle-right');
 			}
 		},
 		

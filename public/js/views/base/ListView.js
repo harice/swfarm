@@ -32,6 +32,7 @@ define([
 			var lastPage = Math.ceil(maxItem / maxItemPerPage);
 			
 			$('#perpage').val(this.collection.listView.numPerPage);
+			
 			$('.display-items').show();
 			
 			if(lastPage > 1) {
@@ -68,7 +69,7 @@ define([
 			}
 			else {
 				$('.pagination').hide();
-				//$('.display-items').hide();
+				// $('.display-items').hide();
 			}
 		},
 		

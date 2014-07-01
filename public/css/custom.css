@@ -382,6 +382,9 @@ ul.autocomplete li.active a {
 .max-width-80 {
   max-width: 130px;
 }
+.width-10 {
+  width: 10px;
+}
 .width-40 {
   width: 40px;
 }
