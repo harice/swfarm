@@ -84,6 +84,17 @@ define([
             
             this.model.save(null, {
                 success: function(model, response, options) {
+                    var contractId = model.get('id');
+                    var contractModel = new ContractModel({id:contractId});
+                    
+                    contractModel.fetch({
+                        success: function(contract) {
+                            $('#view-contract .status').html(contract.get('status').name);
+                        },
+                        wait: true,
+                        headers: thisObj.model.getAuth()
+                    });
+                        
                     thisObj.displayMessage(response);
                 },
                 error: function(model, response, options) {
