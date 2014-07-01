@@ -33,8 +33,7 @@ class Contract extends BaseModel {
         'account_id' => 'required',
         'contract_date_start' => 'required',
         'contract_date_end' => 'required|after:contract_date_start',
-        'user_id' => 'required',
-        'status_id' => 'required'
+        'user_id' => 'required'
     );
     
     /**
