@@ -125,7 +125,9 @@ define([
 				'po_edit_url' : '#/'+Const.URL.PO+'/'+Const.CRUD.EDIT+'/'+this.poId,
 			};
 			
-			if(this.model.get('status').name.toLowerCase() == 'pending' || this.model.get('status').name.toLowerCase() == 'open')
+			if(this.model.get('status').name.toLowerCase() == Const.STATUS.PENDING ||
+				this.model.get('status').name.toLowerCase() == Const.STATUS.OPEN ||
+				this.model.get('status').name.toLowerCase() == Const.STATUS.TESTING)
 				innerTemplateVariables['editable'] = true;
 				
 			if(this.isBid)
