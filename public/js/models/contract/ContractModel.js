@@ -21,7 +21,15 @@ define([
 				},
 				headers: thisObj.getAuth()
 			});
-		}
+		},
+        
+        setCloseURL: function() {
+            this.urlRoot = '/apiv1/contract/close';
+        },
+        
+        setOpenURL: function() {
+            this.urlRoot = '/apiv1/contract/open';
+        }
 	});
 	return ContractModel;
 });

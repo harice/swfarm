@@ -139,6 +139,9 @@ class OrderRepository implements OrderRepositoryInterface {
 
         $data['businessaddress'] = $this->getBusinessAddress($data['account_id']);
         
+        if($data['contract_id'] == null)
+            $data['contract_id'] = null;
+         
         $this->validate($data, 'Order', $data['ordertype']);
        
         $result = DB::transaction(function() use ($data)
@@ -185,6 +188,9 @@ class OrderRepository implements OrderRepositoryInterface {
             $data['status_id'] = 1; //Open status
 
         $data['businessaddress'] = $this->getBusinessAddress($data['account_id']);
+        
+        if($data['contract_id'] == null)
+            $data['contract_id'] = null;
         
         $this->validate($data, 'Order', $data['ordertype']);
        
