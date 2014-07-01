@@ -32,7 +32,8 @@ define([
 			var lastPage = Math.ceil(maxItem / maxItemPerPage);
 			
 			$('#perpage').val(this.collection.listView.numPerPage);
-			$('.display-items').show();
+			if(maxItem > 15)
+				$('.display-items').show();
 			
 			if(lastPage > 1) {
 				$('.pagination').show();
