@@ -151,7 +151,8 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('file', 'APIv1\FileController');
     
     // Contract
-    Route::put('contract/{id}/status', 'APIv1\ContractController@updateStatus');
+    Route::put('contract/close/{id}', 'APIv1\ContractController@closeContract');
+    Route::put('contract/open/{id}', 'APIv1\ContractController@openContract');
     Route::get('contract/search', 'APIv1\ContractController@search');
     Route::resource('contract', 'APIv1\ContractController');
     
