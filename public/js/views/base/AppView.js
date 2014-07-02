@@ -318,8 +318,8 @@ define([
 			
 			var thisObj = this;
 			var tabs = [
-				{'url':'/#/'+Const.URL.PO+'/'+poId, 'label':'Purchase Order'},
-				{'url':'/#/'+Const.URL.PICKUPSCHEDULE+'/'+poId, 'label':'Schedule'},
+				{'url':'/#/'+Const.URL.PO+'/'+poId, 'label':'PO Details'},
+				{'url':'/#/'+Const.URL.PICKUPSCHEDULE+'/'+poId, 'label':'Schedule Details'},
 				{'url':'/#/'+Const.URL.POWEIGHTINFO+'/'+poId, 'label':'Weight Details'},
 			];
 			
@@ -337,8 +337,8 @@ define([
 			
 			var thisObj = this;
 			var tabs = [
-				{'url':'/#/'+Const.URL.SO+'/'+soId, 'label':'Sales Order'},
-				{'url':'/#/'+Const.URL.DELIVERYSCHEDULE+'/'+soId, 'label':'Schedule'},
+				{'url':'/#/'+Const.URL.SO+'/'+soId, 'label':'SO Details'},
+				{'url':'/#/'+Const.URL.DELIVERYSCHEDULE+'/'+soId, 'label':'Schedule Details'},
 				{'url':'/#/'+Const.URL.SOWEIGHTINFO+'/'+soId, 'label':'Weight Details'},
 			];
 			

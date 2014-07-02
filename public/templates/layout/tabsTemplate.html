@@ -1,5 +1,5 @@
 <div class="tab-container" style="position:relative;">
-	<ul class="nav nav-tabs">
+	<ul class="nav nav-tabs inner-tabs-menu">
 		<% _.each(tabs, function(tab){ %>
 		<li <% if (typeof tab.active != "undefined") { %>class="active"<% } %>><a href="<%= tab.url %>"><%= tab.label %></a></li>
 		<% }); %>

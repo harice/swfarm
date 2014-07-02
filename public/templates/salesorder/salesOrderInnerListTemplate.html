@@ -6,7 +6,7 @@
 			<a class="stop-propagation" href="<%= so_url %>/<%= so.get("id") %>"><%= so.get("order_number") %></a>
 			<span class="throbber_wrap" style="display: none;"><i class="fa fa-spinner fa-spin throbber_ajax"></i></span>
 		</td>
-		<td><%= so.get("account").name %></td>
+		<td><a href="<%= account_url %>/<%= so.get("account").id %>"><%= so.get("account").name %></a></td>
 		<td><%= so.get("natureofsale").name %></td>
 		<td class="td-status"><label class="label label-<%= so.get("status").class %>"><%= so.get("status").name %></label></td>
 		<td><%= so.get("created_at").split(" ")[0] %></td>
@@ -31,8 +31,8 @@
 	<tr>
 		<td colspan="9" style="padding:0;">
 			<div class="order-collapsible-item list-view-collapse collapse" id="<%= collapsible_id %><%= so.get("id") %>">
-				<div style="width:100%; padding:8px;">
-					<div style="width:100%; padding:8px; background-color:#fff;">
+				<div class="container">
+					<div class="order-stack-details">
 						<div class="col-md-12 no-padding">
 							<div class="pull-right">
 								<a href="<%= so_url %>/<%= so.get("id") %>" class="btn btn-primary btn-sm"><i class="fa fa-eye width-10"></i> View SO</a>
