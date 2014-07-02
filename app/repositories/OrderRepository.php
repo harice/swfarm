@@ -242,7 +242,7 @@ class OrderRepository implements OrderRepositoryInterface {
 
         $data['businessaddress'] = $this->getBusinessAddress($data['account_id']);
         
-        if($data['contract_id'] == null)
+        if(!isset($data['contract_id']))
             $data['contract_id'] = null;
          
         $this->validate($data, 'Order', $data['ordertype']);
@@ -292,7 +292,7 @@ class OrderRepository implements OrderRepositoryInterface {
 
         $data['businessaddress'] = $this->getBusinessAddress($data['account_id']);
         
-        if($data['contract_id'] == null)
+        if(!isset($data['contract_id']))
             $data['contract_id'] = null;
         
         $this->validate($data, 'Order', $data['ordertype']);
