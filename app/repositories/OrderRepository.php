@@ -701,7 +701,7 @@ class OrderRepository implements OrderRepositoryInterface {
                         ->with('productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_dropoff')
                         ->with('productorder.transportscheduleproduct.weightticketproducts.weightticketscale_type')
                         ->find($orderId);  
-        return $order->toArray();
+        // return $order->toArray();
         if($order == null){
             return array(
                 'error' => true,
