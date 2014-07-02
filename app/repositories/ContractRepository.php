@@ -192,6 +192,61 @@ class ContractRepository implements ContractRepositoryInterface {
         }
     }
     
+    public function salesorder($id)
+    {
+        try
+        {
+            $product_ids = Order::
+                join('productorder', 'order.id', '=', 'productorder.order_id')
+                ->where('ordertype', '=', 2)
+                ->where('contract_id', '=', $id)
+                ->groupBy('product_id')
+                ->orderBy('product_id')
+                ->get(array('product_id'));
+            
+            $salesorder = Order::
+                join('productorder', 'order.id', '=', 'productorder.order_id')
+                ->where('ordertype', '=', 2)
+                ->where('contract_id', '=', $id)
+                ->get();
+            
+            $products = array();
+            foreach($product_ids as $ids) {
+                $product = Product::find($ids['product_id']);
+                
+                $item_sales = Order::with('status')
+                    ->join('productorder', 'order.id', '=', 'productorder.order_id')
+                    ->where('ordertype', '=', 2)
+                    ->where('contract_id', '=', $id)
+                    ->where('product_id', '=', $ids['product_id'])
+                    ->get(array('order.id', 'order_number', 'contract_id', 'stacknumber', 'tons', 'bales', 'product_id', 'status_id'));
+                
+                $total_tons = 0;
+                foreach ($item_sales as $item) {
+                    $total_tons += $item->tons;
+                }
+                
+                $products[] = array(
+                    'product_id' => $ids['product_id'],
+                    'product_name' => $product->name,
+                    'total_tons' => $total_tons,
+                    'salesorders' => $item_sales->toArray()
+                );
+            }
+            
+            $result = array(
+                'products' => $products,
+                // 'salesorder' => $salesorder->toArray()
+            );
+            
+            return $result;
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
+    }
+    
     public function destroy($id)
     {
         try

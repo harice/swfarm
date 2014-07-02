@@ -378,7 +378,9 @@ define([
 						
 						$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(this.models, id));
 						$('#'+collapsibleId).closest('tbody').find('.order-collapsible-item.collapse.in').collapse('toggle');
+						$('#order-accordion tr').find('.accordion-carret').removeClass('fa-angle-down').addClass('fa-angle-right');
 						$('#'+collapsibleId).collapse('toggle');
+						$('#order-accordion tr.collapse-trigger[data-id="'+id+'"]').find('.accordion-carret').removeClass('fa-angle-right').addClass('fa-angle-down');
 					}
 					this.off('sync');
 				});
@@ -392,6 +394,7 @@ define([
 			else {
 				this.collection.setCollapseId(null);
 				$('#'+collapsibleId).collapse('toggle');
+				$(ev.currentTarget).find('.accordion-carret').removeClass('fa-angle-down').addClass('fa-angle-right');
 			}
 		},
 		

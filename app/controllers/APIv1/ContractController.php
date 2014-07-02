@@ -96,6 +96,12 @@ class ContractController extends BaseController {
         $response = $this->repo->updateStatus($id, $data);
         return Response::json($response);
     }
+    
+    public function salesorder($id)
+    {
+        $result = $this->repo->salesorder($id);
+        return Response::json($result);
+    }
 
 	/**
 	 * Remove the specified resource from storage.
