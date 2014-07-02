@@ -50,8 +50,12 @@ define([
 		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
-			'click #delete-contact': 'showConfirmationWindow',
+			'click #delete-contact': 'showDeleteConfirmationWindow',
 			'click #confirm-delete-contact': 'deleteContact',
+		},
+		
+		showDeleteConfirmationWindow: function () {
+			this.showConfirmationWindow();
 		},
 		
 		deleteContact: function (){
