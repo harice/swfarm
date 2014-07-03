@@ -51,7 +51,7 @@ define([
 		
 		render: function(){
 			this.displayContract();
-			this.renderList(1);
+			this.renderList(this.collection.listView.currentPage);
 			Backbone.View.prototype.refreshTitle('Contract','list');
 		},
 		
