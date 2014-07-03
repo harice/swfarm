@@ -12,8 +12,8 @@ define([
 			ContractModel,
 			ContractCollection,
 			contentTemplate,
-			trailerListTemplate,
-			trailerInnerListTemplate,
+			contractListTemplate,
+			contractInnerListTemplate,
 			Const
 ){
 
@@ -55,7 +55,7 @@ define([
 			var innerTemplateVar = {
 				'contract_add_url' : '#/'+Const.URL.CONTRACT+'/'+Const.CRUD.ADD
 			};
-			var innerTemplate = _.template(trailerListTemplate, innerTemplateVar);
+			var innerTemplate = _.template(contractListTemplate, innerTemplateVar);
 			
 			var variables = {
 				h1_title: 'Contract',
@@ -64,11 +64,6 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
-			
-			this.initConfirmationWindow('Are you sure you want to delete this Contract?',
-										'confirm-delete-contract',
-										'Delete',
-										'Delete Contract');
 		},
 		
 		displayList: function () {
@@ -78,43 +73,44 @@ define([
                 contract_url: '#/'+Const.URL.CONTRACT,
 				contract_edit_url: '#/'+Const.URL.CONTRACT+'/'+Const.CRUD.EDIT,
 				contracts: this.collection.models,
+				collapsible_id: Const.PO.COLLAPSIBLE.ID,
 				_: _ 
 			};
 			
-			var innerListTemplate = _.template(trailerInnerListTemplate, data);
+			var innerListTemplate = _.template(contractInnerListTemplate, data);
 			this.subContainer.find("#contract-list tbody").html(innerListTemplate);
 			
 			this.generatePagination();
 		},
 		
 		events: {
-			'click .delete-contract': 'preShowConfirmationWindow',
-			'click #confirm-delete-contract': 'deleteContract'
+			'click #contract-accordion tr.collapse-trigger': 'toggleAccordion',
 		},
 		
-		preShowConfirmationWindow: function (ev) {
-			this.$el.find('#confirm-delete-contract').attr('data-id', $(ev.currentTarget).attr('data-id'));
+		toggleAccordion: function (ev) {
+			var thisObj = this;
 			
-			this.showConfirmationWindow();
+			this.toggleAccordionAndRequestACollection(ev.currentTarget,
+				OrderWeightDetailsByStackCollection,
+				function (collection, id) {
+					var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
+					_.each(collection.models, function (model) {
+						var schedules = model.get('schedule');
+						if(schedules.length > 0) {
+							for(var i=0; i<schedules.length; i++) {
+								var s = schedules[i].transportscheduledate.split(' ');
+								schedules[i].transportscheduledate = thisObj.convertDateFormat(s[0], 'yyyy-mm-dd', thisObj.dateFormat, '-')+' '+s[1];			
+							}
+							model.set('schedule', schedules);
+						}
+					});
+					
+					$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(collection.models, id));
+				}
+			);
+			
 			return false;
 		},
-		
-		deleteContract: function (ev) {
-			var thisObj = this;
-			var contractModel = new ContractModel({id:$(ev.currentTarget).attr('data-id')});
-			
-            contractModel.destroy({
-                success: function (model, response, options) {
-                    thisObj.displayMessage(response);
-                    thisObj.renderList(1);
-                },
-                error: function (model, response, options) {
-                    thisObj.displayMessage(response);
-                },
-                wait: true,
-                headers: contractModel.getAuth()
-            });
-		}
 	});
 
 	return ContractListView;

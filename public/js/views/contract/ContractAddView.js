@@ -231,35 +231,17 @@ define([
 				this.$el.find('#product-list tbody').append(productTemplate);
 				var productItem = this.$el.find('#product-list tbody').find('.product-item:first-child');
 				this.options.productFieldClone = productItem.clone();
-				//this.initProductAutocomplete(productItem);
 				this.addIndexToProductFields(productItem);
 				clone = productItem;
 			}
 			else {
 				var clone = this.options.productFieldClone.clone();
-				//this.initProductAutocomplete(clone);
 				this.addIndexToProductFields(clone);
 				this.$el.find('#product-list tbody').append(clone);
 			}
 				
 			this.addValidationToProduct();
 			return clone;
-		},
-		
-		initProductAutocomplete: function (productItem) {
-			var thisObj = this;
-			
-			var products = this.productAutoCompletePool;
-			
-			productItem.find('.productname').autocomplete({
-				source:products,
-				select: function (ev, ui) {
-					var productField = $(ev.target);
-					productField.siblings('.product_id').val(ui.item.id);
-					productField.val(ui.item.label);
-					return false;
-				}
-			});
 		},
 		
 		getProductDropdown: function () {
@@ -337,8 +319,8 @@ define([
 			'click #add-product': 'addProduct',
 			'click .remove-product': 'removeProduct',
 			'keyup .tons': 'onKeyUpTons',
+			'blur .tons': 'onBlurTon',
 			'keyup .bales': 'formatNumber',
-			'click #cancel-so': 'showConfirmationWindow'
 		},
 		
 		removeProduct: function (ev) {
@@ -352,92 +334,13 @@ define([
 			return (this.$el.find('#product-list tbody .product-item').length)? true : false;
 		},
 		
-		validateProduct: function (ev) {
-			var field = $(ev.target);
-			var name = field.val();
-			var id = field.siblings('.product_id').val();
-			var product = this.isInProductAutoCompletePool(name);
-			
-			if(product === false) {
-				this.emptyProductFields(field);
-			}
-			else {
-				field.val(product.name);
-				field.siblings('.product_id').val(product.id);
-			}
-		},
-		
-		isInProductAutoCompletePool: function (value) {
-			for(var i = 0; i < this.productAutoCompletePool.length; i++) {
-				if(this.productAutoCompletePool[i].value.toLowerCase() === value.toLowerCase()) {
-					return {id:this.productAutoCompletePool[i].id, name:this.productAutoCompletePool[i].value};
-				}
-			}
-			return false;
-		},
-		
 		emptyProductFields: function (field) {
 			field.val('');
 			field.siblings('.product_id').val('');
 		},
 		
-		onBlurUnitPrice: function (ev) {
-			var field = $(ev.target);
-			var bidPrice = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
-			var tonsField = field.closest('.product-item').find('.tons');
-			var tons = (!isNaN(parseFloat(tonsField.val())))? parseFloat(tonsField.val()) : 0;
-			
-			field.val(bidPrice);
-			this.toFixedValue(field, 2);
-			this.computeUnitePrice(bidPrice, tons, field.closest('.product-item').find('.unit-price'));
-		},
-		
-		onKeyUpUnitPrice: function (ev) {
-			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 2);
-			
-			var bidPricefield = $(ev.target);
-			var bidPricefieldVal = this.removeCommaFromNumber(bidPricefield.val());
-			var bidPrice = (!isNaN(parseFloat(bidPricefieldVal)))? parseFloat(bidPricefieldVal) : 0;
-			var tonsField = bidPricefield.closest('.product-item').find('.tons');
-			var tonsFieldVal = this.removeCommaFromNumber(tonsField.val());
-			var tons = (!isNaN(parseFloat(tonsFieldVal)))? parseFloat(tonsFieldVal) : 0;
-			
-			this.computeUnitePrice(bidPrice, tons, bidPricefield.closest('.product-item').find('.unit-price'));
-		},
-		
 		onKeyUpTons: function (ev) {
 			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 4);
-		},
-		
-		computeUnitePrice: function (bidPrice, tonsOrBales, unitePriceField) {
-			var unitPrice = 0;
-			unitPrice = tonsOrBales * bidPrice;
-			unitePriceField.val(this.addCommaToNumber(unitPrice.toFixed(2)));
-		},
-		
-		cancelCONTRACT: function () {
-			if(this.soId !== null) {
-				var thisObj = this;
-				var contractModel = new ContractModel({id:this.soId});
-				contractModel.setCancelURL();
-				contractModel.save(
-					null, 
-					{
-						success: function (model, response, options) {
-							thisObj.displayMessage(response);
-							Backbone.history.history.back();
-						},
-						error: function (model, response, options) {
-							if(typeof response.responseJCONTRACTN.error === 'undefined')
-								validate.showErrors(response.responseJCONTRACTN);
-							else
-								thisObj.displayMessage(response);
-						},
-						headers: contractModel.getAuth()
-					}
-				);
-			}
-			return false;
 		},
 		
 		otherInitializations: function () {}
