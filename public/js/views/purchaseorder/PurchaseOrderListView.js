@@ -1,7 +1,7 @@
 define([
 	'backbone',
 	'bootstrapdatepicker',
-	'views/base/ListView',
+	'views/base/AccordionListView',
 	'collections/purchaseorder/PurchaseOrderCollection',
 	'collections/purchaseorder/DestinationCollection',
 	'collections/purchaseorder/POStatusCollection',
@@ -18,7 +18,7 @@ define([
 	'constant',
 ], function(Backbone,
 			DatePicker,
-			ListView,
+			AccordionListView,
 			PurchaseOrderCollection,
 			DestinationCollection,
 			POStatusCollection,
@@ -35,7 +35,7 @@ define([
 			Const
 ){
 
-	var PurchaseOrderListView = ListView.extend({
+	var PurchaseOrderListView = AccordionListView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
@@ -149,13 +149,6 @@ define([
 			this.subContainer.find("#po-list tbody").html(innerListTemplate);
 			this.collapseSelected();
 			this.generatePagination();
-		},
-		
-		collapseSelected: function () {
-			var id = this.collection.getCollapseId();
-			// console.log(id);
-			if(id)
-				this.$el.find('.collapse-trigger[data-id="'+id+'"]').trigger('click');
 		},
 		
 		setListOptions: function () {
@@ -337,52 +330,27 @@ define([
 		
 		toggleAccordion: function (ev) {
 			var thisObj = this;
-			var id = $(ev.currentTarget).attr('data-id');
-			var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
 			
-			if(!$('#'+collapsibleId).hasClass('in')) {
-				var thisId = id;
-				this.collection.setCollapseLatestId(id);
-				
-				$(ev.currentTarget).find('.throbber_wrap').show();
-				var orderWeightDetailsByStackCollection = new OrderWeightDetailsByStackCollection(id);
-				orderWeightDetailsByStackCollection.on('sync', function() {
-					thisObj.collection.setCollapseId(id);
-					$(ev.currentTarget).find('.throbber_wrap').hide();
-					// console.log(thisId+' == '+thisObj.collection.getCollapseLatestId());
-					if(thisId == thisObj.collection.getCollapseLatestId() && thisObj.subContainerExist()) {
-						_.each(this.models, function (model) {
-							var schedules = model.get('schedule');
-							if(schedules.length > 0) {
-								for(var i=0; i<schedules.length; i++) {
-									var s = schedules[i].transportscheduledate.split(' ');
-									schedules[i].transportscheduledate = thisObj.convertDateFormat(s[0], 'yyyy-mm-dd', thisObj.dateFormat, '-')+' '+s[1];			
-								}
-								model.set('schedule', schedules);
+			this.toggleAccordionAndRequestACollection(ev.currentTarget,
+				OrderWeightDetailsByStackCollection,
+				function (collection, id) {
+					var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
+					_.each(collection.models, function (model) {
+						var schedules = model.get('schedule');
+						if(schedules.length > 0) {
+							for(var i=0; i<schedules.length; i++) {
+								var s = schedules[i].transportscheduledate.split(' ');
+								schedules[i].transportscheduledate = thisObj.convertDateFormat(s[0], 'yyyy-mm-dd', thisObj.dateFormat, '-')+' '+s[1];			
 							}
-						});
-						
-						$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(this.models, id));
-						$('#'+collapsibleId).closest('tbody').find('.order-collapsible-item.collapse.in').collapse('toggle');
-						$('#order-accordion tr').find('.accordion-carret').removeClass('fa-angle-down').addClass('fa-angle-right');
-						$('#'+collapsibleId).collapse('toggle');
-						$('#order-accordion tr.collapse-trigger[data-id="'+id+'"]').find('.accordion-carret').removeClass('fa-angle-right').addClass('fa-angle-down');
-					}
-					this.off('sync');
-				});
-				
-				orderWeightDetailsByStackCollection.on('error', function(collection, response, options) {
-					$(ev.currentTarget).find('.throbber_wrap').hide();
-					this.off('error');
-				});
-				orderWeightDetailsByStackCollection.getModels();
-			}
-			else {
-				this.collection.setCollapseId(null);
-				$('#'+collapsibleId).collapse('toggle');
-				// console.log(collapsibleId);
-				$(ev.currentTarget).find('.accordion-carret').removeClass('fa-angle-down').addClass('fa-angle-right');
-			}
+							model.set('schedule', schedules);
+						}
+					});
+					
+					$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(collection.models, id));
+				}
+			);
+			
+			return false;
 		},
 		
 		generateOrderWeightDetailsByStack: function (models, poId) {
