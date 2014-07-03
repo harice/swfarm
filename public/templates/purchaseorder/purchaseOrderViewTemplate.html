@@ -1,98 +1,43 @@
-<div class="content">
-  
-    <form id="poForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-      <fieldset>
-        <legend>Details</legend>
-        <div class="row">
-          <div class="col-sm-6">
-            <div class="form-group">
-              <label for="ponumber" class="col-sm-3 control-label">PO Number</label>
-              <div class="col-sm-7">
-                <input id="ponumber" type="text" class="form-control ponumber" placeholder="" maxlength="250" readonly>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="status" class="col-sm-3 control-label">Status</label>
-              <div class="col-sm-7">
-                <input id="status" type="text" class="form-control status" placeholder="" maxlength="250" readonly>
-              </div>
-            </div>
-<div id="cancel-reason-cont" class="form-group" style="display:none;">
-              <label for="" class="col-sm-3 control-label">Cancellation Reason</label>
-              <div class="col-sm-7">
-                <input style="display:none;" type="text" class="form-control" placeholder="" maxlength="250" readonly>
-	<textarea style="display:none;" class="form-control" readonly></textarea>
-              </div>
-            </div>
-            <% if (typeof is_bid === "undefined") { %>
-            <div class="form-group">
-              <label for="destination" class="col-sm-3 control-label">Destination</label>
-              <div class="col-sm-7">
-                <input id="destination" type="text" class="form-control destination" placeholder="" maxlength="250" readonly>
-              </div>
-            </div>
-            <% } %>
-            <div class="form-group">
-              <label for="account" class="col-sm-3 control-label">Producer *</label>
-              <div class="col-sm-7">
-                <input type="text" class="form-control capitalize" id="account" maxlength="50" readonly>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="street" class="col-sm-3 control-label">Street</label>
-              <div class="col-sm-7">
-                <input id="street" type="text" class="form-control street" placeholder="" maxlength="250" readonly>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="state" class="col-sm-3 control-label">State</label>
-              <div class="col-sm-7">
-                <input id="state" type="text" class="form-control state" placeholder="" maxlength="250" readonly>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="city" class="col-sm-3 control-label">City</label>
-              <div class="col-sm-7">
-                <input id="city" type="text" class="form-control city" placeholder="" maxlength="250" readonly>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="zipcode" class="col-sm-3 control-label">Zip Code</label>
-              <div class="col-sm-3">
-                <input id="zipcode" type="text" class="form-control zipcode" placeholder="" minlength="5" maxlength="9" readonly>
-              </div>
-            </div>
-          </div>
 
-          <div class="col-sm-6">
-            <div class="form-group">
-              <label for="dateofpurchase" class="col-sm-3 control-label">Date of Purchase</label>
-              <div class="col-sm-4">
-                <input id="dateofpurchase" type="text" class="form-control dateofpurchase" placeholder="" maxlength="250" readonly>
-              </div>
-            </div>
-            <% if (typeof is_bid === "undefined") { %>
-            <div class="form-group"><label for="" class="col-sm-3 control-label">Delivery Period:</label></div>
-            <div class="form-group">
-              <label for="transportdatestart" class="col-sm-3 control-label">Start</label>
-              <div class="col-sm-4">
-                <input id="transportdatestart" type="text" class="form-control transportdatestart" placeholder="" maxlength="250" readonly>
-              </div>
-              <label for="transportdateend" class="col-sm-1 control-label">End</label>
-              <div class="col-sm-4">
-                <input id="transportdateend" type="text" class="form-control transportdateend" placeholder="" maxlength="250" readonly>
-              </div>
-            </div>
-            <% } %>
-            <div class="form-group">
-              <label for="notes" class="col-sm-3 control-label">Notes</label>
-              <div class="col-sm-9">
-                <textarea class="form-control notes" id="notes" readonly></textarea>
-              </div>
-            </div>
-          </div>
-        </div>
-      </fieldset>
+  <h2 class="ponumber margin-bottom-0"><%= po.get('order_number') %></h2>
+  <div class="row margin-top-0">
+    <div class="col-md-6">
+      <% if (typeof is_bid === "undefined") { %>
+        Purchased Date: <code><%= po.get("created_at").split(" ")[0] %></code><br>
+        Pickup Start: <code><%= po.get("transportdatestart").split(" ")[0] %></code>
+        Pickup End: <code><%= po.get("transportdateend").split(" ")[0] %></code><br>
+        Destination: <code><%= po.get('location').location %></code><br>
+      <% } %>
+      Status: <label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label><br>
+      <% if(po.get('status').id == 5 || po.get('status').id == 6) { if(po.get('ordercancellingreason').reason.id != reason_others ) { %>
+      Reason: <code><%= po.get('ordercancellingreason').reason.reason %></code>
+      <% } else { %>
+      Reason: <code><%= po.get('ordercancellingreason').others %></code>
+      <% }} %>
+    </div>
+    <div class="col-md-6">
+      Producer:
+      <address>
+        <p class="margin-top-5 margin-bottom-0"><strong><%= po.get('account').name %></strong></p>
+        <%= po.get('orderaddress').street %>
+        <br>
+        <%= po.get('orderaddress').city %>,
+        <%= po.get('orderaddress').address_states.state_code %>
+        <%= po.get('orderaddress').zipcode %>
+      </address>
+    </div>
+  </div>
+
+  <div class="row margin-top-10">
+    <div class="col-md-12">
+      <blockquote>
+        <p><%= po.get('notes') %></p>
+        <small>Notes</small>
+      </blockquote>
+    </div>
+  </div>
+
+    <form id="poForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
       <fieldset>
         <legend>
           Products
@@ -148,4 +93,3 @@
       </div>
     </form>
     
-</div>

@@ -123,6 +123,9 @@ define([
 			var innerTemplateVariables = {
 				'po_url' : '#/'+Const.URL.PO,
 				'po_edit_url' : '#/'+Const.URL.PO+'/'+Const.CRUD.EDIT+'/'+this.poId,
+				po : this.model,
+				reason_others : Const.CANCELLATIONREASON.OTHERS,
+				_: _
 			};
 			
 			if(this.model.get('status').name.toLowerCase() == Const.STATUS.PENDING ||
@@ -150,7 +153,7 @@ define([
 			var account = this.model.get('account');
 			var address = [this.model.get('orderaddress')];
 			var products = this.model.get('productorder');
-			
+
 			this.$el.find('#ponumber').val(this.model.get('order_number'));
 			this.$el.find('#status').val(this.model.get('status').name);
 			
@@ -166,10 +169,12 @@ define([
                 this.$el.find('#destination').val(this.model.get('location').location);
             }
 			this.$el.find('#account').val(account.name);
-			this.$el.find('#street').val(address[0].street);
-			this.$el.find('#state').val(address[0].address_states[0].state);
-			this.$el.find('#city').val(address[0].city);
-			this.$el.find('#zipcode').val(address[0].zipcode);
+			
+			// this.$el.find('#street').val(address[0].street);
+			// this.$el.find('#state').val(address[0].address_states[0].state);
+			// this.$el.find('#city').val(address[0].city);
+			// this.$el.find('#zipcode').val(address[0].zipcode);
+
 			this.$el.find('#dateofpurchase').val(this.convertDateFormat(this.model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
 			if(!thisObj.isBid) {
 				if(this.model.get('transportdatestart')) {

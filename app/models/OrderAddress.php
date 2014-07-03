@@ -34,7 +34,7 @@ class OrderAddress extends BaseModel {
     );
 
     public function addressStates(){
-        return $this->hasMany('AddressStates', 'id','state');
+        return $this->hasOne('AddressStates', 'id','state');
     }
 
 }
