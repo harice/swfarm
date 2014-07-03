@@ -21,7 +21,8 @@ class ContractRepository implements ContractRepositoryInterface {
                 ->take($perPage)
                 ->offset($offset)
                 ->orderBy($sortby, $orderby)
-                ->paginate($perPage);
+                ->limit($perPage)
+                ->get();
             
             return $result;
         }
