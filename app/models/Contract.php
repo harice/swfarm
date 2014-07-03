@@ -82,6 +82,11 @@ class Contract extends BaseModel {
         return $this->hasMany('Order');
     }
     
+    public function productorders()
+    {
+        return $this->hasManyThrough('ProductOrder', 'Order', 'contract_id', 'order_id');
+    }
+    
     /**
      * Define a One-to-One Relationship
      * 
