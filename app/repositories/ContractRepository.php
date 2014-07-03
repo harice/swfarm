@@ -197,33 +197,20 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         try
         {
-            $contracts = Contract::with('products', 'salesorders', 'productorders', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')->find($id);
-            
-            $product_orders = $contracts->productorders;
-            
-            $product_ids = Order::
-                join('productorder', 'order.id', '=', 'productorder.order_id')
-                ->where('ordertype', '=', 2)
-                ->where('contract_id', '=', $id)
-                ->groupBy('product_id')
-                ->orderBy('product_id')
-                ->get(array('product_id'));
-            
-            $salesorder = Order::
-                join('productorder', 'order.id', '=', 'productorder.order_id')
-                ->where('ordertype', '=', 2)
-                ->where('contract_id', '=', $id)
-                ->get();
+            $contracts = Contract::with('products', 'salesorders', 'productorders', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')
+                ->find($id);
+            $contract_products = $contracts->products;
             
             $products = array();
-            foreach($product_orders as $ids) {
-                $product = Product::find($ids['product_id']);
+            foreach($contract_products as $product) {
+                // var_dump($product->id);
+                $product = Product::find($product->id);
                 
                 $item_sales = Order::with('status')
                     ->join('productorder', 'order.id', '=', 'productorder.order_id')
                     ->where('ordertype', '=', 2)
                     ->where('contract_id', '=', $id)
-                    ->where('product_id', '=', $ids['product_id'])
+                    ->where('product_id', '=', $product->id)
                     ->get(array('order.id', 'order_number', 'contract_id', 'stacknumber', 'tons', 'bales', 'product_id', 'status_id'));
                 
                 $total_tons = 0;
@@ -231,8 +218,8 @@ class ContractRepository implements ContractRepositoryInterface {
                     $total_tons += $item->tons;
                 }
                 
-                $products[$ids['product_id']] = array(
-                    'product_id' => $ids['product_id'],
+                $products[$product->id] = array(
+                    'product_id' => $product->id,
                     'product_name' => $product->name,
                     'total_tons' => $total_tons,
                     'salesorders' => $item_sales->toArray()
