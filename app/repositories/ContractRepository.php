@@ -210,8 +210,8 @@ class ContractRepository implements ContractRepositoryInterface {
                     ->where('ordertype', '=', 2)
                     ->where('contract_id', '=', $id)
                     ->where('product_id', '=', $product->id)
-                    // ->get(array('order.id', 'order_number', 'contract_id', 'stacknumber', 'tons', 'bales', 'product_id', 'status_id'));
-                    ->get();
+                    ->get(array('order.id', 'order_number', 'contract_id', 'stacknumber', 'tons', 'bales', 'product_id', 'status_id'));
+                    // ->get();
                 
                 $total_tons = 0;
                 foreach ($salesorders as $order) {
@@ -228,20 +228,16 @@ class ContractRepository implements ContractRepositoryInterface {
                 );
             }
             
-//            foreach ($schedules as $schedule) {
-//                foreach($schedule as $id) {
-//                    $weight_ticket = WeightTicket::where('transportSchedule_id', '=', $id);
-//                }
-//                $weight_tickets[] += $weight_ticket;
-//            }
+            $weight_tickets = WeightTicket::with('weightticketscale_dropoff')
+                // join('weightticketproducts', 'weightticket.dropoff_id', '=', 'weightticketproducts.id')
+                ->where('transportSchedule_id', '=', 41)
+                ->get();
             
-            $result = array_values($products);
-            
-//            $result = array(
-//                // 'schedules' => $schedules,
-//                // 'weight_tickets' => $weight_tickets,
-//                'products' => array_values($products)
-//            );
+            $result = array(
+                'schedules' => $schedules,
+                'weight_tickets' => $weight_tickets->toArray(),
+                'products' => array_values($products)
+            );
             
             return $result;
         }
