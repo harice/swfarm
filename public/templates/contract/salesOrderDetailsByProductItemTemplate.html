@@ -1,0 +1,53 @@
+<% if (!_.isEmpty(products)) { %>
+	<% _.each(products, function(product){ %>
+		<div class="row margin-top-0 padding-top-10">
+			<div class="col-md-12">Product:</div>
+		</div>
+		<div class="row margin-top-0">
+			<div class="col-md-9">
+				<div class="content-inner table-responsive">
+					<table class="table-condensed table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>SO No.</th>
+								<th>Stack No.</th>
+								<th>Expected Quantity</th>
+								<th>Delivered Quantity</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="content-inner table-responsive">
+					<table class="table-condensed table-bordered table-hover">
+						<tbody>
+							<tr>
+								<td>Expected</td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>Total Deliveries</td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>Remaining</td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	<% }); %>
+<% } %>

@@ -1,23 +1,27 @@
 define([
 	'backbone',
-	'views/base/ListView',
+	'views/base/AccordionListView',
 	'models/contract/ContractModel',
 	'collections/contract/ContractCollection',
+	'collections/contract/SalesOrderDetailsByProductCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/contract/contractListTemplate.html',
 	'text!templates/contract/contractInnerListTemplate.html',
+	'text!templates/contract/salesOrderDetailsByProductItemTemplate.html',
 	'constant'
 ], function(Backbone,
-			ListView,
+			AccordionListView,
 			ContractModel,
 			ContractCollection,
+			SalesOrderDetailsByProductCollection,
 			contentTemplate,
 			contractListTemplate,
 			contractInnerListTemplate,
+			salesOrderDetailsByProductItemTemplate,
 			Const
 ){
 
-	var ContractListView = ListView.extend({
+	var ContractListView = AccordionListView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
@@ -91,9 +95,9 @@ define([
 			var thisObj = this;
 			
 			this.toggleAccordionAndRequestACollection(ev.currentTarget,
-				OrderWeightDetailsByStackCollection,
+				SalesOrderDetailsByProductCollection,
 				function (collection, id) {
-					var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
+					/*var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
 					_.each(collection.models, function (model) {
 						var schedules = model.get('schedule');
 						if(schedules.length > 0) {
@@ -105,7 +109,7 @@ define([
 						}
 					});
 					
-					$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(collection.models, id));
+					$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(collection.models, id));*/
 				}
 			);
 			
