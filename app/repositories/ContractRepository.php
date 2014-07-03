@@ -226,12 +226,9 @@ class ContractRepository implements ContractRepositoryInterface {
                 );
             }
             
-            $result = array(
-                'products' => array_values($products),
-                // 'contracts' => $contracts->toArray()
-            );
+            $result = array_values($products);
             
-            return $products;
+            return $result;
         }
         catch (Exception $e)
         {
