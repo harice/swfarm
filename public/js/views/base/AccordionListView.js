@@ -31,10 +31,10 @@ define([
 						if(thisObj.isFunction(successCallBack))
 							successCallBack(this, id);
 						
-						$('#'+collapsibleId).closest('tbody').find('.order-collapsible-item.collapse.in').collapse('toggle');
-						$('#order-accordion tr').find('.accordion-carret').removeClass('fa-angle-down').addClass('fa-angle-right');
+						$('#'+collapsibleId).closest('tbody').find('.list-view-collapse.collapse.in').collapse('toggle');
+						$('.accordion-list-cont tr').find('.accordion-carret').removeClass('fa-angle-down').addClass('fa-angle-right');
 						$('#'+collapsibleId).collapse('toggle');
-						$('#order-accordion tr.collapse-trigger[data-id="'+id+'"]').find('.accordion-carret').removeClass('fa-angle-right').addClass('fa-angle-down');
+						$('.accordion-list-cont tr.collapse-trigger[data-id="'+id+'"]').find('.accordion-carret').removeClass('fa-angle-right').addClass('fa-angle-down');
 					}
 					this.off('sync');
 				});

@@ -21,7 +21,6 @@ define([
 		},
 		
 		generatePagination: function (maxItem, maxItemPerPage) {
-            
 			if(maxItem == null)
 				var maxItem = this.collection.getMaxItem();
 			if(maxItemPerPage == null)

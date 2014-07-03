@@ -1,7 +1,11 @@
 <% if (!_.isEmpty(contracts)) { %>
 	<% _.each(contracts, function(contract){ %>
-	<tr>
-        <td><a href="<%= contract_url %>/<%= contract.get('id') %>"><%= contract.get("contract_number") %></a></td>
+	<tr class="collapse-trigger cursor-pointer" data-id="<%= contract.get("id") %>">
+        <td>
+			<i class="fa fa-angle-right width-10 accordion-carret"></i>
+			<a class="stop-propagation" href="<%= contract_url %>/<%= contract.get("id") %>"><%= contract.get("contract_number") %></a>
+			<span class="throbber_wrap" style="display: none;"><i class="fa fa-spinner fa-spin throbber_ajax"></i></span>
+		</td>
 		<td><%= contract.get("account").name %></td>
 		<td><%= contract.get("contract_date_start") %></td>
 		<td><%= contract.get("contract_date_end") %></td>
@@ -10,9 +14,9 @@
             <% total_tons = total_tons + parseFloat(product.pivot.tons) %>
         <% }); %>
         <td><%= total_tons.toFixed(4) %></td>
-        <td><label class="label label-<%= contract.get('status').class %>"><%= contract.get('status').name %></label></td>
+        <td><label class="label label-<%= contract.get("status").class %>"><%= contract.get("status").name %></label></td>
 		<td>
-			<a href="<%= contract_edit_url %>/<%= contract.get('id') %>" class="text-primary" title="edit">
+			<a href="<%= contract_edit_url %>/<%= contract.get("id") %>" class="text-primary" title="edit">
 			  <span class="fa-stack">
 	            <i class="fa fa-square fa-stack-2x"></i>
 	            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -20,9 +24,27 @@
 			</a>
 		</td>
 	</tr>
+	<tr>
+		<td colspan="7" style="padding:0;">
+			<div class="contract-collapsible-item list-view-collapse collapse" id="<%= collapsible_id %><%= contract.get("id") %>">
+				<div style="width:100%; padding:8px;">
+					<div style="width:100%; padding:8px; background-color:#fff;">
+						<div class="col-md-12 no-padding">
+							<div class="pull-right">
+								<a href="<%= contract_url %>/<%= contract.get("id") %>" class="btn btn-primary btn-sm"><i class="fa fa-eye width-10"></i> View Contract</a>
+								<a href="<%= contract_edit_url %>/<%= contract.get("id") %>" class="btn btn-primary btn-sm editable-button"><i class="fa fa-pencil width-10"></i> Edit Contract</a>
+								<a href="#" class="btn btn-danger btn-sm close-contract editable-button editable-button" data-id="<%= contract.get("id") %>"><i class="fa fa-times width-10"></i> Close Contract</a>
+							</div>
+						</div>
+						<div class="sales-order-details-by-product"></div>
+					</div>
+				</div>
+			</div>
+		</td>
+	</tr>
 	<% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="6">No result found.</td>
+		<td colspan="7">No result found.</td>
 	</tr>
 <% } %>

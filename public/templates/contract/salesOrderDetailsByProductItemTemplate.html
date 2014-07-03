@@ -1,0 +1,63 @@
+<% if (!_.isEmpty(products)) { %>
+	<% _.each(products, function(product){ %>
+		<div class="row margin-top-0 padding-top-10">
+			<div class="col-md-12">Product: <%= product.get("product_name") %></div>
+		</div>
+		<div class="row margin-top-0">
+			<div class="col-md-9">
+				<div class="content-inner table-responsive">
+					<table class="table-condensed table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>SO No.</th>
+								<th>Stack No.</th>
+								<th>Expected Quantity</th>
+								<th>Delivered Quantity</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							<% if (!_.isEmpty(product.get("salesorders"))) { %>
+								<% _.each(product.get("salesorders"), function(salesorder){ %>
+								<tr>
+									<td>
+										<a href="<%= sales_order_url %>/<%= salesorder.id %>" title="view"><%= salesorder.order_number %></a>
+									</td>
+									<td><%= salesorder.stacknumber %></td>
+									<td><%= salesorder.tons %></td>
+									<td></td>
+									<td><%= salesorder.status.name %></td>
+								</tr>
+								<% }); %>
+							<% } else { %>
+								<tr>
+									<td colspan="5">No results found.</td>
+								</tr>
+							<% } %>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="content-inner table-responsive">
+					<table class="table-condensed table-bordered table-hover">
+						<tbody>
+							<tr>
+								<td>Expected</td>
+								<td><%= product.get("total_tons") %></td>
+							</tr>
+							<tr>
+								<td>Total Deliveries</td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>Remaining</td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	<% }); %>
+<% } %>
