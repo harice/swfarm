@@ -1,47 +1,42 @@
-
-  <h2 class="ponumber margin-bottom-0"><%= po.get('order_number') %></h2>
-  <div class="row margin-top-0">
-    <div class="col-md-6">
-      <% if (typeof is_bid === "undefined") { %>
-        Purchased Date: <code><%= po.get("created_at").split(" ")[0] %></code><br>
-        Pickup Start: <code><%= po.get("transportdatestart").split(" ")[0] %></code>
-        Pickup End: <code><%= po.get("transportdateend").split(" ")[0] %></code><br>
-        Destination: <code><%= po.get('location').location %></code><br>
-      <% } %>
-      Status: <label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label><br>
-      <% if(po.get('status').id == 5 || po.get('status').id == 6) { if(po.get('ordercancellingreason').reason.id != reason_others ) { %>
-      Reason: <code><%= po.get('ordercancellingreason').reason.reason %></code>
-      <% } else { %>
-      Reason: <code><%= po.get('ordercancellingreason').others %></code>
-      <% }} %>
-    </div>
-    <div class="col-md-6">
-      Producer:
-      <address>
-        <p class="margin-top-5 margin-bottom-0"><strong><%= po.get('account').name %></strong></p>
-        <%= po.get('orderaddress').street %>
-        <br>
-        <%= po.get('orderaddress').city %>,
-        <%= po.get('orderaddress').address_states.state_code %>
-        <%= po.get('orderaddress').zipcode %>
-      </address>
-    </div>
+<h2 class="ponumber margin-bottom-0"><%= po.get('order_number') %></h2>
+<div class="row margin-top-0">
+  <div class="col-md-6">
+    <% if (typeof is_bid === "undefined") { %>
+      Purchased Date: <code><%= po.get("created_at").split(" ")[0] %></code><br>
+      Pickup Start: <code><%= po.get("transportdatestart").split(" ")[0] %></code>
+      Pickup End: <code><%= po.get("transportdateend").split(" ")[0] %></code><br>
+      Destination: <code><%= po.get('location').location %></code><br>
+    <% } %>
+    Status: <label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label>
+    <% if(po.get('status').id == 5 || po.get('status').id == 6) { if(po.get('ordercancellingreason').reason.id != reason_others ) { %>
+    <br>Reason: <code><%= po.get('ordercancellingreason').reason.reason %></code>
+    <% } else { %>
+    <br>Reason: <code><%= po.get('ordercancellingreason').others %></code>
+    <% }} %>
+    <% if (typeof po.get('notes') != "undefined") { %>
+    <br>Notes: <%= po.get('notes') %>
+    <% } %>
   </div>
-
-  <div class="row margin-top-10">
-    <div class="col-md-12">
-      <blockquote>
-        <p><%= po.get('notes') %></p>
-        <small>Notes</small>
-      </blockquote>
-    </div>
+  <div class="col-md-6">
+    Producer:
+    <address>
+      <p class="margin-top-5 margin-bottom-0"><strong><%= po.get('account').name %></strong></p>
+      <%= po.get('orderaddress').street %>
+      <br>
+      <%= po.get('orderaddress').city %>,
+      <%= po.get('orderaddress').address_states.state_code %>
+      <%= po.get('orderaddress').zipcode %>
+    </address>
   </div>
+</div>
+<div class="row margin-top-10">
+  <div class="col-md-12">
+    <h3 class="margin-top-0">Products</h3>
+  </div>
+</div>
 
     <form id="poForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
       <fieldset>
-        <legend>
-          Products
-        </legend>
         <div class="table-responsive">
           <table id="product-list" class="table table-bordered">
             <thead>

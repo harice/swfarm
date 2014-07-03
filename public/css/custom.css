@@ -447,6 +447,14 @@ ul.autocomplete li.active a {
   background-color: #fff;
   border: 1px solid #f1f1f1;
 }
+.nav-tabs.inner-tabs-menu > li.active > a,
+.nav-tabs.inner-tabs-menu > li.active > a:hover,
+.nav-tabs.inner-tabs-menu > li.active > a:focus {
+  padding: 5px 10px;
+}
+.inner-tabs-menu > li.active a {
+  padding: 5px 10px;
+}
 .inner-tabs-menu > li a {
   font-size: 12px;
   padding: 5px 10px;
