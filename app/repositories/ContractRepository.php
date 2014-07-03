@@ -235,13 +235,15 @@ class ContractRepository implements ContractRepositoryInterface {
 //                $weight_tickets[] += $weight_ticket;
 //            }
             
-            $result = array(
-                'schedules' => $schedules,
-                // 'weight_tickets' => $weight_tickets,
-                'products' => array_values($products)
-            );
+            $result = array_values($products);
             
-            return array_values($products);
+//            $result = array(
+//                // 'schedules' => $schedules,
+//                // 'weight_tickets' => $weight_tickets,
+//                'products' => array_values($products)
+//            );
+            
+            return $result;
         }
         catch (Exception $e)
         {
