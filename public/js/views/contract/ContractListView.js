@@ -68,6 +68,8 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
+			
+			this.setListOptions();
 		},
 		
 		displayList: function () {
@@ -83,12 +85,21 @@ define([
 			
 			var innerListTemplate = _.template(contractInnerListTemplate, data);
 			this.subContainer.find("#contract-list tbody").html(innerListTemplate);
-			
+			this.collapseSelected();
 			this.generatePagination();
+		},
+		
+		setListOptions: function () {
+			var options = this.collection.listView;
+			console.log(options);
+			
+			if(options.search != '')
+				this.$el.find('#search-keyword').val(options.search);
 		},
 		
 		events: {
 			'click #contract-accordion tr.collapse-trigger': 'toggleAccordion',
+			'click .stop-propagation': 'linkStopPropagation',
 		},
 		
 		toggleAccordion: function (ev) {
@@ -97,23 +108,22 @@ define([
 			this.toggleAccordionAndRequestACollection(ev.currentTarget,
 				SalesOrderDetailsByProductCollection,
 				function (collection, id) {
-					/*var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
-					_.each(collection.models, function (model) {
-						var schedules = model.get('schedule');
-						if(schedules.length > 0) {
-							for(var i=0; i<schedules.length; i++) {
-								var s = schedules[i].transportscheduledate.split(' ');
-								schedules[i].transportscheduledate = thisObj.convertDateFormat(s[0], 'yyyy-mm-dd', thisObj.dateFormat, '-')+' '+s[1];			
-							}
-							model.set('schedule', schedules);
-						}
-					});
-					
-					$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(collection.models, id));*/
+					var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
+					$('#'+collapsibleId).find('.sales-order-details-by-product').html(thisObj.generateSalesOrderDetailsByProduct(collection.models, id));
 				}
 			);
 			
 			return false;
+		},
+		
+		generateSalesOrderDetailsByProduct: function (models) {
+			var data = {
+				products: models,
+				contract_url: '/#/'+Const.URL.CONTRACT,
+				sales_order_url: '/#/'+Const.URL.SO,
+				_: _ 
+			};
+			return _.template(salesOrderDetailsByProductItemTemplate, data);
 		},
 	});
 
