@@ -231,7 +231,7 @@ class ContractRepository implements ContractRepositoryInterface {
                 // 'contracts' => $contracts->toArray()
             );
             
-            return $result;
+            return $products;
         }
         catch (Exception $e)
         {
