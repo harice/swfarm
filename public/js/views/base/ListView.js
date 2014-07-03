@@ -21,7 +21,6 @@ define([
 		},
 		
 		generatePagination: function (maxItem, maxItemPerPage) {
-            console.log('generatePagination');
 			if(maxItem == null)
 				var maxItem = this.collection.getMaxItem();
 			if(maxItemPerPage == null)
@@ -35,9 +34,7 @@ define([
 
 			if(maxItem > 15)
 				$('.display-items').show();
-			console.log('this.collection.getMaxItem(): '+this.collection.getMaxItem());
-			console.log(maxItem+' / '+maxItemPerPage);
-			console.log('lastPage: '+lastPage);
+			
 			if(lastPage > 1) {
 				$('.pagination').show();
 				//$('.display-items').show();
