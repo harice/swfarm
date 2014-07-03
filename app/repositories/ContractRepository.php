@@ -21,8 +21,7 @@ class ContractRepository implements ContractRepositoryInterface {
                 ->take($perPage)
                 ->offset($offset)
                 ->orderBy($sortby, $orderby)
-                ->limit($perPage)
-                ->get();
+                ->paginate($perPage);
             
             return $result;
         }
@@ -206,29 +205,43 @@ class ContractRepository implements ContractRepositoryInterface {
                 // var_dump($product->id);
                 $product = Product::find($product->id);
                 
-                $item_sales = Order::with('status')
+                $salesorders = Order::with('status')
                     ->join('productorder', 'order.id', '=', 'productorder.order_id')
                     ->where('ordertype', '=', 2)
                     ->where('contract_id', '=', $id)
                     ->where('product_id', '=', $product->id)
-                    ->get(array('order.id', 'order_number', 'contract_id', 'stacknumber', 'tons', 'bales', 'product_id', 'status_id'));
+                    // ->get(array('order.id', 'order_number', 'contract_id', 'stacknumber', 'tons', 'bales', 'product_id', 'status_id'));
+                    ->get();
                 
                 $total_tons = 0;
-                foreach ($item_sales as $item) {
-                    $total_tons += $item->tons;
+                foreach ($salesorders as $order) {
+                    $total_tons += $order->tons;
+                    
+                    $schedules[$order->id] = array_flatten(TransportSchedule::where('order_id', '=', $order->id)->get(array('id'))->toArray());
                 }
                 
                 $products[$product->id] = array(
                     'product_id' => $product->id,
                     'product_name' => $product->name,
                     'total_tons' => $total_tons,
-                    'salesorders' => $item_sales->toArray()
+                    'salesorders' => $salesorders->toArray()
                 );
             }
             
-            $result = array_values($products);
+//            foreach ($schedules as $schedule) {
+//                foreach($schedule as $id) {
+//                    $weight_ticket = WeightTicket::where('transportSchedule_id', '=', $id);
+//                }
+//                $weight_tickets[] += $weight_ticket;
+//            }
             
-            return $result;
+            $result = array(
+                'schedules' => $schedules,
+                // 'weight_tickets' => $weight_tickets,
+                'products' => array_values($products)
+            );
+            
+            return array_values($products);
         }
         catch (Exception $e)
         {
