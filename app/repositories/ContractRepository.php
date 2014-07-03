@@ -17,11 +17,12 @@ class ContractRepository implements ContractRepositoryInterface {
             $orderby  = isset($params['orderby']) ? $params['orderby'] :'DSC';
             $offset   = $page * $perPage - $perPage;
             
-            $result = Contract::with('salesorders', 'products', 'account', 'account.address', 'status')
+            $result = Contract::with('salesorders', 'products', 'productorders', 'account', 'account.address', 'status')
                 ->take($perPage)
                 ->offset($offset)
                 ->orderBy($sortby, $orderby)
-                ->paginate($perPage);
+                ->limit($perPage)
+                ->get();
             
             return $result;
         }
@@ -78,7 +79,7 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         try
         {
-            $contract = Contract::with('products', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')->find($id);
+            $contract = Contract::with('products', 'salesorders', 'productorders', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')->find($id);
             
             if (!$contract) {
                 throw new NotFoundException();
@@ -196,6 +197,10 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         try
         {
+            $contracts = Contract::with('products', 'salesorders', 'productorders', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')->find($id);
+            
+            $product_orders = $contracts->productorders;
+            
             $product_ids = Order::
                 join('productorder', 'order.id', '=', 'productorder.order_id')
                 ->where('ordertype', '=', 2)
@@ -211,7 +216,7 @@ class ContractRepository implements ContractRepositoryInterface {
                 ->get();
             
             $products = array();
-            foreach($product_ids as $ids) {
+            foreach($product_orders as $ids) {
                 $product = Product::find($ids['product_id']);
                 
                 $item_sales = Order::with('status')
@@ -226,7 +231,7 @@ class ContractRepository implements ContractRepositoryInterface {
                     $total_tons += $item->tons;
                 }
                 
-                $products[] = array(
+                $products[$ids['product_id']] = array(
                     'product_id' => $ids['product_id'],
                     'product_name' => $product->name,
                     'total_tons' => $total_tons,
@@ -234,12 +239,9 @@ class ContractRepository implements ContractRepositoryInterface {
                 );
             }
             
-            $result = array(
-                'products' => $products,
-                // 'salesorder' => $salesorder->toArray()
-            );
+            $result = array_values($products);
             
-            return $products;
+            return $result;
         }
         catch (Exception $e)
         {

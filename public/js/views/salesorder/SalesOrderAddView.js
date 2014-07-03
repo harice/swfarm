@@ -213,7 +213,9 @@ define([
                 
         // Contracts
         generateContract: function () {
-			var contract_list = _.template(contractTemplate, {'contracts': this.contractCollection.models});
+            // TODO: Filter contracts by account id
+			// var contract_list = _.template(contractTemplate, {'contracts': this.contractCollection.where({ account_id: 2 })});
+            var contract_list = _.template(contractTemplate, {'contracts': this.contractCollection.models});
 			this.$el.find('#contract select').append(contract_list);
 		},
 		
