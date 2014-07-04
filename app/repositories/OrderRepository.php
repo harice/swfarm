@@ -312,7 +312,7 @@ class OrderRepository implements OrderRepositoryInterface {
                 $this->deleteProductOrder($id, null);
             }
 
-            if($productResult != null && $data['ordertype'] == 1){ //for purchase order only
+            if($productResult != null && $data['ordertype'] == 1 && $order->status_id != 4){ //for purchase order only, status 4 is pending
                 if($productResult['hasHoldProduct']){
                     $order->status_id = 7; //Testing status
                 } else {
