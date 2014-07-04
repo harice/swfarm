@@ -6,7 +6,7 @@
 			<a class="stop-propagation" href="<%= po_url %>/<%= po.get("id") %>"><%= po.get("order_number") %></a>
 			<span class="throbber_wrap" style="display: none;"><i class="fa fa-spinner fa-spin throbber_ajax"></i></span>
 		</td>
-		<td><a href="<%= account_url %>/<%= po.get("account").id %>"><%= po.get("account").name %></a></td>
+		<td><a href="<%= account_url %>/<%= po.get("account").id %>" class="stop-propagation"><%= po.get("account").name %></a></td>
 		<td>
             <% if (!_.isNull(po.get("location"))) { %>
                 <%= po.get("location").location %>
