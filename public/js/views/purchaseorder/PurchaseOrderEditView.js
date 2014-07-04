@@ -149,6 +149,10 @@ define([
 			if(this.subContainerExist())
 				this.supplyPOData();
 		},
+		
+		otherInitializations: function () {
+			this.initConvertToPOWindow();
+		},
 	});
 
   return PurchaseOrderEditView;

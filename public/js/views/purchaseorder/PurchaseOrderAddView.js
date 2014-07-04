@@ -16,6 +16,7 @@ define([
 	'text!templates/purchaseorder/purchaseOrderAddTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderProductItemTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderDestinationTemplate.html',
+	'text!templates/purchaseorder/convertToPOFormTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -35,6 +36,7 @@ define([
 			purchaseOrderAddTemplate,
 			productItemTemplate,
 			purchaseOrderDestinationTemplate,
+			convertToPOFormTemplate,
 			Global,
 			Const
 ){
@@ -201,8 +203,12 @@ define([
 			});
 		},
 		
+		getDestination: function () {
+			return _.template(purchaseOrderDestinationTemplate, {'destinations': this.destinationCollection.models});
+		},
+		
 		generateDestination: function () {
-			var destinationTemplate = _.template(purchaseOrderDestinationTemplate, {'destinations': this.destinationCollection.models});
+			var destinationTemplate = this.getDestination();
 			this.$el.find('#po-destination').html(destinationTemplate);
 			this.$el.find('#po-destination .radio-inline:first-child input[type="radio"]').attr('checked', true);
 		},
@@ -408,7 +414,9 @@ define([
 			'keyup .tons': 'onKeyUpTons',
 			'blur .tons': 'onBlurTon',
 			'keyup .bales': 'formatNumber',
-			'click #convert-po': 'convertPO',
+			//'click #convert-po': 'convertPO',
+			'click #convert-po': 'showConvertToPOConfirmationWindow',
+			'click #confirm-convert-po': 'convertPO',
 			'click #cancel-po': 'showConfirmationWindow',
 			'click #confirm-cancel-po': 'cancelPO',
 			'click .attach-pdf': 'attachPDF',
@@ -525,11 +533,6 @@ define([
                 );
 			}
 			return false;
-		},
-		
-		convertPO: function () {
-			this.isConvertToPO = true;
-			$('#poForm').submit();
 		},
 		
 		initPDFUpload: function () {
@@ -674,6 +677,61 @@ define([
 			this.$el.find('#pdf-icon-cont').show();
 			
 			return false;
+		},
+		
+		showConvertToPOConfirmationWindow: function (ev) {
+			this.showConfirmationWindow('modal-with-form-confirm');
+			return false;
+		},
+		
+		initConvertToPOWindow: function () {
+			var thisObj = this;
+			var form = _.template(convertToPOFormTemplate, {'destination': this.getDestination()});
+			
+			this.initConfirmationWindowWithForm('',
+										'confirm-convert-po',
+										'Convert To PO',
+										form,
+										'Convert To Purchase Order');
+			
+			this.$el.find('#bid-destination .radio-inline:first-child input[type="radio"]').attr('checked', true);
+			$('#modal-with-form-confirm .i-circle.warning').remove();
+			$('#modal-with-form-confirm h4').remove();
+			
+			this.initConvertPOCalendar();
+		},
+		
+		convertPO: function () {
+			//this.isConvertToPO = true;
+			//$('#poForm').submit();
+			
+			return false;
+		},
+		
+		initConvertPOCalendar: function () {
+			var thisObj = this;
+			
+			this.$el.find('#bid-start-date .input-group.date').datepicker({
+				orientation: "top left",
+				autoclose: true,
+				clearBtn: true,
+				todayHighlight: true,
+				format: this.dateFormat,
+			}).on('changeDate', function (ev) {
+				var selectedDate = $('#bid-start-date .input-group.date input').val();
+				thisObj.$el.find('#bid-end-date .input-group.date').datepicker('setStartDate', selectedDate);
+			});
+			
+			this.$el.find('#bid-end-date .input-group.date').datepicker({
+				orientation: "top left",
+				autoclose: true,
+				clearBtn: true,
+				todayHighlight: true,
+				format: this.dateFormat,
+			}).on('changeDate', function (ev) {
+				var selectedDate = $('#bid-end-date .input-group.date input').val();
+				thisObj.$el.find('#bid-start-date .input-group.date').datepicker('setEndDate', selectedDate);
+			});
 		},
 		
 		otherInitializations: function () {},
