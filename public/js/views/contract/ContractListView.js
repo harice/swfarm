@@ -1,23 +1,27 @@
 define([
 	'backbone',
-	'views/base/ListView',
+	'views/base/AccordionListView',
 	'models/contract/ContractModel',
 	'collections/contract/ContractCollection',
+	'collections/contract/SalesOrderDetailsByProductCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/contract/contractListTemplate.html',
 	'text!templates/contract/contractInnerListTemplate.html',
+	'text!templates/contract/salesOrderDetailsByProductItemTemplate.html',
 	'constant'
 ], function(Backbone,
-			ListView,
+			AccordionListView,
 			ContractModel,
 			ContractCollection,
+			SalesOrderDetailsByProductCollection,
 			contentTemplate,
-			trailerListTemplate,
-			trailerInnerListTemplate,
+			contractListTemplate,
+			contractInnerListTemplate,
+			salesOrderDetailsByProductItemTemplate,
 			Const
 ){
 
-	var ContractListView = ListView.extend({
+	var ContractListView = AccordionListView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
@@ -47,7 +51,7 @@ define([
 		
 		render: function(){
 			this.displayContract();
-			this.renderList(1);
+			this.renderList(this.collection.listView.currentPage);
 			Backbone.View.prototype.refreshTitle('Contract','list');
 		},
 		
@@ -55,7 +59,7 @@ define([
 			var innerTemplateVar = {
 				'contract_add_url' : '#/'+Const.URL.CONTRACT+'/'+Const.CRUD.ADD
 			};
-			var innerTemplate = _.template(trailerListTemplate, innerTemplateVar);
+			var innerTemplate = _.template(contractListTemplate, innerTemplateVar);
 			
 			var variables = {
 				h1_title: 'Contract',
@@ -65,10 +69,7 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
 			
-			this.initConfirmationWindow('Are you sure you want to delete this Contract?',
-										'confirm-delete-contract',
-										'Delete',
-										'Delete Contract');
+			this.setListOptions();
 		},
 		
 		displayList: function () {
@@ -78,43 +79,52 @@ define([
                 contract_url: '#/'+Const.URL.CONTRACT,
 				contract_edit_url: '#/'+Const.URL.CONTRACT+'/'+Const.CRUD.EDIT,
 				contracts: this.collection.models,
+				collapsible_id: Const.PO.COLLAPSIBLE.ID,
 				_: _ 
 			};
 			
-			var innerListTemplate = _.template(trailerInnerListTemplate, data);
+			var innerListTemplate = _.template(contractInnerListTemplate, data);
 			this.subContainer.find("#contract-list tbody").html(innerListTemplate);
-			
+			this.collapseSelected();
 			this.generatePagination();
 		},
 		
-		events: {
-			'click .delete-contract': 'preShowConfirmationWindow',
-			'click #confirm-delete-contract': 'deleteContract'
+		setListOptions: function () {
+			var options = this.collection.listView;
+			console.log(options);
+			
+			if(options.search != '')
+				this.$el.find('#search-keyword').val(options.search);
 		},
 		
-		preShowConfirmationWindow: function (ev) {
-			this.$el.find('#confirm-delete-contract').attr('data-id', $(ev.currentTarget).attr('data-id'));
+		events: {
+			'click #contract-accordion tr.collapse-trigger': 'toggleAccordion',
+			'click .stop-propagation': 'linkStopPropagation',
+		},
+		
+		toggleAccordion: function (ev) {
+			var thisObj = this;
 			
-			this.showConfirmationWindow();
+			this.toggleAccordionAndRequestACollection(ev.currentTarget,
+				SalesOrderDetailsByProductCollection,
+				function (collection, id) {
+					var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
+					$('#'+collapsibleId).find('.sales-order-details-by-product').html(thisObj.generateSalesOrderDetailsByProduct(collection.models, id));
+				}
+			);
+			
 			return false;
 		},
 		
-		deleteContract: function (ev) {
-			var thisObj = this;
-			var contractModel = new ContractModel({id:$(ev.currentTarget).attr('data-id')});
-			
-            contractModel.destroy({
-                success: function (model, response, options) {
-                    thisObj.displayMessage(response);
-                    thisObj.renderList(1);
-                },
-                error: function (model, response, options) {
-                    thisObj.displayMessage(response);
-                },
-                wait: true,
-                headers: contractModel.getAuth()
-            });
-		}
+		generateSalesOrderDetailsByProduct: function (models) {
+			var data = {
+				products: models,
+				contract_url: '/#/'+Const.URL.CONTRACT,
+				sales_order_url: '/#/'+Const.URL.SO,
+				_: _ 
+			};
+			return _.template(salesOrderDetailsByProductItemTemplate, data);
+		},
 	});
 
 	return ContractListView;

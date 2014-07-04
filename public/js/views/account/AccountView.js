@@ -51,8 +51,12 @@ define([
 		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
-			'click #delete-account': 'showConfirmationWindow',
+			'click #delete-account': 'showDeleteConfirmationWindow',
 			'click #confirm-delete-account': 'deleteAccount',
+		},
+		
+		showDeleteConfirmationWindow: function () {
+			this.showConfirmationWindow();
 		},
 		
 		deleteAccount: function (){

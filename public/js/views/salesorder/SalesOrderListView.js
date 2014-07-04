@@ -1,6 +1,6 @@
 define([
 	'backbone',
-	'views/base/ListView',
+	'views/base/AccordionListView',
 	'collections/salesorder/SalesOrderCollection',
 	'collections/salesorder/OriginCollection',
 	'collections/salesorder/NatureOfSaleCollection',
@@ -18,7 +18,7 @@ define([
 	'text!templates/purchaseorder/orderWeightDetailsByStackItemTemplate.html',
 	'constant',
 ], function(Backbone,
-			ListView,
+			AccordionListView,
 			SalesOrderCollection,
 			OriginCollection,
 			NatureOfSaleCollection,
@@ -37,7 +37,7 @@ define([
 			Const
 ){
 
-	var SalesOrderListView = ListView.extend({
+	var SalesOrderListView = AccordionListView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
@@ -157,12 +157,6 @@ define([
 			this.subContainer.find("#so-list tbody").html(innerListTemplate);
 			this.collapseSelected();
 			this.generatePagination();
-		},
-		
-		collapseSelected: function () {
-			var id = this.collection.getCollapseId();
-			if(id)
-				this.$el.find('.collapse-trigger[data-id="'+id+'"]').trigger('click');
 		},
 		
 		setListOptions: function () {
@@ -352,6 +346,31 @@ define([
 		
 		toggleAccordion: function (ev) {
 			var thisObj = this;
+			
+			this.toggleAccordionAndRequestACollection(ev.currentTarget,
+				OrderWeightDetailsByStackCollection,
+				function (collection, id) {
+					var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
+					_.each(collection.models, function (model) {
+						var schedules = model.get('schedule');
+						if(schedules.length > 0) {
+							for(var i=0; i<schedules.length; i++) {
+								var s = schedules[i].transportscheduledate.split(' ');
+								schedules[i].transportscheduledate = thisObj.convertDateFormat(s[0], 'yyyy-mm-dd', thisObj.dateFormat, '-')+' '+s[1];			
+							}
+							model.set('schedule', schedules);
+						}
+					});
+					
+					$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(collection.models, id));
+				}
+			);
+			
+			return false;
+		},
+		
+		/*toggleAccordion: function (ev) {
+			var thisObj = this;
 			var id = $(ev.currentTarget).attr('data-id');
 			var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
 			
@@ -397,7 +416,7 @@ define([
 				$('#'+collapsibleId).collapse('toggle');
 				$(ev.currentTarget).find('.accordion-carret').removeClass('fa-angle-down').addClass('fa-angle-right');
 			}
-		},
+		},*/
 		
 		generateOrderWeightDetailsByStack: function (models, soId) {
 			var data = {

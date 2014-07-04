@@ -17,7 +17,7 @@ class ContractRepository implements ContractRepositoryInterface {
             $orderby  = isset($params['orderby']) ? $params['orderby'] :'DSC';
             $offset   = $page * $perPage - $perPage;
             
-            $result = Contract::with('salesorders', 'products', 'account', 'account.address', 'status')
+            $result = Contract::with('salesorders', 'products', 'productorders', 'account', 'account.address', 'status')
                 ->take($perPage)
                 ->offset($offset)
                 ->orderBy($sortby, $orderby)
@@ -78,7 +78,7 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         try
         {
-            $contract = Contract::with('products', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')->find($id);
+            $contract = Contract::with('products', 'salesorders', 'productorders', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')->find($id);
             
             if (!$contract) {
                 throw new NotFoundException();
@@ -185,6 +185,61 @@ class ContractRepository implements ContractRepositoryInterface {
             );
             
             return $response;
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
+    }
+    
+    public function salesorder($id)
+    {
+        try
+        {
+            $contracts = Contract::with('products', 'salesorders', 'productorders', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')
+                ->find($id);
+            $contract_products = $contracts->products;
+            
+            $products = array();
+            foreach($contract_products as $product) {
+                // var_dump($product->id);
+                $product = Product::find($product->id);
+                
+                $salesorders = Order::with('status')
+                    ->join('productorder', 'order.id', '=', 'productorder.order_id')
+                    ->where('ordertype', '=', 2)
+                    ->where('contract_id', '=', $id)
+                    ->where('product_id', '=', $product->id)
+                    ->get(array('order.id', 'order_number', 'contract_id', 'stacknumber', 'tons', 'bales', 'product_id', 'status_id'));
+                    // ->get();
+                
+                $total_tons = 0;
+                foreach ($salesorders as $order) {
+                    $total_tons += $order->tons;
+                    
+                    $schedules[$order->id] = array_flatten(TransportSchedule::where('order_id', '=', $order->id)->get(array('id'))->toArray());
+                }
+                
+                $products[$product->id] = array(
+                    'product_id' => $product->id,
+                    'product_name' => $product->name,
+                    'total_tons' => $total_tons,
+                    'salesorders' => $salesorders->toArray()
+                );
+            }
+            
+            $weight_tickets = WeightTicket::with('weightticketscale_dropoff')
+                // join('weightticketproducts', 'weightticket.dropoff_id', '=', 'weightticketproducts.id')
+                ->where('transportSchedule_id', '=', 41)
+                ->get();
+            
+            $result = array(
+                'schedules' => $schedules,
+                'weight_tickets' => $weight_tickets->toArray(),
+                'products' => array_values($products)
+            );
+            
+            return $result;
         }
         catch (Exception $e)
         {

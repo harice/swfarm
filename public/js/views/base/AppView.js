@@ -64,15 +64,19 @@ define([
 			return arrFormattedDate.join(separator);
 		},
 		
-		initConfirmationWindow: function (content, buttonId, buttonLabel, title, dismissModal) {
+		initConfirmationWindow: function (content, buttonId, buttonLabel, title, dismissModal, modalId) {
 			if($('.modal-alert-cont').find('#modal-confirm').length)
 				$('.modal-alert-cont').find('#modal-confirm').remove();
+			
+			if(modalId == null || typeof modalId == 'undefined')
+			modalId = 'modal-confirm';
 			
 			var confirmTemplateVariables = {
 				confirm_title: title,
 				confirm_content: content,
 				confirm_button_id: buttonId,
 				confirm_button_label: buttonLabel,
+				confirm_modal_id: modalId,
 			};
 			
 			if(dismissModal == null || typeof dismissModal == 'undefined' || dismissModal == true)
@@ -123,13 +127,15 @@ define([
 		},
 		
 		hideConfirmationWindow: function (id, callback) {
+			var thisObj = this;
 			
 			if(id == null)
 				id = 'modal-confirm';
 			
 			$('#'+id).on('hidden.bs.modal', function (e) {
 				var getType = {};
-				if(callback && getType.toString.call(callback) === '[object Function]')
+				//if(callback && getType.toString.call(callback) === '[object Function]')
+				if(thisObj.isFunction(callback))
 					callback();
 			});
 			
@@ -361,6 +367,14 @@ define([
 		
 		linkStopPropagation: function (ev) {
 			ev.stopPropagation();
+		},
+		
+		isFunction: function (f) {
+			var getType = {};
+			if(f && getType.toString.call(f) === '[object Function]')
+				return true;
+			else
+				return false;
 		},
 	});
 
