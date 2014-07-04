@@ -699,12 +699,30 @@ define([
 			$('#modal-with-form-confirm h4').remove();
 			
 			this.initConvertPOCalendar();
+			
+			var validate = $('#convertToPOForm').validate({
+				submitHandler: function(form) {
+					var data = $(form).serializeObject();
+					console.log(data);
+					//this.isConvertToPO = true;
+					//$('#poForm').submit();
+				},
+				errorPlacement: function(error, element) {
+					if(element.hasClass('form-date')) {
+						element.closest('.calendar-cont').siblings('.error-msg-cont').html(error);
+					}
+					else if(element.hasClass('price')) {
+						element.closest('.input-group').siblings('.error-msg-cont').html(error);
+					}
+					else {
+						error.insertAfter(element);
+					}
+				},
+			});
 		},
 		
 		convertPO: function () {
-			//this.isConvertToPO = true;
-			//$('#poForm').submit();
-			
+			$('#convertToPOForm').submit();
 			return false;
 		},
 		
