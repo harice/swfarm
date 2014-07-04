@@ -14,6 +14,7 @@
             <% total_tons = total_tons + parseFloat(product.pivot.tons) %>
         <% }); %>
         <td><%= total_tons.toFixed(4) %></td>
+        <td></td>
         <td><label class="label label-<%= contract.get("status").class %>"><%= contract.get("status").name %></label></td>
 		<td>
 			<a href="<%= contract_edit_url %>/<%= contract.get("id") %>" class="text-primary" title="edit">
@@ -25,7 +26,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td colspan="7" style="padding:0;">
+		<td colspan="8" style="padding:0;">
 			<div class="contract-collapsible-item list-view-collapse collapse" id="<%= collapsible_id %><%= contract.get("id") %>">
 				<div style="width:100%; padding:8px;">
 					<div style="width:100%; padding:8px; background-color:#fff;">

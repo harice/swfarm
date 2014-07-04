@@ -17,7 +17,7 @@ class ContractRepository implements ContractRepositoryInterface {
             $orderby  = isset($params['orderby']) ? $params['orderby'] :'DSC';
             $offset   = $page * $perPage - $perPage;
             
-            $result = Contract::with('salesorders', 'products', 'productorders', 'account', 'account.address', 'status')
+            $result = Contract::with('salesorders', 'schedules', 'products', 'productorders', 'account', 'account.address', 'status')
                 ->take($perPage)
                 ->offset($offset)
                 ->orderBy($sortby, $orderby)
@@ -105,7 +105,7 @@ class ContractRepository implements ContractRepositoryInterface {
                 $contract = $this->instance();
                 $contract->fill($data);
                 $contract->save();
-
+                
                 $new_products = array();
                 foreach ($data['products'] as $product)
                 {
@@ -239,7 +239,7 @@ class ContractRepository implements ContractRepositoryInterface {
                 'products' => array_values($products)
             );
             
-            return $result;
+            return array_values($products);
         }
         catch (Exception $e)
         {
