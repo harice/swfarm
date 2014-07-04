@@ -107,6 +107,10 @@ class OrderRepository implements OrderRepositoryInterface {
             $deliveredWeight = 0;
             foreach($productOrder['transportscheduleproduct'] as $transportscheduleproduct){
                 $weightTypeToBeUsed = 1; //pickup weight ticket default
+                if(!isset($transportscheduleproduct['transportschedule']['weightticket'])){
+                    continue;
+                }
+                
                 $weightTicket = $transportscheduleproduct['transportschedule']['weightticket'];
 
                 if($weightTicket['pickup_id'] != null && $weightTicket['dropoff_id'] != null){ //with both pickup and dropoff weight ticket
@@ -314,7 +318,7 @@ class OrderRepository implements OrderRepositoryInterface {
                 $this->deleteProductOrder($id, null);
             }
 
-            if($productResult != null && $data['ordertype'] == 1){ //for purchase order only
+            if($productResult != null && $data['ordertype'] == 1 && $order->status_id != 4){ //for purchase order only, status 4 is pending
                 if($productResult['hasHoldProduct']){
                     $order->status_id = 7; //Testing status
                 } else {

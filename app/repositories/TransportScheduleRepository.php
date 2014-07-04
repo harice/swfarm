@@ -170,7 +170,6 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
             $result = $this->getTotalWeightScheduleForProduct($product['productorder_id']);
           }
           
-
           if(floatval($product['quantity']) > $result['quantityRemaining']){
               $productOrderDetails = ProductOrder::find($product['productorder_id']);
               return array(
