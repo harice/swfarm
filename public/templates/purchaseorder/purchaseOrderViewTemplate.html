@@ -1,90 +1,89 @@
-<h2 class="ponumber margin-bottom-0"><%= po.get('order_number') %></h2>
-<div class="row margin-top-0">
-  <div class="col-md-6">
-    <% if (typeof is_bid === "undefined") { %>
-      Purchased Date: <code><%= po.get("created_at").split(" ")[0] %></code><br>
-      Pickup Start: <code><%= po.get("transportdatestart").split(" ")[0] %></code>
-      Pickup End: <code><%= po.get("transportdateend").split(" ")[0] %></code><br>
-      Destination: <code><%= po.get('location').location %></code><br>
-    <% } %>
-    Status: <label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label>
-    <% if(po.get('status').id == 5 || po.get('status').id == 6) { if(po.get('ordercancellingreason').reason.id != reason_others ) { %>
-    <br>Reason: <code><%= po.get('ordercancellingreason').reason.reason %></code>
-    <% } else { %>
-    <br>Reason: <code><%= po.get('ordercancellingreason').others %></code>
-    <% }} %>
-    <% if (typeof po.get('notes') != "undefined") { %>
-    <br>Notes: <%= po.get('notes') %>
-    <% } %>
+<div class="content padding-top-0">
+  <h2 class="ponumber margin-bottom-0"><%= po.get('order_number') %></h2>
+  <div class="row margin-top-0">
+    <div class="col-md-6">
+      <% if (typeof is_bid === "undefined") { %>
+        Purchased Date: <code><%= po.get("created_at").split(" ")[0] %></code><br>
+        Pickup Start: <code><%= po.get("transportdatestart").split(" ")[0] %></code>
+        Pickup End: <code><%= po.get("transportdateend").split(" ")[0] %></code><br>
+        Destination: <code><%= po.get('location').location %></code><br>
+      <% } %>
+      Status: <label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label>
+      <% if(po.get('status').id == 5 || po.get('status').id == 6) { if(po.get('ordercancellingreason').reason.id != reason_others ) { %>
+      <br>Reason: <code><%= po.get('ordercancellingreason').reason.reason %></code>
+      <% } else { %>
+      <br>Reason: <code><%= po.get('ordercancellingreason').others %></code>
+      <% }} %>
+      <% if (typeof po.get('notes') != "undefined") { %>
+      <br>Notes: <code><%= po.get('notes') %></code>
+      <% } %>
+    </div>
+    <div class="col-md-6">
+      Producer:
+      <address>
+        <p class="margin-top-5 margin-bottom-0"><strong><%= po.get('account').name %></strong></p>
+        <%= po.get('orderaddress').street %>
+        <br>
+        <%= po.get('orderaddress').city %>,
+        <%= po.get('orderaddress').address_states.state_code %>
+        <%= po.get('orderaddress').zipcode %>
+      </address>
+    </div>
   </div>
-  <div class="col-md-6">
-    Producer:
-    <address>
-      <p class="margin-top-5 margin-bottom-0"><strong><%= po.get('account').name %></strong></p>
-      <%= po.get('orderaddress').street %>
-      <br>
-      <%= po.get('orderaddress').city %>,
-      <%= po.get('orderaddress').address_states.state_code %>
-      <%= po.get('orderaddress').zipcode %>
-    </address>
-  </div>
-</div>
-<div class="row margin-top-10">
-  <div class="col-md-12">
-    <h3 class="margin-top-0">Products</h3>
-  </div>
-</div>
+  <div class="row margin-top-10">
+    <div class="col-md-12">
+      <h3 class="margin-top-0">Products</h3>
+      <div class="content-inner table-responsive">
+        <table id="product-list" class="table-condensed table-bordered table-hover">
+          <thead>
+            <tr>
+              <th class="width-150">Product</th>
+              <th>Description</th>
+              <th class="width-110">Stack No.</th>
+              <th class="width-110">Est Tons</span></th>
+              <th class="width-110">Bales</th>
 
-    <form id="poForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-      <fieldset>
-        <div class="table-responsive">
-          <table id="product-list" class="table table-bordered">
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th>Description</th>
-                <th>Stack No.</th>
-                <th  class="width-130">
+              <th class="width-110">
                 <% if (typeof is_bid === "undefined") { %>
                   Unit Price
                 <% } else { %>
                   Bid Unit Price
                 <% } %>
-                </th>
-                <th>Est Tons</th>
-                <th>Bales</th>
-                <th  class="width-130">
+              </th>
+
+              <th class="width-110">
                 <% if (typeof is_bid === "undefined") { %>
                   Total Price
                 <% } else { %>
                   Bid Total Price
                 <% } %>
-                </th>
-                <% if (typeof is_bid === "undefined") { %>
-                <th>Hold for Testing</th>
-	<th>RFV</th>
-	<th>PDF</th>
-                <% } %>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </fieldset>
-      <div class="form-group form-button-container">
-          <div class="col-sm-12">
-              <div class="pull-right">
-              <% if (typeof editable !== "undefined") { %>
-                <% if (typeof is_bid === "undefined") { %>
-	  <a id="close-order" class="btn btn-primary editable-button" href="#">Close Purchase Order</a>
-                  <a id="edit-po" class="btn btn-primary editable-button" href="<%= po_edit_url %>">Edit Purchase Order</a>
-                <% } else {%>
-                  <a id="edit-po" class="btn btn-primary" href="<%= po_edit_url %>">Edit Bid</a>
-                <% } %>
+              </th>
+
+              <% if (typeof is_bid === "undefined") { %>
+              <th class="width-60">Testing</th>
+              <th class="width-60">RFV</th>
+              <th class="width-40">PDF</th>
               <% } %>
-              <a class="btn btn-default" href="<%= po_url %>">Back To PO List</a>
-              </div>
-          </div>
+
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
-    </form>
+      <div class="pull-right margin-top-10">
+        <% if (typeof editable !== "undefined") { %>
+          <% if (typeof is_bid === "undefined") { %>
+            <a id="edit-po" class="btn btn-primary btn-sm editable-button" href="<%= po_edit_url %>"><i class="fa fa-pencil width-10"></i> Edit PO</a>
+            <a id="close-order" class="btn btn-danger btn-sm editable-button" href="#"><i class="fa fa-times width-10"></i> Close PO</a>
+            <a href="#" class="btn btn-danger btn-sm cancel-po editable-button"><i class="fa fa-ban width-10"></i> Cancel PO</a>
+          <% } else {%>
+            <a id="edit-po" class="btn btn-primary btn-sm" href="<%= po_edit_url %>"><i class="fa fa-pencil width-10"></i> Edit Bid</a>
+            <a href="#" class="btn btn-danger btn-sm cancel-bid"><i class="fa fa-ban width-10"></i> Cancel Bid</a>
+          <% } %>
+        <% } %>
+        <a class="btn btn-link btn-sm" href="<%= po_url %>"><i class="fa fa-angle-double-left"></i> Back</a>
+      </div>
+    </div>
+  </div>
+</div>
     

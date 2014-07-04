@@ -1,13 +1,9 @@
 <tr class="product-item">
-	<td>
-		<input class="form-control productname" type="text" maxlength="20" value="<%= productname %>" readonly>
-	</td>
-	<td><input class="form-control description" name="description" maxlength="80" value="<%= description %>" readonly></td>
-	<td><input class="form-control stacknumber" type="text" value="<%= stacknumber %>" maxlength="20" readonly></td>
-	<td>
-		<div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right price unitprice" type="text" value="<%= unitprice %>" readonly></div>
-	</td>
-	<td><input class="form-control text-right number tons" type="text" value="<%= tons %>" readonly></td>
-	<td><input class="form-control text-right number bales" type="text" value="<%= bales %>" readonly></td>
-	<td><div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right totalprice" type="text" value="<%= totalprice %>" readonly></div></td>
+	<td><%= productname %></td>
+	<td><%= description %></td>
+	<td><code><%= stacknumber %></code></td>
+	<td class="text-right"><%= tons %></td>
+	<td class="text-right"><%= bales %></td>
+	<td class="text-right">$ <%= unitprice %></td>
+	<td class="text-right">$ <%= totalprice %></td>
 </tr>

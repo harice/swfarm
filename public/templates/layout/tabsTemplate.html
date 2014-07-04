@@ -4,7 +4,4 @@
 		<li <% if (typeof tab.active != "undefined") { %>class="active"<% } %>><a href="<%= tab.url %>"><%= tab.label %></a></li>
 		<% }); %>
 	</ul>
-	<% if (typeof back_url != "undefined" && typeof back_label != "undefined") { %>
-	<a class="btn btn-default pull-right" href="<%= back_url %>" style="position:absolute; top:0; right:0;"><%= back_label %></a>
-	<% } %>
 </div>

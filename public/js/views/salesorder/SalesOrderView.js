@@ -77,6 +77,8 @@ define([
 			var innerTemplateVariables = {
 				'so_url' : '#/'+Const.URL.SO,
 				'so_edit_url' : '#/'+Const.URL.SO+'/'+Const.CRUD.EDIT+'/'+this.soId,
+				so : this.model,
+				reason_others : Const.CANCELLATIONREASON.OTHERS
 			};
 			
 			if(this.model.get('status').name.toLowerCase() == 'open')
@@ -95,34 +97,7 @@ define([
 		
 		supplySOData: function () {
 			var thisObj = this;
-			
-			var account = this.model.get('account');
-			var address = [this.model.get('orderaddress')];
 			var products = this.model.get('productorder');
-			
-			this.$el.find('#sonumber').val(this.model.get('order_number'));
-			this.$el.find('#status').val(this.model.get('status').name);
-			
-			if(this.model.get('status').id == 3) {
-				this.$el.find('#cancel-reason-cont').show();
-				if(parseInt(this.model.get('ordercancellingreason').reason.id) != parseInt(Const.CANCELLATIONREASON.OTHERS))
-					this.$el.find('#cancel-reason-cont input').val(this.model.get('ordercancellingreason').reason.reason).show();
-				else
-					this.$el.find('#cancel-reason-cont textarea').val(this.model.get('ordercancellingreason').others).show();
-			}
-			
-			this.$el.find('#nos').val(this.model.get('natureofsale').name);
-			if(this.model.get('contract') && typeof this.model.get('contract').contract_number != 'undefined')
-				this.$el.find('#contract').val(this.model.get('contract').contract_number);
-			this.$el.find('#account').val(account.name);
-			this.$el.find('#street').val(address[0].street);
-			this.$el.find('#state').val(address[0].address_states[0].state);
-			this.$el.find('#city').val(address[0].city);
-			this.$el.find('#zipcode').val(address[0].zipcode);
-			this.$el.find('#dateofsales').val(this.convertDateFormat(this.model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
-			this.$el.find('#transportdatestart').val(this.convertDateFormat(this.model.get('transportdatestart').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
-			this.$el.find('#transportdateend').val(this.convertDateFormat(this.model.get('transportdateend').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
-			this.$el.find('#notes').val(this.model.get('notes'));
 			
 			_.each(products, function (product) {
 				var unitprice = (!isNaN(product.unitprice))? product.unitprice : 0;
