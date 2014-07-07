@@ -33,7 +33,6 @@ class ContractRepositoryTest extends TestCase {
             "account_id" => 1,
             "contract_date_start" => "2014-04-21 00:02:20",
             "contract_date_end" => "2014-04-21 00:02:21",
-            "status_id" => 1,
             "products" => array(
                 array(
                     "product_id" => 1,
@@ -50,7 +49,7 @@ class ContractRepositoryTest extends TestCase {
 
         $response = $this->repo->store($data);
 
-        // $this->assertTrue($response instanceof Model);
+        $this->assertTrue($response instanceof Model);
         // $this->assertTrue($response->name === $data['name']);
     }
     

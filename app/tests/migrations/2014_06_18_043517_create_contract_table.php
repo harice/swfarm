@@ -20,7 +20,7 @@ class CreateContractTable extends Migration {
             $table->integer('account_id')->unsigned();
             $table->timestamp('contract_date_start');
             $table->timestamp('contract_date_end');
-            $table->integer('status_id')->unsigned();
+            $table->integer('status_id')->unsigned()->default(1);
             $table->integer('user_id')->unsigned();
             $table->timestamps();
             

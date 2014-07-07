@@ -96,7 +96,7 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         $data['contract_number'] = $this->generateContractNumber('Contract', 'C');
         $data['user_id'] = Auth::user()->id;
-        $data['status_id'] = 1;
+        // $data['status_id'] = 1;
         $this->validate($data);
         
         try
@@ -286,7 +286,7 @@ class ContractRepository implements ContractRepositoryInterface {
         $validator = Validator::make($data, $rules);
         
         if ($validator->fails()) {
-            throw new ValidationException($validator->messages());
+            throw new ValidationException($validator);
         }
         
         return true;
