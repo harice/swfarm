@@ -96,7 +96,7 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         $data['contract_number'] = $this->generateContractNumber('Contract', 'C');
         $data['user_id'] = Auth::user()->id;
-        $data['status_id'] = 1;
+        // $data['status_id'] = 1;
         $this->validate($data);
         
         try
@@ -262,7 +262,8 @@ class ContractRepository implements ContractRepositoryInterface {
 
             $response = array(
                 'error' => false,
-                'message' => Lang::get('messages.success.deleted', array('entity' => 'Contract'))
+                'message' => Lang::get('messages.success.deleted', array('entity' => 'Contract')),
+                'data' => $contract
             );
             
             return $response;
