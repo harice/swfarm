@@ -144,6 +144,7 @@ define([
 				so_url: '#/'+Const.URL.SO,
 				so_edit_url: '#/'+Const.URL.SO+'/'+Const.CRUD.EDIT,
 				so_sched_url: '#/'+Const.URL.DELIVERYSCHEDULE,
+				account_url: '#/'+Const.URL.ACCOUNT,
 				sos: this.collection.models,
 				schedule_url: '#/'+Const.URL.DELIVERYSCHEDULE,
 				add: Const.CRUD.ADD,

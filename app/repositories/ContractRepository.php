@@ -17,7 +17,7 @@ class ContractRepository implements ContractRepositoryInterface {
             $orderby  = isset($params['orderby']) ? $params['orderby'] :'DSC';
             $offset   = $page * $perPage - $perPage;
             
-            $result = Contract::with('salesorders', 'products', 'productorders', 'account', 'account.address', 'status')
+            $result = Contract::with('salesorders', 'schedules', 'products', 'productorders', 'account', 'account.address', 'status')
                 ->take($perPage)
                 ->offset($offset)
                 ->orderBy($sortby, $orderby)
@@ -94,7 +94,7 @@ class ContractRepository implements ContractRepositoryInterface {
     
     public function store($data)
     {
-        $data['contract_number'] = generateControlNumber('Contract', 'C');
+        $data['contract_number'] = $this->generateContractNumber('Contract', 'C');
         $data['user_id'] = Auth::user()->id;
         $data['status_id'] = 1;
         $this->validate($data);
@@ -105,7 +105,7 @@ class ContractRepository implements ContractRepositoryInterface {
                 $contract = $this->instance();
                 $contract->fill($data);
                 $contract->save();
-
+                
                 $new_products = array();
                 foreach ($data['products'] as $product)
                 {
@@ -210,8 +210,8 @@ class ContractRepository implements ContractRepositoryInterface {
                     ->where('ordertype', '=', 2)
                     ->where('contract_id', '=', $id)
                     ->where('product_id', '=', $product->id)
-                    // ->get(array('order.id', 'order_number', 'contract_id', 'stacknumber', 'tons', 'bales', 'product_id', 'status_id'));
-                    ->get();
+                    ->get(array('order.id', 'order_number', 'contract_id', 'stacknumber', 'tons', 'bales', 'product_id', 'status_id'));
+                    // ->get();
                 
                 $total_tons = 0;
                 foreach ($salesorders as $order) {
@@ -228,22 +228,18 @@ class ContractRepository implements ContractRepositoryInterface {
                 );
             }
             
-//            foreach ($schedules as $schedule) {
-//                foreach($schedule as $id) {
-//                    $weight_ticket = WeightTicket::where('transportSchedule_id', '=', $id);
-//                }
-//                $weight_tickets[] += $weight_ticket;
-//            }
+            $weight_tickets = WeightTicket::with('weightticketscale_dropoff')
+                // join('weightticketproducts', 'weightticket.dropoff_id', '=', 'weightticketproducts.id')
+                ->where('transportSchedule_id', '=', 41)
+                ->get();
             
-            $result = array_values($products);
+            $result = array(
+                'schedules' => $schedules,
+                'weight_tickets' => $weight_tickets->toArray(),
+                'products' => array_values($products)
+            );
             
-//            $result = array(
-//                // 'schedules' => $schedules,
-//                // 'weight_tickets' => $weight_tickets,
-//                'products' => array_values($products)
-//            );
-            
-            return $result;
+            return array_values($products);
         }
         catch (Exception $e)
         {
@@ -298,6 +294,12 @@ class ContractRepository implements ContractRepositoryInterface {
     public function instance($data = array())
     {
         return new Contract($data);
+    }
+    
+    function generateContractNumber($model, $prefix){ //type default is PO
+        $dateToday = date('Y-m-d');
+        $count = $model::where('created_at', 'like', $dateToday.'%')->count()+1;
+        return $prefix.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
     }
     
 }

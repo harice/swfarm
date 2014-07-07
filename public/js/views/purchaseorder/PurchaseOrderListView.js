@@ -135,6 +135,7 @@ define([
 				po_url: '#/'+Const.URL.PO,
 				po_edit_url: '#/'+Const.URL.PO+'/'+Const.CRUD.EDIT,
 				po_sched_url: '#/'+Const.URL.PICKUPSCHEDULE,
+				account_url: '#/'+Const.URL.ACCOUNT,
 				pos: this.collection.models,
 				schedule_url: '#/'+Const.URL.PICKUPSCHEDULE,
 				add: Const.CRUD.ADD,

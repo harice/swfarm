@@ -123,6 +123,9 @@ define([
 			var innerTemplateVariables = {
 				'po_url' : '#/'+Const.URL.PO,
 				'po_edit_url' : '#/'+Const.URL.PO+'/'+Const.CRUD.EDIT+'/'+this.poId,
+				po : this.model,
+				reason_others : Const.CANCELLATIONREASON.OTHERS,
+				_: _
 			};
 			
 			if(this.model.get('status').name.toLowerCase() == Const.STATUS.PENDING ||
@@ -147,41 +150,7 @@ define([
 		supplyPOData: function () {
 			var thisObj = this;
 			
-			var account = this.model.get('account');
-			var address = [this.model.get('orderaddress')];
 			var products = this.model.get('productorder');
-			
-			this.$el.find('#ponumber').val(this.model.get('order_number'));
-			this.$el.find('#status').val(this.model.get('status').name);
-			
-			if(this.model.get('status').id == 5 || this.model.get('status').id == 6) {
-				this.$el.find('#cancel-reason-cont').show();
-				if(parseInt(this.model.get('ordercancellingreason').reason.id) != parseInt(Const.CANCELLATIONREASON.OTHERS))
-					this.$el.find('#cancel-reason-cont input').val(this.model.get('ordercancellingreason').reason.reason).show();
-				else
-					this.$el.find('#cancel-reason-cont textarea').val(this.model.get('ordercancellingreason').others).show();
-			}
-			
-            if (this.model.get('location') !== null) {
-                this.$el.find('#destination').val(this.model.get('location').location);
-            }
-			this.$el.find('#account').val(account.name);
-			this.$el.find('#street').val(address[0].street);
-			this.$el.find('#state').val(address[0].address_states[0].state);
-			this.$el.find('#city').val(address[0].city);
-			this.$el.find('#zipcode').val(address[0].zipcode);
-			this.$el.find('#dateofpurchase').val(this.convertDateFormat(this.model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
-			if(!thisObj.isBid) {
-				if(this.model.get('transportdatestart')) {
-					var date = this.convertDateFormat(this.model.get('transportdatestart').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-');
-					this.$el.find('#transportdatestart').val(date);
-				}
-				if(this.model.get('transportdateend')) {
-					var date = this.convertDateFormat(this.model.get('transportdateend').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-');
-					this.$el.find('#transportdateend').val(date);
-				}
-			}
-			this.$el.find('#notes').val(this.model.get('notes'));
 			
 			_.each(products, function (product) {
 				var unitprice = (!isNaN(product.unitprice))? product.unitprice : 0;
@@ -196,7 +165,7 @@ define([
 					tons: thisObj.addCommaToNumber(parseFloat(tons).toFixed(4)),
 					bales: thisObj.addCommaToNumber(product.bales),
 					totalprice: thisObj.addCommaToNumber(totalprice),
-					ishold: (parseInt(product.ishold) == 1)? 'Yes' : 'No',
+					ishold: product.ishold,
 					rfv: product.rfv,
 					//file_id: product.upload[0].file_id,
 					//file_name: product.upload[0].files[0].name,

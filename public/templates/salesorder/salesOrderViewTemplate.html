@@ -1,136 +1,66 @@
-<!--<div class="row">
-    <div class="col-md-12">
-        <div class="block-flat">-->
-
-<form id="soForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-    <fieldset>
-        <legend>Details</legend>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="sonumber" class="col-sm-3 control-label">SO Number</label>
-                    <div class="col-sm-7">
-                        <input id="sonumber" type="text" class="form-control sonumber" placeholder="" maxlength="250" readonly>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="status" class="col-sm-3 control-label">Status</label>
-                    <div class="col-sm-7">
-                        <input id="status" type="text" class="form-control status" placeholder="" maxlength="250" readonly>
-                    </div>
-                </div>
-                <div id="cancel-reason-cont" class="form-group" style="display:none;">
-                    <label for="" class="col-sm-3 control-label">Cancellation Reason</label>
-                    <div class="col-sm-7">
-                        <input style="display:none;" type="text" class="form-control" placeholder="" maxlength="250" readonly>
-                        <textarea style="display:none;" class="form-control" readonly></textarea>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="nos" class="col-sm-3 control-label">Nature of Sale</label>
-                    <div class="col-sm-7">
-                        <input id="nos" type="text" class="form-control nos" placeholder="" maxlength="250" readonly>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="account" class="col-sm-3 control-label">Customer *</label>
-                    <div class="col-sm-7">
-                        <input type="text" class="form-control capitalize" id="account" maxlength="50" readonly>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="street" class="col-sm-3 control-label">Street</label>
-                    <div class="col-sm-7">
-                        <input id="street" type="text" class="form-control street" placeholder="" maxlength="250" readonly>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="state" class="col-sm-3 control-label">State</label>
-                    <div class="col-sm-7">
-                        <input id="state" type="text" class="form-control state" placeholder="" maxlength="250" readonly>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="city" class="col-sm-3 control-label">City</label>
-                    <div class="col-sm-7">
-                        <input id="city" type="text" class="form-control city" placeholder="" maxlength="250" readonly>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="zipcode" class="col-sm-3 control-label">Zip Code</label>
-                    <div class="col-sm-3">
-                        <input id="zipcode" type="text" class="form-control zipcode" placeholder="" minlength="5" maxlength="9" readonly>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="dateofsales" class="col-sm-3 control-label">Date of Sales</label>
-                    <div class="col-sm-4">
-                        <input id="dateofsales" type="text" class="form-control dateofsales" placeholder="" maxlength="250" readonly>
-                    </div>
-                </div>
-                <div class="form-group"><label for="" class="col-sm-3 control-label">Delivery Period:</label></div>
-                <div class="form-group">
-                    <label for="transportdatestart" class="col-sm-3 control-label">Start</label>
-                    <div class="col-sm-4">
-                        <input id="transportdatestart" type="text" class="form-control transportdatestart" placeholder="" maxlength="250" readonly>
-                    </div>
-                    <label for="transportdateend" class="col-sm-1 control-label">End</label>
-                    <div class="col-sm-4">
-                        <input id="transportdateend" type="text" class="form-control transportdateend" placeholder="" maxlength="250" readonly>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="contract" class="col-sm-3 control-label">Contract</label>
-                    <div class="col-sm-7">
-                        <input id="contract" type="text" class="form-control contract" placeholder="" maxlength="250" readonly>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="notes" class="col-sm-3 control-label">Notes</label>
-                    <div class="col-sm-9">
-                        <textarea class="form-control notes" id="notes" readonly></textarea>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </fieldset>
-    <fieldset>
-        <legend>
-            Products
-        </legend>
-        <div class="table-responsive">
-            <table id="product-list" class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Description</th>
-                        <th>Stack No.</th>
-                        <th class="width-130">Unit Price</th>
-                        <th>Est Tons</th>
-                        <th>Bales</th>
-                        <th class="width-130">Total Price</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-    </fieldset>
-	<div class="form-group form-button-container">
-		<div class="col-md-12">
-			<div class="pull-right">
-			<% if (typeof editable !== "undefined") { %>
-			<a id="close-order" class="btn btn-primary editable-button" href="#">Close Sales Order</a>
-			<a id="edit-so" class="btn btn-primary editable-button" href="<%= so_edit_url %>">Edit Sales Order</a>
-			<% } %>
-			<a class="btn btn-default" href="<%= so_url %>">Cancel</a>
-			</div>
-		</div>
-	</div>
+<div class="content padding-top-0">
+  <h2 class="ponumber margin-bottom-0"><%= so.get('order_number') %></h2>
+  <div class="row margin-top-0">
+    <div class="col-md-6">
+        Sales Date: <code><%= so.get("created_at").split(" ")[0] %></code><br>
+        Delivery Start: <code><%= so.get("transportdatestart").split(" ")[0] %></code>
+        Delivery End: <code><%= so.get("transportdateend").split(" ")[0] %></code><br>
+        Nature of Sale: <code><%= so.get('natureofsale').name %></code><br>
         
-</form>
+        <% if (so.get('contract') && typeof so.get('contract').contract_number != 'undefined') { %>
+            <br>Contract: <code><%= so.get('contract').contract_number %></code>
+        <% } %>
 
-<!--</div>
+        Status: <label class="label label-<%= so.get("status").class %>"><%= so.get("status").name %></label>
+        <% if(so.get('status').id == 3) { if(so.get('ordercancellingreason').reason.id != reason_others ) { %>
+            <br>Reason: <code><%= so.get('ordercancellingreason').reason.reason %></code>
+        <% } else { %>
+            <br>Reason: <code><%= so.get('ordercancellingreason').others %></code>
+        <% }} %>
+
+        <% if (typeof so.get('notes') != "undefined") { %>
+            <br>Notes: <code><%= so.get('notes') %></code>
+        <% } %>
+    </div>
+    <div class="col-md-6">
+      Producer:
+      <address>
+        <p class="margin-top-5 margin-bottom-0"><strong><%= so.get('account').name %></strong></p>
+        <%= so.get('orderaddress').street %>
+        <br>
+        <%= so.get('orderaddress').city %>,
+        <%= so.get('orderaddress').address_states.state_code %>
+        <%= so.get('orderaddress').zipcode %>
+      </address>
+    </div>
+  </div>
+  <div class="row margin-top-10">
+    <div class="col-md-12">
+      <h3 class="margin-top-0">Products</h3>
+      <div class="content-inner table-responsive">
+        <table id="product-list" class="table-condensed table-bordered table-hover">
+          <thead>
+            <tr>
+              <th class="width-150">Product</th>
+              <th>Description</th>
+              <th class="width-110">Stack No.</th>
+              <th class="width-110">Est Tons</span></th>
+              <th class="width-110">Bales</th>
+              <th class="width-110">Unit Price</th>
+              <th class="width-110">Total Price</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="pull-right margin-top-10">
+        <% if (typeof editable !== "undefined") { %>
+            <a id="edit-so" class="btn btn-primary btn-sm editable-button" href="<%= so_edit_url %>"><i class="fa fa-pencil width-10"></i> Edit SO</a>
+            <a id="close-order" class="btn btn-danger btn-sm editable-button" href="#"><i class="fa fa-times width-10"></i> Close SO</a>
+            <a href="#" class="btn btn-danger btn-sm cancel-so editable-button"><i class="fa fa-ban width-10"></i> Cancel SO</a>
+        <% } %>        
+        <a class="btn btn-link btn-sm" href="<%= so_url %>"><i class="fa fa-angle-double-left"></i> Back</a>
+      </div>
+    </div>
+  </div>
 </div>
-</div>-->
