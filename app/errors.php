@@ -20,9 +20,9 @@ class ValidationException extends Exception {
         parent::__construct($this->messages, 400);
     }
 
-    public function getMessages() {
-        return $this->messages;
-    }
+//    public function getMessages() {
+//        return $this->messages;
+//    }
 
 }
 

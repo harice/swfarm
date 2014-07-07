@@ -262,7 +262,8 @@ class ContractRepository implements ContractRepositoryInterface {
 
             $response = array(
                 'error' => false,
-                'message' => Lang::get('messages.success.deleted', array('entity' => 'Contract'))
+                'message' => Lang::get('messages.success.deleted', array('entity' => 'Contract')),
+                'data' => $contract
             );
             
             return $response;
@@ -285,7 +286,7 @@ class ContractRepository implements ContractRepositoryInterface {
         $validator = Validator::make($data, $rules);
         
         if ($validator->fails()) {
-            throw new ValidationException($validator);
+            throw new ValidationException($validator->messages());
         }
         
         return true;

@@ -40,6 +40,8 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('product/search', 'APIv1\ProductController@search');
     Route::resource('product', 'APIv1\ProductController');
 
+    // Route::get('account/{id}/contracts', 'APIv1\AccountController@getContracts');
+    Route::get('account/getContracts/{id}', 'APIv1\AccountController@getContracts');
     Route::get('account/trailer', 'APIv1\AccountController@getTrailerAccount');
     Route::get('account/scaler', 'APIv1\AccountController@getScalerAccount');
     Route::get('account/getScaleList', 'APIv1\AccountController@getScaleList');
