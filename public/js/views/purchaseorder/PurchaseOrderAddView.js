@@ -60,6 +60,10 @@ define([
 		inits: function () {
 			var thisObj = this;
 			
+			this.bidTransportdateStart = null;
+			this.bidTransportdateEnd = null;
+			this.bidLocationId = null;
+			
 			this.productAutoCompletePool = [];
 			this.options = {
 				productFieldClone: null,
@@ -151,18 +155,22 @@ define([
 				submitHandler: function(form) {
 					var data = thisObj.formatFormField($(form).serializeObject());
 					
+					if(thisObj.isBid)
+						data['isfrombid'] = '1';
+					
+					if(thisObj.isConvertToPO) {
+						data['createPO'] = '1';
+						data['transportdatestart'] = thisObj.bidTransportdateStart;
+						data['transportdateend'] = thisObj.bidTransportdateEnd;
+						data['location_id'] = thisObj.bidLocationId;
+					}
+					
 					if(typeof data['transportdatestart'] != 'undefined')
 						data['transportdatestart'] = thisObj.convertDateFormat(data['transportdatestart'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					if(typeof data['transportdateend'] != 'undefined')
 						data['transportdateend'] = thisObj.convertDateFormat(data['transportdateend'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					
-					if(thisObj.isBid)
-						data['isfrombid'] = '1';
-					
-					if(thisObj.isConvertToPO)
-						data['createPO'] = '1';
-					
-					//console.log(data);
+					console.log(data);
 					
 					var purchaseOrderModel = new PurchaseOrderModel(data);
 					
@@ -170,12 +178,24 @@ define([
 						null, 
 						{
 							success: function (model, response, options) {
-								thisObj.isConvertToPO = false;
-								thisObj.displayMessage(response);
-								//Global.getGlobalVars().app_router.navigate(Const.URL.PO, {trigger: true});
-								Backbone.history.history.back();
+								if(thisObj.isConvertToPO) {
+									thisObj.isConvertToPO = false;
+									thisObj.hideConfirmationWindow('modal-with-form-confirm', function () {
+										thisObj.displayMessage(response);
+										Backbone.history.history.back();
+									});
+								}
+								else {
+									thisObj.isConvertToPO = false;
+									thisObj.displayMessage(response);
+									Backbone.history.history.back();
+								}
 							},
 							error: function (model, response, options) {
+								if(thisObj.isConvertToPO) {
+									thisObj.hideConfirmationWindow('modal-with-form-confirm');
+								}
+								
 								thisObj.isConvertToPO = false;
 								if(typeof response.responseJSON.error == 'undefined')
 									validate.showErrors(response.responseJSON);
@@ -544,13 +564,13 @@ define([
 				var field = thisObj.$el.find('[name="'+fieldName+'"]');
 				
 				if(thisObj.$el.find('#upload-field-cont').css('display') != 'none') {
-					console.log('empty');
+					//console.log('empty');
 					field.val('');
 					field.attr('data-filename', '');
 					field.closest('td').find('.attach-pdf').addClass('no-attachment');
 				}
 				else {
-					console.log('not empty');
+					//console.log('not empty');
 					var pdfFilenameElement = thisObj.$el.find('#pdf-filename');
 					field.val(pdfFilenameElement.attr('data-id'));
 					field.attr('data-filename', pdfFilenameElement.text());
@@ -600,8 +620,8 @@ define([
 			else {
 				var reader = new FileReader();
 				reader.onload = function (event) {
-					console.log('onload');
-					console.log(event);
+					//console.log('onload');
+					//console.log(event);
 					
 					thisObj.uploadFile({
 						type: file.type,
@@ -625,7 +645,7 @@ define([
 				{
 					success: function (model, response, options) {
 						data['id'] = response;
-						console.log(response);
+						//console.log(response);
 						thisObj.generatePDFIcon(data);
 						thisObj.enableCloseButton('modal-attach-pdf');
 						thisObj.hideFieldThrobber();
@@ -703,9 +723,14 @@ define([
 			var validate = $('#convertToPOForm').validate({
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
-					console.log(data);
-					//this.isConvertToPO = true;
-					//$('#poForm').submit();
+					//console.log(data);
+					
+					thisObj.bidTransportdateStart = data.transportdatestart;
+					thisObj.bidTransportdateEnd = data.transportdateend;
+					thisObj.bidLocationId = data.location_id;
+					
+					thisObj.isConvertToPO = true;
+					thisObj.subContainer.find('#poForm').submit();
 				},
 				errorPlacement: function(error, element) {
 					if(element.hasClass('form-date')) {
@@ -722,7 +747,7 @@ define([
 		},
 		
 		convertPO: function () {
-			$('#convertToPOForm').submit();
+			this.subContainer.find('#convertToPOForm').submit();
 			return false;
 		},
 		
