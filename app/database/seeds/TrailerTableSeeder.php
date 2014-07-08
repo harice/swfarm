@@ -13,7 +13,7 @@ class TrailerTableSeeder extends Seeder {
         
 		$trailer = array(
             array(
-                'account_id'        => 1,
+                'account_id'        => 9,
                 'number'              => 'Trailer 1',
                 'created_at'        => $now,
                 'updated_at'        => $now

@@ -95,19 +95,20 @@ class ContractRepository implements ContractRepositoryInterface {
     public function store($data)
     {
         $data['contract_number'] = $this->generateContractNumber('Contract', 'C');
-        $data['user_id'] = Auth::user()->id;
-        // $data['status_id'] = 1;
         $this->validate($data);
         
         try
         {
-            DB::transaction(function() use ($data){
+            $contract = DB::transaction(function() use ($data){
+                $products = $data['products'];
+                unset($data['products']);
+                
                 $contract = $this->instance();
                 $contract->fill($data);
                 $contract->save();
                 
                 $new_products = array();
-                foreach ($data['products'] as $product)
+                foreach ($products as $product)
                 {
                     $new_products[$product['product_id']] = array(
                         'tons' => $product['tons'],
@@ -116,11 +117,14 @@ class ContractRepository implements ContractRepositoryInterface {
                 }
                 
                 $contract->products()->sync($new_products);
+                
+                return $contract;
             });
             
             $response = array(
                 'error' => false,
-                'message' => Lang::get('messages.success.created', array('entity' => 'Contract'))
+                'message' => Lang::get('messages.success.created', array('entity' => 'Contract')),
+                'data' => $contract
             );
             
             return $response;
@@ -137,13 +141,16 @@ class ContractRepository implements ContractRepositoryInterface {
         
         try
         {
-            DB::transaction(function() use ($data, $id){
+            $contract = DB::transaction(function() use ($data, $id){
+                $products = $data['products'];
+                unset($data['products']);
+                
                 $contract = $this->findById($id);
                 $contract->fill($data);
                 $contract->update();
                 
                 $new_products = array();
-                foreach ($data['products'] as $product)
+                foreach ($products as $product)
                 {
                     $new_products[$product['product_id']] = array(
                         'tons' => $product['tons'],
@@ -152,11 +159,14 @@ class ContractRepository implements ContractRepositoryInterface {
                 }
                 
                 $contract->products()->sync($new_products);
+                
+                return $contract;
             });
             
             $response = array(
                 'error' => false,
-                'message' => Lang::get('messages.success.updated', array('entity' => 'Contract'))
+                'message' => Lang::get('messages.success.updated', array('entity' => 'Contract')),
+                'data' => $contract
             );
             
             return $response;
@@ -234,7 +244,7 @@ class ContractRepository implements ContractRepositoryInterface {
                 ->get();
             
             $result = array(
-                'schedules' => $schedules,
+                // 'schedules' => $schedules,
                 'weight_tickets' => $weight_tickets->toArray(),
                 'products' => array_values($products)
             );
@@ -279,8 +289,7 @@ class ContractRepository implements ContractRepositoryInterface {
         $rules = Contract::$rules;
         
         if ($id) {
-            $rules['contract_number'] = 'sometimes|required|unique:contract,contract_number,'.$id;
-            $rules['user_id'] = 'sometimes|required';
+            $rules['contract_number'] = 'required|unique:contract,contract_number,'.$id;
         }
         
         $validator = Validator::make($data, $rules);
