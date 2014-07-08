@@ -63,7 +63,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
 
   public function addOrUpdateTransportSchedule($data, $transportScheduleId = null){
       $this->validate($data, 'TransportSchedule');
-      DB::beginTransaction()
+      DB::beginTransaction();
       // $result = DB::transaction(function() use ($data, $transportScheduleId){
           if($transportScheduleId == null)
               $transportschedule = new TransportSchedule;
