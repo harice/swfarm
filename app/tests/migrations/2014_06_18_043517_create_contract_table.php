@@ -21,7 +21,7 @@ class CreateContractTable extends Migration {
             $table->timestamp('contract_date_start');
             $table->timestamp('contract_date_end');
             $table->integer('status_id')->unsigned()->default(1);
-            $table->integer('user_id')->unsigned();
+            $table->integer('user_id')->unsigned()->default(1);
             $table->timestamps();
             
             $table->foreign('account_id')->references('id')->on('account')->onDelete('cascade');

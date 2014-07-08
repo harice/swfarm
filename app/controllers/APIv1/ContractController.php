@@ -99,8 +99,10 @@ class ContractController extends BaseController {
     
     public function salesorder($id)
     {
+//        $param['mock'] = true;
+//        
         $param = Input::all();
-        if(!isset($param['mock'])) {
+        if(false) {
             $json = '[
                         {
                             "product_id": 1,
