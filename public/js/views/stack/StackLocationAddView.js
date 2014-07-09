@@ -40,7 +40,7 @@ define([
 				sectionFieldCounter: 0,
 				sectionFieldClass: ['name', 'description', 'id'],
 				sectionFieldClassRequired: ['name'],
-				productFieldExempt: [],
+				sectionFieldExempt: [],
 				sectionFieldSeparator: '.',
 				removeComma: [],
 			};
@@ -96,16 +96,17 @@ define([
 			
 			var validate = $('#locationForm').validate({
 				submitHandler: function(form) {
-					var data = $(form).serializeObject();
+					//var data = $(form).serializeObject();
+					var data = thisObj.formatFormField($(form).serializeObject());
+					//console.log(data);
 					
-					/*var stackLocationModel = new StackLocationModel(data);
+					var stackLocationModel = new StackLocationModel(data);
 					
 					stackLocationModel.save(
 						null, 
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								//Global.getGlobalVars().app_router.navigate(Const.URL.STACKLOCATION, {trigger: true});
 								Backbone.history.history.back();
 							},
 							error: function (model, response, options) {
@@ -116,7 +117,7 @@ define([
 							},
 							headers: stackLocationModel.getAuth(),
 						}
-					);*/
+					);
 				},
 			});
 		},
@@ -160,7 +161,6 @@ define([
 			var sectionFieldClassRequired = this.options.sectionFieldClassRequired;
 			for(var i=0; i < sectionFieldClassRequired.length; i++) {
 				$('.'+sectionFieldClassRequired[i]).each(function() {
-					console.log(sectionFieldClassRequired[i]);
 					$(this).rules('add', {required: true});
 				});
 			}
@@ -209,6 +209,46 @@ define([
                 wait: true,
                 headers: thisObj.model.getAuth(),
             });
+		},
+		
+		formatFormField: function (data) {
+			var formData = {sections:[]};
+			var sectionFieldClass = this.options.sectionFieldClass;
+			
+			for(var key in data) {
+				if(typeof data[key] !== 'function'){
+					var value = data[key];
+					var arrayKey = key.split(this.options.sectionFieldSeparator);
+					
+					if(arrayKey.length < 2)
+						if(this.options.removeComma.indexOf(key) < 0)
+							formData[key] = value;
+						else
+							formData[key] = this.removeCommaFromNumber(value);
+					else {
+						if(arrayKey[0] == sectionFieldClass[0]) {
+							var index = arrayKey[1];
+							var arraySectionFields = {};
+							
+							for(var i = 0; i < sectionFieldClass.length; i++) {
+								if(this.options.sectionFieldExempt.indexOf(sectionFieldClass[i]) < 0) {
+									var fieldValue = data[sectionFieldClass[i]+this.options.sectionFieldSeparator+index];
+									if(!(sectionFieldClass[i] == 'id' && fieldValue == '')) {
+										if(this.options.removeComma.indexOf(sectionFieldClass[i]) < 0)
+											arraySectionFields[sectionFieldClass[i]] = fieldValue;
+										else
+											arraySectionFields[sectionFieldClass[i]] = this.removeCommaFromNumber(fieldValue);
+									}
+								}
+							}
+								
+							formData.sections.push(arraySectionFields);
+						}
+					}
+				}
+			}
+			
+			return formData;
 		},
 		
 		otherInitializations: function () {},

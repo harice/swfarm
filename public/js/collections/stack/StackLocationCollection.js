@@ -4,7 +4,7 @@ define([
 	'models/stack/StackLocationModel',
 ], function(Backbone, ListViewCollection, StackLocationModel){
 	var StackLocationCollection = ListViewCollection.extend({
-		url: '/apiv1/stack',
+		url: '/apiv1/storagelocation',
 		model: StackLocationModel,
 		initialize: function(option){
 			this.runInit();

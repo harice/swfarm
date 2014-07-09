@@ -1,6 +1,6 @@
 <% if (!_.isEmpty(sls)) { %>
 	<% _.each(sls, function(sl){ %>
-	<tr>
+	<tr class="collapse-trigger cursor-pointer" data-id="<%= sl.get("id") %>">
 		<td><%= sl.get("location") %></td>
 		<td><%= sl.get("stacknumber") %></td>
 		<td><%= sl.get("product").name %></td>
@@ -19,9 +19,57 @@
 			</a>
 		</td>
 	</tr>
+	<tr>
+		<td colspan="9" style="padding:0;">
+			<div class="location-collapsible-item list-view-collapse collapse" id="<%= collapsible_id %><%= sl.get("id") %>">
+				<div class="container">
+					<div class="order-stack-details">
+						<div class="col-md-12 no-padding">
+							<div class="pull-right">
+								<a href="<%= sl_edit_url %>/<%= sl.get("id") %>" class="btn btn-primary btn-sm editable-button"><i class="fa fa-pencil width-10"></i> Edit Location</a>
+							</div>
+						</div>
+						<div class="location-section-list">
+							<div class="row margin-top-0 padding-top-10">
+								<div class="col-md-12">Sections:</div>
+							</div>
+							<div class="row margin-top-0">
+								<div class="col-md-12">
+									<div class="content-inner table-responsive">
+										<table class="table-condensed table-bordered table-hover">
+											<thead>
+												<tr>
+													<th>Section Name</th>
+													<th>Description</th>
+												</tr>
+											</thead>
+											<tbody>
+												<% if (!_.isEmpty(stack.get("schedule"))) { %>
+													<% _.each(stack.get("schedule"), function(schedule){ %>
+													<tr>
+														<td></td>
+														<td></td>
+													</tr>
+													<% }); %>
+												<% } else { %>
+													<tr>
+														<td colspan="2">No results found.</td>
+													</tr>
+												<% } %>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</td>
+	</tr>
 	<% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="4">No results found.</td>
+		<td colspan="2">No results found.</td>
 	</tr>
 <% } %>
