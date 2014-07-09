@@ -24,6 +24,10 @@ Route::group(array('prefix' => 'apiv1'), function()
 /* API ROUTES */
 Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 {
+    // Mail
+    Route::get('mail/weightticket/{id}', 'APIv1\WeightTicketController@mailWeightTicket');
+    
+    // User
 	Route::get('users/search', 'APIv1\UsersController@search');
 	Route::get('users/auth', 'APIv1\UsersController@auth');
 	Route::put('users/updateprofile/{id}', 'APIv1\UsersController@updateProfile');
@@ -75,7 +79,6 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('weightticket/getAllWeightticketOfOrder', 'APIv1\WeightTicketController@getAllWeightticketOfOrder');
     Route::put('weightticket/closeWeightTicket/{id}', 'APIv1\WeightTicketController@closeWeightTicket');
     Route::get('weightticket/getScheduleProducts', 'APIv1\WeightTicketController@getScheduleProducts');
-    Route::post('weightticket/{id}/mail', 'APIv1\WeightTicketController@mailWeightTicket');
     Route::resource('weightticket', 'APIv1\WeightTicketController');
 
     //tranport schedule
@@ -164,7 +167,6 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('contract/{id}/salesorders', 'APIv1\ContractController@salesorder');
     Route::get('contract/search', 'APIv1\ContractController@search');
     Route::resource('contract', 'APIv1\ContractController');
-    
 });
 
 
