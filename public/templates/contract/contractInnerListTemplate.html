@@ -14,7 +14,7 @@
             <% total_tons = total_tons + parseFloat(product.pivot.tons) %>
         <% }); %>
         <td><%= total_tons.toFixed(4) %></td>
-        <td></td>
+        <td><%= contract.get("total_delivered").toFixed(4) %></td>
         <td><label class="label label-<%= contract.get("status").class %>"><%= contract.get("status").name %></label></td>
 		<td>
 			<a href="<%= contract_edit_url %>/<%= contract.get("id") %>" class="text-primary" title="edit">
