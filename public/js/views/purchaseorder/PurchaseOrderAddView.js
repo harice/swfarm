@@ -16,6 +16,7 @@ define([
 	'text!templates/purchaseorder/purchaseOrderAddTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderProductItemTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderDestinationTemplate.html',
+	'text!templates/purchaseorder/convertToPOFormTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -35,6 +36,7 @@ define([
 			purchaseOrderAddTemplate,
 			productItemTemplate,
 			purchaseOrderDestinationTemplate,
+			convertToPOFormTemplate,
 			Global,
 			Const
 ){
@@ -57,6 +59,10 @@ define([
 		
 		inits: function () {
 			var thisObj = this;
+			
+			this.bidTransportdateStart = null;
+			this.bidTransportdateEnd = null;
+			this.bidLocationId = null;
 			
 			this.productAutoCompletePool = [];
 			this.options = {
@@ -149,18 +155,22 @@ define([
 				submitHandler: function(form) {
 					var data = thisObj.formatFormField($(form).serializeObject());
 					
+					if(thisObj.isBid)
+						data['isfrombid'] = '1';
+					
+					if(thisObj.isConvertToPO) {
+						data['createPO'] = '1';
+						data['transportdatestart'] = thisObj.bidTransportdateStart;
+						data['transportdateend'] = thisObj.bidTransportdateEnd;
+						data['location_id'] = thisObj.bidLocationId;
+					}
+					
 					if(typeof data['transportdatestart'] != 'undefined')
 						data['transportdatestart'] = thisObj.convertDateFormat(data['transportdatestart'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					if(typeof data['transportdateend'] != 'undefined')
 						data['transportdateend'] = thisObj.convertDateFormat(data['transportdateend'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					
-					if(thisObj.isBid)
-						data['isfrombid'] = '1';
-					
-					if(thisObj.isConvertToPO)
-						data['createPO'] = '1';
-					
-					//console.log(data);
+					console.log(data);
 					
 					var purchaseOrderModel = new PurchaseOrderModel(data);
 					
@@ -168,12 +178,24 @@ define([
 						null, 
 						{
 							success: function (model, response, options) {
-								thisObj.isConvertToPO = false;
-								thisObj.displayMessage(response);
-								//Global.getGlobalVars().app_router.navigate(Const.URL.PO, {trigger: true});
-								Backbone.history.history.back();
+								if(thisObj.isConvertToPO) {
+									thisObj.isConvertToPO = false;
+									thisObj.hideConfirmationWindow('modal-with-form-confirm', function () {
+										thisObj.displayMessage(response);
+										Backbone.history.history.back();
+									});
+								}
+								else {
+									thisObj.isConvertToPO = false;
+									thisObj.displayMessage(response);
+									Backbone.history.history.back();
+								}
 							},
 							error: function (model, response, options) {
+								if(thisObj.isConvertToPO) {
+									thisObj.hideConfirmationWindow('modal-with-form-confirm');
+								}
+								
 								thisObj.isConvertToPO = false;
 								if(typeof response.responseJSON.error == 'undefined')
 									validate.showErrors(response.responseJSON);
@@ -201,8 +223,12 @@ define([
 			});
 		},
 		
+		getDestination: function () {
+			return _.template(purchaseOrderDestinationTemplate, {'destinations': this.destinationCollection.models});
+		},
+		
 		generateDestination: function () {
-			var destinationTemplate = _.template(purchaseOrderDestinationTemplate, {'destinations': this.destinationCollection.models});
+			var destinationTemplate = this.getDestination();
 			this.$el.find('#po-destination').html(destinationTemplate);
 			this.$el.find('#po-destination .radio-inline:first-child input[type="radio"]').attr('checked', true);
 		},
@@ -407,8 +433,10 @@ define([
 			'blur .unitprice': 'onBlurMoney',
 			'keyup .tons': 'onKeyUpTons',
 			'blur .tons': 'onBlurTon',
-			'keyup .bales': 'formatNumber',
-			'click #convert-po': 'convertPO',
+			'keyup .bales': 'onKeyUpBales',
+			//'click #convert-po': 'convertPO',
+			'click #convert-po': 'showConvertToPOConfirmationWindow',
+			'click #confirm-convert-po': 'convertPO',
 			'click #cancel-po': 'showConfirmationWindow',
 			'click #confirm-cancel-po': 'cancelPO',
 			'click .attach-pdf': 'attachPDF',
@@ -423,10 +451,22 @@ define([
 			
 			if(!this.hasProduct())
 				this.addProduct();
+				
+			this.computeTotals();
 		},
 		
 		hasProduct: function () {
 			return (this.$el.find('#product-list tbody .product-item').length)? true : false;
+		},
+		
+		computeTotals: function () {
+			this.computeTotalUnitPrice();
+			this.computeTotalTons();
+			this.computeTotalBales();
+			
+			this.subContainer.find('#product-list tbody .product-item').each(function () {
+				$(this).find('.unitprice').trigger('keyup');
+			});
 		},
 		
 		validateProduct: function (ev) {
@@ -480,6 +520,18 @@ define([
 			var tons = (!isNaN(parseFloat(tonsFieldVal)))? parseFloat(tonsFieldVal) : 0;
 			
 			this.computeUnitePrice(bidPrice, tons, bidPricefield.closest('.product-item').find('.unit-price'));
+			
+			this.computeTotalUnitPrice();
+		},
+		
+		computeTotalUnitPrice: function () {
+			var thisObj = this;
+			var total = 0;
+			this.subContainer.find('#product-list .unitprice').each(function () {
+				var value = thisObj.removeCommaFromNumber($(this).val());
+				total += (!isNaN(parseFloat(value)))? parseFloat(value) : 0;
+			});
+			this.subContainer.find('#total-unitprice').val(thisObj.addCommaToNumber(total.toFixed(2)));
 		},
 		
 		onKeyUpTons: function (ev) {
@@ -493,12 +545,52 @@ define([
 			var bidPrice = (!isNaN(parseFloat(bidPriceFieldVal)))? parseFloat(bidPriceFieldVal) : 0;
 			
 			this.computeUnitePrice(bidPrice, tons, tonsfield.closest('.product-item').find('.unit-price'));
+			
+			this.computeTotalTons();
+		},
+		
+		computeTotalTons: function () {
+			var thisObj = this;
+			var total = 0;
+			this.subContainer.find('#product-list .tons').each(function () {
+				var value = thisObj.removeCommaFromNumber($(this).val());
+				total += (!isNaN(parseFloat(value)))? parseFloat(value) : 0;
+			});
+			this.subContainer.find('#total-tons').val(thisObj.addCommaToNumber(total.toFixed(4)));
 		},
 		
 		computeUnitePrice: function (bidPrice, tonsOrBales, unitePriceField) {
 			var unitPrice = 0;
 			unitPrice = tonsOrBales * bidPrice;
 			unitePriceField.val(this.addCommaToNumber(unitPrice.toFixed(2)));
+			
+			this.computeTotalPrice();
+		},
+		
+		computeTotalPrice: function () {
+			var thisObj = this;
+			var total = 0;
+			this.subContainer.find('#product-list .unit-price').each(function () {
+				var value = thisObj.removeCommaFromNumber($(this).val());
+				total += (!isNaN(parseFloat(value)))? parseFloat(value) : 0;
+			});
+			this.subContainer.find('#total-price').val(thisObj.addCommaToNumber(total.toFixed(2)));
+		},
+		
+		onKeyUpBales: function (ev) {
+			this.fieldAddCommaToNumber($(ev.target).val(), ev.target);
+			
+			this.computeTotalBales();
+		},
+		
+		computeTotalBales: function () {
+			var thisObj = this;
+			var total = 0;
+			this.subContainer.find('#product-list .bales').each(function () {
+				var value = thisObj.removeCommaFromNumber($(this).val());
+				total += (!isNaN(parseInt(value)))? parseInt(value) : 0;
+			});
+			this.subContainer.find('#total-bales').val(thisObj.addCommaToNumber(total));
 		},
 		
 		cancelPO: function () {
@@ -527,11 +619,6 @@ define([
 			return false;
 		},
 		
-		convertPO: function () {
-			this.isConvertToPO = true;
-			$('#poForm').submit();
-		},
-		
 		initPDFUpload: function () {
 			var thisObj = this;
 			this.initAttachPDFWindow();
@@ -541,13 +628,13 @@ define([
 				var field = thisObj.$el.find('[name="'+fieldName+'"]');
 				
 				if(thisObj.$el.find('#upload-field-cont').css('display') != 'none') {
-					console.log('empty');
+					//console.log('empty');
 					field.val('');
 					field.attr('data-filename', '');
 					field.closest('td').find('.attach-pdf').addClass('no-attachment');
 				}
 				else {
-					console.log('not empty');
+					//console.log('not empty');
 					var pdfFilenameElement = thisObj.$el.find('#pdf-filename');
 					field.val(pdfFilenameElement.attr('data-id'));
 					field.attr('data-filename', pdfFilenameElement.text());
@@ -597,8 +684,8 @@ define([
 			else {
 				var reader = new FileReader();
 				reader.onload = function (event) {
-					console.log('onload');
-					console.log(event);
+					//console.log('onload');
+					//console.log(event);
 					
 					thisObj.uploadFile({
 						type: file.type,
@@ -622,7 +709,7 @@ define([
 				{
 					success: function (model, response, options) {
 						data['id'] = response;
-						console.log(response);
+						//console.log(response);
 						thisObj.generatePDFIcon(data);
 						thisObj.enableCloseButton('modal-attach-pdf');
 						thisObj.hideFieldThrobber();
@@ -674,6 +761,84 @@ define([
 			this.$el.find('#pdf-icon-cont').show();
 			
 			return false;
+		},
+		
+		showConvertToPOConfirmationWindow: function (ev) {
+			this.showConfirmationWindow('modal-with-form-confirm');
+			return false;
+		},
+		
+		initConvertToPOWindow: function () {
+			var thisObj = this;
+			var form = _.template(convertToPOFormTemplate, {'destination': this.getDestination()});
+			
+			this.initConfirmationWindowWithForm('',
+										'confirm-convert-po',
+										'Convert To PO',
+										form,
+										'Convert To Purchase Order');
+			
+			this.$el.find('#bid-destination .radio-inline:first-child input[type="radio"]').attr('checked', true);
+			$('#modal-with-form-confirm .i-circle.warning').remove();
+			$('#modal-with-form-confirm h4').remove();
+			
+			this.initConvertPOCalendar();
+			
+			var validate = $('#convertToPOForm').validate({
+				submitHandler: function(form) {
+					var data = $(form).serializeObject();
+					//console.log(data);
+					
+					thisObj.bidTransportdateStart = data.transportdatestart;
+					thisObj.bidTransportdateEnd = data.transportdateend;
+					thisObj.bidLocationId = data.location_id;
+					
+					thisObj.isConvertToPO = true;
+					thisObj.subContainer.find('#poForm').submit();
+				},
+				errorPlacement: function(error, element) {
+					if(element.hasClass('form-date')) {
+						element.closest('.calendar-cont').siblings('.error-msg-cont').html(error);
+					}
+					else if(element.hasClass('price')) {
+						element.closest('.input-group').siblings('.error-msg-cont').html(error);
+					}
+					else {
+						error.insertAfter(element);
+					}
+				},
+			});
+		},
+		
+		convertPO: function () {
+			this.subContainer.find('#convertToPOForm').submit();
+			return false;
+		},
+		
+		initConvertPOCalendar: function () {
+			var thisObj = this;
+			
+			this.$el.find('#bid-start-date .input-group.date').datepicker({
+				orientation: "top left",
+				autoclose: true,
+				clearBtn: true,
+				todayHighlight: true,
+				format: this.dateFormat,
+			}).on('changeDate', function (ev) {
+				var selectedDate = $('#bid-start-date .input-group.date input').val();
+				thisObj.$el.find('#bid-end-date .input-group.date').datepicker('setStartDate', selectedDate);
+			});
+			
+			this.$el.find('#bid-end-date .input-group.date').datepicker({
+				orientation: "top left",
+				autoclose: true,
+				clearBtn: true,
+				todayHighlight: true,
+				format: this.dateFormat,
+			}).on('changeDate', function (ev) {
+				var selectedDate = $('#bid-end-date .input-group.date input').val();
+				thisObj.$el.find('#bid-start-date .input-group.date').datepicker('setEndDate', selectedDate);
+			});
 		},
 		
 		otherInitializations: function () {},

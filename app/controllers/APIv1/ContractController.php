@@ -99,8 +99,10 @@ class ContractController extends BaseController {
     
     public function salesorder($id)
     {
+//        $param['mock'] = true;
+//        
         $param = Input::all();
-        if(!isset($param['mock'])) {
+        if(false) {
             $json = '[
                         {
                             "product_id": 1,
@@ -210,6 +212,18 @@ class ContractController extends BaseController {
 	public function destroy($id)
 	{
 		$response = $this->repo->destroy($id);
+        return Response::json($response);
+	}
+    
+    /**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function products($id)
+	{
+        $response = $this->repo->products($id);
         return Response::json($response);
 	}
 

@@ -341,7 +341,7 @@ define([
 						if(schedules.length > 0) {
 							for(var i=0; i<schedules.length; i++) {
 								var s = schedules[i].transportscheduledate.split(' ');
-								schedules[i].transportscheduledate = thisObj.convertDateFormat(s[0], 'yyyy-mm-dd', thisObj.dateFormat, '-')+' '+s[1];			
+								schedules[i].transportscheduledate = thisObj.convertDateFormat(s[0], 'yyyy-mm-dd', thisObj.dateFormat, '-')+' '+s[1];
 							}
 							model.set('schedule', schedules);
 						}

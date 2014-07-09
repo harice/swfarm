@@ -131,6 +131,8 @@ define([
 				var unitPrice = parseFloat(product.unitprice) * parseFloat(product.tons);
 				productFields.find('.unit-price').val(thisObj.addCommaToNumber(unitPrice.toFixed(2)));
 			});
+			
+			this.computeTotals();
 		},
 		
 		otherInitializations: function () {
@@ -148,6 +150,10 @@ define([
 		postDisplayForm: function () {
 			if(this.subContainerExist())
 				this.supplyPOData();
+		},
+		
+		otherInitializations: function () {
+			this.initConvertToPOWindow();
 		},
 	});
 

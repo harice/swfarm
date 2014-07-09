@@ -11,8 +11,8 @@
 							<tr>
 								<th>SO No.</th>
 								<th>Stack No.</th>
-								<th>Expected Quantity</th>
-								<th>Delivered Quantity</th>
+								<th>Expected</th>
+								<th>Delivered</th>
 								<th>Status</th>
 							</tr>
 						</thead>
@@ -25,7 +25,7 @@
 									</td>
 									<td><%= salesorder.stacknumber %></td>
 									<td><%= salesorder.tons %></td>
-									<td></td>
+									<td><%= salesorder.delivered_tons %></td>
 									<td><%= salesorder.status.name %></td>
 								</tr>
 								<% }); %>
@@ -47,12 +47,12 @@
 								<td><%= product.get("total_tons") %></td>
 							</tr>
 							<tr>
-								<td>Total Deliveries</td>
-								<td></td>
+								<td>Delivered</td>
+								<td><%= product.get("delivered_tons") %></td>
 							</tr>
 							<tr>
 								<td>Remaining</td>
-								<td></td>
+								<td><%= product.get("remaining_tons") %></td>
 							</tr>
 						</tbody>
 					</table>

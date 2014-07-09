@@ -48,6 +48,11 @@ class Contract extends BaseModel {
         return $this->belongsToMany('Product', 'contract_products')->withPivot('tons', 'bales');
     }
     
+    public function contractproducts()
+    {
+        return $this->hasMany('ContractProducts', 'contract_id', 'id');
+    }
+    
     /**
      * Define a One To Many Relationship
      * 
@@ -87,6 +92,17 @@ class Contract extends BaseModel {
         return $this->hasManyThrough('ProductOrder', 'Order', 'contract_id', 'order_id');
     }
     
+    public function schedules()
+    {
+        return $this->hasManyThrough('TransportSchedule', 'Order', 'contract_id', 'order_id');
+    }
+    
+    public function order()
+    {
+        return $this->hasMany('Order', 'contract_id', 'id');
+    }
+
+
     /**
      * Define a One-to-One Relationship
      * 

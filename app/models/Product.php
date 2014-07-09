@@ -46,5 +46,10 @@ class Product extends Eloquent {
     public function bid(){
     	return $this->belongsToMany('Bid', 'bidproduct', 'product_id', 'bid_id');
     }
+    
+    public function productorder()
+    {
+        return $this->belongsTo('ProductOrder', 'id', 'product_id');
+    }
 
 }
