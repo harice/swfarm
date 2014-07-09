@@ -6,7 +6,7 @@ define([
 
 	var AccordionListView = ListView.extend({
 		collapseSelected: function () {
-			var id = this.collection.getCollapseId();
+			var id = this.collection.getCollapseId(); console.log('id: '+id);
 			
 			if(id)
 				this.$el.find('.collapse-trigger[data-id="'+id+'"]').trigger('click');
@@ -54,7 +54,26 @@ define([
 			}
 		},
 		
-		
+		toggleAccordionNormal: function (triggerElement) {
+			var thisObj = this;
+			var id = $(triggerElement).attr('data-id');
+			var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
+			
+			if(!$('#'+collapsibleId).hasClass('in')) {
+				var thisId = id;
+				thisObj.collection.setCollapseId(id);
+				
+				$('#'+collapsibleId).closest('tbody').find('.list-view-collapse.collapse.in').collapse('toggle');
+				$('.accordion-list-cont tr').find('.accordion-carret').removeClass('fa-angle-down').addClass('fa-angle-right');
+				$('#'+collapsibleId).collapse('toggle');
+				$('.accordion-list-cont tr.collapse-trigger[data-id="'+id+'"]').find('.accordion-carret').removeClass('fa-angle-right').addClass('fa-angle-down');
+			}
+			else {
+				this.collection.setCollapseId(null);
+				$('#'+collapsibleId).collapse('toggle');
+				$(triggerElement).find('.accordion-carret').removeClass('fa-angle-down').addClass('fa-angle-right');
+			}
+		},
 	});
 
   return AccordionListView;

@@ -1,23 +1,8 @@
 <% if (!_.isEmpty(sls)) { %>
 	<% _.each(sls, function(sl){ %>
 	<tr class="collapse-trigger cursor-pointer" data-id="<%= sl.get("id") %>">
-		<td><%= sl.get("location") %></td>
-		<td><%= sl.get("stacknumber") %></td>
-		<td><%= sl.get("product").name %></td>
-		<td>
-			<a href="<%= sl_edit_url %>/<%= sl.get("id") %>" class="text-primary" title="edit">
-			  <span class="fa-stack">
-	            <i class="fa fa-square fa-stack-2x"></i>
-	            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-	          </span>
-			</a>
-			<a href="#" class="text-danger delete-sl" data-id="<%= sl.get("id") %>">
-			  <span class="fa-stack">
-	            <i class="fa fa-square fa-stack-2x"></i>
-	            <i class="fa fa-times fa-stack-1x fa-inverse"></i>
-	          </span>
-			</a>
-		</td>
+		<td><%= sl.get("name") %></td>
+		<td><%= sl.get("description") %></td>
 	</tr>
 	<tr>
 		<td colspan="9" style="padding:0;">
@@ -44,11 +29,11 @@
 												</tr>
 											</thead>
 											<tbody>
-												<% if (!_.isEmpty(stack.get("schedule"))) { %>
-													<% _.each(stack.get("schedule"), function(schedule){ %>
+												<% if (!_.isEmpty(sl.get("section"))) { %>
+													<% _.each(sl.get("section"), function(s){ %>
 													<tr>
-														<td></td>
-														<td></td>
+														<td><%= s.name %></td>
+														<td><%= s.description %></td>
 													</tr>
 													<% }); %>
 												<% } else { %>
