@@ -13,7 +13,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         {
             $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
             
-            return StorageLocation::paginate($perPage);
+            return StorageLocation::with('section')->paginate($perPage);
         }
         catch (Exception $e)
         {
