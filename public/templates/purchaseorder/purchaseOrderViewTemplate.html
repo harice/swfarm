@@ -1,32 +1,32 @@
 <div class="content padding-top-0">
-  <h2 class="ponumber margin-bottom-0"><%= po.get('order_number') %></h2>
+  <h2 class="ponumber margin-bottom-0"><%= po.get("order_number") %></h2>
   <div class="row margin-top-0">
     <div class="col-md-6">
       <% if (typeof is_bid === "undefined") { %>
         Purchased Date: <code><%= po.get("created_at").split(" ")[0] %></code><br>
         Pickup Start: <code><%= po.get("transportdatestart").split(" ")[0] %></code>
         Pickup End: <code><%= po.get("transportdateend").split(" ")[0] %></code><br>
-        Destination: <code><%= po.get('location').location %></code><br>
+        Destination: <code><%= po.get("location").location %></code><br>
       <% } %>
       Status: <label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label>
-      <% if(po.get('status').id == 5 || po.get('status').id == 6) { if(po.get('ordercancellingreason').reason.id != reason_others ) { %>
-      <br>Reason: <code><%= po.get('ordercancellingreason').reason.reason %></code>
+      <% if(po.get("status").id == 5 || po.get("status").id == 6) { if(po.get("ordercancellingreason").reason.id != reason_others ) { %>
+      <br>Reason: <code><%= po.get("ordercancellingreason").reason.reason %></code>
       <% } else { %>
-      <br>Reason: <code><%= po.get('ordercancellingreason').others %></code>
+      <br>Reason: <code><%= po.get("ordercancellingreason").others %></code>
       <% }} %>
-      <% if (typeof po.get('notes') != "undefined") { %>
-      <br>Notes: <code><%= po.get('notes') %></code>
+      <% if (typeof po.get("notes") != "undefined") { %>
+      <br>Notes: <code><%= po.get("notes") %></code>
       <% } %>
     </div>
     <div class="col-md-6">
       Producer:
       <address>
-        <p class="margin-top-5 margin-bottom-0"><strong><%= po.get('account').name %></strong></p>
-        <%= po.get('orderaddress').street %>
+        <p class="margin-top-5 margin-bottom-0"><strong><%= po.get("account").name %></strong></p>
+        <%= po.get("orderaddress").street %>
         <br>
-        <%= po.get('orderaddress').city %>,
-        <%= po.get('orderaddress').address_states.state_code %>
-        <%= po.get('orderaddress').zipcode %>
+        <%= po.get("orderaddress").city %>,
+        <%= po.get("orderaddress").address_states.state_code %>
+        <%= po.get("orderaddress").zipcode %>
       </address>
     </div>
   </div>
@@ -67,6 +67,18 @@
 
             </tr>
           </thead>
+		  <tfoot>
+		    <tr>
+			  <td class="text-right" colspan="3">Total</td>
+			  <td id="total-tons" class="text-right">0.0000</td>
+			  <td id="total-bales" class="text-right">0</td>
+			  <td id="total-unitprice" class="text-right">$ 0.00</td>
+			  <td id="total-price" class="text-right">$ 0.00</td>
+			  <% if (typeof is_bid === "undefined") { %>
+			    <td colspan="3">&nbsp;</td>
+			  <% } %>
+			</tr>
+		  </tfoot>
           <tbody></tbody>
         </table>
       </div>

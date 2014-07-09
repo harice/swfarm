@@ -25,7 +25,8 @@ define(function () {
 			'STACKLOCATION': 'administration/stack',
 			'TRAILER': 'administration/trailer',
 			'SETTINGS': 'administration/settings',
-			'SCALE': 'administration/scale'
+			'SCALE': 'administration/scale',
+			'TRUCKER': 'administration/trucker',
 		},
 		'MENU': {
 			'PURCHASES': {
@@ -104,6 +105,12 @@ define(function () {
 				'ADD'	:47,
 				'EDIT'	:48,
 				'DELETE':49
+			},
+			'TRUCKER': {
+				'VIEW'	:50,
+				'ADD'	:51,
+				'EDIT'	:52,
+				'DELETE':53
 			},
 		},
 		'CRUD': {

@@ -99,10 +99,20 @@ define([
 			var thisObj = this;
 			var products = this.model.get('productorder');
 			
+			var totalTons = 0;
+			var totalBales = 0;
+			var totalUnitPrice = 0;
+			var totalTotalPrice = 0;
+			
 			_.each(products, function (product) {
-				var unitprice = (!isNaN(product.unitprice))? product.unitprice : 0;
-				var tons = (!isNaN(product.tons))? product.tons : 0;
+				var unitprice = (!isNaN(parseFloat(product.unitprice)))? parseFloat(product.unitprice) : 0;
+				var tons = (!isNaN(parseFloat(product.tons)))? parseFloat(product.tons) : 0;
 				var totalprice = parseFloat(unitprice * tons).toFixed(2);
+				
+				totalTons += tons;
+				totalUnitPrice += unitprice;
+				totalTotalPrice += parseFloat(totalprice);
+				totalBales += (!isNaN(parseInt(product.bales)))? parseInt(product.bales) : 0;
 				
 				var variables = {
 					productname: product.product.name,
@@ -117,6 +127,11 @@ define([
 				var template = _.template(productItemTemplate, variables);
 				thisObj.$el.find('#product-list tbody').append(template);
 			});
+			
+			this.subContainer.find('#total-tons').html(this.addCommaToNumber(parseFloat(totalTons).toFixed(4)));
+			this.subContainer.find('#total-bales').html(this.addCommaToNumber(totalBales));
+			this.subContainer.find('#total-unitprice').html('$ '+this.addCommaToNumber(parseFloat(totalUnitPrice).toFixed(2)));
+			this.subContainer.find('#total-price').html('$ '+this.addCommaToNumber(parseFloat(totalTotalPrice).toFixed(2)));
 		},
 		
 		events:{

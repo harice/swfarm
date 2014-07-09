@@ -433,7 +433,7 @@ define([
 			'blur .unitprice': 'onBlurMoney',
 			'keyup .tons': 'onKeyUpTons',
 			'blur .tons': 'onBlurTon',
-			'keyup .bales': 'formatNumber',
+			'keyup .bales': 'onKeyUpBales',
 			//'click #convert-po': 'convertPO',
 			'click #convert-po': 'showConvertToPOConfirmationWindow',
 			'click #confirm-convert-po': 'convertPO',
@@ -451,10 +451,22 @@ define([
 			
 			if(!this.hasProduct())
 				this.addProduct();
+				
+			this.computeTotals();
 		},
 		
 		hasProduct: function () {
 			return (this.$el.find('#product-list tbody .product-item').length)? true : false;
+		},
+		
+		computeTotals: function () {
+			this.computeTotalUnitPrice();
+			this.computeTotalTons();
+			this.computeTotalBales();
+			
+			this.subContainer.find('#product-list tbody .product-item').each(function () {
+				$(this).find('.unitprice').trigger('keyup');
+			});
 		},
 		
 		validateProduct: function (ev) {
@@ -508,6 +520,18 @@ define([
 			var tons = (!isNaN(parseFloat(tonsFieldVal)))? parseFloat(tonsFieldVal) : 0;
 			
 			this.computeUnitePrice(bidPrice, tons, bidPricefield.closest('.product-item').find('.unit-price'));
+			
+			this.computeTotalUnitPrice();
+		},
+		
+		computeTotalUnitPrice: function () {
+			var thisObj = this;
+			var total = 0;
+			this.subContainer.find('#product-list .unitprice').each(function () {
+				var value = thisObj.removeCommaFromNumber($(this).val());
+				total += (!isNaN(parseFloat(value)))? parseFloat(value) : 0;
+			});
+			this.subContainer.find('#total-unitprice').val(thisObj.addCommaToNumber(total.toFixed(2)));
 		},
 		
 		onKeyUpTons: function (ev) {
@@ -521,12 +545,52 @@ define([
 			var bidPrice = (!isNaN(parseFloat(bidPriceFieldVal)))? parseFloat(bidPriceFieldVal) : 0;
 			
 			this.computeUnitePrice(bidPrice, tons, tonsfield.closest('.product-item').find('.unit-price'));
+			
+			this.computeTotalTons();
+		},
+		
+		computeTotalTons: function () {
+			var thisObj = this;
+			var total = 0;
+			this.subContainer.find('#product-list .tons').each(function () {
+				var value = thisObj.removeCommaFromNumber($(this).val());
+				total += (!isNaN(parseFloat(value)))? parseFloat(value) : 0;
+			});
+			this.subContainer.find('#total-tons').val(thisObj.addCommaToNumber(total.toFixed(4)));
 		},
 		
 		computeUnitePrice: function (bidPrice, tonsOrBales, unitePriceField) {
 			var unitPrice = 0;
 			unitPrice = tonsOrBales * bidPrice;
 			unitePriceField.val(this.addCommaToNumber(unitPrice.toFixed(2)));
+			
+			this.computeTotalPrice();
+		},
+		
+		computeTotalPrice: function () {
+			var thisObj = this;
+			var total = 0;
+			this.subContainer.find('#product-list .unit-price').each(function () {
+				var value = thisObj.removeCommaFromNumber($(this).val());
+				total += (!isNaN(parseFloat(value)))? parseFloat(value) : 0;
+			});
+			this.subContainer.find('#total-price').val(thisObj.addCommaToNumber(total.toFixed(2)));
+		},
+		
+		onKeyUpBales: function (ev) {
+			this.fieldAddCommaToNumber($(ev.target).val(), ev.target);
+			
+			this.computeTotalBales();
+		},
+		
+		computeTotalBales: function () {
+			var thisObj = this;
+			var total = 0;
+			this.subContainer.find('#product-list .bales').each(function () {
+				var value = thisObj.removeCommaFromNumber($(this).val());
+				total += (!isNaN(parseInt(value)))? parseInt(value) : 0;
+			});
+			this.subContainer.find('#total-bales').val(thisObj.addCommaToNumber(total));
 		},
 		
 		cancelPO: function () {
