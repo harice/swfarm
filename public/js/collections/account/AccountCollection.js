@@ -44,6 +44,11 @@ define([
         getCustomerAccounts: function () {
             this.url = '/apiv1/account?type=customer';
             this.getModels();
+        },
+		
+		getProducerAndWarehouseAccount: function () {
+            this.url = '/apiv1/account/getProducerAndWarehouseAccount';
+            this.getModels();
         }
 	});
 
