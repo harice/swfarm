@@ -16,14 +16,21 @@ class ContractRepository implements ContractRepositoryInterface {
             $sortby   = isset($params['sortby']) ? $params['sortby'] : 'contract_number';
             $orderby  = isset($params['orderby']) ? $params['orderby'] :'DSC';
             $offset   = $page * $perPage - $perPage;
+            $account_id = isset($params['account']) ? $params['account'] : null;
             
-            $result = Contract::with('salesorders', 'schedules', 'products', 'productorders', 'account', 'account.address', 'status')
+            $contracts = Contract::with('salesorders', 'schedules', 'products', 'productorders', 'account', 'account.address', 'status');
+            
+            if ($account_id) {
+                $contracts = $contracts->where('account_id', '=', $account_id);
+            }
+            
+            $response = $contracts
                 ->take($perPage)
                 ->offset($offset)
                 ->orderBy($sortby, $orderby)
                 ->paginate($perPage);
             
-            return $result;
+            return $response;
         }
         catch (Exception $e)
         {
@@ -401,6 +408,14 @@ class ContractRepository implements ContractRepositoryInterface {
         $dateToday = date('Y-m-d');
         $count = $model::where('created_at', 'like', $dateToday.'%')->count()+1;
         return $prefix.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
+    }
+    
+    function products($id)
+    {
+        $products = ContractProducts::where('contract_id', '=', $id)
+            ->join('products', 'product_id', '=', 'products.id' )
+            ->get(array('contract_id', 'product_id', 'name'));
+        return $products;
     }
     
 }

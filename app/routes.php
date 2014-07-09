@@ -155,8 +155,9 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // Contract
     Route::put('contract/close/{id}', 'APIv1\ContractController@closeContract');
     Route::put('contract/open/{id}', 'APIv1\ContractController@openContract');
+    Route::get('contract/getProducts/{id}', 'APIv1\ContractController@products');
     Route::get('contract/getSalesOrderByProduct/{id}', 'APIv1\ContractController@salesorder');
-    Route::get('contract/{id}/salesorder', 'APIv1\ContractController@salesorder');
+    // Route::get('contract/{id}/salesorder', 'APIv1\ContractController@salesorder');
     Route::get('contract/search', 'APIv1\ContractController@search');
     Route::resource('contract', 'APIv1\ContractController');
     

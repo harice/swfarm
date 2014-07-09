@@ -214,5 +214,17 @@ class ContractController extends BaseController {
 		$response = $this->repo->destroy($id);
         return Response::json($response);
 	}
+    
+    /**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function products($id)
+	{
+        $response = $this->repo->products($id);
+        return Response::json($response);
+	}
 
 }
