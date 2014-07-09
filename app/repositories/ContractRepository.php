@@ -142,6 +142,7 @@ class ContractRepository implements ContractRepositoryInterface {
         try
         {
             $contract = DB::transaction(function() use ($data, $id){
+            
                 $products = $data['products'];
                 unset($data['products']);
                 
@@ -206,50 +207,139 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         try
         {
-            $contracts = Contract::with('products', 'salesorders', 'productorders', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')
-                ->find($id);
-            $contract_products = $contracts->products;
+//            $contracts = Contract::with('products', 'salesorders', 'productorders', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')
+//                ->find($id);
+//            $contract_products = $contracts->products;
+//            
+//            $products = array();
+//            foreach($contract_products as $product) {
+//                // var_dump($product->id);
+//                $product = Product::find($product->id);
+//                
+//                $salesorders = Order::with('status')
+//                    ->join('productorder', 'order.id', '=', 'productorder.order_id')
+//                    ->where('ordertype', '=', 2)
+//                    ->where('contract_id', '=', $id)
+//                    ->where('product_id', '=', $product->id)
+//                    ->get(array('order.id', 'order_number', 'contract_id', 'stacknumber', 'tons', 'bales', 'product_id', 'status_id'));
+//                    // ->get();
+//                
+//                $total_tons = 0;
+//                foreach ($salesorders as $order) {
+//                    $total_tons += $order->tons;
+//                    
+//                    $schedules[$order->id] = array_flatten(TransportSchedule::where('order_id', '=', $order->id)->get(array('id'))->toArray());
+//                }
+//                
+//                $products[$product->id] = array(
+//                    'product_id' => $product->id,
+//                    'product_name' => $product->name,
+//                    'total_tons' => $total_tons,
+//                    'salesorders' => $salesorders->toArray()
+//                );
+//            }
+//            
+//            $weight_tickets = WeightTicket::with('weightticketscale_dropoff')
+//                // join('weightticketproducts', 'weightticket.dropoff_id', '=', 'weightticketproducts.id')
+//                // ->where('transportSchedule_id', '=', 41)
+//                ->get();
+//            
+//            $result = array(
+//                // 'schedules' => $schedules,
+//                'weight_tickets' => $weight_tickets->toArray(),
+//                'products' => array_values($products)
+//            );
+//            
+//            // return array_values($products);
+//            return $result;
             
-            $products = array();
-            foreach($contract_products as $product) {
-                // var_dump($product->id);
-                $product = Product::find($product->id);
+            $contract = Contract::with('contractproducts.products.productorder.product')
+                        ->with('contractproducts.products.productorder.order')
+                        ->with('contractproducts.products.productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_pickup')
+                        ->with('contractproducts.products.productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_dropoff')
+                        ->with('contractproducts.products.productorder.transportscheduleproduct.weightticketproducts.weightticketscale_type')
+                        ->whereHas('order', function($query) use ($id)
+                        {
+                            $query->where('contract_id', '=', $id);
+
+                        })
+                        ->find($id);
+                        
+            $contract_products = $contract->contractproducts;
+            
+            $result = array();
+            foreach($contract_products as $contract_product) {
+                $result[$contract_product->product_id] = $contract_product->toArray();
+                $result[$contract_product->product_id]['total_tons'] = $contract_product->tons;
                 
-                $salesorders = Order::with('status')
-                    ->join('productorder', 'order.id', '=', 'productorder.order_id')
-                    ->where('ordertype', '=', 2)
-                    ->where('contract_id', '=', $id)
-                    ->where('product_id', '=', $product->id)
-                    ->get(array('order.id', 'order_number', 'contract_id', 'stacknumber', 'tons', 'bales', 'product_id', 'status_id'));
-                    // ->get();
-                
-                $total_tons = 0;
-                foreach ($salesorders as $order) {
-                    $total_tons += $order->tons;
+                $total_delivered_tons = 0.0;
+                foreach($contract_product->products as $product) {
+                    $result[$contract_product->product_id]['product_name'] = $product->name;
+                    $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['stacknumber'] = $product->productorder['stacknumber'];
+                    $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['order_number'] = $product->productorder->order->order_number;
+                    $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['tons'] = $product->productorder->tons;
+                    $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['status']['name'] = $product->productorder->order->status_id;
+                    $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['status']['class'] = "success";
                     
-                    $schedules[$order->id] = array_flatten(TransportSchedule::where('order_id', '=', $order->id)->get(array('id'))->toArray());
+                    
+                    foreach($product->productorder->transportscheduleproduct as $schedule) {
+                        $delivered_gross = $schedule->transportschedule->weightticket->weightticketscale_dropoff->gross;
+                        $delivered_tare = $schedule->transportschedule->weightticket->weightticketscale_dropoff->tare;
+                        
+                        $delivered_tons = $schedule->weightticketproducts[1]->pounds / 2000;
+                        $total_delivered_tons += $delivered_tons;
+                    }
+                    
+                    $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['delivered_tons'] = $delivered_tons;
                 }
                 
-                $products[$product->id] = array(
-                    'product_id' => $product->id,
-                    'product_name' => $product->name,
-                    'total_tons' => $total_tons,
-                    'salesorders' => $salesorders->toArray()
-                );
+                $result[$contract_product->product_id]['delivered_tons'] = $total_delivered_tons;
+                $result[$contract_product->product_id]['remaining_tons'] = $contract_product->tons - $total_delivered_tons;
             }
+                        
+//            $result = array(
+//                "product_id" => 1,
+//                "product_name" => "Alfalfa",
+//                "total_tons" => "1,900.0000",
+//                "delivered_tons" => "1,125.0000",
+//                "remaining_tons" => "1,775.0000",
+//                "salesorders" => array(
+//                    array(
+//                        "id" => 24,
+//                        "order_number" => "S20140630-0004",
+//                        "contract_id" => 5,
+//                        "stacknumber" => "COW94934949",
+//                        "tons" => "50.0000",
+//                        "bales" => 5,
+//                        "product_id" => 1,
+//                        "status_id" => 1,
+//                        "status" => array(
+//                            "id" => 1,
+//                            "name" => "Open",
+//                            "class" => "success"
+//                        ),
+//                        "delivered_tons" => "1,000.0000"
+//                    ),
+//                    array(
+//                        "id" => 31,
+//                        "order_number" => "S20140701-0001",
+//                        "contract_id" => 5,
+//                        "stacknumber" => "S2",
+//                        "tons" => "50.0000",
+//                        "bales" => 5,
+//                        "product_id" => 1,
+//                        "status_id" => 1,
+//                        "status" => array(
+//                            "id" => 1,
+//                            "name" => "Open",
+//                            "class" => "success"
+//                        ),
+//                        "delivered_tons" => "1,000.0000"
+//                    )
+//                )
+//            );
             
-            $weight_tickets = WeightTicket::with('weightticketscale_dropoff')
-                // join('weightticketproducts', 'weightticket.dropoff_id', '=', 'weightticketproducts.id')
-                ->where('transportSchedule_id', '=', 41)
-                ->get();
-            
-            $result = array(
-                // 'schedules' => $schedules,
-                'weight_tickets' => $weight_tickets->toArray(),
-                'products' => array_values($products)
-            );
-            
-            return array_values($products);
+            return $result;
         }
         catch (Exception $e)
         {
@@ -289,7 +379,8 @@ class ContractRepository implements ContractRepositoryInterface {
         $rules = Contract::$rules;
         
         if ($id) {
-            $rules['contract_number'] = 'required|unique:contract,contract_number,'.$id;
+            $rules['contract_number'] = 'sometimes|required|unique:contract,contract_number,'.$id;
+            $rules['user_id'] = 'sometimes|required';
         }
         
         $validator = Validator::make($data, $rules);

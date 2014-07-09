@@ -12,7 +12,7 @@ class ContractRepositoryTest extends TestCase {
         $this->repo = App::make('ContractRepository');
         
         Artisan::call('migrate', array('--path' => 'app/tests/migrations'));
-        $this->seed();
+        $this->seed('TestDatabaseSeeder');
     }
     
     public function testFindAllReturnsCollection()
@@ -62,7 +62,8 @@ class ContractRepositoryTest extends TestCase {
             "account_id" => 1,
             "contract_date_start" => "2014-04-21 00:02:20",
             "contract_date_end" => "2014-04-21 00:02:21",
-            "user_id" => 1
+            "user_id" => 1,
+            "products" => array()
         );
         
         $model = $this->repo->update(1, $data);
