@@ -21,11 +21,21 @@
 								<% _.each(stack.get("schedule"), function(schedule){ %>
 								<tr>
 									<td>
-										<a href="<%= schedule_url %>/<%= schedule.transportschedule_id %>" title="view"><%= schedule.transportscheduledate %></a>
+										<a href="<%= schedule_url %>/<%= schedule.transportschedule_id %>" title="view">
+											<%= formatDateAMPM(schedule.transportscheduledate) %>
+										</a> 
+										<% if(schedule.transportscheduledate_status.id == 1) { %>
+											<code><%= schedule.transportscheduledate_status.name %></code>
+										<% } %>
 									</td>
 									<td>
 										<% if (schedule.weightTicketNumber) { %>
-											<a href="<%= weight_info_url %>/<%= schedule.transportschedule_id %>" title="view"><%= schedule.weightTicketNumber %></a>
+											<a href="<%= weight_info_url %>/<%= schedule.transportschedule_id %>" title="view">
+												<%= schedule.weightTicketNumber %>
+											</a> 
+											<% if(schedule.weightTicketNumber_status.id == 1) { %>
+												<code><%= schedule.weightTicketNumber_status.name %></code>
+											<% } %>
 										<% } %>
 									</td>
 									<td><%= schedule.expected %></td>
@@ -47,15 +57,19 @@
 						<tbody>
 							<tr>
 								<td>Expected</td>
-								<td><%= stack.get("totalExpected") %></td>
+								<td><%= numberFormat(stack.get("totalExpected"),4) %></td>
 							</tr>
 							<tr>
 								<td>Total Deliveries</td>
-								<td><%= stack.get("totalDeliveries") %></td>
+								<td><%= numberFormat(stack.get("totalDeliveries"),4) %></td>
 							</tr>
 							<tr>
 								<td>Remaining</td>
-								<td><%= (parseFloat(stack.get("totalExpected")) - parseFloat(stack.get("totalDeliveries"))).toFixed(4) %></td>
+								<td>
+									<code>
+										<%= numberFormat(parseFloat(stack.get("totalExpected")) - parseFloat(stack.get("totalDeliveries")),4) %>
+									</code>
+								</td>
 							</tr>
 						</tbody>
 					</table>

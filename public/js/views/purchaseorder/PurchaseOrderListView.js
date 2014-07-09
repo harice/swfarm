@@ -361,6 +361,9 @@ define([
 				weight_info_url: '/#/'+Const.URL.POWEIGHTINFO+'/'+poId,
 				_: _ 
 			};
+
+			_.extend(data,Backbone.View.prototype.helpers);
+
 			return _.template(orderWeightDetailsByStackItemTemplate, data);
 		},
 		

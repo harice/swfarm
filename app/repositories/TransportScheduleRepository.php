@@ -37,19 +37,21 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       $orderby = isset($params['orderby']) ? $params['orderby'] : 'DESC'; //default order is Ascending
       $offset = $page*$perPage-$perPage;
       $orderId = $params['order_id'];
+
       //pulling of data    
       $transportSchedules = TransportSchedule::with('trucker')
-                      ->with('status')
-                      ->with('originloader')
-                      ->with('destinationloader')
-                      ->with('trucker.accountidandname.accounttype')
-                      ->with('originloader.accountidandname')
-                      ->with('destinationloader.accountidandname')
-                      ->with('trailer.account')
-                      ->with('transportscheduleproduct.productorder.product')
-                      ->where('order_id', '=', $orderId)
-                      ->where('type', '=', $scheduleType)
-                      ->paginate($perPage);
+                ->with('status')
+                ->with('originloader')
+                ->with('destinationloader')
+                ->with('trucker.accountidandname.accounttype')
+                ->with('originloader.accountidandname')
+                ->with('destinationloader.accountidandname')
+                ->with('trailer.account')
+                ->with('transportscheduleproduct.productorder.product')
+                ->where('order_id', '=', $orderId)
+                ->where('type', '=', $scheduleType)
+                ->orderBy($sortby,$orderby)
+                ->paginate($perPage);
 
       foreach($transportSchedules as $item){
           $item['scheduledate'] = date('Y-m-d', strtotime($item['date']));

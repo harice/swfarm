@@ -697,6 +697,8 @@ class OrderRepository implements OrderRepositoryInterface {
 
     public function getOrderWeightDetailsByStack($orderId){
         $order = Order::with('productorder.product')
+                        ->with('productorder.transportscheduleproduct.transportschedule.status')
+                        ->with('productorder.transportscheduleproduct.transportschedule.weightticket.status')
                         ->with('productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_pickup')
                         ->with('productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_dropoff')
                         ->with('productorder.transportscheduleproduct.weightticketproducts.weightticketscale_type')
@@ -722,8 +724,12 @@ class OrderRepository implements OrderRepositoryInterface {
                 $weightTicket = $transportscheduleproduct['transportschedule']['weightticket'];
                 $stackList[$index]['schedule'][$i]['transportschedule_id'] = $transportscheduleproduct['transportschedule_id'];
                 $stackList[$index]['schedule'][$i]['transportscheduledate'] = $transportscheduleproduct['transportschedule']['date'];
+                $stackList[$index]['schedule'][$i]['transportscheduledate_status'] = $transportscheduleproduct['transportschedule']['status']->toArray();
                 $stackList[$index]['schedule'][$i]['expected'] = $transportscheduleproduct['quantity'];
                 $stackList[$index]['schedule'][$i]['weightTicketNumber'] = $weightTicket['weightTicketNumber'];
+                if($weightTicket['weightTicketNumber']) {
+                    $stackList[$index]['schedule'][$i]['weightTicketNumber_status'] = $weightTicket['status']->toArray();
+                }
 
                 if($weightTicket['pickup_id'] != null && $weightTicket['dropoff_id'] != null){ //with both pickup and dropoff weight ticket
                     $weightTicketPickup = $weightTicket['weightticketscale_pickup'];
@@ -791,12 +797,15 @@ class OrderRepository implements OrderRepositoryInterface {
                 $i++;
 
             }
+
+            usort($stackList[$index]['schedule'],function($a,$b){ return strtotime($b['transportscheduledate']) - strtotime($a['transportscheduledate']); });
+
             $stackList[$index]['totalDeliveries'] = number_format($stackList[$index]['totalDeliveries'], 4);
             $index++;
         }
 
         return $stackList;
-    } 
+    }
 
     private function getWeightTicketProductTobeUsed($type, $weightticketproducts){
         $netWeight = null;
