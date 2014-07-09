@@ -1,36 +1,36 @@
 <div class="content padding-top-0">
-  <h2 class="ponumber margin-bottom-0"><%= so.get('order_number') %></h2>
+  <h2 class="ponumber margin-bottom-0"><%= so.get("order_number") %></h2>
   <div class="row margin-top-0">
     <div class="col-md-6">
         Sales Date: <code><%= so.get("created_at").split(" ")[0] %></code><br>
         Delivery Start: <code><%= so.get("transportdatestart").split(" ")[0] %></code>
         Delivery End: <code><%= so.get("transportdateend").split(" ")[0] %></code><br>
-        Nature of Sale: <code><%= so.get('natureofsale').name %></code><br>
+        Nature of Sale: <code><%= so.get("natureofsale").name %></code><br>
         
-        <% if (so.get('contract') && typeof so.get('contract').contract_number != 'undefined') { %>
-            <br>Contract: <code><%= so.get('contract').contract_number %></code>
+        <% if (so.get("contract") && typeof so.get("contract").contract_number != "undefined") { %>
+            <br>Contract: <code><%= so.get("contract").contract_number %></code>
         <% } %>
 
         Status: <label class="label label-<%= so.get("status").class %>"><%= so.get("status").name %></label>
-        <% if(so.get('status').id == 3) { if(so.get('ordercancellingreason').reason.id != reason_others ) { %>
-            <br>Reason: <code><%= so.get('ordercancellingreason').reason.reason %></code>
+        <% if(so.get("status").id == 3) { if(so.get("ordercancellingreason").reason.id != reason_others ) { %>
+            <br>Reason: <code><%= so.get("ordercancellingreason").reason.reason %></code>
         <% } else { %>
-            <br>Reason: <code><%= so.get('ordercancellingreason').others %></code>
+            <br>Reason: <code><%= so.get("ordercancellingreason").others %></code>
         <% }} %>
 
-        <% if (typeof so.get('notes') != "undefined") { %>
-            <br>Notes: <code><%= so.get('notes') %></code>
+        <% if (typeof so.get("notes") != "undefined") { %>
+            <br>Notes: <code><%= so.get("notes") %></code>
         <% } %>
     </div>
     <div class="col-md-6">
       Producer:
       <address>
-        <p class="margin-top-5 margin-bottom-0"><strong><%= so.get('account').name %></strong></p>
-        <%= so.get('orderaddress').street %>
+        <p class="margin-top-5 margin-bottom-0"><strong><%= so.get("account").name %></strong></p>
+        <%= so.get("orderaddress").street %>
         <br>
-        <%= so.get('orderaddress').city %>,
-        <%= so.get('orderaddress').address_states.state_code %>
-        <%= so.get('orderaddress').zipcode %>
+        <%= so.get("orderaddress").city %>,
+        <%= so.get("orderaddress").address_states.state_code %>
+        <%= so.get("orderaddress").zipcode %>
       </address>
     </div>
   </div>
@@ -50,6 +50,15 @@
               <th class="width-110">Total Price</th>
             </tr>
           </thead>
+		  <tfoot>
+		    <tr>
+			  <td class="text-right" colspan="3">Total</td>
+			  <td id="total-tons" class="text-right">0.0000</td>
+			  <td id="total-bales" class="text-right">0</td>
+			  <td id="total-unitprice" class="text-right">$ 0.00</td>
+			  <td id="total-price" class="text-right">$ 0.00</td>
+			</tr>
+		  </tfoot>
           <tbody></tbody>
         </table>
       </div>

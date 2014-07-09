@@ -28,6 +28,7 @@ define([
 	'controllers/settings/SettingsController',
 	'controllers/scale/ScaleController',
     'controllers/contract/ContractController',
+	'controllers/trucker/TruckerController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
@@ -59,6 +60,7 @@ define([
 			SettingsController,
 			ScaleController,
             ContractController,
+			TruckerController,
 			Global,
 			Const,
 			Session) {
@@ -202,6 +204,12 @@ define([
 	routerRoutes[Const.URL.CONTRACT+'/'] = 'showContractPage';
 	routerRoutes[Const.URL.CONTRACT+'/:action'] = 'showContractPage';
 	routerRoutes[Const.URL.CONTRACT+'/:action/:id'] = 'showContractPage';
+	
+	//truck
+	routerRoutes[Const.URL.TRUCKER] = 'showTruckerPage';
+	routerRoutes[Const.URL.TRUCKER+'/'] = 'showTruckerPage';
+	routerRoutes[Const.URL.TRUCKER+'/:action'] = 'showTruckerPage';
+	routerRoutes[Const.URL.TRUCKER+'/:action/:id'] = 'showTruckerPage';
 	
 	routerRoutes['*actions'] = 'defaultAction';
 
@@ -461,6 +469,13 @@ define([
 			this.closeView();
 			var contractController = new ContractController();
 			this.currView = contractController.setAction(action, id);
+			this.currView.render();
+		});
+		
+		app_router.on('route:showTruckerPage', function (action, id) {
+			this.closeView();
+			var truckerController = new TruckerController();
+			this.currView = truckerController.setAction(action, id);
 			this.currView.render();
 		});
 		
