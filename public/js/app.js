@@ -19,32 +19,8 @@ define([
 
 		Backbone.View.prototype.helpers = {
 			formatDateAMPM : function(dt) {
-				var d = new Date("2014-08-09 01:00:00");
-				console.log(d);
-				var month = d.getMonth() + 1;
-				month = month + '';
-				if(month.length == 1) { month = '0' + month; }
-
-				var day = d.getDate();
-				day = day + '';
-				if(day.length == 1) { day = '0' + day; }
-
-				var year = d.getFullYear();
-
-				var hour = d.getHours();
-				if (hour < 12) { ampm = 'AM'; } else { ampm = 'PM'; }
-				if (hour == 0) { hour = 12; }
-				if (hour > 12) { hour = hour - 12; }
-				hour = hour + '';
-				if (hour.length == 1) { hour = '0' + hour; }
-
-				var minutes = d.getMinutes();
-				minutes = minutes + '';
-				if (minutes.length == 1) { minutes = '0' + minutes; }
-
-				return month + '-' + day + '-' + year + ' ' + hour + ':' + minutes + ' ' + ampm;
+				return Backbone.View.prototype.formatDate('m-d-Y h:m A',Backbone.View.prototype.strToTime(dt));
 			},
-
 			numberFormat : function(number,decimals) {
 				return Backbone.View.prototype.numberFormat(number,decimals,'.',',');
 			}
