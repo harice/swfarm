@@ -15,7 +15,7 @@ class Update1001OrderTable extends Migration {
 		Schema::table('order', function(Blueprint $table)
 		{
 			$table->integer('contract_id')->unsigned()->nullable();
-            $table->foreign('contract_id')->references('id')->on('order')->onDelete('cascade');
+            $table->foreign('contract_id')->references('id')->on('contract')->onDelete('cascade');
 		});
 	}
 
