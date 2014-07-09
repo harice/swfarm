@@ -226,5 +226,17 @@ class ContractController extends BaseController {
         $response = $this->repo->products($id);
         return Response::json($response);
 	}
+    
+    /**
+	 * Get Weight Tickets of this Contract.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function weighttickets($id)
+	{
+        $response = $this->repo->weighttickets($id);
+        return Response::json($response);
+	}
 
 }
