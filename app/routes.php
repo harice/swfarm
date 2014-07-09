@@ -40,6 +40,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('product/search', 'APIv1\ProductController@search');
     Route::resource('product', 'APIv1\ProductController');
 
+    Route::get('account/getProducerAndWarehouseAccount', 'APIv1\AccountController@getProducerAndWarehouseAccount');
     Route::get('account/trailer', 'APIv1\AccountController@getTrailerAccount');
     Route::get('account/scaler', 'APIv1\AccountController@getScalerAccount');
     Route::get('account/getScaleList', 'APIv1\AccountController@getScaleList');
@@ -154,6 +155,9 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::put('contract/{id}/status', 'APIv1\ContractController@updateStatus');
     Route::get('contract/search', 'APIv1\ContractController@search');
     Route::resource('contract', 'APIv1\ContractController');
+
+    // Storage location
+    Route::resource('storagelocation', 'APIv1\StorageLocationController');
     
 });
 
