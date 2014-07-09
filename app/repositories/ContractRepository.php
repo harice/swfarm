@@ -24,13 +24,24 @@ class ContractRepository implements ContractRepositoryInterface {
                 $contracts = $contracts->where('account_id', '=', $account_id);
             }
             
-            $response = $contracts
+            $result = $contracts
                 ->take($perPage)
                 ->offset($offset)
                 ->orderBy($sortby, $orderby)
                 ->paginate($perPage);
             
-            return $response;
+            $result = $result->toArray();
+            
+            $data = $result['data'];
+            unset($result['data']);
+            foreach ($data as $contract) {
+                $weightticket = $this->weighttickets($contract['id']);
+                
+                $contract['total_delivered'] = $weightticket['total_tons_delivered'];
+                $result['data'][] = $contract;
+            }
+            
+            return $result;
         }
         catch (Exception $e)
         {
