@@ -236,7 +236,15 @@ class ContractRepository implements ContractRepositoryInterface {
 
                         })
                         ->find($id);
-                        
+            
+            if(!$contract) {
+                $response = array(
+                    'message' => 'No salesorder'
+                );
+                
+                return $response;
+            }
+            
             $contract_products = $contract->contractproducts;
             
             $result = array();
