@@ -459,44 +459,45 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                             ->with('weightticketscale_pickup.scale')
                             ->where('transportSchedule_id', '=', $transportSchedule_id)->first();
             
-            foreach ($recipients as $recipient) {
-                if (isset($recipient['name'])) {
-                    $header['recipient_name'] = $data['name'] = $recipient['name'];
-                }
-                
-                $data = array(
-                    'body' => 'Please see details of the Weight Ticket below.',
-                    'weightticket' => $weightticket,
-                    'order_number' => $order['order_number'],
-                    'account_name' => $account['name']
-                );
-                
-//                $result = View::make('emails.weightticket', $data);
-//                return $result;
-                
-                $header = array(
-                    'subject' => 'Weight Ticket',
-                    'recipient_email' => $recipient['email'],
-                    'sender_name' => '',
-                    'sender_email' => ''
-                );
-
-                $sent = Mail::send('emails.weightticket', $data, function($message) use ($header)
-                {
-                    if (isset($header['recipient_name'])) {
-                        $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator')
-                                ->to($header['recipient_email'], $header['recipient_name'])
-                                ->subject($header['subject']);
-                    } else {
-                        $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator')
-                                ->to($header['recipient_email'])
-                                ->subject($header['subject']);
+            if ($weightticket) {
+                foreach ($recipients as $recipient) {
+                    if (isset($recipient['name'])) {
+                        $header['recipient_name'] = $data['name'] = $recipient['name'];
                     }
-                });
 
-                if (!$sent) {
-                    return 'Email was not sent.';
+                    $data = array(
+                        'body' => 'Please see details of the Weight Ticket below.',
+                        'weightticket' => $weightticket,
+                        'order_number' => $order['order_number'],
+                        'account_name' => $account['name']
+                    );
+
+//                    return View::make('emails.weightticket', $data);
+
+                    $header = array(
+                        'subject' => 'Weight Ticket',
+                        'recipient_email' => $recipient['email'],
+                        'sender_name' => '',
+                        'sender_email' => ''
+                    );
+
+                    $sent = Mail::send('emails.weightticket', $data, function($message) use ($header)
+                    {
+                        if (isset($header['recipient_name'])) {
+                            $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator')
+                                    ->to($header['recipient_email'], $header['recipient_name'])
+                                    ->subject($header['subject']);
+                        } else {
+                            $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator')
+                                    ->to($header['recipient_email'])
+                                    ->subject($header['subject']);
+                        }
+                    });
                 }
+            } else {
+                return Response::json(array(
+                    'error' => true,
+                    'message' => 'Email was not sent.'), 200);
             }
             
             return Response::json(array(
