@@ -113,6 +113,8 @@ class ContractRepository implements ContractRepositoryInterface {
     public function store($data)
     {
         $data['contract_number'] = $this->generateContractNumber('Contract', 'C');
+        $data['user_id'] = Auth::user()->id;
+        $data['status_id'] = 1;
         $this->validate($data);
         
         try
@@ -236,7 +238,15 @@ class ContractRepository implements ContractRepositoryInterface {
 
                         })
                         ->find($id);
-                        
+            
+            if(!$contract) {
+                $response = array(
+                    'message' => 'No salesorder'
+                );
+                
+                return $response;
+            }
+            
             $contract_products = $contract->contractproducts;
             
             $result = array();

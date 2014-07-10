@@ -21,8 +21,7 @@ class ContractController extends BaseController {
 	 */
 	public function index()
 	{
-        $result = $this->repo->findAll( Input::all() );
-        return Response::json($result);
+        return $this->repo->findAll( Input::all() );
 	}
     
     /**
