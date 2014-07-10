@@ -580,6 +580,12 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr>
+                                                        @foreach ($weightticket["weightticketscale_pickup"]["weightticketproducts"] as $product)
+                                                            <td>{{ $product["transportscheduleproduct"]["productorder"]["stacknumber"] }}</td>
+                                                            <td>{{ $product["transportscheduleproduct"]["productorder"]["product"]["name"] }}</td>
+                                                            <td>{{ $product["bales"] }}</td>
+                                                            <td>{{ $product["pounds"] }}</td>
+                                                        @endforeach
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -634,6 +640,12 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr>
+                                                        @foreach ($weightticket["weightticketscale_dropoff"]["weightticketproducts"] as $product)
+                                                            <td>{{ $product["transportscheduleproduct"]["productorder"]["stacknumber"] }}</td>
+                                                            <td>{{ $product["transportscheduleproduct"]["productorder"]["product"]["name"] }}</td>
+                                                            <td>{{ $product["bales"] }}</td>
+                                                            <td>{{ $product["pounds"] }}</td>
+                                                        @endforeach
                                                         </tr>
                                                     </tbody>
                                                 </table>
