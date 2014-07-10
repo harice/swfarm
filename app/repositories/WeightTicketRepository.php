@@ -427,32 +427,11 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         return new WeightTicket($data);
     }
 
-    // public function closeWeightTicket($transportSchedule_id){
-    //     $weightTicket = WeightTicket::where('transportSchedule_id', '=', $transportSchedule_id)->first();
-        
-    //     if($weightTicket->status_id == 1){ //check if Open
-    //         $this->validate($data['pickup_info'], 'WeightTicketScale');
-    //         $weightTicket->status_id = 2;
-    //         $weightTicket->save();
-
-    //         return array(
-    //             'error' => false,
-    //             'message' => 'Weight ticket closed.');
-    //     } else if($weightTicket->status_id == 2) {//if close
-    //           return array(
-    //               'error' => false,
-    //               'message' => 'Weight ticket is already closed.');
-    //     } else {
-    //           return array(
-    //               'error' => false,
-    //               'message' => 'Weight ticket cannot be cancel if the status is not open or pending.');
-    //     }       
-    // }
-
     public function mailWeightTicket($id, $recipients)
     {
         try
         {
+            var_dump($recipients);
             // Get weight ticket
             $_weightticket = WeightTicket::find($id);
             
