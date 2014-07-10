@@ -79,7 +79,7 @@ define([
 		},
 		
 		setListOptions: function () {
-			var options = this.collection.listView; console.log(options);
+			var options = this.collection.listView; //console.log(options);
 			
 			if(options.search != '')
 				this.$el.find('#search-keyword').val(options.search);

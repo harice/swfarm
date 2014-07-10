@@ -1,5 +1,6 @@
 define([
 	'backbone',
+	'bootstrapdatepicker',
 	'views/salesorder/SalesOrderAddView',
 	'jqueryui',
 	'jqueryvalidate',
@@ -10,16 +11,18 @@ define([
 	'collections/salesorder/OriginCollection',
 	'collections/salesorder/NatureOfSaleCollection',
 	'collections/product/ProductCollection',
-    'collections/contract/ContractCollection',
+    'collections/contract/ContractByAccountCollection',
 	'models/salesorder/SalesOrderModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/salesorder/salesOrderAddTemplate.html',
 	'text!templates/salesorder/salesOrderProductItemTemplate.html',
 	'text!templates/salesorder/salesOrderOriginTemplate.html',
 	'text!templates/salesorder/salesOrderNatureOfSaleTemplate.html',
+	'text!templates/salesorder/salesOrderContractTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
+			DatePicker,
 			SalesOrderAddView,
 			JqueryUI,
 			Validate,
@@ -30,13 +33,14 @@ define([
 			OriginCollection,
 			NatureOfSaleCollection,
 			ProductCollection,
-            ContractCollection,
+            ContractByAccountCollection,
 			SalesOrderModel,
 			contentTemplate,
 			salesOrderAddTemplate,
 			productItemTemplate,
 			salesOrderOriginTemplate,
 			salesOrderNatureOfSaleTemplate,
+			contractTemplate,
 			Global,
 			Const
 ){
@@ -64,30 +68,30 @@ define([
 				removeComma: ['unitprice', 'tons', 'bales'],
 			};
 			
-			this.originCollection = new OriginCollection();
+			/*this.originCollection = new OriginCollection();
 			this.originCollection.on('sync', function() {	
 				thisObj.natureOfSaleCollection.getModels();
 				this.off('sync');
 			});
 			this.originCollection.on('error', function(collection, response, options) {
 				this.off('error');
-			});
+			});*/
 			
 			this.natureOfSaleCollection = new NatureOfSaleCollection();
 			this.natureOfSaleCollection.on('sync', function() {
-				thisObj.contractCollection.getModels();
+				thisObj.productCollection.getAllModel();
 				this.off('sync');
 			});
 			this.natureOfSaleCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
             
-            this.contractCollection = new ContractCollection();
-            this.contractCollection.on('sync', function() {
-				thisObj.productCollection.getAllModel();
-				this.off('sync');
+            this.contractByAccountCollection = new ContractByAccountCollection();
+            this.contractByAccountCollection.on('sync', function() {
+				thisObj.generateContract();
+				//this.off('sync');
 			});
-			this.contractCollection.on('error', function(collection, response, options) {
+			this.contractByAccountCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
 			
@@ -114,7 +118,10 @@ define([
 			
 			this.model = new SalesOrderModel({id:this.soId});
 			this.model.on('change', function() {
-				thisObj.originCollection.getModels();
+				//thisObj.originCollection.getModels();
+				
+				if(this.get('contract_id'))
+				thisObj.natureOfSaleCollection.getModels();
 				this.off('change');
 			});
 		},
@@ -141,6 +148,9 @@ define([
 			this.$el.find('#state').val(address[0].address_states.state);
 			this.$el.find('#city').val(address[0].city);
 			this.$el.find('#zipcode').val(address[0].zipcode);
+			
+			this.contractByAccountCollection.getContractByAccount(account.id);
+			
 			this.$el.find('#dateofsale').val(this.convertDateFormat(this.model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
             if(this.model.get('contract') && typeof this.model.get('contract').id != 'undefined')
 				this.$el.find('select[name="contract_id"] option[value="'+this.model.get('contract').id+'"]').attr('selected', 'selected');
