@@ -488,15 +488,13 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
                     Mail::send('emails.weightticket', $data, function($message) use ($header)
                     {
+                        $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator');
                         if (isset($header['recipient_name'])) {
-                            $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator')
-                                    ->to($header['recipient_email'], $header['recipient_name'])
-                                    ->subject($header['subject']);
+                            $message->to($header['recipient_email'], $header['recipient_name']);
                         } else {
-                            $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator')
-                                    ->to($header['recipient_email'])
-                                    ->subject($header['subject']);
+                            $message->to($header['recipient_email']);
                         }
+                        $message->subject($header['subject']);
                     });
                 }
             } else {
