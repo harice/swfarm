@@ -227,7 +227,36 @@ define([
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click .close-weight-ticket': 'showCloseWeightTicketConfirmationWindow',
 			'click #confirm-close-wt': 'closeWeightTicket',
+            'click #mail-weight-ticket': 'mailWeightTicket'
 		},
+                
+        mailWeightTicket: function() {
+            var thisObj = this;
+			
+			var weightInfoModel = new SOWeightInfoModel({id:this.schedId});
+			weightInfoModel.setEmailURL();
+			weightInfoModel.save(
+				null,
+				{
+					success: function (model, response, options) {
+//						thisObj.hideConfirmationWindow('modal-confirm', function () {
+//							thisObj.subContainer.find('.editable-button').remove();
+//						});
+						thisObj.displayMessage(response);
+					},
+					error: function (model, response, options) {
+//						thisObj.hideConfirmationWindow();
+						if(typeof response.responseJSON.error === 'undefined')
+							alert(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: weightInfoModel.getAuth()
+				}
+			);
+                
+            return false;
+        },
 		
 		showCloseWeightTicketConfirmationWindow: function (ev) {
 			this.initConfirmationWindow('Are you sure you want to close this weight ticket?',

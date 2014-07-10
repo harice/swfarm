@@ -37,7 +37,10 @@ class ContractRepository implements ContractRepositoryInterface {
             foreach ($data as $contract) {
                 $weightticket = $this->weighttickets($contract['id']);
                 
-                $contract['total_delivered'] = $weightticket['total_tons_delivered'];
+                if ($weightticket) {
+                    $contract['total_delivered'] = $weightticket['total_tons_delivered'];
+                }
+                
                 $result['data'][] = $contract;
             }
             
