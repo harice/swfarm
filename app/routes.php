@@ -25,8 +25,7 @@ Route::group(array('prefix' => 'apiv1'), function()
 Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 {
     // Mail
-    Route::get('email/weightticket/{id}', 'APIv1\WeightTicketController@mailWeightTicket');
-    Route::get('email', 'APIv1\EmailController@send');
+    Route::post('weightticket/{id}/mail', 'APIv1\WeightTicketController@mailWeightTicket');
     
     // User
 	Route::get('users/search', 'APIv1\UsersController@search');

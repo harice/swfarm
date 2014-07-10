@@ -500,7 +500,7 @@
                                             <td valign="top" class="bodyContent" mc:edit="body_content00">
                                                 <br />
                                                 <br />
-                                                Hi {{ $name }},
+                                                Hi {{{ $name or '' }}},
                                                 <br />
                                                 <br />
                                                 {{ $body }}

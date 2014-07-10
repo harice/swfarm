@@ -431,7 +431,6 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     {
         try
         {
-            var_dump($recipients);
             // Get weight ticket
             $_weightticket = WeightTicket::find($id);
             
@@ -454,20 +453,22 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                             ->where('transportSchedule_id', '=', $transportSchedule_id)->first();
             
             foreach ($recipients as $recipient) {
+                if (isset($recipient['name'])) {
+                    $header['recipient_name'] = $data['name'] = $recipient['name'];
+                }
+                
                 $data = array(
-                    'name' => $recipient['name'],
                     'body' => 'Please see details of the Weight Ticket below.',
                     'weightticket' => $weightticket,
                     'order_number' => $order['order_number'],
                     'account_name' => $account['name']
                 );
                 
-                // $result = View::make('emails.weightticket', $data);
-                // return $result;
+//                $result = View::make('emails.weightticket', $data);
+//                return $result;
                 
                 $header = array(
                     'subject' => 'Weight Ticket',
-                    'recipient_name' => $recipient['name'],
                     'recipient_email' => $recipient['email'],
                     'sender_name' => '',
                     'sender_email' => ''
@@ -475,9 +476,15 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
                 $sent = Mail::send('emails.weightticket', $data, function($message) use ($header)
                 {
-                    $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator')
-                            ->to($header['recipient_email'], $header['recipient_name'])
-                            ->subject($header['subject']);
+                    if (isset($header['recipient_name'])) {
+                        $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator')
+                                ->to($header['recipient_email'], $header['recipient_name'])
+                                ->subject($header['subject']);
+                    } else {
+                        $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator')
+                                ->to($header['recipient_email'])
+                                ->subject($header['subject']);
+                    }
                 });
 
                 if (!$sent) {
