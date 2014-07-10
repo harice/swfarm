@@ -100,7 +100,7 @@ define([
 		},
 		
 		render: function(){
-			this.destinationCollection.getModels();
+			//this.destinationCollection.getModels();
 			this.cancellingReasonCollection.getModels();
 			Backbone.View.prototype.refreshTitle('Purchase Order','list');
 		},

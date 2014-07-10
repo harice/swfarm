@@ -1,6 +1,6 @@
 define([
 	'backbone',
-	'views/base/ListView',
+	'views/base/AccordionListView',
 	'models/stack/StackLocationModel',
 	'collections/stack/StackLocationCollection',
 	'text!templates/layout/contentTemplate.html',
@@ -8,7 +8,7 @@ define([
 	'text!templates/stack/stackLocationInnerListTemplate.html',
 	'constant',
 ], function(Backbone,
-			ListView,
+			AccordionListView,
 			StackLocationModel,
 			StackLocationCollection,
 			contentTemplate,
@@ -17,7 +17,7 @@ define([
 			Const
 ){
 
-	var StackLocationListView = ListView.extend({
+	var StackLocationListView = AccordionListView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
@@ -38,7 +38,7 @@ define([
 		
 		render: function(){
 			this.displayStackLocation();
-			this.renderList(1);
+			this.renderList(this.collection.listView.currentPage);
 			Backbone.View.prototype.refreshTitle('Stack Location','list');
 		},
 		
@@ -59,6 +59,8 @@ define([
 										'confirm-delete-sl',
 										'Delete',
 										'Delete Stack Location');
+										
+			this.setListOptions();
 		},
 		
 		displayList: function () {
@@ -66,18 +68,33 @@ define([
 			var data = {
 				sl_edit_url: '#/'+Const.URL.STACKLOCATION+'/'+Const.CRUD.EDIT,
 				sls: this.collection.models,
+				collapsible_id: Const.PO.COLLAPSIBLE.ID,
 				_: _ 
 			};
 			
 			var innerListTemplate = _.template(stackLocationInnerListTemplate, data);
 			this.subContainer.find("#sl-list tbody").html(innerListTemplate);
-			
+			this.collapseSelected();
 			this.generatePagination();
 		},
 		
+		setListOptions: function () {
+			var options = this.collection.listView; //console.log(options);
+			
+			if(options.search != '')
+				this.$el.find('#search-keyword').val(options.search);
+		},
+		
 		events: {
+			'click tr.collapse-trigger': 'toggleAccordion',
 			'click .delete-sl': 'preShowConfirmationWindow',
 			'click #confirm-delete-sl': 'deleteStockLocation'
+		},
+		
+		toggleAccordion: function (ev) {
+			var thisObj = this;
+			this.toggleAccordionNormal(ev.currentTarget);
+			return false;
 		},
 		
 		preShowConfirmationWindow: function (ev) {

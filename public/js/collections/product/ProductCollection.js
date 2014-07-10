@@ -34,6 +34,11 @@ define([
 			this.url = '/apiv1/weightticket/getScheduleProducts?transportschedule_id='+schedId;
 			this.getModels();
 		},
+		
+		getContractProducts: function (contractId) {
+			this.url = '/apiv1/contract/getProducts/'+contractId;
+			this.getModels();
+		},
 	});
 
 	return ProductCollection;

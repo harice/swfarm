@@ -258,7 +258,10 @@ define([
 			this.producerAutoCompleteView.typeInCallback = function (result) {
 				var address = result.address;
 				thisObj.$el.find('#street').val(address[0].street);
-				thisObj.$el.find('#state').val(address[0].address_states[0].state);
+				if(address[0].address_states.length > 0 && typeof address[0].address_states[0].state != 'undefined')
+					thisObj.$el.find('#state').val(address[0].address_states[0].state);
+				else if(typeof address[0].address_states.state != 'undefined')
+					thisObj.$el.find('#state').val(address[0].address_states.state);
 				thisObj.$el.find('#city').val(address[0].city);
 				thisObj.$el.find('#zipcode').val(address[0].zipcode);
 			},
