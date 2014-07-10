@@ -113,6 +113,8 @@ class ContractRepository implements ContractRepositoryInterface {
     public function store($data)
     {
         $data['contract_number'] = $this->generateContractNumber('Contract', 'C');
+        $data['user_id'] = Auth::user()->id;
+        $data['status_id'] = 1;
         $this->validate($data);
         
         try
