@@ -227,6 +227,7 @@ define([
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click .close-weight-ticket': 'showCloseWeightTicketConfirmationWindow',
 			'click #confirm-close-wt': 'closeWeightTicket',
+            'click #mail-weight-ticket': 'mailWeight'
 		},
 		
 		showCloseWeightTicketConfirmationWindow: function (ev) {
