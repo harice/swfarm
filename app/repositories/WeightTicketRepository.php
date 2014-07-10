@@ -427,28 +427,6 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         return new WeightTicket($data);
     }
 
-    // public function closeWeightTicket($transportSchedule_id){
-    //     $weightTicket = WeightTicket::where('transportSchedule_id', '=', $transportSchedule_id)->first();
-        
-    //     if($weightTicket->status_id == 1){ //check if Open
-    //         $this->validate($data['pickup_info'], 'WeightTicketScale');
-    //         $weightTicket->status_id = 2;
-    //         $weightTicket->save();
-
-    //         return array(
-    //             'error' => false,
-    //             'message' => 'Weight ticket closed.');
-    //     } else if($weightTicket->status_id == 2) {//if close
-    //           return array(
-    //               'error' => false,
-    //               'message' => 'Weight ticket is already closed.');
-    //     } else {
-    //           return array(
-    //               'error' => false,
-    //               'message' => 'Weight ticket cannot be cancel if the status is not open or pending.');
-    //     }       
-    // }
-
     public function mailWeightTicket($id, $recipients)
     {
         try
@@ -475,20 +453,22 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                             ->where('transportSchedule_id', '=', $transportSchedule_id)->first();
             
             foreach ($recipients as $recipient) {
+                if (isset($recipient['name'])) {
+                    $header['recipient_name'] = $data['name'] = $recipient['name'];
+                }
+                
                 $data = array(
-                    'name' => $recipient['name'],
                     'body' => 'Please see details of the Weight Ticket below.',
                     'weightticket' => $weightticket,
                     'order_number' => $order['order_number'],
                     'account_name' => $account['name']
                 );
                 
-                // $result = View::make('emails.weightticket', $data);
-                // return $result;
+//                $result = View::make('emails.weightticket', $data);
+//                return $result;
                 
                 $header = array(
                     'subject' => 'Weight Ticket',
-                    'recipient_name' => $recipient['name'],
                     'recipient_email' => $recipient['email'],
                     'sender_name' => '',
                     'sender_email' => ''
@@ -496,9 +476,15 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
                 $sent = Mail::send('emails.weightticket', $data, function($message) use ($header)
                 {
-                    $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator')
-                            ->to($header['recipient_email'], $header['recipient_name'])
-                            ->subject($header['subject']);
+                    if (isset($header['recipient_name'])) {
+                        $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator')
+                                ->to($header['recipient_email'], $header['recipient_name'])
+                                ->subject($header['subject']);
+                    } else {
+                        $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator')
+                                ->to($header['recipient_email'])
+                                ->subject($header['subject']);
+                    }
                 });
 
                 if (!$sent) {
