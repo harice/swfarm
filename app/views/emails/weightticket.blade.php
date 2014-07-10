@@ -532,6 +532,7 @@
                                             </td>
                                         </tr>
                                     </table>
+                                    <hr />
                                     
                                     @if (isset($weightticket["weightticketscale_pickup"]))
                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateBody">
@@ -595,6 +596,7 @@
                                         </tr>
                                     </table>
                                     @endif
+                                    <hr />
                                     
                                     @if (isset($weightticket["weightticketscale_dropoff"]))
                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateBody">
@@ -658,6 +660,7 @@
                                         </tr>
                                     </table>
                                     @endif
+                                    <hr />
                                     <!-- // END BODY -->
                                 </td>
                             </tr>
