@@ -127,7 +127,6 @@ define([
 			this.$el.find('#loading-ticket-no').val(this.model.get('loadingTicketNumber'));
 			
 			if(pickupInfo != null) {
-				console.log(pickupInfo);
 				this.$el.find('#pickup-fields').show();
 				if(typeof pickupInfo.scaler_account[0] != 'undefined' && typeof pickupInfo.scaler_account[0].name != 'undefined' && pickupInfo.scaler_account[0].name != null)
 					this.$el.find('#pickup-info .scale-account').val(pickupInfo.scaler_account[0].name);
@@ -176,7 +175,6 @@ define([
 			}
 			
 			if(dropoffInfo != null) {
-				console.log(dropoffInfo);
 				this.$el.find('#dropoff-fields').show();
 				if(typeof dropoffInfo.scaler_account[0] != 'undefined' && typeof dropoffInfo.scaler_account[0].name != 'undefined' && dropoffInfo.scaler_account[0].name != null)
 					this.$el.find('#dropoff-info .scale-account').val(dropoffInfo.scaler_account[0].name);
