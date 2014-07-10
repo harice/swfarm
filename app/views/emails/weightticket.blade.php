@@ -533,7 +533,7 @@
                                         </tr>
                                     </table>
                                     
-                                    @if (!isset($weightticket["weightticketscale_pickup"]))
+                                    @if (isset($weightticket["weightticketscale_pickup"]))
                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateBody">
                                         <tr>
                                             <td valign="top" class="bodyContent" mc:edit="body_content01">
@@ -596,7 +596,7 @@
                                     </table>
                                     @endif
                                     
-                                    @if (!isset($weightticket["weightticketscale_pickup"]))
+                                    @if (isset($weightticket["weightticketscale_pickup"]))
                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateBody">
                                         <tr>
                                             <td valign="top" class="bodyContent" mc:edit="body_content03">
