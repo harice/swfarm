@@ -488,6 +488,18 @@ class AccountRepository implements AccountRepositoryInterface {
       );
   }
 
+  public function getProducerAndWarehouseAccount(){
+      $accountIds = array(5, 10); //producer and wearehouse accounts
+      $accounts = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($accountIds){
+                    $query->whereIn('id', $accountIds);
+                  })->get(array('id', 'name', 'accounttype'));
+
+    return Response::json(
+          $accounts->toArray(),
+          200
+      );
+  }
+
   public function getScaleList($scalerAccount_id){
       $scaleList = Scale::where('account_id', '=', $scalerAccount_id)->get();
       return Response::json(

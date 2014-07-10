@@ -827,6 +827,10 @@ define([
 			}).on('changeDate', function (ev) {
 				var selectedDate = $('#bid-start-date .input-group.date input').val();
 				thisObj.$el.find('#bid-end-date .input-group.date').datepicker('setStartDate', selectedDate);
+			}).on('show', function (ev) {
+				setTimeout(function(){
+					$('.datepicker.datepicker-dropdown.dropdown-menu').css('z-index', 99999999999999);
+				}, 0);
 			});
 			
 			this.$el.find('#bid-end-date .input-group.date').datepicker({
@@ -838,6 +842,10 @@ define([
 			}).on('changeDate', function (ev) {
 				var selectedDate = $('#bid-end-date .input-group.date input').val();
 				thisObj.$el.find('#bid-start-date .input-group.date').datepicker('setEndDate', selectedDate);
+			}).on('show', function (ev) {
+				setTimeout(function(){
+					$('.datepicker.datepicker-dropdown.dropdown-menu').css('z-index', 99999999999999);
+				}, 0);
 			});
 		},
 		

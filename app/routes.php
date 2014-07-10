@@ -46,6 +46,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 
     // Route::get('account/{id}/contracts', 'APIv1\AccountController@getContracts');
     Route::get('account/getContracts/{id}', 'APIv1\AccountController@getContracts');
+	Route::get('account/getProducerAndWarehouseAccount', 'APIv1\AccountController@getProducerAndWarehouseAccount');
     Route::get('account/trailer', 'APIv1\AccountController@getTrailerAccount');
     Route::get('account/scaler', 'APIv1\AccountController@getScalerAccount');
     Route::get('account/getScaleList', 'APIv1\AccountController@getScaleList');
@@ -167,6 +168,9 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('contract/{id}/salesorders', 'APIv1\ContractController@salesorder');
     Route::get('contract/search', 'APIv1\ContractController@search');
     Route::resource('contract', 'APIv1\ContractController');
+
+    // Storage location
+    Route::resource('storagelocation', 'APIv1\StorageLocationController');
 });
 
 

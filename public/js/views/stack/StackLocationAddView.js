@@ -5,7 +5,7 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'models/stack/StackLocationModel',
-	'collections/product/ProductCollection',
+	'collections/account/AccountCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/stack/stackLocationAddTemplate.html',
 	'text!templates/stack/stackLocationSectionItemTemplate.html',
@@ -17,7 +17,7 @@ define([
 			Validate,
 			TextFormatter,
 			StackLocationModel,
-			ProductCollection,
+			AccountCollection,
 			contentTemplate,
 			stackLocationAddTemplate,
 			stackLocationSectionItemTemplate,
@@ -38,26 +38,26 @@ define([
 			this.options = {
 				sectionFieldClone: null,
 				sectionFieldCounter: 0,
-				sectionFieldClass: ['section_name', 'description', 'id'],
-				sectionFieldClassRequired: ['section_name'],
+				sectionFieldClass: ['name', 'description', 'id'],
+				sectionFieldClassRequired: ['name'],
 				productFieldExempt: [],
 				sectionFieldSeparator: '.',
 				removeComma: [],
 			};
 			
-			this.productCollection = new ProductCollection();
-			this.productCollection.on('sync', function() {
+			this.producerAndWarehouseAccount = new AccountCollection();
+			this.producerAndWarehouseAccount.on('sync', function() {
 				if(thisObj.subContainerExist())
 					thisObj.displayForm();
 				this.off('sync');
 			});
-			this.productCollection.on('error', function(collection, response, options) {
+			this.producerAndWarehouseAccount.on('error', function(collection, response, options) {
 				this.off('error');
 			});
 		},
 		
 		render: function(){
-			this.productCollection.getAllModel();
+			this.producerAndWarehouseAccount.getProducerAndWarehouseAccount();
 			Backbone.View.prototype.refreshTitle('Stack Location','add');
 		},
 		
@@ -82,11 +82,11 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
 			
-			//this.generateProduct();
+			this.initValidateForm();
+			this.generateAccount();
 			this.addSection();
 			this.focusOnFirstField();
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
-			this.initValidateForm();
 			
 			this.otherInitializations();
 		},
@@ -160,18 +160,19 @@ define([
 			var sectionFieldClassRequired = this.options.sectionFieldClassRequired;
 			for(var i=0; i < sectionFieldClassRequired.length; i++) {
 				$('.'+sectionFieldClassRequired[i]).each(function() {
+					console.log(sectionFieldClassRequired[i]);
 					$(this).rules('add', {required: true});
 				});
 			}
 		},
 		
-		generateProduct: function () {
+		generateAccount: function () {
 			var options = '';
-			_.each(this.productCollection.models, function (model) {
+			_.each(this.producerAndWarehouseAccount.models, function (model) {
 				options += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
 			
-			this.$el.find('#product_id').append(options);
+			this.$el.find('#account_id').append(options);
 		},
 		
 		events: {
