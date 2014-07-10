@@ -221,11 +221,14 @@ define([
 			this.$el.find('#so-nos .radio-inline:first-child input[type="radio"]').attr('checked', true);
 		},
                 
-        // Contracts
-        generateContract: function () {
-            var contract_list = _.template(contractTemplate, {'contracts': this.contractByAccountCollection.models});
+		generateContract: function () {
+			var contractList = _.template(contractTemplate, {'contracts': this.contractByAccountCollection.models});
+			var currentValue = this.$el.find('#contract_id').val();
 			this.resetSelect(this.$el.find('#contract_id'));
-			this.$el.find('#contract_id').append(contract_list);
+			this.$el.find('#contract_id').append(contractList);
+			
+			if(currentValue != '' && this.$el.find('#contract_id option[value="'+currentValue+'"]').length > 0)
+				this.$el.find('#contract_id').val(currentValue);
 		},
 		
 		initCustomerAutocomplete: function () {
@@ -254,7 +257,10 @@ define([
 			this.customerAutoCompleteView.typeInCallback = function (result) {
 				var address = result.address;
 				thisObj.$el.find('#street').val(address[0].street);
-				thisObj.$el.find('#state').val(address[0].address_states[0].state);
+				if(address[0].address_states.length > 0 && typeof address[0].address_states[0].state != 'undefined')
+					thisObj.$el.find('#state').val(address[0].address_states[0].state);
+				else if(typeof address[0].address_states.state != 'undefined')
+					thisObj.$el.find('#state').val(address[0].address_states.state);
 				thisObj.$el.find('#city').val(address[0].city);
 				thisObj.$el.find('#zipcode').val(address[0].zipcode);
 				thisObj.contractByAccountCollection.getContractByAccount(result.id);
@@ -340,7 +346,7 @@ define([
 			});
 		},
 		
-		getAllProductDropdown: function () {
+		getAllProductDropdown: function () {//console.log('getAllProductDropdown');
 			var dropDown = '<option value="">Select a product</option>';
 			_.each(this.productCollection.models, function (model) {
 				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
@@ -350,10 +356,18 @@ define([
 		},
 		
 		generateAllProductDropdown: function () {
-			this.subContainer.find('#product-list .product_id').html(this.getAllProductDropdown());
+			//this.subContainer.find('#product-list .product_id').html(this.getAllProductDropdown());
+			var thisObj = this;
+			this.subContainer.find('#product-list .product_id').each(function () {
+				var currentValue = $(this).val();
+				$(this).html(thisObj.getAllProductDropdown());
+				
+				if(currentValue != '' && $(this).find('option[value="'+currentValue+'"]').length > 0)
+					$(this).val(currentValue);
+			});
 		},
 		
-		getContractProductDropdown: function () {
+		getContractProductDropdown: function () {//console.log('getContractProductDropdown');
 			var dropDown = '<option value="">Select a product</option>';
 			_.each(this.contractProductsCollection.models, function (model) {
 				dropDown += '<option value="'+model.get('product_id')+'">'+model.get('name')+'</option>';
@@ -363,10 +377,18 @@ define([
 		},
 		
 		generateContractProductDropdown: function () {
-			this.subContainer.find('#product-list .product_id').html(this.getContractProductDropdown());
+			//this.subContainer.find('#product-list .product_id').html(this.getContractProductDropdown());
+			var thisObj = this;
+			this.subContainer.find('#product-list .product_id').each(function () {
+				var currentValue = $(this).val();
+				$(this).html(thisObj.getContractProductDropdown());
+				
+				if(currentValue != '' && $(this).find('option[value="'+currentValue+'"]').length > 0)
+					$(this).val(currentValue);
+			});
 		},
 		
-		getProductDropdown: function () {
+		getProductDropdown: function () {//console.log('getProductDropdown');
 			if(this.subContainer.find('#contract_id').val() == '')
 				return this.getAllProductDropdown();
 			else
