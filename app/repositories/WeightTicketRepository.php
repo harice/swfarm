@@ -427,6 +427,13 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         return new WeightTicket($data);
     }
 
+    /**
+     * Mail Weight Ticket
+     * 
+     * @param type $id TransportSchedule id
+     * @param array $recipients
+     * @return type
+     */
     public function mailWeightTicket($id, $recipients)
     {
         $recipients = array(
@@ -438,12 +445,6 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         
         try
         {
-            // Get weight ticket
-//            $_weightticket = WeightTicket::find($id);
-//            var_dump($_weightticket);
-            
-            // Get transport schedule
-            // $transportSchedule_id = $_weightticket['transportSchedule_id'];
             $transportSchedule_id = $id;
             $transportSchedule = TransportSchedule::find($transportSchedule_id);
             
@@ -463,16 +464,6 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                 ->where('transportSchedule_id', '=', $transportSchedule_id)
                 ->first();
             
-//            if ($weightticket) {
-//                return Response::json(array(
-//                    'error' => false,
-//                    'message' => 'Email has been sent.'), 200);
-//            } else {
-//                return Response::json(array(
-//                    'error' => true,
-//                    'message' => 'Email was not sent.'), 200);
-//            }
-            
             if ($weightticket) {
                 foreach ($recipients as $recipient) {
                     if (isset($recipient['name'])) {
@@ -486,7 +477,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                         'account_name' => $account['name']
                     );
 
-//                    return View::make('emails.weightticket', $data);
+                    // return View::make('emails.weightticket', $data);
 
                     $header = array(
                         'subject' => 'Weight Ticket',
@@ -495,7 +486,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                         'sender_email' => ''
                     );
 
-                    $sent = Mail::send('emails.weightticket', $data, function($message) use ($header)
+                    Mail::send('emails.weightticket', $data, function($message) use ($header)
                     {
                         if (isset($header['recipient_name'])) {
                             $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator')
