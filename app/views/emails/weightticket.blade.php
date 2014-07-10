@@ -575,10 +575,10 @@
                                                 <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 400px;">
                                                     <thead>
                                                         <tr>
-                                                            <th>Stack No.</th>
-                                                            <th>Product</th>
-                                                            <th>Bales</th>
-                                                            <th>Lbs.</th>
+                                                            <th style="text-align: left">Stack No.</th>
+                                                            <th style="text-align: left">Product</th>
+                                                            <th style="text-align: left">Bales</th>
+                                                            <th style="text-align: left">Lbs.</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -596,9 +596,9 @@
                                         </tr>
                                     </table>
                                     @endif
-                                    <hr />
                                     
                                     @if (isset($weightticket["weightticketscale_dropoff"]))
+                                    <hr />
                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateBody">
                                         <tr>
                                             <td valign="top" class="bodyContent" mc:edit="body_content03">
@@ -639,10 +639,10 @@
                                                 <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 400px;">
                                                     <thead>
                                                         <tr>
-                                                            <th>Stack No.</th>
-                                                            <th>Product</th>
-                                                            <th>Bales</th>
-                                                            <th>Lbs.</th>
+                                                            <th style="text-align: left">Stack No.</th>
+                                                            <th style="text-align: left">Product</th>
+                                                            <th style="text-align: left">Bales</th>
+                                                            <th style="text-align: left">Lbs.</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
