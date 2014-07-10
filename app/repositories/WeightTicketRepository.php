@@ -429,6 +429,13 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
     public function mailWeightTicket($id, $recipients)
     {
+        $recipients = array(
+            array(
+                "name" => "John Doe",
+                "email" => "swfarm@mailinator.com"
+            )
+        );
+        
         try
         {
             // Get weight ticket
@@ -492,7 +499,9 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                 }
             }
             
-            return 'Email has been sent.';
+            return Response::json(array(
+              'error' => false,
+              'message' => 'Email has been sent.'), 200);
         }
         catch (Exception $e)
         {
