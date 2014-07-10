@@ -575,10 +575,10 @@
                                                 <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 400px;">
                                                     <thead>
                                                         <tr>
-                                                            <th style="text-align: left">Stack No.</th>
-                                                            <th style="text-align: left">Product</th>
-                                                            <th style="text-align: left">Bales</th>
-                                                            <th style="text-align: left">Lbs.</th>
+                                                            <th style="text-align: left;">Stack No.</th>
+                                                            <th style="text-align: left;">Product</th>
+                                                            <th style="text-align: left;">Bales</th>
+                                                            <th style="text-align: left;">Lbs.</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -639,10 +639,10 @@
                                                 <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 400px;">
                                                     <thead>
                                                         <tr>
-                                                            <th style="text-align: left">Stack No.</th>
-                                                            <th style="text-align: left">Product</th>
-                                                            <th style="text-align: left">Bales</th>
-                                                            <th style="text-align: left">Lbs.</th>
+                                                            <th style="text-align: left;">Stack No.</th>
+                                                            <th style="text-align: left;">Product</th>
+                                                            <th style="text-align: left;">Bales</th>
+                                                            <th style="text-align: left;">Lbs.</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
