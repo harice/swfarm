@@ -439,10 +439,12 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         try
         {
             // Get weight ticket
-            $_weightticket = WeightTicket::find($id);
+//            $_weightticket = WeightTicket::find($id);
+//            var_dump($_weightticket);
             
             // Get transport schedule
-            $transportSchedule_id = $_weightticket['transportSchedule_id'];
+            // $transportSchedule_id = $_weightticket['transportSchedule_id'];
+            $transportSchedule_id = $id;
             $transportSchedule = TransportSchedule::find($transportSchedule_id);
             
             // Get order
@@ -451,13 +453,25 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             // Get account
             $account = Account::find($order['account_id']);
             
-            $weightticket = WeightTicket::with('weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder.product')
-                            ->with('weightticketscale_dropoff.scalerAccount')
-                            ->with('weightticketscale_dropoff.scale')
-                            ->with('weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder.product')
-                            ->with('weightticketscale_pickup.scalerAccount')
-                            ->with('weightticketscale_pickup.scale')
-                            ->where('transportSchedule_id', '=', $transportSchedule_id)->first();
+            $weightticket = WeightTicket::
+                with('weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder.product')
+                ->with('weightticketscale_dropoff.scalerAccount')
+                ->with('weightticketscale_dropoff.scale')
+                ->with('weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder.product')
+                ->with('weightticketscale_pickup.scalerAccount')
+                ->with('weightticketscale_pickup.scale')
+                ->where('transportSchedule_id', '=', $transportSchedule_id)
+                ->first();
+            
+//            if ($weightticket) {
+//                return Response::json(array(
+//                    'error' => false,
+//                    'message' => 'Email has been sent.'), 200);
+//            } else {
+//                return Response::json(array(
+//                    'error' => true,
+//                    'message' => 'Email was not sent.'), 200);
+//            }
             
             if ($weightticket) {
                 foreach ($recipients as $recipient) {
