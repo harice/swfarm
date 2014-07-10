@@ -3,19 +3,19 @@
   <div class="row margin-top-0">
     <div class="col-md-6">
       <% if (typeof is_bid === "undefined") { %>
-        Purchased Date: <code><%= po.get("created_at").split(" ")[0] %></code><br>
-        Pickup Start: <code><%= po.get("transportdatestart").split(" ")[0] %></code>
-        Pickup End: <code><%= po.get("transportdateend").split(" ")[0] %></code><br>
-        Destination: <code><%= po.get("location").location %></code><br>
+        Purchased Date: <span class="text-danger"><%= formatDateAMPM(po.get("created_at")) %></span><br>
+        Pickup Start: <span class="text-danger"><%= formatDate(po.get("transportdatestart")) %></span>
+        Pickup End: <span class="text-danger"><%= formatDate(po.get("transportdateend")) %></span><br>
+        Destination: <span class="text-danger"><%= po.get("location").location %></span><br>
       <% } %>
       Status: <label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label>
       <% if(po.get("status").id == 5 || po.get("status").id == 6) { if(po.get("ordercancellingreason").reason.id != reason_others ) { %>
-      <br>Reason: <code><%= po.get("ordercancellingreason").reason.reason %></code>
+      <br>Reason: <%= po.get("ordercancellingreason").reason.reason %>
       <% } else { %>
-      <br>Reason: <code><%= po.get("ordercancellingreason").others %></code>
+      <br>Reason: <%= po.get("ordercancellingreason").others %>
       <% }} %>
-      <% if (typeof po.get("notes") != "undefined") { %>
-      <br>Notes: <code><%= po.get("notes") %></code>
+      <% if (po.get("notes").length > 0) { %>
+      <br>Notes: <%= po.get("notes") %>
       <% } %>
     </div>
     <div class="col-md-6">
@@ -39,9 +39,13 @@
             <tr>
               <th class="width-150">Product</th>
               <th>Description</th>
-              <th class="width-110">Stack No.</th>
-              <th class="width-110">Est Tons</span></th>
-              <th class="width-110">Bales</th>
+              <th class="width-150">Stack No.</th>
+              
+              <% if (typeof is_bid === "undefined") { %>
+              <th class="width-60">Testing</th>
+              <th class="width-60">RFV</th>
+              <th class="width-40">PDF</th>
+              <% } %>
 
               <th class="width-110">
                 <% if (typeof is_bid === "undefined") { %>
@@ -51,6 +55,8 @@
                 <% } %>
               </th>
 
+              <th class="width-110">Est Tons</span></th>
+              <th class="width-110">Bales</th>
               <th class="width-110">
                 <% if (typeof is_bid === "undefined") { %>
                   Total Price
@@ -59,41 +65,31 @@
                 <% } %>
               </th>
 
-              <% if (typeof is_bid === "undefined") { %>
-              <th class="width-60">Testing</th>
-              <th class="width-60">RFV</th>
-              <th class="width-40">PDF</th>
-              <% } %>
-
             </tr>
           </thead>
-		  <tfoot>
-		    <tr>
-			  <td class="text-right" colspan="3">Total</td>
-			  <td id="total-tons" class="text-right">0.0000</td>
-			  <td id="total-bales" class="text-right">0</td>
-			  <td id="total-unitprice" class="text-right">$ 0.00</td>
-			  <td id="total-price" class="text-right">$ 0.00</td>
-			  <% if (typeof is_bid === "undefined") { %>
-			    <td colspan="3">&nbsp;</td>
-			  <% } %>
-			</tr>
-		  </tfoot>
           <tbody></tbody>
+    		  <tfoot>
+    		    <tr>
+      			  <td class="text-right" colspan="<% if (typeof is_bid === "undefined") { %>7<% } else { %>4<% } %>">Total</td>
+      			  <td class="text-right"><strong id="total-tons">0.0000</strong></td>
+      			  <td class="text-right"><strong id="total-bales">0</strong></td>
+      			  <td class="text-right"><strong id="total-price">$ 0.00</strong></td>
+      			</tr>
+    		  </tfoot>
         </table>
       </div>
       <div class="pull-right margin-top-10">
         <% if (typeof editable !== "undefined") { %>
           <% if (typeof is_bid === "undefined") { %>
-            <a id="edit-po" class="btn btn-primary btn-sm editable-button" href="<%= po_edit_url %>"><i class="fa fa-pencil width-10"></i> Edit PO</a>
-            <a id="close-order" class="btn btn-danger btn-sm editable-button" href="#"><i class="fa fa-times width-10"></i> Close PO</a>
-            <a href="#" class="btn btn-danger btn-sm cancel-po editable-button"><i class="fa fa-ban width-10"></i> Cancel PO</a>
+            <a id="edit-po" class="btn btn-link btn-sm editable-button" href="<%= po_edit_url %>"><i class="fa fa-pencil width-10"></i> Edit PO</a>
+            <a id="close-order" class="btn btn-link color-danger btn-sm editable-button" href="#"><i class="fa fa-times width-10"></i> Close PO</a>
+            <a href="#" class="btn btn-link color-danger btn-sm cancel-po editable-button"><i class="fa fa-ban width-10"></i> Cancel PO</a>
           <% } else {%>
-            <a id="edit-po" class="btn btn-primary btn-sm" href="<%= po_edit_url %>"><i class="fa fa-pencil width-10"></i> Edit Bid</a>
-            <a href="#" class="btn btn-danger btn-sm cancel-bid"><i class="fa fa-ban width-10"></i> Cancel Bid</a>
+            <a id="edit-po" class="btn btn-link btn-sm" href="<%= po_edit_url %>"><i class="fa fa-pencil width-10"></i> Edit Bid</a>
+            <a href="#" class="btn btn-link color-danger btn-sm cancel-bid"><i class="fa fa-ban width-10"></i> Cancel Bid</a>
           <% } %>
         <% } %>
-        <a class="btn btn-link btn-sm" href="<%= po_url %>"><i class="fa fa-angle-double-left"></i> Back</a>
+        <a class="btn btn-link btn-sm" href="<%= po_url %>"><i class="fa fa-angle-double-left width-10"></i> Back</a>
       </div>
     </div>
   </div>

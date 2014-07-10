@@ -18,12 +18,13 @@ define([
 		var overrideNavigateAwayFromForm = false;
 
 		Backbone.View.prototype.helpers = {
-			formatDateAMPM : function(dt) {
-				return Backbone.View.prototype.formatDate('m-d-Y h:m A',Backbone.View.prototype.strToTime(dt));
-			},
-			numberFormat : function(number,decimals) {
-				return Backbone.View.prototype.numberFormat(number,decimals,'.',',');
-			}
+			formatDate 			: function(string) { return Backbone.View.prototype.formatDate('m-d-Y',Backbone.View.prototype.strToTime(string)); },
+			formatDateBy 		: function(string,format) { return Backbone.View.prototype.formatDate(format,Backbone.View.prototype.strToTime(string)); },
+			formatDateAMPM 		: function(string) { return Backbone.View.prototype.formatDate('m-d-Y h:i A',Backbone.View.prototype.strToTime(string)); },
+			numberFormat 		: function(number) { return Backbone.View.prototype.numberFormat(number,2,'.',','); },
+			numberFormatLbs 	: function(number) { return Backbone.View.prototype.numberFormat(number,2,'.',','); },
+			numberFormatTons 	: function(number) { return Backbone.View.prototype.numberFormat(number,4,'.',','); },
+			numberFormatBales 	: function(number) { return Backbone.View.prototype.numberFormat(number,0,'.',','); }
 		}
 
 		Backbone.View.prototype.strToTime = function strtotime(text, now) {
@@ -35,66 +36,22 @@ define([
 			if (match && match[2] === match[4]) { 
 				if (match[1] > 1901) { 
 					switch (match[2]) { 
-						case '-': { 
-							if (match[3] > 12 || match[5] > 31) { return fail; }
-							return new Date(match[1], parseInt(match[3], 10) - 1, match[5],match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000;
-						}
+						case '-': { if (match[3] > 12 || match[5] > 31) { return fail; } return new Date(match[1], parseInt(match[3], 10) - 1, match[5],match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000; }
 						case '.': { return fail; }
-						case '/': { 
-							if (match[3] > 12 || match[5] > 31) { return fail; }
-							return new Date(match[1], parseInt(match[3], 10) - 1, match[5],match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000;
-						}
+						case '/': { if (match[3] > 12 || match[5] > 31) { return fail; } return new Date(match[1], parseInt(match[3], 10) - 1, match[5],match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000; }
 					}
 				} else if (match[5] > 1901) {
 					switch (match[2]) {
-						case '-': { 
-							if (match[3] > 12 || match[1] > 31) { return fail; }
-							return new Date(match[5], parseInt(match[3], 10) - 1, match[1],match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000;
-						}
-						case '.': { 
-							if (match[3] > 12 || match[1] > 31) { return fail; }
-							return new Date(match[5], parseInt(match[3], 10) - 1, match[1],match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000;
-						}
-						case '/': { 
-							if (match[1] > 12 || match[3] > 31) { return fail; }
-							return new Date(match[5], parseInt(match[1], 10) - 1, match[3],match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000;
-						}
+						case '-': { if (match[3] > 12 || match[1] > 31) { return fail; } return new Date(match[5], parseInt(match[3], 10) - 1, match[1],match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000; }
+						case '.': { if (match[3] > 12 || match[1] > 31) { return fail; } return new Date(match[5], parseInt(match[3], 10) - 1, match[1],match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000; }
+						case '/': { if (match[1] > 12 || match[3] > 31) { return fail; } return new Date(match[5], parseInt(match[1], 10) - 1, match[3],match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000; }
 					}
 				} else {
 					switch (match[2]) {
-						case '-': { 
-							if (match[3] > 12 || match[5] > 31 || (match[1] < 70 && match[1] > 38)) { return fail; }
-							year = match[1] >= 0 && match[1] <= 38 ? +match[1] + 2000 : match[1];
-							return new Date(year, parseInt(match[3], 10) - 1, match[5],match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000;
-						}
-						case '.': { 
-							if (match[5] >= 70) { 
-								if (match[3] > 12 || match[1] > 31) { return fail; }
-								return new Date(match[5], parseInt(match[3], 10) - 1, match[1],match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000;
-							}
-
-							if (match[5] < 60 && !match[6]) { 
-								if (match[1] > 23 || match[3] > 59) { return fail; }
-
-								today = new Date();
-								return new Date(today.getFullYear(), today.getMonth(), today.getDate(),match[1] || 0, match[3] || 0, match[5] || 0, match[9] || 0) / 1000;
-							}
-							return fail;
-						}
-						case '/': {
-							if (match[1] > 12 || match[3] > 31 || (match[5] < 70 && match[5] > 38)) {
-								return fail;
-							}
-
-							year = match[5] >= 0 && match[5] <= 38 ? +match[5] + 2000 : match[5];
-							return new Date(year, parseInt(match[1], 10) - 1, match[3],match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000;
-						}
-						case ':': { 
-							if (match[1] > 23 || match[3] > 59 || match[5] > 59) { return fail; }
-
-							today = new Date();
-							return new Date(today.getFullYear(), today.getMonth(), today.getDate(),match[1] || 0, match[3] || 0, match[5] || 0) / 1000;
-						}
+						case '-': { if (match[3] > 12 || match[5] > 31 || (match[1] < 70 && match[1] > 38)) { return fail; } year = match[1] >= 0 && match[1] <= 38 ? +match[1] + 2000 : match[1]; return new Date(year, parseInt(match[3], 10) - 1, match[5],match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000; }
+						case '.': { if (match[5] >= 70) { if (match[3] > 12 || match[1] > 31) { return fail; } return new Date(match[5], parseInt(match[3], 10) - 1, match[1],match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000; } if (match[5] < 60 && !match[6]) { if (match[1] > 23 || match[3] > 59) { return fail; } today = new Date(); return new Date(today.getFullYear(), today.getMonth(), today.getDate(),match[1] || 0, match[3] || 0, match[5] || 0, match[9] || 0) / 1000; } return fail; }
+						case '/': { if (match[1] > 12 || match[3] > 31 || (match[5] < 70 && match[5] > 38)) { return fail; } year = match[5] >= 0 && match[5] <= 38 ? +match[5] + 2000 : match[5]; return new Date(year, parseInt(match[1], 10) - 1, match[3],match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000; }
+						case ':': { if (match[1] > 23 || match[3] > 59 || match[5] > 59) { return fail; } today = new Date(); return new Date(today.getFullYear(), today.getMonth(), today.getDate(),match[1] || 0, match[3] || 0, match[5] || 0) / 1000; }
 					}
 				}
 			}
@@ -139,12 +96,8 @@ define([
 		Backbone.View.prototype.formatDate = function date(format, timestamp) {
 			var that = this;
 			var jsdate, f;
-			var txt_words = [
-				'Sun', 'Mon', 'Tues', 'Wednes', 'Thurs', 'Fri', 'Satur',
-				'January', 'February', 'March', 'April', 'May', 'June',
-				'July', 'August', 'September', 'October', 'November', 'December'
-			];
-			
+			var txt_words = ['Sun', 'Mon', 'Tues', 'Wednes', 'Thurs', 'Fri', 'Satur', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
 			var formatChr = /\\?(.?)/gi;
 			var formatChrCb = function(t, s) { return f[t] ? f[t]() : s; };
 			var _pad = function(n, c) { n = String(n); while (n.length < c) { n = '0' + n; } return n; };
@@ -195,20 +148,10 @@ define([
 
 		Backbone.View.prototype.numberFormat = function(number, decimals, dec_point, thousands_sep) {
 			number = (number + '').replace(/[^0-9+\-Ee.]/g, '');
-			var n = !isFinite(+number) ? 0 : +number, prec = !isFinite(+decimals) ? 0 : Math.abs(decimals), sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,dec = (typeof dec_point === 'undefined') ? '.' : dec_point,s = '', toFixedFix = function(n, prec) {
-				var k = Math.pow(10, prec);
-				return '' + (Math.round(n * k) / k).toFixed(prec);
-			};
-			
+			var n = !isFinite(+number) ? 0 : +number, prec = !isFinite(+decimals) ? 0 : Math.abs(decimals), sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,dec = (typeof dec_point === 'undefined') ? '.' : dec_point,s = '', toFixedFix = function(n, prec) { var k = Math.pow(10, prec); return '' + (Math.round(n * k) / k).toFixed(prec); };
 			s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-			if (s[0].length > 3) {
-				s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-			}
-			
-			if ((s[1] || '').length < prec) {
-				s[1] = s[1] || '';
-				s[1] += new Array(prec - s[1].length + 1).join('0');
-			}
+			if (s[0].length > 3) { s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep); }
+			if ((s[1] || '').length < prec) { s[1] = s[1] || ''; s[1] += new Array(prec - s[1].length + 1).join('0'); }
 			return s.join(dec);
 		}
 
