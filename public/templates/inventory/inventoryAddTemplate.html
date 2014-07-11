@@ -1,0 +1,84 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="block-flat">
+            <div class="content">
+                <div class="row">
+                    <div class="col-md-9">
+                        <form id="inventoryForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+                            <% if (typeof inventory_id !== "undefined") { %>
+                                <input type="hidden" name="id" value="<%= inventory_id %>" />
+                            <% } %>
+                            <fieldset>
+                                <legend>Details</legend>                  
+                                <div class="form-group">
+                                    <label for="transaction_type" class="col-sm-3 control-label">Trailer Account *</label>
+                                    <div class="col-sm-5">
+                                        <div class="styled-select">
+                                            <select class="form-control width-304" id="transaction_type" name="transaction_type" required>
+                                                <option value="">Select a transaction type</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+							<fieldset>
+								<legend>
+									Products
+									<button title="Add Product" id="add-product" type="button" class="pull-right btn btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
+								</legend>
+								<div class="table-responsive">
+									<table id="product-list" class="table table-bordered">
+										<thead>
+											<tr>
+												<th>Product</th>
+												<th>Description</th>
+												<th>Stack No.</th>
+												<th class="width-130"><% if (typeof is_bid === "undefined") { %>Unit Price<% } else { %>Bid Unit Price<% } %></th>
+												<th class="width-120">Est Tons</th>
+												<th>Bales</th>
+												<th class="width-150"><% if (typeof is_bid === "undefined") { %>Total Price<% } else { %>Bid Total Price<% } %></th>
+												<% if (typeof is_bid === "undefined") { %>
+												<th>Hold for Testing</th>
+												<th class="width-70">RFV</th>
+												<th class="width-50">PDF</th>
+												<% } %>
+												<th></th>
+											</tr>
+										</thead>
+										<tfoot>
+											<tr>
+												<td class="text-right" colspan="3">Total</td>
+												<td>
+													<div class="input-group margin-0">
+														<span class="input-group-addon">$</span>
+														<input id="total-unitprice" class="form-control text-right" type="text" value="0.00" readonly>
+													</div>
+												</td>
+												<td><input id="total-tons" class="form-control text-right" type="text" value="0.0000" readonly></td>
+												<td><input id="total-bales" class="form-control text-right" type="text" value="0" readonly></td>
+												<td>
+													<div class="input-group margin-0">
+														<span class="input-group-addon">$</span>
+														<input id="total-price" class="form-control text-right" type="text" value="0.00" readonly>
+													</div>
+												</td>
+												<td <% if (typeof is_bid === "undefined") { %>colspan="4"<% } %>>&nbsp;</td>
+											</tr>
+										</tfoot>
+										<tbody></tbody>
+									</table>
+								</div>
+							</fieldset>
+                            <div class="form-group">
+                                <div class="col-md-5 col-md-offset-3">
+                                    <button id="save" type="submit" class="save btn btn-primary">Save</button>
+                                    <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div> <!-- /.content -->
+        </div> <!-- /.block-flat -->
+    </div>
+</div>

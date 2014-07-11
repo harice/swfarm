@@ -27,6 +27,7 @@ define(function () {
 			'SETTINGS': 'administration/settings',
 			'SCALE': 'administration/scale',
 			'TRUCKER': 'administration/trucker',
+			'INVENTORY': 'inventory',
 		},
 		'MENU': {
 			'PURCHASES': {
@@ -111,6 +112,12 @@ define(function () {
 				'ADD'	:51,
 				'EDIT'	:52,
 				'DELETE':53
+			},
+			'INVENTORY': {
+				'VIEW'	:54,
+				'ADD'	:55,
+				'EDIT'	:56,
+				'DELETE':57
 			},
 		},
 		'CRUD': {
