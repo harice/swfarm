@@ -26,6 +26,7 @@ define([
 			purchaseOrderTabbingTemplate,
 			weightInfoViewTemplate,
 			weightInfoViewProductItemTemplate,
+            serviceTemplate,
 			Global,
 			Const
 ){
