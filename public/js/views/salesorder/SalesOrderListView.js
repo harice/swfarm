@@ -369,55 +369,6 @@ define([
 			return false;
 		},
 		
-		/*toggleAccordion: function (ev) {
-			var thisObj = this;
-			var id = $(ev.currentTarget).attr('data-id');
-			var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
-			
-			if(!$('#'+collapsibleId).hasClass('in')) {
-				var thisId = id;
-				this.collection.setCollapseLatestId(id);
-				
-				$(ev.currentTarget).find('.throbber_wrap').show();
-				var orderWeightDetailsByStackCollection = new OrderWeightDetailsByStackCollection(id);
-				orderWeightDetailsByStackCollection.on('sync', function() {
-					thisObj.collection.setCollapseId(id);
-					$(ev.currentTarget).find('.throbber_wrap').hide();
-					//console.log(thisId+' == '+thisObj.collection.getCollapseLatestId());
-					if(thisId == thisObj.collection.getCollapseLatestId() && thisObj.subContainerExist()) {
-						_.each(this.models, function (model) {
-							var schedules = model.get('schedule');
-							if(schedules.length > 0) {
-								for(var i=0; i<schedules.length; i++) {
-									var s = schedules[i].transportscheduledate.split(' ');
-									schedules[i].transportscheduledate = thisObj.convertDateFormat(s[0], 'yyyy-mm-dd', thisObj.dateFormat, '-')+' '+s[1];			
-								}
-								model.set('schedule', schedules);
-							}
-						});
-						
-						$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(this.models, id));
-						$('#'+collapsibleId).closest('tbody').find('.order-collapsible-item.collapse.in').collapse('toggle');
-						$('#order-accordion tr').find('.accordion-carret').removeClass('fa-angle-down').addClass('fa-angle-right');
-						$('#'+collapsibleId).collapse('toggle');
-						$('#order-accordion tr.collapse-trigger[data-id="'+id+'"]').find('.accordion-carret').removeClass('fa-angle-right').addClass('fa-angle-down');
-					}
-					this.off('sync');
-				});
-				
-				orderWeightDetailsByStackCollection.on('error', function(collection, response, options) {
-					$(ev.currentTarget).find('.throbber_wrap').hide();
-					this.off('error');
-				});
-				orderWeightDetailsByStackCollection.getModels();
-			}
-			else {
-				this.collection.setCollapseId(null);
-				$('#'+collapsibleId).collapse('toggle');
-				$(ev.currentTarget).find('.accordion-carret').removeClass('fa-angle-down').addClass('fa-angle-right');
-			}
-		},*/
-		
 		generateOrderWeightDetailsByStack: function (models, soId) {
 			var data = {
 				stacks: models,

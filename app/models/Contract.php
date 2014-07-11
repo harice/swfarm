@@ -102,7 +102,6 @@ class Contract extends BaseModel {
         return $this->hasMany('Order', 'contract_id', 'id');
     }
 
-
     /**
      * Define a One-to-One Relationship
      * 

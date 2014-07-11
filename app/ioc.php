@@ -30,3 +30,4 @@ App::bind('SettingsRepositoryInterface', 'SettingsRepository');
 App::bind('FileRepositoryInterface', 'FileRepository');
 App::bind('ContractRepositoryInterface', 'ContractRepository');
 App::bind('ContractProductsRepositoryInterface', 'ContractProductsRepository');
+App::bind('StorageLocationRepositoryInterface', 'StorageLocationRepository');

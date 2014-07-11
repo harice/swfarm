@@ -65,8 +65,8 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
 
   public function addOrUpdateTransportSchedule($data, $transportScheduleId = null){
       $this->validate($data, 'TransportSchedule');
-      
-      $result = DB::transaction(function() use ($data, $transportScheduleId){
+      DB::beginTransaction();
+      // $result = DB::transaction(function() use ($data, $transportScheduleId){
           if($transportScheduleId == null)
               $transportschedule = new TransportSchedule;
           else
@@ -113,16 +113,20 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
 
           $addProductResult = $this->addProductToSchedule($transportschedule->id, $data['products']);
           if($addProductResult != false){
-            return $addProductResult;
+            DB::rollback();
+            return Response::json($addProductResult, 500);
+            // return $addProductResult;
           }
-          return $transportschedule->id;
-      });
-      
-      if(is_array($result)){
-        return Response::json($result, 500);
-      }
+          // return $transportschedule->id;
+      // });
 
-      if($transportScheduleId == null){
+      DB::commit();
+
+      // if(is_array($result)){
+      //   return Response::json($result, 500);
+      // }
+
+      if($transportschedule->id == null){
           $message = 'Schedule successfully created.';
       } else {
           $message = 'Schedule successfully updated.';

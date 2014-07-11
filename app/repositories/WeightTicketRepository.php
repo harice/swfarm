@@ -427,37 +427,25 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         return new WeightTicket($data);
     }
 
-    // public function closeWeightTicket($transportSchedule_id){
-    //     $weightTicket = WeightTicket::where('transportSchedule_id', '=', $transportSchedule_id)->first();
-        
-    //     if($weightTicket->status_id == 1){ //check if Open
-    //         $this->validate($data['pickup_info'], 'WeightTicketScale');
-    //         $weightTicket->status_id = 2;
-    //         $weightTicket->save();
-
-    //         return array(
-    //             'error' => false,
-    //             'message' => 'Weight ticket closed.');
-    //     } else if($weightTicket->status_id == 2) {//if close
-    //           return array(
-    //               'error' => false,
-    //               'message' => 'Weight ticket is already closed.');
-    //     } else {
-    //           return array(
-    //               'error' => false,
-    //               'message' => 'Weight ticket cannot be cancel if the status is not open or pending.');
-    //     }       
-    // }
-
+    /**
+     * Mail Weight Ticket
+     * 
+     * @param type $id TransportSchedule id
+     * @param array $recipients
+     * @return type
+     */
     public function mailWeightTicket($id, $recipients)
     {
+        $recipients = array(
+            array(
+                "name" => "John Doe",
+                "email" => "swfarm@mailinator.com"
+            )
+        );
+        
         try
         {
-            // Get weight ticket
-            $_weightticket = WeightTicket::find($id);
-            
-            // Get transport schedule
-            $transportSchedule_id = $_weightticket['transportSchedule_id'];
+            $transportSchedule_id = $id;
             $transportSchedule = TransportSchedule::find($transportSchedule_id);
             
             // Get order
@@ -466,47 +454,58 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             // Get account
             $account = Account::find($order['account_id']);
             
-            $weightticket = WeightTicket::with('weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder.product')
-                            ->with('weightticketscale_dropoff.scalerAccount')
-                            ->with('weightticketscale_dropoff.scale')
-                            ->with('weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder.product')
-                            ->with('weightticketscale_pickup.scalerAccount')
-                            ->with('weightticketscale_pickup.scale')
-                            ->where('transportSchedule_id', '=', $transportSchedule_id)->first();
+            $weightticket = WeightTicket::
+                with('weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder.product')
+                ->with('weightticketscale_dropoff.scalerAccount')
+                ->with('weightticketscale_dropoff.scale')
+                ->with('weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder.product')
+                ->with('weightticketscale_pickup.scalerAccount')
+                ->with('weightticketscale_pickup.scale')
+                ->where('transportSchedule_id', '=', $transportSchedule_id)
+                ->first();
             
-            foreach ($recipients as $recipient) {
-                $data = array(
-                    'name' => $recipient['name'],
-                    'body' => 'Please see details of the Weight Ticket below.',
-                    'weightticket' => $weightticket,
-                    'order_number' => $order['order_number'],
-                    'account_name' => $account['name']
-                );
-                
-                // $result = View::make('emails.weightticket', $data);
-                // return $result;
-                
-                $header = array(
-                    'subject' => 'Weight Ticket',
-                    'recipient_name' => $recipient['name'],
-                    'recipient_email' => $recipient['email'],
-                    'sender_name' => '',
-                    'sender_email' => ''
-                );
+            if ($weightticket) {
+                foreach ($recipients as $recipient) {
+                    if (isset($recipient['name'])) {
+                        $header['recipient_name'] = $data['name'] = $recipient['name'];
+                    }
 
-                $sent = Mail::send('emails.weightticket', $data, function($message) use ($header)
-                {
-                    $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator')
-                            ->to($header['recipient_email'], $header['recipient_name'])
-                            ->subject($header['subject']);
-                });
+                    $data = array(
+                        'body' => 'Please see details of the Weight Ticket below.',
+                        'weightticket' => $weightticket,
+                        'order_number' => $order['order_number'],
+                        'account_name' => $account['name']
+                    );
 
-                if (!$sent) {
-                    return 'Email was not sent.';
+                    // return View::make('emails.weightticket', $data);
+
+                    $header = array(
+                        'subject' => 'Weight Ticket',
+                        'recipient_email' => $recipient['email'],
+                        'sender_name' => '',
+                        'sender_email' => ''
+                    );
+
+                    Mail::send('emails.weightticket', $data, function($message) use ($header)
+                    {
+                        $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator');
+                        if (isset($header['recipient_name'])) {
+                            $message->to($header['recipient_email'], $header['recipient_name']);
+                        } else {
+                            $message->to($header['recipient_email']);
+                        }
+                        $message->subject($header['subject']);
+                    });
                 }
+            } else {
+                return Response::json(array(
+                    'error' => true,
+                    'message' => 'Email was not sent.'), 200);
             }
             
-            return 'Email has been sent.';
+            return Response::json(array(
+              'error' => false,
+              'message' => 'Email has been sent.'), 200);
         }
         catch (Exception $e)
         {

@@ -21,8 +21,7 @@ class ContractController extends BaseController {
 	 */
 	public function index()
 	{
-        $result = $this->repo->findAll( Input::all() );
-        return Response::json($result);
+        return $this->repo->findAll( Input::all() );
 	}
     
     /**
@@ -224,6 +223,18 @@ class ContractController extends BaseController {
 	public function products($id)
 	{
         $response = $this->repo->products($id);
+        return Response::json($response);
+	}
+    
+    /**
+	 * Get Weight Tickets of this Contract.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function weighttickets($id)
+	{
+        $response = $this->repo->weighttickets($id);
         return Response::json($response);
 	}
 

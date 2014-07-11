@@ -23,8 +23,8 @@ class DatabaseSeeder extends Seeder {
         // Sales Order
         $this->call('LocationTableSeeder');
         $this->call('NatureOfSaleTableSeeder');
-        $this->call('StatusTableSeeder');
-
+        $this->call('StatusTableSeeder');		
+		
         // Testing
         // $this->call('ProductsTableSeeder');
         // $this->call('AccountTableSeeder');
@@ -44,9 +44,7 @@ class DatabaseSeeder extends Seeder {
         // $this->call('ScaleTableSeeder');
         // $this->call('TrailerTableSeeder');
         // $this->call('FeeTableSeeder');
-        
         // $this->call('ContractTableSeeder');
         // $this->call('ContractProductsTableSeeder');
     }
-
 }

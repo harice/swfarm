@@ -11,7 +11,7 @@ define([
 	'collections/salesorder/OriginCollection',
 	'collections/salesorder/NatureOfSaleCollection',
 	'collections/product/ProductCollection',
-    'collections/contract/ContractCollection',
+    'collections/contract/ContractByAccountCollection',
 	'models/salesorder/SalesOrderModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/salesorder/salesOrderAddTemplate.html',
@@ -33,7 +33,7 @@ define([
 			OriginCollection,
 			NatureOfSaleCollection,
 			ProductCollection,
-            ContractCollection,
+            ContractByAccountCollection,
 			SalesOrderModel,
 			contentTemplate,
 			salesOrderAddTemplate,
@@ -68,30 +68,30 @@ define([
 				removeComma: ['unitprice', 'tons', 'bales'],
 			};
 			
-			this.originCollection = new OriginCollection();
+			/*this.originCollection = new OriginCollection();
 			this.originCollection.on('sync', function() {	
 				thisObj.natureOfSaleCollection.getModels();
 				this.off('sync');
 			});
 			this.originCollection.on('error', function(collection, response, options) {
 				this.off('error');
-			});
+			});*/
 			
 			this.natureOfSaleCollection = new NatureOfSaleCollection();
 			this.natureOfSaleCollection.on('sync', function() {
-				thisObj.contractCollection.getModels();
+				thisObj.productCollection.getAllModel();
 				this.off('sync');
 			});
 			this.natureOfSaleCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
             
-            this.contractCollection = new ContractCollection();
-            this.contractCollection.on('sync', function() {
-				thisObj.productCollection.getAllModel();
-				this.off('sync');
+            this.contractByAccountCollection = new ContractByAccountCollection();
+            this.contractByAccountCollection.on('sync', function() {
+				thisObj.generateContract();
+				//this.off('sync');
 			});
-			this.contractCollection.on('error', function(collection, response, options) {
+			this.contractByAccountCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
 			
@@ -114,10 +114,20 @@ define([
 			this.productCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
+			
+			this.contractProductsCollection = new ProductCollection();
+			this.contractProductsCollection.on('sync', function() {
+				thisObj.generateContractProductDropdown();
+				//this.off('sync');
+			});
+			this.contractProductsCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 		},
 		
 		render: function(){
-			this.originCollection.getModels();
+			//this.originCollection.getModels();
+			this.natureOfSaleCollection.getModels();
 			Backbone.View.prototype.refreshTitle('Sales Order','add');
 		},
 		
@@ -146,7 +156,7 @@ define([
 			
 			// this.generateOrigin();
 			this.generateNatureOfSale();
-            this.generateContract();
+            //this.generateContract();
 			this.initCustomerAutocomplete();
 			this.initCalendar();
 			this.addProduct();
@@ -211,12 +221,14 @@ define([
 			this.$el.find('#so-nos .radio-inline:first-child input[type="radio"]').attr('checked', true);
 		},
                 
-        // Contracts
-        generateContract: function () {
-            // TODO: Filter contracts by account id
-			// var contract_list = _.template(contractTemplate, {'contracts': this.contractCollection.where({ account_id: 2 })});
-            var contract_list = _.template(contractTemplate, {'contracts': this.contractCollection.models});
-			this.$el.find('#contract select').append(contract_list);
+		generateContract: function () {
+			var contractList = _.template(contractTemplate, {'contracts': this.contractByAccountCollection.models});
+			var currentValue = this.$el.find('#contract_id').val();
+			this.resetSelect(this.$el.find('#contract_id'));
+			this.$el.find('#contract_id').append(contractList);
+			
+			if(currentValue != '' && this.$el.find('#contract_id option[value="'+currentValue+'"]').length > 0)
+				this.$el.find('#contract_id').val(currentValue);
 		},
 		
 		initCustomerAutocomplete: function () {
@@ -239,14 +251,19 @@ define([
 				thisObj.$el.find('#state').val(address[0].address_states[0].state);
 				thisObj.$el.find('#city').val(address[0].city);
 				thisObj.$el.find('#zipcode').val(address[0].zipcode);
+				thisObj.contractByAccountCollection.getContractByAccount(model.get('id'));
 			};
 			
 			this.customerAutoCompleteView.typeInCallback = function (result) {
 				var address = result.address;
 				thisObj.$el.find('#street').val(address[0].street);
-				thisObj.$el.find('#state').val(address[0].address_states[0].state);
+				if(address[0].address_states.length > 0 && typeof address[0].address_states[0].state != 'undefined')
+					thisObj.$el.find('#state').val(address[0].address_states[0].state);
+				else if(typeof address[0].address_states.state != 'undefined')
+					thisObj.$el.find('#state').val(address[0].address_states.state);
 				thisObj.$el.find('#city').val(address[0].city);
 				thisObj.$el.find('#zipcode').val(address[0].zipcode);
+				thisObj.contractByAccountCollection.getContractByAccount(result.id);
 			},
 			
 			this.customerAutoCompleteView.typeInEmptyCallback = function () {
@@ -254,6 +271,8 @@ define([
 				thisObj.$el.find('#state').val('');
 				thisObj.$el.find('#city').val('');
 				thisObj.$el.find('#zipcode').val('');
+				thisObj.resetSelect(thisObj.$el.find('#contract_id'));
+				thisObj.$el.find('#contract_id').trigger('change');
 			},
 			
 			this.customerAutoCompleteView.render();
@@ -297,14 +316,13 @@ define([
 				this.$el.find('#product-list tbody').append(productTemplate);
 				var productItem = this.$el.find('#product-list tbody').find('.product-item:first-child');
 				this.options.productFieldClone = productItem.clone();
-				//this.initProductAutocomplete(productItem);
 				this.addIndexToProductFields(productItem);
 				clone = productItem;
 			}
 			else {
 				var clone = this.options.productFieldClone.clone();
-				//this.initProductAutocomplete(clone);
 				this.addIndexToProductFields(clone);
+				clone.find('.product_id').html(this.getProductDropdown());
 				this.$el.find('#product-list tbody').append(clone);
 			}
 				
@@ -328,13 +346,53 @@ define([
 			});
 		},
 		
-		getProductDropdown: function () {
+		getAllProductDropdown: function () {//console.log('getAllProductDropdown');
 			var dropDown = '<option value="">Select a product</option>';
 			_.each(this.productCollection.models, function (model) {
 				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
 			
 			return dropDown;
+		},
+		
+		generateAllProductDropdown: function () {
+			//this.subContainer.find('#product-list .product_id').html(this.getAllProductDropdown());
+			var thisObj = this;
+			this.subContainer.find('#product-list .product_id').each(function () {
+				var currentValue = $(this).val();
+				$(this).html(thisObj.getAllProductDropdown());
+				
+				if(currentValue != '' && $(this).find('option[value="'+currentValue+'"]').length > 0)
+					$(this).val(currentValue);
+			});
+		},
+		
+		getContractProductDropdown: function () {//console.log('getContractProductDropdown');
+			var dropDown = '<option value="">Select a product</option>';
+			_.each(this.contractProductsCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('product_id')+'">'+model.get('name')+'</option>';
+			});
+			
+			return dropDown;
+		},
+		
+		generateContractProductDropdown: function () {
+			//this.subContainer.find('#product-list .product_id').html(this.getContractProductDropdown());
+			var thisObj = this;
+			this.subContainer.find('#product-list .product_id').each(function () {
+				var currentValue = $(this).val();
+				$(this).html(thisObj.getContractProductDropdown());
+				
+				if(currentValue != '' && $(this).find('option[value="'+currentValue+'"]').length > 0)
+					$(this).val(currentValue);
+			});
+		},
+		
+		getProductDropdown: function () {//console.log('getProductDropdown');
+			if(this.subContainer.find('#contract_id').val() == '')
+				return this.getAllProductDropdown();
+			else
+				return this.getContractProductDropdown();
 		},
 		
 		addIndexToProductFields: function (bidProductItem) {
@@ -409,7 +467,8 @@ define([
 			'blur .tons': 'onBlurTon',
 			'keyup .bales': 'onKeyUpBales',
 			'click #cancel-so': 'showConfirmationWindow',
-			'click #confirm-cancel-so': 'cancelSO'
+			'click #confirm-cancel-so': 'cancelSO',
+			'change #contract_id': 'onChangeContract'
 		},
 		
 		removeProduct: function (ev) {
@@ -583,6 +642,18 @@ define([
 				);
 			}
 			return false;
+		},
+		
+		onChangeContract: function (ev) {
+			var val = $(ev.target).val();
+			if(val != '')
+				this.contractProductsCollection.getContractProducts($(ev.target).val());
+			else
+				this.generateAllProductDropdown();
+		},
+		
+		resetSelect: function (select) {
+			select.find('option:gt(0)').remove();
 		},
 		
 		otherInitializations: function () {},

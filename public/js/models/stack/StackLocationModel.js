@@ -3,7 +3,7 @@ define([
 ], function(Backbone) {
 
 	var StackLocationModel = Backbone.Model.extend({
-		urlRoot: '/apiv1/stack',
+		urlRoot: '/apiv1/storagelocation',
 		defaults: {
         },
 		runFetch: function () {

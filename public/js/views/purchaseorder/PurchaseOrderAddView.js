@@ -258,7 +258,10 @@ define([
 			this.producerAutoCompleteView.typeInCallback = function (result) {
 				var address = result.address;
 				thisObj.$el.find('#street').val(address[0].street);
-				thisObj.$el.find('#state').val(address[0].address_states[0].state);
+				if(address[0].address_states.length > 0 && typeof address[0].address_states[0].state != 'undefined')
+					thisObj.$el.find('#state').val(address[0].address_states[0].state);
+				else if(typeof address[0].address_states.state != 'undefined')
+					thisObj.$el.find('#state').val(address[0].address_states.state);
 				thisObj.$el.find('#city').val(address[0].city);
 				thisObj.$el.find('#zipcode').val(address[0].zipcode);
 			},
@@ -827,6 +830,10 @@ define([
 			}).on('changeDate', function (ev) {
 				var selectedDate = $('#bid-start-date .input-group.date input').val();
 				thisObj.$el.find('#bid-end-date .input-group.date').datepicker('setStartDate', selectedDate);
+			}).on('show', function (ev) {
+				setTimeout(function(){
+					$('.datepicker.datepicker-dropdown.dropdown-menu').css('z-index', 99999999999999);
+				}, 0);
 			});
 			
 			this.$el.find('#bid-end-date .input-group.date').datepicker({
@@ -838,6 +845,10 @@ define([
 			}).on('changeDate', function (ev) {
 				var selectedDate = $('#bid-end-date .input-group.date input').val();
 				thisObj.$el.find('#bid-start-date .input-group.date').datepicker('setEndDate', selectedDate);
+			}).on('show', function (ev) {
+				setTimeout(function(){
+					$('.datepicker.datepicker-dropdown.dropdown-menu').css('z-index', 99999999999999);
+				}, 0);
 			});
 		},
 		

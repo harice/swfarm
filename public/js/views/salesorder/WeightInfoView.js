@@ -127,7 +127,6 @@ define([
 			this.$el.find('#loading-ticket-no').val(this.model.get('loadingTicketNumber'));
 			
 			if(pickupInfo != null) {
-				console.log(pickupInfo);
 				this.$el.find('#pickup-fields').show();
 				if(typeof pickupInfo.scaler_account[0] != 'undefined' && typeof pickupInfo.scaler_account[0].name != 'undefined' && pickupInfo.scaler_account[0].name != null)
 					this.$el.find('#pickup-info .scale-account').val(pickupInfo.scaler_account[0].name);
@@ -176,7 +175,6 @@ define([
 			}
 			
 			if(dropoffInfo != null) {
-				console.log(dropoffInfo);
 				this.$el.find('#dropoff-fields').show();
 				if(typeof dropoffInfo.scaler_account[0] != 'undefined' && typeof dropoffInfo.scaler_account[0].name != 'undefined' && dropoffInfo.scaler_account[0].name != null)
 					this.$el.find('#dropoff-info .scale-account').val(dropoffInfo.scaler_account[0].name);
@@ -229,7 +227,36 @@ define([
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click .close-weight-ticket': 'showCloseWeightTicketConfirmationWindow',
 			'click #confirm-close-wt': 'closeWeightTicket',
+            'click #mail-weight-ticket': 'mailWeightTicket'
 		},
+                
+        mailWeightTicket: function() {
+            var thisObj = this;
+			
+			var weightInfoModel = new SOWeightInfoModel({id:this.schedId});
+			weightInfoModel.setEmailURL();
+			weightInfoModel.save(
+				null,
+				{
+					success: function (model, response, options) {
+//						thisObj.hideConfirmationWindow('modal-confirm', function () {
+//							thisObj.subContainer.find('.editable-button').remove();
+//						});
+						thisObj.displayMessage(response);
+					},
+					error: function (model, response, options) {
+//						thisObj.hideConfirmationWindow();
+						if(typeof response.responseJSON.error === 'undefined')
+							alert(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: weightInfoModel.getAuth()
+				}
+			);
+                
+            return false;
+        },
 		
 		showCloseWeightTicketConfirmationWindow: function (ev) {
 			this.initConfirmationWindow('Are you sure you want to close this weight ticket?',

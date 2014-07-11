@@ -246,7 +246,7 @@ class OrderRepository implements OrderRepositoryInterface {
 
         $data['businessaddress'] = $this->getBusinessAddress($data['account_id']);
         
-        if(!isset($data['contract_id']))
+        if(!isset($data['contract_id']) || $data['contract_id'] == '')
             $data['contract_id'] = null;
          
         $this->validate($data, 'Order', $data['ordertype']);
@@ -296,7 +296,7 @@ class OrderRepository implements OrderRepositoryInterface {
 
         $data['businessaddress'] = $this->getBusinessAddress($data['account_id']);
         
-        if(!isset($data['contract_id']))
+        if(!isset($data['contract_id']) || $data['contract_id'] == '')
             $data['contract_id'] = null;
         
         $this->validate($data, 'Order', $data['ordertype']);
@@ -703,6 +703,7 @@ class OrderRepository implements OrderRepositoryInterface {
                         ->with('productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_dropoff')
                         ->with('productorder.transportscheduleproduct.weightticketproducts.weightticketscale_type')
                         ->find($orderId);  
+ 
         // return $order->toArray();
         if($order == null){
             return array(

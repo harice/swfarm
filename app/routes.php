@@ -24,6 +24,11 @@ Route::group(array('prefix' => 'apiv1'), function()
 /* API ROUTES */
 Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 {
+    // Mail
+    Route::put('weightticket/mailWeightTicket/{id}', 'APIv1\WeightTicketController@mailWeightTicket');
+    Route::put('weightticket/{id}/mail', 'APIv1\WeightTicketController@mailWeightTicket');
+    
+    // User
 	Route::get('users/search', 'APIv1\UsersController@search');
 	Route::get('users/auth', 'APIv1\UsersController@auth');
 	Route::put('users/updateprofile/{id}', 'APIv1\UsersController@updateProfile');
@@ -42,6 +47,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 
     // Route::get('account/{id}/contracts', 'APIv1\AccountController@getContracts');
     Route::get('account/getContracts/{id}', 'APIv1\AccountController@getContracts');
+	Route::get('account/getProducerAndWarehouseAccount', 'APIv1\AccountController@getProducerAndWarehouseAccount');
     Route::get('account/trailer', 'APIv1\AccountController@getTrailerAccount');
     Route::get('account/scaler', 'APIv1\AccountController@getScalerAccount');
     Route::get('account/getScaleList', 'APIv1\AccountController@getScaleList');
@@ -75,7 +81,6 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('weightticket/getAllWeightticketOfOrder', 'APIv1\WeightTicketController@getAllWeightticketOfOrder');
     Route::put('weightticket/closeWeightTicket/{id}', 'APIv1\WeightTicketController@closeWeightTicket');
     Route::get('weightticket/getScheduleProducts', 'APIv1\WeightTicketController@getScheduleProducts');
-    Route::post('weightticket/{id}/mail', 'APIv1\WeightTicketController@mailWeightTicket');
     Route::resource('weightticket', 'APIv1\WeightTicketController');
 
     //tranport schedule
@@ -155,14 +160,19 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // Contract
     Route::put('contract/close/{id}', 'APIv1\ContractController@closeContract');
     Route::put('contract/open/{id}', 'APIv1\ContractController@openContract');
+    
     Route::get('contract/getProducts/{id}', 'APIv1\ContractController@products');
     Route::get('contract/getSalesOrderByProduct/{id}', 'APIv1\ContractController@salesorder');
-    // Route::get('contract/{id}/salesorder', 'APIv1\ContractController@salesorder');
+    
+    Route::get('contract/{id}/weighttickets', 'APIv1\ContractController@weighttickets');
+    Route::get('contract/{id}/products', 'APIv1\ContractController@products');
+    Route::get('contract/{id}/salesorders', 'APIv1\ContractController@salesorder');
     Route::get('contract/search', 'APIv1\ContractController@search');
     Route::resource('contract', 'APIv1\ContractController');
-    
-});
 
+    // Storage location
+    Route::resource('storagelocation', 'APIv1\StorageLocationController');
+});
 
 
 Route::get('/', function(){
