@@ -106,6 +106,8 @@ define([
 			var confirmTemplate = _.template(attachPDFTemplate, {});
 			this.$el.find('.modal-alert-cont').append(confirmTemplate);
 		},
+                
+        
 		
 		disableCloseButton: function (id) {
 			//console.log('disableCloseButton: '+id);

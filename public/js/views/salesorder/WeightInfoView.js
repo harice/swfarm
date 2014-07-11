@@ -11,6 +11,7 @@ define([
 	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/salesorder/weightInfoViewTemplate.html',
 	'text!templates/salesorder/weightInfoViewProductItemTemplate.html',
+    'text!templates/salesorder/serviceTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -108,6 +109,12 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.find('#with-tab-content').html(compiledTemplate);
+		},
+        
+        // Initialize Service Form
+        initServiceWindow: function () {
+			var confirmTemplate = _.template(serviceTemplate, {});
+			this.$el.find('.modal-alert-cont').append(confirmTemplate);
 		},
 		
 		supplyWeightInfoData: function () {
@@ -227,7 +234,19 @@ define([
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click .close-weight-ticket': 'showCloseWeightTicketConfirmationWindow',
 			'click #confirm-close-wt': 'closeWeightTicket',
-            'click #mail-weight-ticket': 'mailWeightTicket'
+            'click #mail-weight-ticket': 'showMailWeightTicketConfirmationWindow',
+            'click #confirm-mail-weight-ticket': 'mailWeightTicket'
+		},
+                
+        showMailWeightTicketConfirmationWindow: function (ev) {
+			this.initConfirmationWindow('Are you sure you want to close this weight ticket?',
+										'confirm-mail-weight-ticket',
+										'Mail Weight Ticket',
+										'Mail Weight Ticket',
+										false);
+			this.showConfirmationWindow();
+			
+			return false;
 		},
                 
         mailWeightTicket: function() {
