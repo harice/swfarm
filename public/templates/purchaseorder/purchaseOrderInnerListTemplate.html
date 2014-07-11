@@ -15,15 +15,15 @@
         <td>
 			<label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label>
 		</td>
-		<td><%= po.get("created_at").split(" ")[0] %></td>
+		<td><%= formatDate(po.get("created_at")) %></td>
 		<td>
 			<% if (po.get("transportdatestart")) { %>
-				<%= po.get("transportdatestart") %>
+				<%= formatDate(po.get("transportdatestart")) %>
 			<% } %>
 		</td>
 		<td>
 			<% if (po.get("transportdateend")) { %>
-				<%= po.get("transportdateend") %>
+				<%= formatDate(po.get("transportdateend")) %>
 			<% } %>
 		</td>
 		<td>
@@ -31,7 +31,7 @@
 				<div style="width: <%= po.get("weightPercentageDelivered") %>%" class="progress-bar progress-bar-<%= po.get("status").class %>"><%= po.get("weightPercentageDelivered") %>%</div>
 			</div>
 		</td>
-		<td class="text-right">$ <%= po.get("totalPrice") %></td>
+		<td class="text-right">$ <%= numberFormat(po.get("totalPrice")) %></td>
 	</tr>
 	<tr>
 		<td colspan="9" style="padding:0;">
@@ -40,16 +40,26 @@
 					<div class="order-stack-details">
 						<div class="col-md-12 no-padding">
 							<div class="pull-right">
-								<a href="<%= po_url %>/<%= po.get("id") %>" class="btn btn-primary btn-sm"><i class="fa fa-eye width-10"></i> View PO</a>
 								<% var postatus = po.get("status").name.toLowerCase() %>
+								<a href="<%= po_url %>/<%= po.get("id") %>" class="btn btn-link btn-sm">
+									<i class="fa fa-eye width-10"></i> View <% if (postatus != po_status_pending) { %>PO<% } else { %>Bid<% } %>
+								</a>
 								<% if (postatus == po_status_pending || postatus == po_status_open || postatus == po_status_testing) { %>
-									<a href="<%= po_edit_url %>/<%= po.get("id") %>" class="btn btn-primary btn-sm editable-button"><i class="fa fa-pencil width-10"></i> Edit PO</a>
+									<a href="<%= po_edit_url %>/<%= po.get("id") %>" class="btn btn-link btn-sm editable-button">
+										<i class="fa fa-pencil width-10"></i> Edit <% if (postatus != po_status_pending) { %>PO<% } else { %>Bid<% } %>
+									</a>
 									<% if (postatus != po_status_pending) { %>
-										<a href="#" class="btn btn-danger btn-sm close-po editable-button" data-id="<%= po.get("id") %>"><i class="fa fa-times width-10"></i> Close PO</a>
+										<a href="#" class="btn btn-link btn-sm close-po editable-button color-danger" data-id="<%= po.get("id") %>">
+											<i class="fa fa-times width-10"></i> Close PO
+										</a>
 									<% } %>
-									<a href="#" data-id="<%= po.get("id") %>" class="btn btn-danger btn-sm cancel-po editable-button"><i class="fa fa-ban width-10"></i> Cancel PO</a>
+									<a href="#" data-id="<%= po.get("id") %>" class="btn btn-link btn-sm cancel-po editable-button color-danger">
+										<i class="fa fa-ban width-10"></i> Cancel <% if (postatus != po_status_pending) { %>PO<% } else { %>Bid<% } %>
+									</a>
 									<% if (postatus != po_status_pending) { %>
-										<a href="<%= schedule_url %>/<%= po.get("id") %>/<%= add %>" class="btn btn-primary btn-sm editable-button"><i class="fa fa-clock-o width-10"></i> Add Schedule</a>
+										<a href="<%= schedule_url %>/<%= po.get("id") %>/<%= add %>" class="btn btn-link btn-sm editable-button">
+											<i class="fa fa-clock-o width-10"></i> Add Schedule
+										</a>
 									<% } %>
 								<% } %>
 							</div>

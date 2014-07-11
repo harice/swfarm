@@ -2,6 +2,21 @@
 body {
   font-size: 12px;
 }
+*,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+  font-family: Helvetica, Arial, sans-serif;
+}
 p {
   font-size: 12px;
 }
@@ -61,8 +76,8 @@ label.error {
   font-size: 12px;
 }
 .not-nav > li > h1 {
-  font-size: 18px;
-  margin: 12px 0;
+  font-size: 20px;
+  margin: 10px 0;
 }
 .not-nav > li > h1 small {
   font-size: 75%;
@@ -165,6 +180,12 @@ label {
 .padding-right-0 {
   padding-right: 0;
 }
+.margin-none {
+  margin: 0;
+}
+.margin-0 {
+  margin: 0;
+}
 .margin-top-0 {
   margin-top: 0;
 }
@@ -217,28 +238,22 @@ body .filter .dropdown-header {
   border: 0 none;
 }
 /* Table  */
-.table > thead > tr > th.sortable {
+.table-condensed > thead > tr > th.sortable {
   cursor: pointer;
 }
-.table > thead > tr > th {
-  font-weight: bold;
+.table-condensed > thead > tr > th,
+.table-condensed > tbody > tr > th,
+.table-condensed > tfoot > tr > th,
+.table-condensed > thead > tr > td,
+.table-condensed > tbody > tr > td,
+.table-condensed > tfoot > tr > td {
+  vertical-align: top;
 }
-.table > thead > tr > th,
-.table > tbody > tr > th,
-.table > tfoot > tr > th,
-.table > thead > tr > td,
-.table > tbody > tr > td,
-.table > tfoot > tr > td {
-  vertical-align: middle;
-}
-table th.align-center {
+.table-condensed th.align-center {
   text-align: center;
 }
-table td.align-center {
+.table-condensed td.align-center {
   text-align: center;
-}
-.margin-none {
-  margin: 0;
 }
 .dl-horizontal dt,
 .dl-horizontal dd {
@@ -249,9 +264,6 @@ table td.align-center {
 }
 .dl-horizontal dd {
   margin-left: 25%;
-}
-.margin-0 {
-  margin: 0;
 }
 .textarea-height-34 {
   max-height: 34px;
@@ -439,6 +451,12 @@ ul.autocomplete li.active a {
 }
 .width-304 {
   width: 304px;
+}
+.btn-sm i {
+  font-size: 12px;
+}
+table td i {
+  font-size: 12px;
 }
 .list-view-collapse .container {
   width: 100%;
