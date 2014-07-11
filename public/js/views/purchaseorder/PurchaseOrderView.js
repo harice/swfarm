@@ -48,7 +48,7 @@ define([
 		
 		initialize: function(option) {
 			this.initSubContainer();
-			
+
 			var thisObj = this;
 			this.poId = option.id;
 			this.isBid = false;

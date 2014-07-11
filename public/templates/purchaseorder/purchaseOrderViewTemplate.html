@@ -7,6 +7,8 @@
         Pickup Start: <span class="text-danger"><%= formatDate(po.get("transportdatestart")) %></span>
         Pickup End: <span class="text-danger"><%= formatDate(po.get("transportdateend")) %></span><br>
         Destination: <span class="text-danger"><%= po.get("location").location %></span><br>
+      <% } else { %>
+        Bid Date: <span class="text-danger"><%= formatDateAMPM(po.get("created_at")) %></span><br>
       <% } %>
       Status: <label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label>
       <% if(po.get("status").id == 5 || po.get("status").id == 6) { if(po.get("ordercancellingreason").reason.id != reason_others ) { %>

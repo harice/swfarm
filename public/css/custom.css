@@ -180,6 +180,12 @@ label {
 .padding-right-0 {
   padding-right: 0;
 }
+.margin-none {
+  margin: 0;
+}
+.margin-0 {
+  margin: 0;
+}
 .margin-top-0 {
   margin-top: 0;
 }
@@ -241,16 +247,13 @@ body .filter .dropdown-header {
 .table-condensed > thead > tr > td,
 .table-condensed > tbody > tr > td,
 .table-condensed > tfoot > tr > td {
-  vertical-align: middle;
+  vertical-align: top;
 }
 .table-condensed th.align-center {
   text-align: center;
 }
 .table-condensed td.align-center {
   text-align: center;
-}
-.margin-none {
-  margin: 0;
 }
 .dl-horizontal dt,
 .dl-horizontal dd {
@@ -261,9 +264,6 @@ body .filter .dropdown-header {
 }
 .dl-horizontal dd {
   margin-left: 25%;
-}
-.margin-0 {
-  margin: 0;
 }
 .textarea-height-34 {
   max-height: 34px;
@@ -451,6 +451,12 @@ ul.autocomplete li.active a {
 }
 .width-304 {
   width: 304px;
+}
+.btn-sm i {
+  font-size: 12px;
+}
+table td i {
+  font-size: 12px;
 }
 .list-view-collapse .container {
   width: 100%;

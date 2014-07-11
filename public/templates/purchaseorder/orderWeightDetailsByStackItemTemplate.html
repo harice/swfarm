@@ -21,25 +21,17 @@
 								<% _.each(stack.get("schedule"), function(schedule){ %>
 								<tr>
 									<td>
+										<i class="fa fa-check-circle width-10 <%if(schedule.transportscheduledate_status.id==1){%>color-success<%}%>"></i>
 										<a href="<%= schedule_url %>/<%= schedule.transportschedule_id %>" title="view">
 											<%= formatDateAMPM(schedule.transportscheduledate) %>
-										</a> 
-										<% if(schedule.transportscheduledate_status.id == 1) { %>
-											<label class="label label-<%= schedule.transportscheduledate_status.class %>">
-												<%= schedule.transportscheduledate_status.name %>
-											</label>
-										<% } %>
+										</a>
 									</td>
 									<td>
 										<% if (schedule.weightTicketNumber) { %>
+											<i class="fa fa-check-circle width-10 <%if(schedule.weightTicketNumber_status.id==1){%>color-success<%}%>"></i>
 											<a href="<%= weight_info_url %>/<%= schedule.transportschedule_id %>" title="view">
 												<%= schedule.weightTicketNumber %>
-											</a> 
-											<% if(schedule.weightTicketNumber_status.id == 1) { %>
-												<label class="label label-<%= schedule.weightTicketNumber_status.class %>">
-													<%= schedule.weightTicketNumber_status.name %>
-												</label>
-											<% } %>
+											</a>
 										<% } %>
 									</td>
 									<td><%= numberFormatTons(schedule.expected) %></td>
@@ -60,7 +52,7 @@
 					<table class="table-condensed table-bordered table-hover">
 						<tbody>
 							<tr>
-								<td>Expected</td>
+								<td class="width-100">Expected</td>
 								<td><span class="text-danger"><%= numberFormatTons(stack.get("totalExpected")) %></span></td>
 							</tr>
 							<tr>
