@@ -434,15 +434,8 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
      * @param array $recipients
      * @return type
      */
-    public function mailWeightTicket($id, $recipients)
+    public function mailWeightTicket($id, $data)
     {
-        $recipients = array(
-            array(
-                "name" => "John Doe",
-                "email" => "swfarm@mailinator.com"
-            )
-        );
-        
         try
         {
             $transportSchedule_id = $id;
@@ -463,6 +456,24 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                 ->with('weightticketscale_pickup.scale')
                 ->where('transportSchedule_id', '=', $transportSchedule_id)
                 ->first();
+            
+            // Get Contacts
+            $recipients = array(
+                array(
+                    "name" => "John Doe",
+                    "email" => "swfarm@mailinator.com"
+                )
+            );
+
+            // Add additional recipients
+            $emails = explode(',', $data['recipients']);
+            foreach ($emails as $email) {
+                $recipients[] = array(
+                    "email" => $email
+                );
+            }
+            
+            Log::debug($recipients);
             
             if ($weightticket) {
                 foreach ($recipients as $recipient) {
