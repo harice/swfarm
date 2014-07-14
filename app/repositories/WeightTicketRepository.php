@@ -441,6 +441,15 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             $transportSchedule_id = $id;
             $transportSchedule = TransportSchedule::find($transportSchedule_id);
             
+            $contact_trucker = Contact::find($transportSchedule->trucker_id);
+            
+            if ($transportSchedule->originloader_id == $transportSchedule->destinationloader_id) {
+                $contact_loader = Contact::find($transportSchedule->destinationloader_id);
+            } else {
+                $contact_loader_origin = Contact::find($transportSchedule->originloader_id);
+                $contact_loader_destination = Contact::find($transportSchedule->destinationloader_id);
+            }
+            
             // Get order
             $order = Order::find($transportSchedule["order_id"]);
             
@@ -466,7 +475,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             );
 
             // Add additional recipients
-            $emails = explode(',', $data['recipients']);
+            $emails = explode(',', preg_replace( '/\s+/', '', $data['recipients']));
             foreach ($emails as $email) {
                 $recipients[] = array(
                     "email" => $email
