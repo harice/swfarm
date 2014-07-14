@@ -1,0 +1,38 @@
+<!-- Modal -->
+<div class="modal fade" id="<%= confirm_modal_id %>" tabindex="-1" role="dialog">
+    <div class="modal-dialog custom-width">
+        <div class="modal-content">
+            <div class="modal-header">
+                <% if(typeof(confirm_title) != "undefined") { %><h3><%= confirm_title %></h3><% } %>
+                <button type="button" class="close close-window" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="">
+                    <p class="confirm-content margin-bottom-0"><%= confirm_content %></p>
+                    <form id="mail-weight-ticket-form" method="get" action="mailWeightTicket">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="weightticket" value="1"> Weight Ticket
+                            </label>
+                        </div>
+                        <div class="checkbox disabled">
+                            <label>
+                                <input type="checkbox" name="loadingticket" value="1"> Loading Ticket
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient">Email address</label>
+                            <input type="email" class="form-control" id="recipient" name="recipient" placeholder="Enter email" multiple="multiple">
+                            <span class="help-block">Input multiple email separated by comma.</span>
+                        </div>
+                        <button type="submit" class="btn btn-warning btn-sm btn-flat hidden"><%= confirm_button_label %></button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-sm btn-flat close-window" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-warning btn-sm btn-flat" <% if(typeof confirm_dismiss_modal != "undefined") { %>data-dismiss="modal" <% } %>data-id="" id="<%= confirm_button_id %>"><%= confirm_button_label %></button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
