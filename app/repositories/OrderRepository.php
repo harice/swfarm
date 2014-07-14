@@ -737,8 +737,8 @@ class OrderRepository implements OrderRepositoryInterface {
                     $weightTicketDropoff = $weightTicket['weightticketscale_dropoff'];
                     //compute net weight
                     if($weightTicketPickup['gross'] != null && $weightTicketPickup['tare'] != null){
-                        $pickupNetWeight = number_format($weightTicketPickup['gross'] - $weightTicketPickup['tare'], 4);
-                        $dropoffNetWeight = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 4);
+                        $pickupNetWeight = number_format($weightTicketPickup['gross'] - $weightTicketPickup['tare'], 4, '.', '');
+                        $dropoffNetWeight = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 4, '.', '');
                     } else {
                         $pickupNetWeight = 0;
                         $dropoffNetWeight = 0;
@@ -759,10 +759,10 @@ class OrderRepository implements OrderRepositoryInterface {
                         
                     } else {
                         if($pickupNetWeight <= $dropoffNetWeight){
-                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($pickupNetWeight, 4);
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($pickupNetWeight, 4, '.', '');
                             $stackList[$index]['schedule'][$i]['weighttickettype'] = 1;
                         } else {
-                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($dropoffNetWeight, 4);
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($dropoffNetWeight, 4, '.', '');
                             $stackList[$index]['schedule'][$i]['weighttickettype'] = 2;
                         }
                     }
@@ -773,9 +773,9 @@ class OrderRepository implements OrderRepositoryInterface {
                         $stackList[$index]['schedule'][$i]['delivered'] = $this->getWeightTicketProductTobeUsed(1, $transportscheduleproduct['weightticketproducts']);
                     } else {
                         if($weightTicketPickup['gross'] != null && $weightTicketPickup['tare'] != null){
-                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($weightTicketPickup['gross'] - $weightTicketPickup['tare'], 4);
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($weightTicketPickup['gross'] - $weightTicketPickup['tare'], 4, '.', '');
                         } else {
-                            $stackList[$index]['schedule'][$i]['delivered'] = number_format(0, 4);
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format(0, 4, '.', '');
                         }
                     }
                     $stackList[$index]['schedule'][$i]['weighttickettype'] = 1;
@@ -786,9 +786,9 @@ class OrderRepository implements OrderRepositoryInterface {
                         $stackList[$index]['schedule'][$i]['delivered'] = $this->getWeightTicketProductTobeUsed(2, $transportscheduleproduct['weightticketproducts']);
                     } else {
                         if($weightTicketDropoff['gross'] != null && $weightTicketDropoff['tare'] != null){
-                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 4);
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 4, '.', '');
                         } else {
-                            $stackList[$index]['schedule'][$i]['delivered'] = number_format(0, 4);
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format(0, 4, '.', '');
                         }
                     }
                     $stackList[$index]['schedule'][$i]['weighttickettype'] = 2;
@@ -800,8 +800,8 @@ class OrderRepository implements OrderRepositoryInterface {
             }
 
             usort($stackList[$index]['schedule'],function($a,$b){ return strtotime($b['transportscheduledate']) - strtotime($a['transportscheduledate']); });
-
-            $stackList[$index]['totalDeliveries'] = number_format($stackList[$index]['totalDeliveries'], 4);
+            
+            $stackList[$index]['totalDeliveries'] = number_format($stackList[$index]['totalDeliveries'], 4, '.', '');
             $index++;
         }
 
