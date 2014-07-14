@@ -12,7 +12,7 @@
                 <%= po.get("location").location %>
             <% } %>
         </td>
-        <td>
+        <td class="td-status">
 			<label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label>
 		</td>
 		<td><%= formatDate(po.get("created_at")) %></td>
