@@ -371,21 +371,26 @@ class ContractRepository implements ContractRepositoryInterface {
                 ->where('contract_id', '=', $id)
                 ->get();
             
-            $total_bales_delivered = 0;
-            $total_gross_delivered = 0.0000;
-            $total_tare_delivered = 0.0000;
+            $total_dropoff_bales_delivered = $total_pickup_bales_delivered = 0;
+            $total_dropoff_gross_delivered = $total_pickup_gross_delivered = 0.0000;
+            $total_dropoff_tare_delivered = $total_pickup_tare_delivered = 0.0000;
+            
             foreach ($delivered_products as $product) {
-                $total_bales_delivered += $product->weightticketscale_dropoff->bales;
-                $total_gross_delivered += $product->weightticketscale_dropoff->gross;
-                $total_tare_delivered += $product->weightticketscale_dropoff->tare;
+                $total_dropoff_bales_delivered += $product->weightticketscale_dropoff->bales;
+                $total_dropoff_gross_delivered += $product->weightticketscale_dropoff->gross;
+                $total_dropoff_tare_delivered += $product->weightticketscale_dropoff->tare;
+                
+                $total_pickup_bales_delivered += $product->weightticketscale_pickup->bales;
+                $total_pickup_gross_delivered += $product->weightticketscale_pickup->gross;
+                $total_pickup_tare_delivered += $product->weightticketscale_pickup->tare;
             }
             
             $result = array(
                 'delivered_products' => $delivered_products->toArray(),
-                'total_tons_delivered' => $total_gross_delivered - $total_tare_delivered,
-                'total_bales_delivered' => $total_bales_delivered,
-                'total_gross_delivered' => $total_gross_delivered,
-                'total_tare_delivered' => $total_tare_delivered
+                'total_tons_delivered' => $total_pickup_gross_delivered - $total_pickup_tare_delivered,
+                'total_bales_delivered' => $total_pickup_bales_delivered,
+                'total_gross_delivered' => $total_pickup_gross_delivered,
+                'total_tare_delivered' => $total_pickup_tare_delivered
             );
             
             return $result;
