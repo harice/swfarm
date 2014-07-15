@@ -40,7 +40,7 @@ class InventoryRepository implements InventoryRepositoryInterface {
           $inventory = $inventory->where('created_at', 'like', $date.'%'); 
         }
 
-        $inventory = $inventory->orderBy($sortby, $orderby)
+        $inventory = $inventory->orderBy($sortby, $orderby);
         $inventory = $inventory->paginate($perPage);
                                 // ->take($perPage)
                                 // ->offset($offset)
@@ -130,12 +130,12 @@ class InventoryRepository implements InventoryRepositoryInterface {
                 }
             }
 
-            
-            if($type == 4){
+
+            if($type == 4){ //if issue type, no need for section to
                 $product['sectionto_id'] == null;
             }
 
-            if($type == 5){ //if issue type, no need for section from
+            if($type == 5){ //if receipt type, no need for section from
                 $product['sectionfrom_id'] == null;
             }
 
