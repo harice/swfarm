@@ -1,6 +1,6 @@
 define([
 	'backbone',
-	'views/base/ListView',
+	'views/base/AccordionListView',
 	'collections/salesorder/SalesOrderCollection',
 	'collections/salesorder/OriginCollection',
 	'collections/salesorder/NatureOfSaleCollection',
@@ -18,7 +18,7 @@ define([
 	'text!templates/purchaseorder/orderWeightDetailsByStackItemTemplate.html',
 	'constant',
 ], function(Backbone,
-			ListView,
+			AccordionListView,
 			SalesOrderCollection,
 			OriginCollection,
 			NatureOfSaleCollection,
@@ -37,7 +37,7 @@ define([
 			Const
 ){
 
-	var SalesOrderListView = ListView.extend({
+	var SalesOrderListView = AccordionListView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function() {
@@ -48,17 +48,6 @@ define([
 			
 			this.collection = new SalesOrderCollection();
 			this.collection.on('sync', function() {
-				_.each(this.models, function (model) {
-					model.set('created_at', thisObj.convertDateFormat(model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
-					
-					if(model.get('transportdatestart'))
-						model.set('transportdatestart', thisObj.convertDateFormat(model.get('transportdatestart').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
-					if(model.get('transportdateend'))
-						model.set('transportdateend', thisObj.convertDateFormat(model.get('transportdateend').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
-					if(model.get('totalPrice'))
-						model.set('totalPrice', thisObj.addCommaToNumber(parseFloat(model.get('totalPrice')).toFixed(2)));
-				});
-				
 				if(thisObj.subContainerExist())
 					thisObj.displayList();
 			});
@@ -144,23 +133,21 @@ define([
 				so_url: '#/'+Const.URL.SO,
 				so_edit_url: '#/'+Const.URL.SO+'/'+Const.CRUD.EDIT,
 				so_sched_url: '#/'+Const.URL.DELIVERYSCHEDULE,
+				account_url: '#/'+Const.URL.ACCOUNT,
 				sos: this.collection.models,
 				schedule_url: '#/'+Const.URL.DELIVERYSCHEDULE,
 				add: Const.CRUD.ADD,
 				collapsible_id: Const.PO.COLLAPSIBLE.ID,
+				so_status_open: Const.STATUS.OPEN,
 				_: _ 
 			};
+			
+			_.extend(data,Backbone.View.prototype.helpers);
 			
 			var innerListTemplate = _.template(salesOrderInnerListTemplate, data);
 			this.subContainer.find("#so-list tbody").html(innerListTemplate);
 			this.collapseSelected();
 			this.generatePagination();
-		},
-		
-		collapseSelected: function () {
-			var id = this.collection.getCollapseId();
-			if(id)
-				this.$el.find('.collapse-trigger[data-id="'+id+'"]').trigger('click');
 		},
 		
 		setListOptions: function () {
@@ -298,6 +285,8 @@ define([
 			'change #reason': 'onChangeReason',
 			'click #order-accordion tr.collapse-trigger': 'toggleAccordion',
 			'click .stop-propagation': 'linkStopPropagation',
+			'click .close-so': 'showCloseConfirmationWindow',
+			'click #confirm-close-order': 'closeOrder',
 		},
 		
 		onChangeReason: function (ev) {
@@ -348,48 +337,27 @@ define([
 		
 		toggleAccordion: function (ev) {
 			var thisObj = this;
-			var id = $(ev.currentTarget).attr('data-id');
-			var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
 			
-			if(!$('#'+collapsibleId).hasClass('in')) {
-				var thisId = id;
-				this.collection.setCollapseLatestId(id);
-				
-				$(ev.currentTarget).find('.throbber_wrap').show();
-				var orderWeightDetailsByStackCollection = new OrderWeightDetailsByStackCollection(id);
-				orderWeightDetailsByStackCollection.on('sync', function() {
-					thisObj.collection.setCollapseId(id);
-					$(ev.currentTarget).find('.throbber_wrap').hide();
-					//console.log(thisId+' == '+thisObj.collection.getCollapseLatestId());
-					if(thisId == thisObj.collection.getCollapseLatestId() && thisObj.subContainerExist()) {
-						_.each(this.models, function (model) {
-							var schedules = model.get('schedule');
-							if(schedules.length > 0) {
-								for(var i=0; i<schedules.length; i++) {
-									var s = schedules[i].transportscheduledate.split(' ');
-									schedules[i].transportscheduledate = thisObj.convertDateFormat(s[0], 'yyyy-mm-dd', thisObj.dateFormat, '-')+' '+s[1];			
-								}
-								model.set('schedule', schedules);
+			this.toggleAccordionAndRequestACollection(ev.currentTarget,
+				OrderWeightDetailsByStackCollection,
+				function (collection, id) {
+					var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
+					_.each(collection.models, function (model) {
+						var schedules = model.get('schedule');
+						if(schedules.length > 0) {
+							for(var i=0; i<schedules.length; i++) {
+								var s = schedules[i].transportscheduledate.split(' ');
+								schedules[i].transportscheduledate = thisObj.convertDateFormat(s[0], 'yyyy-mm-dd', thisObj.dateFormat, '-')+' '+s[1];			
 							}
-						});
-						
-						$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(this.models, id));
-						$('#'+collapsibleId).closest('tbody').find('.order-collapsible-item.collapse.in').collapse('toggle');
-						$('#'+collapsibleId).collapse('toggle');
-					}
-					this.off('sync');
-				});
-				
-				orderWeightDetailsByStackCollection.on('error', function(collection, response, options) {
-					$(ev.currentTarget).find('.throbber_wrap').hide();
-					this.off('error');
-				});
-				orderWeightDetailsByStackCollection.getModels();
-			}
-			else {
-				this.collection.setCollapseId(null);
-				$('#'+collapsibleId).collapse('toggle');
-			}
+							model.set('schedule', schedules);
+						}
+					});
+					
+					$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(collection.models, id));
+				}
+			);
+			
+			return false;
 		},
 		
 		generateOrderWeightDetailsByStack: function (models, soId) {
@@ -399,7 +367,52 @@ define([
 				weight_info_url: '/#/'+Const.URL.SOWEIGHTINFO+'/'+soId,
 				_: _ 
 			};
+			
+			_.extend(data,Backbone.View.prototype.helpers);
+
 			return _.template(orderWeightDetailsByStackItemTemplate, data);
+		},
+		
+		showCloseConfirmationWindow: function (ev) {
+			var id = $(ev.currentTarget).attr('data-id');
+			this.initConfirmationWindow('Are you sure you want to close this sales order?',
+										'confirm-close-order',
+										'Close Sales Order',
+										'Close Sales Order',
+										false);
+			this.showConfirmationWindow();
+			this.$el.find('#modal-confirm #confirm-close-order').attr('data-id', id);
+			return false;
+		},
+		
+		closeOrder: function (ev) {
+			var thisObj = this;
+			var id = $(ev.currentTarget).attr('data-id');
+			
+			var salesOrderModel = new SalesOrderModel({id:id});
+			salesOrderModel.setCloseURL();
+			salesOrderModel.save(
+				null,
+				{
+					success: function (model, response, options) {
+						thisObj.hideConfirmationWindow('modal-confirm', function () {
+							thisObj.subContainer.find('#'+Const.PO.COLLAPSIBLE.ID+id+' .editable-button').remove();
+							thisObj.subContainer.find('.collapse-trigger[data-id="'+id+'"] .td-status').html('<label class="label label-default">Closed</label>');
+						});
+						thisObj.displayMessage(response);
+					},
+					error: function (model, response, options) {
+						thisObj.hideConfirmationWindow();
+						if(typeof response.responseJSON.error == 'undefined')
+							alert(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: salesOrderModel.getAuth(),
+				}
+			);
+			
+			return false;
 		},
 	});
 

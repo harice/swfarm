@@ -13,6 +13,7 @@ define([
 		
 		initialize: function(option) {
 			this.initSubContainer();
+            this.contractId = option.id;
 			var thisObj = this;
 			
 			this.model = new ContractModel({id:option.id});
@@ -79,20 +80,46 @@ define([
 		closeContract: function (){
 			var thisObj = this;
             
-            console.log(this.model);
+            this.model.setCloseURL();
             
-//            this.model.destroy({
-//                success: function (model, response, options) {
-//                    thisObj.displayMessage(response);
-//                    //Global.getGlobalVars().app_router.navigate(Const.URL.CONTRACT, {trigger: true});
-//					Backbone.history.history.back();
-//                },
-//                error: function (model, response, options) {
-//                    thisObj.displayMessage(response);
-//                },
-//                wait: true,
-//                headers: thisObj.model.getAuth()
-//            });
+            this.model.save(null, {
+                success: function(model, response, options) {
+                    var contractId = model.get('id');
+                    var contractModel = new ContractModel({id:contractId});
+                    
+                    contractModel.fetch({
+                        success: function(contract) {
+                            $('#view-contract .status').html(contract.get('status').name);
+                        },
+                        wait: true,
+                        headers: thisObj.model.getAuth()
+                    });
+                        
+                    thisObj.displayMessage(response);
+                },
+                error: function(model, response, options) {
+                    thisObj.displayMessage(response);
+                },
+                wait: true,
+                headers: this.model.getAuth()
+            });
+		},
+        
+        openContract: function (){
+			var thisObj = this;
+            
+            this.model.setOpenURL();
+            
+            this.model.save(null, {
+                success: function(model, response, options) {
+                    thisObj.displayMessage(response);
+                },
+                error: function(model, response, options) {
+                    thisObj.displayMessage(response);
+                },
+                wait: true,
+                headers: this.model.getAuth()
+            });
 		}
 	});
 

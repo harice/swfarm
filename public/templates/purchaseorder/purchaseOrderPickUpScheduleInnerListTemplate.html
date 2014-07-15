@@ -1,12 +1,43 @@
 <% if (!_.isEmpty(schedules)) { %>
 	<% _.each(schedules, function(schedule){ %>
 	<tr>
-		<td><a href="<%= po_schedule_url %>/<%= schedule.get("id") %>"><%= schedule.get("scheduledate") %> <%= schedule.get("scheduletimeHour") %>:<%= schedule.get("scheduletimeMin") %> <%= schedule.get("scheduletimeAmPm") %></a></td>
-		<td><%= schedule.get("trucker").accountidandname.accounttype[0].name %></td>
-		<td><%= schedule.get("trucker").lastname %>, <%= schedule.get("trucker").firstname %> <%= schedule.get("trucker").suffix %></td>
-		<td><%= schedule.get("originloader").lastname %>, <%= schedule.get("originloader").firstname %> <%= schedule.get("originloader").suffix %></td>
-		<td><%= schedule.get("destinationloader").lastname %>, <%= schedule.get("destinationloader").firstname %> <%= schedule.get("destinationloader").suffix %></td>
-		<td><%= schedule.get("distance") %> miles</td>
+		<td>
+			<a href="<%= po_schedule_url %>/<%= schedule.get("id") %>">
+				<%= schedule.get("scheduledate") %> 
+				<%= schedule.get("scheduletimeHour") %>:<%= schedule.get("scheduletimeMin") %> 
+				<%= schedule.get("scheduletimeAmPm") %>
+			</a>
+		</td>
+		<td>
+			<a href="<%= contact_url %><%= schedule.get("trucker").id %>">
+				<%= schedule.get("trucker").lastname %>, <%= schedule.get("trucker").firstname %> <%= schedule.get("trucker").suffix %>
+			</a>
+			<a href="<%= account_url %><%= schedule.get("trucker").accountidandname.id %>">
+				<code><%= schedule.get("trucker").accountidandname.name %></code>
+			</a>
+		</td>
+		<td>
+			<a href="<%= account_url %><%= schedule.get("trailer").account.id %>">
+				<%= schedule.get("trailer").account.name %>
+			</a>
+			<code><%= schedule.get("trailer").number %></code>
+		</td>
+		<td>
+			<a href="<%= contact_url %><%= schedule.get("originloader").id %>">
+				<%= schedule.get("originloader").lastname %>, <%= schedule.get("originloader").firstname %> <%= schedule.get("originloader").suffix %>
+			</a>
+			<a href="<%= account_url %><%= schedule.get("originloader").accountidandname.id %>">
+				<code><%= schedule.get("originloader").accountidandname.name %></code>
+			</a>
+		</td>
+		<td>
+			<a href="<%= contact_url %><%= schedule.get("destinationloader").id %>">
+			<%= schedule.get("destinationloader").lastname %>, <%= schedule.get("destinationloader").firstname %> <%= schedule.get("destinationloader").suffix %>
+			</a>
+			<a href="<%= account_url %><%= schedule.get("destinationloader").accountidandname.id %>">
+				<code><%= schedule.get("destinationloader").accountidandname.name %></code>
+			</a>
+		</td>
 		<td>
 			<a href="<%= po_weight_info_url %>/<%= schedule.get("id") %>" class="text-primary" title="weight info">
 			 	<span class="fa-stack">
@@ -27,6 +58,15 @@
 					<i class="fa fa-times fa-stack-1x fa-inverse"></i>
 				</span>
 			</a>
+			<% } else { %>
+				<span class="fa-stack">
+					<i class="fa fa-square fa-stack-2x"></i>
+					<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+				</span>
+				<span class="fa-stack">
+					<i class="fa fa-square fa-stack-2x"></i>
+					<i class="fa fa-times fa-stack-1x fa-inverse"></i>
+				</span>
 			<% } %>
 		</td>
 	</tr>

@@ -1,7 +1,14 @@
 <% if (!_.isEmpty(sos)) { %>
 	<% _.each(sos, function(so){ %>
-	<tr class="collapse-trigger" data-id="<%= so.get("id") %>">
-		<td><a class="stop-propagation" href="<%= so_url %>/<%= so.get("id") %>"><%= so.get("order_number") %></a></td>
+	<tr class="collapse-trigger cursor-pointer" data-id="<%= so.get("id") %>">
+		<td>
+			<i class="fa fa-angle-right width-10 accordion-carret"></i>
+			<a class="stop-propagation" href="<%= so_url %>/<%= so.get("id") %>"><%= so.get("order_number") %></a>
+			<span class="throbber_wrap" style="display: none;"><i class="fa fa-spinner fa-spin throbber_ajax"></i></span>
+		</td>
+		<td><a href="<%= account_url %>/<%= so.get("account").id %>" class="stop-propagation"><%= so.get("account").name %></a></td>
+		<td><%= so.get("natureofsale").name %></td>
+		<td class="td-status"><label class="label label-<%= so.get("status").class %>"><%= so.get("status").name %></label></td>
 		<td><%= so.get("created_at").split(" ")[0] %></td>
 		<td>
 			<% if (so.get("transportdatestart")) { %>
@@ -13,72 +20,32 @@
 				<%= so.get("transportdateend") %>
 			<% } %>
 		</td>
-		<td><%= so.get("account").name %></td>
-		<td><label class="label label-<%= so.get("status").class %>"><%= so.get("status").name %></label></td>
 		<td>
 			<div class="progress">
 				<div style="width: <%= so.get("weightPercentageDelivered") %>%" class="progress-bar progress-bar-<%= so.get("status").class %>"><%= so.get("weightPercentageDelivered") %>%</div>
 			</div>
 		</td>
-		<td><%= so.get("natureofsale").name %></td>
+		
 		<td class="text-right">$ <%= so.get("totalPrice") %></td>
-		<td>
-			<% if (so.get("status").name.toLowerCase() == "open") { %>
-				<a href="<%= so_sched_url %>/<%= so.get("id") %>" class="text-primary" title="schedule">
-					<span class="fa-stack">
-						<i class="fa fa-square fa-stack-2x"></i>
-						<i class="fa fa-clock-o fa-stack-1x fa-inverse"></i>
-					</span>
-				</a>
-			<% } else {%>
-			 	<span class="fa-stack">
-					<i class="fa fa-square fa-stack-2x"></i>
-					<i class="fa fa-clock-o fa-stack-1x fa-inverse"></i>
-				</span>
-			<% } %>
-
-			<% if (so.get("status").name.toLowerCase() == "open" || so.get("status").name.toLowerCase() == "pending") { %>
-				<a href="<%= so_edit_url %>/<%= so.get("id") %>" class="text-primary" title="edit">
-				  	<span class="fa-stack">
-						<i class="fa fa-square fa-stack-2x"></i>
-						<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-					</span>
-				</a>
-				<a href="#" data-id="<%= so.get("id") %>" class="text-primary cancel-so">
-				 	<span class="fa-stack">
-						<i class="fa fa-shopping-cart fa-stack-1x"></i>
-						<i class="fa fa-ban fa-stack-2x text-danger"></i>
-					</span>
-				</a>
-			<% } else {%>
-				<span class="fa-stack">
-					<i class="fa fa-square fa-stack-2x"></i>
-					<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-				</span>
-				<span class="fa-stack">
-					<i class="fa fa-shopping-cart fa-stack-1x"></i>
-					<i class="fa fa-ban fa-stack-2x"></i>
-				</span>
-			<% } %>
-			<span class="throbber_wrap" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
-		</td>
 	</tr>
 	<tr>
-		<td colspan="10" style="padding:0;">
+		<td colspan="9" style="padding:0;">
 			<div class="order-collapsible-item list-view-collapse collapse" id="<%= collapsible_id %><%= so.get("id") %>">
-				<div class="container" style="width:100%; padding-bottom:20px;">
-					<div class="row">
-						<div class="col-md-12">
+				<div class="container">
+					<div class="order-stack-details">
+						<div class="col-md-12 no-padding">
 							<div class="pull-right">
-								<a href="<%= so_url %>/<%= so.get("id") %>" class="btn btn-primary btn-sm">View SO</a>
-								<a href="<%= so_edit_url %>/<%= so.get("id") %>" class="btn btn-primary btn-sm">Edit SO</a>
-								<a href="#" class="btn btn-primary btn-sm">Close SO</a>
-								<a href="#" data-id="<%= so.get("id") %>" class="btn btn-primary btn-sm cancel-so">Cancel SO</a>
-								<a href="<%= schedule_url %>/<%= so.get("id") %>/<%= add %>" class="btn btn-primary btn-sm">Add Schedule</a>
+								<a href="<%= so_url %>/<%= so.get("id") %>" class="btn btn-primary btn-sm"><i class="fa fa-eye width-10"></i> View SO</a>
+								<% if (so.get("status").name.toLowerCase() == so_status_open) { %>
+									<a href="<%= so_edit_url %>/<%= so.get("id") %>" class="btn btn-primary btn-sm editable-button"><i class="fa fa-pencil width-10"></i> Edit SO</a>
+									<a href="#" class="btn btn-danger btn-sm close-so editable-button editable-button" data-id="<%= so.get("id") %>"><i class="fa fa-times width-10"></i> Close SO</a>
+									<a href="#" data-id="<%= so.get("id") %>" class="btn btn-danger btn-sm cancel-so editable-button"><i class="fa fa-ban width-10"></i> Cancel SO</a>
+									<a href="<%= schedule_url %>/<%= so.get("id") %>/<%= add %>" class="btn btn-primary btn-sm editable-button"><i class="fa fa-clock-o width-10"></i> Add Schedule</a>
+								<% } %>
 							</div>
 						</div>
+						<div class="order-weight-details-by-stack"></div>
 					</div>
-					<div class="order-weight-details-by-stack"></div>
 				</div>
 			</div>
 		</td>
@@ -86,6 +53,6 @@
 	<% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="10">No results found.</td>
+		<td colspan="9">No results found.</td>
 	</tr>
 <% } %>

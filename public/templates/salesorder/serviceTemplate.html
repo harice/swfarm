@@ -1,0 +1,28 @@
+<!-- Modal -->
+<div data-backdrop="static" data-keyboard="false" class="modal fade" id="modal-attach-pdf" tabindex="-1" role="dialog">
+    <div class="modal-dialog full-color custom-width">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close close-window" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="hidden">Mail and Print</h3>
+            </div>
+            <div class="modal-body">
+                <form id="serviceForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-sm-10 col-sm-offset-1">
+                            <div class="form-group">
+                                <label for="email">Email address</label>
+                                <input type="email" class="form-control" id="email" placeholder="Enter email" multiple="multiple">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send</button>
+                            <button id="confirm-mail-weight-ticket" class="btn btn-primary">Confirm Email</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-mono2 btn-flat close-window" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

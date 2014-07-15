@@ -97,8 +97,8 @@
                                 <div class="form-group">
                                     <label for="contract_id" class="col-sm-3 control-label">Contract</label>
                                     <div class="col-sm-7">
-                                        <div id="contract" class="styled-select">
-                                            <select class="form-control contract_id width-160" name="contract_id">
+                                        <div class="styled-select">
+                                            <select id="contract_id" class="form-control contract_id width-160" name="contract_id">
                                                 <option value="">Select a contract</option>
                                             </select>
                                         </div>
@@ -133,6 +133,26 @@
                                         <th></th>
                                     </tr>
                                 </thead>
+								<tfoot>
+									<tr>
+										<td class="text-right" colspan="3">Total</td>
+										<td>
+											<div class="input-group margin-0">
+												<span class="input-group-addon">$</span>
+												<input id="total-unitprice" class="form-control text-right" type="text" value="0.00" readonly>
+											</div>
+										</td>
+										<td><input id="total-tons" class="form-control text-right" type="text" value="0.0000" readonly></td>
+										<td><input id="total-bales" class="form-control text-right" type="text" value="0" readonly></td>
+										<td>
+											<div class="input-group margin-0">
+												<span class="input-group-addon">$</span>
+												<input id="total-price" class="form-control text-right" type="text" value="0.00" readonly>
+											</div>
+										</td>
+										<td>&nbsp;</td>
+									</tr>
+								</tfoot>
                                 <tbody></tbody>
                             </table>
                         </div>

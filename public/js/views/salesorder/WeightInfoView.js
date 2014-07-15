@@ -11,6 +11,7 @@ define([
 	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/salesorder/weightInfoViewTemplate.html',
 	'text!templates/salesorder/weightInfoViewProductItemTemplate.html',
+    'text!templates/salesorder/serviceTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -25,6 +26,7 @@ define([
 			purchaseOrderTabbingTemplate,
 			weightInfoViewTemplate,
 			weightInfoViewProductItemTemplate,
+            serviceTemplate,
 			Global,
 			Const
 ){
@@ -109,6 +111,12 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.find('#with-tab-content').html(compiledTemplate);
 		},
+        
+        // Initialize Service Form
+        initServiceWindow: function () {
+			var confirmTemplate = _.template(serviceTemplate, {});
+			this.$el.find('.modal-alert-cont').append(confirmTemplate);
+		},
 		
 		supplyWeightInfoData: function () {
 			var thisObj = this;
@@ -127,7 +135,6 @@ define([
 			this.$el.find('#loading-ticket-no').val(this.model.get('loadingTicketNumber'));
 			
 			if(pickupInfo != null) {
-				console.log(pickupInfo);
 				this.$el.find('#pickup-fields').show();
 				if(typeof pickupInfo.scaler_account[0] != 'undefined' && typeof pickupInfo.scaler_account[0].name != 'undefined' && pickupInfo.scaler_account[0].name != null)
 					this.$el.find('#pickup-info .scale-account').val(pickupInfo.scaler_account[0].name);
@@ -176,7 +183,6 @@ define([
 			}
 			
 			if(dropoffInfo != null) {
-				console.log(dropoffInfo);
 				this.$el.find('#dropoff-fields').show();
 				if(typeof dropoffInfo.scaler_account[0] != 'undefined' && typeof dropoffInfo.scaler_account[0].name != 'undefined' && dropoffInfo.scaler_account[0].name != null)
 					this.$el.find('#dropoff-info .scale-account').val(dropoffInfo.scaler_account[0].name);
@@ -229,7 +235,50 @@ define([
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click .close-weight-ticket': 'showCloseWeightTicketConfirmationWindow',
 			'click #confirm-close-wt': 'closeWeightTicket',
+            'click #mail-weight-ticket': 'showMailForm',
+            'click #confirm-mail-weight-ticket': 'mailWeightTicket'
 		},
+                
+        showMailForm: function() {
+            this.initModalForm('',
+                'confirm-mail-weight-ticket',
+                'Send',
+                'Send Email',
+                false);
+            this.showModalForm();
+            
+            return false;
+        },
+                
+        mailWeightTicket: function(ev) {
+            
+            var thisObj = this;
+            var formData = {
+                weightticket: $('#mail-weight-ticket-form input[name=weightticket]').prop('checked'),
+                loadingticket: $('#mail-weight-ticket-form input[name=loadingticket]').prop('checked'),
+                recipients: $('#mail-weight-ticket-form input[name=recipient]').val()
+            };
+			
+			var weightInfoModel = new SOWeightInfoModel({id:this.schedId});
+			weightInfoModel.setEmailURL();
+			weightInfoModel.save(
+				formData,
+				{
+					success: function (model, response, options) {
+						thisObj.displayMessage(response);
+					},
+					error: function (model, response, options) {
+						if(typeof response.responseJSON.error === 'undefined')
+							alert(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: weightInfoModel.getAuth()
+				}
+			);
+                
+            return false;
+        },
 		
 		showCloseWeightTicketConfirmationWindow: function (ev) {
 			this.initConfirmationWindow('Are you sure you want to close this weight ticket?',

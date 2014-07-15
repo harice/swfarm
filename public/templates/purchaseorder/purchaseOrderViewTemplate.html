@@ -1,163 +1,99 @@
-<!--<div class="row">
-	<div class="col-sm-12">
-        <div class="tab-container">
-			<ul class="nav nav-tabs">
-			  <li class="active"><a href="ui-tabs-accordions.html#home">Home</a></li>
-			  <li><a href="#">Profile</a></li>
-			  <li><a href="ui-tabs-accordions.html#messages">Messages</a></li>
-			</ul>
-		</div>
-		<div class="block-flat"> -->
-            <div class="content">
-                <form id="poForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-                  <fieldset>
-                    <legend>Details</legend>
-                    <div class="row">
-                      <div class="col-sm-6">
-                        <div class="form-group">
-                          <label for="ponumber" class="col-sm-3 control-label">PO Number</label>
-                          <div class="col-sm-7">
-                            <input id="ponumber" type="text" class="form-control ponumber" placeholder="" maxlength="250" readonly>
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <label for="status" class="col-sm-3 control-label">Status</label>
-                          <div class="col-sm-7">
-                            <input id="status" type="text" class="form-control status" placeholder="" maxlength="250" readonly>
-                          </div>
-                        </div>
-						<div id="cancel-reason-cont" class="form-group" style="display:none;">
-                          <label for="" class="col-sm-3 control-label">Cancellation Reason</label>
-                          <div class="col-sm-7">
-                            <input style="display:none;" type="text" class="form-control" placeholder="" maxlength="250" readonly>
-							<textarea style="display:none;" class="form-control" readonly></textarea>
-                          </div>
-                        </div>
-                        <% if (typeof is_bid === "undefined") { %>
-                        <div class="form-group">
-                          <label for="destination" class="col-sm-3 control-label">Destination</label>
-                          <div class="col-sm-7">
-                            <input id="destination" type="text" class="form-control destination" placeholder="" maxlength="250" readonly>
-                          </div>
-                        </div>
-                        <% } %>
-                        <div class="form-group">
-                          <label for="account" class="col-sm-3 control-label">Producer *</label>
-                          <div class="col-sm-7">
-                            <input type="text" class="form-control capitalize" id="account" maxlength="50" readonly>
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <label for="street" class="col-sm-3 control-label">Street</label>
-                          <div class="col-sm-7">
-                            <input id="street" type="text" class="form-control street" placeholder="" maxlength="250" readonly>
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <label for="state" class="col-sm-3 control-label">State</label>
-                          <div class="col-sm-7">
-                            <input id="state" type="text" class="form-control state" placeholder="" maxlength="250" readonly>
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <label for="city" class="col-sm-3 control-label">City</label>
-                          <div class="col-sm-7">
-                            <input id="city" type="text" class="form-control city" placeholder="" maxlength="250" readonly>
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <label for="zipcode" class="col-sm-3 control-label">Zip Code</label>
-                          <div class="col-sm-3">
-                            <input id="zipcode" type="text" class="form-control zipcode" placeholder="" minlength="5" maxlength="9" readonly>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col-sm-6">
-                        <div class="form-group">
-                          <label for="dateofpurchase" class="col-sm-3 control-label">Date of Purchase</label>
-                          <div class="col-sm-4">
-                            <input id="dateofpurchase" type="text" class="form-control dateofpurchase" placeholder="" maxlength="250" readonly>
-                          </div>
-                        </div>
-                        <% if (typeof is_bid === "undefined") { %>
-                        <div class="form-group"><label for="" class="col-sm-3 control-label">Delivery Period:</label></div>
-                        <div class="form-group">
-                          <label for="transportdatestart" class="col-sm-3 control-label">Start</label>
-                          <div class="col-sm-4">
-                            <input id="transportdatestart" type="text" class="form-control transportdatestart" placeholder="" maxlength="250" readonly>
-                          </div>
-                          <label for="transportdateend" class="col-sm-1 control-label">End</label>
-                          <div class="col-sm-4">
-                            <input id="transportdateend" type="text" class="form-control transportdateend" placeholder="" maxlength="250" readonly>
-                          </div>
-                        </div>
-                        <% } %>
-                        <div class="form-group">
-                          <label for="notes" class="col-sm-3 control-label">Notes</label>
-                          <div class="col-sm-9">
-                            <textarea class="form-control notes" id="notes" readonly></textarea>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </fieldset>
-                  <fieldset>
-                    <legend>
-                      Products
-                    </legend>
-                    <div class="table-responsive">
-                      <table id="product-list" class="table table-bordered">
-                        <thead>
-                          <tr>
-                            <th>Product</th>
-                            <th>Description</th>
-                            <th>Stack No.</th>
-                            <th  class="width-130">
-                            <% if (typeof is_bid === "undefined") { %>
-                              Unit Price
-                            <% } else { %>
-                              Bid Unit Price
-                            <% } %>
-                            </th>
-                            <th>Est Tons</th>
-                            <th>Bales</th>
-                            <th  class="width-130">
-                            <% if (typeof is_bid === "undefined") { %>
-                              Total Price
-                            <% } else { %>
-                              Bid Total Price
-                            <% } %>
-                            </th>
-                            <% if (typeof is_bid === "undefined") { %>
-                            <th>Hold for Testing</th>
-							<th>RFV</th>
-							<th>PDF</th>
-                            <% } %>
-                          </tr>
-                        </thead>
-                        <tbody></tbody>
-                      </table>
-                    </div>
-                  </fieldset>
-                  <div class="form-group form-button-container">
-                      <div class="col-sm-12">
-                          <div class="pull-right">
-                          <% if (typeof editable !== "undefined") { %>
-                            <% if (typeof is_bid === "undefined") { %>
-							  <a id="close-order" class="btn btn-primary editable-button" href="#">Close Purchase Order</a>
-                              <a id="edit-po" class="btn btn-primary editable-button" href="<%= po_edit_url %>">Edit Purchase Order</a>
-                            <% } else {%>
-                              <a id="edit-po" class="btn btn-primary" href="<%= po_edit_url %>">Edit Bid</a>
-                            <% } %>
-                          <% } %>
-                          <a class="btn btn-default" href="<%= po_url %>">Back To PO List</a>
-                          </div>
-                      </div>
-                  </div>
-                </form>
-                
-            </div> <!-- /.content -->
-        <!--</div>
+<div class="content padding-top-0">
+  <h2 class="ponumber margin-bottom-0"><%= po.get("order_number") %></h2>
+  <div class="row margin-top-0">
+    <div class="col-md-6">
+      <% if (typeof is_bid === "undefined") { %>
+        Purchased Date: <span class="text-danger"><%= formatDateAMPM(po.get("created_at")) %></span><br>
+        Pickup Start: <span class="text-danger"><%= formatDate(po.get("transportdatestart")) %></span>
+        Pickup End: <span class="text-danger"><%= formatDate(po.get("transportdateend")) %></span><br>
+        Destination: <span class="text-danger"><%= po.get("location").location %></span><br>
+      <% } else { %>
+        Bid Date: <span class="text-danger"><%= formatDateAMPM(po.get("created_at")) %></span><br>
+      <% } %>
+      Status: <label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label>
+      <% if(po.get("status").id == 5 || po.get("status").id == 6) { if(po.get("ordercancellingreason").reason.id != reason_others ) { %>
+      <br>Reason: <%= po.get("ordercancellingreason").reason.reason %>
+      <% } else { %>
+      <br>Reason: <%= po.get("ordercancellingreason").others %>
+      <% }} %>
+      <% if (po.get("notes").length > 0) { %>
+      <br>Notes: <%= po.get("notes") %>
+      <% } %>
     </div>
-</div>-->
+    <div class="col-md-6">
+      Producer:
+      <address>
+        <p class="margin-top-5 margin-bottom-0"><strong><%= po.get("account").name %></strong></p>
+        <%= po.get("orderaddress").street %>
+        <br>
+        <%= po.get("orderaddress").city %>,
+        <%= po.get("orderaddress").address_states.state_code %>
+        <%= po.get("orderaddress").zipcode %>
+      </address>
+    </div>
+  </div>
+  <div class="row margin-top-10">
+    <div class="col-md-12">
+      <h3 class="margin-top-0">Products</h3>
+      <div class="content-inner table-responsive">
+        <table id="product-list" class="table-condensed table-bordered table-hover">
+          <thead>
+            <tr>
+              <th class="width-150">Product</th>
+              <th>Description</th>
+              <th class="width-150">Stack No.</th>
+              
+              <% if (typeof is_bid === "undefined") { %>
+              <th class="width-60">Testing</th>
+              <th class="width-60">RFV</th>
+              <th class="width-40">PDF</th>
+              <% } %>
+
+              <th class="width-110">
+                <% if (typeof is_bid === "undefined") { %>
+                  Unit Price
+                <% } else { %>
+                  Bid Unit Price
+                <% } %>
+              </th>
+
+              <th class="width-110">Est Tons</span></th>
+              <th class="width-110">Bales</th>
+              <th class="width-110">
+                <% if (typeof is_bid === "undefined") { %>
+                  Total Price
+                <% } else { %>
+                  Bid Total Price
+                <% } %>
+              </th>
+
+            </tr>
+          </thead>
+          <tbody></tbody>
+    		  <tfoot>
+    		    <tr>
+      			  <td class="text-right" colspan="<% if (typeof is_bid === "undefined") { %>7<% } else { %>4<% } %>">Total</td>
+      			  <td class="text-right"><strong id="total-tons">0.0000</strong></td>
+      			  <td class="text-right"><strong id="total-bales">0</strong></td>
+      			  <td class="text-right"><strong id="total-price">$ 0.00</strong></td>
+      			</tr>
+    		  </tfoot>
+        </table>
+      </div>
+      <div class="pull-right margin-top-10">
+        <% if (typeof editable !== "undefined") { %>
+          <% if (typeof is_bid === "undefined") { %>
+            <a id="edit-po" class="btn btn-link btn-sm editable-button" href="<%= po_edit_url %>"><i class="fa fa-pencil width-10"></i> Edit PO</a>
+            <a id="close-order" class="btn btn-link color-danger btn-sm editable-button" href="#"><i class="fa fa-times width-10"></i> Close PO</a>
+            <a href="#" class="btn btn-link color-danger btn-sm cancel-po editable-button"><i class="fa fa-ban width-10"></i> Cancel PO</a>
+          <% } else {%>
+            <a id="edit-po" class="btn btn-link btn-sm" href="<%= po_edit_url %>"><i class="fa fa-pencil width-10"></i> Edit Bid</a>
+            <a href="#" class="btn btn-link color-danger btn-sm cancel-bid"><i class="fa fa-ban width-10"></i> Cancel Bid</a>
+          <% } %>
+        <% } %>
+        <a class="btn btn-link btn-sm" href="<%= po_url %>"><i class="fa fa-angle-double-left width-10"></i> Back</a>
+      </div>
+    </div>
+  </div>
+</div>
+    

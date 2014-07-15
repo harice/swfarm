@@ -5,9 +5,10 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'models/stack/StackLocationModel',
-	'collections/product/ProductCollection',
+	'collections/account/AccountCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/stack/stackLocationAddTemplate.html',
+	'text!templates/stack/stackLocationSectionItemTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -16,9 +17,10 @@ define([
 			Validate,
 			TextFormatter,
 			StackLocationModel,
-			ProductCollection,
+			AccountCollection,
 			contentTemplate,
 			stackLocationAddTemplate,
+			stackLocationSectionItemTemplate,
 			Global,
 			Const
 ){
@@ -33,19 +35,29 @@ define([
 			this.h1Title = 'Stack Location';
 			this.h1Small = 'add';
 			
-			this.productCollection = new ProductCollection();
-			this.productCollection.on('sync', function() {
+			this.options = {
+				sectionFieldClone: null,
+				sectionFieldCounter: 0,
+				sectionFieldClass: ['name', 'description', 'id'],
+				sectionFieldClassRequired: ['name'],
+				sectionFieldExempt: [],
+				sectionFieldSeparator: '.',
+				removeComma: [],
+			};
+			
+			this.producerAndWarehouseAccount = new AccountCollection();
+			this.producerAndWarehouseAccount.on('sync', function() {
 				if(thisObj.subContainerExist())
 					thisObj.displayForm();
 				this.off('sync');
 			});
-			this.productCollection.on('error', function(collection, response, options) {
+			this.producerAndWarehouseAccount.on('error', function(collection, response, options) {
 				this.off('error');
 			});
 		},
 		
 		render: function(){
-			this.productCollection.getAllModel();
+			this.producerAndWarehouseAccount.getProducerAndWarehouseAccount();
 			Backbone.View.prototype.refreshTitle('Stack Location','add');
 		},
 		
@@ -54,6 +66,7 @@ define([
 			
 			var innerTemplateVariables = {
 				'sl_url' : '#/'+Const.URL.STACKLOCATION,
+				'account_list' : '',
 			};
 			
 			if(this.slId != null)
@@ -69,10 +82,11 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
 			
-			this.generateProduct();
+			this.initValidateForm();
+			this.generateAccount();
+			this.addSection();
 			this.focusOnFirstField();
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
-			this.initValidateForm();
 			
 			this.otherInitializations();
 		},
@@ -80,9 +94,11 @@ define([
 		initValidateForm: function () {
 			var thisObj = this;
 			
-			var validate = $('#soForm').validate({
+			var validate = $('#locationForm').validate({
 				submitHandler: function(form) {
-					var data = $(form).serializeObject();
+					//var data = $(form).serializeObject();
+					var data = thisObj.formatFormField($(form).serializeObject());
+					//console.log(data);
 					
 					var stackLocationModel = new StackLocationModel(data);
 					
@@ -91,7 +107,6 @@ define([
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								//Global.getGlobalVars().app_router.navigate(Const.URL.STACKLOCATION, {trigger: true});
 								Backbone.history.history.back();
 							},
 							error: function (model, response, options) {
@@ -107,19 +122,76 @@ define([
 			});
 		},
 		
-		generateProduct: function () {
+		addSection: function () {
+			var clone = null;
+			
+			if(this.options.sectionFieldClone == null) {
+				var sectionTemplateVars = {};
+				var sectionTemplate = _.template(stackLocationSectionItemTemplate, sectionTemplateVars);
+				
+				this.$el.find('#section-list tbody').append(sectionTemplate);
+				var sectionItem = this.$el.find('#section-list tbody').find('.section-item:first-child');
+				this.options.sectionFieldClone = sectionItem.clone();
+				this.addIndexToSectionFields(sectionItem);
+				clone = sectionItem;
+			}
+			else {
+				var clone = this.options.sectionFieldClone.clone();
+				this.addIndexToSectionFields(clone);
+				this.$el.find('#section-list tbody').append(clone);
+			}
+				
+			this.addValidationToSection();
+			return clone;
+		},
+		
+		addIndexToSectionFields: function (sectionItem) {
+			var sectionFieldClass = this.options.sectionFieldClass;
+			for(var i=0; i < sectionFieldClass.length; i++) {
+				var field = sectionItem.find('.'+sectionFieldClass[i]);
+				var name = field.attr('name');
+				field.attr('name', name + this.options.sectionFieldSeparator + this.options.sectionFieldCounter);
+			}
+			
+			this.options.sectionFieldCounter++;
+		},
+		
+		addValidationToSection: function () {
+			var thisObj = this;
+			var sectionFieldClassRequired = this.options.sectionFieldClassRequired;
+			for(var i=0; i < sectionFieldClassRequired.length; i++) {
+				$('.'+sectionFieldClassRequired[i]).each(function() {
+					$(this).rules('add', {required: true});
+				});
+			}
+		},
+		
+		generateAccount: function () {
 			var options = '';
-			_.each(this.productCollection.models, function (model) {
+			_.each(this.producerAndWarehouseAccount.models, function (model) {
 				options += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
 			
-			this.$el.find('#product_id').append(options);
+			this.$el.find('#account_id').append(options);
 		},
 		
 		events: {
+			'click #add-section': 'addSection',
+			'click .remove-section': 'removeSection',
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #delete-sl': 'showConfirmationWindow',
 			'click #confirm-delete-sl': 'deleteStockLocation'
+		},
+		
+		removeSection: function (ev) {
+			$(ev.target).closest('tr').remove();
+			
+			if(!this.hasSection())
+				this.addSection();
+		},
+		
+		hasSection: function () {
+			return (this.$el.find('#section-list tbody .section-item').length)? true : false;
 		},
 		
 		deleteStockLocation: function () {
@@ -137,6 +209,46 @@ define([
                 wait: true,
                 headers: thisObj.model.getAuth(),
             });
+		},
+		
+		formatFormField: function (data) {
+			var formData = {sections:[]};
+			var sectionFieldClass = this.options.sectionFieldClass;
+			
+			for(var key in data) {
+				if(typeof data[key] !== 'function'){
+					var value = data[key];
+					var arrayKey = key.split(this.options.sectionFieldSeparator);
+					
+					if(arrayKey.length < 2)
+						if(this.options.removeComma.indexOf(key) < 0)
+							formData[key] = value;
+						else
+							formData[key] = this.removeCommaFromNumber(value);
+					else {
+						if(arrayKey[0] == sectionFieldClass[0]) {
+							var index = arrayKey[1];
+							var arraySectionFields = {};
+							
+							for(var i = 0; i < sectionFieldClass.length; i++) {
+								if(this.options.sectionFieldExempt.indexOf(sectionFieldClass[i]) < 0) {
+									var fieldValue = data[sectionFieldClass[i]+this.options.sectionFieldSeparator+index];
+									if(!(sectionFieldClass[i] == 'id' && fieldValue == '')) {
+										if(this.options.removeComma.indexOf(sectionFieldClass[i]) < 0)
+											arraySectionFields[sectionFieldClass[i]] = fieldValue;
+										else
+											arraySectionFields[sectionFieldClass[i]] = this.removeCommaFromNumber(fieldValue);
+									}
+								}
+							}
+								
+							formData.sections.push(arraySectionFields);
+						}
+					}
+				}
+			}
+			
+			return formData;
 		},
 		
 		otherInitializations: function () {},

@@ -142,6 +142,11 @@ class AccountController extends BaseController {
 		//return $this->account->getTruckerAccount(Input::get('search'));
 		return $this->account->getTruckerAccountTypes();
 	}
+    
+    public function getContracts($id)
+    {
+        return $this->account->getContracts($id);
+    }
 
 
 }

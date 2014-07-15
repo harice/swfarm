@@ -33,8 +33,7 @@ class Contract extends BaseModel {
         'account_id' => 'required',
         'contract_date_start' => 'required',
         'contract_date_end' => 'required|after:contract_date_start',
-        'user_id' => 'required',
-        'status_id' => 'required'
+        'user_id' => 'required'
     );
     
     /**
@@ -47,6 +46,11 @@ class Contract extends BaseModel {
     public function products()
     {
         return $this->belongsToMany('Product', 'contract_products')->withPivot('tons', 'bales');
+    }
+    
+    public function contractproducts()
+    {
+        return $this->hasMany('ContractProducts', 'contract_id', 'id');
     }
     
     /**
@@ -83,6 +87,21 @@ class Contract extends BaseModel {
         return $this->hasMany('Order');
     }
     
+    public function productorders()
+    {
+        return $this->hasManyThrough('ProductOrder', 'Order', 'contract_id', 'order_id');
+    }
+    
+    public function schedules()
+    {
+        return $this->hasManyThrough('TransportSchedule', 'Order', 'contract_id', 'order_id');
+    }
+    
+    public function order()
+    {
+        return $this->hasMany('Order', 'contract_id', 'id');
+    }
+
     /**
      * Define a One-to-One Relationship
      * 

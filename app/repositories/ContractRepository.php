@@ -16,12 +16,35 @@ class ContractRepository implements ContractRepositoryInterface {
             $sortby   = isset($params['sortby']) ? $params['sortby'] : 'contract_number';
             $orderby  = isset($params['orderby']) ? $params['orderby'] :'DSC';
             $offset   = $page * $perPage - $perPage;
+            $account_id = isset($params['account']) ? $params['account'] : null;
             
-            $result = Contract::with('salesorders', 'products', 'account', 'account.address', 'status')
+            $contracts = Contract::with('salesorders', 'schedules', 'products', 'productorders', 'account', 'account.address', 'status');
+            
+            if ($account_id) {
+                $contracts = $contracts->where('account_id', '=', $account_id);
+            }
+            
+            $result = $contracts
                 ->take($perPage)
                 ->offset($offset)
                 ->orderBy($sortby, $orderby)
                 ->paginate($perPage);
+            
+            $result = $result->toArray();
+            
+            if (!empty($result['data'])) {
+                $data = $result['data'];
+                unset($result['data']);
+                foreach ($data as $contract) {
+                    $weightticket = $this->weighttickets($contract['id']);
+
+                    if ($weightticket) {
+                        $contract['total_delivered'] = $weightticket['total_tons_delivered'];
+                    }
+
+                    $result['data'][] = $contract;
+                }
+            }
             
             return $result;
         }
@@ -78,7 +101,7 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         try
         {
-            $contract = Contract::with('products', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')->find($id);
+            $contract = Contract::with('products', 'salesorders', 'productorders', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')->find($id);
             
             if (!$contract) {
                 throw new NotFoundException();
@@ -94,19 +117,23 @@ class ContractRepository implements ContractRepositoryInterface {
     
     public function store($data)
     {
-        $data['contract_number'] = generateControlNumber('Contract', 'C');
+        $data['contract_number'] = $this->generateContractNumber('Contract', 'C');
         $data['user_id'] = Auth::user()->id;
+        $data['status_id'] = 1;
         $this->validate($data);
         
         try
         {
-            DB::transaction(function() use ($data){
+            $contract = DB::transaction(function() use ($data){
+                $products = $data['products'];
+                unset($data['products']);
+                
                 $contract = $this->instance();
                 $contract->fill($data);
                 $contract->save();
-
+                
                 $new_products = array();
-                foreach ($data['products'] as $product)
+                foreach ($products as $product)
                 {
                     $new_products[$product['product_id']] = array(
                         'tons' => $product['tons'],
@@ -115,11 +142,14 @@ class ContractRepository implements ContractRepositoryInterface {
                 }
                 
                 $contract->products()->sync($new_products);
+                
+                return $contract;
             });
             
             $response = array(
                 'error' => false,
-                'message' => Lang::get('messages.success.created', array('entity' => 'Contract'))
+                'message' => Lang::get('messages.success.created', array('entity' => 'Contract')),
+                'data' => $contract
             );
             
             return $response;
@@ -136,13 +166,17 @@ class ContractRepository implements ContractRepositoryInterface {
         
         try
         {
-            DB::transaction(function() use ($data, $id){
+            $contract = DB::transaction(function() use ($data, $id){
+            
+                $products = $data['products'];
+                unset($data['products']);
+                
                 $contract = $this->findById($id);
                 $contract->fill($data);
                 $contract->update();
                 
                 $new_products = array();
-                foreach ($data['products'] as $product)
+                foreach ($products as $product)
                 {
                     $new_products[$product['product_id']] = array(
                         'tons' => $product['tons'],
@@ -151,11 +185,14 @@ class ContractRepository implements ContractRepositoryInterface {
                 }
                 
                 $contract->products()->sync($new_products);
+                
+                return $contract;
             });
             
             $response = array(
                 'error' => false,
-                'message' => Lang::get('messages.success.updated', array('entity' => 'Contract'))
+                'message' => Lang::get('messages.success.updated', array('entity' => 'Contract')),
+                'data' => $contract
             );
             
             return $response;
@@ -191,6 +228,70 @@ class ContractRepository implements ContractRepositoryInterface {
         }
     }
     
+    public function salesorder($id)
+    {
+        try
+        {
+            $contract = Contract::with('contractproducts.products.productorder.product')
+                        ->with('contractproducts.products.productorder.order')
+                        ->with('contractproducts.products.productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_pickup')
+                        ->with('contractproducts.products.productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_dropoff')
+                        ->with('contractproducts.products.productorder.transportscheduleproduct.weightticketproducts.weightticketscale_type')
+                        ->whereHas('order', function($query) use ($id)
+                        {
+                            $query->where('contract_id', '=', $id);
+
+                        })
+                        ->find($id);
+            
+            if(!$contract) {
+                $response = array(
+                    'message' => 'No salesorder'
+                );
+                
+                return $response;
+            }
+            
+            $contract_products = $contract->contractproducts;
+            
+            $result = array();
+            foreach($contract_products as $contract_product) {
+                $result[$contract_product->product_id] = $contract_product->toArray();
+                $result[$contract_product->product_id]['total_tons'] = $contract_product->tons;
+                
+                $total_delivered_tons = 0.0;
+                foreach($contract_product->products as $product) {
+                    $result[$contract_product->product_id]['product_name'] = $product->name;
+                    $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['stacknumber'] = $product->productorder['stacknumber'];
+                    $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['order_number'] = $product->productorder->order->order_number;
+                    $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['tons'] = $product->productorder->tons;
+                    $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['status']['name'] = $product->productorder->order->status_id;
+                    $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['status']['class'] = "success";
+                    
+                    $delivered_tons = 0.0;
+                    foreach($product->productorder->transportscheduleproduct as $schedule) {
+                        $delivered_gross = $schedule->transportschedule->weightticket->weightticketscale_dropoff->gross;
+                        $delivered_tare = $schedule->transportschedule->weightticket->weightticketscale_dropoff->tare;
+                        
+                        $delivered_tons = $schedule->weightticketproducts[1]->pounds / 2000;
+                        $total_delivered_tons += $delivered_tons;
+                    }
+                    
+                    $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['delivered_tons'] = $delivered_tons;
+                }
+                
+                $result[$contract_product->product_id]['delivered_tons'] = $total_delivered_tons;
+                $result[$contract_product->product_id]['remaining_tons'] = $contract_product->tons - $total_delivered_tons;
+            }
+            
+            return $result;
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
+    }
+    
     public function destroy($id)
     {
         try
@@ -206,7 +307,8 @@ class ContractRepository implements ContractRepositoryInterface {
 
             $response = array(
                 'error' => false,
-                'message' => Lang::get('messages.success.deleted', array('entity' => 'Contract'))
+                'message' => Lang::get('messages.success.deleted', array('entity' => 'Contract')),
+                'data' => $contract
             );
             
             return $response;
@@ -238,6 +340,65 @@ class ContractRepository implements ContractRepositoryInterface {
     public function instance($data = array())
     {
         return new Contract($data);
+    }
+    
+    function generateContractNumber($model, $prefix){ //type default is PO
+        $dateToday = date('Y-m-d');
+        $count = $model::where('created_at', 'like', $dateToday.'%')->count()+1;
+        return $prefix.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
+    }
+    
+    public function products($id)
+    {
+        $products = ContractProducts::where('contract_id', '=', $id)
+            ->join('products', 'product_id', '=', 'products.id' )
+            ->get(array('contract_id', 'product_id', 'name'));
+        return $products;
+    }
+    
+    /**
+     * 
+     * 
+     * @return Products
+     */
+    public function weighttickets($id)
+    {
+        try
+        {
+            $delivered_products = WeightTicket::with('weightticketscale_dropoff', 'weightticketscale_pickup')
+                ->join('transportschedule', 'transportSchedule_id', '=', 'transportschedule.id')
+                ->join('order', 'order_id', '=', 'order.id')
+                ->where('contract_id', '=', $id)
+                ->get();
+            
+            $total_dropoff_bales_delivered = $total_pickup_bales_delivered = 0;
+            $total_dropoff_gross_delivered = $total_pickup_gross_delivered = 0.0000;
+            $total_dropoff_tare_delivered = $total_pickup_tare_delivered = 0.0000;
+            
+            foreach ($delivered_products as $product) {
+                $total_dropoff_bales_delivered += $product->weightticketscale_dropoff->bales;
+                $total_dropoff_gross_delivered += $product->weightticketscale_dropoff->gross;
+                $total_dropoff_tare_delivered += $product->weightticketscale_dropoff->tare;
+                
+                $total_pickup_bales_delivered += $product->weightticketscale_pickup->bales;
+                $total_pickup_gross_delivered += $product->weightticketscale_pickup->gross;
+                $total_pickup_tare_delivered += $product->weightticketscale_pickup->tare;
+            }
+            
+            $result = array(
+                'delivered_products' => $delivered_products->toArray(),
+                'total_tons_delivered' => $total_pickup_gross_delivered - $total_pickup_tare_delivered,
+                'total_bales_delivered' => $total_pickup_bales_delivered,
+                'total_gross_delivered' => $total_pickup_gross_delivered,
+                'total_tare_delivered' => $total_pickup_tare_delivered
+            );
+            
+            return $result;
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
     }
     
 }

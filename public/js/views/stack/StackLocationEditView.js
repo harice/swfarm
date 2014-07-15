@@ -5,7 +5,7 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'models/stack/StackLocationModel',
-	'collections/product/ProductCollection',
+	'collections/account/AccountCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/stack/stackLocationAddTemplate.html',
 	'global',
@@ -16,7 +16,7 @@ define([
 			Validate,
 			TextFormatter,
 			StackLocationModel,
-			ProductCollection,
+			AccountCollection,
 			contentTemplate,
 			stackLocationAddTemplate,
 			Global,
@@ -33,21 +33,31 @@ define([
 			this.h1Title = 'Stack Location';
 			this.h1Small = 'add';
 			
-			this.productCollection = new ProductCollection();
-			this.productCollection.on('sync', function() {
+			this.options = {
+				sectionFieldClone: null,
+				sectionFieldCounter: 0,
+				sectionFieldClass: ['name', 'description', 'id'],
+				sectionFieldClassRequired: ['name'],
+				sectionFieldExempt: [],
+				sectionFieldSeparator: '.',
+				removeComma: [],
+			};
+			
+			this.producerAndWarehouseAccount = new AccountCollection();
+			this.producerAndWarehouseAccount.on('sync', function() {
 				if(thisObj.subContainerExist()) {
 					thisObj.displayForm();
 					thisObj.supplyStackLocationData();
 				}
 				this.off('sync');
 			});
-			this.productCollection.on('error', function(collection, response, options) {
+			this.producerAndWarehouseAccount.on('error', function(collection, response, options) {
 				this.off('error');
 			});
 			
 			this.model = new StackLocationModel({id:this.slId});
 			this.model.on('change', function() {
-				thisObj.productCollection.getAllModel();
+				thisObj.producerAndWarehouseAccount.getProducerAndWarehouseAccount();
 				this.off('change');
 			});
 		},
@@ -62,9 +72,22 @@ define([
 		},
 		
 		supplyStackLocationData: function () {
-			this.$el.find('#location').val(this.model.get('location'));
-			this.$el.find('#stacknumber').val(this.model.get('stacknumber'));
-			this.$el.find('#product_id').val(this.model.get('product_id'));
+			var thisObj = this;
+			var section = this.model.get('section');
+			
+			this.$el.find('#account_id').val(this.model.get('account_id'));
+			this.$el.find('#name').val(this.model.get('name'));
+			this.$el.find('#description').val(this.model.get('description'));
+			
+			var i= 0;
+			_.each(section, function (s) {
+				var sectionFields = (i > 0)? thisObj.addSection(): thisObj.$el.find('#section-list tbody .section-item:first-child');
+				i++;
+				
+				sectionFields.find('.id').val(s.id);
+				sectionFields.find('.name').val(s.name);
+				sectionFields.find('.description').val(s.description);
+			});
 		},
 		
 		initDeleteConfirmation: function () {

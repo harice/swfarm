@@ -453,6 +453,16 @@ class AccountRepository implements AccountRepositoryInterface {
             200
         );
   }
+  
+  public function getContracts($account_id)
+  {
+      $contracts = Contract::where('account_id', '=', $account_id)->get(array('id', 'contract_number'));
+      
+      return Response::json(
+          $contracts->toArray(),
+          200
+      );
+  }
 
   public function getTrailerAccount(){
       $accountIds = array(7); //operator, hauler and Southwest Farms trucker accounts ids

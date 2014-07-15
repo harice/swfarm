@@ -1,5 +1,6 @@
 define([
 	'backbone',
+    'text!templates/layout/modalFormTemplate.html',
 	'text!templates/layout/confirmModalTemplate.html',
 	'text!templates/layout/confirmNavigateAwayFromFormModalTemplate.html',
 	'text!templates/layout/confirmModalWithFormTemplate.html',
@@ -7,6 +8,7 @@ define([
 	'text!templates/layout/tabsTemplate.html',
 	'constant',
 ], function(Backbone,
+            modalFormTemplate,
 			confirmModalTemplate,
 			confirmNavigateAwayFromFormModalTemplate,
 			confirmModalWithFormTemplate,
@@ -64,15 +66,19 @@ define([
 			return arrFormattedDate.join(separator);
 		},
 		
-		initConfirmationWindow: function (content, buttonId, buttonLabel, title, dismissModal) {
+		initConfirmationWindow: function (content, buttonId, buttonLabel, title, dismissModal, modalId) {
 			if($('.modal-alert-cont').find('#modal-confirm').length)
 				$('.modal-alert-cont').find('#modal-confirm').remove();
+			
+			if(modalId == null || typeof modalId == 'undefined')
+			modalId = 'modal-confirm';
 			
 			var confirmTemplateVariables = {
 				confirm_title: title,
 				confirm_content: content,
 				confirm_button_id: buttonId,
 				confirm_button_label: buttonLabel,
+				confirm_modal_id: modalId,
 			};
 			
 			if(dismissModal == null || typeof dismissModal == 'undefined' || dismissModal == true)
@@ -102,6 +108,8 @@ define([
 			var confirmTemplate = _.template(attachPDFTemplate, {});
 			this.$el.find('.modal-alert-cont').append(confirmTemplate);
 		},
+                
+        
 		
 		disableCloseButton: function (id) {
 			//console.log('disableCloseButton: '+id);
@@ -121,15 +129,48 @@ define([
 			
 			return false;
 		},
+                
+        initModalForm: function (content, buttonId, buttonLabel, title, dismissModal, modalId) {
+			if($('.modal-alert-cont').find('#modal-confirm').length)
+				$('.modal-alert-cont').find('#modal-confirm').remove();
+			
+			if(modalId == null || typeof modalId == 'undefined')
+			modalId = 'modal-confirm';
+			
+			var modalTemplateVariables = {
+				confirm_title: title,
+				confirm_content: content,
+				confirm_button_id: buttonId,
+				confirm_button_label: buttonLabel,
+				confirm_modal_id: modalId,
+			};
+			
+			if(dismissModal == null || typeof dismissModal == 'undefined' || dismissModal == true)
+				modalTemplateVariables['confirm_dismiss_modal'] = 1;
+			
+			var modalTemplate = _.template(modalFormTemplate, modalTemplateVariables);
+			this.$el.find('.modal-alert-cont').append(modalTemplate);
+		},
+                
+        showModalForm: function (id) {
+			if(id == null)
+				id = 'modal-confirm';
+				
+			$('#'+id).modal('show');
+			
+			return false;
+		},
 		
 		hideConfirmationWindow: function (id, callback) {
+			var thisObj = this;
 			
 			if(id == null)
 				id = 'modal-confirm';
 			
 			$('#'+id).on('hidden.bs.modal', function (e) {
 				var getType = {};
-				if(callback && getType.toString.call(callback) === '[object Function]')
+				//if(callback && getType.toString.call(callback) === '[object Function]')
+				if(thisObj.isFunction(callback))
 					callback();
 			});
 			
@@ -318,8 +359,8 @@ define([
 			
 			var thisObj = this;
 			var tabs = [
-				{'url':'/#/'+Const.URL.PO+'/'+poId, 'label':'Purchase Order'},
-				{'url':'/#/'+Const.URL.PICKUPSCHEDULE+'/'+poId, 'label':'Schedule'},
+				{'url':'/#/'+Const.URL.PO+'/'+poId, 'label':'PO Details'},
+				{'url':'/#/'+Const.URL.PICKUPSCHEDULE+'/'+poId, 'label':'Schedule Details'},
 				{'url':'/#/'+Const.URL.POWEIGHTINFO+'/'+poId, 'label':'Weight Details'},
 			];
 			
@@ -337,8 +378,8 @@ define([
 			
 			var thisObj = this;
 			var tabs = [
-				{'url':'/#/'+Const.URL.SO+'/'+soId, 'label':'Sales Order'},
-				{'url':'/#/'+Const.URL.DELIVERYSCHEDULE+'/'+soId, 'label':'Schedule'},
+				{'url':'/#/'+Const.URL.SO+'/'+soId, 'label':'SO Details'},
+				{'url':'/#/'+Const.URL.DELIVERYSCHEDULE+'/'+soId, 'label':'Schedule Details'},
 				{'url':'/#/'+Const.URL.SOWEIGHTINFO+'/'+soId, 'label':'Weight Details'},
 			];
 			
@@ -361,6 +402,14 @@ define([
 		
 		linkStopPropagation: function (ev) {
 			ev.stopPropagation();
+		},
+		
+		isFunction: function (f) {
+			var getType = {};
+			if(f && getType.toString.call(f) === '[object Function]')
+				return true;
+			else
+				return false;
 		},
 	});
 

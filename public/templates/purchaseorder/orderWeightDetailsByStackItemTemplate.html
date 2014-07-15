@@ -1,19 +1,19 @@
 <% if (!_.isEmpty(stacks)) { %>
 	<% _.each(stacks, function(stack){ %>
-		<div class="row">
-			<div class="col-md-2">Stack No.: <%= stack.get("stackNumber") %></div>
-			<div class="col-md-2">Product: <%= stack.get("productName") %></div>
+		<div class="row margin-top-0 padding-top-10">
+			<div class="col-md-2">Stack No.: <code><%= stack.get("stackNumber") %></code></div>
+			<div class="col-md-2">Product: <span class="text-danger"><%= stack.get("productName") %></span></div>
 		</div>
-		<div class="row">
+		<div class="row margin-top-0">
 			<div class="col-md-9">
 				<div class="content-inner table-responsive">
 					<table class="table-condensed table-bordered table-hover">
 						<thead>
 							<tr>
-								<th>Schedule</th>
-								<th>Weight Ticket No.</th>
-								<th>Expected</th>
-								<th>Delivered</th>
+								<th class="width-250">Schedule</th>
+								<th class="width-250">Weight Ticket No.</th>
+								<th class="width-150">Expected</th>
+								<th class="width-150">Delivered</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -21,27 +21,21 @@
 								<% _.each(stack.get("schedule"), function(schedule){ %>
 								<tr>
 									<td>
-										<%= schedule.transportscheduledate %>&nbsp;&nbsp;
-										<a href="<%= schedule_url %>/<%= schedule.transportschedule_id %>" class="text-primary" title="edit">
-											<span class="fa-stack">
-												<i class="fa fa-square fa-stack-2x"></i>
-												<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-											</span>
+										<i class="fa fa-check-circle width-10 <%if(schedule.transportscheduledate_status.id==1){%>color-success<%}%>"></i>
+										<a href="<%= schedule_url %>/<%= schedule.transportschedule_id %>" title="view">
+											<%= formatDateAMPM(schedule.transportscheduledate) %>
 										</a>
 									</td>
 									<td>
 										<% if (schedule.weightTicketNumber) { %>
-											<%= schedule.weightTicketNumber %>&nbsp;&nbsp;
-											<a href="<%= weight_info_url %>/<%= schedule.transportschedule_id %>" class="text-primary" title="edit">
-												<span class="fa-stack">
-													<i class="fa fa-square fa-stack-2x"></i>
-													<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-												</span>
+											<i class="fa fa-check-circle width-10 <%if(schedule.weightTicketNumber_status.id==1){%>color-success<%}%>"></i>
+											<a href="<%= weight_info_url %>/<%= schedule.transportschedule_id %>" title="view">
+												<%= schedule.weightTicketNumber %>
 											</a>
 										<% } %>
 									</td>
-									<td><%= schedule.expected %></td>
-									<td><%= schedule.delivered %></td>
+									<td><%= numberFormatTons(schedule.expected) %></td>
+									<td><%= numberFormatTons(schedule.delivered) %></td>
 								</tr>
 								<% }); %>
 							<% } else { %>
@@ -58,16 +52,20 @@
 					<table class="table-condensed table-bordered table-hover">
 						<tbody>
 							<tr>
-								<td>Expected</td>
-								<td><%= stack.get("totalExpected") %></td>
+								<td class="width-100">Expected</td>
+								<td><span class="text-danger"><%= numberFormatTons(stack.get("totalExpected")) %></span></td>
 							</tr>
 							<tr>
 								<td>Total Deliveries</td>
-								<td><%= stack.get("totalDeliveries") %></td>
+								<td><span class="text-danger"><%= numberFormatTons(stack.get("totalDeliveries")) %></span></td>
 							</tr>
 							<tr>
 								<td>Remaining</td>
-								<td><%= (parseFloat(stack.get("totalExpected")) - parseFloat(stack.get("totalDeliveries"))).toFixed(4) %></td>
+								<td>
+									<span class="text-danger">
+										<%= numberFormatTons(parseFloat(stack.get("totalExpected")) - parseFloat(stack.get("totalDeliveries"))) %>
+									</span>
+								</td>
 							</tr>
 						</tbody>
 					</table>

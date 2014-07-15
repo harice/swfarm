@@ -1,97 +1,71 @@
 <% if (!_.isEmpty(pos)) { %>
 	<% _.each(pos, function(po){ %>
-	<tr class="collapse-trigger" data-id="<%= po.get("id") %>">
-		<td><a class="stop-propagation" href="<%= po_url %>/<%= po.get("id") %>"><%= po.get("order_number") %></a></td>
-		<td><%= po.get("created_at").split(" ")[0] %></td>
+	<tr class="collapse-trigger cursor-pointer" data-id="<%= po.get("id") %>">
+		<td>
+			<i class="fa fa-angle-right width-10 accordion-carret"></i>
+			<a class="stop-propagation" href="<%= po_url %>/<%= po.get("id") %>"><%= po.get("order_number") %></a>
+			<span class="throbber_wrap" style="display: none;"><i class="fa fa-spinner fa-spin throbber_ajax"></i></span>
+		</td>
+		<td><a href="<%= account_url %>/<%= po.get("account").id %>" class="stop-propagation"><%= po.get("account").name %></a></td>
+		<td>
+            <% if (!_.isNull(po.get("location"))) { %>
+                <%= po.get("location").location %>
+            <% } %>
+        </td>
+        <td>
+			<label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label>
+		</td>
+		<td><%= formatDate(po.get("created_at")) %></td>
 		<td>
 			<% if (po.get("transportdatestart")) { %>
-				<%= po.get("transportdatestart") %>
+				<%= formatDate(po.get("transportdatestart")) %>
 			<% } %>
 		</td>
 		<td>
 			<% if (po.get("transportdateend")) { %>
-				<%= po.get("transportdateend") %>
+				<%= formatDate(po.get("transportdateend")) %>
 			<% } %>
-		</td>
-		<td><%= po.get("account").name %></td>
-		<td>
-			<label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label>
 		</td>
 		<td>
 			<div class="progress">
 				<div style="width: <%= po.get("weightPercentageDelivered") %>%" class="progress-bar progress-bar-<%= po.get("status").class %>"><%= po.get("weightPercentageDelivered") %>%</div>
 			</div>
 		</td>
-		<td>
-            <% if (!_.isNull(po.get("location"))) { %>
-                <%= po.get("location").location %>
-            <% } %>
-        </td>
-		<td class="text-right">$ <%= po.get("totalPrice") %></td>
-		<td>
-			<% if (po.get("status").name.toLowerCase() == "open") { %>
-				<a href="<%= po_sched_url %>/<%= po.get("id") %>" class="text-primary" title="schedule">
-					<span class="fa-stack">
-						<i class="fa fa-square fa-stack-2x"></i>
-						<i class="fa fa-clock-o fa-stack-1x fa-inverse"></i>
-					</span>
-				</a>
-			<% } else {%>
-				<span class="fa-stack">
-					<i class="fa fa-square fa-stack-2x"></i>
-					<i class="fa fa-clock-o fa-stack-1x fa-inverse"></i>
-				</span>
-			<% } %>
-
-			<% if (po.get("status").name.toLowerCase() == "open" || po.get("status").name.toLowerCase() == "pending" || po.get("status").name.toLowerCase() == "testing") { %>
-				<a href="<%= po_edit_url %>/<%= po.get("id") %>" class="text-primary" title="edit">
-					<span class="fa-stack">
-						<i class="fa fa-square fa-stack-2x"></i>
-						<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-					</span>
-				</a>
-				<a href="#" data-id="<%= po.get("id") %>" class="cancel-po text-primary">
-					<span class="fa-stack">
-						<i class="fa fa-shopping-cart fa-stack-1x"></i>
-						<i class="fa fa-ban fa-stack-2x text-danger"></i>
-					</span>
-				</a>
-			<% } else {%>
-				<span class="fa-stack">
-					<i class="fa fa-square fa-stack-2x"></i>
-					<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-				</span>
-				<span class="fa-stack">
-					<i class="fa fa-shopping-cart fa-stack-1x"></i>
-					<i class="fa fa-ban fa-stack-2x"></i>
-				</span>
-			<% } %>
-			<span class="throbber_wrap" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
-		</td>
+		<td class="text-right">$ <%= numberFormat(po.get("totalPrice")) %></td>
 	</tr>
 	<tr>
-		<td colspan="10" style="padding:0;">
+		<td colspan="9" style="padding:0;">
 			<div class="order-collapsible-item list-view-collapse collapse" id="<%= collapsible_id %><%= po.get("id") %>">
-				<div class="container" style="width:100%; padding-bottom:20px;">
-					<div class="row">
-						<div class="col-md-12">
+				<div class="container">
+					<div class="order-stack-details">
+						<div class="col-md-12 no-padding">
 							<div class="pull-right">
-								<a href="<%= po_url %>/<%= po.get("id") %>" class="btn btn-primary btn-sm">View PO</a>
 								<% var postatus = po.get("status").name.toLowerCase() %>
+								<a href="<%= po_url %>/<%= po.get("id") %>" class="btn btn-link btn-sm">
+									<i class="fa fa-eye width-10"></i> View <% if (postatus != po_status_pending) { %>PO<% } else { %>Bid<% } %>
+								</a>
 								<% if (postatus == po_status_pending || postatus == po_status_open || postatus == po_status_testing) { %>
-									<a href="<%= po_edit_url %>/<%= po.get("id") %>" class="btn btn-primary btn-sm">Edit PO</a>
+									<a href="<%= po_edit_url %>/<%= po.get("id") %>" class="btn btn-link btn-sm editable-button">
+										<i class="fa fa-pencil width-10"></i> Edit <% if (postatus != po_status_pending) { %>PO<% } else { %>Bid<% } %>
+									</a>
 									<% if (postatus != po_status_pending) { %>
-										<a href="#" class="btn btn-primary btn-sm">Close PO</a>
+										<a href="#" class="btn btn-link btn-sm close-po editable-button color-danger" data-id="<%= po.get("id") %>">
+											<i class="fa fa-times width-10"></i> Close PO
+										</a>
 									<% } %>
-									<a href="#" data-id="<%= po.get("id") %>" class="btn btn-primary btn-sm cancel-po">Cancel PO</a>
+									<a href="#" data-id="<%= po.get("id") %>" class="btn btn-link btn-sm cancel-po editable-button color-danger">
+										<i class="fa fa-ban width-10"></i> Cancel <% if (postatus != po_status_pending) { %>PO<% } else { %>Bid<% } %>
+									</a>
 									<% if (postatus != po_status_pending) { %>
-										<a href="<%= schedule_url %>/<%= po.get("id") %>/<%= add %>" class="btn btn-primary btn-sm">Add Schedule</a>
+										<a href="<%= schedule_url %>/<%= po.get("id") %>/<%= add %>" class="btn btn-link btn-sm editable-button">
+											<i class="fa fa-clock-o width-10"></i> Add Schedule
+										</a>
 									<% } %>
 								<% } %>
 							</div>
 						</div>
+						<div class="order-weight-details-by-stack"></div>
 					</div>
-					<div class="order-weight-details-by-stack"></div>
 				</div>
 			</div>
 		</td>
@@ -99,6 +73,6 @@
 	<% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="10">No results found.</td>
+		<td colspan="9">No results found.</td>
 	</tr>
 <% } %>
