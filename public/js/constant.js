@@ -171,7 +171,10 @@ define(function () {
 			'POCANCELLED' : 'po cancelled',
 			'TESTING' : 'testing',
 		},
-		
+		'INVENTORY': {
+			'LOCATIONFROMREQUIRED': ['transfer','issue'],
+			'LOCATIONTOREQUIRED': ['transfer','receipt'],
+		},
 	};
 	
 	return constant;

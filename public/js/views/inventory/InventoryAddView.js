@@ -149,6 +149,17 @@ define([
 						}
 					);
 				},
+				errorPlacement: function(error, element) {
+					if(element.hasClass('form-date')) {
+						element.closest('.calendar-cont').siblings('.error-msg-cont').html(error);
+					}
+					else if(element.hasClass('price')) {
+						element.closest('.input-group').siblings('.error-msg-cont').html(error);
+					}
+					else {
+						error.insertAfter(element);
+					}
+				},
 			});
 		},
 		
@@ -173,7 +184,8 @@ define([
 				this.addIndexToProductFields(clone);
 				this.$el.find('#product-list tbody').append(clone);
 			}
-				
+			
+			this.toggleDisableLocation(clone);
 			this.addValidationToProduct(clone);
 			return clone;
 		},
@@ -212,9 +224,20 @@ define([
 			var productFieldClassRequired = this.options.productFieldClassRequired;
 			for(var i=0; i < productFieldClassRequired.length; i++) {
 				var rules = {};
+				var transactionType = $('#transactiontype_id option:selected').text().toLowerCase();
 				
-				if(productFieldClassRequired[i] == 'rfv')
-					rules = {require_rfv: true};
+				if(productFieldClassRequired[i] == 'sectionfrom_id') {
+					if(Const.INVENTORY.LOCATIONFROMREQUIRED.indexOf(transactionType) < 0)
+						rules = {required: false};
+					else
+						rules = {required: true};
+				}
+				else if(productFieldClassRequired[i] == 'sectionto_id') {
+					if(Const.INVENTORY.LOCATIONTOREQUIRED.indexOf(transactionType) < 0)
+						rules = {required: false};
+					else
+						rules = {required: true};
+				}
 				else
 					rules = {required: true};
 				
@@ -222,6 +245,12 @@ define([
 					$(this).rules('add', rules);
 				});
 			}
+		},
+		
+		changeValidation: function (element, rules) {
+			element.each(function () {
+				$(this).rules('add', rules);
+			});
 		},
 		
 		generateTransactionType: function () {
@@ -276,6 +305,11 @@ define([
 		events: {
 			'click #add-product': 'addProduct',
 			'click .remove-product': 'removeProduct',
+			'keyup .tons': 'onKeyUpTons',
+			'blur .tons': 'onBlurTon',
+			'keyup .price': 'onKeyUpPrice',
+			'blur .price': 'onBlurMoney',
+			'change #transactiontype_id': 'onChangeTransactionType',
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #delete-trucker': 'showConfirmationWindow',
 			'click #confirm-delete-trucker': 'deleteTrucker'
@@ -292,20 +326,81 @@ define([
 			return (this.$el.find('#product-list tbody .product-item').length)? true : false;
 		},
 		
-		deleteTrucker: function () {
-			var thisObj = this;
-            
-            this.model.destroy({
-                success: function (model, response, options) {
-                    thisObj.displayMessage(response);
-					Backbone.history.history.back();
-                },
-                error: function (model, response, options) {
-                    thisObj.displayMessage(response);
-                },
-                wait: true,
-                headers: thisObj.model.getAuth(),
-            });
+		onKeyUpTons: function (ev) {
+			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 4);
+			
+			var tonsfield = $(ev.target);
+			var tonsfieldVal = this.removeCommaFromNumber(tonsfield.val());
+			var tons = (!isNaN(parseFloat(tonsfieldVal)))? parseFloat(tonsfieldVal) : 0;
+			var priceField = tonsfield.closest('.product-item').find('.price');
+			var priceFieldVal = this.removeCommaFromNumber(priceField.val());
+			var price = (!isNaN(parseFloat(priceFieldVal)))? parseFloat(priceFieldVal) : 0;
+			
+			this.computeTotalPrice(price, tons, tonsfield.closest('.product-item').find('.total-price'));
+		},
+		
+		onKeyUpPrice: function (ev) {
+			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 2);
+			
+			var pricefield = $(ev.target);
+			var pricefieldVal = this.removeCommaFromNumber(pricefield.val());
+			var price = (!isNaN(parseFloat(pricefieldVal)))? parseFloat(pricefieldVal) : 0;
+			var tonsField = pricefield.closest('.product-item').find('.tons');
+			var tonsFieldVal = this.removeCommaFromNumber(tonsField.val());
+			var tons = (!isNaN(parseFloat(tonsFieldVal)))? parseFloat(tonsFieldVal) : 0;
+			
+			this.computeTotalPrice(price, tons, pricefield.closest('.product-item').find('.total-price'));
+		},
+		
+		computeTotalPrice: function (price, ton, totalPriceField) {
+			var totalPrice = 0;
+			totalPrice = ton * price;
+			totalPriceField.val(this.addCommaToNumber(totalPrice.toFixed(2)));
+		},
+		
+		onChangeTransactionType: function (ev) {
+			var transactionType = $(ev.currentTarget).find('option:selected').text().toLowerCase();
+			var fromRules = null;
+			var toRules = null;
+			
+			this.toggleDisableLocation();
+			
+			if(Const.INVENTORY.LOCATIONFROMREQUIRED.indexOf(transactionType) < 0)
+				fromRules = {required: false};
+			else
+				fromRules = {required: true};
+			
+			this.changeValidation($('.sectionfrom_id'), fromRules);
+			
+			if(Const.INVENTORY.LOCATIONTOREQUIRED.indexOf(transactionType) < 0)
+				toRules = {required: false};
+			else
+				toRules = {required: true};
+			
+			this.changeValidation($('.sectionto_id'), toRules);
+		},
+		
+		toggleDisableLocation: function (element) {
+			var transactionType = $('#transactiontype_id option:selected').text().toLowerCase();
+			
+			if(element == null) {
+				if(Const.INVENTORY.LOCATIONFROMREQUIRED.indexOf(transactionType) < 0)
+					$('.sectionfrom_id').attr('disabled', true); 
+				else
+					$('.sectionfrom_id').attr('disabled', false); 
+				
+				if(Const.INVENTORY.LOCATIONTOREQUIRED.indexOf(transactionType) < 0)
+					$('.sectionto_id').attr('disabled', true);
+				else
+					$('.sectionto_id').attr('disabled', false);
+			}
+			else {
+				if(element.find('.sectionfrom_id').length && Const.INVENTORY.LOCATIONFROMREQUIRED.indexOf(transactionType) < 0)
+					element.find('.sectionfrom_id').attr('disabled', true);
+				
+				if(element.find('.sectionto_id').length && Const.INVENTORY.LOCATIONTOREQUIRED.indexOf(transactionType) < 0)
+					element.find('.sectionto_id').attr('disabled', true);
+			}
 		},
 		
 		otherInitializations: function () {},
