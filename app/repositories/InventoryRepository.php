@@ -9,30 +9,34 @@ class InventoryRepository implements InventoryRepositoryInterface {
     
     public function findAll($params)
     {
-        // try
-        // {
-        //     $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
-            
-        //     return StorageLocation::with('section')->paginate($perPage);
-        // }
-        // catch (Exception $e)
-        // {
-        //     return $e->getMessage();
-        // }
+        $inventory = Inventory::with('inventorytransactiontype')
+                                ->with('inventoryproduct.stack.productName')
+                                ->with('inventoryproduct.sectionfrom.storagelocationName')
+                                ->with('inventoryproduct.sectionto.storagelocationName')
+                                ->with('order')
+                                ->with('weightticket')
+                                ->find($id);
     }
     
     public function findById($id)
     {
-        // $storagelocation = StorageLocation::with('section')->find($id);
+
+        $inventory = Inventory::with('inventorytransactiontype')
+                                ->with('inventoryproduct.stack.productName')
+                                ->with('inventoryproduct.sectionfrom.storagelocationName')
+                                ->with('inventoryproduct.sectionto.storagelocationName')
+                                ->with('order')
+                                ->with('weightticket')
+                                ->find($id);
         
-        // if (!$storagelocation) {
-        //     return array(
-        //         'error' => true,
-        //         'message' => 'Storage location not found.'
-        //     );
-        // }
+        if (!$inventory) {
+            return array(
+                'error' => true,
+                'message' => 'Inventory not found.'
+            );
+        }
         
-        // return $storagelocation->toArray();
+        return $inventory   ->toArray();
         
     }
     

@@ -51,6 +51,14 @@ class InventoryProduct extends BaseModel {
     {
         return $this->belongsTo('Stack', 'stack_id', 'id');
     }
+
+    public function sectionfrom(){
+        return $this->hasOne('Section', 'id', 'sectionfrom_id');
+    }
+
+    public function sectionto(){
+        return $this->hasOne('Section', 'id', 'sectionto_id');
+    }
     
     
 }
