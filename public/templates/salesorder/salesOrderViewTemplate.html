@@ -1,25 +1,26 @@
 <div class="content padding-top-0">
   <h2 class="ponumber margin-bottom-0"><%= so.get("order_number") %></h2>
+  
   <div class="row margin-top-0">
     <div class="col-md-6">
-        Sales Date: <code><%= so.get("created_at").split(" ")[0] %></code><br>
-        Delivery Start: <code><%= so.get("transportdatestart").split(" ")[0] %></code>
-        Delivery End: <code><%= so.get("transportdateend").split(" ")[0] %></code><br>
-        Nature of Sale: <code><%= so.get("natureofsale").name %></code><br>
+        Sales Date: <span class="text-danger"><%= formatDateAMPM(so.get("created_at")) %></span><br>
+        Delivery Start: <span class="text-danger"><%= formatDate(so.get("transportdatestart")) %></span>
+        Delivery End: <span class="text-danger"><%= formatDate(so.get("transportdateend")) %></span><br>
+        Nature of Sale: <span class="text-danger"><%= so.get("natureofsale").name %></span><br>
         
         <% if (so.get("contract") && typeof so.get("contract").contract_number != "undefined") { %>
-            <br>Contract: <code><%= so.get("contract").contract_number %></code>
+            <br>Contract: <span class="text-danger"><%= so.get("contract").contract_number %></span>
         <% } %>
 
         Status: <label class="label label-<%= so.get("status").class %>"><%= so.get("status").name %></label>
         <% if(so.get("status").id == 3) { if(so.get("ordercancellingreason").reason.id != reason_others ) { %>
-            <br>Reason: <code><%= so.get("ordercancellingreason").reason.reason %></code>
+            <br>Reason: <span class="text-danger"><%= so.get("ordercancellingreason").reason.reason %></span>
         <% } else { %>
-            <br>Reason: <code><%= so.get("ordercancellingreason").others %></code>
+            <br>Reason: <span class="text-danger"><%= so.get("ordercancellingreason").others %></span>
         <% }} %>
 
-        <% if (typeof so.get("notes") != "undefined") { %>
-            <br>Notes: <code><%= so.get("notes") %></code>
+        <% if (so.get("notes").length > 0) { %>
+            <br>Notes: <%= so.get("notes") %>
         <% } %>
     </div>
     <div class="col-md-6">
@@ -34,6 +35,7 @@
       </address>
     </div>
   </div>
+  
   <div class="row margin-top-10">
     <div class="col-md-12">
       <h3 class="margin-top-0">Products</h3>
@@ -43,32 +45,42 @@
             <tr>
               <th class="width-150">Product</th>
               <th>Description</th>
-              <th class="width-110">Stack No.</th>
+              <th class="width-150">Stack No.</th>
+               <th class="width-110">Unit Price</th>
               <th class="width-110">Est Tons</span></th>
               <th class="width-110">Bales</th>
-              <th class="width-110">Unit Price</th>
               <th class="width-110">Total Price</th>
             </tr>
           </thead>
-		  <tfoot>
-		    <tr>
-			  <td class="text-right" colspan="3">Total</td>
-			  <td id="total-tons" class="text-right">0.0000</td>
-			  <td id="total-bales" class="text-right">0</td>
-			  <td id="total-unitprice" class="text-right">$ 0.00</td>
-			  <td id="total-price" class="text-right">$ 0.00</td>
-			</tr>
-		  </tfoot>
+    		  <tfoot>
+    		    <tr>
+      			  <td class="text-right" colspan="4">Total</td>
+      			  <td class="text-right"><strong id="total-tons">0.0000</strong></td>
+      			  <td class="text-right"><strong id="total-bales">0</strong></td>
+      			  <td class="text-right"><strong id="total-price">$ 0.00</strong></td>
+      			</tr>
+    		  </tfoot>
           <tbody></tbody>
         </table>
       </div>
-      <div class="pull-right margin-top-10">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="pull-right">
         <% if (typeof editable !== "undefined") { %>
-            <a id="edit-so" class="btn btn-primary btn-sm editable-button" href="<%= so_edit_url %>"><i class="fa fa-pencil width-10"></i> Edit SO</a>
-            <a id="close-order" class="btn btn-danger btn-sm editable-button" href="#"><i class="fa fa-times width-10"></i> Close SO</a>
-            <a href="#" class="btn btn-danger btn-sm cancel-so editable-button"><i class="fa fa-ban width-10"></i> Cancel SO</a>
+            <a id="edit-so" class="btn btn-primary btn-trans btn-rad btn-sm editable-button" href="<%= so_edit_url %>">
+              <i class="fa fa-pencil width-10"></i> Edit SO
+            </a>
+            <a id="close-order" class="btn btn-warning btn-trans btn-rad btn-sm editable-button" href="#">
+              <i class="fa fa-times width-10"></i> Close SO
+            </a>
+            <a href="#" class="btn btn-warning btn-trans btn-rad btn-sm cancel-so editable-button">
+              <i class="fa fa-ban width-10"></i> Cancel SO
+            </a>
         <% } %>        
-        <a class="btn btn-link btn-sm" href="<%= so_url %>"><i class="fa fa-angle-double-left"></i> Back</a>
+        <a class="btn btn-trans btn-rad btn-sm" href="<%= so_url %>"><i class="fa fa-reply width-10"></i> Back</a>
       </div>
     </div>
   </div>

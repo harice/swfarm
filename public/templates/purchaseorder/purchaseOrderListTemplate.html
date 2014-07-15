@@ -5,8 +5,8 @@
               <div class="row margin-top-0">
 
                 <div class="col-md-3 padding-top-10 padding-right-0">
-                  <a href="<%= po_add_url %>" class="btn btn-primary btn-sm margin-left-0">+ Add Purchase Order</a>
-                  <a href="<%= bid_add_url %>" class="btn btn-success btn-sm">+ Add Bid</a>
+                  <a href="<%= po_add_url %>" class="btn btn-primary btn-sm btn-trans btn-rad margin-left-0">+ Add PO</a>
+                  <a href="<%= bid_add_url %>" class="btn btn-warning btn-sm btn-trans btn-rad">+ Add Bid</a>
                 </div>
 
                 <div class="col-md-2">
@@ -15,7 +15,7 @@
                         <div class="input-group input-group-sm date datetime margin-bottom-0">
                           <input class="form-control" size="16" type="text" value="" />
                           <div class="input-group-btn">
-                            <button class="btn btn-primary"><span class="glyphicon glyphicon-th"></span></button>
+                            <button class="btn btn-trans"><span class="fa fa-calendar"></span></button>
                           </div>
                         </div>
                         <p class="help-block margin-bottom-0">Purchased Date</p>
@@ -29,7 +29,7 @@
                           <div class="input-group input-group-sm date datetime margin-bottom-0">
                             <input class="form-control" size="16" type="text" value="" />
                             <div class="input-group-btn">
-                              <button class="btn btn-primary"><span class="glyphicon glyphicon-th"></span></button>
+                              <button class="btn btn-trans"><span class="fa fa-calendar"></span></button>
                             </div>
                           </div>
                           <p class="help-block margin-bottom-0">Pick-up Start</p>
@@ -43,7 +43,7 @@
                           <div class="input-group input-group-sm date datetime margin-bottom-0">
                             <input class="form-control" size="16" type="text" value="" />
                             <div class="input-group-btn">
-                              <button class="btn btn-primary"><span class="glyphicon glyphicon-th"></span></button>
+                              <button class="btn btn-trans"><span class="fa fa-calendar"></span></button>
                             </div>
                           </div>
                           <p class="help-block margin-bottom-0">Pick-up End</p>
@@ -58,7 +58,7 @@
                       <input type="text" class="search form-control" id="search-keyword" placeholder="" style="border-radius:3px 0 0 3px;">
 
                       <div class="input-group-btn">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="border-radius:0;">
+                        <button type="button" class="btn btn-trans dropdown-toggle" data-toggle="dropdown" style="border-radius:0;">
                           <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu pull-right filter" role="menu">
@@ -69,7 +69,7 @@
                           <li><input class="statusFilter" type="radio" name="statusFilter" value="" checked> All</li>
                           <%= status_filters %>
                         </ul>
-                        <button type="button" class="btn btn-primary search-local">Search</button>
+                        <button type="button" class="btn btn-trans search-local">Search</button>
                       </div>
                     </div>
                   </form>
