@@ -404,8 +404,13 @@ class InventoryRepository implements InventoryRepositoryInterface {
         return $transactionType->toArray();
     }
 
-    public function getStackList($stacknumber){
-        $stackList = Stack::where('stacknumber', 'like', '%'.$stacknumber.'%')->orderBy('stacknumber', 'ASC')->get();
+    // public function getStackList($stacknumber){
+    //     $stackList = Stack::where('stacknumber', 'like', '%'.$stacknumber.'%')->orderBy('stacknumber', 'ASC')->get();
+    //     return $stackList->toArray();
+    // }
+
+    public function getStackList(){
+        $stackList = Stack::orderBy('stacknumber', 'ASC')->get(array('id', 'stacknumber'));
         return $stackList->toArray();
     }
     
