@@ -9,18 +9,49 @@ class InventoryRepository implements InventoryRepositoryInterface {
     
     public function findAll($params)
     {
+        $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+        $sortby   = isset($params['sortby']) ? $params['sortby'] : 'created_at';
+        $orderby  = isset($params['orderby']) ? $params['orderby'] : 'desc';
+        $date = isset($params['date']) ? $params['date'] : null; //default date is the present date
+        $filter = isset($params['search']) ? $params['search'] : null;
+        // $page = isset($params['page']) ? $params['page'] : '1'; //default to page 1
+        // $offset = $page*$perPage-$perPage;
         $inventory = Inventory::with('inventorytransactiontype')
                                 ->with('inventoryproduct.stack.productName')
                                 ->with('inventoryproduct.sectionfrom.storagelocationName')
                                 ->with('inventoryproduct.sectionto.storagelocationName')
                                 ->with('order')
-                                ->with('weightticket')
-                                ->find($id);
+                                ->with('weightticket');
+
+        if ($filter != null){
+            $inventory = $inventory->where(function($query) use ($filter){
+                         $query->orWhereHas('account', function($query) use ($filter){
+                              $query->where('name', 'like', '%'.$filter.'%');
+
+                          })
+                          ->orWhere(function ($query) use ($filter){
+                              $query->orWhere('order_number','like','%'.$filter.'%');
+                          });
+                      });
+                      // ->whereNull('deleted_at');
+        }
+
+        if($date != null){
+          $inventory = $inventory->where('created_at', 'like', $date.'%'); 
+        }
+
+        $inventory = $inventory->orderBy($sortby, $orderby)
+        $inventory = $inventory->paginate($perPage);
+                                // ->take($perPage)
+                                // ->offset($offset)
+                                // ->orderBy($sortby, $orderby)
+                                // ->get();
+
+        return $inventory->toArray();
     }
     
     public function findById($id)
     {
-
         $inventory = Inventory::with('inventorytransactiontype')
                                 ->with('inventoryproduct.stack.productName')
                                 ->with('inventoryproduct.sectionfrom.storagelocationName')
@@ -44,6 +75,9 @@ class InventoryRepository implements InventoryRepositoryInterface {
     {
         DB::beginTransaction();
         $this->validate($data, 'Inventory');
+        if($data['notes'] == ""){
+            $data['notes'] = null;
+        }
         $inventory = new Inventory;
         $inventory->fill($data);
 
