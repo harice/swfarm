@@ -4,8 +4,9 @@ define([
 	'views/salesorder/WeightInfoAddView',
 	'views/salesorder/WeightInfoEditView',
 	'views/salesorder/WeightInfoView',
+    'views/weightinfo/WeightInfoPrintView',
 	'constant',
-], function(Backbone, WeightInfoListView, WeightInfoAddView, WeightInfoEditView, WeightInfoView, Const){
+], function(Backbone, WeightInfoListView, WeightInfoAddView, WeightInfoEditView, WeightInfoView, WeightInfoPrintView, Const){
 	
 	function SOWeightInfoController () {	
 		
@@ -23,6 +24,11 @@ define([
 						return this.edit(soId, schedId, type);
 					break;
 				
+                case Const.CRUD.PRINT:
+					if(schedId !== null && this.IsInt(schedId))
+                        return this.print(soId, schedId);
+					break;
+                    
 				default:
 					if(soId != null && this.IsInt(soId)) {
 						if(schedId != null && this.IsInt(schedId))
@@ -48,6 +54,10 @@ define([
 		
 		this.list = function (soId) {
 			return new WeightInfoListView({'soId':soId});
+		};
+        
+        this.print = function (soId, schedId) {
+			return new WeightInfoPrintView({'soId':soId, 'schedId':schedId});
 		};
 		
 		this.IsInt = function (i) {
