@@ -28,6 +28,7 @@ class CreateOrderTable extends Migration {
             $table->text('notes')->nullable();
             $table->boolean('isfrombid');
             $table->smallInteger('ordertype');
+            $table->integer('contract_id')->unsigned()->nullable();
             $table->timestamps();
             $table->softDeletes();
             
@@ -37,6 +38,7 @@ class CreateOrderTable extends Migration {
             $table->foreign('orderaddress_id')->references('id')->on('orderaddress');
             $table->foreign('status_id')->references('id')->on('status');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('contract_id')->references('id')->on('contract')->onDelete('cascade');
 		});
 	}
 
