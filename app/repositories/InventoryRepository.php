@@ -24,15 +24,22 @@ class InventoryRepository implements InventoryRepositoryInterface {
                                 ->with('weightticket');
 
         if ($filter != null){
-            $inventory = $inventory->where(function($query) use ($filter){
-                         $query->orWhereHas('account', function($query) use ($filter){
-                              $query->where('name', 'like', '%'.$filter.'%');
+            // $inventory = $inventory->where(function($query) use ($filter){
+            //              $query->orWhereHas('account', function($query) use ($filter){
+            //                   $query->where('name', 'like', '%'.$filter.'%');
 
-                          })
-                          ->orWhere(function ($query) use ($filter){
-                              $query->orWhere('order_number','like','%'.$filter.'%');
-                          });
-                      });
+            //               })
+            //               ->orWhere(function ($query) use ($filter){
+            //                   $query->orWhere('order_number','like','%'.$filter.'%');
+            //               });
+            //           });
+
+            $inventory = $inventory->whereHas('inventoryproduct', function($query) use ($filter)
+                            {
+                                $query->whereHas('stack', function($stack) use ($filter){
+                                    $query->where('stacknumber', 'like', $$filter);    
+                                });
+                            });
                       // ->whereNull('deleted_at');
         }
 
@@ -76,7 +83,7 @@ class InventoryRepository implements InventoryRepositoryInterface {
         DB::beginTransaction();
         $this->validate($data, 'Inventory');
         if($data['notes'] == ""){
-            $data['notes'] = null;
+            $data['notes'] = "";
         }
         $inventory = new Inventory;
         $inventory->fill($data);
