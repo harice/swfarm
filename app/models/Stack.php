@@ -34,9 +34,14 @@ class Stack extends BaseModel {
     
     public function product()
     {
-        return $this->belongsTo('Product');
+        return $this->belongsTo('Product')->withTrashed();
     }
-    
+
+    public function productName()
+    {
+        return $this->belongsTo('Product', 'product_id', 'id')->select(array('id', 'name'))->withTrashed();
+    }
+
     public function stacklocation(){
         return $this->hasMany('StackLocation', 'id', 'stack_id');
     }

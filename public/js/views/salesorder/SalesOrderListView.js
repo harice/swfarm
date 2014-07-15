@@ -48,17 +48,6 @@ define([
 			
 			this.collection = new SalesOrderCollection();
 			this.collection.on('sync', function() {
-				_.each(this.models, function (model) {
-					model.set('created_at', thisObj.convertDateFormat(model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
-					
-					if(model.get('transportdatestart'))
-						model.set('transportdatestart', thisObj.convertDateFormat(model.get('transportdatestart').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
-					if(model.get('transportdateend'))
-						model.set('transportdateend', thisObj.convertDateFormat(model.get('transportdateend').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
-					if(model.get('totalPrice'))
-						model.set('totalPrice', thisObj.addCommaToNumber(parseFloat(model.get('totalPrice')).toFixed(2)));
-				});
-				
 				if(thisObj.subContainerExist())
 					thisObj.displayList();
 			});
@@ -152,6 +141,8 @@ define([
 				so_status_open: Const.STATUS.OPEN,
 				_: _ 
 			};
+			
+			_.extend(data,Backbone.View.prototype.helpers);
 			
 			var innerListTemplate = _.template(salesOrderInnerListTemplate, data);
 			this.subContainer.find("#so-list tbody").html(innerListTemplate);
@@ -376,6 +367,9 @@ define([
 				weight_info_url: '/#/'+Const.URL.SOWEIGHTINFO+'/'+soId,
 				_: _ 
 			};
+			
+			_.extend(data,Backbone.View.prototype.helpers);
+
 			return _.template(orderWeightDetailsByStackItemTemplate, data);
 		},
 		

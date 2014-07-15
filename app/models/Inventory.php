@@ -32,15 +32,15 @@ class Inventory extends Eloquent {
     }
 
     public function inventoryproduct(){
-        return $this->hasMany('InvetoryProduct', 'inventory_id', 'id');
+        return $this->hasMany('InventoryProduct', 'inventory_id', 'id');
     }
 
     public function order(){
-        return $this->hasMany('Order', 'id', 'order_id');
+        return $this->hasOne('Order', 'id', 'order_id');
     }
 
     public function weightticket(){
-        return $this->hasMany('WeightTicket', 'id', 'weightticket_id');
+        return $this->hasOne('WeightTicket', 'id', 'weightticket_id');
     }
 
     // public function delete(){

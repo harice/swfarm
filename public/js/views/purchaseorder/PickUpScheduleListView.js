@@ -92,6 +92,8 @@ define([
 				po_schedule_edit_url: '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId+'/'+Const.CRUD.EDIT,
 				po_schedule_url: '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId,
 				po_weight_info_url: '#/'+Const.URL.POWEIGHTINFO+'/'+this.poId,
+				account_url: '#/'+Const.URL.ACCOUNT+'/',
+				contact_url: '#/'+Const.URL.CONTACT+'/',
 				schedules: this.collection.models,
 				_: _ 
 			};

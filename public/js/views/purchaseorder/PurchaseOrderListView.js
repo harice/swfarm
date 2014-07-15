@@ -46,17 +46,6 @@ define([
 			
 			this.collection = new PurchaseOrderCollection();
 			this.collection.on('sync', function() {
-				_.each(this.models, function (model) {
-					model.set('created_at', thisObj.convertDateFormat(model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
-					
-					if(model.get('transportdatestart'))
-						model.set('transportdatestart', thisObj.convertDateFormat(model.get('transportdatestart').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
-					if(model.get('transportdateend'))
-						model.set('transportdateend', thisObj.convertDateFormat(model.get('transportdateend').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
-					if(model.get('totalPrice'))
-						model.set('totalPrice', thisObj.addCommaToNumber(parseFloat(model.get('totalPrice')).toFixed(2)));
-				});
-				
 				if(thisObj.subContainerExist())
 					thisObj.displayList();
 			});
@@ -100,7 +89,6 @@ define([
 		},
 		
 		render: function(){
-			//this.destinationCollection.getModels();
 			this.cancellingReasonCollection.getModels();
 			Backbone.View.prototype.refreshTitle('Purchase Order','list');
 		},
@@ -145,6 +133,8 @@ define([
 				po_status_testing: Const.STATUS.TESTING,
 				_: _ 
 			};
+
+			_.extend(data,Backbone.View.prototype.helpers);
 			
 			var innerListTemplate = _.template(purchaseOrderInnerListTemplate, data);
 			this.subContainer.find("#po-list tbody").html(innerListTemplate);
@@ -336,17 +326,6 @@ define([
 				OrderWeightDetailsByStackCollection,
 				function (collection, id) {
 					var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
-					_.each(collection.models, function (model) {
-						var schedules = model.get('schedule');
-						if(schedules.length > 0) {
-							for(var i=0; i<schedules.length; i++) {
-								var s = schedules[i].transportscheduledate.split(' ');
-								schedules[i].transportscheduledate = thisObj.convertDateFormat(s[0], 'yyyy-mm-dd', thisObj.dateFormat, '-')+' '+s[1];
-							}
-							model.set('schedule', schedules);
-						}
-					});
-					
 					$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(collection.models, id));
 				}
 			);
@@ -361,6 +340,9 @@ define([
 				weight_info_url: '/#/'+Const.URL.POWEIGHTINFO+'/'+poId,
 				_: _ 
 			};
+
+			_.extend(data,Backbone.View.prototype.helpers);
+
 			return _.template(orderWeightDetailsByStackItemTemplate, data);
 		},
 		
