@@ -434,19 +434,21 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
      * @param array $recipients
      * @return type
      */
-    public function mailWeightTicket($id, $recipients)
+    public function mailWeightTicket($id, $data)
     {
-        $recipients = array(
-            array(
-                "name" => "John Doe",
-                "email" => "swfarm@mailinator.com"
-            )
-        );
-        
         try
         {
             $transportSchedule_id = $id;
             $transportSchedule = TransportSchedule::find($transportSchedule_id);
+            
+            $contact_trucker = Contact::find($transportSchedule->trucker_id);
+            
+            if ($transportSchedule->originloader_id == $transportSchedule->destinationloader_id) {
+                $contact_loader = Contact::find($transportSchedule->destinationloader_id);
+            } else {
+                $contact_loader_origin = Contact::find($transportSchedule->originloader_id);
+                $contact_loader_destination = Contact::find($transportSchedule->destinationloader_id);
+            }
             
             // Get order
             $order = Order::find($transportSchedule["order_id"]);
@@ -463,6 +465,24 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                 ->with('weightticketscale_pickup.scale')
                 ->where('transportSchedule_id', '=', $transportSchedule_id)
                 ->first();
+            
+            // Get Contacts
+            $recipients = array(
+                array(
+                    "name" => "John Doe",
+                    "email" => "swfarm@mailinator.com"
+                )
+            );
+
+            // Add additional recipients
+            $emails = explode(',', preg_replace( '/\s+/', '', $data['recipients']));
+            foreach ($emails as $email) {
+                $recipients[] = array(
+                    "email" => $email
+                );
+            }
+            
+            Log::debug($recipients);
             
             if ($weightticket) {
                 foreach ($recipients as $recipient) {

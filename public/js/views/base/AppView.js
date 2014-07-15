@@ -1,5 +1,6 @@
 define([
 	'backbone',
+    'text!templates/layout/modalFormTemplate.html',
 	'text!templates/layout/confirmModalTemplate.html',
 	'text!templates/layout/confirmNavigateAwayFromFormModalTemplate.html',
 	'text!templates/layout/confirmModalWithFormTemplate.html',
@@ -7,6 +8,7 @@ define([
 	'text!templates/layout/tabsTemplate.html',
 	'constant',
 ], function(Backbone,
+            modalFormTemplate,
 			confirmModalTemplate,
 			confirmNavigateAwayFromFormModalTemplate,
 			confirmModalWithFormTemplate,
@@ -120,6 +122,37 @@ define([
 		
 		showConfirmationWindow: function (id) {
 			
+			if(id == null)
+				id = 'modal-confirm';
+				
+			$('#'+id).modal('show');
+			
+			return false;
+		},
+                
+        initModalForm: function (content, buttonId, buttonLabel, title, dismissModal, modalId) {
+			if($('.modal-alert-cont').find('#modal-confirm').length)
+				$('.modal-alert-cont').find('#modal-confirm').remove();
+			
+			if(modalId == null || typeof modalId == 'undefined')
+			modalId = 'modal-confirm';
+			
+			var modalTemplateVariables = {
+				confirm_title: title,
+				confirm_content: content,
+				confirm_button_id: buttonId,
+				confirm_button_label: buttonLabel,
+				confirm_modal_id: modalId,
+			};
+			
+			if(dismissModal == null || typeof dismissModal == 'undefined' || dismissModal == true)
+				modalTemplateVariables['confirm_dismiss_modal'] = 1;
+			
+			var modalTemplate = _.template(modalFormTemplate, modalTemplateVariables);
+			this.$el.find('.modal-alert-cont').append(modalTemplate);
+		},
+                
+        showModalForm: function (id) {
 			if(id == null)
 				id = 'modal-confirm';
 				
