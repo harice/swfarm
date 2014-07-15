@@ -129,6 +129,17 @@ class InventoryRepository implements InventoryRepositoryInterface {
                     $product['sectionto_id'] = null;
                 }
             }
+
+            
+            if($type == 4){
+                $product['sectionto_id'] == null;
+            }
+
+            if($type == 5){ //if issue type, no need for section from
+                $product['sectionfrom_id'] == null;
+            }
+
+
             if($product['sectionfrom_id'] == $product['sectionto_id']) {
                 return array(
                     'error' => true,
