@@ -523,7 +523,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             
             return Response::json(array(
               'error' => false,
-              'message' => 'Email has been sent.'), 200);
+              'message' => 'Weight Ticket was sent.'), 200);
         }
         catch (Exception $e)
         {
@@ -761,7 +761,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             
             $response = Response::json(array(
               'error' => false,
-              'message' => 'Email has been sent.'), 200);
+              'message' => 'Loading Ticket was sent.'), 200);
             
             return $response;
         }
