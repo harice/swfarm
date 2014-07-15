@@ -2,7 +2,7 @@
     <div class="row margin-top-0">
         <div class="col-md-12">
             <% if (typeof editable !== "undefined") { %>
-				<a href="<%= po_schedule_add_url %>" class="btn btn-primary btn-sm margin-left-0">+ Add Pick Up Schedule</a>
+				<a href="<%= po_schedule_add_url %>" class="btn btn-primary btn-trans btn-rad btn-sm margin-left-0">+ Add Pickup Schedule</a>
 			<% } %>
         </div>
     </div>
@@ -11,11 +11,13 @@
         <table id="po-schedule-list" class="table-condensed table-bordered table-hover">
             <thead>
                 <tr>
-                    <th>Schedule</th>
-                    <th>Trucker</th>
-                    <th>Trailer</th>
-                    <th>Loader (Origin)</th>
-                    <th>Loader (Destination)</th>
+                    <th class="width-150">Schedule</th>
+                    <th class="width-90">Status</th>
+                    <th>Expected [Tons]</th>
+                    <th>Trucker Contact</th>
+                    <th>Trailer Number</th>
+                    <th>Loader [Origin]</th>
+                    <th>Loader [Destination]</th>
                     <th class="width-110">Action</th>
                 </tr>
             </thead>

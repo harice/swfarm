@@ -35,12 +35,18 @@
 					<div class="order-stack-details">
 						<div class="col-md-12 no-padding">
 							<div class="pull-right">
-								<a href="<%= so_url %>/<%= so.get("id") %>" class="btn btn-link btn-sm"><i class="fa fa-eye width-10"></i> View SO</a>
+								<a href="<%= so_url %>/<%= so.get("id") %>" class="btn btn-trans btn-rad btn-primary btn-sm">
+									<i class="fa fa-eye width-10"></i> View SO
+								</a>
 								<% if (so.get("status").name.toLowerCase() == so_status_open) { %>
-									<a href="<%= so_edit_url %>/<%= so.get("id") %>" class="btn btn-link btn-sm editable-button"><i class="fa fa-pencil width-10"></i> Edit SO</a>
-									<a href="#" class="btn btn-link btn-sm close-so editable-button editable-button color-danger" data-id="<%= so.get("id") %>"><i class="fa fa-times width-10"></i> Close SO</a>
-									<a href="#" data-id="<%= so.get("id") %>" class="btn btn-link btn-sm cancel-so editable-button color-danger"><i class="fa fa-ban width-10"></i> Cancel SO</a>
-									<a href="<%= schedule_url %>/<%= so.get("id") %>/<%= add %>" class="btn btn-link btn-sm editable-button"><i class="fa fa-clock-o width-10"></i> Add Schedule</a>
+									<a href="<%= so_edit_url %>/<%= so.get("id") %>" class="btn btn-primary btn-trans btn-rad btn-sm editable-button">
+										<i class="fa fa-pencil width-10"></i> Edit SO
+									</a>
+									<a href="#" class="btn btn-warning btn-trans btn-rad btn-sm close-so editable-button editable-button" data-id="<%= so.get("id") %>"><i class="fa fa-times width-10"></i> Close SO</a>
+									<a href="#" data-id="<%= so.get("id") %>" class="btn btn-warning btn-trans btn-rad btn-sm cancel-so editable-button">
+										<i class="fa fa-ban width-10"></i> Cancel SO
+									</a>
+									<a href="<%= schedule_url %>/<%= so.get("id") %>/<%= add %>" class="btn btn-trans btn-rad btn-primary btn-sm editable-button"><i class="fa fa-clock-o width-10"></i> Add Schedule</a>
 								<% } %>
 							</div>
 						</div>
