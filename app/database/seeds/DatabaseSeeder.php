@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder {
         $this->call('AddressTypeTableSeeder');
         $this->call('ReasonsTableSeeder');
         $this->call('AddressStatesTableSeeder');
+        $this->call('InventoryTransactionTypeTableSeeder');
 
         // Sales Order
         $this->call('LocationTableSeeder');

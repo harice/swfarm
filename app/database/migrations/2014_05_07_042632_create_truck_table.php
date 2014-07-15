@@ -17,8 +17,8 @@ class CreateTruckTable extends Migration {
 			$table->engine = 'InnoDB';
             $table->increments('id');
 			$table->integer('account_id')->unsigned();
-            $table->string('name', 20);
-            $table->decimal('rate', 8, 2);
+            $table->string('trucknumber', 20);
+            $table->decimal('fee', 10, 2);
 			$table->timestamps();
             
             $table->foreign('account_id')->references('id')->on('account');
