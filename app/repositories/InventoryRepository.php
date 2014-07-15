@@ -14,30 +14,20 @@ class InventoryRepository implements InventoryRepositoryInterface {
         $orderby  = isset($params['orderby']) ? $params['orderby'] : 'desc';
         $date = isset($params['date']) ? $params['date'] : null; //default date is the present date
         $filter = isset($params['search']) ? $params['search'] : null;
+        $type = isset($params['type']) ? $params['type'] : null;
         // $page = isset($params['page']) ? $params['page'] : '1'; //default to page 1
         // $offset = $page*$perPage-$perPage;
-        $inventory = Inventory::with('inventorytransactiontype')
-                                ->with('inventoryproduct.stack.productName')
-                                ->with('inventoryproduct.sectionfrom.storagelocationName')
-                                ->with('inventoryproduct.sectionto.storagelocationName')
-                                ->with('order')
-                                ->with('weightticket');
+        $inventory = Inventory::with('inventorytransactiontype');
+                                // ->with('inventoryproduct.stack.productName')
+                                // ->with('inventoryproduct.sectionfrom.storagelocationName')
+                                // ->with('inventoryproduct.sectionto.storagelocationName')
+                                // ->with('order')
+                                // ->with('weightticket');
 
         if ($filter != null){
-            // $inventory = $inventory->where(function($query) use ($filter){
-            //              $query->orWhereHas('account', function($query) use ($filter){
-            //                   $query->where('name', 'like', '%'.$filter.'%');
-
-            //               })
-            //               ->orWhere(function ($query) use ($filter){
-            //                   $query->orWhere('order_number','like','%'.$filter.'%');
-            //               });
-            //           });
-
-            $inventory = $inventory->whereHas('inventoryproduct', function($query) use ($filter)
-                            {
-                                $query->whereHas('stack', function($stack) use ($filter){
-                                    $query->where('stacknumber', 'like', $$filter);    
+            $inventory = $inventory->whereHas('inventoryproduct', function($inventoryproduct) use ($filter){
+                                $inventoryproduct->whereHas('stack', function($stack) use ($filter){
+                                    $stack->where('stacknumber', 'like', $filter.'%');    
                                 });
                             });
                       // ->whereNull('deleted_at');
@@ -45,6 +35,10 @@ class InventoryRepository implements InventoryRepositoryInterface {
 
         if($date != null){
           $inventory = $inventory->where('created_at', 'like', $date.'%'); 
+        }
+
+        if($type != null){ //inventory transaction type
+          $inventory = $inventory->where('transactiontype_id', '=', $type); 
         }
 
         $inventory = $inventory->orderBy($sortby, $orderby);
@@ -130,11 +124,15 @@ class InventoryRepository implements InventoryRepositoryInterface {
                 if($product['sectionfrom_id'] == ''){
                     $product['sectionfrom_id'] = null;
                 }
+            } else{
+                $product['sectionfrom_id'] = null;
             }
             if(isset($product['sectionto_id'])){
                 if($product['sectionto_id'] == ''){
                     $product['sectionto_id'] = null;
                 }
+            } else {
+                $product['sectionto_id'] = null;
             }
 
 
