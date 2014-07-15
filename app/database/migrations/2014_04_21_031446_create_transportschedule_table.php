@@ -29,6 +29,7 @@ class CreateTransportscheduleTable extends Migration {
 			$table->decimal('truckingrate', 8, 2)->nullable();
 			$table->decimal('trailerrate', 8, 2)->nullable();
 			$table->tinyInteger('type'); //1 - for pickup, 2 - for delivery
+            $table->integer('status_id')->unsigned();
 			$table->timestamps();
 
 			$table->foreign('order_id')->references('id')->on('order');
@@ -36,6 +37,7 @@ class CreateTransportscheduleTable extends Migration {
 			$table->foreign('trailer_id')->references('id')->on('trailer');
 			$table->foreign('originloader_id')->references('id')->on('contact');
 			$table->foreign('destinationloader_id')->references('id')->on('contact');
+            $table->foreign('status_id')->references('id')->on('status');
 		});
 	}
 
