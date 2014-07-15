@@ -4,18 +4,18 @@ namespace APIv1;
 
 use BaseController;
 use Illuminate\Support\Facades\Response;
-use StorageLocationRepositoryInterface;
+use InventoryRepositoryInterface;
 use Input;
 
 /**
- * Description of StorageController
+ * Description of InventoryController
  *
  * @author Avs
  */
 
-class StorageLocationController extends BaseController {
+class InventoryController extends BaseController {
     
-    public function __construct(StorageLocationRepositoryInterface $repo)
+    public function __construct(InventoryRepositoryInterface $repo)
     {
         $this->repo = $repo;
     }
@@ -78,8 +78,13 @@ class StorageLocationController extends BaseController {
         return Response::json($response);
 	}
 
-	public function locationList(){
-		$response = $this->repo->getAllStorageLocation();
+	public function transactionType(){
+		$response = $this->repo->getInventoryTransactionType();
+        return Response::json($response);
+	}
+
+	public function stackList(){
+		$response = $this->repo->getStackList(Input::get('stacknumber'));
         return Response::json($response);
 	}
 

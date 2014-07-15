@@ -316,7 +316,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
     } else {
           return Response::json(array(
               'error' => false,
-              'message' => 'Schedule cannot be close because its weight ticket is not in close status.'), 500);
+              'message' => 'Schedule cannot be closed because weight ticket is not yet created.'), 500);
     }       
   }
 
