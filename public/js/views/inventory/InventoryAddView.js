@@ -9,6 +9,7 @@ define([
 	'collections/product/ProductCollection',
 	'collections/stack/LocationCollection',
 	'collections/inventory/LocationTransactionTypeCollection',
+	'collections/inventory/StackNumberCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/inventory/inventoryAddTemplate.html',
 	'text!templates/inventory/inventoryProductItemTemplate.html',
@@ -24,6 +25,7 @@ define([
 			ProductCollection,
 			LocationCollection,
 			LocationTransactionTypeCollection,
+			StackNumberCollection,
 			contentTemplate,
 			inventoryAddTemplate,
 			inventoryProductItemTemplate,
@@ -41,6 +43,7 @@ define([
 			this.h1Title = 'Inventory';
 			this.h1Small = 'add';
 			
+			this.stackNumberAutoCompletePool = [];
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
@@ -88,10 +91,23 @@ define([
 			this.locationTransactionTypeCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
+			
+			this.stackNumberCollection = new StackNumberCollection();
+			this.stackNumberCollection.on('sync', function() {
+				_.each(this.models, function (stackNumberModel) {
+					thisObj.stackNumberAutoCompletePool.push(stackNumberModel.get('stacknumber'));
+				});
+				
+				thisObj.locationTransactionTypeCollection.getModels();
+				this.off('sync');
+			});
+			this.stackNumberCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 		},
 		
 		render: function(){
-			this.locationTransactionTypeCollection.getModels();
+			this.stackNumberCollection.getModels();
 			Backbone.View.prototype.refreshTitle(this.h1Title,this.h1Small);
 		},
 		
@@ -176,11 +192,13 @@ define([
 				this.$el.find('#product-list tbody').append(productTemplate);
 				var productItem = this.$el.find('#product-list tbody').find('.product-item:first-child');
 				this.options.productFieldClone = productItem.clone();
+				this.initStackNumberAutocomplete(productItem);
 				this.addIndexToProductFields(productItem);
 				clone = productItem;
 			}
 			else {
 				var clone = this.options.productFieldClone.clone();
+				this.initStackNumberAutocomplete(clone);
 				this.addIndexToProductFields(clone);
 				this.$el.find('#product-list tbody').append(clone);
 			}
@@ -245,6 +263,26 @@ define([
 					$(this).rules('add', rules);
 				});
 			}
+		},
+		
+		initStackNumberAutocomplete: function (productItem) {
+			var thisObj = this;
+			
+			var stackNumbers = this.stackNumberAutoCompletePool;
+			
+			productItem.find('.stacknumber').autocomplete({
+				source:stackNumbers,
+				messages: {
+					noResults: '',
+					results: function() {},
+				}
+				/*select: function (ev, ui) {
+					var productField = $(ev.target);
+					productField.siblings('.product_id').val(ui.item.id);
+					productField.val(ui.item.label);
+					return false;
+				},*/
+			});
 		},
 		
 		changeValidation: function (element, rules) {
