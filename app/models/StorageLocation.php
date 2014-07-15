@@ -31,7 +31,7 @@ class StorageLocation extends Eloquent {
     }
 
     public function section(){
-        return $this->hasMany('section', 'storagelocation_id', 'id');
+        return $this->hasMany('Section', 'storagelocation_id', 'id');
     }
 
     public function delete(){

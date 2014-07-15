@@ -21,10 +21,12 @@ class CreateContractTable extends Migration {
             $table->timestamp('contract_date_start');
             $table->timestamp('contract_date_end');
             $table->integer('user_id')->unsigned();
+            $table->integer('status_id')->unsigned();
             $table->timestamps();
             
             $table->foreign('account_id')->references('id')->on('account')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('status_id')->references('id')->on('status')->onDelete('cascade');
 		});
 	}
 

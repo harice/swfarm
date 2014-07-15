@@ -24,10 +24,13 @@ class CreateProductOrderTable extends Migration {
 			$table->integer('bales');
 			$table->decimal('unitprice', 8, 2)->nullable();
 			$table->boolean('ishold');
+            $table->string('rfv', 3)->after('bales');
+            $table->integer('stack_id')->unsigned()->nullable();
 			$table->timestamps();
 
 			$table->foreign('product_id')->references('id')->on('products');
             $table->foreign('order_id')->references('id')->on('order');
+            $table->foreign('stack_id')->references('id')->on('stack');
 		});
 	}
 

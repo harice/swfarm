@@ -697,6 +697,8 @@ class OrderRepository implements OrderRepositoryInterface {
 
     public function getOrderWeightDetailsByStack($orderId){
         $order = Order::with('productorder.product')
+                        ->with('productorder.transportscheduleproduct.transportschedule.status')
+                        ->with('productorder.transportscheduleproduct.transportschedule.weightticket.status')
                         ->with('productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_pickup')
                         ->with('productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_dropoff')
                         ->with('productorder.transportscheduleproduct.weightticketproducts.weightticketscale_type')
@@ -723,16 +725,20 @@ class OrderRepository implements OrderRepositoryInterface {
                 $weightTicket = $transportscheduleproduct['transportschedule']['weightticket'];
                 $stackList[$index]['schedule'][$i]['transportschedule_id'] = $transportscheduleproduct['transportschedule_id'];
                 $stackList[$index]['schedule'][$i]['transportscheduledate'] = $transportscheduleproduct['transportschedule']['date'];
+                $stackList[$index]['schedule'][$i]['transportscheduledate_status'] = $transportscheduleproduct['transportschedule']['status']->toArray();
                 $stackList[$index]['schedule'][$i]['expected'] = $transportscheduleproduct['quantity'];
                 $stackList[$index]['schedule'][$i]['weightTicketNumber'] = $weightTicket['weightTicketNumber'];
+                if($weightTicket['weightTicketNumber']) {
+                    $stackList[$index]['schedule'][$i]['weightTicketNumber_status'] = $weightTicket['status']->toArray();
+                }
 
                 if($weightTicket['pickup_id'] != null && $weightTicket['dropoff_id'] != null){ //with both pickup and dropoff weight ticket
                     $weightTicketPickup = $weightTicket['weightticketscale_pickup'];
                     $weightTicketDropoff = $weightTicket['weightticketscale_dropoff'];
                     //compute net weight
                     if($weightTicketPickup['gross'] != null && $weightTicketPickup['tare'] != null){
-                        $pickupNetWeight = number_format($weightTicketPickup['gross'] - $weightTicketPickup['tare'], 4);
-                        $dropoffNetWeight = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 4);
+                        $pickupNetWeight = number_format($weightTicketPickup['gross'] - $weightTicketPickup['tare'], 4, '.', '');
+                        $dropoffNetWeight = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 4, '.', '');
                     } else {
                         $pickupNetWeight = 0;
                         $dropoffNetWeight = 0;
@@ -753,10 +759,10 @@ class OrderRepository implements OrderRepositoryInterface {
                         
                     } else {
                         if($pickupNetWeight <= $dropoffNetWeight){
-                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($pickupNetWeight, 4);
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($pickupNetWeight, 4, '.', '');
                             $stackList[$index]['schedule'][$i]['weighttickettype'] = 1;
                         } else {
-                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($dropoffNetWeight, 4);
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($dropoffNetWeight, 4, '.', '');
                             $stackList[$index]['schedule'][$i]['weighttickettype'] = 2;
                         }
                     }
@@ -767,9 +773,9 @@ class OrderRepository implements OrderRepositoryInterface {
                         $stackList[$index]['schedule'][$i]['delivered'] = $this->getWeightTicketProductTobeUsed(1, $transportscheduleproduct['weightticketproducts']);
                     } else {
                         if($weightTicketPickup['gross'] != null && $weightTicketPickup['tare'] != null){
-                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($weightTicketPickup['gross'] - $weightTicketPickup['tare'], 4);
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($weightTicketPickup['gross'] - $weightTicketPickup['tare'], 4, '.', '');
                         } else {
-                            $stackList[$index]['schedule'][$i]['delivered'] = number_format(0, 4);
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format(0, 4, '.', '');
                         }
                     }
                     $stackList[$index]['schedule'][$i]['weighttickettype'] = 1;
@@ -780,9 +786,9 @@ class OrderRepository implements OrderRepositoryInterface {
                         $stackList[$index]['schedule'][$i]['delivered'] = $this->getWeightTicketProductTobeUsed(2, $transportscheduleproduct['weightticketproducts']);
                     } else {
                         if($weightTicketDropoff['gross'] != null && $weightTicketDropoff['tare'] != null){
-                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 4);
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 4, '.', '');
                         } else {
-                            $stackList[$index]['schedule'][$i]['delivered'] = number_format(0, 4);
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format(0, 4, '.', '');
                         }
                     }
                     $stackList[$index]['schedule'][$i]['weighttickettype'] = 2;
@@ -792,12 +798,16 @@ class OrderRepository implements OrderRepositoryInterface {
                 $i++;
 
             }
-            $stackList[$index]['totalDeliveries'] = number_format($stackList[$index]['totalDeliveries'], 4);
+
+           
+            usort($stackList[$index]['schedule'],function($a,$b){ return strtotime($b['transportscheduledate']) - strtotime($a['transportscheduledate']); });
+
+            $stackList[$index]['totalDeliveries'] = number_format($stackList[$index]['totalDeliveries'], 4, '.', '');
             $index++;
         }
 
         return $stackList;
-    } 
+    }
 
     private function getWeightTicketProductTobeUsed($type, $weightticketproducts){
         $netWeight = null;

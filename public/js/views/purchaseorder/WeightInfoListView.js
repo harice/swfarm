@@ -81,6 +81,7 @@ define([
 		displayList: function () {
 			var data = {
 				weightInfo_url: '/#/'+Const.URL.POWEIGHTINFO+'/'+this.poId,
+				po_schedule_url: '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId,
 				weightInfo: this.collection.models,
 				_: _ 
 			};
@@ -88,6 +89,8 @@ define([
 			if(this.model.get('status').name.toLowerCase() == Const.STATUS.OPEN)
 				data['editable'] = true;
 			
+			_.extend(data,Backbone.View.prototype.helpers);
+
 			var innerListTemplate = _.template(weightInfoInnerListTemplate, data);
 			this.subContainer.find("#po-weight-info-list tbody").html(innerListTemplate);
 			if(this.subContainer.find("#po-weight-info-list tbody").find('tr').length == 0)

@@ -431,22 +431,24 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
      * Mail Weight Ticket
      * 
      * @param type $id TransportSchedule id
-     * @param array $recipients
+     * @param array $data
      * @return type
      */
-    public function mailWeightTicket($id, $recipients)
+    public function mailWeightTicket($id, $data)
     {
-        $recipients = array(
-            array(
-                "name" => "John Doe",
-                "email" => "swfarm@mailinator.com"
-            )
-        );
-        
         try
         {
             $transportSchedule_id = $id;
             $transportSchedule = TransportSchedule::find($transportSchedule_id);
+            
+            $contact_trucker = Contact::find($transportSchedule->trucker_id);
+            
+            if ($transportSchedule->originloader_id == $transportSchedule->destinationloader_id) {
+                $contact_loader = Contact::find($transportSchedule->destinationloader_id);
+            } else {
+                $contact_loader_origin = Contact::find($transportSchedule->originloader_id);
+                $contact_loader_destination = Contact::find($transportSchedule->destinationloader_id);
+            }
             
             // Get order
             $order = Order::find($transportSchedule["order_id"]);
@@ -463,6 +465,22 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                 ->with('weightticketscale_pickup.scale')
                 ->where('transportSchedule_id', '=', $transportSchedule_id)
                 ->first();
+            
+            // Get Contacts
+//            $recipients = array(
+//                array(
+//                    "name" => "John Doe",
+//                    "email" => "swfarm@mailinator.com"
+//                )
+//            );
+
+            // Add additional recipients
+            $emails = explode(',', preg_replace( '/\s+/', '', $data['recipients']));
+            foreach ($emails as $email) {
+                $recipients[] = array(
+                    "email" => $email
+                );
+            }
             
             if ($weightticket) {
                 foreach ($recipients as $recipient) {
@@ -486,17 +504,15 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                         'sender_email' => ''
                     );
 
-                    Mail::send('emails.weightticket', $data, function($message) use ($header)
+                    Mail::send(array('html' => 'emails.weightticket'), $data, function($message) use ($header)
                     {
+                        $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator');
                         if (isset($header['recipient_name'])) {
-                            $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator')
-                                    ->to($header['recipient_email'], $header['recipient_name'])
-                                    ->subject($header['subject']);
+                            $message->to($header['recipient_email'], $header['recipient_name']);
                         } else {
-                            $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator')
-                                    ->to($header['recipient_email'])
-                                    ->subject($header['subject']);
+                            $message->to($header['recipient_email']);
                         }
+                        $message->subject($header['subject']);
                     });
                 }
             } else {
@@ -507,7 +523,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             
             return Response::json(array(
               'error' => false,
-              'message' => 'Email has been sent.'), 200);
+              'message' => 'Weight Ticket was sent.'), 200);
         }
         catch (Exception $e)
         {
@@ -602,6 +618,152 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
               'error' => false,
               'message' => 'Weighticket successfully close.'), 200);
             // return $weightticket;
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
+    }
+    
+    /**
+     * Mail loading ticket.
+     * 
+     * @param type $id
+     * @param type $data
+     * @return type
+     */
+    public function mailLoadingTicket($id, $data)
+    {
+        try
+        {
+            // Get Transport Schedule
+            $transportSchedule = TransportSchedule::find($id);
+            if (!$transportSchedule) {
+                throw new NotFoundException('Transport Schedule not found.', 404);
+            }
+            
+            // Get Trucker Account, Truck #, and Truck Driver
+            $driver = Contact::with('account')
+                ->where('id', '=', $transportSchedule->trucker_id)
+                ->first();
+            if (!$driver) {
+                throw new NotFoundException('Driver not found.', 404);
+            }
+            $trucker = Account::find($driver['account']);
+            
+            // Get Loaders
+            if ($transportSchedule->originloader_id) {
+                $contact_loader_origin = Contact::find($transportSchedule->originloader_id);
+            }
+            if ($transportSchedule->destinationloader_id) {
+                $contact_loader_destination = Contact::find($transportSchedule->destinationloader_id);
+            }
+            
+            // Get Order
+            $order = Order::find($transportSchedule["order_id"]);
+            if (!$order) {
+                throw new NotFoundException('Order not found.', 404);
+            }
+            
+            // Get Customer
+            $account = Account::with('address')
+                ->where('id', '=', $order['account_id'])
+                ->first();
+            if (!$account) {
+                throw new NotFoundException('Account not found.', 404);
+            }
+            
+            // Get Weight Ticket
+            $weightticket = WeightTicket::
+                with('weightticketscale_dropoff')
+                ->with('weightticketscale_pickup')
+                ->where('transportSchedule_id', '=', $id)
+                ->first();
+            if (!$weightticket) {
+                throw new NotFoundException('Weight Ticket not found.', 404);
+            }
+            
+            // Get Contacts
+//            $recipients = array(
+//                array(
+//                    "name" => "John Doe",
+//                    "email" => "swfarm@mailinator.com"
+//                )
+//            );
+
+            // Add additional recipients
+            $emails = explode(',', preg_replace( '/\s+/', '', $data['recipients']));
+            foreach ($emails as $email) {
+                $recipients[] = array(
+                    "email" => $email
+                );
+            }
+            
+            if ($weightticket) {
+                foreach ($recipients as $recipient) {
+                    if (isset($recipient['name'])) {
+                        $header['recipient_name'] = $data['name'] = $recipient['name'];
+                    }
+
+                    $data = array(
+                        'body' => 'Please see details of the Loading Ticket below.',
+                        'weightticket' => $weightticket,
+                        'order_number' => $order['order_number'],
+                        'account_name' => $account['name'],
+                        'address' => $account['address'],
+                        'account_phone' => $account['phone'],
+                        'loader_origin' => $contact_loader_origin['id'] ? ($contact_loader_origin['firstname'] .' '  .$contact_loader_origin['lastname']) : '',
+                        'loader_origin_fee' => $transportSchedule->originloaderfee,
+                        'loader_destination' => $contact_loader_destination['id'] ? ($contact_loader_destination['firstname'] .' '  .$contact_loader_destination['lastname']) : '',
+                        'loader_destination_fee' => $transportSchedule->destinationloaderfee,
+                        'driver' => $driver['firstname'] . ' ' .$driver['lastname'],
+                        'trucker' => $trucker->name
+                    );
+
+                    // return View::make('emails.loadingticket', $data);
+
+                    $header = array(
+                        'subject' => 'Weight Ticket',
+                        'recipient_email' => $recipient['email'],
+                        'sender_name' => '',
+                        'sender_email' => ''
+                    );
+
+                    Mail::send(array('html' => 'emails.loadingticket'), $data, function($message) use ($header)
+                    {
+                        $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator');
+                        if (isset($header['recipient_name'])) {
+                            $message->to($header['recipient_email'], $header['recipient_name']);
+                        } else {
+                            $message->to($header['recipient_email']);
+                        }
+                        $message->subject($header['subject']);
+                    });
+                }
+            } else {
+                return Response::json(array(
+                    'error' => true,
+                    'message' => 'Email was not sent.'), 200);
+            }
+            
+//            $response = array(
+//                'error' => false,
+//                'message' => 'Loading Ticket has been sent.',
+//                'data' => array(
+//                    'transportSchedule' => $transportSchedule->toArray(),
+//                    'driver' => $driver->toArray(),
+//                    'customer' => $account->toArray(),
+//                    'loader_origin' => $contact_loader_origin->toArray(),
+//                    'loader_destination' => $contact_loader_destination->toArray(),
+//                    'weightticket' => $weightticket->toArray()
+//                )
+//            );
+            
+            $response = Response::json(array(
+              'error' => false,
+              'message' => 'Loading Ticket was sent.'), 200);
+            
+            return $response;
         }
         catch (Exception $e)
         {

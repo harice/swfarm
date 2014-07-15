@@ -11,6 +11,7 @@ define([
 	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/salesorder/weightInfoViewTemplate.html',
 	'text!templates/salesorder/weightInfoViewProductItemTemplate.html',
+    'text!templates/salesorder/serviceTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -25,6 +26,7 @@ define([
 			purchaseOrderTabbingTemplate,
 			weightInfoViewTemplate,
 			weightInfoViewProductItemTemplate,
+            serviceTemplate,
 			Global,
 			Const
 ){
@@ -108,6 +110,12 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.find('#with-tab-content').html(compiledTemplate);
+		},
+        
+        // Initialize Service Form
+        initServiceWindow: function () {
+			var confirmTemplate = _.template(serviceTemplate, {});
+			this.$el.find('.modal-alert-cont').append(confirmTemplate);
 		},
 		
 		supplyWeightInfoData: function () {
@@ -227,25 +235,39 @@ define([
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click .close-weight-ticket': 'showCloseWeightTicketConfirmationWindow',
 			'click #confirm-close-wt': 'closeWeightTicket',
-            'click #mail-weight-ticket': 'mailWeightTicket'
+            'click #mail-weight-ticket': 'showMailForm',
+            'click #confirm-mail-weight-ticket': 'mailWeightTicket'
 		},
                 
-        mailWeightTicket: function() {
+        showMailForm: function() {
+            this.initModalForm('',
+                'confirm-mail-weight-ticket',
+                'Send',
+                'Send Email',
+                false);
+            this.showModalForm();
+            
+            return false;
+        },
+                
+        mailWeightTicket: function(ev) {
+            
             var thisObj = this;
+            var formData = {
+                weightticket: $('#mail-weight-ticket-form input[name=weightticket]').prop('checked'),
+                loadingticket: $('#mail-weight-ticket-form input[name=loadingticket]').prop('checked'),
+                recipients: $('#mail-weight-ticket-form input[name=recipient]').val()
+            };
 			
 			var weightInfoModel = new SOWeightInfoModel({id:this.schedId});
 			weightInfoModel.setEmailURL();
 			weightInfoModel.save(
-				null,
+				formData,
 				{
 					success: function (model, response, options) {
-//						thisObj.hideConfirmationWindow('modal-confirm', function () {
-//							thisObj.subContainer.find('.editable-button').remove();
-//						});
 						thisObj.displayMessage(response);
 					},
 					error: function (model, response, options) {
-//						thisObj.hideConfirmationWindow();
 						if(typeof response.responseJSON.error === 'undefined')
 							alert(response.responseJSON);
 						else

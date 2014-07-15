@@ -10,8 +10,8 @@
 
 	    <title>Southwest Farms</title>
 	    
-	    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,700,800' rel='stylesheet' type='text/css'>
-	  	<link href='http://fonts.googleapis.com/css?family=Raleway:300,200,100' rel='stylesheet' type='text/css'>
+	    <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,700,800' rel='stylesheet' type='text/css'>
+	  	<link href='http://fonts.googleapis.com/css?family=Raleway:300,200,100' rel='stylesheet' type='text/css'> -->
 		
 		<link href="js/libs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
   		<link rel="stylesheet" type="text/css" href="js/libs/jquery.gritter/css/jquery.gritter.css" />

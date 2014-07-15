@@ -3,7 +3,7 @@
 /**
  * Description of FarmLocation
  *
- * @author Das
+ * @author Avs
  */
 class Stack extends BaseModel {
     
@@ -19,7 +19,7 @@ class Stack extends BaseModel {
      * 
      * @var array
      */
-    protected $fillable = array('stacknumber', 'product_id', 'location');
+    protected $fillable = array('stacknumber', 'product_id');
 
     /**
      * Define field validation rules.
@@ -27,24 +27,22 @@ class Stack extends BaseModel {
      * @var array
      */
 	public static $rules = array(
-        'stacknumber' => 'required|unique:stack',
+        'stacknumber' => 'required',
         'product_id' => 'required',
-        'location' => 'required|unique:stack'
     );
     
-    /**
-     * Define relationship with FarmLocation model.
-     * 
-     * @return type
-     */
-    public function farmlocation()
-    {
-        return $this->belongsTo('FarmLocation');
-    }
     
     public function product()
     {
-        return $this->belongsTo('Product');
+        return $this->belongsTo('Product')->withTrashed();
     }
-    
+
+    public function productName()
+    {
+        return $this->belongsTo('Product', 'product_id', 'id')->select(array('id', 'name'))->withTrashed();
+    }
+
+    public function stacklocation(){
+        return $this->hasMany('StackLocation', 'id', 'stack_id');
+    }
 }

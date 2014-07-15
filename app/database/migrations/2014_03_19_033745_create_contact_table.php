@@ -24,6 +24,7 @@ class CreateContactTable extends Migration {
 			$table->string('phone',20)->nullable();
 			$table->string('mobile',20)->nullable();
 			$table->integer('account')->unsigned()->nullable();
+            $table->decimal('rate', 8, 2)->nullable();
 			$table->timestamps();
 			$table->softDeletes();
 

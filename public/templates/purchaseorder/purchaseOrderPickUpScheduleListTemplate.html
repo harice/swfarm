@@ -1,50 +1,43 @@
-<!--<div class="row margin-top-0">
-    <div class="col-md-12">
-        <div class="block-flat">-->
-            <div class="content padding-top-0">
-                <div class="row margin-top-0">
-                    <div class="col-md-3 padding-top-10 padding-right-0">
-                        <% if (typeof editable !== "undefined") { %>
-							<a href="<%= po_schedule_add_url %>" class="btn btn-primary btn-sm">+ Add Pick Up Schedule</a>
-						<% } %>
-                    </div>
-                    <div class="col-md-2 col-md-offset-4"></div>
-                    <div class="col-md-3 padding-top-10"></div>
-                </div>
-
-                <div class="content-inner table-responsive">
-                    <table id="po-schedule-list" class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Schedule</th>
-                                <th>Trucker Type</th>
-                                <th>Trucker</th>
-                                <th>Loader (Origin)</th>
-                                <th>Loader (Destination)</th>
-                                <th>Distance</th>
-                                <th class="width-110">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-
-                    <div class="clearfix">
-                        <div class="styled-select pull-left">
-                            <select class="form-control width-100" id="perpage" name="perpage">
-                                <option value="15">15 rows</option>
-                                <option value="25">25 rows</option>
-                                <option value="50">50 rows</option>
-                            </select>
-                        </div>
-                        <ul class="pagination pagination-sm pull-right margin-none" style="display:none;">
-                            <li><a class="first-page btn" href="#"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
-                            <li><a class="prev-page btn" href="#"><span class="glyphicon glyphicon-step-backward"></span></a></li>
-                            <li><a class="next-page btn" href="#"><span class="glyphicon glyphicon-step-forward"></span></a></li>
-                            <li><a class="last-page btn" href="#"><span class="glyphicon glyphicon-fast-forward"></span></a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div> <!-- /.content -->
-        <!--</div>
+<div class="content padding-top-0">
+    <div class="row margin-top-0">
+        <div class="col-md-12">
+            <% if (typeof editable !== "undefined") { %>
+				<a href="<%= po_schedule_add_url %>" class="btn btn-primary btn-trans btn-rad btn-sm margin-left-0">+ Add Pickup Schedule</a>
+			<% } %>
+        </div>
     </div>
-</div>-->
+
+    <div class="content-inner table-responsive">
+        <table id="po-schedule-list" class="table-condensed table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th class="width-150">Schedule</th>
+                    <th class="width-90">Status</th>
+                    <th>Expected [Tons]</th>
+                    <th>Trucker Contact</th>
+                    <th>Trailer Number</th>
+                    <th>Loader [Origin]</th>
+                    <th>Loader [Destination]</th>
+                    <th class="width-110">Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div class="clearfix">
+            <div class="styled-select pull-left margin-top-10 margin-bottom-0 margin-left-0 margin-right-0 display-items" style="display:none;">
+                <select class="form-control width-100" id="perpage" name="perpage">
+                    <option value="15">15 rows</option>
+                    <option value="25">25 rows</option>
+                    <option value="50">50 rows</option>
+                </select>
+            </div>
+            <ul class="pagination pagination-sm pull-right margin-top-10 margin-bottom-0 margin-left-0 margin-right-0" style="display:none;">
+                <li><a class="first-page btn" href="#"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
+                <li><a class="prev-page btn" href="#"><span class="glyphicon glyphicon-step-backward"></span></a></li>
+                <li><a class="next-page btn" href="#"><span class="glyphicon glyphicon-step-forward"></span></a></li>
+                <li><a class="last-page btn" href="#"><span class="glyphicon glyphicon-fast-forward"></span></a></li>
+            </ul>
+        </div>
+    </div>
+</div>

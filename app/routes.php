@@ -25,6 +25,7 @@ Route::group(array('prefix' => 'apiv1'), function()
 Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 {
     // Mail
+    Route::put('weightticket/mailLoadingTicket/{id}', 'APIv1\WeightTicketController@mailLoadingTicket');
     Route::put('weightticket/mailWeightTicket/{id}', 'APIv1\WeightTicketController@mailWeightTicket');
     Route::put('weightticket/{id}/mail', 'APIv1\WeightTicketController@mailWeightTicket');
     
@@ -171,7 +172,13 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('contract', 'APIv1\ContractController');
 
     // Storage location
+    Route::get('storagelocation/locationlist', 'APIv1\StorageLocationController@locationList');
     Route::resource('storagelocation', 'APIv1\StorageLocationController');
+
+    // Inventory
+    Route::get('inventory/stacklist', 'APIv1\InventoryController@stackList');
+    Route::get('inventory/transactiontype', 'APIv1\InventoryController@transactionType');
+    Route::resource('inventory', 'APIv1\InventoryController');
 });
 
 
