@@ -455,3 +455,10 @@ table td i { font-size:12px; }
 }
 
 @import "datepicker.less";
+
+@media print {
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
+}

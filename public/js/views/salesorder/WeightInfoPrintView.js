@@ -4,13 +4,14 @@ define([
 	'views/base/PrintView',
 	'jqueryvalidate',
 	'jquerytextformatter',
-	'models/purchaseorder/PurchaseOrderModel',
-	'models/purchaseorder/POScheduleModel',
-	'models/purchaseorder/POWeightInfoModel',
+	'models/salesorder/SalesOrderModel',
+	'models/salesorder/SOScheduleModel',
+	'models/salesorder/SOWeightInfoModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/weightinfo/weightInfoPrintTemplate.html',
-	'text!templates/purchaseorder/weightInfoViewProductItemTemplate.html',
+	'text!templates/salesorder/weightInfoViewProductItemTemplate.html',
+    'text!templates/salesorder/serviceTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -18,13 +19,14 @@ define([
 			AppView,
 			Validate,
 			TextFormatter,
-			PurchaseOrderModel,
-			POScheduleModel,
-			POWeightInfoModel,
+			SalesOrderModel,
+			SOScheduleModel,
+			SOWeightInfoModel,
 			contentTemplate,
 			purchaseOrderTabbingTemplate,
 			weightInfoViewTemplate,
 			weightInfoViewProductItemTemplate,
+            serviceTemplate,
 			Global,
 			Const
 ){
@@ -36,26 +38,26 @@ define([
 			this.initSubContainer();
 			
 			var thisObj = this;
-			this.poId = option.poId;
+			this.soId = option.soId;
 			this.schedId = option.schedId;
 			this.h1Title = 'Weight Info';
 			this.h1Small = 'view';
 			
-			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generateSOTabs(this.poId, 3)}));
+			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generateSOTabs(this.soId, 3)}));
 			
-			this.purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
-			this.purchaseOrderModel.on('change', function() {
-				thisObj.poScheduleModel.runFetch();
+			this.salesOrderModel = new SalesOrderModel({id:this.soId});
+			this.salesOrderModel.on('change', function() {
+				thisObj.soScheduleModel.runFetch();
 				thisObj.off('change');
 			});
 			
-			this.poScheduleModel = new POScheduleModel({id:this.schedId});
-			this.poScheduleModel.on('change', function() {
+			this.soScheduleModel = new SOScheduleModel({id:this.schedId});
+			this.soScheduleModel.on('change', function() {
 				thisObj.model.runFetch();
 				thisObj.off('change');
 			});
 			
-			this.model = new POWeightInfoModel({id:this.schedId});
+			this.model = new SOWeightInfoModel({id:this.schedId});
 			this.model.on('change', function() {
 				if(thisObj.subContainerExist()) {
 					thisObj.displayForm();
@@ -67,15 +69,14 @@ define([
 		},
 		
 		render: function(){
-            $("#cl-sidebar").hide();
-            $(".tab-container").hide();
-            $(".back-to-top").hide();
-            $(".user-nav li").hide();
-            $(".user-nav").append('<li><button class="btn btn-default" style="margin-top: 4px;">Back to Previous Page</button></li>');
-            
+//            $("#cl-sidebar").remove();
+//            $(".tab-container").remove();
+//            $(".back-to-top").remove();
 //            $("body").addClass("print");
+//            $(".user-nav li").remove();
+//            $(".user-nav").append('<li><button class="btn btn-default" style="margin-top: 4px;">Back to Previous Page</button></li>');
             
-			this.purchaseOrderModel.runFetch();
+			this.salesOrderModel.runFetch();
 			Backbone.View.prototype.refreshTitle('Weight Info','view');
 		},
 		
@@ -83,28 +84,22 @@ define([
 			var thisObj = this;
 			
 			var innerTemplateVariables = {
-				pickup_weight_info_edit_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+Const.CRUD.EDIT+'/'+Const.WEIGHTINFO.PICKUP,
-				pickup_weight_info_add_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD+'/'+Const.WEIGHTINFO.PICKUP,
-				dropoff_weight_info_edit_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+Const.CRUD.EDIT+'/'+Const.WEIGHTINFO.DROPOFF,
-				dropoff_weight_info_add_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD+'/'+Const.WEIGHTINFO.DROPOFF,
-				previous_so_sched_url: '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.poId,
+				pickup_weight_info_edit_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.EDIT+'/'+Const.WEIGHTINFO.PICKUP,
+				pickup_weight_info_add_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD+'/'+Const.WEIGHTINFO.PICKUP,
+				dropoff_weight_info_edit_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.EDIT+'/'+Const.WEIGHTINFO.DROPOFF,
+				dropoff_weight_info_add_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD+'/'+Const.WEIGHTINFO.DROPOFF,
+				previous_so_sched_url: '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId,
         
                 weightticket : this.model,
-                so : this.purchaseOrderModel,
-                schedule : this.poScheduleModel,
+                so : this.salesOrderModel,
+                schedule : this.soScheduleModel,
                 
                 pickup_products : this.model.get("weightticketscale_pickup").weightticketproducts,
                 dropoff_products : this.model.get("weightticketscale_pickup").weightticketproducts
 			};
-            
-            console.log(innerTemplateVariables['weightticket']);
-            console.log(innerTemplateVariables['so']);
-            console.log(innerTemplateVariables['schedule']);
-            
-            console.log(innerTemplateVariables['pickup_products']);
 			
 			if((!this.model.get('status') || (this.model.get('status') && this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)) && 
-				this.purchaseOrderModel.get('status').name.toLowerCase() == Const.STATUS.OPEN)
+				this.salesOrderModel.get('status').name.toLowerCase() == Const.STATUS.OPEN)
 				innerTemplateVariables['editable'] = true;
 			
 			if(this.model.get('weightticketscale_pickup') != null)
@@ -122,19 +117,25 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.find('#with-tab-content').html(compiledTemplate);
 		},
+        
+        // Initialize Service Form
+        initServiceWindow: function () {
+			var confirmTemplate = _.template(serviceTemplate, {});
+			this.$el.find('.modal-alert-cont').append(confirmTemplate);
+		},
 		
 		supplyWeightInfoData: function () {
 			var thisObj = this;
 			var pickupInfo = this.model.get('weightticketscale_pickup');
 			var dropoffInfo = this.model.get('weightticketscale_dropoff');
 			
-			var dateAndTime = this.convertDateFormat(this.poScheduleModel.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-')
-								+' '+this.poScheduleModel.get('scheduletimeHour')
-								+':'+this.poScheduleModel.get('scheduletimeMin')
-								+' '+this.poScheduleModel.get('scheduletimeAmPm');
+			var dateAndTime = this.convertDateFormat(this.soScheduleModel.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-')
+								+' '+this.soScheduleModel.get('scheduletimeHour')
+								+':'+this.soScheduleModel.get('scheduletimeMin')
+								+' '+this.soScheduleModel.get('scheduletimeAmPm');
 			
-			this.$el.find('#so-number').val(this.purchaseOrderModel.get('order_number'));
-			this.$el.find('#producer').val(this.purchaseOrderModel.get('account').name);
+			this.$el.find('#so-number').val(this.salesOrderModel.get('order_number'));
+			this.$el.find('#producer').val(this.salesOrderModel.get('account').name);
 			this.$el.find('#date-and-time').val(dateAndTime);
 			this.$el.find('#weight-ticket-no').val(this.model.get('weightTicketNumber'));
 			this.$el.find('#loading-ticket-no').val(this.model.get('loadingTicketNumber'));
@@ -237,18 +238,8 @@ define([
 		},
 		
 		events: {
-			'click #go-to-previous-page': function() {
-                this.goToPreviousPage();
-                this.togglePrintElements();
-            }
-		},
-                
-        togglePrintElements: function() {
-            $("#cl-sidebar").show();
-            $(".tab-container").show();
-            $(".back-to-top").show();
-            $(".user-nav li").show();
-        }
+			'click #go-to-previous-page': 'goToPreviousPage'
+		}
 	});
 
 	return WeightInfoPrintView;
