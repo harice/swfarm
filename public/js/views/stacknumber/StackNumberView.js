@@ -23,14 +23,18 @@ define([
 			this.initSubContainer();
 			
 			var thisObj = this;
-			this.stackNumberId = option.id;
+			this.stackNumber = option.id;
 			this.h1Title = 'Stack Number Transaction';
 			this.h1Small = 'list';
 			
 			this.collection = new StackNumberCollection();
+			this.collection.setFilter('stacknumber', this.stackNumber);
+			this.collection.listView.searchURLForFilter = false;
 			this.collection.on('sync', function() {
-				if(thisObj.subContainerExist())
+				if(thisObj.subContainerExist()) {
+					thisObj.displayStackNumber();
 					thisObj.displayList();
+				}
 			});
 			this.collection.on('error', function(collection, response, options) {
 				this.off('error');
@@ -38,13 +42,16 @@ define([
 		},
 		
 		render: function(){
-			this.displayStackNumber();
 			this.renderList(1);
 			Backbone.View.prototype.refreshTitle(this.h1Title, this.h1Small);
 		},
 		
 		displayStackNumber: function () {
-			var innerTemplateVar = {};
+			var innerTemplateVar = {
+				product_stacknumber: this.collection.getOtherData('productname')+' '+this.collection.getOtherData('stacknumber'),
+				total_on_hand: this.addCommaToNumber(parseFloat(this.collection.getOtherData('onHandTons')).toFixed(4)),
+			};
+			console.log(this.collection.getOtherData('productname'));
 			var innerTemplate = _.template(stackNumberListTemplate, innerTemplateVar);
 			
 			var variables = {
@@ -60,6 +67,8 @@ define([
 				stacknumbers: this.collection.models,
 				_: _ 
 			};
+			
+			_.extend(data,Backbone.View.prototype.helpers);
 			
 			var innerListTemplate = _.template(stackNumberInnerListTemplate, data);
 			this.subContainer.find("#stacknumber-list tbody").html(innerListTemplate);

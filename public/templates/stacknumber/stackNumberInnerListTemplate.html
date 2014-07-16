@@ -1,11 +1,11 @@
 <% if (!_.isEmpty(stacknumbers)) { %>
 	<% _.each(stacknumbers, function(stacknumber){ %>
 	<tr>
+		<td><%= formatDate(stacknumber.get("transactionDate")) %></td>
 		<td></td>
+		<td><%= stacknumber.get("transactionType") %></td>
 		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
+		<td><%= stacknumber.get("totalDelivered") %></td>
 	</tr>
 	<% }); %>
 <% } else { %>

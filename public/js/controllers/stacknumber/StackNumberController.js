@@ -10,7 +10,7 @@ define([
 			return this.view(id);
 		};
 		
-		this.view = function () {
+		this.view = function (id) {
 			return new StackNumberView({'id':id});
 		};
 	};

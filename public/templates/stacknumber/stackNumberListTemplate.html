@@ -3,20 +3,15 @@
         <div class="block-flat padding-top-0 padding-bottom-0">
             <div class="content padding-top-0">
                 <div class="row margin-top-0">
-                    <div class="col-md-offset-9 col-md-3 padding-top-10">
-                        <form id="searchLocal" name="searchLocal" class="form-inline searchLocal" role="form">
-                            <div class="input-group input-group-sm">
-                                <label class="sr-only" for="search">Search</label>
-                                <input type="text" class="search form-control" id="search-keyword" placeholder="" style="border-radius:3px 0 0 3px;">
-
-                                <div class="input-group-btn">
-                                    <button type="button" class="btn btn-primary search-local">Search</button>
-                                </div>
-                            </div>
-                        </form>
+                    <div class="col-md-12 padding-top-10">
+                        <h3><%= product_stacknumber %></h3>
+						<hr>
                     </div>
                 </div>
-
+				<div class="row margin-top-0">
+					<div class="col-md-9 padding-top-10">Inventory On Hand Summary</div>
+					<div class="col-md-3 padding-top-10">Total On Hand: <%= total_on_hand %> Tons</div>
+				</div>
                 <div class="content-inner table-responsive">
                     <table id="stacknumber-list" class="table-condensed table-bordered table-hover">
                         <thead>
