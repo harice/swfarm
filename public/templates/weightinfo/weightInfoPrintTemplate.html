@@ -17,6 +17,7 @@
 <div class="content">
 
     <form id="soWeightInfoFrom" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+        <% if (weightticket.get("weightticketscale_pickup")) { %>
         <fieldset>
             <legend>Pickup</legend>
             <div id="pickup-fields" style="display:none;">
@@ -64,7 +65,7 @@
                                 <td><%= product.transportscheduleproduct.productorder.product.name %></td>
                                 <td><%= (typeof product.bales != 'undefined' && product.bales != null)? parseFloat(product.bales) : 0 %></td>
                                 <td><%= (typeof product.pounds != 'undefined' && product.pounds != null)? parseFloat(product.pounds) : 0 %></td>
-                                <td><%= (typeof product.pounds != 'undefined' && product.pounds != null)? (parseFloat(product.pounds) * Const.LB2TON).toFixed(4) : 0.0000 %></td>
+                                <td><%= (typeof product.pounds != 'undefined' && product.pounds != null)? parseFloat(product.pounds) : 0.0000 %></td>
                             </tr>
                             <% }); %>
                         </tbody>
@@ -80,19 +81,9 @@
                 </div>
             </div>
         </fieldset>
-        <div class="form-group form-button-container">
-            <div class="col-md-12">
-                <div class="pull-right">
-                    <% if (typeof editable !== "undefined") { %>
-                    <% if (typeof has_pickup_info !== "undefined") { %>
-                    <a class="btn btn-primary editable-button" href="<%= pickup_weight_info_edit_url %>">Edit Pickup Weight Ticket</a>
-                    <% } else { %>
-                    <a class="btn btn-primary editable-button" href="<%= pickup_weight_info_add_url %>">Add Pickup Weight Ticket</a>
-                    <% } %>
-                    <% } %>
-                </div>
-            </div>
-        </div>
+        <% } %>
+        
+        <% if (weightticket.get("weightticketscale_dropoff")) { %>
         <fieldset>
             <legend>Dropoff</legend>
             <div id="dropoff-fields" style="display:none;">
@@ -140,7 +131,7 @@
                                 <td><%= product.transportscheduleproduct.productorder.product.name %></td>
                                 <td><%= (typeof product.bales != 'undefined' && product.bales != null)? parseFloat(product.bales) : 0 %></td>
                                 <td><%= (typeof product.pounds != 'undefined' && product.pounds != null)? parseFloat(product.pounds) : 0 %></td>
-                                <td><%= (typeof product.pounds != 'undefined' && product.pounds != null)? (parseFloat(product.pounds) * Const.LB2TON).toFixed(4) : 0.0000 %></td>
+                                <td><%= (typeof product.pounds != 'undefined' && product.pounds != null)? parseFloat(product.pounds) : 0.0000 %></td>
                             </tr>
                             <% }); %>
                         </tbody>
@@ -156,6 +147,7 @@
                 </div>
             </div>
         </fieldset>
+        <% } %>
     </form>
 
 </div> <!-- /.content -->
