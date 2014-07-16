@@ -69,10 +69,10 @@ define([
 		},
 		
 		render: function(){
-            $("#cl-sidebar").remove();
-            $(".tab-container").remove();
-            $(".back-to-top").remove();
-            $(".user-nav li").remove();
+            $("#cl-sidebar").hide();
+            $(".tab-container").hide();
+            $(".back-to-top").hide();
+            $(".user-nav li").hide();
             $(".user-nav").append('<li><button class="btn btn-default" style="margin-top: 4px;">Back to Previous Page</button></li>');
             
 //            $("body").addClass("print");
