@@ -253,6 +253,7 @@ class ContractRepository implements ContractRepositoryInterface {
             }
             
             $contract_products = $contract->contractproducts;
+            var_dump($contract_products);
             
             $result = array();
             foreach($contract_products as $contract_product) {
