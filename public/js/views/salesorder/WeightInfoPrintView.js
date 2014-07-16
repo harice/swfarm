@@ -69,12 +69,13 @@ define([
 		},
 		
 		render: function(){
-//            $("#cl-sidebar").remove();
-//            $(".tab-container").remove();
-//            $(".back-to-top").remove();
+            $("#cl-sidebar").remove();
+            $(".tab-container").remove();
+            $(".back-to-top").remove();
+            $(".user-nav li").remove();
+            $(".user-nav").append('<li><button class="btn btn-default" style="margin-top: 4px;">Back to Previous Page</button></li>');
+            
 //            $("body").addClass("print");
-//            $(".user-nav li").remove();
-//            $(".user-nav").append('<li><button class="btn btn-default" style="margin-top: 4px;">Back to Previous Page</button></li>');
             
 			this.salesOrderModel.runFetch();
 			Backbone.View.prototype.refreshTitle('Weight Info','view');
@@ -238,8 +239,18 @@ define([
 		},
 		
 		events: {
-			'click #go-to-previous-page': 'goToPreviousPage'
-		}
+			'click #go-to-previous-page': function() {
+                this.goToPreviousPage();
+                this.togglePrintElements();
+            }
+		},
+                
+        togglePrintElements: function() {
+            $("#cl-sidebar").show();
+            $(".tab-container").show();
+            $(".back-to-top").show();
+            $(".user-nav li").show();
+        }
 	});
 
 	return WeightInfoPrintView;
