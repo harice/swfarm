@@ -26,7 +26,7 @@
 									<td><%= salesorder.stacknumber %></td>
 									<td><%= salesorder.tons %></td>
 									<td><%= salesorder.delivered_tons %></td>
-									<td><%= salesorder.status.name %></td>
+                                    <td><label class="label label-<%= salesorder.status.class %>"><%= salesorder.status.name %></label></td>
 								</tr>
 								<% }); %>
 							<% } else { %>
