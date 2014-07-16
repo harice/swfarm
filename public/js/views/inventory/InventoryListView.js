@@ -1,19 +1,23 @@
 define([
 	'backbone',
 	'views/base/ListView',
-	'models/trucker/TruckerModel',
-	'collections/trailer/TrailerCollection',
+	'models/inventory/InventoryModel',
+	'collections/inventory/InventoryCollection',
+	'collections/product/ProductCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/inventory/inventoryListTemplate.html',
 	'text!templates/inventory/inventoryInnerListTemplate.html',
+	'text!templates/inventory/productFilterTemplate.html',
 	'constant',
 ], function(Backbone,
 			ListView,
-			TruckerModel,
-			TrailerCollection,
+			InventoryModel,
+			InventoryCollection,
+			ProductCollection,
 			contentTemplate,
 			inventoryListTemplate,
 			inventoryInnerListTemplate,
+			productFilterTemplate,
 			Const
 ){
 
@@ -28,7 +32,7 @@ define([
 			this.h1Title = 'Inventory';
 			this.h1Small = 'list';
 			
-			this.collection = new TrailerCollection();
+			this.collection = new InventoryCollection();
 			this.collection.on('sync', function() {
 				if(thisObj.subContainerExist())
 					thisObj.displayList();
@@ -36,17 +40,28 @@ define([
 			this.collection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
+			
+			this.productCollection = new ProductCollection();
+			this.productCollection.on('sync', function() {
+				thisObj.displayInventory();
+				thisObj.renderList(1);
+				this.off('sync');
+			});
+			this.productCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 		},
 		
 		render: function(){
-			this.displayInventory();
-			this.renderList(1);
+			this.productCollection.getAllModel();
 			Backbone.View.prototype.refreshTitle(this.h1Title,this.h1Small);
 		},
 		
 		displayInventory: function () {
+			var productTemplate = _.template(productFilterTemplate, {'products': this.productCollection.models});
 			var innerTemplateVar = {
 				'inventory_add_url' : '#/'+Const.URL.INVENTORY+'/'+Const.CRUD.ADD,
+				'product_filters' : productTemplate,
 			};
 			var innerTemplate = _.template(inventoryListTemplate, innerTemplateVar);
 			
@@ -92,9 +107,9 @@ define([
 		
 		deleteTrucker: function (ev) {
 			var thisObj = this;
-			var truckerModel = new TruckerModel({id:$(ev.currentTarget).attr('data-id')});
+			var inventoryModel = new InventoryModel({id:$(ev.currentTarget).attr('data-id')});
 			
-            truckerModel.destroy({
+            inventoryModel.destroy({
                 success: function (model, response, options) {
                     thisObj.displayMessage(response);
                     thisObj.renderList(1);
@@ -103,7 +118,7 @@ define([
                     thisObj.displayMessage(response);
                 },
                 wait: true,
-                headers: truckerModel.getAuth(),
+                headers: inventoryModel.getAuth(),
             });
 		},
 	});

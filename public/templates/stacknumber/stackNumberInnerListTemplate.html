@@ -1,0 +1,15 @@
+<% if (!_.isEmpty(stacknumbers)) { %>
+	<% _.each(stacknumbers, function(stacknumber){ %>
+	<tr>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+	</tr>
+	<% }); %>
+<% } else { %>
+	<tr>
+		<td colspan="5">No result found.</td>
+	</tr>
+<% } %>

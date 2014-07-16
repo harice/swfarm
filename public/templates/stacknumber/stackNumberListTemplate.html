@@ -3,25 +3,14 @@
         <div class="block-flat padding-top-0 padding-bottom-0">
             <div class="content padding-top-0">
                 <div class="row margin-top-0">
-                    <div class="col-md-9 padding-top-10 padding-right-0">
-                        <a href="<%= inventory_add_url %>" class="btn btn-primary btn-trans btn-rad btn-sm margin-left-0">+ Add Inventory Transaction</a>
-                    </div>
-                    <div class="col-md-3 padding-top-10">
+                    <div class="col-md-offset-9 col-md-3 padding-top-10">
                         <form id="searchLocal" name="searchLocal" class="form-inline searchLocal" role="form">
                             <div class="input-group input-group-sm">
                                 <label class="sr-only" for="search">Search</label>
-                                <input type="text" class="search form-control" style="border-radius:3px 0 0 3px;" id="search-keyword" placeholder="">
+                                <input type="text" class="search form-control" id="search-keyword" placeholder="" style="border-radius:3px 0 0 3px;">
 
                                 <div class="input-group-btn">
-                                    <button type="button" class="btn btn-trans dropdown-toggle" data-toggle="dropdown" style="border-radius:0;">
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu pull-right filter" role="menu">
-                                        <li class="dropdown-header"><i class="fa fa-truck"></i>Filter By Product</li>
-                                        <li><input class="product_id" type="radio" name="product_id" value="" checked> All</li>
-                                        <%= product_filters %>
-                                    </ul>
-                                    <button type="button" class="btn btn-trans search-local">Search</button>
+                                    <button type="button" class="btn btn-primary search-local">Search</button>
                                 </div>
                             </div>
                         </form>
@@ -29,17 +18,14 @@
                 </div>
 
                 <div class="content-inner table-responsive">
-                    <table id="inventory-list" class="table-condensed table-bordered table-hover">
+                    <table id="stacknumber-list" class="table-condensed table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>Product</th>
-                                <th>Stack No.</th>
-								<th>Location</th>
-								<th>On Hand</th>
-                                <th>Committed</th>
-								<th>Ordered</th>
-								<th>Available</th>
-                                <th class="width-110">Action</th>
+                                <th>Transaction Date</th>
+                                <th>Weight Ticket No.</th>
+								<th>Transaction Type</th>
+								<th>Reference No.</th>
+								<th>Delivered Tons</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
