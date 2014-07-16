@@ -115,11 +115,9 @@ class InventoryRepository implements InventoryRepositoryInterface {
                         
                         break;
                     }
-                    
                 }
                 $index++;
             }
-
         }
         // $stack = Stack::with('inventoryproduct.inventory')
         //                 ->with('inventoryproduct.sectionfrom.stacklocation')
@@ -168,7 +166,7 @@ class InventoryRepository implements InventoryRepositoryInterface {
         }
 
         $inventoryProduct = $this->addInventoryProduct($inventory->id, $inventory->transactiontype_id, $data['products']);
-        // var_dump($inventoryProduct);
+        
         if(is_array($inventoryProduct)){
             DB::rollback();
             return $inventoryProduct;
@@ -182,8 +180,8 @@ class InventoryRepository implements InventoryRepositoryInterface {
         } else {
             DB::rollback();
             $response = array(
-            'error' => true,
-            'message' => "A problem was encountered while saving stacks in inventory.");
+                'error' => true,
+                'message' => "A problem was encountered while saving stacks in inventory.");
         }
 
         return $response;

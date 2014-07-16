@@ -73,12 +73,23 @@ class OrderController extends BaseController {
     public function cancelOrder($id)
     {
         $model = $this->repo->cancelOrder($id, Input::all());
-    	return Response::json($model);
+        if($model['error']){
+            $status = 500; //if has error
+        } else {
+            $status = 200;
+        }
+    	return Response::json($model, $status);
     }
     
     public function closeOrder($id)
     {
-        return $this->repo->closeOrder($id);
+        $model = $this->repo->closeOrder($id);
+        if($model['error']){
+            $status = 500; //if has error
+        } else {
+            $status = 200;
+        }
+        return Response::json($model, $status);
     }
 
     public function getPOStatus(){
