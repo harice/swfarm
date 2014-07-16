@@ -13,9 +13,9 @@
         <% _.each(contract.get("products"), function(product) { %>
             <% total_tons = total_tons + parseFloat(product.pivot.tons) %>
         <% }); %>
-        <td><%= total_tons.toFixed(4) %></td>
+        <td><%= numberFormatTons(total_tons) %></td>
         <td>
-            <%= contract.get("total_delivered").toFixed(4) %>
+            <%= numberFormatTons(contract.get("total_delivered")) %>
         </td>
         <td><label class="label label-<%= contract.get("status").class %>"><%= contract.get("status").name %></label></td>
 	</tr>
