@@ -51,7 +51,7 @@ class InventoryRepository implements InventoryRepositoryInterface {
         return $inventory->toArray();
     }
 
-    public function getStackListByProduct($params){
+    /*public function getStackListByProduct($params){
         $productId = $params['productId'];
         // $stackList = Stack::with('stacklocation.section')
         //                     ->with('productName')->where('product_id', '=', $productId)->orderBy('stacknumber', 'ASC')->get();
@@ -81,8 +81,91 @@ class InventoryRepository implements InventoryRepositoryInterface {
         
 
         return $result;
-    }
+    }*/
 
+    /*public function getStackListByProduct($params){
+        $productId = $params['productId'];
+        // $stackList = Stack::with('stacklocation.section')
+        //                     ->with('productName')->where('product_id', '=', $productId)->orderBy('stacknumber', 'ASC')->get();
+        $result = array();
+        
+        
+        $products = Product::with('stack.stacklocation.section.storagelocationName')->orderBy('name', 'ASC');
+        if($productId != null){
+            $products = $products->where('id', '=', $productId);
+        }
+        $products = $products->get();
+
+        if($products){
+            $products = $products->toArray();
+            // return $products;
+            $productCnt = 0;
+            foreach($products as $product){
+                $index = 0;
+                $result[$productCnt]['ProductName'] = $product['name'];
+                foreach($product['stack'] as $stack){
+                    $result[$productCnt][$index]['stacknumber'] = $stack['stacknumber'];
+                    $result[$productCnt][$index]['stacklocation'] = "";
+                    $result[$productCnt][$index]['onHandTons'] = 0;
+                    foreach($stack['stacklocation'] as $stacklocation){
+                        $result[$productCnt][$index]['stacklocation'] .= $stacklocation['section'][0]['storagelocation_name']['name']." - ".$stacklocation['section'][0]['name']." | ";
+                        $result[$productCnt][$index]['onHandTons'] += $stacklocation['tons'];
+                    }
+                    $result[$productCnt][$index]['stacklocation'] = substr($result[$productCnt][$index]['stacklocation'], 0, -2); //remove extra | on last
+                    $index++;
+                }
+                $productCnt++;
+            }
+        } else {
+            return array(
+                'error' => true,
+                'message' => 'Product not found.'
+            );
+        }
+        
+
+        return $result;
+    }*/
+
+    public function getStackListByProduct($params){
+        $productId = isset($params['productId']) ? $params['productId'] : null;
+        $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+        // $stackList = Stack::with('stacklocation.section')
+        //                     ->with('productName')->where('product_id', '=', $productId)->orderBy('stacknumber', 'ASC')->get();
+        $result = array();
+        $index = 0;
+        // $products = Product::with('stack.stacklocation.section.storagelocationName')->where('id', '=', $productId)->first();
+        $products = Product::with('stack.stacklocation.section.storagelocationName')->orderBy('name', 'ASC');
+        if($productId != null){
+            $products = $products->where('id', '=', $productId);
+        }
+        $products = $products->get();
+
+        if($products){
+            $products = $products->toArray();
+            foreach($products as $product){
+                foreach($product['stack'] as $stack){
+                    $result[$index]['productname'] = $product['name'];
+                    $result[$index]['stacknumber'] = $stack['stacknumber'];
+                    $result[$index]['stacklocation'] = "";
+                    $result[$index]['onHandTons'] = 0;
+                    foreach($stack['stacklocation'] as $stacklocation){
+                        $result[$index]['stacklocation'] .= $stacklocation['section'][0]['storagelocation_name']['name']." - ".$stacklocation['section'][0]['name']." | ";
+                        $result[$index]['onHandTons'] += $stacklocation['tons'];
+                    }
+                    $result[$index]['stacklocation'] = substr($result[$index]['stacklocation'], 0, -2); //remove extra | on last
+                    $index++;
+                }
+            }
+        } else {
+            return array(
+                'error' => true,
+                'message' => 'Product not found.'
+            );
+        }
+        return $result;
+    }
+/*
     public function getInventorySummaryByStack($params){
         $stacknumber = $params['stacknumber'];
         $inventory = Inventory::with('inventorytransactiontype')
@@ -99,10 +182,11 @@ class InventoryRepository implements InventoryRepositoryInterface {
             $result = array();
             $index = 0;
             foreach($inventory as $item){
-                $result[$index]['stacknumber'] = $stacknumber;
+                $result['stacknumber'] = $stacknumber;
                 $result[$index]['transactionDate'] = $item['created_at'];
                 $result[$index]['transactionType'] = $item['inventorytransactiontype']['type'];
                 foreach($item['inventoryproduct'] as $product){
+                    $result['productname'] = $product['stack']['product_name']['name'];
                     if($product['stack']['stacknumber'] == $stacknumber){
                         $result[$index]['totalDelivered'] = "";
                         if($item['inventorytransactiontype']['id'] == 3){
@@ -119,12 +203,67 @@ class InventoryRepository implements InventoryRepositoryInterface {
                 $index++;
             }
         }
-        // $stack = Stack::with('inventoryproduct.inventory')
-        //                 ->with('inventoryproduct.sectionfrom.stacklocation')
-        //                 ->with('inventoryproduct.sectionto.stacklocation')
-        //                 ->where('stacknumber', 'like', $stacknumber)->get();
-
+       
         return $result;
+    }*/
+
+    public function getInventorySummaryByStack($params){
+        $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST'); //default, see app/config/constants
+        $stacknumber = $params['stacknumber'];
+        
+        $inventoryProduct = InventoryProduct::with('inventory.inventorytransactiontype')->with('stack.stacklocation.section')->with('stack.productName')
+                                                ->wherehas('stack', function($stack) use ($stacknumber){
+                                                    $stack->where('stacknumber', 'like', $stacknumber);
+                                                })->paginate($perPage)->toArray();
+        $result = array();
+
+        if($inventoryProduct['data']){
+            $result['total'] = $inventoryProduct['total'];
+            $result['per_page'] = $inventoryProduct['per_page'];
+            $result['current_page'] = $inventoryProduct['current_page'];
+            $result['last_page'] = $inventoryProduct['last_page'];
+            $result['from'] = $inventoryProduct['from'];
+            $result['to'] = $inventoryProduct['to'];
+            $index = 0;
+            $result['stacknumber'] = $stacknumber;
+            $result['onHandTons'] = $this->getTotalDelivered($stacknumber);
+            foreach($inventoryProduct['data'] as $product){
+                $result['data'][$index]['transactionDate'] = $product['inventory']['created_at'];
+                $result['data'][$index]['transactionType'] = $product['inventory']['inventorytransactiontype']['type'];
+                $result['productname'] = $product['stack']['product_name']['name'];
+                if($product['inventory']['transactiontype_id'] == 3){
+                     $result['data'][$index]['totalDelivered'] = "0"; //as is because its transfer
+                 } else if($product['inventory']['transactiontype_id'] == 4){
+                    $result['data'][$index]['totalDelivered'] = "-".$product['tons'];
+                } else if($product['inventory']['transactiontype_id'] == 5){
+                    $result['data'][$index]['totalDelivered'] = "+".$product['tons'];
+                }
+                $index++;
+            }
+        }
+        
+        return $result;
+    }
+
+    private function getTotalDelivered($stacknumber){
+        $inventoryProduct = InventoryProduct::with('inventory')
+                                            ->wherehas('stack', function($stack) use ($stacknumber){
+                                                $stack->where('stacknumber', 'like', $stacknumber);
+                                            })->get();
+        $totalDelivered = 0;
+        if($inventoryProduct){
+            $inventoryProduct = $inventoryProduct->toArray();
+            foreach($inventoryProduct as $product){
+                $transactionType = $product['inventory']['transactiontype_id'];
+                if($transactionType == 4){
+                    $totalDelivered -= $product['tons'];
+                } else if($transactionType == 5){
+                    $totalDelivered += $product['tons'];
+                }
+            }
+        }
+
+        return $totalDelivered;
     }
     
     public function findById($id)
