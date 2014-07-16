@@ -176,10 +176,8 @@ class InventoryRepository implements InventoryRepositoryInterface {
             $stackList = $stackList->where('product_id', '=', $productId);
         }
         $stackList = $stackList->orderBy('stacknumber', 'ASC')->paginate($perPage)->toArray();
-        // return $stackList;
 
         $result = array();
-        
        
         if($stackList['data']){
             $result['total'] = $stackList['total'];
@@ -194,9 +192,11 @@ class InventoryRepository implements InventoryRepositoryInterface {
                 $result['data'][$index]['stacknumber'] = $product['stacknumber'];
                 $result['data'][$index]['stacklocation'] = "";
                 $result['data'][$index]['onHandTons'] = 0;
-                foreach($product['stacklocation'] as $stacklocation){ 
+                foreach($product['stacklocation'] as $stacklocation){
+                    if($stacklocation['tons'] != 0) {
                         $result['data'][$index]['stacklocation'] .= $stacklocation['section'][0]['storagelocation_name']['name']." - ".$stacklocation['section'][0]['name']." | ";
                         $result['data'][$index]['onHandTons'] += $stacklocation['tons'];
+                    }                        
                 }
                 $result['data'][$index]['stacklocation'] = substr($result['data'][$index]['stacklocation'], 0, -2); //remove extra | on last
                 $index++;
