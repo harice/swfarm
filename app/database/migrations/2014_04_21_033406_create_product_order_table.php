@@ -24,7 +24,7 @@ class CreateProductOrderTable extends Migration {
 			$table->integer('bales');
 			$table->decimal('unitprice', 8, 2)->nullable();
 			$table->boolean('ishold');
-            $table->string('rfv', 3)->after('bales');
+            $table->string('rfv', 3);
             $table->integer('stack_id')->unsigned()->nullable();
 			$table->timestamps();
 

@@ -21,31 +21,16 @@
 			<a href="<%= contact_url %><%= schedule.get("trucker").id %>">
 				<%= schedule.get("trucker").lastname %>, <%= schedule.get("trucker").firstname %> <%= schedule.get("trucker").suffix %>
 			</a>
-			<!-- <a href="<%= account_url %><%= schedule.get("trucker").accountidandname.id %>">
-				<span class="text-danger">[<%= schedule.get("trucker").accountidandname.name %>]</span>
-			</a> -->
-		</td>
-		<td>
-			<%= schedule.get("trailer").number %>
-			<!-- <a href="<%= account_url %><%= schedule.get("trailer").account.id %>">
-				<span class="text-danger">[<%= schedule.get("trailer").account.name %>]</span>
-			</a> -->
 		</td>
 		<td>
 			<a href="<%= contact_url %><%= schedule.get("originloader").id %>">
 				<%= schedule.get("originloader").lastname %>, <%= schedule.get("originloader").firstname %> <%= schedule.get("originloader").suffix %>
 			</a>
-			<!-- <a href="<%= account_url %><%= schedule.get("originloader").accountidandname.id %>">
-				<span class="text-danger">[<%= schedule.get("originloader").accountidandname.name %>]</span>
-			</a> -->
 		</td>
 		<td>
 			<a href="<%= contact_url %><%= schedule.get("destinationloader").id %>">
 			<%= schedule.get("destinationloader").lastname %>, <%= schedule.get("destinationloader").firstname %> <%= schedule.get("destinationloader").suffix %>
 			</a>
-			<!-- <a href="<%= account_url %><%= schedule.get("destinationloader").accountidandname.id %>">
-				<span class="text-danger">[<%= schedule.get("destinationloader").accountidandname.name %>]</span>
-			</a> -->
 		</td>
 		<td>
 			<a href="<%= po_weight_info_url %>/<%= schedule.get("id") %>" title="weight info">

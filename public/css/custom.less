@@ -334,6 +334,7 @@ ul.autocomplete, .ui-autocomplete {
 .width-130 { width: 130px; }
 .width-140 { width: 140px; }
 .width-150 { width:150px; }
+.width-170 { width:170px; }
 .width-200 { width:200px; }
 .width-250 { width:250px; }
 .width-300 { width: 300px; }
@@ -445,4 +446,20 @@ table td i { font-size:12px; }
     left: 205px;
     top: 4px;
 }
+
+// Print
+.print {
+    #cl-sidebar,
+    .tab-container {
+        display: none;
+    }
+}
+
 @import "datepicker.less";
+
+@media print {
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
+}

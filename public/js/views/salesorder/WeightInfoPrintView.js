@@ -1,7 +1,7 @@
 define([
 	'backbone',
 	'bootstrapdatepicker',
-	'views/base/AppView',
+	'views/base/PrintView',
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'models/salesorder/SalesOrderModel',
@@ -9,7 +9,7 @@ define([
 	'models/salesorder/SOWeightInfoModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
-	'text!templates/salesorder/weightInfoViewTemplate.html',
+	'text!templates/weightinfo/weightInfoPrintTemplate.html',
 	'text!templates/salesorder/weightInfoViewProductItemTemplate.html',
     'text!templates/salesorder/serviceTemplate.html',
 	'global',
@@ -31,7 +31,7 @@ define([
 			Const
 ){
 
-	var WeightInfoView = AppView.extend({
+	var WeightInfoPrintView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {
@@ -60,14 +60,6 @@ define([
 			this.model = new SOWeightInfoModel({id:this.schedId});
 			this.model.on('change', function() {
 				if(thisObj.subContainerExist()) {
-					/*if(typeof this.get('weightTicketNumber') === 'undefined') {console.log('here here');
-						Global.getGlobalVars().app_router.navigate(Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD, {trigger: true});}
-					else {
-						
-						thisObj.displayForm();
-						thisObj.supplyWeightInfoData();
-					}*/
-					
 					thisObj.displayForm();
 					thisObj.supplyWeightInfoData();
 				}
@@ -77,6 +69,14 @@ define([
 		},
 		
 		render: function(){
+            $("#cl-sidebar").hide();
+            $(".tab-container").hide();
+            $(".back-to-top").hide();
+            $(".user-nav li").hide();
+            $(".user-nav").append('<li><button class="btn btn-default" style="margin-top: 4px;">Back to Previous Page</button></li>');
+            
+//            $("body").addClass("print");
+            
 			this.salesOrderModel.runFetch();
 			Backbone.View.prototype.refreshTitle('Weight Info','view');
 		},
@@ -90,7 +90,13 @@ define([
 				dropoff_weight_info_edit_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.EDIT+'/'+Const.WEIGHTINFO.DROPOFF,
 				dropoff_weight_info_add_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD+'/'+Const.WEIGHTINFO.DROPOFF,
 				previous_so_sched_url: '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId,
-                weight_info_print_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.PRINT
+        
+                weightticket : this.model,
+                so : this.salesOrderModel,
+                schedule : this.soScheduleModel,
+                
+                pickup_products : this.model.get("weightticketscale_pickup").weightticketproducts,
+                dropoff_products : this.model.get("weightticketscale_pickup").weightticketproducts
 			};
 			
 			if((!this.model.get('status') || (this.model.get('status') && this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)) && 
@@ -176,7 +182,7 @@ define([
 					};
 					
 					var productItemTemplate = _.template(weightInfoViewProductItemTemplate, variables);
-					thisObj.$el.find('#pickup-product-list tbody').append(productItemTemplate);
+					// thisObj.$el.find('#pickup-product-list tbody').append(productItemTemplate);
 				});
 				thisObj.$el.find('#pickup-product-list tfoot .total-bales').text(this.addCommaToNumber(pickupProductsBalesTotal.toString()));
 				thisObj.$el.find('#pickup-product-list tfoot .total-pounds').text(this.addCommaToNumber(pickupProductsPoundsTotal.toFixed(2)));
@@ -224,7 +230,7 @@ define([
 					};
 					
 					var productItemTemplate = _.template(weightInfoViewProductItemTemplate, variables);
-					thisObj.$el.find('#dropoff-product-list tbody').append(productItemTemplate);
+					// thisObj.$el.find('#dropoff-product-list tbody').append(productItemTemplate);
 				});
 				thisObj.$el.find('#dropoff-product-list tfoot .total-bales').text(this.addCommaToNumber(dropoffProductsBalesTotal.toString()));
 				thisObj.$el.find('#dropoff-product-list tfoot .total-pounds').text(this.addCommaToNumber(dropoffProductsPoundsTotal.toFixed(2)));
@@ -233,101 +239,19 @@ define([
 		},
 		
 		events: {
-			'click #go-to-previous-page': 'goToPreviousPage',
-			'click .close-weight-ticket': 'showCloseWeightTicketConfirmationWindow',
-			'click #confirm-close-wt': 'closeWeightTicket',
-            'click #mail-weight-ticket': 'showMailForm',
-            'click #confirm-mail-weight-ticket': 'mailWeightTicket',
-            'click #print-weight-ticket': 'printWeightTicket'
+			'click #go-to-previous-page': function() {
+                this.goToPreviousPage();
+                this.togglePrintElements();
+            }
 		},
                 
-        printWeightTicket: function() {
-            console.log('Print weight ticket');
-            
-            return false;
-        },
-                
-        showMailForm: function() {
-            this.initModalForm('',
-                'confirm-mail-weight-ticket',
-                'Send',
-                'Send Email',
-                false);
-            this.showModalForm();
-            
-            return false;
-        },
-                
-        mailWeightTicket: function(ev) {
-            
-            var thisObj = this;
-            var formData = {
-                weightticket: $('#mail-weight-ticket-form input[name=weightticket]').prop('checked'),
-                loadingticket: $('#mail-weight-ticket-form input[name=loadingticket]').prop('checked'),
-                recipients: $('#mail-weight-ticket-form input[name=recipient]').val()
-            };
-			
-			var weightInfoModel = new SOWeightInfoModel({id:this.schedId});
-			weightInfoModel.setEmailURL();
-			weightInfoModel.save(
-				formData,
-				{
-					success: function (model, response, options) {
-						thisObj.displayMessage(response);
-					},
-					error: function (model, response, options) {
-						if(typeof response.responseJSON.error === 'undefined')
-							alert(response.responseJSON);
-						else
-							thisObj.displayMessage(response);
-					},
-					headers: weightInfoModel.getAuth()
-				}
-			);
-                
-            return false;
-        },
-		
-		showCloseWeightTicketConfirmationWindow: function (ev) {
-			this.initConfirmationWindow('Are you sure you want to close this weight ticket?',
-										'confirm-close-wt',
-										'Close Weight Ticket',
-										'Close Weight Ticket',
-										false);
-			this.showConfirmationWindow();
-			
-			return false;
-		},
-		
-		closeWeightTicket: function (ev) {
-			
-			var thisObj = this;
-			
-			var weightInfoModel = new SOWeightInfoModel({id:this.schedId});
-			weightInfoModel.setCloseURL();
-			weightInfoModel.save(
-				null,
-				{
-					success: function (model, response, options) {
-						thisObj.hideConfirmationWindow('modal-confirm', function () {
-							thisObj.subContainer.find('.editable-button').remove();
-						});
-						thisObj.displayMessage(response);
-					},
-					error: function (model, response, options) {
-						thisObj.hideConfirmationWindow();
-						if(typeof response.responseJSON.error == 'undefined')
-							alert(response.responseJSON);
-						else
-							thisObj.displayMessage(response);
-					},
-					headers: weightInfoModel.getAuth(),
-				}
-			);
-			
-			return false;
-		},
+        togglePrintElements: function() {
+            $("#cl-sidebar").show();
+            $(".tab-container").show();
+            $(".back-to-top").show();
+            $(".user-nav li").show();
+        }
 	});
 
-	return WeightInfoView;
+	return WeightInfoPrintView;
 });

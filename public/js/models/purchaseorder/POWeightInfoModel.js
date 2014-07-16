@@ -21,6 +21,10 @@ define([
 		setCloseURL: function () {
 			this.urlRoot = '/apiv1/weightticket/closeWeightTicket';
 		},
+                
+        setEmailURL: function () {
+			this.urlRoot = '/apiv1/weightticket/mailWeightTicket';
+		}
 	});
 
 	return POWeightInfoModel;

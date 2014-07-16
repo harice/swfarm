@@ -1,0 +1,153 @@
+<div class="content padding-top-0">
+    <h2 class="ponumber margin-bottom-0"><%= weightticket.get("weightTicketNumber") %></h2>
+    <div class="row margin-top-0">
+        <div class="col-md-6">
+            SO No: <code><%= so.get("order_number") %></code><br>
+            Customer: <code><%= so.get("account").name %></code><br>
+            Loading Ticket No: <code><%= weightticket.get("loadingTicketNumber") %></code><br>
+            Unloading Ticket No: <code><%= weightticket.get("unloadingTicketNumber") %></code><br>
+            Date: <code><%= weightticket.get("created_at") %></code>
+        </div>
+        <div class="col-md-6">
+            <button id="go-to-previous-page" class="btn btn-primary no-print">Go back to previus page.</button>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+
+    <form id="soWeightInfoFrom" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+        <% if (weightticket.get("weightticketscale_pickup")) { %>
+        <fieldset>
+            <legend>Pickup</legend>
+            <div id="pickup-fields" style="display:none;">
+                <div class="table-responsive">
+                    <table id="pickup-info" class="table table-condensed table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width:15%;">Scale</th>
+                                <th style="width:15%;">Scale Name</th>
+                                <th style="width:15%;">Scale Fee</th>
+                                <th style="width:15%;">Bales</th>
+                                <th style="width:15%;">Gross</th>
+                                <th style="width:15%;">Tare</th>
+                                <th style="width:10%;">Net</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><%= weightticket.get("weightticketscale_pickup").scaler_account[0].name %></td>
+                                <td><%= weightticket.get("weightticketscale_pickup").scale.name %></td>
+                                <td><%= weightticket.get("weightticketscale_pickup").fee %></td>
+                                <td><%= weightticket.get("weightticketscale_pickup").bales %></td>
+                                <td><%= weightticket.get("weightticketscale_pickup").gross %></td>
+                                <td><%= weightticket.get("weightticketscale_pickup").tare %></td>
+                                <td><span class="net">0.0000</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-responsive">
+                    <table id="pickup-product-list" class="table table-condensed table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width:20%;">Stack No.</th>
+                                <th style="width:20%;">Product</th>
+                                <th style="width:20%;">Bales</th>
+                                <th style="width:20%;">Lbs.</th>
+                                <th style="width:20%;">Net Tons</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% _.each(pickup_products, function (product) { %>
+                            <tr>
+                                <td><%= product.transportscheduleproduct.productorder.stacknumber %></td>
+                                <td><%= product.transportscheduleproduct.productorder.product.name %></td>
+                                <td><%= (typeof product.bales != 'undefined' && product.bales != null)? parseFloat(product.bales) : 0 %></td>
+                                <td><%= (typeof product.pounds != 'undefined' && product.pounds != null)? parseFloat(product.pounds) : 0 %></td>
+                                <td><%= (typeof product.pounds != 'undefined' && product.pounds != null)? parseFloat(product.pounds) : 0.0000 %></td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2">Total</td>
+                                <td><span class="total-bales">0</span></td>
+                                <td><span class="total-pounds">0.00</span></td>
+                                <td><span class="total-net-tons">0.0000</span></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </fieldset>
+        <% } %>
+        
+        <% if (weightticket.get("weightticketscale_dropoff")) { %>
+        <fieldset>
+            <legend>Dropoff</legend>
+            <div id="dropoff-fields" style="display:none;">
+                <div class="table-responsive">
+                    <table id="dropoff-info" class="table table-condensed table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width:15%;">Scale</th>
+                                <th style="width:15%;">Scale Name</th>
+                                <th style="width:15%;">Scale Fee</th>
+                                <th style="width:15%;">Bales</th>
+                                <th style="width:15%;">Gross</th>
+                                <th style="width:15%;">Tare</th>
+                                <th style="width:10%;">Net</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><%= weightticket.get("weightticketscale_dropoff").scaler_account[0].name %></td>
+                                <td><%= weightticket.get("weightticketscale_dropoff").scale.name %></td>
+                                <td><%= weightticket.get("weightticketscale_dropoff").fee %></td>
+                                <td><%= weightticket.get("weightticketscale_dropoff").bales %></td>
+                                <td><%= weightticket.get("weightticketscale_dropoff").gross %></td>
+                                <td><%= weightticket.get("weightticketscale_dropoff").tare %></td>
+                                <td><span class="net">0.0000</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-responsive">
+                    <table id="dropoff-product-list" class="table table-condensed table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width:20%;">Stack No.</th>
+                                <th style="width:20%;">Product</th>
+                                <th style="width:20%;">Bales</th>
+                                <th style="width:20%;">Lbs.</th>
+                                <th style="width:20%;">Net Tons</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% _.each(dropoff_products, function (product) { %>
+                            <tr>
+                                <td><%= product.transportscheduleproduct.productorder.stacknumber %></td>
+                                <td><%= product.transportscheduleproduct.productorder.product.name %></td>
+                                <td><%= (typeof product.bales != 'undefined' && product.bales != null)? parseFloat(product.bales) : 0 %></td>
+                                <td><%= (typeof product.pounds != 'undefined' && product.pounds != null)? parseFloat(product.pounds) : 0 %></td>
+                                <td><%= (typeof product.pounds != 'undefined' && product.pounds != null)? parseFloat(product.pounds) : 0.0000 %></td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2">Total</td>
+                                <td><span class="total-bales">0</span></td>
+                                <td><span class="total-pounds">0.00</span></td>
+                                <td><span class="total-net-tons">0.0000</span></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </fieldset>
+        <% } %>
+    </form>
+
+</div> <!-- /.content -->
