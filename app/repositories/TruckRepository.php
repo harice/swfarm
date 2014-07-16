@@ -3,125 +3,93 @@
 /**
  * Description of TruckRepository
  *
- * @author Das
+ * @author Avs
  */
 class TruckRepository implements TruckRepositoryInterface {
     
     public function findAll($params)
     {
-        try
-        {
-            $perPage = isset($params['perpage']) ? $params['perpage'] : 10;
-            
-            return Truck::paginate($perPage);
-        }
-        catch (Exception $e)
-        {
-            return $e->getMessage();
-        }
+       
+        $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+        
+        return Truck::with('account.accounttype')->paginate($perPage);
+       
     }
     
     public function findById($id)
     {
-        try
-        {
-            $truck = Truck::find($id);
-            
-            if (!$truck) {
-                throw new NotFoundException();
-            }
-            
-            return $truck;
+        $truck = Truck::with('account.accounttype')->find($id);
+        
+        if (!$truck) {
+            throw new NotFoundException();
         }
-        catch (Exception $e)
-        {
-            return $e->getMessage();
-        }
+        
+        return $truck;
     }
     
     public function store($data)
     {
-        try
-        {
-            $this->validate($data);
-            $truck = $this->instance();
-            $truck->fill($data);
-            
-            if (!$truck->save()) {
-                return array(
-                    'error' => true,
-                    'message' => 'Truck was not created.'
-                );
-            }
-            
-            $response = array(
-                'error' => false,
-                'message' => Lang::get('messages.success.created', array('entity' => 'Truck')),
-                'data' => $truck->toArray()
+        $this->validate($data);
+        $truck = $this->instance();
+        $truck->fill($data);
+        
+        if (!$truck->save()) {
+            return array(
+                'error' => true,
+                'message' => 'Truck was not created.'
             );
-            
-            return $response;
         }
-        catch (Exception $e)
-        {
-            return $e->getMessage();
-        }
+        
+        $response = array(
+            'error' => false,
+            'message' => Lang::get('messages.success.created', array('entity' => 'Truck'))
+        );
+        
+        return $response;
+   
     }
     
     public function update($id, $data)
     {
-        try
-        {
-            $this->validate($data, $id);
-            $truck = $this->findById($id);
-            $truck->fill($data);
-            
-            if (!$truck->update()) {
-                return array(
-                    'error' => true,
-                    'message' => 'Truck was not updated.'
-                );
-            }
-            
-            $response = array(
-                'error' => false,
-                'message' => Lang::get('messages.success.updated', array('entity' => 'Truck')),
-                'data' => $truck->toArray()
+      
+        $this->validate($data, $id);
+        $truck = $this->findById($id);
+        $truck->fill($data);
+        
+        if (!$truck->update()) {
+            return array(
+                'error' => true,
+                'message' => 'Truck was not updated.'
             );
-            
-            return $response;
         }
-        catch (Exception $e)
-        {
-            return $e->getMessage();
-        }
+        
+        $response = array(
+            'error' => false,
+            'message' => Lang::get('messages.success.updated', array('entity' => 'Truck'))
+        );
+        
+        return $response;
     }
     
     public function destroy($id)
     {
-        try
-        {
-            $truck = $this->findById($id);
+       
+        $truck = $this->findById($id);
 
-            if (!$truck->delete()) {
-                return array(
-                    'error' => true,
-                    'message' => 'Truck was not deleted.'
-                );
-            }
-
-            $response = array(
-                'error' => false,
-                'message' => Lang::get('messages.success.deleted', array('entity' => 'Truck')),
-                'data' => $truck->toArray()
+        if (!$truck->delete()) {
+            return array(
+                'error' => true,
+                'message' => 'Truck was not deleted.'
             );
-            
-            return $response;
         }
-        catch (Exception $e)
-        {
-            return $e->getMessage();
-        }
+
+        $response = array(
+            'error' => false,
+            'message' => Lang::get('messages.success.deleted', array('entity' => 'Truck'))
+        );
+        
+        return $response;
+       
     }
     
     public function validate($data, $id = null)
@@ -130,8 +98,8 @@ class TruckRepository implements TruckRepositoryInterface {
         
         if ($id) {
             $rules['account_id'] = 'required';
-            $rules['name'] = 'required|unique:truck,name,'.$id;
-            $rules['rate'] = 'required';
+            $rules['trucknumber'] = 'required|unique:truck,trucknumber,'.$id;
+            $rules['fee'] = 'required';
         }
         
         $validator = Validator::make($data, $rules);

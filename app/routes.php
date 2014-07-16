@@ -176,6 +176,8 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('storagelocation', 'APIv1\StorageLocationController');
 
     // Inventory
+    Route::get('inventory/summaryByStack', 'APIv1\InventoryController@getInventorySummaryByStack');
+    Route::get('inventory/stackListByProduct', 'APIv1\InventoryController@getStackListByProduct');
     Route::get('inventory/stacklist', 'APIv1\InventoryController@stackList');
     Route::get('inventory/transactiontype', 'APIv1\InventoryController@transactionType');
     Route::resource('inventory', 'APIv1\InventoryController');
