@@ -83,6 +83,8 @@ define([
 				_: _ 
 			};
 			
+			_.extend(data,Backbone.View.prototype.helpers);
+			
 			var innerListTemplate = _.template(inventoryInnerListTemplate, data);
 			this.subContainer.find("#inventory-list tbody").html(innerListTemplate);
 			

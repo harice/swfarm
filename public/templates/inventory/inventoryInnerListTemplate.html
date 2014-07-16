@@ -4,7 +4,7 @@
 		<td><a href="<%= stacknumber_url %>/<%= i.get("stacknumber") %>"><%= i.get("stacknumber") %></a></td>
 		<td><%= i.get("productname") %></td>
 		<td><%= i.get("stacklocation") %></td>
-		<td><%= i.get("onHandTons") %></td>
+		<td class="text-right"><%= numberFormatTons(i.get("onHandTons")) %></td>
 		<td></td>
 		<td></td>
 		<td></td>
