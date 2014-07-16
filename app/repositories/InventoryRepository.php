@@ -126,7 +126,7 @@ class InventoryRepository implements InventoryRepositoryInterface {
 
         return $result;
     }*/
-
+    /* latest
     public function getStackListByProduct($params){
         $productId = isset($params['productId']) ? $params['productId'] : null;
         $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
@@ -163,6 +163,51 @@ class InventoryRepository implements InventoryRepositoryInterface {
                 'message' => 'Product not found.'
             );
         }
+        return $result;
+    }*/
+
+
+    public function getStackListByProduct($params){
+        $productId = isset($params['productId']) ? $params['productId'] : null;
+        $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+        $stackList = Stack::with('stacklocation.section.storagelocationName')
+                            ->with('productName');
+        if($productId != null) {
+            $stackList = $stackList->where('product_id', '=', $productId);
+        }
+        $stackList = $stackList->orderBy('stacknumber', 'ASC')->paginate($perPage)->toArray();
+        // return $stackList;
+
+        $result = array();
+        
+       
+        if($stackList['data']){
+            $result['total'] = $stackList['total'];
+            $result['per_page'] = $stackList['per_page'];
+            $result['current_page'] = $stackList['current_page'];
+            $result['last_page'] = $stackList['last_page'];
+            $result['from'] = $stackList['from'];
+            $result['to'] = $stackList['to'];
+            $index = 0;
+            foreach($stackList['data'] as $product){
+                $result['data'][$index]['productname'] = $product['product_name']['name'];
+                $result['data'][$index]['stacknumber'] = $product['stacknumber'];
+                $result['data'][$index]['stacklocation'] = "";
+                $result['data'][$index]['onHandTons'] = 0;
+                foreach($product['stacklocation'] as $stacklocation){ 
+                        $result['data'][$index]['stacklocation'] .= $stacklocation['section'][0]['storagelocation_name']['name']." - ".$stacklocation['section'][0]['name']." | ";
+                        $result['data'][$index]['onHandTons'] += $stacklocation['tons'];
+                }
+                $result['data'][$index]['stacklocation'] = substr($result['data'][$index]['stacklocation'], 0, -2); //remove extra | on last
+                $index++;
+            }
+        } else {
+            return array(
+                'error' => true,
+                'message' => 'Product not found.'
+            );
+        }
+
         return $result;
     }
 /*
