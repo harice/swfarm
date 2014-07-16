@@ -24,27 +24,19 @@ class ContractRepository implements ContractRepositoryInterface {
                 $contracts = $contracts->where('account_id', '=', $account_id);
             }
             
-            $result = $contracts
-                ->take($perPage)
-                ->offset($offset)
-                ->orderBy($sortby, $orderby)
-                ->paginate($perPage);
+            $_contracts = $contracts->get();
+            $total_contracts = $_contracts->count();
             
-            $result = $result->toArray();
-            
-            if (!empty($result['data'])) {
-                $data = $result['data'];
-                unset($result['data']);
-                foreach ($data as $contract) {
-                    $weightticket = $this->weighttickets($contract['id']);
+            $contracts_array = $_contracts->toArray();
+            foreach ($contracts_array as &$contract) {
+                $weightticket = $this->weightticket($contract['id']);
 
-                    if ($weightticket) {
-                        $contract['total_delivered'] = $weightticket['total_tons_delivered'];
-                    }
-
-                    $result['data'][] = $contract;
+                if ($weightticket) {
+                    $contract['total_delivered'] = $weightticket['total_tons_delivered'];
                 }
             }
+            
+            $result = Paginator::make($contracts_array, $total_contracts, $perPage);
             
             return $result;
         }
@@ -118,7 +110,7 @@ class ContractRepository implements ContractRepositoryInterface {
     public function store($data)
     {
         $data['contract_number'] = $this->generateContractNumber('Contract', 'C');
-        $data['user_id'] = Auth::user()->id;
+        $data['user_id'] = 1;
         $data['status_id'] = 1;
         $this->validate($data);
         
@@ -370,7 +362,7 @@ class ContractRepository implements ContractRepositoryInterface {
      * 
      * @return Products
      */
-    public function weighttickets($id)
+    public function weightticket($id)
     {
         try
         {
