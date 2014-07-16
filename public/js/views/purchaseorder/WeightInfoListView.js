@@ -35,14 +35,6 @@ define([
 			
 			this.collection = new POWeightInfoCollection({id:this.poId});
 			this.collection.on('sync', function() {
-				_.each(this.models, function (model) {
-					var transportScheduleDate = model.get('transportScheduleDate').split(' ');
-					model.set('transportScheduleDate', thisObj.convertDateFormat(transportScheduleDate[0], thisObj.dateFormatDB, thisObj.dateFormat, '-')+' '+transportScheduleDate[1]);
-					model.set('gross', thisObj.addCommaToNumber(parseFloat(model.get('gross')).toFixed(4)));
-					model.set('tare', thisObj.addCommaToNumber(parseFloat(model.get('tare')).toFixed(4)));
-					model.set('netWeight', thisObj.addCommaToNumber(parseFloat(model.get('netWeight')).toFixed(4)));
-				});
-				
 				if(thisObj.subContainerExist())
 					thisObj.displayList();
 			});

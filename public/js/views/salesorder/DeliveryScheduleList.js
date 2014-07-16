@@ -35,11 +35,6 @@ define([
 			
 			this.collection = new SOScheduleCollection({id:option.id});
 			this.collection.on('sync', function() {
-				_.each(this.models, function (model) {
-					model.set('scheduledate', thisObj.convertDateFormat(model.get('scheduledate').split(' ')[0], thisObj.dateFormatDB, thisObj.dateFormat, '-'));
-					model.set('distance', thisObj.addCommaToNumber(parseFloat(model.get('distance')).toFixed(2)));
-				});
-				
 				if(thisObj.subContainerExist())
 					thisObj.displayList();
 			});
@@ -91,6 +86,8 @@ define([
 				so_schedule_edit_url: '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId+'/'+Const.CRUD.EDIT,
 				so_schedule_url: '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId,
 				so_weight_info_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+this.soId,
+				account_url: '#/'+Const.URL.ACCOUNT+'/',
+				contact_url: '#/'+Const.URL.CONTACT+'/',
 				schedules: this.collection.models,
 				_: _ 
 			};
@@ -98,6 +95,8 @@ define([
 			if(this.isEditable())
 				data['editable'] = true;
 			
+			_.extend(data,Backbone.View.prototype.helpers);
+
 			var innerListTemplate = _.template(deliveryScheduleInnerListTemplate, data);
 			this.subContainer.find("#so-schedule-list tbody").html(innerListTemplate);
 			

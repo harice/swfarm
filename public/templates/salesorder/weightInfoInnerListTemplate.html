@@ -2,26 +2,25 @@
 	<% _.each(weightInfo, function(info){ %>
 		<% if (info.get("weightTicketNumber")) { %>
 			<tr>
-				<td><a href="<%= weightInfo_url %>/<%= info.get("transportScheduleId") %>"><%= info.get("weightTicketNumber") %></a></td>
-				<td><%= info.get("transportScheduleDate") %></td>
-				<td><%= info.get("gross") %></td>
-				<td><%= info.get("tare") %></td>
-				<td><%= info.get("netWeight") %></td>
 				<td>
-					<% if(info.get("status").name.toLowerCase() == "open" && typeof editable != "undefined") { %>
-					<a href="#" class="text-danger delete-schedule" title="delete">
-						<span class="fa-stack">
-							<i class="fa fa-square fa-stack-2x"></i>
-							<i class="fa fa-times fa-stack-1x fa-inverse"></i>
-						</span>
+					<a href="<%= weightInfo_url %>/<%= info.get("transportScheduleId") %>">
+						<%= info.get("weightTicketNumber") %>
 					</a>
-					<% } %>
 				</td>
+				<td><label class="label label-<%= info.get("status").class %>"><%= info.get("status").class %></label></td>
+				<td>
+					<a href="<%= so_schedule_url %>/<%= info.get("transportScheduleId") %>">
+						<%= formatDateAMPM(info.get("transportScheduleDate")) %>
+					</a>
+				</td>
+				<td class="text-right"><%= numberFormatTons(info.get("gross")) %></td>
+				<td class="text-right"><%= numberFormatTons(info.get("tare")) %></td>
+				<td class="text-right"><%= numberFormatTons(info.get("netWeight")) %></td>
 			</tr>
 		<% } %>
 	<% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="6">No result found.</td>
+		<td colspan="5">No result found.</td>
 	</tr>
 <% } %>
