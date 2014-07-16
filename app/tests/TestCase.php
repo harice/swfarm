@@ -5,7 +5,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase {
     public function tearDown()
     {
         Mockery::close();
-        Artisan::call('migrate:reset');
+        // Artisan::call('migrate:reset');
     }
     
 	/**
