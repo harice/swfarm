@@ -1,27 +1,13 @@
 <% if (!_.isEmpty(inventory)) { %>
 	<% _.each(inventory, function(i){ %>
 	<tr>
+		<td><a href="<%= stacknumber_url %>/<%= i.get("stacknumber") %>"><%= i.get("stacknumber") %></a></td>
+		<td><%= i.get("productname") %></td>
+		<td><%= i.get("stacklocation") %></td>
+		<td><%= i.get("onHandTons") %></td>
 		<td></td>
 		<td></td>
 		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td>
-			<a href="<%= inventory_edit_url %>/<%= i.get("id") %>" class="text-primary" title="edit">
-			  <span class="fa-stack">
-	            <i class="fa fa-square fa-stack-2x"></i>
-	            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-	          </span>
-			</a>
-			<a href="#" class="text-danger delete-inventory" data-id="<%= i.get("id") %>">
-			  <span class="fa-stack">
-	            <i class="fa fa-square fa-stack-2x"></i>
-	            <i class="fa fa-times fa-stack-1x fa-inverse"></i>
-	          </span>
-			</a>
-		</td>
 	</tr>
 	<% }); %>
 <% } else { %>

@@ -33,6 +33,7 @@ define([
 			this.h1Small = 'list';
 			
 			this.collection = new InventoryCollection();
+			this.collection.listView.searchURLForFilter = false;
 			this.collection.on('sync', function() {
 				if(thisObj.subContainerExist())
 					thisObj.displayList();
@@ -44,7 +45,7 @@ define([
 			this.productCollection = new ProductCollection();
 			this.productCollection.on('sync', function() {
 				thisObj.displayInventory();
-				thisObj.renderList(1);
+				thisObj.renderList(thisObj.collection.listView.currentPage);
 				this.off('sync');
 			});
 			this.productCollection.on('error', function(collection, response, options) {
@@ -66,23 +67,18 @@ define([
 			var innerTemplate = _.template(inventoryListTemplate, innerTemplateVar);
 			
 			var variables = {
-				h1_title: 'Trailer',
-				h1_small: 'list',
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
 			
-			this.initConfirmationWindow('Are you sure you want to delete this Trucker?',
-										'confirm-delete-trucker',
-										'Delete',
-										'Delete Trucker');
+			this.setListOptions();
 		},
 		
 		displayList: function () {
 			
 			var data = {
-				inventory_edit_url: '#/'+Const.URL.INVENTORY+'/'+Const.CRUD.EDIT,
+				stacknumber_url: '#/'+Const.URL.STACKNUMBER,
 				inventory: this.collection.models,
 				_: _ 
 			};
@@ -93,33 +89,26 @@ define([
 			this.generatePagination();
 		},
 		
+		setListOptions: function () {
+			var options = this.collection.listView;
+			//console.log(options);
+			
+			if(options.search != '')
+				this.$el.find('#search-keyword').val(options.search);
+				
+			if(options.filters.productId != '')
+				this.$el.find('[name="product_id"][value="'+options.filters.productId+'"]').attr('checked', true);
+		},
+		
 		events: {
-			'click .delete-trucker': 'preShowConfirmationWindow',
-			'click #confirm-delete-trucker': 'deleteTrucker'
+			'change .product_id' : 'filterByProduct',
 		},
 		
-		preShowConfirmationWindow: function (ev) {
-			this.$el.find('#confirm-delete-trucker').attr('data-id', $(ev.currentTarget).attr('data-id'));
-			
-			this.showConfirmationWindow();
+		filterByProduct: function (ev) {
+			var filter = $(ev.target).val();
+			this.collection.setFilter('productId', filter)
+			this.renderList(1);
 			return false;
-		},
-		
-		deleteTrucker: function (ev) {
-			var thisObj = this;
-			var inventoryModel = new InventoryModel({id:$(ev.currentTarget).attr('data-id')});
-			
-            inventoryModel.destroy({
-                success: function (model, response, options) {
-                    thisObj.displayMessage(response);
-                    thisObj.renderList(1);
-                },
-                error: function (model, response, options) {
-                    thisObj.displayMessage(response);
-                },
-                wait: true,
-                headers: inventoryModel.getAuth(),
-            });
 		},
 	});
 

@@ -24,6 +24,8 @@ define([
 			lookUpIds: {},
 			collapseId: null,
 			collapseLatestId: null,
+			searchURLForFilter: true,
+			otherData:{},
 		},
 		initialize: function(option){
 			//this.runInit();

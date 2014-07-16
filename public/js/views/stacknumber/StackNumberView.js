@@ -77,6 +77,7 @@ define([
 		},
 		
 		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
 		},
 	});
 
