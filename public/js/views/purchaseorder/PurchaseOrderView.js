@@ -246,7 +246,7 @@ define([
 		},
 		
 		showPDF: function (ev) {
-			console.log('showPDF');
+			// console.log('showPDF');
 			this.model = new FileModel({id:$(ev.currentTarget).attr('data-id')});
 			this.model.on('change', function() {
 				
