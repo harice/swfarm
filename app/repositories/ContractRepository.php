@@ -24,27 +24,19 @@ class ContractRepository implements ContractRepositoryInterface {
                 $contracts = $contracts->where('account_id', '=', $account_id);
             }
             
-            $result = $contracts
-                ->take($perPage)
-                ->offset($offset)
-                ->orderBy($sortby, $orderby)
-                ->paginate($perPage);
+            $_contracts = $contracts->get();
+            $total_contracts = $_contracts->count();
             
-            $result = $result->toArray();
-            
-            if (!empty($result['data'])) {
-                $data = $result['data'];
-                unset($result['data']);
-                foreach ($data as $contract) {
-                    $weightticket = $this->weighttickets($contract['id']);
+            $contracts_array = $_contracts->toArray();
+            foreach ($contracts_array as &$contract) {
+                $weightticket = $this->weightticket($contract['id']);
 
-                    if ($weightticket) {
-                        $contract['total_delivered'] = $weightticket['total_tons_delivered'];
-                    }
-
-                    $result['data'][] = $contract;
+                if ($weightticket) {
+                    $contract['total_delivered'] = $weightticket['total_tons_delivered'];
                 }
             }
+            
+            $result = Paginator::make($contracts_array, $total_contracts, $perPage);
             
             return $result;
         }
@@ -118,7 +110,7 @@ class ContractRepository implements ContractRepositoryInterface {
     public function store($data)
     {
         $data['contract_number'] = $this->generateContractNumber('Contract', 'C');
-        $data['user_id'] = Auth::user()->id;
+        $data['user_id'] = 1;
         $data['status_id'] = 1;
         $this->validate($data);
         
@@ -266,8 +258,15 @@ class ContractRepository implements ContractRepositoryInterface {
                     $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['stacknumber'] = $product->productorder['stacknumber'];
                     $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['order_number'] = $product->productorder->order->order_number;
                     $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['tons'] = $product->productorder->tons;
-                    $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['status']['name'] = $product->productorder->order->status_id;
-                    $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['status']['class'] = "success";
+                    
+                    if ($product->productorder->order->status_id == 2) {
+                        $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['status']['name'] = "Closed";
+                        $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['status']['class'] = "default";
+                    } else {
+                        $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['status']['name'] = "Open";
+                        $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['status']['class'] = "success";
+                    }
+                    
                     
                     $delivered_tons = 0.0;
                     foreach($product->productorder->transportscheduleproduct as $schedule) {
@@ -278,7 +277,7 @@ class ContractRepository implements ContractRepositoryInterface {
                         
                         foreach($schedule->weightticketproducts as $weightticket_product) {
                             if ($weightticket_product->weightticketscale_type->type == 2) {
-                                $delivered_tons = $weightticket_product->pounds / 2000;
+                                $delivered_tons = $weightticket_product->pounds / 2000.0;
                             }
                         }
                         
@@ -286,11 +285,11 @@ class ContractRepository implements ContractRepositoryInterface {
                         $total_delivered_tons += $delivered_tons;
                     }
                     
-                    $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['delivered_tons'] = $delivered_tons;
+                    $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['delivered_tons'] = number_format($delivered_tons, 4);
                 }
                 
-                $result[$contract_product->product_id]['delivered_tons'] = $total_delivered_tons;
-                $result[$contract_product->product_id]['remaining_tons'] = $contract_product->tons - $total_delivered_tons;
+                $result[$contract_product->product_id]['delivered_tons'] = number_format($total_delivered_tons, 4);
+                $result[$contract_product->product_id]['remaining_tons'] = number_format(($contract_product->tons - $total_delivered_tons), 4);
             }
             
             return $result;
@@ -370,7 +369,7 @@ class ContractRepository implements ContractRepositoryInterface {
      * 
      * @return Products
      */
-    public function weighttickets($id)
+    public function weightticket($id)
     {
         try
         {

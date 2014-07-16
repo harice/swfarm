@@ -69,10 +69,10 @@ define([
 		},
 		
 		render: function(){
-            $("#cl-sidebar").remove();
-            $(".tab-container").remove();
-            $(".back-to-top").remove();
-            $(".user-nav li").remove();
+            $("#cl-sidebar").hide();
+            $(".tab-container").hide();
+            $(".back-to-top").hide();
+            $(".user-nav li").hide();
             $(".user-nav").append('<li><button class="btn btn-default" style="margin-top: 4px;">Back to Previous Page</button></li>');
             
 //            $("body").addClass("print");
@@ -85,6 +85,7 @@ define([
 			var thisObj = this;
 			
 			var innerTemplateVariables = {
+                _: _,
 				pickup_weight_info_edit_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.EDIT+'/'+Const.WEIGHTINFO.PICKUP,
 				pickup_weight_info_add_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD+'/'+Const.WEIGHTINFO.PICKUP,
 				dropoff_weight_info_edit_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.EDIT+'/'+Const.WEIGHTINFO.DROPOFF,
@@ -98,6 +99,8 @@ define([
                 pickup_products : this.model.get("weightticketscale_pickup").weightticketproducts,
                 dropoff_products : this.model.get("weightticketscale_pickup").weightticketproducts
 			};
+            
+            _.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
 			
 			if((!this.model.get('status') || (this.model.get('status') && this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)) && 
 				this.salesOrderModel.get('status').name.toLowerCase() == Const.STATUS.OPEN)

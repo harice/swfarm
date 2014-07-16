@@ -28,6 +28,7 @@ define(function () {
 			'SCALE': 'administration/scale',
 			'TRUCKER': 'administration/trucker',
 			'INVENTORY': 'inventory',
+			'STACKNUMBER': 'stacknumber',
 		},
 		'MENU': {
 			'PURCHASES': {

@@ -31,7 +31,8 @@ class StackLocation extends Eloquent {
     }
 
     public function section(){
-        return $this->hasMany('Section', 'section_id', 'id');
+        return $this->hasMany('Section', 'id', 'section_id');
     }
+
 
 }
