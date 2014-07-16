@@ -253,7 +253,6 @@ class ContractRepository implements ContractRepositoryInterface {
             }
             
             $contract_products = $contract->contractproducts;
-            var_dump($contract_products);
             
             $result = array();
             foreach($contract_products as $contract_product) {
@@ -262,6 +261,7 @@ class ContractRepository implements ContractRepositoryInterface {
                 
                 $total_delivered_tons = 0.0;
                 foreach($contract_product->products as $product) {
+                    // return $product;
                     $result[$contract_product->product_id]['product_name'] = $product->name;
                     $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['stacknumber'] = $product->productorder['stacknumber'];
                     $result[$contract_product->product_id]['salesorders'][$product->productorder['id']]['order_number'] = $product->productorder->order->order_number;
@@ -271,10 +271,18 @@ class ContractRepository implements ContractRepositoryInterface {
                     
                     $delivered_tons = 0.0;
                     foreach($product->productorder->transportscheduleproduct as $schedule) {
-                        $delivered_gross = $schedule->transportschedule->weightticket->weightticketscale_dropoff->gross;
-                        $delivered_tare = $schedule->transportschedule->weightticket->weightticketscale_dropoff->tare;
+                        // return $schedule;
+//                        Log::debug($schedule->transportschedule->weightticket->weightticketscale_dropoff->gross);
+//                        $delivered_gross = $schedule->transportschedule->weightticket->weightticketscale_dropoff->gross;
+//                        $delivered_tare = $schedule->transportschedule->weightticket->weightticketscale_dropoff->tare;
                         
-                        $delivered_tons = $schedule->weightticketproducts[1]->pounds / 2000;
+                        foreach($schedule->weightticketproducts as $weightticket_product) {
+                            if ($weightticket_product->weightticketscale_type->type == 2) {
+                                $delivered_tons = $weightticket_product->pounds / 2000;
+                            }
+                        }
+                        
+//                        $delivered_tons = $schedule->weightticketproducts[1]->pounds / 2000;
                         $total_delivered_tons += $delivered_tons;
                     }
                     

@@ -96,12 +96,6 @@ define([
                 pickup_products : this.model.get("weightticketscale_pickup").weightticketproducts,
                 dropoff_products : this.model.get("weightticketscale_pickup").weightticketproducts
 			};
-            
-            console.log(innerTemplateVariables['weightticket']);
-            console.log(innerTemplateVariables['so']);
-            console.log(innerTemplateVariables['schedule']);
-            
-            console.log(innerTemplateVariables['pickup_products']);
 			
 			if((!this.model.get('status') || (this.model.get('status') && this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)) && 
 				this.purchaseOrderModel.get('status').name.toLowerCase() == Const.STATUS.OPEN)
