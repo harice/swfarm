@@ -9,7 +9,7 @@
         Nature of Sale: <span class="text-danger"><%= so.get("natureofsale").name %></span><br>
         
         <% if (so.get("contract") && typeof so.get("contract").contract_number != "undefined") { %>
-            <br>Contract: <span class="text-danger"><%= so.get("contract").contract_number %></span>
+            Contract: <span class="text-danger"><%= so.get("contract").contract_number %></span><br>
         <% } %>
 
         Status: <label class="label label-<%= so.get("status").class %>"><%= so.get("status").name %></label>

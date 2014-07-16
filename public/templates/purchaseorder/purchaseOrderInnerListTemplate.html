@@ -49,11 +49,11 @@
 										<i class="fa fa-pencil width-10"></i> Edit <% if (postatus != po_status_pending) { %>PO<% } else { %>Bid<% } %>
 									</a>
 									<% if (postatus != po_status_pending) { %>
-										<a href="#" class="btn btn-danger btn-trans btn-rad btn-sm close-po editable-button" data-id="<%= po.get("id") %>">
+										<a href="#" class="btn btn-warning btn-trans btn-rad btn-sm close-po editable-button" data-id="<%= po.get("id") %>">
 											<i class="fa fa-times width-10"></i> Close PO
 										</a>
 									<% } %>
-									<a href="#" data-id="<%= po.get("id") %>" class="btn btn-trans btn-rad btn-danger btn-sm cancel-po editable-button">
+									<a href="#" data-id="<%= po.get("id") %>" class="btn btn-trans btn-rad btn-warning btn-sm cancel-po editable-button">
 										<i class="fa fa-ban width-10"></i> Cancel <% if (postatus != po_status_pending) { %>PO<% } else { %>Bid<% } %>
 									</a>
 									<% if (postatus != po_status_pending) { %>
