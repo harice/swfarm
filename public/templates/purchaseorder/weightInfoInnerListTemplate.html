@@ -7,6 +7,7 @@
 						<%= info.get("weightTicketNumber") %>
 					</a>
 				</td>
+				<td><label class="label label-<%= info.get("status").class %>"><%= info.get("status").name %></label></td>
 				<td>
 					<a href="<%= po_schedule_url %>/<%= info.get("transportScheduleId") %>">
 						<%= formatDateAMPM(info.get("transportScheduleDate")) %>

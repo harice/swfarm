@@ -137,7 +137,7 @@ define([
 		},
 		
 		isEditable: function () {
-			if(this.model.get('status').name.toLowerCase() == Const.STATUS.OPEN)
+			if(this.model.get('status').name.toLowerCase() != Const.STATUS.PENDING)
 				return true;
 			else
 				return false;
