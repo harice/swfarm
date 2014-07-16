@@ -1,0 +1,73 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="block-flat">
+            <div class="content">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form id="inventoryForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+                            <% if (typeof inventory_id !== "undefined") { %>
+                                <input type="hidden" name="id" value="<%= inventory_id %>" />
+                            <% } %>
+                            <fieldset>
+                                <legend>Details</legend>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="transactiontype_id" class="col-sm-3 control-label">Transaction Type *</label>
+											<div class="col-sm-7">
+												<div class="styled-select">
+													<select class="form-control width-304" id="transactiontype_id" name="transactiontype_id" required>
+														<option value="">Select a transaction type</option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="notes" class="col-sm-3 control-label">Notes</label>
+											<div class="col-sm-9">
+												<textarea class="form-control notes" id="notes" name="notes"></textarea>
+											</div>
+										</div>
+									</div>
+								</div>
+                            </fieldset>
+							<fieldset>
+								<legend>
+									Products
+									<button title="Add Product" id="add-product" type="button" class="pull-right btn btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
+								</legend>
+								<div class="table-responsive">
+									<table id="product-list" class="table table-bordered">
+										<thead>
+											<tr>
+												<th>Product</th>
+												<th>Stock No.</th>
+												<th>Location From</th>
+												<th>Location To</th>
+												<th>Ton</th>
+												<th>Unit Price</th>
+												<th>Total Price</th>
+												<th></th>
+											</tr>
+										</thead>
+										<tbody></tbody>
+									</table>
+								</div>
+							</fieldset>
+                            <div class="form-group form-button-container">
+                                <div class="col-md-12">
+									<div class="pull-right">
+										<button id="save" type="submit" class="save btn btn-primary">Save</button>
+										<a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
+									</div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div> <!-- /.content -->
+        </div> <!-- /.block-flat -->
+    </div>
+</div>

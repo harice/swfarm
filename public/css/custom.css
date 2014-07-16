@@ -1,4 +1,3 @@
-/* Table  */
 body {
   font-size: 12px;
 }
@@ -274,7 +273,8 @@ body .filter .dropdown-header {
 .textarea-height-34 {
   max-height: 34px;
 }
-ul.autocomplete {
+ul.autocomplete,
+.ui-autocomplete {
   display: none;
   max-height: 200px;
   overflow-x: hidden;
@@ -286,22 +286,27 @@ ul.autocomplete {
   border: 1px solid #ccc;
   padding: 0;
 }
-ul.autocomplete li {
+ul.autocomplete li,
+.ui-autocomplete li {
   background-image: none;
   display: list-item;
   list-style: none outside none;
 }
-ul.autocomplete li a {
+ul.autocomplete li a,
+.ui-autocomplete li a {
   display: block;
   padding: 5px 20px;
   clear: both;
 }
 ul.autocomplete li a:hover,
-ul.autocomplete li a:focus {
+.ui-autocomplete li a:hover,
+ul.autocomplete li a:focus,
+.ui-autocomplete li a:focus {
   background-color: #19B698;
   color: #fff;
 }
-ul.autocomplete li.active a {
+ul.autocomplete li.active a,
+.ui-autocomplete li.active a {
   background-color: #19B698;
   color: #fff;
 }
@@ -549,6 +554,10 @@ table td i {
   position: absolute;
   left: 205px;
   top: 4px;
+}
+.print #cl-sidebar,
+.print .tab-container {
+  display: none;
 }
 /*!
  * Datepicker for Bootstrap
@@ -1340,4 +1349,10 @@ fieldset[disabled] .datepicker table tr td span.active.disabled:hover.active {
 .datepicker.dropdown-menu th,
 .datepicker.dropdown-menu td {
   padding: 4px 5px;
+}
+@media print {
+  .no-print,
+  .no-print * {
+    display: none !important;
+  }
 }

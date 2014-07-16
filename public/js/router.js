@@ -29,6 +29,7 @@ define([
 	'controllers/scale/ScaleController',
     'controllers/contract/ContractController',
 	'controllers/trucker/TruckerController',
+	'controllers/inventory/InventoryController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
@@ -61,6 +62,7 @@ define([
 			ScaleController,
             ContractController,
 			TruckerController,
+			InventoryController,
 			Global,
 			Const,
 			Session) {
@@ -210,6 +212,12 @@ define([
 	routerRoutes[Const.URL.TRUCKER+'/'] = 'showTruckerPage';
 	routerRoutes[Const.URL.TRUCKER+'/:action'] = 'showTruckerPage';
 	routerRoutes[Const.URL.TRUCKER+'/:action/:id'] = 'showTruckerPage';
+	
+	//truck
+	routerRoutes[Const.URL.INVENTORY] = 'showInventoryPage';
+	routerRoutes[Const.URL.INVENTORY+'/'] = 'showInventoryPage';
+	routerRoutes[Const.URL.INVENTORY+'/:action'] = 'showInventoryPage';
+	routerRoutes[Const.URL.INVENTORY+'/:action/:id'] = 'showInventoryPage';
 	
 	routerRoutes['*actions'] = 'defaultAction';
 
@@ -479,13 +487,20 @@ define([
 			this.currView.render();
 		});
 		
+		app_router.on('route:showInventoryPage', function (action, id) {
+			this.closeView();
+			var inventoryController = new InventoryController();
+			this.currView = inventoryController.setAction(action, id);
+			this.currView.render();
+		});
+		
 		app_router.on('route:defaultAction', function (actions) {
 			this.closeView();
 			console.log('default page');
 			this.currView = new HomePageView();
 			this.currView.render();
 		});
-
+		
 		Global.getGlobalVars().app_router = app_router;
 		Backbone.history.start();
 	};

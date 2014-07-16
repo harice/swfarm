@@ -231,8 +231,50 @@ define([
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click .close-weight-ticket': 'showCloseWeightTicketConfirmationWindow',
 			'click #confirm-close-wt': 'closeWeightTicket',
-			'click #email-weight-ticket': 'mailWeightTicket'
+			'click #mail-weight-ticket': 'showMailForm',
+            'click #confirm-mail-weight-ticket': 'mailWeightTicket'
 		},
+                
+        showMailForm: function() {
+            this.initModalForm('',
+                'confirm-mail-weight-ticket',
+                'Send',
+                'Send Email',
+                false);
+            this.showModalForm();
+            
+            return false;
+        },
+                
+        mailWeightTicket: function(ev) {
+            
+            var thisObj = this;
+            var formData = {
+                weightticket: $('#mail-weight-ticket-form input[name=weightticket]').prop('checked'),
+                loadingticket: $('#mail-weight-ticket-form input[name=loadingticket]').prop('checked'),
+                recipients: $('#mail-weight-ticket-form input[name=recipient]').val()
+            };
+			
+			var weightInfoModel = new POWeightInfoModel({id:this.schedId});
+			weightInfoModel.setEmailURL();
+			weightInfoModel.save(
+				formData,
+				{
+					success: function (model, response, options) {
+						thisObj.displayMessage(response);
+					},
+					error: function (model, response, options) {
+						if(typeof response.responseJSON.error === 'undefined')
+							alert(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: weightInfoModel.getAuth()
+				}
+			);
+                
+            return false;
+        },
 		
 		showCloseWeightTicketConfirmationWindow: function (ev) {
 			this.initConfirmationWindow('Are you sure you want to close this weight ticket?',
@@ -272,11 +314,7 @@ define([
 			);
 			
 			return false;
-		},
-                
-        mailWeightTicket: function(ev) {
-            console.log(ev);
-        }
+		}
 	});
 
 	return WeightInfoView;

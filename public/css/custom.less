@@ -174,7 +174,7 @@ body {
     // padding-left: 0;
 }
 
-ul.autocomplete {
+ul.autocomplete, .ui-autocomplete {
     display: none;
     max-height: 200px;
     overflow-x: hidden;
@@ -445,4 +445,20 @@ table td i { font-size:12px; }
     left: 205px;
     top: 4px;
 }
+
+// Print
+.print {
+    #cl-sidebar,
+    .tab-container {
+        display: none;
+    }
+}
+
 @import "datepicker.less";
+
+@media print {
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
+}
