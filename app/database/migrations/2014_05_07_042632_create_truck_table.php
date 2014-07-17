@@ -20,6 +20,7 @@ class CreateTruckTable extends Migration {
             $table->string('trucknumber', 20);
             $table->decimal('fee', 10, 2);
 			$table->timestamps();
+            $table->softDeletes();
             
             $table->foreign('account_id')->references('id')->on('account');
 		});
