@@ -1,6 +1,7 @@
 <div class="content padding-top-0">
 	<h2 class="ponumber margin-bottom-0"><%= po.get("order_number") %></h2>
-	Scheduled Date: <span class="text-danger"><%= formatDateAMPM(pu.get("date")) %></span>
+	Scheduled Date: <span class="text-danger"><%= formatDateAMPM(pu.get("date")) %></span><br>
+	Status: <label class="label label-<%= pu.get("status").class %>"><%= pu.get("status").name %></label>
 	<div class="row margin-top-0">
     	<div class="col-md-4">
 			<h3>Loader (<span class="text-danger">Origin</span>)</h3>
