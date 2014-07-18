@@ -1,8 +1,10 @@
 <% if (!_.isEmpty(truckers)) { %>
 	<% _.each(truckers, function(trucker){ %>
 	<tr>
-		<td><%= trucker.get("account").name %></td>
-		<td><%= trucker.get("number") %></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
 		<td>
 			<a href="<%= trucker_edit_url %>/<%= trucker.get("id") %>" class="text-primary" title="edit">
 			  <span class="fa-stack">

@@ -2,7 +2,7 @@ define([
 	'backbone',
 	'views/base/ListView',
 	'models/trucker/TruckerModel',
-	'collections/trailer/TrailerCollection',
+	'collections/trucker/TruckerCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/trucker/truckerListTemplate.html',
 	'text!templates/trucker/truckerInnerListTemplate.html',
@@ -10,7 +10,7 @@ define([
 ], function(Backbone,
 			ListView,
 			TruckerModel,
-			TrailerCollection,
+			TruckerCollection,
 			contentTemplate,
 			truckerListTemplate,
 			truckerInnerListTemplate,
@@ -28,7 +28,7 @@ define([
 			this.h1Title = 'Trucker';
 			this.h1Small = 'list';
 			
-			this.collection = new TrailerCollection();
+			this.collection = new TruckerCollection();
 			this.collection.on('sync', function() {
 				if(thisObj.subContainerExist())
 					thisObj.displayList();
