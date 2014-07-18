@@ -34,6 +34,7 @@ define([
 			this.truckerId = null;
 			this.h1Title = 'Trucker';
 			this.h1Small = 'add';
+			this.selectedTruckerAccountId = null;
 			
 			this.accountTypeCollection = new AccountTypeCollection();
 			this.accountTypeCollection.on('sync', function() {
@@ -129,7 +130,7 @@ define([
 			'keyup #fee': 'formatMoney',
 			'blur #fee': 'onBlurMoney',
 			'click #go-to-previous-page': 'goToPreviousPage',
-			'click #delete-trucker': 'showConfirmationWindow',
+			'click #delete-trucker': 'showDeleteConfirmationWindow',
 			'click #confirm-delete-trucker': 'deleteTrucker'
 		},
 		
@@ -157,7 +158,8 @@ define([
 			this.$el.find('#account_id').append(dropDown);
 			
 			if(typeof this.selectedTruckerAccountId != 'undefined' && this.selectedTruckerAccountId != null) {
-				this.$el.find('account_id').val(this.selectedTruckerAccountId);
+				console.log('this.selectedTruckerAccountId: '+this.selectedTruckerAccountId);
+				this.$el.find('#account_id').val(this.selectedTruckerAccountId);
 				this.selectedTruckerAccountId = null;
 			}
 			else {
@@ -180,6 +182,10 @@ define([
                 wait: true,
                 headers: thisObj.model.getAuth(),
             });
+		},
+		
+		showDeleteConfirmationWindow: function () {
+			this.showConfirmationWindow();
 		},
 		
 		otherInitializations: function () {},
