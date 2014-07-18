@@ -21,7 +21,7 @@ class AddressTableSeeder extends Seeder {
 			array(
                 'account' => '1',
                 'street' => 'North St.',
-                'city' => 'test city',
+                'city' => 'Sin City',
                 'state' => '2',
                 'zipcode' => '29620',
                 'country' => '1',
@@ -32,7 +32,7 @@ class AddressTableSeeder extends Seeder {
             array(
                 'account' => '6',
                 'street' => 'North St.',
-                'city' => 'test city',
+                'city' => 'Sin City',
                 'state' => '2',
                 'zipcode' => '29620',
                 'country' => '1',
