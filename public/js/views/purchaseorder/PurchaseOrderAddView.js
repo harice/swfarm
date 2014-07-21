@@ -188,7 +188,7 @@ define([
 								else {
 									thisObj.isConvertToPO = false;
 									thisObj.displayMessage(response);
-									//Backbone.history.history.back();
+									Backbone.history.history.back();
 								}
 							},
 							error: function (model, response, options) {
