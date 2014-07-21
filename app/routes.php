@@ -25,6 +25,7 @@ Route::group(array('prefix' => 'apiv1'), function()
 Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 {
     // Mail
+    Route::put('weightticket/mailLoadingTicket/{id}', 'APIv1\WeightTicketController@mailLoadingTicket');
     Route::put('weightticket/mailWeightTicket/{id}', 'APIv1\WeightTicketController@mailWeightTicket');
     Route::put('weightticket/{id}/mail', 'APIv1\WeightTicketController@mailWeightTicket');
     
@@ -143,6 +144,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('trailer', 'APIv1\TrailerController');
     
     // Truck
+    Route::get('truck/listByAccount', 'APIv1\TruckController@getTruckerListByAccount');
     Route::resource('truck', 'APIv1\TruckController');
     
     // Fee
@@ -180,7 +182,6 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('inventory/stacklist', 'APIv1\InventoryController@stackList');
     Route::get('inventory/transactiontype', 'APIv1\InventoryController@transactionType');
     Route::resource('inventory', 'APIv1\InventoryController');
-  
 });
 
 

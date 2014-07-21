@@ -82,6 +82,8 @@ define([
 				collapsible_id: Const.PO.COLLAPSIBLE.ID,
 				_: _ 
 			};
+            
+            _.extend(data,Backbone.View.prototype.helpers);
 			
 			var innerListTemplate = _.template(contractInnerListTemplate, data);
 			this.subContainer.find("#contract-list tbody").html(innerListTemplate);
@@ -122,6 +124,9 @@ define([
 				sales_order_url: '/#/'+Const.URL.SO,
 				_: _ 
 			};
+            
+            _.extend(data,Backbone.View.prototype.helpers);
+            
 			return _.template(salesOrderDetailsByProductItemTemplate, data);
 		},
 	});

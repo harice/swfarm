@@ -61,7 +61,7 @@ label.error { color: #CC0000 !important; font-weight: normal; }
 .table-condensed > thead > tr > td, 
 .table-condensed > tbody > tr > td, 
 .table-condensed > tfoot > tr > td { padding:3px; font-size:12px; }
-.fa-stack { width:1.7em; height:1.7em; line-height:1.7em; }
+.fa-stack { width:1.7em; height:1.7em; line-height:1.53em; }
 .fa-stack-2x { font-size:1.7em; }
 .label { padding:.3em .3em .2em; }
 
@@ -79,6 +79,9 @@ label.error { color: #CC0000 !important; font-weight: normal; }
 .modal-body { padding:10px; }
 .modal-footer { padding:10px; }
 .close { font-size:20px;}
+
+.btn-sm { padding:4px 5px; }
+.btn-rad { border-radius:3px; }
 
 .cursor-pointer { cursor:pointer; }
 
@@ -171,7 +174,7 @@ body {
     // padding-left: 0;
 }
 
-ul.autocomplete {
+ul.autocomplete, .ui-autocomplete {
     display: none;
     max-height: 200px;
     overflow-x: hidden;
@@ -318,6 +321,7 @@ ul.autocomplete {
 }
 
 .max-width-80 { max-width: 130px; }
+.min-width-100 { min-width: 100px; }
 .width-10 { width:10px; }
 .width-40  { width: 40px; }
 .width-60  { width: 60px; }
@@ -330,6 +334,8 @@ ul.autocomplete {
 .width-130 { width: 130px; }
 .width-140 { width: 140px; }
 .width-150 { width:150px; }
+.width-170 { width:170px; }
+.width-200 { width:200px; }
 .width-250 { width:250px; }
 .width-300 { width: 300px; }
 .width-304 { width: 304px; }
@@ -439,4 +445,21 @@ table td i { font-size:12px; }
     position: absolute;
     left: 205px;
     top: 4px;
+}
+
+// Print
+.print {
+    #cl-sidebar,
+    .tab-container {
+        display: none;
+    }
+}
+
+@import "datepicker.less";
+
+@media print {
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
 }

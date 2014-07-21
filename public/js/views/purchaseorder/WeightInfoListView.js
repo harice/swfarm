@@ -35,14 +35,6 @@ define([
 			
 			this.collection = new POWeightInfoCollection({id:this.poId});
 			this.collection.on('sync', function() {
-				_.each(this.models, function (model) {
-					var transportScheduleDate = model.get('transportScheduleDate').split(' ');
-					model.set('transportScheduleDate', thisObj.convertDateFormat(transportScheduleDate[0], thisObj.dateFormatDB, thisObj.dateFormat, '-')+' '+transportScheduleDate[1]);
-					model.set('gross', thisObj.addCommaToNumber(parseFloat(model.get('gross')).toFixed(4)));
-					model.set('tare', thisObj.addCommaToNumber(parseFloat(model.get('tare')).toFixed(4)));
-					model.set('netWeight', thisObj.addCommaToNumber(parseFloat(model.get('netWeight')).toFixed(4)));
-				});
-				
 				if(thisObj.subContainerExist())
 					thisObj.displayList();
 			});
@@ -62,7 +54,7 @@ define([
 		
 		render: function(){
 			this.model.runFetch();
-			Backbone.View.prototype.refreshTitle('Weight Information','list');
+			Backbone.View.prototype.refreshTitle('Weight Info','list');
 		},
 		
 		displaySchedule: function () {
@@ -81,6 +73,7 @@ define([
 		displayList: function () {
 			var data = {
 				weightInfo_url: '/#/'+Const.URL.POWEIGHTINFO+'/'+this.poId,
+				po_schedule_url: '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId,
 				weightInfo: this.collection.models,
 				_: _ 
 			};
@@ -88,6 +81,8 @@ define([
 			if(this.model.get('status').name.toLowerCase() == Const.STATUS.OPEN)
 				data['editable'] = true;
 			
+			_.extend(data,Backbone.View.prototype.helpers);
+
 			var innerListTemplate = _.template(weightInfoInnerListTemplate, data);
 			this.subContainer.find("#po-weight-info-list tbody").html(innerListTemplate);
 			if(this.subContainer.find("#po-weight-info-list tbody").find('tr').length == 0)

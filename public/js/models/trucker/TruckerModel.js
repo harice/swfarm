@@ -3,7 +3,7 @@ define([
 ], function(Backbone) {
 
 	var TruckerModel = Backbone.Model.extend({
-		urlRoot: '/apiv1/trailer',
+		urlRoot: '/apiv1/truck',
 		defaults: {
         },
 		runFetch: function () {
@@ -13,7 +13,7 @@ define([
 				success: function(model, response, options) {
 					if(typeof response.error != 'undefined') {
 						alert(response.message);
-						Global.getGlobalVars().app_router.navigate(Const.URL.TRUCKER, {trigger: true});
+						Backbone.history.history.back();
 					}
 				},
 				error: function(model, response, options) {

@@ -58,14 +58,6 @@ define([
 			this.model = new POWeightInfoModel({id:this.schedId});
 			this.model.on('change', function() {
 				if(thisObj.subContainerExist()) {
-					/*if(typeof this.get('weightTicketNumber') === 'undefined')
-						Global.getGlobalVars().app_router.navigate(Const.URL.POWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD, {trigger: true});
-					else {
-						
-						thisObj.displayForm();
-						thisObj.supplyWeightInfoData();
-					}*/
-					
 					thisObj.displayForm();
 					thisObj.supplyWeightInfoData();
 				}
@@ -91,7 +83,10 @@ define([
                 weight_info_print_url: '#/'+Const.URL.POWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+'print',
                 weight_info_mail_url: '#/'+Const.URL.POWEIGHTINFO+'/'+thisObj.model.id+'/'+'mail',
 				previous_po_sched_url: '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId,
-                weight_info_id: thisObj.model.id
+                weight_info_id: thisObj.model.id,
+                po: this.purchaseOrderModel,
+                schedule: this.poScheduleModel,
+                wi: this.model,
 			};
 			
 			if((!this.model.get('status') || (this.model.get('status') && this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)) && 
@@ -102,7 +97,9 @@ define([
 				innerTemplateVariables['has_pickup_info'] = true;
 			if(this.model.get('weightticketscale_dropoff') != null)
 				innerTemplateVariables['has_dropoff_info'] = true;
-			
+
+			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
+
 			var innerTemplate = _.template(weightInfoViewTemplate, innerTemplateVariables);
 			
 			var variables = {
@@ -118,17 +115,6 @@ define([
 			var thisObj = this;
 			var pickupInfo = this.model.get('weightticketscale_pickup');
 			var dropoffInfo = this.model.get('weightticketscale_dropoff');
-			
-			var dateAndTime = this.convertDateFormat(this.poScheduleModel.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-')
-								+' '+this.poScheduleModel.get('scheduletimeHour')
-								+':'+this.poScheduleModel.get('scheduletimeMin')
-								+' '+this.poScheduleModel.get('scheduletimeAmPm');
-			
-			this.$el.find('#po-number').val(this.purchaseOrderModel.get('order_number'));
-			this.$el.find('#producer').val(this.purchaseOrderModel.get('account').name);
-			this.$el.find('#date-and-time').val(dateAndTime);
-			this.$el.find('#weight-ticket-no').val(this.model.get('weightTicketNumber'));
-			this.$el.find('#loading-ticket-no').val(this.model.get('loadingTicketNumber'));
 			
 			if(pickupInfo != null) {
 				this.$el.find('#pickup-fields').show();
@@ -231,8 +217,50 @@ define([
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click .close-weight-ticket': 'showCloseWeightTicketConfirmationWindow',
 			'click #confirm-close-wt': 'closeWeightTicket',
-			'click #email-weight-ticket': 'mailWeightTicket'
+			'click #mail-weight-ticket': 'showMailForm',
+            'click #confirm-mail-weight-ticket': 'mailWeightTicket'
 		},
+                
+        showMailForm: function() {
+            this.initModalForm('',
+                'confirm-mail-weight-ticket',
+                'Send',
+                'Send Email',
+                false);
+            this.showModalForm();
+            
+            return false;
+        },
+                
+        mailWeightTicket: function(ev) {
+            
+            var thisObj = this;
+            var formData = {
+                weightticket: $('#mail-weight-ticket-form input[name=weightticket]').prop('checked'),
+                loadingticket: $('#mail-weight-ticket-form input[name=loadingticket]').prop('checked'),
+                recipients: $('#mail-weight-ticket-form input[name=recipient]').val()
+            };
+			
+			var weightInfoModel = new POWeightInfoModel({id:this.schedId});
+			weightInfoModel.setEmailURL();
+			weightInfoModel.save(
+				formData,
+				{
+					success: function (model, response, options) {
+						thisObj.displayMessage(response);
+					},
+					error: function (model, response, options) {
+						if(typeof response.responseJSON.error === 'undefined')
+							alert(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: weightInfoModel.getAuth()
+				}
+			);
+                
+            return false;
+        },
 		
 		showCloseWeightTicketConfirmationWindow: function (ev) {
 			this.initConfirmationWindow('Are you sure you want to close this weight ticket?',
@@ -272,11 +300,7 @@ define([
 			);
 			
 			return false;
-		},
-                
-        mailWeightTicket: function(ev) {
-            console.log(ev);
-        }
+		}
 	});
 
 	return WeightInfoView;

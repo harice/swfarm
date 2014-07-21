@@ -170,7 +170,7 @@ define([
 					if(typeof data['transportdateend'] != 'undefined')
 						data['transportdateend'] = thisObj.convertDateFormat(data['transportdateend'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					
-					console.log(data);
+					// console.log(data);
 					
 					var purchaseOrderModel = new PurchaseOrderModel(data);
 					

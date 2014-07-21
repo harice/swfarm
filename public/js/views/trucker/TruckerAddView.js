@@ -6,6 +6,7 @@ define([
 	'jquerytextformatter',
 	'models/trucker/TruckerModel',
 	'collections/account/AccountCollection',
+	'collections/account/AccountTypeCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/trucker/truckerAddTemplate.html',
 	'global',
@@ -17,6 +18,7 @@ define([
 			TextFormatter,
 			TruckerModel,
 			AccountCollection,
+			AccountTypeCollection,
 			contentTemplate,
 			truckerAddTemplate,
 			Global,
@@ -32,27 +34,39 @@ define([
 			this.truckerId = null;
 			this.h1Title = 'Trucker';
 			this.h1Small = 'add';
+			this.selectedTruckerAccountId = null;
 			
-			this.truckerAccountCollection = new AccountCollection();
-			this.truckerAccountCollection.on('sync', function() {
+			this.accountTypeCollection = new AccountTypeCollection();
+			this.accountTypeCollection.on('sync', function() {
 				if(thisObj.subContainerExist())
 					thisObj.displayForm();
 				this.off('sync');
 			});
-			this.truckerAccountCollection.on('error', function(collection, response, options) {
+			this.accountTypeCollection.on('error', function(collection, response, options) {
 				this.off('error');
+			});
+			
+			this.truckerAccountCollection = new AccountCollection();
+			this.truckerAccountCollection.on('sync', function() {
+				thisObj.generateTruckerDropdown();
+                thisObj.hideFieldThrobber();
+			});
+			this.truckerAccountCollection.on('error', function(collection, response, options) {
+				//this.off('error');
 			});
 		},
 		
 		render: function(){
-			this.truckerAccountCollection.getTrailerAccounts();
+			this.accountTypeCollection.getTruckType();
 			Backbone.View.prototype.refreshTitle(this.h1Title,this.h1Small);
 		},
 		
 		displayForm: function () {
 			var thisObj = this;
 			
-			var innerTemplateVariables = {};
+			var innerTemplateVariables = {
+				trucker_account_type_list : this.getTruckerType(),
+			};
 			
 			if(this.truckerId != null)
 				innerTemplateVariables['trucker_id'] = this.truckerId;
@@ -67,7 +81,6 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
 			
-			this.generateTruckerAccount();
 			this.focusOnFirstField();
 			this.initValidateForm();
 			
@@ -77,11 +90,11 @@ define([
 		initValidateForm: function () {
 			var thisObj = this;
 			
-			var validate = $('#trailerForm').validate({
+			var validate = $('#TruckerForm').validate({
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
-					//data['rate'] = '0.00';
-					//console.log(data);
+					data['fee'] = thisObj.removeCommaFromNumber(data['fee']);
+					console.log(data);
 					var truckerModel = new TruckerModel(data);
 					
 					truckerModel.save(
@@ -104,19 +117,55 @@ define([
 			});
 		},
 		
-		generateTruckerAccount: function () {
-			var options = '';
-			_.each(this.truckerAccountCollection.models, function (model) {
-				options += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
+		getTruckerType: function () {
+			var dropDown = '';
+			_.each(this.accountTypeCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
-			
-			this.$el.find('#account_id').append(options);
+			return dropDown;
 		},
 		
 		events: {
+			'change #truckerAccountType_id': 'onChangeTruckerType',
+			'keyup #fee': 'formatMoney',
+			'blur #fee': 'onBlurMoney',
 			'click #go-to-previous-page': 'goToPreviousPage',
-			'click #delete-trucker': 'showConfirmationWindow',
+			'click #delete-trucker': 'showDeleteConfirmationWindow',
 			'click #confirm-delete-trucker': 'deleteTrucker'
+		},
+		
+		onChangeTruckerType: function (ev) {
+			this.fetchTruckerAccounts($(ev.currentTarget).val());
+		},
+		
+		fetchTruckerAccounts: function (accountTypeId, accountId) {
+			if(accountId != null)
+				this.selectedTruckerAccountId = accountId;
+			
+			this.resetSelect($('#account_id'));
+			
+			if(accountTypeId != '') {
+				this.showFieldThrobber('#account_id');
+				this.truckerAccountCollection.getTruckerAccountsByAccountType(accountTypeId);
+			}
+		},
+		
+		generateTruckerDropdown: function () {
+			var dropDown = '';
+			_.each(this.truckerAccountCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
+			});
+			this.$el.find('#account_id').append(dropDown);
+			
+			if(typeof this.selectedTruckerAccountId != 'undefined' && this.selectedTruckerAccountId != null) {
+				console.log('this.selectedTruckerAccountId: '+this.selectedTruckerAccountId);
+				this.$el.find('#account_id').val(this.selectedTruckerAccountId);
+				this.selectedTruckerAccountId = null;
+			}
+			else {
+				if(this.truckerAccountCollection.models.length == 1)
+					this.$el.find('#account_id').val(this.truckerAccountCollection.models[0].get('id')).change();
+			}
 		},
 		
 		deleteTrucker: function () {
@@ -133,6 +182,10 @@ define([
                 wait: true,
                 headers: thisObj.model.getAuth(),
             });
+		},
+		
+		showDeleteConfirmationWindow: function () {
+			this.showConfirmationWindow();
 		},
 		
 		otherInitializations: function () {},

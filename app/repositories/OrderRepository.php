@@ -829,7 +829,6 @@ class OrderRepository implements OrderRepositoryInterface {
             usort($stackList[$index]['schedule'],function($a,$b){ return strtotime($b['transportscheduledate']) - strtotime($a['transportscheduledate']); });
 
             $stackList[$index]['totalDeliveries'] = number_format($stackList[$index]['totalDeliveries'], 4, '.', '');
-
             $index++;
         }
 

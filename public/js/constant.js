@@ -27,6 +27,8 @@ define(function () {
 			'SETTINGS': 'administration/settings',
 			'SCALE': 'administration/scale',
 			'TRUCKER': 'administration/trucker',
+			'INVENTORY': 'inventory',
+			'STACKNUMBER': 'stacknumber',
 		},
 		'MENU': {
 			'PURCHASES': {
@@ -112,6 +114,12 @@ define(function () {
 				'EDIT'	:52,
 				'DELETE':53
 			},
+			'INVENTORY': {
+				'VIEW'	:54,
+				'ADD'	:55,
+				'EDIT'	:56,
+				'DELETE':57
+			},
 		},
 		'CRUD': {
 			'ADD': 'add',
@@ -164,7 +172,10 @@ define(function () {
 			'POCANCELLED' : 'po cancelled',
 			'TESTING' : 'testing',
 		},
-		
+		'INVENTORY': {
+			'LOCATIONFROMREQUIRED': ['transfer','issue'],
+			'LOCATIONTOREQUIRED': ['transfer','receipt'],
+		},
 	};
 	
 	return constant;

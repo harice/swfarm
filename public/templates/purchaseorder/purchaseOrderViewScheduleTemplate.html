@@ -1,180 +1,104 @@
-<!--<div class="row">
-    <div class="col-md-12">
-        <div class="block-flat">-->
-            <div class="content">
-				<form id="POScheduleForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-					<fieldset>
-						<legend>Schedule</legend>
-						<div class="col-md-4 col-sm-6">
-							<div class="form-group">
-								<label for="scheduledate" class="col-sm-4 control-label small">Date</label>
-								<div class="col-sm-8">
-									<input type="text" id="scheduledate" class="form-control" readonly>
-								</div>				
-							</div>
-							<div class="form-group">
-								<label for="" class="col-sm-4 control-label small">Time</label>
-								<div class="col-sm-8">
-                                    <input type="text" id="scheduletimeHour" class="form-control width-80" readonly>
-									<input type="text" id="scheduletimeMin" class="form-control width-80" readonly>
-									<input type="text" id="scheduletimeAmPm" class="form-control width-80" readonly>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="truckerAccountType_id" class="col-sm-4 control-label small">Trucker Type</label>
-								<div class="col-sm-8">
-									<input type="text" id="truckerAccountType_id" class="form-control" readonly>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="truckerAccount_id" class="col-sm-4 control-label small">Trucker</label>
-								<div class="col-sm-8">
-									<input type="text" id="truckerAccount_id" class="form-control" readonly>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="trucker_id" class="col-sm-4 control-label small">Trucker Contact</label>
-								<div class="col-sm-8">
-									<input type="text" id="trucker_id" class="form-control" readonly>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="trailer" class="col-sm-4 control-label small">Trailer</label>
-								<div class="col-sm-8">
-									<input type="text" id="trailer" class="form-control" readonly>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="trailer_id" class="col-sm-4 control-label small">Trailer Number</label>
-								<div class="col-sm-8">
-									<input type="text" id="trailer_id" class="form-control" readonly>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="distance" class="col-sm-4 control-label small">Distance</label>
-								<div class="col-sm-8">
-									<input type="text" id="distance" class="form-control text-right" readonly>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="fuelcharge" class="col-sm-4 control-label small">Fuel Charges</label>
-								<div class="col-sm-8">
-									<div class="input-group margin-0">
-										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right" id="fuelcharge" placeholder="0.00" readonly>
-									</div>	
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="truckingrate" class="col-sm-4 control-label small">Trucking/Hauling Rate</label>
-								<div class="col-sm-8">
-									<div class="input-group margin-0">
-										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right" id="truckingrate" placeholder="0.00" readonly>
-									</div>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="trailerrate" class="col-sm-4 control-label small">Trailer Rent</label>
-								<div class="col-sm-8">
-									<div class="input-group margin-0">
-										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right" id="trailerrate" placeholder="0.00" readonly>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-4 col-sm-6">
-							<h4>Origin</h4>
-							<div class="form-group">
-								<label for="originloader" class="col-sm-4 control-label small">Loader</label>
-								<div class="col-sm-8">
-									<input type="text" id="originloader" class="form-control" readonly>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="originloader_id" class="col-sm-4 control-label small">Loader Contact</label>
-								<div class="col-sm-8">
-									<input type="text" id="originloader_id" class="form-control" readonly>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="originloaderfee" class="col-sm-4 control-label small">Loader's Fee</label>
-								<div class="col-sm-8">
-									<div class="input-group margin-0">
-										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right" id="originloaderfee" placeholder="0.00"  readonly>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-4 col-sm-6">
-							<h4>Destination</h4>
-							<div class="form-group">
-								<label for="destinationloader" class="col-sm-4 control-label small">Loader</label>
-								<div class="col-sm-8">
-									<input type="text" id="destinationloader" class="form-control" readonly>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="destinationloader_id" class="col-sm-4 control-label small">Loader Contact</label>
-								<div class="col-sm-8">
-									<input type="text" id="destinationloader_id" class="form-control" readonly>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="destinationloaderfee" class="col-sm-4 control-label small">Loader's Fee</label>
-								<div class="col-sm-8">
-									<div class="input-group margin-0">
-										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right" id="destinationloaderfee" placeholder="0.00" readonly>
-									</div>
-								</div>
-							</div>
-						</div>
-					</fieldset>
-					<fieldset>
-						<legend>
-							Products
-						</legend>
-					<div class="table-responsive">
-						<table id="product-list" class="table table-bordered">
-							<thead>
-								<tr>
-									<th>Stack #</th>
-									<th>Product</th>
-									<th class="width-150">Quantity</th>
-								</tr>
-							</thead>
-							<tfoot>
-								<tr>
-									<td class="text-right" colspan="2">Total</td>
-									<td>
-										<div class="input-group margin-0">
-											<input id="total-quantity" type="text" class="form-control text-right" placeholder="0.0000" readonly>
-											<span class="input-group-addon">Tons</span>
-										</div>
-									</td>
-								</tr>
-							</tfoot>
-							<tbody></tbody>
-						</table>
-					</div>
-					</fieldset>
-					<div class="form-group form-button-container">
-						<div class="pull-right">
-							<% if (typeof editable !== "undefined") { %>
-								<a id="close-schedule" class="btn btn-primary editable-button" href="#">Close Pick Up Schedule</a>
-								<a id="edit-schedule" class="btn btn-primary editable-button" href="<%= schedule_edit_url %>">Edit Pick Up Schedule</a>
-								<button id="delete-schedule" type="button" class="btn btn-danger editable-button">Delete</button>
-							<% } %>
-							<a id="go-to-weight-info" class="btn btn-primary" href="<%= weight_info_url %>">Weight Info</a>
-							<a id="go-to-previous-page" class="btn btn-link" href="#">Cancel</a>
-						</div>
-					</div>
-				</form>
-              
-            </div> <!-- /.content -->
-        <!--</div>
-    </div>
-</div>-->
+<div class="content padding-top-0">
+	<h2 class="ponumber margin-bottom-0"><%= po.get("order_number") %></h2>
+	Scheduled Date: <span class="text-danger"><%= formatDateAMPM(pu.get("date")) %></span><br>
+	Status: <label class="label label-<%= pu.get("status").class %>"><%= pu.get("status").name %></label>
+	<div class="row margin-top-0">
+    	<div class="col-md-4">
+			<h3>Loader (<span class="text-danger">Origin</span>)</h3>
+			Loader: <span class="text-danger"><%= pu.get("originloader").accountidandname.name %></span><br>
+	        Loader Contact: <span class="text-danger"><%= pu.get("originloader").lastname %>, <%= pu.get("originloader").firstname %> <%= pu.get("originloader").suffix %></span><br>
+
+			<h3>Loader (<span class="text-danger">Destination</span>)</h3>
+			Loader: <span class="text-danger"><%= pu.get("destinationloader").accountidandname.name %></span><br>
+	        Loader Contact: <span class="text-danger"><%= pu.get("destinationloader").lastname %>, <%= pu.get("destinationloader").firstname %> <%= pu.get("destinationloader").suffix %></span>
+
+		</div>
+		<div class="col-md-4">
+			<h3>Trucker</h3>
+			Trucker: <span class="text-danger"><%= pu.get("trucker").accountidandname.name %></span><br>
+	        Trucker Contact: <span class="text-danger"><%= pu.get("trucker").lastname %>, <%= pu.get("trucker").firstname %> <%= pu.get("trucker").suffix %></span><br>
+
+	        <h3>Trailer</h3>
+			Trailer: <span class="text-danger"><%= pu.get("trailer").account.name %></span><br>
+			Trailer Number: <span class="text-danger"><%= pu.get("trailer").number %></span>
+		</div>
+		<div class="col-md-4">
+			<div class="table-responsive margin-top-10">
+				<table class="table-condensed no-border">
+					<tbody class="no-border-x no-border-y">
+						<tr>
+							<td class="width-170">Distance :</td>
+							<td class="text-right text-danger"><%= numberFormat(pu.get("distance")) %></td>
+						</tr>
+						<tr>
+							<td>Fuel Charges :</td>
+							<td class="text-right text-danger">$ <%= numberFormat(pu.get("fuelcharge")) %></td>
+						</tr>
+						<tr>
+							<td>Loaders Fee (<span class="text-danger">Origin</span>) :</td>
+							<td class="text-right text-danger">$ <%= numberFormat(pu.get("originloaderfee")) %></td>
+						</tr>
+						<tr>
+							<td>Loaders Fee (<span class="text-danger">Destination</span>) :</td>
+							<td class="text-right text-danger">$ <%= numberFormat(pu.get("destinationloaderfee")) %></td>
+						</tr>
+						<tr>
+							<td>Trucking / Hauling Rate :</td>
+							<td class="text-right text-danger">$ <%= numberFormat(pu.get("truckingrate")) %></td>
+						</tr>
+						<tr>
+							<td>Trailer Rent :</td>
+							<td class="text-right text-danger">$ <%= numberFormat(pu.get("trailerrate")) %></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+    	<div class="col-md-12">
+			<h3 class="margin-top-0">Products</h3>
+			<div class="table-responsive">
+				<table id="product-list" class="table-condensed table-hover table-bordered">
+					<thead>
+						<tr>							
+							<th class="width-200">Product</th>
+							<th>Stack No.</th>
+							<th class="width-150">Quantity</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+					<tfoot>
+						<tr>
+							<td class="text-right" colspan="2">Total</td>
+							<td class="text-right"><strong id="total-quantity"></strong></td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+	    <div class="col-md-12">
+			<div class="pull-right">
+				<% if (typeof editable !== "undefined") { %>
+					<a id="edit-schedule" class="btn btn-primary btn-trans btn-rad btn-sm editable-button" href="<%= schedule_edit_url %>">
+						<i class="fa fa-pencil width-10"></i> Edit Schedule
+					</a>
+					<a id="close-schedule" class="btn btn-warning btn-trans btn-rad btn-sm editable-button" href="#">
+						<i class="fa fa-times width-10"></i> Close Schedule
+					</a>
+					<a id="delete-schedule" class="btn btn-warning btn-trans btn-rad btn-sm editable-button">
+						<i class="fa fa-trash-o"></i> Delete Schedule
+					</a>
+				<% } %>
+				<a id="go-to-weight-info" class="btn btn-primary btn-trans btn-rad btn-sm" href="<%= weight_info_url %>">
+					<i class="fa fa-info"></i> Weight Info
+				</a>
+				<a class="btn btn-trans btn-rad btn-sm" id="go-to-previous-page" href="#">
+					<i class="fa fa-reply width-10"></i> Back
+				</a>
+			</div>
+		</div>
+	</div>
+</div>

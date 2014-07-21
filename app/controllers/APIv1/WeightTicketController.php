@@ -82,7 +82,29 @@ class WeightTicketController extends BaseController {
 	}
 
     public function mailWeightTicket($id) {
-        return $this->weightticket->mailWeightTicket($id, Input::all());
+        $input = Input::all();
+        
+        if (($input['weightticket'] == 1) and ($input['loadingticket'] == 1)) {
+            $mail_weightticket = $this->weightticket->mailWeightTicket($id, Input::all());
+            $mail_loadingticket = $this->weightticket->mailLoadingTicket($id, Input::all());
+            
+            return Response::json(
+                    array(
+                        'error' => false,
+                        'message' => 'Both Weight Ticket and Loading Ticket had been sent.'
+                    ),
+                    200
+                );
+        } elseif ($input['weightticket'] == 1) {
+            return $this->weightticket->mailWeightTicket($id, Input::all());
+        } else {
+            return $this->weightticket->mailLoadingTicket($id, Input::all());
+        }
+    }
+    
+    public function mailLoadingTicket($id) {
+        return $this->weightticket->mailLoadingTicket($id, Input::all());
+        // return Response::json($response);
     }
 
     public function getAllWeightticketOfOrder(){

@@ -24,6 +24,24 @@ class Contract extends BaseModel {
     );
     
     /**
+     * Add an array of attributes that do not have a corresponding column in
+     * the database.
+     * 
+     * @var type 
+     */
+    protected $appends = array('total_delivered');
+    
+    /**
+     * Get the delivered quantity for this Contract.
+     * 
+     * @return type
+     */
+    public function getTotalDeliveredAttribute()
+    {
+        return $this->attributes['total_delivered'] = '0.0000';
+    }
+
+    /**
      * Define field validation rules.
      * 
      * @var array

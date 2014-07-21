@@ -115,5 +115,18 @@ class TruckRepository implements TruckRepositoryInterface {
     {
         return new Truck($data);
     }
+
+    public function getTruckerListByAccount($accountId){
+
+        $trucks =  Truck::where('account_id', '=', $accountId)->get(array('id', 'trucknumber', 'fee'));
+        if($trucks){
+            return $trucks->toArray();
+        } else {
+            return array(
+                    'error' => true,
+                    'message' => 'No trucks found on this the trucker account you specified.'
+                );
+        }
+    }
     
 }

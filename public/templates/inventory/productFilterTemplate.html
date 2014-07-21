@@ -1,0 +1,5 @@
+<% _.each(products, function(product){ %>
+<li>
+    <input type="radio" id="p<%= product.get("id") %>" value="<%= product.get("id") %>" name="product_id" class="product_id icheck"><span></span> <%= product.get("name") %>
+</li>
+<% }); %>
