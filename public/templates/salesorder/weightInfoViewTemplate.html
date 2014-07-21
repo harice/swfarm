@@ -171,9 +171,6 @@
 								<% } else { %>
 									<a class="btn btn-primary editable-button" href="<%= dropoff_weight_info_add_url %>">Add Dropoff Weight Ticket</a>
 								<% } %>
-							<% } else { %>
-                                <button id="print-weight-ticket" class="btn btn-primary">Print</button>
-                                <button id="mail-weight-ticket" class="btn btn-primary">Email</button>
                             <% } %>
                         </div>
                     </div>
@@ -183,7 +180,10 @@
                         <div class="pull-right">
 							<% if (typeof editable !== "undefined") { %>
 								<a class="btn btn-primary close-weight-ticket editable-button" href="#">Close Weight Ticket</a>
-							<% } %>
+							<% } else { %>
+                                <a href="<%= weight_info_print_url %>" class="btn btn-primary">Print</a>
+                                <button id="mail-weight-ticket" class="btn btn-primary">Email</button>
+                            <% } %>
                             <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
                         </div>
                     </div>

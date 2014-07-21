@@ -84,6 +84,7 @@ define([
 			if(this.model.get('status').name.toLowerCase() == 'open')
 				innerTemplateVariables['editable'] = true;
 			
+			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
 			var innerTemplate = _.template(salesOrderViewTemplate, innerTemplateVariables);
 			
 			var variables = {
@@ -107,7 +108,7 @@ define([
 			_.each(products, function (product) {
 				var unitprice = (!isNaN(parseFloat(product.unitprice)))? parseFloat(product.unitprice) : 0;
 				var tons = (!isNaN(parseFloat(product.tons)))? parseFloat(product.tons) : 0;
-				var totalprice = parseFloat(unitprice * tons).toFixed(2);
+				var totalprice = parseFloat(unitprice * tons);
 				
 				totalTons += tons;
 				totalUnitPrice += unitprice;
@@ -118,20 +119,19 @@ define([
 					productname: product.product.name,
 					description: product.description,
 					stacknumber: product.stacknumber,
-					unitprice: thisObj.addCommaToNumber(parseFloat(unitprice).toFixed(2)),
-					tons: thisObj.addCommaToNumber(parseFloat(tons).toFixed(4)),
-					bales: thisObj.addCommaToNumber(product.bales),
-					totalprice: thisObj.addCommaToNumber(totalprice),
+					unitprice: Backbone.View.prototype.helpers.numberFormat(unitprice),
+					tons: Backbone.View.prototype.helpers.numberFormatTons(tons),
+					bales: Backbone.View.prototype.helpers.numberFormatBales(product.bales),
+					totalprice: Backbone.View.prototype.helpers.numberFormat(totalprice),
 				};
 				
 				var template = _.template(productItemTemplate, variables);
 				thisObj.$el.find('#product-list tbody').append(template);
 			});
 			
-			this.subContainer.find('#total-tons').html(this.addCommaToNumber(parseFloat(totalTons).toFixed(4)));
-			this.subContainer.find('#total-bales').html(this.addCommaToNumber(totalBales));
-			this.subContainer.find('#total-unitprice').html('$ '+this.addCommaToNumber(parseFloat(totalUnitPrice).toFixed(2)));
-			this.subContainer.find('#total-price').html('$ '+this.addCommaToNumber(parseFloat(totalTotalPrice).toFixed(2)));
+			this.subContainer.find('#total-tons').html(Backbone.View.prototype.helpers.numberFormatTons(totalTons));
+			this.subContainer.find('#total-bales').html(Backbone.View.prototype.helpers.numberFormatBales(totalBales));
+			this.subContainer.find('#total-price').html('$ '+Backbone.View.prototype.helpers.numberFormat(totalTotalPrice));
 		},
 		
 		events:{

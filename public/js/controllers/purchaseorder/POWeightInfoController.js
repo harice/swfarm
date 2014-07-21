@@ -25,8 +25,8 @@ define([
 					break;
                     
                 case Const.CRUD.PRINT:
-                    if((poId != null && this.IsInt(poId)) && (schedId != null && this.IsInt(schedId))) 
-						return this.print(poId, schedId);
+					if(schedId !== null && this.IsInt(schedId))
+                        return this.print(poId, schedId);
 					break;
 				
 				default:
@@ -47,10 +47,6 @@ define([
 		this.edit = function (poId, schedId, type) {
 			return new WeightInfoEditView({'poId':poId, 'schedId':schedId, 'type':type});
 		};
-        
-        this.print = function (poId, schedId) {
-			return new WeightInfoPrintView({'poId':poId, 'schedId':schedId});
-		};
 		
 		this.view = function (poId, schedId) {
 			return new WeightInfoView({'poId':poId, 'schedId':schedId});
@@ -58,6 +54,10 @@ define([
 		
 		this.list = function (poId) {
 			return new WeightInfoListView({'poId':poId});
+		};
+        
+        this.print = function (poId, schedId) {
+			return new WeightInfoPrintView({'poId':poId, 'schedId':schedId});
 		};
 		
 		this.IsInt = function (i) {

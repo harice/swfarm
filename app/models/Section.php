@@ -38,6 +38,14 @@ class Section extends BaseModel {
     {
         return $this->belongsTo('StorageLocation', 'storagelocation_id', 'id');
     }
-    
+
+    public function storagelocationName()
+    {
+        return $this->belongsTo('StorageLocation', 'storagelocation_id', 'id')->select(array('id', 'name'))->withTrashed();
+    }
+
+    public function stacklocation(){
+        return $this->belongsTo('StackLocation', 'id', 'section_id');
+    }
     
 }

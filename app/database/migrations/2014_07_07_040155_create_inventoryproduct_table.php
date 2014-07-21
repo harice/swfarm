@@ -19,11 +19,15 @@ class CreateInventoryproductTable extends Migration {
 			$table->integer('stack_id')->unsigned();
 			$table->decimal('price', 10, 2);
 			$table->decimal('tons', 8, 4);
+            $table->integer('sectionfrom_id')->unsigned()->nullable();
+            $table->integer('sectionto_id')->unsigned()->nullable();
 			
 			$table->timestamps();
 
 			$table->foreign('inventory_id')->references('id')->on('inventory');
 			$table->foreign('stack_id')->references('id')->on('stack');
+            $table->foreign('sectionfrom_id')->references('id')->on('section');
+			$table->foreign('sectionto_id')->references('id')->on('section');
 		});
 	}
 

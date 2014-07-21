@@ -342,17 +342,6 @@ define([
 				OrderWeightDetailsByStackCollection,
 				function (collection, id) {
 					var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
-					_.each(collection.models, function (model) {
-						var schedules = model.get('schedule');
-						if(schedules.length > 0) {
-							for(var i=0; i<schedules.length; i++) {
-								var s = schedules[i].transportscheduledate.split(' ');
-								schedules[i].transportscheduledate = thisObj.convertDateFormat(s[0], 'yyyy-mm-dd', thisObj.dateFormat, '-')+' '+s[1];			
-							}
-							model.set('schedule', schedules);
-						}
-					});
-					
 					$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(collection.models, id));
 				}
 			);

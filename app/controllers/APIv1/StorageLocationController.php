@@ -78,4 +78,9 @@ class StorageLocationController extends BaseController {
         return Response::json($response);
 	}
 
+	public function locationList(){
+		$response = $this->repo->getAllStorageLocation();
+        return Response::json($response);
+	}
+
 }

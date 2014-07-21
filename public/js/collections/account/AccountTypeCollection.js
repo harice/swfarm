@@ -9,6 +9,11 @@ define([
 		initialize: function(){
 			this.setDefaultURL(this.url);
 		},
+		
+		getTruckType: function () {
+            this.url = '/apiv1/account/truckerAccountTypes';
+            this.getModels();
+        }
 	});
 
 	return AccountTypeCollection;

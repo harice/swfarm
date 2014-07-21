@@ -90,6 +90,7 @@ define([
 				dropoff_weight_info_edit_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.EDIT+'/'+Const.WEIGHTINFO.DROPOFF,
 				dropoff_weight_info_add_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD+'/'+Const.WEIGHTINFO.DROPOFF,
 				previous_so_sched_url: '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId,
+                weight_info_print_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.PRINT
 			};
 			
 			if((!this.model.get('status') || (this.model.get('status') && this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)) && 
@@ -236,8 +237,15 @@ define([
 			'click .close-weight-ticket': 'showCloseWeightTicketConfirmationWindow',
 			'click #confirm-close-wt': 'closeWeightTicket',
             'click #mail-weight-ticket': 'showMailForm',
-            'click #confirm-mail-weight-ticket': 'mailWeightTicket'
+            'click #confirm-mail-weight-ticket': 'mailWeightTicket',
+            'click #print-weight-ticket': 'printWeightTicket'
 		},
+                
+        printWeightTicket: function() {
+            console.log('Print weight ticket');
+            
+            return false;
+        },
                 
         showMailForm: function() {
             this.initModalForm('',

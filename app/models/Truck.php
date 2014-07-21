@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Description of FarmLocation
+ * Description of Truck
  *
- * @author Das
+ * @author Avs
  */
 class Truck extends BaseModel {
     
@@ -13,13 +13,15 @@ class Truck extends BaseModel {
 	 * @var string
 	 */
 	protected $table = 'truck';
+
+    protected $softDelete = true;
     
     /**
      * Define fillable attributes in a model.
      * 
      * @var array
      */
-    protected $fillable = array('account_id', 'name', 'rate');
+    protected $fillable = array('account_id', 'trucknumber', 'fee');
 
     /**
      * Define field validation rules.
@@ -28,8 +30,12 @@ class Truck extends BaseModel {
      */
 	public static $rules = array(
         'account_id' => 'required',
-        'name' => 'required|unique:truck,name',
-        'rate' => 'required'
+        'trucknumber' => 'required|unique:truck,trucknumber',
+        'fee' => 'required'
     );
+
+    public function account(){
+        return $this->hasOne('Account', 'id', 'account_id')->select(array('id', 'name', 'accounttype'));
+    }
     
 }

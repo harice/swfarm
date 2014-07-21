@@ -20,6 +20,8 @@ define([
 				lookUpIds: {},
 				collapseId: null,
 				collapseLatestId: null,
+				searchURLForFilter: true,
+				otherData:{},
 			};
 		},
 		
@@ -51,6 +53,12 @@ define([
 						
 						if(data.total != null)
 							thisObj.setMaxItem(data.total);
+						
+						for(var key in data) {
+							if(typeof data[key] !== 'function' && key != 'total' && key != 'data'){
+								thisObj.setOtherData(key, data[key]);
+							}
+						}
 						
 						thisObj.trigger('sync');
 					}
@@ -112,13 +120,13 @@ define([
 			return this.listView.sort[type];
 		},
 		
-		setFilter: function (filter) {
+		/*setFilter: function (filter) {
 			this.listView.filter = filter;
 		},
 		
 		getFilter: function (filter) {
 			return this.listView.filter;
-		},
+		},*/
 		
 		setSearch: function (search) {
 			this.listView.search = search;
@@ -160,6 +168,17 @@ define([
 			return this.listView.collapseLatestId;
 		},
 		
+		setOtherData: function (key, value) {
+			this.listView.otherData[key] = value;
+		},
+		
+		getOtherData: function (key) {
+			if(typeof this.listView.otherData[key] !== 'undefined')
+				return this.listView.otherData[key];
+			else
+				return null;
+		},
+		
 		setPaginationURL: function (page) {
 			var searchURL = '';
 			var orderBy = (this.listView.sort[this.listView.currentSort])? 'asc' : 'desc';
@@ -194,10 +213,8 @@ define([
 				}	
 			}
 				
-			if(isFilter && !isSearch) {
+			if(isFilter && !isSearch && this.listView.searchURLForFilter)
 				searchURL = '/search';
-				params = _.extend(params, {search:this.listView.search});
-			}
 			
 			for(var lookUpIdName in this.listView.lookUpIds) {
 				if(this.listView.lookUpIds[lookUpIdName] != '' && this.listView.lookUpIds[lookUpIdName] != null) {

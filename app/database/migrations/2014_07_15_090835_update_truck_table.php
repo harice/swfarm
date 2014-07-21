@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateWeightticketTable extends Migration {
+class UpdateTruckTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,9 +12,9 @@ class UpdateWeightticketTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::table('weightticket', function(Blueprint $table)
+		Schema::table('truck', function(Blueprint $table)
 		{
-			$table->string('unloadingTicketNumber', 20)->unique()->after('loadingTicketNumber');
+			$table->softDeletes();
 		});
 	}
 

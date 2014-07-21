@@ -526,8 +526,12 @@ class OrderRepository implements OrderRepositoryInterface {
     public function closeOrder($id)
     {
         $order = Order::find($id);
-       
-        if($order->status_id != 2){
+        
+        if($order->status_id == 3 || $order->status_id == 5 || $order->status_id == 6){ //order is cancelled
+            return array(
+                        'error' => true,
+                        'message' => 'Order is already cancelled, cannot change the status to close.');
+        } else if($order->status_id != 2){
             $transportSchedules = TransportSchedule::where('order_id', '=', $id)->get()->toArray();
             $allScheduleIsClose = true;
             foreach($transportSchedules as $schedule){
@@ -542,21 +546,18 @@ class OrderRepository implements OrderRepositoryInterface {
                 $order->status_id = 2;
                 $order->save();
                 // echo "CLOSING";
-                return Response::json(array(
+                return array(
                         'error' => false,
-                        'message' => 'Order successfully closed')
-                , 200);
+                        'message' => 'Order successfully closed');
             } else {
-                return Response::json(array(
+                return array(
                         'error' => true,
-                        'message' => 'Order has open schedule(s).')
-                , 500);
+                        'message' => 'Order has open schedule(s).');
             }
         } else {
-            return Response::json(array(
+            return array(
                         'error' => true,
-                        'message' => 'Order status is already closed.')
-                , 500);
+                        'message' => 'Order status is already closed.');
         }
     }
 
@@ -574,6 +575,12 @@ class OrderRepository implements OrderRepositoryInterface {
 
     public function cancelOrder($id, $data){
         $order = Order::find($id);
+        if($this->checkIfHasWeightTicket($id)){
+            return array(
+                  'error' => true,
+                  'message' => 'Order cannot be cancel because it has weight ticket.');
+        }
+
         $data['order'] = $id;
 
         if($order->isfrombid == 1 && $order->status_id == 4 && $order->ordertype == 1){ //PO that is on bid
@@ -593,7 +600,7 @@ class OrderRepository implements OrderRepositoryInterface {
 
             return array(
                   'error' => false,
-                  'message' => 'PO cancelled.');
+                  'message' => 'Order cancelled.');
         } else if($order->status_id == 1 || $order->status_id == 4){ //check if Open or pending, for sales order
               $order->status_id = 3;
               $order->save();
@@ -605,13 +612,28 @@ class OrderRepository implements OrderRepositoryInterface {
                   'message' => 'Order cancelled.');
         } else if($order->status_id == 3 || $order->status_id == 5 || $order->status_id == 6) {
               return array(
-                  'error' => false,
+                  'error' => true,
                   'message' => 'Order is already cancelled');
         } else {
               return array(
-                  'error' => false,
+                  'error' => true,
                   'message' => 'Order cannot be cancel if the status is not open or pending.');
         }       
+    }
+
+    private function checkIfHasWeightTicket($orderId){
+        $hasWeightTicket = false;
+        $order = Order::with('transportschedule.weightticket')->find($orderId)->toArray();
+        // return $order;
+        foreach($order['transportschedule'] as $item){
+            if($item != null){
+                if($item['weightticket']['pickup_id'] != null || $item['weightticket']['dropoff_id'] != null){
+                    $hasWeightTicket = true;
+                    break;
+                }
+            }
+        }
+        return $hasWeightTicket;
     }
 /*
     public function uploadFile($data, $entityname){
@@ -737,8 +759,8 @@ class OrderRepository implements OrderRepositoryInterface {
                     $weightTicketDropoff = $weightTicket['weightticketscale_dropoff'];
                     //compute net weight
                     if($weightTicketPickup['gross'] != null && $weightTicketPickup['tare'] != null){
-                        $pickupNetWeight = number_format($weightTicketPickup['gross'] - $weightTicketPickup['tare'], 4);
-                        $dropoffNetWeight = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 4);
+                        $pickupNetWeight = number_format($weightTicketPickup['gross'] - $weightTicketPickup['tare'], 4, '.', '');
+                        $dropoffNetWeight = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 4, '.', '');
                     } else {
                         $pickupNetWeight = 0;
                         $dropoffNetWeight = 0;
@@ -759,10 +781,10 @@ class OrderRepository implements OrderRepositoryInterface {
                         
                     } else {
                         if($pickupNetWeight <= $dropoffNetWeight){
-                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($pickupNetWeight, 4);
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($pickupNetWeight, 4, '.', '');
                             $stackList[$index]['schedule'][$i]['weighttickettype'] = 1;
                         } else {
-                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($dropoffNetWeight, 4);
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($dropoffNetWeight, 4, '.', '');
                             $stackList[$index]['schedule'][$i]['weighttickettype'] = 2;
                         }
                     }
@@ -773,9 +795,9 @@ class OrderRepository implements OrderRepositoryInterface {
                         $stackList[$index]['schedule'][$i]['delivered'] = $this->getWeightTicketProductTobeUsed(1, $transportscheduleproduct['weightticketproducts']);
                     } else {
                         if($weightTicketPickup['gross'] != null && $weightTicketPickup['tare'] != null){
-                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($weightTicketPickup['gross'] - $weightTicketPickup['tare'], 4);
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($weightTicketPickup['gross'] - $weightTicketPickup['tare'], 4, '.', '');
                         } else {
-                            $stackList[$index]['schedule'][$i]['delivered'] = number_format(0, 4);
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format(0, 4, '.', '');
                         }
                     }
                     $stackList[$index]['schedule'][$i]['weighttickettype'] = 1;
@@ -786,9 +808,9 @@ class OrderRepository implements OrderRepositoryInterface {
                         $stackList[$index]['schedule'][$i]['delivered'] = $this->getWeightTicketProductTobeUsed(2, $transportscheduleproduct['weightticketproducts']);
                     } else {
                         if($weightTicketDropoff['gross'] != null && $weightTicketDropoff['tare'] != null){
-                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 4);
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 4, '.', '');
                         } else {
-                            $stackList[$index]['schedule'][$i]['delivered'] = number_format(0, 4);
+                            $stackList[$index]['schedule'][$i]['delivered'] = number_format(0, 4, '.', '');
                         }
                     }
                     $stackList[$index]['schedule'][$i]['weighttickettype'] = 2;
@@ -799,9 +821,10 @@ class OrderRepository implements OrderRepositoryInterface {
 
             }
 
+           
             usort($stackList[$index]['schedule'],function($a,$b){ return strtotime($b['transportscheduledate']) - strtotime($a['transportscheduledate']); });
 
-            $stackList[$index]['totalDeliveries'] = number_format($stackList[$index]['totalDeliveries'], 4);
+            $stackList[$index]['totalDeliveries'] = number_format($stackList[$index]['totalDeliveries'], 4, '.', '');
             $index++;
         }
 
@@ -825,7 +848,7 @@ class OrderRepository implements OrderRepositoryInterface {
     }  
 
     private function getNetWeight($weightticketproducts){
-        $netWeight = number_format($weightticketproducts['pounds'] * 0.0005, 4); //lbs to tons
+        $netWeight = number_format($weightticketproducts['pounds'] * 0.0005, 4, '.', ''); //lbs to tons
         return $netWeight;
     }
     
