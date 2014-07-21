@@ -6,6 +6,7 @@ define([
 	'jquerytextformatter',
 	'models/trucker/TruckerModel',
 	'collections/account/AccountCollection',
+	'collections/account/AccountTypeCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/trucker/truckerAddTemplate.html',
 	'global',
@@ -17,6 +18,7 @@ define([
 			TextFormatter,
 			TruckerModel,
 			AccountCollection,
+			AccountTypeCollection,
 			contentTemplate,
 			truckerAddTemplate,
 			Global,
@@ -29,25 +31,35 @@ define([
 		initialize: function(option) {
 			this.initSubContainer();
 			var thisObj = this;
-			this.trailerId = option.id;
+			this.truckerId = option.id;
 			this.h1Title = 'Trucker';
-			this.h1Small = 'edit';
+			this.h1Small = 'add';
+			this.selectedTruckerAccountId = null;
 			
-			this.truckerAccountCollection = new AccountCollection();
-			this.truckerAccountCollection.on('sync', function() {
+			this.accountTypeCollection = new AccountTypeCollection();
+			this.accountTypeCollection.on('sync', function() {
 				if(thisObj.subContainerExist()) {
 					thisObj.displayForm();
 					thisObj.supplyTruckerData();
 				}
 				this.off('sync');
 			});
-			this.truckerAccountCollection.on('error', function(collection, response, options) {
+			this.accountTypeCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
 			
-			this.model = new TruckerModel({id:this.trailerId});
+			this.truckerAccountCollection = new AccountCollection();
+			this.truckerAccountCollection.on('sync', function() {
+				thisObj.generateTruckerDropdown();
+                thisObj.hideFieldThrobber();
+			});
+			this.truckerAccountCollection.on('error', function(collection, response, options) {
+				//this.off('error');
+			});
+			
+			this.model = new TruckerModel({id:this.truckerId});
 			this.model.on('change', function() {
-				thisObj.truckerAccountCollection.getTrailerAccounts();
+				thisObj.accountTypeCollection.getTruckType();
 				this.off('change');
 			});
 		},
@@ -62,8 +74,10 @@ define([
 		},
 		
 		supplyTruckerData: function () {
-			this.$el.find('#account_id').val(this.model.get('account_id'));
-			this.$el.find('#number').val(this.model.get('number'));
+			this.$el.find('#truckerAccountType_id').val(this.model.get('account').accounttype[0].id);
+			this.fetchTruckerAccounts(this.model.get('account').accounttype[0].id, this.model.get('account').id);
+			this.$el.find('#trucknumber').val(this.model.get('trucknumber'));
+			this.$el.find('#fee').val(this.addCommaToNumber(this.model.get('fee')));
 		},
 		
 		initDeleteConfirmation: function () {
