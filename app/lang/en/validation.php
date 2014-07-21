@@ -101,7 +101,8 @@ return array(
 		'mobile' => 'mobile number',
 		'phone' =>'phone number',
 		'contact_id' =>'contact',
-		'account_id' =>'account'
+		'account_id' =>'account',
+		'truck_id' =>'truck'
 		),
 
 );
