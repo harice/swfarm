@@ -30,6 +30,7 @@ define([
     'controllers/contract/ContractController',
 	'controllers/trucker/TruckerController',
 	'controllers/inventory/InventoryController',
+	'controllers/stacknumber/StackNumberController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
@@ -63,6 +64,7 @@ define([
             ContractController,
 			TruckerController,
 			InventoryController,
+			StackNumberController,
 			Global,
 			Const,
 			Session) {
@@ -213,11 +215,14 @@ define([
 	routerRoutes[Const.URL.TRUCKER+'/:action'] = 'showTruckerPage';
 	routerRoutes[Const.URL.TRUCKER+'/:action/:id'] = 'showTruckerPage';
 	
-	//truck
+	//inventory
 	routerRoutes[Const.URL.INVENTORY] = 'showInventoryPage';
 	routerRoutes[Const.URL.INVENTORY+'/'] = 'showInventoryPage';
 	routerRoutes[Const.URL.INVENTORY+'/:action'] = 'showInventoryPage';
 	routerRoutes[Const.URL.INVENTORY+'/:action/:id'] = 'showInventoryPage';
+	
+	//stacknumber
+	routerRoutes[Const.URL.STACKNUMBER+'/:id'] = 'showStackNumberPage';
 	
 	routerRoutes['*actions'] = 'defaultAction';
 
@@ -491,6 +496,13 @@ define([
 			this.closeView();
 			var inventoryController = new InventoryController();
 			this.currView = inventoryController.setAction(action, id);
+			this.currView.render();
+		});
+		
+		app_router.on('route:showStackNumberPage', function (id) {
+			this.closeView();
+			var stackNumberController = new StackNumberController();
+			this.currView = stackNumberController.setAction(id);
 			this.currView.render();
 		});
 		

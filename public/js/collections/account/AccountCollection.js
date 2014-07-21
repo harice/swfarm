@@ -49,7 +49,7 @@ define([
 		getProducerAndWarehouseAccount: function () {
             this.url = '/apiv1/account/getProducerAndWarehouseAccount';
             this.getModels();
-        }
+        },
 	});
 
 	return AccountCollection;

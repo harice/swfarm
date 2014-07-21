@@ -2,8 +2,8 @@ define([
 	'backbone',
 ], function(Backbone) {
 
-	var TruckerModel = Backbone.Model.extend({
-		urlRoot: '/apiv1/truck',
+	var StackNumberModel = Backbone.Model.extend({
+		urlRoot: '',
 		defaults: {
         },
 		runFetch: function () {
@@ -23,5 +23,5 @@ define([
 			});
 		},
 	});
-	return TruckerModel;
+	return StackNumberModel;
 });

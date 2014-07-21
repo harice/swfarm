@@ -57,4 +57,7 @@ class Product extends Eloquent {
         return $this->belongsTo('ContractProducts', 'id', 'product_id');
     }
 
+    public function stack(){
+        return $this->hasMany('Stack', 'product_id', 'id')->select(array('id', 'stacknumber', 'product_id'));
+    }
 }

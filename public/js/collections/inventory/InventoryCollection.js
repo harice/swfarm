@@ -1,12 +1,12 @@
 define([
 	'backbone',
 	'collections/base/ListViewCollection',
-	'models/salesorder/SalesOrderModel',
+	'models/inventory/InventoryModel',
 	'constant',
-], function(Backbone, ListViewCollection, SalesOrderModel, Const){
-	var SalesOrderCollection = ListViewCollection.extend({
-		url: '/apiv1/salesorder',
-		model: SalesOrderModel,
+], function(Backbone, ListViewCollection, InventoryModel, Const){
+	var InventoryCollection = ListViewCollection.extend({
+		url: '/apiv1/inventory/stackListByProduct',
+		model: InventoryModel,
 		listView: {
 			numPerPage: Const.MAXITEMPERPAGE,
 			currentPage: 1,
@@ -17,10 +17,7 @@ define([
 				created_at: false,
 			},
 			filters: {
-				location: '',
-				status: '',
-				transportstart: '',
-				transportend: '',
+				productId: '',
 			},
 			filter: '',
 			date: '',
@@ -40,15 +37,9 @@ define([
 						created_at: false,
 					},
 				}
-			);
-			
-			this.listView.filters.location = '';
-			this.listView.filters.status = '';
-			this.listView.filters.natureofsale = '';
-			this.listView.filters.transportstart = '';
-			this.listView.filters.transportend = '';*/
+			);*/
 		},
 	});
 
-	return SalesOrderCollection;
+	return InventoryCollection;
 });

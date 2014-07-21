@@ -411,6 +411,10 @@ define([
 			else
 				return false;
 		},
+		
+		resetSelect: function (select) {
+			select.find('option:gt(0)').remove();
+		},
 	});
 
 	return AppView;
