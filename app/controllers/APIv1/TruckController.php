@@ -78,4 +78,9 @@ class TruckController extends BaseController {
         return Response::json($response);
 	}
 
+	public function getTruckerListByAccount(){
+		$response = $this->repo->getTruckerListByAccount(Input::get('accountId'));
+		return Response::json($response);
+	}
+
 }
