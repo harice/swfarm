@@ -18,6 +18,7 @@ class OrderRepository implements OrderRepositoryInterface {
         $order = Order::with('productorder')
                         ->with('productorder.product')
                         ->with('account')
+                        ->with('contact')
                         ->with('orderaddress', 'orderaddress.addressStates')
                         ->with('location')
                         ->with('status')
@@ -194,6 +195,7 @@ class OrderRepository implements OrderRepositoryInterface {
         $order = Order::with('productorder')
                 ->with('productorder.product')
                 ->with('account')
+                ->with('contact')
                 ->with('orderaddress', 'orderaddress.addressStates')
                 ->with('location')
                 ->with('status')
@@ -244,12 +246,14 @@ class OrderRepository implements OrderRepositoryInterface {
         else
             $data['status_id'] = 1; //Open status
 
+        $this->validate($data, 'Order', $data['ordertype']);
+
         $data['businessaddress'] = $this->getBusinessAddress($data['account_id']);
         
         if(!isset($data['contract_id']) || $data['contract_id'] == '')
             $data['contract_id'] = null;
          
-        $this->validate($data, 'Order', $data['ordertype']);
+        
        
         $result = DB::transaction(function() use ($data)
         {
@@ -294,13 +298,13 @@ class OrderRepository implements OrderRepositoryInterface {
         if($data['createPO']) //update PO status when true
             $data['status_id'] = 1; //Open status
 
+        $this->validate($data, 'Order', $data['ordertype']);
+
         $data['businessaddress'] = $this->getBusinessAddress($data['account_id']);
         
         if(!isset($data['contract_id']) || $data['contract_id'] == '')
             $data['contract_id'] = null;
         
-        $this->validate($data, 'Order', $data['ordertype']);
-       
         $result = DB::transaction(function() use ($id, $data)
         {   
             $productResult = null;

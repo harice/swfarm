@@ -21,6 +21,7 @@ class Order extends BaseModel {
         'location_id',
         'natureofsale_id',
         'account_id',
+        'contact_id',
         'orderaddress_id',
         'transportdatestart',
         'transportdateend',
@@ -42,11 +43,13 @@ class Order extends BaseModel {
      */
 	public static $so_rules = array(
         'natureofsale_id' => 'required',
-        'account_id' => 'required'
+        'account_id' => 'required',
+        'contact_id' => 'required'
     );
 
     public static $po_rules = array(
-        'account_id' => 'required'
+        'account_id' => 'required',
+        'contact_id' => 'required'
     );
     
     public function productorder()
@@ -94,6 +97,10 @@ class Order extends BaseModel {
     public function contract()
     {
         return $this->belongsTo('Contract');
+    }
+
+    public function contact(){
+        return $this->hasOne('Contact', 'id', 'contact_id')->select(array('id', 'firstname', 'lastname', 'suffix'));
     }
 
 }
