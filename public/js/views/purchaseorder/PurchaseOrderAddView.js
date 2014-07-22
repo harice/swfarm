@@ -10,6 +10,7 @@ define([
 	'collections/account/AccountProducerCollection',
 	'collections/purchaseorder/DestinationCollection',
 	'collections/product/ProductCollection',
+	'collections/contact/ContactCollection',
 	'models/purchaseorder/PurchaseOrderModel',
 	'models/file/FileModel',
 	'text!templates/layout/contentTemplate.html',
@@ -30,6 +31,7 @@ define([
 			AccountProducerCollection,
 			DestinationCollection,
 			ProductCollection,
+			ContactCollection,
 			PurchaseOrderModel,
 			FileModel,
 			contentTemplate,
@@ -104,6 +106,15 @@ define([
 			});
 			this.productCollection.on('error', function(collection, response, options) {
 				this.off('error');
+			});
+			
+			this.producerCollection = new ContactCollection();
+			this.producerCollection.on('sync', function() {
+				thisObj.generateDestinationLoaderAccountContacts();
+                thisObj.hideFieldThrobber();
+			});
+			this.producerCollection.on('error', function(collection, response, options) {
+				//this.off('error');
 			});
 		},
 		
