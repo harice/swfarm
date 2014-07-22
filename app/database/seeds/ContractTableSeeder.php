@@ -8,56 +8,36 @@ class ContractTableSeeder extends Seeder {
         $date = $now->format('Y-m-d H:i:s');
         
 		$contracts = array(
-			array(
-                'contract_number' => 'C20140630-0001',
-                'account_id' => 1,
-                'contract_date_start' => $date,
-                'contract_date_end' => $date,
-                'user_id' => 1,
-                'status_id' => 1,
-                'created_at' => $date,
-                'updated_at' => $date
+            array(
+                'contract_number' => 'C20140723-0001',
+                'account_id' => '12',
+                'contract_date_start' => '2014-07-22 00:00:00',
+                'contract_date_end' => '2015-07-22 00:00:00',
+                'user_id' => '1',
+                'status_id' => '1',
+                'created_at' => '2014-07-22 16:09:18',
+                'updated_at' => '2014-07-22 16:09:18'
             ),
             array(
-                'contract_number' => 'C20140630-0002',
-                'account_id' => 1,
-                'contract_date_start' => $date,
-                'contract_date_end' => $date,
-                'user_id' => 1,
-                'status_id' => 1,
-                'created_at' => $date,
-                'updated_at' => $date
+                'contract_number' => 'C20140723-0002',
+                'account_id' => '13',
+                'contract_date_start' => '2014-07-22 00:00:00',
+                'contract_date_end' => '2015-07-22 00:00:00',
+                'user_id' => '1',
+                'status_id' => '1',
+                'created_at' => '2014-07-22 16:09:18',
+                'updated_at' => '2014-07-22 16:09:18'
             ),
             array(
-                'contract_number' => 'C20140630-0003',
-                'account_id' => 1,
-                'contract_date_start' => $date,
-                'contract_date_end' => $date,
-                'user_id' => 1,
-                'status_id' => 1,
-                'created_at' => $date,
-                'updated_at' => $date
+                'contract_number' => 'C20140723-0003',
+                'account_id' => '14',
+                'contract_date_start' => '2014-07-22 00:00:00',
+                'contract_date_end' => '2015-07-22 00:00:00',
+                'user_id' => '1',
+                'status_id' => '1',
+                'created_at' => '2014-07-22 16:09:18',
+                'updated_at' => '2014-07-22 16:09:18'
             ),
-            array(
-                'contract_number' => 'C20140630-0004',
-                'account_id' => 1,
-                'contract_date_start' => $date,
-                'contract_date_end' => $date,
-                'user_id' => 1,
-                'status_id' => 1,
-                'created_at' => $date,
-                'updated_at' => $date
-            ),
-            array(
-                'contract_number' => 'C20140630-0005',
-                'account_id' => 1,
-                'contract_date_start' => $date,
-                'contract_date_end' => $date,
-                'user_id' => 1,
-                'status_id' => 1,
-                'created_at' => $date,
-                'updated_at' => $date
-            )
 		);
 
 		DB::table('contract')->insert($contracts);

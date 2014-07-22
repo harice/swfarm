@@ -159,48 +159,6 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('file', 'APIv1\FileController');
     
     // Contract
-    Route::get('contract/{id}/getSalesOrders', function($id, $product_id = 1) {
-        try
-        {
-            $orders = Order::join('productorder', 'order.id', '=', 'productorder.order_id')
-                ->with('transportschedule.weightticket.weightticketscale_pickup.weightticketproducts')
-                ->where('contract_id', '=', $id);
-            
-            if(isset($product_id)) {
-                $orders = $orders->where('product_id', '=', $product_id);
-            }
-                
-            $orders = $orders->get();
-            
-            if(!$orders) {
-                throw new NotFoundException('No Orders found for this contract.', 401);
-            }
-            
-            return $orders;
-        }
-        catch (Exception $e)
-        {
-            return $e->getMessage();
-        }
-    });
-    
-    Route::get('contract/{id}/getSchedules', function($id) {
-        $schedules = Order::join('productorder', 'order.id', '=', 'productorder.order_id')
-            ->with('transportschedule.transportscheduleproduct.weightticketproducts')
-
-            ->with(array('transportschedule.transportscheduleproduct' => function($transportscheduleproduct) {
-                return $transportscheduleproduct
-                    ->join('productorder', 'transportscheduleproduct.productorder_id', '=', 'productorder.id')
-                    ->where('product_id', '=', 1);
-            }))
-
-            ->where('contract_id', '=', $id)
-            ->where('product_id', '=', 1)
-            ->get();
-        
-        return $schedules;
-    });
-    
     Route::put('contract/close/{id}', 'APIv1\ContractController@closeContract');
     Route::put('contract/open/{id}', 'APIv1\ContractController@openContract');
     
