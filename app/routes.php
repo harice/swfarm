@@ -144,6 +144,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('trailer', 'APIv1\TrailerController');
     
     // Truck
+    Route::get('truck/listByAccount', 'APIv1\TruckController@getTruckerListByAccount');
     Route::resource('truck', 'APIv1\TruckController');
     
     // Fee

@@ -99,7 +99,10 @@ return array(
 		'email' =>'e-mail',
 		'emp_no' => 'employee number',
 		'mobile' => 'mobile number',
-		'phone' =>'phone number'
+		'phone' =>'phone number',
+		'contact_id' =>'contact',
+		'account_id' =>'account',
+		'truck_id' =>'truck'
 		),
 
 );
