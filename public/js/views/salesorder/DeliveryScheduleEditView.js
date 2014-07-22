@@ -68,6 +68,7 @@ define([
 			var destinationloader = this.model.get('destinationloader');
 			var trailer = this.model.get('trailer');
 			var products = this.model.get('transportscheduleproduct');
+			var truckerNumber = this.model.get('truckvehicle');
 			
 			this.$el.find('#so-sched-start-date .input-group.date').datepicker('update', this.convertDateFormat(this.model.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-'));
 			this.$el.find('#scheduletimeHour').val(this.model.get('scheduletimeHour'));
@@ -93,7 +94,7 @@ define([
 			this.$el.find('#total-quantity').val(this.addCommaToNumber(totalQuantity.toFixed(4)));
 			
 			this.$el.find('#truckerAccountType_id').val(trucker.accountidandname.accounttype[0].id);
-			this.fetchTruckerAccounts(trucker.accountidandname.accounttype[0].id, trucker.accountidandname.id, trucker.id, this.model.get('truckingrate'));
+			this.fetchTruckerAccounts(trucker.accountidandname.accounttype[0].id, trucker.accountidandname.id, trucker.id, truckerNumber.id, this.model.get('truckingrate'));
 			
 			this.$el.find('#trailer').val(trailer.account_id);
 			this.fetchTrailer(trailer.account_id, trailer.id);

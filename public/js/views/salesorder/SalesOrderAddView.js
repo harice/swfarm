@@ -270,6 +270,7 @@ define([
 				if(thisObj.currentCustomerId != model.get('id')) {
 					thisObj.currentCustomerId = model.get('id')
 					thisObj.showFieldThrobber('#contact_id');
+					thisObj.resetSelect(thisObj.subContainer.find('#contact_id'));
 					thisObj.customerAccountCollection.getContactsByAccountId(thisObj.currentCustomerId);
 				}
 			};
@@ -288,6 +289,7 @@ define([
 				if(thisObj.currentCustomerId != result.id) {
 					thisObj.currentCustomerId = result.id;
 					thisObj.showFieldThrobber('#contact_id');
+					thisObj.resetSelect(thisObj.subContainer.find('#contact_id'));
 					thisObj.customerAccountCollection.getContactsByAccountId(thisObj.currentCustomerId);
 				}
 			},
@@ -685,7 +687,6 @@ define([
 			_.each(this.customerAccountCollection.models, function (model) {
 				dropDown += '<option value="'+model.get('id')+'">'+model.get('lastname')+', '+model.get('firstname')+'</option>';
 			});
-			this.resetSelect(this.subContainer.find('#contact_id'));
 			this.$el.find('#contact_id').append(dropDown);
 			
 			if(typeof this.customerAccountContactId != 'undefined' && this.customerAccountContactId != null) {
