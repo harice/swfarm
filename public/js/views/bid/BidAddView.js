@@ -10,6 +10,7 @@ define([
 	'collections/account/AccountProducerCollection',
 	'collections/purchaseorder/DestinationCollection',
 	'collections/product/ProductCollection',
+	'collections/contact/ContactCollection',
 	'models/purchaseorder/PurchaseOrderModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddTemplate.html',
@@ -28,6 +29,7 @@ define([
 			AccountProducerCollection,
 			DestinationCollection,
 			ProductCollection,
+			ContactCollection,
 			PurchaseOrderModel,
 			contentTemplate,
 			purchaseOrderAddTemplate,
@@ -51,6 +53,13 @@ define([
 			this.poId = null;
 			this.h1Title = 'Bid';
 			this.h1Small = 'add';
+			
+			this.bidTransportdateStart = null;
+			this.bidTransportdateEnd = null;
+			this.bidLocationId = null;
+			
+			this.currentProducerId = null;
+			this.producerAccountContactId = null;
 			
 			this.productAutoCompletePool = [];
 			this.options = {
@@ -91,6 +100,15 @@ define([
 			});
 			this.productCollection.on('error', function(collection, response, options) {
 				this.off('error');
+			});
+			
+			this.producerAccountCollection = new ContactCollection();
+			this.producerAccountCollection.on('sync', function() {
+				thisObj.generateProducerAccountContacts();
+                thisObj.hideFieldThrobber();
+			});
+			this.producerAccountCollection.on('error', function(collection, response, options) {
+				//this.off('error');
 			});
 		},
 	});
