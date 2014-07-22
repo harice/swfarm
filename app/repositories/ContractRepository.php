@@ -247,45 +247,55 @@ class ContractRepository implements ContractRepositoryInterface {
             
             $contract_products = $contract->contractproducts;
             
-            $result = $contract_products->toArray();
-            foreach($result as &$_result) {
-                $_result['total_tons'] = $_result['tons'];
-                
-                $product = Product::find($_result['product_id']);
-                $_result['product_name'] = $product->name;
-                
-                // Get Sales Orders
-                $salesorders = $this->getSalesOrders($id, $_result['product_id']);
-                $_result['salesorders'] = $salesorders->toArray();
-                
-                $delivered_tons = 0.000;
-//                $_so['delivered_tons'] = 0.0000;
-                foreach ($_result['salesorders'] as &$_so) {
-                    if ($_so['status_id'] == 2) {
-                        $_so['status']['name'] = "Closed";
-                        $_so['status']['class'] = "default";
-                    } else {
-                        $_so['status']['name'] = "Open";
-                        $_so['status']['class'] = "success";
+            if ($contract_products) {
+                $result = $contract_products->toArray();
+                foreach($result as &$_result) {
+                    $_result['total_tons'] = $_result['tons'];
+
+                    $product = Product::find($_result['product_id']);
+                    $_result['product_name'] = $product->name;
+
+                    // Get Sales Orders
+                    $salesorders = $this->getSalesOrders($id, $_result['product_id']);
+                    return $salesorders;
+                    $_result['salesorders'] = $salesorders->toArray();
+
+                    $delivered_tons = 0.000;
+    //                $_so['delivered_tons'] = 0.0000;
+                    foreach ($_result['salesorders'] as &$_so) {
+                        if ($_so['status_id'] == 2) {
+                            $_so['status']['name'] = "Closed";
+                            $_so['status']['class'] = "default";
+                        } else {
+                            $_so['status']['name'] = "Open";
+                            $_so['status']['class'] = "success";
+                        }
+                        
+                        $_so['delivered_tons'] = 0.0000;
+    //                    return $_so['transportschedule'];
+                        if ($_so['transportschedule']) {
+                            
+                            foreach ($_so['transportschedule'] as $schedule) {
+//                                $delivered_tons += $schedule['transportscheduleproduct'] ? $schedule['transportscheduleproduct'][0]['weightticketproducts'][0]['pounds'] : 0.0000;
+                                $_so['delivered_tons'] += $schedule['transportscheduleproduct'] ? number_format($schedule['transportscheduleproduct'][0]['weightticketproducts'][0]['pounds']*0.0005, 4) : 0.0000;
+                                
+                                foreach ($schedule['transportscheduleproduct'] as $transportscheduleproduct) {
+                                    $delivered_tons += $schedule['transportscheduleproduct'] ? $transportscheduleproduct['weightticketproducts'][0]['pounds'] : 0.0000;
+                                }
+                            }
+                        }
                     }
-                    
-                    foreach ($_so['transportschedule'] as $schedule) {
-                        Log::debug($schedule);
-                    }
-                    
-                    $delivered_tons += $this->getDeliveredTons($_so['order_id'], 'order');
-                    
-//                    $delivered_tons += $this->getDeliveredTonsPerProduct($_so['order_id'], $_so['product_id']);
-//                    $delivered_tons += $this->getDeliveredTons($_so['order_id']);
+
+                    $_result['delivered_tons'] = number_format(($delivered_tons*0.0005), 4);
+                    $_result['remaining_tons'] = number_format(($_result['tons'] - ($delivered_tons*0.0005)), 4);
                 }
-                
-                $_result['delivered_tons'] = number_format($delivered_tons, 4);
-                $_result['remaining_tons'] = number_format(($_result['tons'] - $delivered_tons), 4);
+                unset($_so);
+                unset($_result);
+
+                return $result;
             }
-            unset($_so);
-            unset($_result);
             
-            return $result;
+            return true;
         }
         catch (Exception $e)
         {
@@ -438,19 +448,21 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         try
         {
-//            $orders = Order::join('productorder', 'order.id', '=', 'productorder.order_id')
-//                ->where('contract_id', '=', $contract_id);
-            
             $orders = Order::join('productorder', 'order.id', '=', 'productorder.order_id')
-                ->with('transportschedule.weightticket.weightticketscale_pickup.weightticketproducts')
+                ->with('transportschedule.transportscheduleproduct.weightticketproducts')
+
+                ->with(array('transportschedule.transportscheduleproduct' => function($transportscheduleproduct) use($product_id) {
+                    return $transportscheduleproduct
+                        ->join('productorder', 'transportscheduleproduct.productorder_id', '=', 'productorder.id')
+                        ->where('product_id', '=', $product_id);
+                }))
+
                 ->where('contract_id', '=', $contract_id);
-            
-            return $orders;
             
             if(isset($product_id)) {
                 $orders = $orders->where('product_id', '=', $product_id);
             }
-                
+            
             $orders = $orders->get();
             
             if(!$orders) {

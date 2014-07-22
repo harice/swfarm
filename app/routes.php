@@ -187,8 +187,15 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('contract/{id}/getSchedules', function($id) {
         $schedules = Order::join('productorder', 'order.id', '=', 'productorder.order_id')
             ->with('transportschedule.transportscheduleproduct.weightticketproducts')
-            ->with('transportschedule.transportscheduleproduct.productorder')
+
+            ->with(array('transportschedule.transportscheduleproduct' => function($transportscheduleproduct) {
+                return $transportscheduleproduct
+                    ->join('productorder', 'transportscheduleproduct.productorder_id', '=', 'productorder.id')
+                    ->where('product_id', '=', 1);
+            }))
+
             ->where('contract_id', '=', $id)
+            ->where('product_id', '=', 1)
             ->get();
         
         return $schedules;
