@@ -95,7 +95,11 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         try
         {
-            $contract = Contract::with('products', 'salesorders', 'productorders', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')->find($id);
+//            $contract = Contract::with('products', 'salesorders', 'productorders', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')->find($id);
+            
+            $contract = Contract::with('salesorders.transportschedule.weightticket.weightticketscale_pickup.weightticketproducts')
+                ->with('salesorders.transportschedule.weightticket.weightticketscale_dropoff.weightticketproducts')
+                ->find($id);
             
             if (!$contract) {
                 throw new NotFoundException();
@@ -236,6 +240,7 @@ class ContractRepository implements ContractRepositoryInterface {
             
             $contract = Contract::with('contractproducts')
                 ->find($id);
+            
             if(!$contract) {
                 throw new NotFoundException('Contract not found.', 401);
             }
@@ -245,6 +250,9 @@ class ContractRepository implements ContractRepositoryInterface {
             $result = $contract_products->toArray();
             foreach($result as &$_result) {
                 $_result['total_tons'] = $_result['tons'];
+                
+                $product = Product::find($_result['product_id']);
+                $_result['product_name'] = $product->name;
                 
                 // Get Sales Orders
                 $salesorders = $this->getSalesOrders($id, $_result['product_id']);
@@ -259,6 +267,10 @@ class ContractRepository implements ContractRepositoryInterface {
                     } else {
                         $_so['status']['name'] = "Open";
                         $_so['status']['class'] = "success";
+                    }
+                    
+                    foreach ($_so['transportschedule'] as $schedule) {
+                        Log::debug($schedule);
                     }
                     
                     $delivered_tons += $this->getDeliveredTons($_so['order_id'], 'order');
@@ -426,11 +438,14 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         try
         {
-            $orders = Order::
-//                with('productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_pickup')
-//                ->with('productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_dropoff')
-                join('productorder', 'order.id', '=', 'productorder.order_id')
+//            $orders = Order::join('productorder', 'order.id', '=', 'productorder.order_id')
+//                ->where('contract_id', '=', $contract_id);
+            
+            $orders = Order::join('productorder', 'order.id', '=', 'productorder.order_id')
+                ->with('transportschedule.weightticket.weightticketscale_pickup.weightticketproducts')
                 ->where('contract_id', '=', $contract_id);
+            
+            return $orders;
             
             if(isset($product_id)) {
                 $orders = $orders->where('product_id', '=', $product_id);
@@ -443,6 +458,23 @@ class ContractRepository implements ContractRepositoryInterface {
             }
             
             return $orders;
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
+    }
+    
+    public function getSchedules($id)
+    {
+        try
+        {
+            $schedules = Order::with('transportschedule.transportscheduleproduct.weightticketproducts')
+                ->with('transportschedule.transportscheduleproduct.productorder')
+                ->where('contract_id', '=', $id)
+                ->get();
+
+            return $schedules;
         }
         catch (Exception $e)
         {
