@@ -16,6 +16,7 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/salesorder/salesOrderAddTemplate.html',
 	'text!templates/salesorder/salesOrderProductItemTemplate.html',
+	'text!templates/salesorder/salesOrderSubProductItemTemplate.html',
 	'text!templates/salesorder/salesOrderOriginTemplate.html',
 	'text!templates/salesorder/salesOrderNatureOfSaleTemplate.html',
     'text!templates/salesorder/salesOrderContractTemplate.html',
@@ -38,6 +39,7 @@ define([
 			contentTemplate,
 			salesOrderAddTemplate,
 			productItemTemplate,
+			productSubItemTemplate,
 			salesOrderOriginTemplate,
 			salesOrderNatureOfSaleTemplate,
             contractTemplate,
@@ -60,6 +62,7 @@ define([
 			this.productAutoCompletePool = [];
 			this.options = {
 				productFieldClone: null,
+				productSubFieldClone: null,
 				productFieldCounter: 0,
 				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'id'],
 				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales'],
@@ -313,20 +316,45 @@ define([
 				};
 				var productTemplate = _.template(productItemTemplate, productTemplateVars);
 				
-				this.$el.find('#product-list tbody').append(productTemplate);
-				var productItem = this.$el.find('#product-list tbody').find('.product-item:first-child');
+				this.$el.find('#product-list > tbody').append(productTemplate);
+				this.addProductSub(this.$el.find('#product-list > tbody').find('.product-stack:first table'));
+				//var productItem = this.$el.find('#product-list > tbody').find('.product-item:first-child');
+				var productItem = this.$el.find('#product-list > tbody').children();
 				this.options.productFieldClone = productItem.clone();
 				this.addIndexToProductFields(productItem);
 				clone = productItem;
 			}
 			else {
-				var clone = this.options.productFieldClone.clone();
+				clone = this.options.productFieldClone.clone();
 				this.addIndexToProductFields(clone);
 				clone.find('.product_id').html(this.getProductDropdown());
-				this.$el.find('#product-list tbody').append(clone);
+				this.$el.find('#product-list > tbody').append(clone);
 			}
 				
 			this.addValidationToProduct();
+			return clone;
+		},
+		
+		addProductStack: function (ev) {
+			this.addProductSub($(ev.currentTarget).closest('.product-stack').find('table:first'));
+		},
+		
+		addProductSub: function (tableElement) { console.log('addProductSub');
+			var clone = null;
+			
+			if(this.options.productSubFieldClone == null) {
+				var productSubTemplateVars = {};
+				var productSubTemplate = _.template(productSubItemTemplate, productSubTemplateVars);
+				tableElement.find('tbody').append(productSubTemplate);
+				var productSubItem = tableElement.find('tbody').find('.product-stack-item:first-child');
+				this.options.productSubFieldClone = productSubItem.clone();
+				clone = productSubItem;
+			}
+			else {
+				clone = this.options.productSubFieldClone.clone();
+				tableElement.find('tbody').append(clone);
+			}
+			
 			return clone;
 		},
 		
@@ -459,7 +487,9 @@ define([
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #add-product': 'addProduct',
+			'click .add-product-stack': 'addProductStack',
 			'click .remove-product': 'removeProduct',
+			'click .remove-product-stack': 'removeProductStack',
 			//'blur .productname': 'validateProduct',
 			'keyup .unitprice': 'onKeyUpUnitPrice',
 			'blur .unitprice': 'onBlurMoney',
@@ -472,7 +502,9 @@ define([
 		},
 		
 		removeProduct: function (ev) {
-			$(ev.target).closest('tr').remove();
+			var tr = $(ev.currentTarget).closest('tr');
+			tr.next().remove();
+			tr.remove();
 			
 			if(!this.hasProduct())
 				this.addProduct();
@@ -482,6 +514,21 @@ define([
 		
 		hasProduct: function () {
 			return (this.$el.find('#product-list tbody .product-item').length)? true : false;
+		},
+		
+		removeProductStack: function (ev) {
+			var tr = $(ev.currentTarget).closest('tr');
+			var table = tr.closest('table');
+			tr.remove();
+			
+			if(!this.hasProductSub(table)) {
+				this.addProductSub(table);
+			}
+		},
+		
+		hasProductSub: function (tableElement) {
+			console.log('hasProductSub: '+tableElement.find('tbody .product-stack-item').length);
+			return (tableElement.find('tbody .product-stack-item').length)? true : false;
 		},
 		
 		computeTotals: function () {
