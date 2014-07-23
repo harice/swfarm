@@ -303,6 +303,8 @@ define([
 					headers: weightInfoModel.getAuth(),
 				}
 			);
+                
+            location.reload(true);
 			
 			return false;
 		}

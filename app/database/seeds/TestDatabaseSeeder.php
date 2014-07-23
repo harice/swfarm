@@ -44,6 +44,7 @@ class TestDatabaseSeeder extends Seeder {
         // $this->call('StackTableSeeder');
         $this->call('ScaleTableSeeder');
         $this->call('TrailerTableSeeder');
+        $this->call('TruckTableSeeder');
         // $this->call('FeeTableSeeder');
         $this->call('ContractTableSeeder');
         $this->call('ContractProductsTableSeeder');

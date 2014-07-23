@@ -134,6 +134,33 @@ class AccountTableSeeder extends Seeder {
                 'created_at' => $date,
                 'updated_at' => $date
             ),
+            array(
+                'name' => 'Producer A',
+                'website' => 'http://www.producer-a.com',
+                'description' => 'Lorem ipsum set amet.',
+                'phone' => '123-434-4343',
+                'accounttype' => 5,
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
+            array(
+                'name' => 'Producer B',
+                'website' => 'http://www.producer-b.com',
+                'description' => 'Lorem ipsum set amet.',
+                'phone' => '123-434-4343',
+                'accounttype' => 5,
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
+            array(
+                'name' => 'Producer C',
+                'website' => 'http://www.producer-c.com',
+                'description' => 'Lorem ipsum set amet.',
+                'phone' => '123-434-4343',
+                'accounttype' => 5,
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
 		);
 
         DB::table('account')->insert($accounts);

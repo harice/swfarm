@@ -181,7 +181,7 @@
     <div class="form-group form-button-container">
         <div class="col-md-12">
             <div class="pull-right">
-                <% if(wi.get("weightTicketNumber")) { %>
+                <% if (!wi.get("error") && !(typeof editable !== "undefined")) { %>
                     <a href="<%= weight_info_print_url %>" class="btn btn-primary">Print</a>
                     <button id="mail-weight-ticket" class="btn btn-primary">Email</button>
                 <% } %>
