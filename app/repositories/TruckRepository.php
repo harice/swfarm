@@ -115,5 +115,10 @@ class TruckRepository implements TruckRepositoryInterface {
     {
         return new Truck($data);
     }
+
+    public function getTruckerListByAccount($accountId){
+        $trucks =  Truck::where('account_id', '=', $accountId)->get(array('id', 'trucknumber', 'fee'));
+        return $trucks->toArray();
+    }
     
 }

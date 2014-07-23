@@ -3,12 +3,12 @@
 class AccountTableSeeder extends Seeder {
     
     public function run()
-	{
+    {
         $now = new DateTime('NOW');
         $date = $now->format('Y-m-d H:i:s');
         
-		$accounts = array(
-			array(
+        $accounts = array(
+            array(
                 'name' => 'Hay Customer',
                 'website' => 'http://www.haysupplier.com',
                 'description' => 'Lorem ipsum set amet.',
@@ -136,7 +136,7 @@ class AccountTableSeeder extends Seeder {
             ),
 		);
 
-		DB::table('account')->insert($accounts);
-	}
+        DB::table('account')->insert($accounts);
+    }
     
 }

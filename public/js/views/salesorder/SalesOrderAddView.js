@@ -11,6 +11,7 @@ define([
 	'collections/salesorder/OriginCollection',
 	'collections/salesorder/NatureOfSaleCollection',
 	'collections/product/ProductCollection',
+	'collections/contact/ContactCollection',
     'collections/contract/ContractByAccountCollection',
 	'models/salesorder/SalesOrderModel',
 	'text!templates/layout/contentTemplate.html',
@@ -33,6 +34,7 @@ define([
 			OriginCollection,
 			NatureOfSaleCollection,
 			ProductCollection,
+			ContactCollection,
             ContractByAccountCollection,
 			SalesOrderModel,
 			contentTemplate,
@@ -56,6 +58,9 @@ define([
 			this.soId = null;
 			this.h1Title = 'Sales Order';
 			this.h1Small = 'add';
+			
+			this.currentCustomerId = null;
+			this.customerAccountContactId = null;
 			
 			this.productAutoCompletePool = [];
 			this.options = {
@@ -122,6 +127,15 @@ define([
 			});
 			this.contractProductsCollection.on('error', function(collection, response, options) {
 				this.off('error');
+			});
+			
+			this.customerAccountCollection = new ContactCollection();
+			this.customerAccountCollection.on('sync', function() {
+				thisObj.generateCustomerAccountContacts();
+                thisObj.hideFieldThrobber();
+			});
+			this.customerAccountCollection.on('error', function(collection, response, options) {
+				//this.off('error');
 			});
 		},
 		
@@ -252,6 +266,13 @@ define([
 				thisObj.$el.find('#city').val(address[0].city);
 				thisObj.$el.find('#zipcode').val(address[0].zipcode);
 				thisObj.contractByAccountCollection.getContractByAccount(model.get('id'));
+				
+				if(thisObj.currentCustomerId != model.get('id')) {
+					thisObj.currentCustomerId = model.get('id')
+					thisObj.showFieldThrobber('#contact_id');
+					thisObj.resetSelect(thisObj.subContainer.find('#contact_id'));
+					thisObj.customerAccountCollection.getContactsByAccountId(thisObj.currentCustomerId);
+				}
 			};
 			
 			this.customerAutoCompleteView.typeInCallback = function (result) {
@@ -264,6 +285,13 @@ define([
 				thisObj.$el.find('#city').val(address[0].city);
 				thisObj.$el.find('#zipcode').val(address[0].zipcode);
 				thisObj.contractByAccountCollection.getContractByAccount(result.id);
+				
+				if(thisObj.currentCustomerId != result.id) {
+					thisObj.currentCustomerId = result.id;
+					thisObj.showFieldThrobber('#contact_id');
+					thisObj.resetSelect(thisObj.subContainer.find('#contact_id'));
+					thisObj.customerAccountCollection.getContactsByAccountId(thisObj.currentCustomerId);
+				}
 			},
 			
 			this.customerAutoCompleteView.typeInEmptyCallback = function () {
@@ -273,6 +301,8 @@ define([
 				thisObj.$el.find('#zipcode').val('');
 				thisObj.resetSelect(thisObj.$el.find('#contract_id'));
 				thisObj.$el.find('#contract_id').trigger('change');
+				
+				thisObj.resetSelect(thisObj.subContainer.find('#contact_id'));
 			},
 			
 			this.customerAutoCompleteView.render();
@@ -652,8 +682,21 @@ define([
 				this.generateAllProductDropdown();
 		},
 		
-		resetSelect: function (select) {
-			select.find('option:gt(0)').remove();
+		generateCustomerAccountContacts: function () {
+			var dropDown = '';
+			_.each(this.customerAccountCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('lastname')+', '+model.get('firstname')+'</option>';
+			});
+			this.$el.find('#contact_id').append(dropDown);
+			
+			if(typeof this.customerAccountContactId != 'undefined' && this.customerAccountContactId != null) {
+				this.$el.find('#contact_id').val(this.customerAccountContactId);
+				this.customerAccountContactId = null;
+			}
+			else {
+				if(this.customerAccountCollection.models.length == 1)
+					this.$el.find('#contact_id').val(this.customerAccountCollection.models[0].get('id')).change();
+			}
 		},
 		
 		otherInitializations: function () {},

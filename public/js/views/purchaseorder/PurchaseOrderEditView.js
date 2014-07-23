@@ -10,6 +10,7 @@ define([
 	'collections/account/AccountProducerCollection',
 	'collections/purchaseorder/DestinationCollection',
 	'collections/product/ProductCollection',
+	'collections/contact/ContactCollection',
 	'models/purchaseorder/PurchaseOrderModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddTemplate.html',
@@ -28,6 +29,7 @@ define([
 			AccountProducerCollection,
 			DestinationCollection,
 			ProductCollection,
+			ContactCollection,
 			PurchaseOrderModel,
 			contentTemplate,
 			purchaseOrderAddTemplate,
@@ -91,6 +93,11 @@ define([
 			this.$el.find('#city').val(address[0].city);
 			this.$el.find('#zipcode').val(address[0].zipcode);
 			this.$el.find('#dateofpurchase').val(this.convertDateFormat(this.model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
+			
+			this.currentProducerId = account.id;
+			this.producerAccountContactId = this.model.get('contact_id');
+			this.showFieldThrobber('#contact_id');
+			this.producerAccountCollection.getContactsByAccountId(account.id);
 			
 			if(!this.isBid) {
 				if(this.model.get('transportdatestart')) {
