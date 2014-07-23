@@ -259,7 +259,7 @@ class ContractRepository implements ContractRepositoryInterface {
                     $_product['product_name'] = $product->name;
 
                     // Get Sales Orders
-                    $salesorders = $this->getSalesOrders($id);
+                    $salesorders = $this->getSalesOrders($id, $_product['product_id']);
                     $_product['salesorders'] = $salesorders->toArray();
                     
                     // Process SO
@@ -352,15 +352,23 @@ class ContractRepository implements ContractRepositoryInterface {
         return $total_tons;
     }
     
-    public function getSalesOrders($contract_id)
+    public function getSalesOrders($contract_id, $product_id = null)
     {
         try
         {
             $orders = Order::with('transportschedule.transportscheduleproduct.weightticketproducts')
                 ->with('transportschedule.transportscheduleproduct.weightticketproducts.weightticketscale.pickup')
                 ->with('transportschedule.transportscheduleproduct.productorder')
-                ->where('contract_id', '=', $contract_id)
-                ->get();
+                ->where('contract_id', '=', $contract_id);
+                
+            if ($product_id) {
+                $orders = $orders->whereHas('productorder', function($q) use($product_id)
+                {
+                    $q->where('product_id', '=', $product_id);
+                });
+            }
+            
+            $orders = $orders->get();
             
             if(!$orders) {
                 throw new NotFoundException('No Orders found for this contract.', 401);

@@ -38,36 +38,6 @@ class ContractTableSeeder extends Seeder {
                 'created_at' => '2014-07-22 16:09:18',
                 'updated_at' => '2014-07-22 16:09:18'
             ),
-            array(
-                'contract_number' => 'C20140723-0021',
-                'account_id' => '15',
-                'contract_date_start' => '2014-07-22 00:00:00',
-                'contract_date_end' => '2015-07-22 00:00:00',
-                'user_id' => '1',
-                'status_id' => '1',
-                'created_at' => '2014-07-22 16:09:18',
-                'updated_at' => '2014-07-22 16:09:18'
-            ),
-            array(
-                'contract_number' => 'C20140723-0022',
-                'account_id' => '16',
-                'contract_date_start' => '2014-07-22 00:00:00',
-                'contract_date_end' => '2015-07-22 00:00:00',
-                'user_id' => '1',
-                'status_id' => '1',
-                'created_at' => '2014-07-22 16:09:18',
-                'updated_at' => '2014-07-22 16:09:18'
-            ),
-            array(
-                'contract_number' => 'C20140723-0023',
-                'account_id' => '17',
-                'contract_date_start' => '2014-07-22 00:00:00',
-                'contract_date_end' => '2015-07-22 00:00:00',
-                'user_id' => '1',
-                'status_id' => '1',
-                'created_at' => '2014-07-22 16:09:18',
-                'updated_at' => '2014-07-22 16:09:18'
-            ),
 		);
 
 		DB::table('contract')->insert($contracts);
