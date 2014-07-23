@@ -67,12 +67,17 @@ define([
 			this.productAutoCompletePool = [];
 			this.options = {
 				productFieldClone: null,
-				productSubFieldClone: null,
 				productFieldCounter: 0,
-				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'id'],
-				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales'],
+				productFieldClass: ['product_id', 'unitprice', 'tons', 'id'],
+				productFieldClassRequired: ['product_id', 'unitprice', 'tons'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
+				productSubFieldClone: null,
+				productSubFieldCounter: 0,
+				productSubFieldClass: ['stacknumber', 'description', 'tons', 'bales', 'id'],
+				productSubFieldClassRequired: ['stacknumber', 'tons', 'bales'],
+				productSubFieldExempt: [],
+				productSubFieldSeparator: '.',
 				removeComma: ['unitprice', 'tons', 'bales'],
 			};
 			
@@ -185,7 +190,10 @@ define([
 			
 			var validate = $('#soForm').validate({
 				submitHandler: function(form) {
+					//var data = $(form).serializeObject();
 					var data = thisObj.formatFormField($(form).serializeObject());
+					console.log(data);
+					/*var data = thisObj.formatFormField($(form).serializeObject());
                     
 					data['transportdatestart'] = thisObj.convertDateFormat(data['transportdatestart'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					data['transportdateend'] = thisObj.convertDateFormat(data['transportdateend'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
@@ -210,7 +218,7 @@ define([
 							},
 							headers: salesOrderModel.getAuth(),
 						}
-					);
+					);*/
 				},
 				errorPlacement: function(error, element) {
 					if(element.hasClass('form-date')) {
@@ -347,7 +355,7 @@ define([
 				var productTemplate = _.template(productItemTemplate, productTemplateVars);
 				
 				this.$el.find('#product-list > tbody').append(productTemplate);
-				this.addProductSub(this.$el.find('#product-list > tbody').find('.product-stack:first table'));
+				//this.addProductSub(this.$el.find('#product-list > tbody').find('.product-stack:first table'));
 				//var productItem = this.$el.find('#product-list > tbody').find('.product-item:first-child');
 				var productItem = this.$el.find('#product-list > tbody').children();
 				this.options.productFieldClone = productItem.clone();
@@ -360,8 +368,10 @@ define([
 				clone.find('.product_id').html(this.getProductDropdown());
 				this.$el.find('#product-list > tbody').append(clone);
 			}
-				
+			
 			this.addValidationToProduct();
+			this.addProductSub(clone.find('.product-stack-table'));
+			
 			return clone;
 		},
 		
@@ -369,8 +379,9 @@ define([
 			this.addProductSub($(ev.currentTarget).closest('.product-stack').find('table:first'));
 		},
 		
-		addProductSub: function (tableElement) { console.log('addProductSub');
+		addProductSub: function (tableElement) {
 			var clone = null;
+			var parentId = tableElement.find('tbody').attr('data-id');
 			
 			if(this.options.productSubFieldClone == null) {
 				var productSubTemplateVars = {};
@@ -378,10 +389,12 @@ define([
 				tableElement.find('tbody').append(productSubTemplate);
 				var productSubItem = tableElement.find('tbody').find('.product-stack-item:first-child');
 				this.options.productSubFieldClone = productSubItem.clone();
+				this.addIndexToProductSubFields(productSubItem, parentId);
 				clone = productSubItem;
 			}
 			else {
 				clone = this.options.productSubFieldClone.clone();
+				this.addIndexToProductSubFields(clone, parentId);
 				tableElement.find('tbody').append(clone);
 			}
 			
@@ -453,28 +466,117 @@ define([
 				return this.getContractProductDropdown();
 		},
 		
-		addIndexToProductFields: function (bidProductItem) {
+		addIndexToProductFields: function (productFieldItem) {
 			var productFieldClass = this.options.productFieldClass;
 			for(var i=0; i < productFieldClass.length; i++) {
-				var field = bidProductItem.find('.'+productFieldClass[i]);
+				var field = productFieldItem.find('.'+productFieldClass[i]);
 				var name = field.attr('name');
 				field.attr('name', name + this.options.productFieldSeparator + this.options.productFieldCounter);
 			}
 			
+			productFieldItem.find('.product-stack-table tbody').attr('data-id', this.options.productFieldCounter);
 			this.options.productFieldCounter++;
+		},
+		
+		addIndexToProductSubFields: function (productSubFieldItem, parentIndex) {
+			var productSubFieldClass = this.options.productSubFieldClass;
+			for(var i=0; i < productSubFieldClass.length; i++) {
+				var field = productSubFieldItem.find('.'+productSubFieldClass[i]);
+				var name = field.attr('name');
+				field.attr('name', name + this.options.productFieldSeparator + parentIndex + this.options.productSubFieldSeparator + this.options.productSubFieldCounter);
+			}
+			
+			this.options.productSubFieldCounter++;
 		},
 		
 		addValidationToProduct: function () {
 			var thisObj = this;
 			var productFieldClassRequired = this.options.productFieldClassRequired;
 			for(var i=0; i < productFieldClassRequired.length; i++) {
-				$('.'+productFieldClassRequired[i]).each(function() {
+				$('#product-list .product-item .'+productFieldClassRequired[i]).each(function() {
 					$(this).rules('add', {required: true});
 				});
 			}
 		},
 		
 		formatFormField: function (data) {
+			var formData = {products:[]};
+			var productFieldClass = this.options.productFieldClass;
+			
+			for(var key in data) {
+				if(typeof data[key] !== 'function'){
+					var value = data[key];
+					var arrayKey = key.split(this.options.productFieldSeparator);
+					
+					
+					if(arrayKey.length < 2) {
+						if(this.options.removeComma.indexOf(key) < 0)
+							formData[key] = value;
+						else
+							formData[key] = this.removeCommaFromNumber(value);
+					}
+					else {
+						if(arrayKey[0] == productFieldClass[0]) {
+							var index = arrayKey[1];
+							var arrayProductFields = {};
+							
+							for(var i = 0; i < productFieldClass.length; i++) {
+								if(this.options.productFieldExempt.indexOf(productFieldClass[i]) < 0) {
+									var fieldValue = data[productFieldClass[i]+this.options.productFieldSeparator+index];
+									if(!(productFieldClass[i] == 'id' && fieldValue == '')) {
+										if(this.options.removeComma.indexOf(productFieldClass[i]) < 0)
+											arrayProductFields[productFieldClass[i]] = fieldValue;
+										else
+											arrayProductFields[productFieldClass[i]] = this.removeCommaFromNumber(fieldValue);
+									}
+								}
+							}
+							
+							arrayProductFields['stacks'] = this.getProductStackFields(data, index);
+							
+							formData.products.push(arrayProductFields);
+						}
+					}
+				}
+			}
+			
+			return formData;
+		},
+		
+		getProductStackFields: function (data, productIndex) {
+			var stacks = [];
+			var productFieldClass = this.options.productSubFieldClass;
+			
+			for(var key in data) {
+				if(typeof data[key] !== 'function'){
+					var value = data[key];
+					var arrayKey = key.split(this.options.productFieldSeparator);
+					
+					if(arrayKey.length > 2 && arrayKey[0] == productFieldClass[0] && arrayKey[1] == productIndex) {
+						var index = arrayKey[2];
+						var arrayProductFields = {};
+						
+						for(var i = 0; i < productFieldClass.length; i++) {
+							if(this.options.productSubFieldExempt.indexOf(productFieldClass[i]) < 0) {
+								var fieldValue = data[productFieldClass[i]+this.options.productFieldSeparator+productIndex+this.options.productSubFieldSeparator+index];
+								if(!(productFieldClass[i] == 'id' && fieldValue == '')) {
+									if(this.options.removeComma.indexOf(productFieldClass[i]) < 0)
+										arrayProductFields[productFieldClass[i]] = fieldValue;
+									else
+										arrayProductFields[productFieldClass[i]] = this.removeCommaFromNumber(fieldValue);
+								}
+							}
+						}
+						
+						stacks.push(arrayProductFields);
+					}
+				}
+			}
+			
+			return stacks;
+		},
+		
+		/*formatFormField: function (data) {
 			var formData = {products:[]};
 			var productFieldClass = this.options.productFieldClass;
 			
@@ -512,7 +614,7 @@ define([
 			}
 			
 			return formData;
-		},
+		},*/
 		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',

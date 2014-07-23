@@ -1,7 +1,11 @@
 <tr class="product-stack-item">
-	<td><input class="form-control" type="text" maxlength="20"></td>
-	<td><input class="form-control text-right" type="text" maxlength="12"></td>
-	<td><input class="form-control text-right" type="text"></td>
+	<td>
+		<input type="hidden" class="id" name="id" value="" />
+		<input class="form-control stacknumber" name="stacknumber" type="text" maxlength="20">
+	</td>
+	<td><input class="form-control description" name="description" maxlength="80"></td>
+	<td><input class="form-control text-right tons" name="tons" type="text" maxlength="12"></td>
+	<td><input class="form-control text-right bales" name="bales" type="text"></td>
 	<td>
 		<button title="Remove Product Stack" type="button" class="pull-right btn btn-danger btn-xs remove-product-stack"><span class="glyphicon glyphicon-remove"></span></button>
 	</td>
