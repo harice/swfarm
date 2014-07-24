@@ -15,7 +15,7 @@
 		
 		<link href="js/libs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
   		<link rel="stylesheet" type="text/css" href="js/libs/jquery.gritter/css/jquery.gritter.css" />
-		<link rel="stylesheet" href="fonts/font-awesome-4/css/font-awesome.min.css">
+		<link rel="stylesheet" href="fonts/font-awesome-4.1.0/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="js/libs/jquery.nanoscroller/nanoscroller.css" />
         <link rel="stylesheet" type="text/css" href="js/libs/jquery.select2/select2.css" />
         <link rel="stylesheet" type="text/css" href="js/libs/jquery.icheck/skins/flat/blue.css" />

@@ -24,7 +24,8 @@ define([
 			numberFormat 		: function(number) { return Backbone.View.prototype.numberFormat(number,2,'.',','); },
 			numberFormatLbs 	: function(number) { return Backbone.View.prototype.numberFormat(number,2,'.',','); },
 			numberFormatTons 	: function(number) { return Backbone.View.prototype.numberFormat(number,4,'.',','); },
-			numberFormatBales 	: function(number) { return Backbone.View.prototype.numberFormat(number,0,'.',','); }
+			numberFormatBales 	: function(number) { return Backbone.View.prototype.numberFormat(number,0,'.',','); },
+			convertLbsToTons 	: function(number) { return Backbone.View.prototype.numberFormat((number * Const.LB2TON),4,'.',','); }
 		}
 
 		Backbone.View.prototype.strToTime = function strtotime(text, now) {

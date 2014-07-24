@@ -76,7 +76,9 @@ label.error {
   font-size: 12px;
 }
 .not-nav > li > h1 {
-  font-size: 20px;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 400;
   margin: 10px 0;
 }
 .not-nav > li > h1 small {
@@ -90,6 +92,14 @@ label.error {
 }
 .cl-mcont .row .margin-top-10 {
   margin-top: 10px;
+}
+.cont h2 {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 20px;
+  line-height: 28px;
+}
+.cont h2.margin-bottom-0 {
+  margin-bottom: 0;
 }
 .block-flat .padding-top-0 {
   padding-top: 0;
@@ -125,6 +135,9 @@ label.error {
 }
 .transform-upper {
   text-transform: uppercase;
+}
+.height-3 {
+  height: 3px;
 }
 .progress-bar-default {
   background-color: #a1a1a1;
@@ -244,6 +257,11 @@ body .filter .dropdown-header {
   border: 0 none;
 }
 /* Table  */
+.table-condensed > thead > tr > th,
+.table-condensed > tfoot > tr > td {
+  color: #000;
+  font-weight: 400;
+}
 .table-condensed > thead > tr > th.sortable {
   cursor: pointer;
 }
@@ -500,6 +518,13 @@ table td i {
 .inner-tabs-menu > li a {
   font-size: 12px;
   padding: 5px 10px;
+}
+.inner-tabs-menu > li.margin-bottom-n2 {
+  margin-bottom: -2px;
+}
+.inner-tab-content {
+  border-top: 1px solid #e2e2e2;
+  padding: 10px;
 }
 #description,
 #notes {

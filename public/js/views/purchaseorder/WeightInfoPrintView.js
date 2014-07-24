@@ -138,8 +138,8 @@ define([
 			
 			if(pickupInfo != null) {
 				this.$el.find('#pickup-fields').show();
-				if(typeof pickupInfo.scaler_account[0] != 'undefined' && typeof pickupInfo.scaler_account[0].name != 'undefined' && pickupInfo.scaler_account[0].name != null)
-					this.$el.find('#pickup-info .scale-account').val(pickupInfo.scaler_account[0].name);
+				if(typeof pickupInfo.scaler_account != 'undefined' && typeof pickupInfo.scaler_account.name != 'undefined' && pickupInfo.scaler_account.name != null)
+					this.$el.find('#pickup-info .scale-account').val(pickupInfo.scaler_account.name);
 				if(typeof pickupInfo.scale != 'undefined' && pickupInfo.scale != null && typeof pickupInfo.scale.name != 'undefined' && pickupInfo.scale.name != null)
 					this.$el.find('#pickup-info .scale-name').val(pickupInfo.scale.name);
 				if(typeof pickupInfo.fee != 'undefined' && pickupInfo.fee != null)
@@ -186,8 +186,8 @@ define([
 			
 			if(dropoffInfo != null) {
 				this.$el.find('#dropoff-fields').show();
-				if(typeof dropoffInfo.scaler_account[0] != 'undefined' && typeof dropoffInfo.scaler_account[0].name != 'undefined' && dropoffInfo.scaler_account[0].name != null)
-					this.$el.find('#dropoff-info .scale-account').val(dropoffInfo.scaler_account[0].name);
+				if(typeof dropoffInfo.scaler_account != 'undefined' && typeof dropoffInfo.scaler_account.name != 'undefined' && dropoffInfo.scaler_account.name != null)
+					this.$el.find('#dropoff-info .scale-account').val(dropoffInfo.scaler_account.name);
 				if(typeof dropoffInfo.scale != 'undefined' && dropoffInfo.scale != null && typeof dropoffInfo.scale.name != 'undefined' && dropoffInfo.scale.name != null)
 					this.$el.find('#dropoff-info .scale-name').val(dropoffInfo.scale.name);
 				if(typeof dropoffInfo.fee != 'undefined' && dropoffInfo.fee != null)

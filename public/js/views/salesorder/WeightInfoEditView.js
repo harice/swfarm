@@ -58,7 +58,7 @@ define([
 		
 		render: function(){
 			this.model.runFetch();
-			Backbone.View.prototype.refreshTitle('Weight Info','edit');
+			Backbone.View.prototype.refreshTitle('Weight Ticket','edit');
 		},
 		
 		supplyWeightInfoData: function () {
@@ -75,10 +75,10 @@ define([
 				else
 					weightInfo = dropoffInfo;
 					
-				if(typeof weightInfo.scaler_account[0] != 'undefined' && typeof weightInfo.scaler_account[0].id != 'undefined' && weightInfo.scaler_account[0].id != null) {
-					this.$el.find('#scaleAccount_id').val(weightInfo.scaler_account[0].id);
+				if(typeof weightInfo.scaler_account != 'undefined' && typeof weightInfo.scaler_account.id != 'undefined' && weightInfo.scaler_account.id != null) {
+					this.$el.find('#scaleAccount_id').val(weightInfo.scaler_account.id);
 					var scaleId = (typeof weightInfo.scale != 'undefined' && typeof weightInfo.scale.id != 'undefined' && weightInfo.scale.id != null)? weightInfo.scale.id : '';
-					this.fetchScale(weightInfo.scaler_account[0].id, scaleId);
+					this.fetchScale(weightInfo.scaler_account.id, scaleId);
 				}
 				
 				var weightInfoBales = (typeof weightInfo.bales != 'undefined' && weightInfo.bales != null)? this.addCommaToNumber(weightInfo.bales) : '';

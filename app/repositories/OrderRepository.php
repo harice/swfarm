@@ -218,6 +218,7 @@ class OrderRepository implements OrderRepositoryInterface {
                     });
                 });
             });
+            $response['weightPercentageDelivered'] = $this->getExpectedDeliveredData($response['id']);
           
         } else {
           $response = array(

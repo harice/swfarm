@@ -359,9 +359,9 @@ define([
 			
 			var thisObj = this;
 			var tabs = [
-				{'url':'/#/'+Const.URL.PO+'/'+poId, 'label':'PO Details'},
-				{'url':'/#/'+Const.URL.PICKUPSCHEDULE+'/'+poId, 'label':'Schedule Details'},
-				{'url':'/#/'+Const.URL.POWEIGHTINFO+'/'+poId, 'label':'Weight Details'},
+				{'url':'/#/'+Const.URL.PO+'/'+poId, 'label':'PO Details', 'icon':'fa-file-text-o'},
+				{'url':'/#/'+Const.URL.PICKUPSCHEDULE+'/'+poId, 'label':'Schedules', 'icon':'fa-clock-o'},
+				{'url':'/#/'+Const.URL.POWEIGHTINFO+'/'+poId, 'label':'Weight Tickets', 'icon':'fa-ticket'},
 			];
 			
 			for(var i = 0; i < tabs.length; i++) {
@@ -378,9 +378,9 @@ define([
 			
 			var thisObj = this;
 			var tabs = [
-				{'url':'/#/'+Const.URL.SO+'/'+soId, 'label':'SO Details'},
-				{'url':'/#/'+Const.URL.DELIVERYSCHEDULE+'/'+soId, 'label':'Schedule Details'},
-				{'url':'/#/'+Const.URL.SOWEIGHTINFO+'/'+soId, 'label':'Weight Details'},
+				{'url':'/#/'+Const.URL.SO+'/'+soId, 'label':'SO Details', 'icon':'fa-file-text'},
+				{'url':'/#/'+Const.URL.DELIVERYSCHEDULE+'/'+soId, 'label':'Schedules', 'icon':'fa-clock-o'},
+				{'url':'/#/'+Const.URL.SOWEIGHTINFO+'/'+soId, 'label':'Weight Tickets', 'icon':'fa-ticket'},
 			];
 			
 			for(var i = 0; i < tabs.length; i++) {
