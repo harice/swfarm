@@ -11,6 +11,7 @@ define([
 	'collections/salesorder/OriginCollection',
 	'collections/salesorder/NatureOfSaleCollection',
 	'collections/product/ProductCollection',
+	'collections/contact/ContactCollection',
     'collections/contract/ContractByAccountCollection',
 	'models/salesorder/SalesOrderModel',
 	'text!templates/layout/contentTemplate.html',
@@ -33,6 +34,7 @@ define([
 			OriginCollection,
 			NatureOfSaleCollection,
 			ProductCollection,
+			ContactCollection,
             ContractByAccountCollection,
 			SalesOrderModel,
 			contentTemplate,
@@ -57,6 +59,9 @@ define([
 			this.h1Title = 'Sales Order';
 			this.h1Small = 'edit';
 			this.isInitProcess = true;
+			
+			this.currentCustomerId = null;
+			this.customerAccountContactId = null;
 			
 			this.productAutoCompletePool = [];
 			this.options = {
@@ -133,6 +138,15 @@ define([
 				this.off('error');
 			});
 			
+			this.customerAccountCollection = new ContactCollection();
+			this.customerAccountCollection.on('sync', function() {
+				thisObj.generateCustomerAccountContacts();
+                thisObj.hideFieldThrobber();
+			});
+			this.customerAccountCollection.on('error', function(collection, response, options) {
+				//this.off('error');
+			});
+			
 			this.model = new SalesOrderModel({id:this.soId});
 			this.model.on('change', function() {
 				//thisObj.originCollection.getModels();
@@ -167,6 +181,11 @@ define([
 			this.$el.find('#state').val(address[0].address_states.state);
 			this.$el.find('#city').val(address[0].city);
 			this.$el.find('#zipcode').val(address[0].zipcode);
+			
+			this.currentCustomerId = account.id;
+			this.customerAccountContactId = this.model.get('contact_id');
+			this.showFieldThrobber('#contact_id');
+			this.customerAccountCollection.getContactsByAccountId(account.id);
 			
 			this.$el.find('#dateofsale').val(this.convertDateFormat(this.model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
             

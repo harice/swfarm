@@ -21,7 +21,7 @@ class AddressTableSeeder extends Seeder {
 			array(
                 'account' => '1',
                 'street' => 'North St.',
-                'city' => 'test city',
+                'city' => 'Sin City',
                 'state' => '2',
                 'zipcode' => '29620',
                 'country' => '1',
@@ -32,7 +32,73 @@ class AddressTableSeeder extends Seeder {
             array(
                 'account' => '6',
                 'street' => 'North St.',
-                'city' => 'test city',
+                'city' => 'Sin City',
+                'state' => '2',
+                'zipcode' => '29620',
+                'country' => '1',
+                'type' => '1',
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
+            array(
+                'account' => '12',
+                'street' => 'North St.',
+                'city' => 'Sin City',
+                'state' => '2',
+                'zipcode' => '29620',
+                'country' => '1',
+                'type' => '1',
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
+            array(
+                'account' => '13',
+                'street' => 'North St.',
+                'city' => 'Sin City',
+                'state' => '2',
+                'zipcode' => '29620',
+                'country' => '1',
+                'type' => '1',
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
+            array(
+                'account' => '14',
+                'street' => 'North St.',
+                'city' => 'Sin City',
+                'state' => '2',
+                'zipcode' => '29620',
+                'country' => '1',
+                'type' => '1',
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
+            array(
+                'account' => 15,
+                'street' => 'North St.',
+                'city' => 'Sin City',
+                'state' => '2',
+                'zipcode' => '29620',
+                'country' => '1',
+                'type' => '1',
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
+            array(
+                'account' => 16,
+                'street' => 'North St.',
+                'city' => 'Sin City',
+                'state' => '2',
+                'zipcode' => '29620',
+                'country' => '1',
+                'type' => '1',
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
+            array(
+                'account' => 17,
+                'street' => 'North St.',
+                'city' => 'Sin City',
                 'state' => '2',
                 'zipcode' => '29620',
                 'country' => '1',
