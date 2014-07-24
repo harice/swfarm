@@ -43,20 +43,13 @@ class TrailerRepository implements TrailerRepositoryInterface {
     
     public function findById($id)
     {
-        try
-        {
-            $trailer = Trailer::with('account')->find($id);
-            
-            if (!$trailer) {
-                throw new NotFoundException();
-            }
-            
+        $trailer = Trailer::with('account')->find($id);
+
+        if ($trailer) {
             return $trailer;
         }
-        catch (Exception $e)
-        {
-            return $e->getMessage();
-        }
+        
+        throw new NotFoundException('Trailer was not found.');
     }
     
     public function store($data)
@@ -78,7 +71,7 @@ class TrailerRepository implements TrailerRepositoryInterface {
             $response = array(
                 'error' => false,
                 'message' => Lang::get('messages.success.created', array('entity' => 'Trailer')),
-                'data' => $trailer->toArray()
+                'data' => $trailer
             );
             
             return $response;
@@ -108,7 +101,7 @@ class TrailerRepository implements TrailerRepositoryInterface {
             $response = array(
                 'error' => false,
                 'message' => Lang::get('messages.success.updated', array('entity' => 'Trailer')),
-                'data' => $trailer->toArray()
+                'data' => $trailer
             );
             
             return $response;
@@ -135,7 +128,7 @@ class TrailerRepository implements TrailerRepositoryInterface {
             $response = array(
                 'error' => false,
                 'message' => Lang::get('messages.success.deleted', array('entity' => 'Trailer')),
-                'data' => $trailer->toArray()
+                'data' => $trailer
             );
             
             return $response;

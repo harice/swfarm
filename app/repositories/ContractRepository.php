@@ -93,24 +93,13 @@ class ContractRepository implements ContractRepositoryInterface {
     
     public function findById($id)
     {
-        try
-        {
-            $contract = Contract::with('products', 'salesorders', 'productorders', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')->find($id);
-            
-//            $contract = Contract::with('salesorders.transportschedule.weightticket.weightticketscale_pickup.weightticketproducts')
-//                ->with('salesorders.transportschedule.weightticket.weightticketscale_dropoff.weightticketproducts')
-//                ->find($id);
-            
-            if (!$contract) {
-                throw new NotFoundException();
-            }
-            
+        $contract = Contract::with('products', 'salesorders', 'productorders', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')->find($id);
+
+        if ($contract) {
             return $contract;
         }
-        catch (Exception $e)
-        {
-            return $e->getMessage();
-        }
+        
+        throw new NotFoundException('Contract was not found.');
     }
     
     public function store($data)
