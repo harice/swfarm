@@ -9,57 +9,57 @@ class ContactTableSeeder extends Seeder {
         
 		$contacts = array(
             array(
-                'id' => '1',
                 'firstname' => 'Lewis',
                 'lastname' => 'Hamilton',
                 'suffix' => '',
                 'position' => '',
                 'email' => 'lewis@hamilton.com',
-                'phone' => '111-111-1111',
+                'phone' => '(999) 999 9999',
                 'mobile' => '',
                 'account' => 1,
+                'rate' => '0.00',
                 'created_at' => $date,
                 'updated_at' => $date,
                 'deleted_at' => NULL
             ),
             array(
-                'id' => '2',
                 'firstname' => 'John Loader',
                 'lastname' => 'Smith',
                 'suffix' => '',
                 'position' => '',
                 'email' => 'smith@hamilton.com',
-                'phone' => '111-111-1111',
+                'phone' => '(999) 999 9999',
                 'mobile' => '',
                 'account' => 3,
+                'rate' => '0.00',
                 'created_at' => $date,
                 'updated_at' => $date,
                 'deleted_at' => NULL
             ),
             array(
-                'id' => '3',
                 'firstname' => 'Lou Loader',
                 'lastname' => 'Vega',
                 'suffix' => '',
                 'position' => '',
                 'email' => 'vega@hamilton.com',
-                'phone' => '111-111-1111',
+                'phone' => '(999) 999 9999',
                 'mobile' => '',
                 'account' => 4,
+                'rate' => '0.00',
                 'created_at' => $date,
                 'updated_at' => $date,
                 'deleted_at' => NULL
             ),
             array(
-                'id' => '4',
                 'firstname' => 'Chuckie',
                 'lastname' => 'Truckie',
                 'suffix' => '',
                 'position' => '',
                 'email' => 'truckie@hamilton.com',
-                'phone' => '111-111-1111',
+                'phone' => '(999) 999 9999',
                 'mobile' => '',
                 'account' => 11,
+                'rate' => '0.00',
                 'created_at' => $date,
                 'updated_at' => $date,
                 'deleted_at' => NULL
@@ -74,8 +74,8 @@ class ContactTableSeeder extends Seeder {
                 'mobile' => '',
                 'account' => 12,
                 'rate' => '0.00',
-                'created_at' => '2014-07-23 13:10:49',
-                'updated_at' => '2014-07-23 13:10:49',
+                'created_at' => $date,
+                'updated_at' => $date,
                 'deleted_at' => NULL
             ),
             array(
@@ -88,8 +88,8 @@ class ContactTableSeeder extends Seeder {
                 'mobile' => '',
                 'account' => 13,
                 'rate' => '0.00',
-                'created_at' => '2014-07-23 13:10:49',
-                'updated_at' => '2014-07-23 13:10:49',
+                'created_at' => $date,
+                'updated_at' => $date,
                 'deleted_at' => NULL
             ),
             array(
@@ -102,8 +102,8 @@ class ContactTableSeeder extends Seeder {
                 'mobile' => '',
                 'account' => 14,
                 'rate' => '0.00',
-                'created_at' => '2014-07-23 13:10:49',
-                'updated_at' => '2014-07-23 13:10:49',
+                'created_at' => $date,
+                'updated_at' => $date,
                 'deleted_at' => NULL
             ),
             array(
@@ -116,8 +116,8 @@ class ContactTableSeeder extends Seeder {
                 'mobile' => '',
                 'account' => 15,
                 'rate' => '0.00',
-                'created_at' => '2014-07-23 13:10:49',
-                'updated_at' => '2014-07-23 13:10:49',
+                'created_at' => $date,
+                'updated_at' => $date,
                 'deleted_at' => NULL
             ),
             array(
@@ -130,8 +130,8 @@ class ContactTableSeeder extends Seeder {
                 'mobile' => '',
                 'account' => 16,
                 'rate' => '0.00',
-                'created_at' => '2014-07-23 13:10:49',
-                'updated_at' => '2014-07-23 13:10:49',
+                'created_at' => $date,
+                'updated_at' => $date,
                 'deleted_at' => NULL
             ),
             array(
@@ -144,8 +144,8 @@ class ContactTableSeeder extends Seeder {
                 'mobile' => '',
                 'account' => 17,
                 'rate' => '0.00',
-                'created_at' => '2014-07-23 13:10:49',
-                'updated_at' => '2014-07-23 13:10:49',
+                'created_at' => $date,
+                'updated_at' => $date,
                 'deleted_at' => NULL
             ),
         );
