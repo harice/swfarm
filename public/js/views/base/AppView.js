@@ -235,6 +235,7 @@ define([
 			$(".mask-fee").mask('#,##0.99', {reverse: true, maxlength: false});
             $(".mask-distance").mask('##0.00', {reverse: true});*/
             $(".mask-fee").mask('##0.00', {reverse: true});
+            $(".mask-rate").mask('#0.00', {reverse: true});
             // $(".mask-trucker-fee").mask('#,##0.00', {reverse: true});
         },
 		
