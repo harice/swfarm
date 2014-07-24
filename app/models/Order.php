@@ -103,4 +103,8 @@ class Order extends BaseModel {
         return $this->hasOne('Contact', 'id', 'contact_id')->select(array('id', 'firstname', 'lastname', 'suffix'));
     }
 
+    public function productsummary(){
+        return $this->hasMany('ProductOrderSummary', 'order_id', 'id')->select(array('id', 'product_id', 'order_id', 'tons', 'unitprice'));
+    }
+
 }
