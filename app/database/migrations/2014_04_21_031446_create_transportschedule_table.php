@@ -19,6 +19,7 @@ class CreateTransportscheduleTable extends Migration {
 			$table->integer('order_id')->unsigned();
 			$table->timestamp('date');
 			$table->integer('trucker_id')->unsigned();
+            $table->integer('truck_id')->unsigned();
 			$table->integer('trailer_id')->unsigned()->nullable();
 			$table->decimal('distance', 8, 2);
 			$table->decimal('fuelcharge', 8, 2);
@@ -34,6 +35,7 @@ class CreateTransportscheduleTable extends Migration {
 
 			$table->foreign('order_id')->references('id')->on('order');
 			$table->foreign('trucker_id')->references('id')->on('contact');
+            $table->foreign('truck_id')->references('id')->on('truck');
 			$table->foreign('trailer_id')->references('id')->on('trailer');
 			$table->foreign('originloader_id')->references('id')->on('contact');
 			$table->foreign('destinationloader_id')->references('id')->on('contact');
