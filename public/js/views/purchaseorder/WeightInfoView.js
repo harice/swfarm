@@ -67,6 +67,11 @@ define([
 		},
 		
 		render: function(){
+            $("#cl-sidebar").show();
+            $(".tab-container").show();
+            $(".back-to-top").show();
+            $(".user-nav li").show();
+            
 			this.purchaseOrderModel.runFetch();
 			Backbone.View.prototype.refreshTitle('Weight Info','view');
 		},
@@ -298,6 +303,8 @@ define([
 					headers: weightInfoModel.getAuth(),
 				}
 			);
+                
+            location.reload(true);
 			
 			return false;
 		}

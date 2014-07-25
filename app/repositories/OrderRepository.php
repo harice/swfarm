@@ -473,7 +473,7 @@ class OrderRepository implements OrderRepositoryInterface {
 
             foreach($products as $product){
                 if(isset($product['id'])){
-                    $deleteProductOrder = $this->deleteProductOrder($orderId, $item);        
+                    $deleteProductOrder = $this->deleteProductOrder($orderId, $product);        
                 }
             }
            
@@ -584,11 +584,11 @@ class OrderRepository implements OrderRepositoryInterface {
             $productordersummary->fill($product);
             $productordersummary->save();
             //if operation is update, need to remove the order delete by the user on client side
-            if($isUpdate){
-                $stacks = $this->addStacksToOrder($order_id, $product['stacks'], $productordersummary->id);
-            } else {
-                $stacks = $this->addStacksToOrder($order_id, $product['stacks'], $productordersummary->id);
-            }
+            // if($isUpdate){
+            //     $stacks = $this->addStacksToOrder($order_id, $product['stacks'], $productordersummary->id);
+            // } else {
+            $stacks = $this->addStacksToOrder($order_id, $product['stacks'], $productordersummary->id);
+            // }
             
 
             if(isset($stacks['hasHoldProduct'])){

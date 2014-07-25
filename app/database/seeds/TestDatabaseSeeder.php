@@ -11,25 +11,26 @@ class TestDatabaseSeeder extends Seeder {
         Eloquent::unguard();
 
         $this->call('UsersTableSeeder');
-//        $this->call('SettingsTableSeeder');
-//        $this->call('PermissioncategoryTableSeeder');
-//        $this->call('PermissiontypeTableSeeder');
-//        $this->call('PermissioncategorytypeTableSeeder');
+        $this->call('SettingsTableSeeder');
+        $this->call('PermissioncategoryTableSeeder');
+        $this->call('PermissiontypeTableSeeder');
+        $this->call('PermissioncategorytypeTableSeeder');
         $this->call('AccountTypeTableSeeder');
-//        $this->call('AddressTypeTableSeeder');
-//        $this->call('ReasonsTableSeeder');
-//        $this->call('AddressStatesTableSeeder');
+        $this->call('AddressTypeTableSeeder');
+        $this->call('ReasonsTableSeeder');
+        $this->call('AddressStatesTableSeeder');
 
         // Sales Order
-//        $this->call('LocationTableSeeder');
-//        $this->call('NatureOfSaleTableSeeder');
+        $this->call('LocationTableSeeder');
+        $this->call('NatureOfSaleTableSeeder');
         $this->call('StatusTableSeeder');
 
         // Testing
+        // --------------------------------------------------------------------
         $this->call('ProductsTableSeeder');
         $this->call('AccountTableSeeder');
-        // $this->call('ContactTableSeeder');
-        // $this->call('AddressTableSeeder');
+        $this->call('AddressTableSeeder');
+        $this->call('ContactTableSeeder');
         // $this->call('BidTableSeeder');
         // $this->call('BidProductTableSeeder');
         // $this->call('PurchaseOrderTableSeeder');
@@ -41,10 +42,10 @@ class TestDatabaseSeeder extends Seeder {
         // $this->call('ProductOrderTableSeeder');
         // $this->call('FarmLocationTableSeeder');
         // $this->call('StackTableSeeder');
-        // $this->call('ScaleTableSeeder');
-        // $this->call('TrailerTableSeeder');
+        $this->call('ScaleTableSeeder');
+        $this->call('TrailerTableSeeder');
+        $this->call('TruckTableSeeder');
         // $this->call('FeeTableSeeder');
-        
         $this->call('ContractTableSeeder');
         $this->call('ContractProductsTableSeeder');
     }

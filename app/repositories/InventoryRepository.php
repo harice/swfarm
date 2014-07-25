@@ -201,11 +201,6 @@ class InventoryRepository implements InventoryRepositoryInterface {
                 $result['data'][$index]['stacklocation'] = substr($result['data'][$index]['stacklocation'], 0, -2); //remove extra | on last
                 $index++;
             }
-        } else {
-            return array(
-                'error' => true,
-                'message' => 'Product not found.'
-            );
         }
 
         return $result;

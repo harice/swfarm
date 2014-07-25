@@ -42,11 +42,11 @@ class TruckRepository implements TruckRepositoryInterface {
         
         $response = array(
             'error' => false,
-            'message' => Lang::get('messages.success.created', array('entity' => 'Truck'))
+            'message' => Lang::get('messages.success.created', array('entity' => 'Truck')),
+            'data' => $truck
         );
         
         return $response;
-   
     }
     
     public function update($id, $data)
@@ -65,7 +65,8 @@ class TruckRepository implements TruckRepositoryInterface {
         
         $response = array(
             'error' => false,
-            'message' => Lang::get('messages.success.updated', array('entity' => 'Truck'))
+            'message' => Lang::get('messages.success.updated', array('entity' => 'Truck')),
+            'data' => $truck
         );
         
         return $response;
@@ -85,7 +86,8 @@ class TruckRepository implements TruckRepositoryInterface {
 
         $response = array(
             'error' => false,
-            'message' => Lang::get('messages.success.deleted', array('entity' => 'Truck'))
+            'message' => Lang::get('messages.success.deleted', array('entity' => 'Truck')),
+            'data' => $truck
         );
         
         return $response;

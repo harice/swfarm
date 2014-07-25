@@ -94,10 +94,7 @@ define([
         
                 weightticket : this.model,
                 so : this.salesOrderModel,
-                schedule : this.soScheduleModel,
-                
-                pickup_products : this.model.get("weightticketscale_pickup").weightticketproducts,
-                dropoff_products : this.model.get("weightticketscale_pickup").weightticketproducts
+                schedule : this.soScheduleModel
 			};
             
             _.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
@@ -105,11 +102,6 @@ define([
 			if((!this.model.get('status') || (this.model.get('status') && this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)) && 
 				this.salesOrderModel.get('status').name.toLowerCase() == Const.STATUS.OPEN)
 				innerTemplateVariables['editable'] = true;
-			
-			if(this.model.get('weightticketscale_pickup') != null)
-				innerTemplateVariables['has_pickup_info'] = true;
-			if(this.model.get('weightticketscale_dropoff') != null)
-				innerTemplateVariables['has_dropoff_info'] = true;
 			
 			var innerTemplate = _.template(weightInfoViewTemplate, innerTemplateVariables);
 			

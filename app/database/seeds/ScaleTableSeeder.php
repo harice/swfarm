@@ -15,12 +15,14 @@ class ScaleTableSeeder extends Seeder {
             array(
                 'account_id'        => 7,
                 'name'              => 'Scale 1',
+                'rate'              => '0.00',
                 'created_at'        => $now,
                 'updated_at'        => $now
             ),
             array(
                 'account_id'        => 8,
                 'name'              => 'Scale 2',
+                'rate'              => '0.00',
                 'created_at'        => $now,
                 'updated_at'        => $now
             )

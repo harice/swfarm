@@ -16,10 +16,12 @@ class CreateTransportscheduleproductTable extends Migration {
 		{
 			$table->engine = 'InnoDB';
             $table->increments('id');
+            $table->integer('truck_id')->unsigned();
             $table->integer('transportschedule_id')->unsigned();
             $table->integer('productorder_id')->unsigned();
 			$table->decimal('quantity', 8, 4);
 
+            $table->foreign('truck_id')->references('id')->on('truck');
 			$table->foreign('transportschedule_id')->references('id')->on('transportschedule')->onDelete('cascade');
             $table->foreign('productorder_id')->references('id')->on('productorder');
 		});

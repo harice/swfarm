@@ -18,6 +18,11 @@ define([
 				}
 			);
 		},
+		
+		getTruckerNumbersByAccount: function (id) {
+			this.url = '/apiv1/truck/listByAccount?accountId='+id;
+			this.getModels();
+		},
 	});
 
 	return TruckerCollection;
