@@ -17,11 +17,13 @@ class CreateProductordersummaryTable extends Migration {
 			$table->engine = 'InnoDB';
 			$table->increments('id');
 			$table->integer('product_id')->unsigned();
+			$table->integer('order_id')->unsigned();
 			$table->decimal('tons', 8, 4);
 			$table->decimal('unitprice', 8, 2)->nullable();
 			$table->timestamps();
 
 			$table->foreign('product_id')->references('id')->on('products');
+			$table->foreign('order_id')->references('id')->on('order');
 		});
 	}
 
