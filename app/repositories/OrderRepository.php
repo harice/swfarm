@@ -246,8 +246,10 @@ class OrderRepository implements OrderRepositoryInterface {
         else
             $data['status_id'] = 1; //Open status
         
-        if ($data['natureofsale_id'] != Config::get('constants.NOS_RESERVED')) {
-            unset($data['contract_id']);
+        if (isset($data['natureofsale_id'])) {
+            if ($data['natureofsale_id'] != Config::get('constants.NOS_RESERVED')) {
+                unset($data['contract_id']);
+            }
         }
 
         $this->validate($data, 'Order', $data['ordertype']);
