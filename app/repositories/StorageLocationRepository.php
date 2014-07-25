@@ -36,6 +36,24 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         
     }
     
+    public function search($_search)
+    {
+        try
+        {
+            $perPage = isset($_search['perpage']) ? $_search['perpage'] : 15;
+            
+            $searchWord = $_search['search'];
+                
+            return StorageLocation::with('section')
+                                  ->where('name', 'like', '%'.$searchWord.'%')
+                                  ->paginate($perPage);
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
+    }
+    
     public function store($data)
     {
         DB::beginTransaction();
