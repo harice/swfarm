@@ -12,6 +12,7 @@ define([
 	'collections/product/ProductCollection',
 	'collections/contact/ContactCollection',
     'collections/contract/ContractByAccountCollection',
+	'collections/inventory/StackNumberCollection',
 	'models/salesorder/SalesOrderModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/salesorder/salesOrderAddTemplate.html',
@@ -35,6 +36,7 @@ define([
 			ProductCollection,
 			ContactCollection,
             ContractByAccountCollection,
+			StackNumberCollection,
 			SalesOrderModel,
 			contentTemplate,
 			salesOrderAddTemplate,
@@ -132,6 +134,15 @@ define([
                 thisObj.hideFieldThrobber();
 			});
 			this.customerAccountCollection.on('error', function(collection, response, options) {
+				//this.off('error');
+			});
+			
+			this.stackNumberCollection = new StackNumberCollection();
+			this.stackNumberCollection.on('sync', function() {
+				
+				//this.off('sync');
+			});
+			this.stackNumberCollection.on('error', function(collection, response, options) {
 				//this.off('error');
 			});
 		},
@@ -613,6 +624,7 @@ define([
 			'change #contract_id': 'onChangeContract',
 			'click #verify-so': 'showVerifyConfirmationWindow',
 			'click #confirm-verify-order': 'verifySo',
+			'change .product_id': 'generateStackNumberSuggestions',
 		},
 		
 		removeProduct: function (ev) {
@@ -780,6 +792,10 @@ define([
 				if(this.customerAccountCollection.models.length == 1)
 					this.$el.find('#contact_id').val(this.customerAccountCollection.models[0].get('id')).change();
 			}
+		},
+		
+		generateStackNumberSuggestions: function (ev) {
+			this.stackNumberCollection.getStackNumbersByProduct($(ev.currentTarget).val());
 		},
 		
 		showVerifyConfirmationWindow: function () {
