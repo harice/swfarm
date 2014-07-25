@@ -33,8 +33,8 @@ class DatabaseSeeder extends Seeder {
         // $this->call('ScaleTableSeeder');
         // $this->call('TrailerTableSeeder');
         // $this->call('FeeTableSeeder');
-
         // $this->call('AddressTableSeeder');
+        
         // $this->call('BidTableSeeder');
         // $this->call('BidProductTableSeeder');
         // $this->call('PurchaseOrderTableSeeder');
