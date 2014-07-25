@@ -12,10 +12,13 @@ define([
 	'collections/product/ProductCollection',
 	'collections/contact/ContactCollection',
 	'models/purchaseorder/PurchaseOrderModel',
+	'models/file/FileModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderProductItemTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderSubProductItemTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderDestinationTemplate.html',
+	'text!templates/purchaseorder/convertToPOFormTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -31,10 +34,13 @@ define([
 			ProductCollection,
 			ContactCollection,
 			PurchaseOrderModel,
+			FileModel,
 			contentTemplate,
 			purchaseOrderAddTemplate,
 			productItemTemplate,
+			productSubItemTemplate,
 			purchaseOrderDestinationTemplate,
+			convertToPOFormTemplate,
 			Global,
 			Const
 ){
@@ -78,7 +84,7 @@ define([
 			
 			var account = this.model.get('account');
 			var address = [this.model.get('orderaddress')];
-			var products = this.model.get('productorder');
+			var products = this.model.get('productsummary');
 			
 			this.$el.find('#ponumber').val(this.model.get('order_number'));
 			this.$el.find('#status').val(this.model.get('status').name);
@@ -116,6 +122,50 @@ define([
 			
 			var i= 0;
 			_.each(products, function (product) {
+				var productFields = null;
+				if(i > 0)
+					productFields = thisObj.addProduct();
+				else {
+					productFields = thisObj.$el.find('#product-list > tbody .product-item:first');
+					productFields.find('.product_id').html(thisObj.getProductDropdown());
+				}
+				i++;
+				
+				productFields.find('.id').val(product.id);
+				productFields.find('.product_id').val(product.productname.id);
+				productFields.find('.unitprice').val(thisObj.addCommaToNumber(parseFloat(product.unitprice).toFixed(2)));
+				productFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(product.tons).toFixed(4)));
+				var unitPrice = parseFloat(product.unitprice) * parseFloat(product.tons);
+				productFields.find('.unit-price').val(thisObj.addCommaToNumber(unitPrice.toFixed(2)));
+				
+				var j = 0;
+				_.each(product.productorder, function (productSub) {
+					var productSubFields = null;
+					
+					if(j > 0)
+						productSubFields = thisObj.addProductSub(productFields.find('.product-stack-table'));
+					else
+						productSubFields = productFields.next('.product-stack').find('.product-stack-table > tbody .product-stack-item:first');
+					j++;
+					
+					productSubFields.find('.id').val(productSub.id);
+					productSubFields.find('.stacknumber').val(productSub.stacknumber);
+					productSubFields.find('.description').val(productSub.description);
+					productSubFields.find('.tons').val(productSub.tons);
+					productSubFields.find('.bales').val(productSub.bales);
+					productSubFields.find('.ishold').val(productSub.ishold);
+					productSubFields.find('.rfv').val(productSub.rfv);
+					
+					if(productSub.upload.length > 0) {
+						productSubFields.find('.uploadedfile').val(productSub.upload[0].file_id);
+						productSubFields.find('.uploadedfile').attr('data-filename', productSub.upload[0].files[0].name);
+						productSubFields.find('.attach-pdf').removeClass('no-attachment');
+					}
+				});
+			});
+			
+			/*var i= 0;
+			_.each(products, function (product) {
 				var productFields = (i > 0)? thisObj.addProduct(): thisObj.$el.find('#product-list tbody .product-item:first-child');
 				i++;
 				
@@ -137,7 +187,7 @@ define([
 				
 				var unitPrice = parseFloat(product.unitprice) * parseFloat(product.tons);
 				productFields.find('.unit-price').val(thisObj.addCommaToNumber(unitPrice.toFixed(2)));
-			});
+			});*/
 			
 			this.computeTotals();
 		},

@@ -1,0 +1,17 @@
+<tr class="product-stack-item">
+	<td><code><%= stacknumber %></code></td>
+	<td><%= description %></td>
+	<td class="text-right"><%= tons %></td>
+	<td class="text-right"><%= bales %></td>
+	<% if (typeof is_bid === "undefined") { %>
+	<td class="text-right"><i class="fa fa-check-square-o <% if(ishold==1) { %>color-success<% } %>"></i></td>
+	<td><%= rfv %></td>
+	<td>
+		<% if (typeof file_path !== "undefined") { %>
+			<a class="attach-pdf color-success" href="<%= file_path %>" target="_blank"><i class="fa fa-book"></i></a>
+		<% } else { %>
+			<i class="fa fa-book"></i>
+		<% } %>
+	</td>
+	<% } %>
+</tr>

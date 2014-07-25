@@ -1,9 +1,22 @@
 <tr class="product-item">
 	<td><%= productname %></td>
-	<td><%= description %></td>
-	<td><code><%= stacknumber %></code></td>
 	<td class="text-right">$ <%= unitprice %></td>
 	<td class="text-right"><%= tons %></td>
-	<td class="text-right"><%= bales %></td>
 	<td class="text-right">$ <%= totalprice %></td>
+</tr>
+<tr class="product-stack">
+	<td></td>
+	<td colspan="3">
+		<div class="table-responsive">
+			<table class="table-condensed table-bordered table-hover product-stack-table">
+				<thead>
+					<th>Stack No.</th>
+					<th>Description</th>
+					<th>Est Tons</th>
+					<th>Bales</th>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+	</td>
 </tr>

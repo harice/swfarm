@@ -16,6 +16,7 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/salesorder/salesOrderAddTemplate.html',
 	'text!templates/salesorder/salesOrderProductItemTemplate.html',
+	'text!templates/salesorder/salesOrderSubProductItemTemplate.html',
 	'text!templates/salesorder/salesOrderOriginTemplate.html',
 	'text!templates/salesorder/salesOrderNatureOfSaleTemplate.html',
 	'text!templates/salesorder/salesOrderContractTemplate.html',
@@ -38,6 +39,7 @@ define([
 			contentTemplate,
 			salesOrderAddTemplate,
 			productItemTemplate,
+			productSubItemTemplate,
 			salesOrderOriginTemplate,
 			salesOrderNatureOfSaleTemplate,
 			contractTemplate,
@@ -209,11 +211,8 @@ define([
 				
 				productFields.find('.id').val(product.id);
 				productFields.find('.product_id').val(product.productname.id);
-				//productFields.find('.description').val(product.description);
-				//productFields.find('.stacknumber').val(product.stacknumber);
 				productFields.find('.unitprice').val(thisObj.addCommaToNumber(parseFloat(product.unitprice).toFixed(2)));
 				productFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(product.tons).toFixed(4)));
-				//productFields.find('.bales').val(thisObj.addCommaToNumber(product.bales));
 				var unitPrice = parseFloat(product.unitprice) * parseFloat(product.tons);
 				productFields.find('.unit-price').val(thisObj.addCommaToNumber(unitPrice.toFixed(2)));
 				
