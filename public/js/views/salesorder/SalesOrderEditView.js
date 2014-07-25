@@ -8,7 +8,6 @@ define([
 	'jqueryphonenumber',
 	'views/autocomplete/CustomAutoCompleteView',
 	'collections/account/AccountCustomerCollection',
-	'collections/salesorder/OriginCollection',
 	'collections/salesorder/NatureOfSaleCollection',
 	'collections/product/ProductCollection',
 	'collections/contact/ContactCollection',
@@ -31,7 +30,6 @@ define([
 			PhoneNumber,
 			CustomAutoCompleteView,
 			AccountCustomerCollection,
-			OriginCollection,
 			NatureOfSaleCollection,
 			ProductCollection,
 			ContactCollection,
@@ -67,21 +65,18 @@ define([
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
-				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'id'],
-				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales'],
+				productFieldClass: ['product_id', 'unitprice', 'tons', 'id'],
+				productFieldClassRequired: ['product_id', 'unitprice', 'tons'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
+				productSubFieldClone: null,
+				productSubFieldCounter: 0,
+				productSubFieldClass: ['stacknumber', 'description', 'tons', 'bales', 'id'],
+				productSubFieldClassRequired: ['stacknumber', 'tons', 'bales'],
+				productSubFieldExempt: [],
+				productSubFieldSeparator: '.',
 				removeComma: ['unitprice', 'tons', 'bales'],
 			};
-			
-			/*this.originCollection = new OriginCollection();
-			this.originCollection.on('sync', function() {	
-				thisObj.natureOfSaleCollection.getModels();
-				this.off('sync');
-			});
-			this.originCollection.on('error', function(collection, response, options) {
-				this.off('error');
-			});*/
 			
 			this.natureOfSaleCollection = new NatureOfSaleCollection();
 			this.natureOfSaleCollection.on('sync', function() {
@@ -149,7 +144,6 @@ define([
 			
 			this.model = new SalesOrderModel({id:this.soId});
 			this.model.on('change', function() {
-				//thisObj.originCollection.getModels();
 				if(this.get('contract_id'))
 					thisObj.contractByAccountCollection.getContractByAccount(this.get('account').id);
 				else
@@ -169,7 +163,7 @@ define([
 			
 			var account = this.model.get('account');
 			var address = [this.model.get('orderaddress')];
-			var products = this.model.get('productorder');
+			var products = this.model.get('productsummary');
 			
 			this.$el.find('#sonumber').val(this.model.get('order_number'));
 			this.$el.find('#status').val(this.model.get('status').name);
@@ -204,25 +198,41 @@ define([
 			
 			var i= 0;
 			_.each(products, function (product) {
-				//var productFields = (i > 0)? thisObj.addProduct(): thisObj.$el.find('#product-list tbody .product-item:first-child');
 				var productFields = null;
 				if(i > 0)
 					productFields = thisObj.addProduct();
 				else {
-					productFields = thisObj.$el.find('#product-list tbody .product-item:first-child');
+					productFields = thisObj.$el.find('#product-list > tbody .product-item:first');
 					productFields.find('.product_id').html(thisObj.getProductDropdown());
 				}
 				i++;
 				
 				productFields.find('.id').val(product.id);
-				productFields.find('.product_id').val(product.product.id);
-				productFields.find('.description').val(product.description);
-				productFields.find('.stacknumber').val(product.stacknumber);
+				productFields.find('.product_id').val(product.productname.id);
+				//productFields.find('.description').val(product.description);
+				//productFields.find('.stacknumber').val(product.stacknumber);
 				productFields.find('.unitprice').val(thisObj.addCommaToNumber(parseFloat(product.unitprice).toFixed(2)));
 				productFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(product.tons).toFixed(4)));
-				productFields.find('.bales').val(thisObj.addCommaToNumber(product.bales));
+				//productFields.find('.bales').val(thisObj.addCommaToNumber(product.bales));
 				var unitPrice = parseFloat(product.unitprice) * parseFloat(product.tons);
 				productFields.find('.unit-price').val(thisObj.addCommaToNumber(unitPrice.toFixed(2)));
+				
+				var j = 0;
+				_.each(product.productorder, function (productSub) {
+					var productSubFields = null;
+					
+					if(j > 0)
+						productSubFields = thisObj.addProductSub(productFields.find('.product-stack-table'));
+					else
+						productSubFields = productFields.next('.product-stack').find('.product-stack-table > tbody .product-stack-item:first');
+					j++;
+					
+					productSubFields.find('.id').val(productSub.id);
+					productSubFields.find('.stacknumber').val(productSub.stacknumber);
+					productSubFields.find('.description').val(productSub.description);
+					productSubFields.find('.tons').val(productSub.tons);
+					productSubFields.find('.bales').val(productSub.bales);
+				});
 			});
 			
 			this.computeTotals();
