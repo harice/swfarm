@@ -16,6 +16,7 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderProductItemTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderSubProductItemTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderDestinationTemplate.html',
 	'text!templates/purchaseorder/convertToPOFormTemplate.html',
 	'global',
@@ -37,6 +38,7 @@ define([
 			contentTemplate,
 			purchaseOrderAddTemplate,
 			productItemTemplate,
+			productSubItemTemplate,
 			purchaseOrderDestinationTemplate,
 			convertToPOFormTemplate,
 			Global,
@@ -73,10 +75,16 @@ define([
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
-				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'ishold', 'id', 'rfv', 'uploadedfile'],
-				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales'],
+				productFieldClass: ['product_id', 'unitprice', 'tons', 'id'],
+				productFieldClassRequired: ['product_id', 'unitprice', 'tons'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
+				productSubFieldClone: null,
+				productSubFieldCounter: 0,
+				productSubFieldClass: ['stacknumber', 'description', 'tons', 'bales', 'id', 'ishold', 'rfv', 'uploadedfile'],
+				productSubFieldClassRequired: ['stacknumber', 'tons', 'bales'],
+				productSubFieldExempt: [],
+				productSubFieldSeparator: '.',
 				removeComma: ['unitprice', 'tons', 'bales'],
 				fileFileClone: null,
 			};
@@ -345,8 +353,8 @@ define([
 				
 				var productTemplate = _.template(productItemTemplate, productTemplateVars);
 				
-				this.$el.find('#product-list tbody').append(productTemplate);
-				var productItem = this.$el.find('#product-list tbody').find('.product-item:first-child');
+				this.$el.find('#product-list > tbody').append(productTemplate);
+				var productItem = this.$el.find('#product-list > tbody').children();
 				this.options.productFieldClone = productItem.clone();
 				//this.initProductAutocomplete(productItem);
 				this.addIndexToProductFields(productItem);
@@ -356,10 +364,38 @@ define([
 				var clone = this.options.productFieldClone.clone();
 				//this.initProductAutocomplete(clone);
 				this.addIndexToProductFields(clone);
-				this.$el.find('#product-list tbody').append(clone);
+				this.$el.find('#product-list > tbody').append(clone);
 			}
 				
 			this.addValidationToProduct(clone);
+			this.addProductSub(clone.find('.product-stack-table'));
+			
+			return clone;
+		},
+		
+		addProductStack: function (ev) {
+			this.addProductSub($(ev.currentTarget).closest('.product-stack').find('table:first'));
+		},
+		
+		addProductSub: function (tableElement) {
+			var clone = null;
+			var parentId = tableElement.find('tbody').attr('data-id');
+			
+			if(this.options.productSubFieldClone == null) {
+				var productSubTemplateVars = {};
+				var productSubTemplate = _.template(productSubItemTemplate, productSubTemplateVars);
+				tableElement.find('tbody').append(productSubTemplate);
+				var productSubItem = tableElement.find('tbody').find('.product-stack-item:first-child');
+				this.options.productSubFieldClone = productSubItem.clone();
+				this.addIndexToProductSubFields(productSubItem, parentId);
+				clone = productSubItem;
+			}
+			else {
+				clone = this.options.productSubFieldClone.clone();
+				this.addIndexToProductSubFields(clone, parentId);
+				tableElement.find('tbody').append(clone);
+			}
+			
 			return clone;
 		},
 		
@@ -388,15 +424,27 @@ define([
 			return dropDown;
 		},
 		
-		addIndexToProductFields: function (bidProductItem) {
+		addIndexToProductFields: function (productFieldItem) {
 			var productFieldClass = this.options.productFieldClass;
 			for(var i=0; i < productFieldClass.length; i++) {
-				var field = bidProductItem.find('.'+productFieldClass[i]);
+				var field = productFieldItem.find('.'+productFieldClass[i]);
 				var name = field.attr('name');
 				field.attr('name', name + this.options.productFieldSeparator + this.options.productFieldCounter);
 			}
 			
+			productFieldItem.find('.product-stack-table tbody').attr('data-id', this.options.productFieldCounter);
 			this.options.productFieldCounter++;
+		},
+		
+		addIndexToProductSubFields: function (productSubFieldItem, parentIndex) {
+			var productSubFieldClass = this.options.productSubFieldClass;
+			for(var i=0; i < productSubFieldClass.length; i++) {
+				var field = productSubFieldItem.find('.'+productSubFieldClass[i]);
+				var name = field.attr('name');
+				field.attr('name', name + this.options.productFieldSeparator + parentIndex + this.options.productSubFieldSeparator + this.options.productSubFieldCounter);
+			}
+			
+			this.options.productSubFieldCounter++;
 		},
 		
 		addValidationToProduct: function (clone) {
@@ -460,6 +508,7 @@ define([
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #add-product': 'addProduct',
+			'click .add-product-stack': 'addProductStack',
 			'click .remove-product': 'removeProduct',
 			//'blur .productname': 'validateProduct',
 			'keyup .unitprice': 'onKeyUpUnitPrice',
@@ -470,8 +519,6 @@ define([
 			//'click #convert-po': 'convertPO',
 			'click #convert-po': 'showConvertToPOConfirmationWindow',
 			'click #confirm-convert-po': 'convertPO',
-			'click #cancel-po': 'showConfirmationWindow',
-			'click #confirm-cancel-po': 'cancelPO',
 			'click .attach-pdf': 'attachPDF',
 			
 			'change #pdf-file': 'readFile',
@@ -571,15 +618,17 @@ define([
 			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 4);
 			
 			var tonsfield = $(ev.target);
-			var tonsfieldVal = this.removeCommaFromNumber(tonsfield.val());
-			var tons = (!isNaN(parseFloat(tonsfieldVal)))? parseFloat(tonsfieldVal) : 0;
-			var bidPriceField = tonsfield.closest('.product-item').find('.unitprice');
-			var bidPriceFieldVal = this.removeCommaFromNumber(bidPriceField.val());
-			var bidPrice = (!isNaN(parseFloat(bidPriceFieldVal)))? parseFloat(bidPriceFieldVal) : 0;
-			
-			this.computeUnitePrice(bidPrice, tons, tonsfield.closest('.product-item').find('.unit-price'));
-			
-			this.computeTotalTons();
+			if(tonsfield.closest('.product-item').find('.unitprice').length > 0 && tonsfield.closest('.product-item').find('.unit-price').length > 0) {
+				var tonsfieldVal = this.removeCommaFromNumber(tonsfield.val());
+				var tons = (!isNaN(parseFloat(tonsfieldVal)))? parseFloat(tonsfieldVal) : 0;
+				var bidPriceField = tonsfield.closest('.product-item').find('.unitprice');
+				var bidPriceFieldVal = this.removeCommaFromNumber(bidPriceField.val());
+				var bidPrice = (!isNaN(parseFloat(bidPriceFieldVal)))? parseFloat(bidPriceFieldVal) : 0;
+				
+				this.computeUnitePrice(bidPrice, tons, tonsfield.closest('.product-item').find('.unit-price'));
+				
+				this.computeTotalTons();
+			}
 		},
 		
 		computeTotalTons: function () {
@@ -624,32 +673,6 @@ define([
 				total += (!isNaN(parseInt(value)))? parseInt(value) : 0;
 			});
 			this.subContainer.find('#total-bales').val(thisObj.addCommaToNumber(total));
-		},
-		
-		cancelPO: function () {
-			if(this.poId != null) {
-				var thisObj = this;
-				var purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
-                purchaseOrderModel.setCancelURL();
-                purchaseOrderModel.save(
-                    null, 
-                    {
-                        success: function (model, response, options) {
-                            thisObj.displayMessage(response);
-                            //Global.getGlobalVars().app_router.navigate(Const.URL.PO, {trigger: true});
-							Backbone.history.history.back();
-                        },
-                        error: function (model, response, options) {
-                            if(typeof response.responseJSON.error == 'undefined')
-                                validate.showErrors(response.responseJSON);
-                            else
-                                thisObj.displayMessage(response);
-                        },
-                        headers: purchaseOrderModel.getAuth(),
-                    }
-                );
-			}
-			return false;
 		},
 		
 		initPDFUpload: function () {

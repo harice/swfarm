@@ -355,8 +355,6 @@ define([
 				var productTemplate = _.template(productItemTemplate, productTemplateVars);
 				
 				this.$el.find('#product-list > tbody').append(productTemplate);
-				//this.addProductSub(this.$el.find('#product-list > tbody').find('.product-stack:first table'));
-				//var productItem = this.$el.find('#product-list > tbody').find('.product-item:first-child');
 				var productItem = this.$el.find('#product-list > tbody').children();
 				this.options.productFieldClone = productItem.clone();
 				this.addIndexToProductFields(productItem);
@@ -532,7 +530,10 @@ define([
 								}
 							}
 							
-							arrayProductFields['stacks'] = this.getProductStackFields(data, index);
+							arrayProductFields['stacks'] = this.getProductStackFields(data, index, {
+								'product_id': arrayProductFields.product_id,
+								'unitprice': arrayProductFields.unitprice,
+							});
 							
 							formData.products.push(arrayProductFields);
 						}
@@ -543,7 +544,7 @@ define([
 			return formData;
 		},
 		
-		getProductStackFields: function (data, productIndex) {
+		getProductStackFields: function (data, productIndex, otherData) {
 			var stacks = [];
 			var productFieldClass = this.options.productSubFieldClass;
 			
@@ -567,6 +568,8 @@ define([
 								}
 							}
 						}
+						
+						arrayProductFields = _.extend(arrayProductFields, otherData);
 						
 						stacks.push(arrayProductFields);
 					}
@@ -628,9 +631,9 @@ define([
 			'keyup .tons': 'onKeyUpTons',
 			'blur .tons': 'onBlurTon',
 			'keyup .bales': 'onKeyUpBales',
-			'click #cancel-so': 'showConfirmationWindow',
-			'click #confirm-cancel-so': 'cancelSO',
-			'change #contract_id': 'onChangeContract'
+			'change #contract_id': 'onChangeContract',
+			'click #verify-so': 'showVerifyConfirmationWindow',
+			'click #confirm-verify-order': 'verifySo',
 		},
 		
 		removeProduct: function (ev) {
@@ -659,7 +662,7 @@ define([
 		},
 		
 		hasProductSub: function (tableElement) {
-			console.log('hasProductSub: '+tableElement.find('tbody .product-stack-item').length);
+			//console.log('hasProductSub: '+tableElement.find('tbody .product-stack-item').length);
 			return (tableElement.find('tbody .product-stack-item').length)? true : false;
 		},
 		
@@ -742,15 +745,17 @@ define([
 			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 4);
 			
 			var tonsfield = $(ev.target);
-			var tonsfieldVal = this.removeCommaFromNumber(tonsfield.val());
-			var tons = (!isNaN(parseFloat(tonsfieldVal)))? parseFloat(tonsfieldVal) : 0;
-			var bidPriceField = tonsfield.closest('.product-item').find('.unitprice');
-			var bidPriceFieldVal = this.removeCommaFromNumber(bidPriceField.val());
-			var bidPrice = (!isNaN(parseFloat(bidPriceFieldVal)))? parseFloat(bidPriceFieldVal) : 0;
-			
-			this.computeUnitePrice(bidPrice, tons, tonsfield.closest('.product-item').find('.unit-price'));
-			
-			this.computeTotalTons();
+			if(tonsfield.closest('.product-item').find('.unitprice').length > 0 && tonsfield.closest('.product-item').find('.unit-price').length > 0) {
+				var tonsfieldVal = this.removeCommaFromNumber(tonsfield.val());
+				var tons = (!isNaN(parseFloat(tonsfieldVal)))? parseFloat(tonsfieldVal) : 0;
+				var bidPriceField = tonsfield.closest('.product-item').find('.unitprice');
+				var bidPriceFieldVal = this.removeCommaFromNumber(bidPriceField.val());
+				var bidPrice = (!isNaN(parseFloat(bidPriceFieldVal)))? parseFloat(bidPriceFieldVal) : 0;
+				
+				this.computeUnitePrice(bidPrice, tons, tonsfield.closest('.product-item').find('.unit-price'));
+				
+				this.computeTotalTons();
+			}
 		},
 		
 		computeTotalTons: function () {
@@ -784,7 +789,7 @@ define([
 		onKeyUpBales: function (ev) {
 			this.fieldAddCommaToNumber($(ev.target).val(), ev.target);
 			
-			this.computeTotalBales();
+			//this.computeTotalBales();
 		},
 		
 		computeTotalBales: function () {
@@ -795,32 +800,6 @@ define([
 				total += (!isNaN(parseInt(value)))? parseInt(value) : 0;
 			});
 			this.subContainer.find('#total-bales').val(thisObj.addCommaToNumber(total));
-		},
-		
-		cancelSO: function () {
-			if(this.soId != null) {
-				var thisObj = this;
-				var salesOrderModel = new SalesOrderModel({id:this.soId});
-				salesOrderModel.setCancelURL();
-				salesOrderModel.save(
-					null, 
-					{
-						success: function (model, response, options) {
-							thisObj.displayMessage(response);
-							//Global.getGlobalVars().app_router.navigate(Const.URL.SO, {trigger: true});
-							Backbone.history.history.back();
-						},
-						error: function (model, response, options) {
-							if(typeof response.responseJSON.error == 'undefined')
-								validate.showErrors(response.responseJSON);
-							else
-								thisObj.displayMessage(response);
-						},
-						headers: salesOrderModel.getAuth(),
-					}
-				);
-			}
-			return false;
 		},
 		
 		onChangeContract: function (ev) {
@@ -846,6 +825,22 @@ define([
 				if(this.customerAccountCollection.models.length == 1)
 					this.$el.find('#contact_id').val(this.customerAccountCollection.models[0].get('id')).change();
 			}
+		},
+		
+		showVerifyConfirmationWindow: function () {
+			this.initConfirmationWindow('Are you sure you want to verify this sales order?',
+										'confirm-verify-order',
+										'Verify Sales Order',
+										'Verify Sales Order',
+										false);
+			this.showConfirmationWindow();
+			
+			return false;
+		},
+		
+		verifySo: function () {
+			this.hideConfirmationWindow();
+			return false;
 		},
 		
 		otherInitializations: function () {},
