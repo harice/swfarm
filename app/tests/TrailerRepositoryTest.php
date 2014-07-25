@@ -4,12 +4,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\Paginator;
 
-class ContractRepositoryTest extends TestCase {
+class TrailerRepositoryTest extends TestCase {
     
     public function setUp()
     {
         parent::setUp();
-        $this->repo = App::make('ContractRepository');
+        $this->repo = App::make('TrailerRepository');
         
         Artisan::call('migrate');
         $this->seed('TestDatabaseSeeder');
@@ -33,18 +33,15 @@ class ContractRepositoryTest extends TestCase {
         $date = $now->format('Y-m-d H:i:s');
         
         $data = array(
-            'contract_number' => 'C20140630-0001',
-            'account_id' => 1,
-            'contract_date_start' => '2014-06-29 00:00:00',
-            'contract_date_end' => '2014-06-29 00:00:01',
-            'user_id' => 1,
-            'status_id' => 1,
-            'created_at' => $date,
-            'updated_at' => $date,
-            'products' => array()
+            'account_id'        => 9,
+            'number'            => 'Trailer A',
+            'rate'              => '0.00',
+            'created_at'        => $date,
+            'updated_at'        => $date
         );
 
         $response = $this->repo->store($data);
+        Log::debug($response);
 
         $this->assertTrue($response['data'] instanceof Model);
     }
@@ -55,17 +52,15 @@ class ContractRepositoryTest extends TestCase {
         $date = $now->format('Y-m-d H:i:s');
         
 		$data = array(
-            'contract_number' => 'C20140715-000',
-            'account_id' => 1,
-            'contract_date_start' => '2014-06-29 00:00:00',
-            'contract_date_end' => '2014-06-29 00:00:01',
-            'products' => array()
+            'account_id'        => 9,
+            'number'            => 'Trailer AAA',
+            'rate'              => '0.00'
         );
         
         $model = $this->repo->update(1, $data);
         
         $this->assertTrue($model['data'] instanceof Model);
-        $this->assertTrue($model['data']->contract_number === $data['contract_number']);
+        $this->assertTrue($model['data']->number === $data['number']);
     }
     
     public function testDestroySaves()
@@ -88,11 +83,9 @@ class ContractRepositoryTest extends TestCase {
     public function testValidatePasses()
     {
         $data = array(
-            'contract_number' => 'C20140630-0002',
-            'account_id' => 1,
-            'contract_date_start' => '2014-06-29 00:00:00',
-            'contract_date_end' => '2014-06-29 00:00:01',
-            'user_id' => 1
+            'account_id'        => 9,
+            'number'            => 'Trailer B',
+            'rate'              => '0.00'
         );
         
         $response = $this->repo->validate($data);
@@ -102,6 +95,8 @@ class ContractRepositoryTest extends TestCase {
     public function testValidateFails()
     {
         $data = array(
+            'account_id'        => 9,
+            'rate'              => '0.00'
         );
         
         try {
@@ -124,13 +119,15 @@ class ContractRepositoryTest extends TestCase {
     public function testInstanceReturnsModelWithData()
     {
         $data = array(
-            'contract_number' => 'C20140715-000'
+            'account_id'        => 9,
+            'number'            => 'Trailer B',
+            'rate'              => '0.00'
         );
 
         $response = $this->repo->instance($data);
         
         $this->assertTrue($response instanceof Model);
-        $this->assertTrue($response->contract_number === $data['contract_number']);
+        $this->assertTrue($response->number === $data['number']);
     }
     
 }

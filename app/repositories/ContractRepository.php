@@ -29,7 +29,13 @@ class ContractRepository implements ContractRepositoryInterface {
             
             $contracts_array = $_contracts->toArray();
             foreach ($contracts_array as &$contract) {
+                $contract['total_expected'] = 0.0000;
+                foreach ($contract['products'] as $product) {
+                    $contract['total_expected'] += $product['pivot']['tons'];
+                }
+                
                 $contract['total_delivered'] = $this->getDeliveredTons($contract['id']);
+                $contract['total_delivered_percentage'] = number_format((($contract['total_delivered'] / $contract['total_expected']) * 100));
             }
             
             $result = Paginator::make($contracts_array, $total_contracts, $perPage);
@@ -87,26 +93,13 @@ class ContractRepository implements ContractRepositoryInterface {
     
     public function findById($id)
     {
-        return $this->getDeliveredTons($id);
-        
-        try
-        {
-//            $contract = Contract::with('products', 'salesorders', 'productorders', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')->find($id);
-            
-            $contract = Contract::with('salesorders.transportschedule.weightticket.weightticketscale_pickup.weightticketproducts')
-                ->with('salesorders.transportschedule.weightticket.weightticketscale_dropoff.weightticketproducts')
-                ->find($id);
-            
-            if (!$contract) {
-                throw new NotFoundException();
-            }
-            
+        $contract = Contract::with('products', 'salesorders', 'productorders', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')->find($id);
+
+        if ($contract) {
             return $contract;
         }
-        catch (Exception $e)
-        {
-            return $e->getMessage();
-        }
+        
+        throw new NotFoundException('Contract was not found.');
     }
     
     public function store($data)
@@ -261,7 +254,7 @@ class ContractRepository implements ContractRepositoryInterface {
                     $_product['product_name'] = $product->name;
 
                     // Get Sales Orders
-                    $salesorders = $this->getSalesOrders($id);
+                    $salesorders = $this->getSalesOrders($id, $_product['product_id']);
                     $_product['salesorders'] = $salesorders->toArray();
                     
                     // Process SO
@@ -354,15 +347,23 @@ class ContractRepository implements ContractRepositoryInterface {
         return $total_tons;
     }
     
-    public function getSalesOrders($contract_id)
+    public function getSalesOrders($contract_id, $product_id = null)
     {
         try
         {
             $orders = Order::with('transportschedule.transportscheduleproduct.weightticketproducts')
                 ->with('transportschedule.transportscheduleproduct.weightticketproducts.weightticketscale.pickup')
                 ->with('transportschedule.transportscheduleproduct.productorder')
-                ->where('contract_id', '=', $contract_id)
-                ->get();
+                ->where('contract_id', '=', $contract_id);
+                
+            if ($product_id) {
+                $orders = $orders->whereHas('productorder', function($q) use($product_id)
+                {
+                    $q->where('product_id', '=', $product_id);
+                });
+            }
+            
+            $orders = $orders->get();
             
             if(!$orders) {
                 throw new NotFoundException('No Orders found for this contract.', 401);

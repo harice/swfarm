@@ -30,18 +30,22 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         try
         {
             $weightticket = WeightTicket::with('status')
-                            ->with('weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder.product')
-                            ->with('weightticketscale_dropoff.scalerAccount')
-                            ->with('weightticketscale_dropoff.scale')
-                            ->with('weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder.product')
-                            ->with('weightticketscale_pickup.scalerAccount')
-                            ->with('weightticketscale_pickup.scale')
-                            ->where('transportSchedule_id', '=', $schedule_id)->first();
+                ->with('weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder.product')
+                ->with('weightticketscale_dropoff.scalerAccount')
+                ->with('weightticketscale_dropoff.scale')
+                ->with('weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder.product')
+                ->with('weightticketscale_pickup.scalerAccount')
+                ->with('weightticketscale_pickup.scale')
+                ->where('transportSchedule_id', '=', $schedule_id)->first();
 
-            if(!$weightticket) 
-                throw new NotFoundException('Weight Info Not Found');
+            if($weightticket) {
+                return $weightticket;
+            }
 
-            return $weightticket;
+            return array(
+                'error' => true,
+                'message' => 'Weight Ticket Not Found.'
+            );
         }
         catch (Exception $e)
         {

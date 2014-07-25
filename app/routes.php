@@ -174,6 +174,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 
     // Storage location
     Route::get('storagelocation/locationlist', 'APIv1\StorageLocationController@locationList');
+    Route::get('storagelocation/search', 'APIv1\StorageLocationController@search');
     Route::resource('storagelocation', 'APIv1\StorageLocationController');
 
     // Inventory

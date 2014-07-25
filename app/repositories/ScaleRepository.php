@@ -43,20 +43,13 @@ class ScaleRepository implements ScaleRepositoryInterface {
     
     public function findById($id)
     {
-        try
-        {
-            $scale = Scale::with('account')->find($id);
-            
-            if (!$scale) {
-                throw new NotFoundException();
-            }
-            
+        $scale = Scale::with('account')->find($id);
+
+        if ($scale) {
             return $scale;
         }
-        catch (Exception $e)
-        {
-            return $e->getMessage();
-        }
+        
+        throw new NotFoundException('Scale was not found.');
     }
     
     public function store($data)
@@ -68,20 +61,18 @@ class ScaleRepository implements ScaleRepositoryInterface {
             $scale = $this->instance();
             $scale->fill($data);
             
-            if (!$scale->save()) {
+            if ($scale->save()) {
                 return array(
-                    'error' => true,
-                    'message' => 'Scale was not created.'
+                    'error' => false,
+                    'message' => Lang::get('messages.success.created', array('entity' => 'Scale')),
+                    'data' => $scale
                 );
             }
             
-            $response = array(
-                'error' => false,
-                'message' => Lang::get('messages.success.created', array('entity' => 'Scale')),
-                200
+            return array(
+                'error' => true,
+                'message' => 'Scale was not created.'
             );
-            
-            return $response;
         }
         catch (Exception $e)
         {
@@ -108,7 +99,7 @@ class ScaleRepository implements ScaleRepositoryInterface {
             $response = array(
                 'error' => false,
                 'message' => Lang::get('messages.success.updated', array('entity' => 'Scale')),
-                'data' => $scale->toArray()
+                'data' => $scale
             );
             
             return $response;
@@ -135,7 +126,7 @@ class ScaleRepository implements ScaleRepositoryInterface {
             $response = array(
                 'error' => false,
                 'message' => Lang::get('messages.success.deleted', array('entity' => 'Scale')),
-                'data' => $scale->toArray()
+                'data' => $scale
             );
             
             return $response;

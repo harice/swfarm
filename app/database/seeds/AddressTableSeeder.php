@@ -72,6 +72,39 @@ class AddressTableSeeder extends Seeder {
                 'type' => '1',
                 'created_at' => $date,
                 'updated_at' => $date
+            ),
+            array(
+                'account' => 15,
+                'street' => 'North St.',
+                'city' => 'Sin City',
+                'state' => '2',
+                'zipcode' => '29620',
+                'country' => '1',
+                'type' => '1',
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
+            array(
+                'account' => 16,
+                'street' => 'North St.',
+                'city' => 'Sin City',
+                'state' => '2',
+                'zipcode' => '29620',
+                'country' => '1',
+                'type' => '1',
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
+            array(
+                'account' => 17,
+                'street' => 'North St.',
+                'city' => 'Sin City',
+                'state' => '2',
+                'zipcode' => '29620',
+                'country' => '1',
+                'type' => '1',
+                'created_at' => $date,
+                'updated_at' => $date
             )
 		);
 
