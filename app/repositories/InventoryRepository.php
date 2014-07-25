@@ -668,8 +668,13 @@ class InventoryRepository implements InventoryRepositoryInterface {
     //     return $stackList->toArray();
     // }
 
-    public function getStackList(){
-        $stackList = Stack::orderBy('stacknumber', 'ASC')->get(array('id', 'stacknumber'));
+    public function getStackList($productId = null){
+        if($productId != null){
+            $stackList = Stack::with('stacklocation.section')->where('product_id', '=', $productId)->orderBy('stacknumber', 'ASC')->get(array('id', 'stacknumber'));    
+        } else {
+            $stackList = Stack::with('stacklocation.section')->orderBy('stacknumber', 'ASC')->get(array('id', 'stacknumber'));    
+        }
+        
         return $stackList->toArray();
     }
 
