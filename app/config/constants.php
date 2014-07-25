@@ -13,6 +13,8 @@ return array(
     'AUDIT_DELETED' => 'Deleted',
 
     'TRUCKING_RATE' => 2.00,
+    
+    'NOS_RESERVED' => 1,
 
     'VERSION' => "3.0"
 

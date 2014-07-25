@@ -295,6 +295,12 @@ class OrderRepository implements OrderRepositoryInterface {
             $data['status_id'] = 4; //Pending status
         else
             $data['status_id'] = 1; //Open status
+        
+        if (isset($data['natureofsale_id'])) {
+            if ($data['natureofsale_id'] != Config::get('constants.NOS_RESERVED')) {
+                unset($data['contract_id']);
+            }
+        }
 
         $this->validate($data, 'Order', $data['ordertype']);
 
@@ -528,7 +534,7 @@ class OrderRepository implements OrderRepositoryInterface {
     }
     
     public function validate($data, $entity, $orderType = null)
-    {   
+    {
         $messages = array(
             'rfv.required_if' => 'The RFV field is required when product is on hold.',
         );
@@ -539,6 +545,10 @@ class OrderRepository implements OrderRepositoryInterface {
                 $validator = Validator::make($data, $entity::$po_rules, $messages);
             } else { //SO rules need to used
                 $validator = Validator::make($data, $entity::$so_rules, $messages);
+                $validator->sometimes('contract_id', 'required', function($data)
+                {
+                    return $data->natureofsale_id == Config::get('constants.NOS_RESERVED');
+                });
             }
         }
         

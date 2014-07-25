@@ -9,7 +9,7 @@ define([
 	'models/salesorder/SOWeightInfoModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
-	'text!templates/weightinfo/weightInfoPrintTemplate.html',
+	'text!templates/salesorder/weightInfoPrintTemplate.html',
 	'text!templates/salesorder/weightInfoViewProductItemTemplate.html',
     'text!templates/salesorder/serviceTemplate.html',
 	'global',
