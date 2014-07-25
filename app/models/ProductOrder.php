@@ -23,7 +23,8 @@ class ProductOrder extends Eloquent {
         'bales',
         'unitprice',
         'ishold',
-        'rfv'
+        'rfv',
+        'productordersummary_id'
     );
     
     public static $rules = array(
@@ -56,6 +57,10 @@ class ProductOrder extends Eloquent {
 
     public function transportscheduleproduct(){
         return $this->hasMany('TransportScheduleProduct', 'productorder_id', 'id');
+    }
+
+    public function productordersummary(){
+        return $this->hasOne('ProductOrderSummary', 'id', 'productordersummary_id');
     }
 
 }

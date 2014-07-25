@@ -15,14 +15,24 @@ class OrderRepository implements OrderRepositoryInterface {
         $transportend = isset($params['transportend']) ? $params['transportend'] : null;
         $filter = isset($params['search']) ? $params['search'] : null;
         
-        $order = Order::with('productorder')
-                        ->with('productorder.product')
-                        ->with('account')
-                        ->with('contact')
-                        ->with('orderaddress', 'orderaddress.addressStates')
-                        ->with('location')
-                        ->with('status')
-                        ->with('ordercancellingreason.reason');
+        // $order = Order::with('productorder')
+        //                 ->with('productorder.product')
+        //                 ->with('account')
+        //                 ->with('contact')
+        //                 ->with('orderaddress', 'orderaddress.addressStates')
+        //                 ->with('location')
+        //                 ->with('status')
+        //                 ->with('ordercancellingreason.reason');
+
+        $order = Order::with('productsummary.productname')
+                ->with('productsummary.productorder.product')
+                ->with('productsummary.productorder.upload.files')
+                ->with('account')
+                ->with('contact')
+                ->with('orderaddress', 'orderaddress.addressStates')
+                ->with('location')
+                ->with('status')
+                ->with('ordercancellingreason.reason');
 
         if($orderType == 2) //for SO only
             $order = $order->with('natureofsale', 'contract');
@@ -190,10 +200,9 @@ class OrderRepository implements OrderRepositoryInterface {
         return $result['percentage'];
     }
     
-    public function getOrder($id, $orderType = 1)
+    /*public function getOrder($id, $orderType = 1)
     {
-        $order = Order::with('productorder')
-                ->with('productorder.product')
+        $order = Order::with('productorder.product')
                 ->with('account')
                 ->with('contact')
                 ->with('orderaddress', 'orderaddress.addressStates')
@@ -228,11 +237,52 @@ class OrderRepository implements OrderRepositoryInterface {
         }
 
         return $response;
+    }*/
+
+    public function getOrder($id, $orderType = 1)
+    {
+        $order = Order::with('productsummary.productname')
+                ->with('productsummary.productorder.product')
+                ->with('productsummary.productorder.upload.files')
+                ->with('account')
+                ->with('contact')
+                ->with('orderaddress', 'orderaddress.addressStates')
+                ->with('location')
+                ->with('status')
+                ->with('ordercancellingreason.reason');
+
+        if($orderType == 2) //for SO only
+            $order = $order->with('natureofsale', 'contract');
+
+        $order = $order->where('ordertype', '=', $orderType)->find($id);
+
+        if($order){
+            $response = array();
+            $response = $order->toArray();
+            //adding new index in file array for passing auth
+            array_walk($response['productsummary'], function(&$productsummary) {
+                array_walk($productsummary['productorder'], function(&$productorder) {
+                    array_walk($productorder['upload'], function (&$upload){
+                        array_walk($upload['files'], function (&$files){
+                            $userEmail = Auth::user()->email;
+                            $userPassword = Request::header('php-auth-pw');
+                            $files['auth'] = base64_encode($files['id'].','.$userEmail.','.$userPassword);
+                        });
+                    });
+                });
+            });
+        } else {
+          $response = array(
+            'error' => true,
+            'message' => "Order not found");
+        }
+
+        return $response;
     }
     
     public function addOrder($data, $orderType = 1)
     {
-        
+        // var_dump($data['products'][0]['summary']['tons']);exit;
         $now = new DateTime('NOW');
         $date = $now->format('Y-m-d H:i:s');
         
@@ -253,8 +303,6 @@ class OrderRepository implements OrderRepositoryInterface {
         if(!isset($data['contract_id']) || $data['contract_id'] == '')
             $data['contract_id'] = null;
          
-        
-       
         $result = DB::transaction(function() use ($data)
         {
             $result = array();
@@ -263,8 +311,8 @@ class OrderRepository implements OrderRepositoryInterface {
             $order = $this->instance();
             $order->fill($data);
             $order->save();
-
-            $productResult = $this->addProductOrder($order->id, $data['products']);
+            $productResult = $this->addProductToOrder($order->id, $data['products']);
+            // $productResult = $this->addProductOrder($order->id, $data['products']);
             
             if($productResult['hasHoldProduct'] && $data['ordertype'] == 1){ //for purchase order only
                 $order->status_id = 7; //Testing status
@@ -316,10 +364,10 @@ class OrderRepository implements OrderRepositoryInterface {
             $order->save();
 
             if(isset($data['products'])){
-                $this->deleteProductOrder($id, $data['products']); //delete product order that is remove by client
-                $productResult = $this->addProductOrder($order->id, $data['products']);
+                $this->deleteProductOrderSummary($id, $data['products']); //delete product order that is remove by client
+                $productResult = $this->addProductToOrder($order->id, $data['products'], true);
             } else {
-                $this->deleteProductOrder($id, null);
+                $this->deleteProductOrderSummary($id, null);
             }
 
             if($productResult != null && $data['ordertype'] == 1 && $order->status_id != 4){ //for purchase order only, status 4 is pending
@@ -330,6 +378,7 @@ class OrderRepository implements OrderRepositoryInterface {
                 }
                 $order->save();
             }
+
             return $order;
         });
         
@@ -360,7 +409,7 @@ class OrderRepository implements OrderRepositoryInterface {
         return $orderaddress->id;
     }
 
-    private function deleteProductOrder($orderId, $products){
+    /*private function deleteProductOrder($orderId, $products){
       //deleting bidproduct
       $existingProductOrderId = array();
       if($products != null){
@@ -379,6 +428,7 @@ class OrderRepository implements OrderRepositoryInterface {
 
                 })
                 ->delete();
+        $productOrderSummary = ProductOrderSummary::find($productOrder->productordersummary_id)->delete();
     } else { //delete product order that is included in array
       $productOrder = ProductOrder::with('order')
                 ->whereHas('order', function($query) use ($orderId)
@@ -390,7 +440,80 @@ class OrderRepository implements OrderRepositoryInterface {
                 ->delete();
     }
     return $productOrder;
-  }
+  }*/
+
+    private function deleteProductOrderSummary($orderId, $products){
+        //deleting bidproduct
+        $existingProductOrderSummaryId = array();
+        if($products != null){
+            foreach($products as $item){
+              $productOrderData = $item;
+              if(isset($productOrderData['id'])){
+                    $existingProductOrderSummaryId[] = $productOrderData['id'];
+                }
+            }
+        }
+        if($existingProductOrderSummaryId == null){ //delete all product order associated with this order
+          $ProductOrderSummary = ProductOrderSummary::with('order')
+                    ->whereHas('order', function($query) use ($orderId)
+                    {
+                        $query->where('id', '=', $orderId);
+
+                    })
+                    ->delete();
+        } else { //delete product order that is included in array
+            $ProductOrderSummary = ProductOrderSummary::with('order')
+                    ->whereHas('order', function($query) use ($orderId)
+                    {
+                        $query->where('id', '=', $orderId);
+
+                    })
+                    ->whereNotIn('id',$existingProductOrderSummaryId)
+                    ->delete();
+
+            foreach($products as $product){
+                if(isset($product['id'])){
+                    $deleteProductOrder = $this->deleteProductOrder($orderId, $item);        
+                }
+            }
+           
+        }
+
+        return $ProductOrderSummary;
+    }
+
+    private function deleteProductOrder($orderId, $product){
+        $stacks = $product['stacks'];
+        $existingProductOrderId = array();
+        if($stacks != null){
+            foreach($stacks as $item){
+                $productOrderData = $item;
+                if(isset($productOrderData['id'])){
+                  $existingProductOrderId[] = $productOrderData['id'];
+                }
+            }
+        }
+        if($existingProductOrderId == null){ //delete all product order associated with this order
+            $productOrder = ProductOrder::with('order')
+                            ->whereHas('order', function($query) use ($orderId)
+                            {
+                                $query->where('id', '=', $orderId);
+
+                            })->where('productordersummary_id', '=', $product['id'])
+                            ->delete();
+        } else { //delete product order that is included in array
+            $productOrder = ProductOrder::with('order')
+                            ->whereHas('order', function($query) use ($orderId)
+                            {
+                                $query->where('id', '=', $orderId);
+
+                            })
+                            ->whereNotIn('id',$existingProductOrderId)
+                            ->where('productordersummary_id', '=', $product['id'])
+                            ->delete();
+        }
+        return $productOrder;
+    }
     
     public function deleteOrder($id)
     {   $result = false;
@@ -447,14 +570,43 @@ class OrderRepository implements OrderRepositoryInterface {
         
         return $prefix.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
     }
-    
-    private function addProductOrder($order_id, $products = array())
-    {
-        $result = array('hasHoldProduct' => false);
 
+    private function addProductToOrder($order_id, $products = array(), $isUpdate = false){
+        $result = array('hasHoldProduct' => false);
+        foreach ($products as $product){
+            if(isset($product['id'])){
+                $productordersummary = ProductOrderSummary::find($product['id']);
+            }
+            else {
+                $productordersummary = new ProductOrderSummary();
+            }
+            $product['order_id'] = $order_id;
+            $productordersummary->fill($product);
+            $productordersummary->save();
+            //if operation is update, need to remove the order delete by the user on client side
+            if($isUpdate){
+                $stacks = $this->addStacksToOrder($order_id, $product['stacks'], $productordersummary->id);
+            } else {
+                $stacks = $this->addStacksToOrder($order_id, $product['stacks'], $productordersummary->id);
+            }
+            
+
+            if(isset($stacks['hasHoldProduct'])){
+                if($stacks['hasHoldProduct']){
+                    $result['hasHoldProduct'] = true;
+                }
+            }
+            
+        }
+        return $result;
+    }
+    
+    private function addStacksToOrder($order_id, $products = array(), $productordersummary_id){
+        $result = array('hasHoldProduct' => false);
+        // var_dump($products);exit;
         foreach ($products as $product) {
             $product['order_id'] = $order_id;
-            
+            $product['productordersummary_id'] = $productordersummary_id;
             //set order status to testing when it has product hold with no rfv and file set
             if(isset($product['ishold']) && $result['hasHoldProduct'] == false){
                 if($product['ishold'] == 1){
@@ -467,10 +619,14 @@ class OrderRepository implements OrderRepositoryInterface {
             }
            
             $this->validate($product, 'ProductOrder');
-            if(isset($product['id']))
+            if(isset($product['id'])){
                 $productorder = ProductOrder::find($product['id']);
-            else
-                $productorder = new ProductOrder();
+                // var_dump($product['id']);
+                // var_dump($productorder);
+            } else {
+                $productorder = new ProductOrder;
+            }
+
 
             $productorder->fill($product);
             $productorder->save();
@@ -478,6 +634,7 @@ class OrderRepository implements OrderRepositoryInterface {
             if(isset($product['uploadedfile'])){
                 $this->linkUploadFilesToProductOrder($product['uploadedfile'], $productorder->id);
             }
+
         }
         return $result;
     }
