@@ -71,10 +71,10 @@ define([
 			var trailer = this.model.get('trailer');
 			var products = this.model.get('transportscheduleproduct');
 			
-			this.$el.find('#po-sched-start-date .input-group.date').datepicker('update', this.convertDateFormat(this.model.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-'));
-			this.$el.find('#scheduletimeHour').val(this.model.get('scheduletimeHour'));
-			this.$el.find('#scheduletimeMin').val(this.model.get('scheduletimeMin'));
-			this.$el.find('#scheduletimeAmPm').val(this.model.get('scheduletimeAmPm'));
+			this.$el.find('#po-sched-start-date .input-group.date').datepicker('update', Backbone.View.prototype.helpers.formatDate(this.model.get('date')));
+			this.$el.find('#scheduletimeHour').val(Backbone.View.prototype.helpers.formatDateBy(this.model.get('date'),'h'));
+			this.$el.find('#scheduletimeMin').val(Backbone.View.prototype.helpers.formatDateBy(this.model.get('date'),'i'));
+			this.$el.find('#scheduletimeAmPm').val(Backbone.View.prototype.helpers.formatDateBy(this.model.get('date'),'A'));
 			
 			this.$el.find('#distance').val(this.addCommaToNumber(this.model.get('distance')));
 			this.$el.find('#fuelcharge').val(this.addCommaToNumber(this.model.get('fuelcharge')));

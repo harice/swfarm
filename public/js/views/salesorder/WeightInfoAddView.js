@@ -112,14 +112,18 @@ define([
 			var innerTemplateVariables = {
 				scaler_account_list: this.getScalerDropDown(),
 				cancel_url: (this.wiId == null && this.type != Const.WEIGHTINFO.PICKUP && this.type != Const.WEIGHTINFO.DROPOFF)? '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId : '#/'+Const.URL.SOWEIGHTINFO+'/'+this.soId+'/'+this.schedId,
+				so: this.salesOrderModel,
+				schedule: this.soScheduleModel,
 			};
 			
 			if(this.wiId != null)
 				innerTemplateVariables['wiId'] = this.wiId;
 			
 			if(this.type == Const.WEIGHTINFO.PICKUP || this.type == Const.WEIGHTINFO.DROPOFF)
-				innerTemplateVariables['wiType'] = this.type.charAt(0).toUpperCase() + this.type.slice(1);
+				innerTemplateVariables['wiType'] = this.type;
 			
+			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
+
 			var innerTemplate = _.template(weightInfoAddTemplate, innerTemplateVariables);
 			
 			var variables = {
@@ -140,14 +144,8 @@ define([
 		},
 		
 		supplySOInfo: function () {
-			var dateAndTime = this.convertDateFormat(this.soScheduleModel.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-')
-								+' '+this.soScheduleModel.get('scheduletimeHour')
-								+':'+this.soScheduleModel.get('scheduletimeMin')
-								+' '+this.soScheduleModel.get('scheduletimeAmPm');
-			
 			this.$el.find('#so-number').val(this.salesOrderModel.get('order_number'));
 			this.$el.find('#producer').val(this.salesOrderModel.get('account').name);
-			this.$el.find('#date-and-time').val(dateAndTime);
 			
 			if(this.wiId != null) {
 				this.$el.find('#weight-ticket-no').val(this.model.get('weightTicketNumber'));

@@ -304,21 +304,21 @@ define([
 		
 		filterByOrigin: function (ev) {
 			var filter = $(ev.target).val();
-			this.collection.setFilter('location', filter)
+			this.collection.setFilter('location', filter);
 			this.renderList(1);
 			return false;
 		},
 		
 		filterByNatureOfSale: function (ev) {
 			var filter = $(ev.target).val();
-			this.collection.setFilter('natureofsale', filter)
+			this.collection.setFilter('natureofsale', filter);
 			this.renderList(1);
 			return false;
 		},
 		
 		filterByStatus: function (ev) {
 			var filter = $(ev.target).val(); //console.log(filter);
-			this.collection.setFilter('status', filter)
+			this.collection.setFilter('status', filter);
 			this.renderList(1);
 			return false;
 		},

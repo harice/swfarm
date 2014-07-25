@@ -104,6 +104,9 @@ label.error {
 .block-flat .padding-top-0 {
   padding-top: 0;
 }
+.block-flat .padding-top-10 {
+  padding-top: 10px;
+}
 .block-flat,
 .block-wizard {
   padding: 5px;

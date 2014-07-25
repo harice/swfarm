@@ -12,14 +12,10 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
                         ->with('destinationloader.accountidandname')
                         ->with('trailer.account')
                         ->with('transportscheduleproduct.productorder.product')
+                        ->with('weightticket')
                         ->where('id', '=', $id)->first();
       if($transportSchedule){
           $transportSchedule = $transportSchedule->toArray();
-          $transportSchedule['scheduledate'] = date('Y-m-d', strtotime($transportSchedule['date']));
-          $transportSchedule['scheduletimeHour'] = date('h', strtotime($transportSchedule['date']));
-          $transportSchedule['scheduletimeMin'] = date('i', strtotime($transportSchedule['date']));
-          $transportSchedule['scheduletimeAmPm'] = date('A', strtotime($transportSchedule['date']));
-
           return $transportSchedule;
         
       } else {
@@ -48,17 +44,11 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
                 ->with('destinationloader.accountidandname')
                 ->with('trailer.account')
                 ->with('transportscheduleproduct.productorder.product')
+                ->with('weightticket')
                 ->where('order_id', '=', $orderId)
                 ->where('type', '=', $scheduleType)
                 ->orderBy($sortby,$orderby)
                 ->paginate($perPage);
-
-      foreach($transportSchedules as $item){
-          $item['scheduledate'] = date('Y-m-d', strtotime($item['date']));
-          $item['scheduletimeHour'] = date('h', strtotime($item['date']));
-          $item['scheduletimeMin'] = date('i', strtotime($item['date']));
-          $item['scheduletimeAmPm'] = date('A', strtotime($item['date']));
-      }
 
       return $transportSchedules;
   }

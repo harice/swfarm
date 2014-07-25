@@ -1,66 +1,20 @@
-<div class="row">
-    <div class="col-md-12">
-        <div class="block-flat">
-            <div class="content">
-              
+<div class="row margin-top-0">
+    <div class="col-md-12 no-padding">
+        <div class="block-flat padding-top-0 padding-bottom-0">
+            <div class="content padding-top-10">
+              <% if(_.isNull(schedule.get('weightticket'))) { %>
+              <h2 class="ponumber margin-bottom-0"><%= formatDateAMPM(schedule.get('date')) %></h2>
+              Status: <label class="label label-<%= schedule.get("status").class %>"><%= schedule.get("status").name %></label><br>
+              PO No.: <span class='text-danger'><%= so.get("order_number") %></span>
+              <% } else { %>
+              <% } %>
+
+              <h3><i class='fa fa-ticket'></i> <%= ucfirst(wiType) %> Ticket</h3>
+
               <form id="soWeightInfoFrom" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-				<fieldset>
-                  <legend>Details</legend>
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="so-number" class="col-sm-3 control-label">SO No.</label>
-                        <div class="col-sm-7">
-                          <input id="so-number" type="text" class="form-control" maxlength="250" readonly>
-                        </div>
-                      </div>
-					  <div class="form-group">
-                        <label for="producer" class="col-sm-3 control-label">Customer</label>
-                        <div class="col-sm-7">
-                          <input id="producer" type="text" class="form-control" maxlength="250" readonly>
-                        </div>
-                      </div>
-					  <% if (typeof wiId !== "undefined") { %>
-					  <div class="form-group">
-                        <label for="weight-ticket-no" class="col-sm-3 control-label">Weight Ticket No.</label>
-                        <div class="col-sm-7">
-                          <input id="weight-ticket-no" type="text" class="form-control" maxlength="250" readonly>
-                        </div>
-                      </div>
-					  <div class="form-group">
-                        <label for="loading-ticket-no" class="col-sm-3 control-label">Loading Ticket No.</label>
-                        <div class="col-sm-7">
-                          <input id="loading-ticket-no" type="text" class="form-control" maxlength="250" readonly>
-                        </div>
-                      </div>
-					  <% } %>
-					  <div class="form-group">
-                        <label for="weightinfo_type" class="col-sm-3 control-label">Type</label>
-                        <div class="col-sm-7">
-                          <% if (typeof wiType !== "undefined") { %>
-							<input id="weightinfo_type" type="text" class="form-control width-200 weightinfo_type" maxlength="250" name="weightinfo_type" value="<%= wiType %>" readonly>
-						  <% } else { %>
-						  <div class="styled-select">
-							<select id="weightinfo_type" class="form-contro width-200 weightinfo_type" name="weightinfo_type" value="">
-							  <option value="">Select a type</option>
-							  <option value="pickup">Pickup</option>
-							  <option value="dropoff">Dropoff</option>
-							</select>
-						  </div>
-						  <% } %>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="date-and-time" class="col-sm-3 control-label">Date and Time</label>
-                        <div class="col-sm-7">
-                          <input id="date-and-time" type="text" class="form-control" maxlength="250" readonly>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </fieldset>
+              <input id="weightinfo_type" type="hidden" class="weightinfo_type" name="weightinfo_type" value="<%= wiType %>">
+				
+
                 <fieldset>
                   <div class="table-responsive">
                     <table id="weight-info" class="table table-bordered">

@@ -689,7 +689,7 @@ class OrderRepository implements OrderRepositoryInterface {
    }
 */
     public function getPOStatus(){
-        return Status::whereIn('id',array(1,2,3,4))->get()->toArray(); //return statuses for orders
+        return Status::whereIn('id',array(1,2,4,5,6,7))->get()->toArray(); //return statuses for orders
     }
 
     public function getSOStatus(){

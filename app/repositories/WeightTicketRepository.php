@@ -614,6 +614,12 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             //change the status
             $weightticketObj->status_id = 2; //close status
             $weightticketObj->save();
+
+            // automatically close the schedule when closing ticket
+            $transportSchedule = TransportSchedule::find($schedule_id);
+            $transportSchedule->status_id = 2;
+            $transportSchedule->save();
+
             return Response::json(array(
               'error' => false,
               'message' => 'Weighticket successfully close.'), 200);

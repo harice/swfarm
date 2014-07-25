@@ -112,14 +112,18 @@ define([
 			var innerTemplateVariables = {
 				scaler_account_list: this.getScalerDropDown(),
 				cancel_url: (this.wiId == null && this.type != Const.WEIGHTINFO.PICKUP && this.type != Const.WEIGHTINFO.DROPOFF)? '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId : '#/'+Const.URL.POWEIGHTINFO+'/'+this.poId+'/'+this.schedId,
+				po: this.purchaseOrderModel,
+				schedule: this.poScheduleModel,
 			};
 			
 			if(this.wiId != null)
 				innerTemplateVariables['wiId'] = this.wiId;
 			
 			if(this.type == Const.WEIGHTINFO.PICKUP || this.type == Const.WEIGHTINFO.DROPOFF)
-				innerTemplateVariables['wiType'] = this.type.charAt(0).toUpperCase() + this.type.slice(1);
+				innerTemplateVariables['wiType'] = this.type;
 			
+			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
+
 			var innerTemplate = _.template(weightInfoAddTemplate, innerTemplateVariables);
 			
 			var variables = {
@@ -140,14 +144,8 @@ define([
 		},
 		
 		supplyPOInfo: function () {
-			var dateAndTime = this.convertDateFormat(this.poScheduleModel.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-')
-								+' '+this.poScheduleModel.get('scheduletimeHour')
-								+':'+this.poScheduleModel.get('scheduletimeMin')
-								+' '+this.poScheduleModel.get('scheduletimeAmPm');
-			
 			this.$el.find('#po-number').val(this.purchaseOrderModel.get('order_number'));
 			this.$el.find('#producer').val(this.purchaseOrderModel.get('account').name);
-			this.$el.find('#date-and-time').val(dateAndTime);
 			
 			if(this.wiId != null) {
 				this.$el.find('#weight-ticket-no').val(this.model.get('weightTicketNumber'));
@@ -160,9 +158,9 @@ define([
 			
 			var validate = $('#poWeightInfoFrom').validate({
 				submitHandler: function(form) {
-					//console.log($(form).serializeObject());
+					// console.log($(form).serializeObject());
 					var dataTemp = thisObj.formatFormField($(form).serializeObject());
-					//console.log(dataTemp);
+					// console.log(dataTemp);
 					var type = dataTemp.weightinfo_type;
 					delete dataTemp.weightinfo_type;
 					
@@ -173,7 +171,7 @@ define([
 					if(thisObj.wiId != null)
 						data['id'] = thisObj.schedId;
 					
-					//console.log(data);
+					// console.log(data); return;
 					
 					var poWeightInfoModel = new POWeightInfoModel(data);
 					
@@ -182,7 +180,6 @@ define([
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								//Global.getGlobalVars().app_router.navigate(Const.URL.SO, {trigger: true});
 								Backbone.history.history.back();
 							},
 							error: function (model, response, options) {
