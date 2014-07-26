@@ -11,9 +11,14 @@ class TrailerRepository implements TrailerRepositoryInterface {
     {
         try
         {
-            $perPage = isset($params['perpage']) ? $params['perpage'] : 10;
+            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.USERS_PER_LIST');
+            $sortby = isset($params['sortby']) ? $params['sortby'] : 'number';
+            $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
             
-            return Trailer::with('account')->paginate($perPage);
+            return Trailer::join('account', 'trailer.account_id', '=', 'account.id')
+                ->select('trailer.id', 'trailer.number', 'account.name')
+                ->orderBy($sortby, $orderby)
+                ->paginate($perPage);
         }
         catch (Exception $e)
         {
@@ -21,18 +26,21 @@ class TrailerRepository implements TrailerRepositoryInterface {
         }
     }
     
-    public function search($_search)
+    public function search($params)
     {
         try
         {
-            $perPage = isset($_search['perpage']) ? $_search['perpage'] : 15;
+            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.USERS_PER_LIST');
+            $sortby = isset($params['sortby']) ? $params['sortby'] : 'number';
+            $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
+            $searchWord = $params['search'];
             
-            $searchWord = $_search['search'];
-            
-            return Trailer::with('account')
+            return Trailer::join('account', 'trailer.account_id', '=', 'account.id')
+                ->select('trailer.id', 'trailer.number', 'account.name')
                 ->where(function ($query) use ($searchWord) {
                     $query->where('number','like','%'.$searchWord.'%');
                 })
+                ->orderBy($sortby, $orderby)
                 ->paginate($perPage);
         }
         catch (Exception $e)
