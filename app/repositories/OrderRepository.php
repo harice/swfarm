@@ -303,6 +303,12 @@ class OrderRepository implements OrderRepositoryInterface {
         $data['createPO'] = isset($data['createPO']) ? $data['createPO'] : 0;
         if($data['createPO']) //update PO status when true
             $data['status_id'] = 1; //Open status
+        
+        if (isset($data['natureofsale_id'])) {
+            if ($data['natureofsale_id'] != Config::get('constants.NOS_RESERVED')) {
+                unset($data['contract_id']);
+            }
+        }
 
         $this->validate($data, 'Order', $data['ordertype']);
 

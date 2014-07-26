@@ -63,7 +63,8 @@ class ContactRepository implements ContactRepositoryInterface {
             'account' => 'required|exists:account,id',
             'email' => 'required|email|unique:contact',
             'phone' => 'required|between:14,14',
-            'mobile' => 'between:14,14'
+            'mobile' => 'between:14,14',
+            'rate' => 'regex:/^([0-9]{1,3})([,\.]([0-9]{1,2})){0,1}$/'
         );
         
         if (isset($data['rate'])) {
@@ -73,6 +74,10 @@ class ContactRepository implements ContactRepositoryInterface {
         }
 
         $this->validate($data, $rules);
+        
+        if ($data['rate'] > 100.00) {
+            throw new Exception('Please enter a rate less than 100.00');
+        }
 
         $contact = new Contact;
 
@@ -110,10 +115,21 @@ class ContactRepository implements ContactRepositoryInterface {
             'account' => 'required|exists:account,id',
             'email' => 'required|email|unique:contact,email,' . $id,
             'phone' => 'required|between:14,14',
-            'mobile' => 'between:14,14'
+            'mobile' => 'between:14,14',
+            'rate' => 'regex:/^([0-9]{1,3})([,\.]([0-9]{1,2})){0,1}$/'
         );
+        
+        if (isset($data['rate'])) {
+            if (!$this->hasRate($data['account'])) {
+                unset($data['rate']);
+            }
+        }
 
         $this->validate($data, $rules);
+        
+        if ($data['rate'] > 100.00) {
+            throw new Exception('Please enter a rate less than 100.00');
+        }
 
         $contact = Contact::find($id);
 
