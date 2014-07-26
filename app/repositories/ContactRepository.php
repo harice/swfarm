@@ -221,7 +221,7 @@ class ContactRepository implements ContactRepositoryInterface {
     }
 
     /**
-     * Check if Contact has rate.
+     * Check if Account has rate.
      * 
      * @param type $account_id
      * @return boolean

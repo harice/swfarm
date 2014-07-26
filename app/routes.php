@@ -66,6 +66,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('account/contact', 'APIv1\AccountController@getAllContactOnAccount');
 	Route::resource('account', 'APIv1\AccountController');
 
+    Route::get('contact/hasRate/{id}', 'APIv1\ContactController@hasRate');
 	Route::get('contact/search', 'APIv1\ContactController@search');
 	Route::resource('contact', 'APIv1\ContactController');
 
