@@ -117,21 +117,31 @@ class TrailerRepository implements TrailerRepositoryInterface {
         try
         {
             $trailer = $this->findById($id);
-
-            if (!$trailer->delete()) {
-                return array(
-                    'error' => true,
-                    'message' => 'Trailer was not deleted.'
-                );
-            }
-
-            $response = array(
-                'error' => false,
-                'message' => Lang::get('messages.success.deleted', array('entity' => 'Trailer')),
-                'data' => $trailer
-            );
             
-            return $response;
+            if ($trailer) {
+                
+                $transport_schedule = TransportSchedule::where('trailer_id', '=', $id)->get();
+                
+                if (!$transport_schedule->count()) {
+                    $trailer->forceDelete();
+                    
+                    return array(
+                        'error' => false,
+                        'message' => Lang::get('messages.success.deleted', array('entity' => 'Trailer')),
+                        'data' => $trailer
+                    );
+                } else {
+                    return array(
+                        'error' => true,
+                        'message' => 'Trailer has transport schedule.'
+                    );
+                }
+            }
+            
+            return array(
+                'error' => true,
+                'message' => 'Trailer was not deleted.'
+            );
         }
         catch (Exception $e)
         {
