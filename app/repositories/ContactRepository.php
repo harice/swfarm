@@ -201,7 +201,16 @@ class ContactRepository implements ContactRepositoryInterface {
         $contact = Contact::find($id);
 
         if ($contact) {
-            $contact->delete();
+            
+            $order = Order::where('contact_id', '=', $id);
+            $originloader = TransportSchedule::where('originloader_id', '=', $id);
+            $destinationloader = TransportSchedule::where('destinationloader_id', '=', $id);
+            
+            if (!$order->count() && !$originloader->count() && !$destinationloader->count()) {
+                $contact->forceDelete();
+            } else {
+                $contact->delete();
+            }
 
             $response = Response::json(array(
                     'error' => false,
