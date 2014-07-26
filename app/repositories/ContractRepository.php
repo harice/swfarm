@@ -38,6 +38,7 @@ class ContractRepository implements ContractRepositoryInterface {
                 $contract['total_delivered_percentage'] = number_format((($contract['total_delivered'] / $contract['total_expected']) * 100));
             }
             
+            $contracts_array = array_slice($contracts_array, $offset, $perPage);
             $result = Paginator::make($contracts_array, $total_contracts, $perPage);
             
             return $result;
