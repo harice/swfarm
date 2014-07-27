@@ -48,6 +48,7 @@ define([
 			var innerTemplateVar = {
 				'trucker_add_url' : '#/'+Const.URL.TRUCKER+'/'+Const.CRUD.ADD,
 			};
+    
 			var innerTemplate = _.template(truckerListTemplate, innerTemplateVar);
 			
 			var variables = {
@@ -67,11 +68,13 @@ define([
 		displayList: function () {
 			
 			var data = {
+                trucker_url: '#/'+Const.URL.TRUCKER,
 				trucker_edit_url: '#/'+Const.URL.TRUCKER+'/'+Const.CRUD.EDIT,
 				truckers: this.collection.models,
 				_: _ 
 			};
 			
+            _.extend(data,Backbone.View.prototype.helpers);
 			var innerListTemplate = _.template(truckerInnerListTemplate, data);
 			this.subContainer.find("#trucker-list tbody").html(innerListTemplate);
 			
@@ -79,8 +82,13 @@ define([
 		},
 		
 		events: {
+            'click .sort-trucknumber' : 'sortTruckNumber',
 			'click .delete-trucker': 'preShowConfirmationWindow',
 			'click #confirm-delete-trucker': 'deleteTrucker'
+		},
+                
+        sortTruckNumber: function () {
+			this.sortByField('trucknumber');
 		},
 		
 		preShowConfirmationWindow: function (ev) {

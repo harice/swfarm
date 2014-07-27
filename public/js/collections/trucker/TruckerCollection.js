@@ -11,10 +11,10 @@ define([
 			this.setDefaultURL(this.url);
 			this.setSortOptions(
 				{
-					currentSort: 'created_at',
+					currentSort: 'trucknumber',
 					sort: {
-						created_at: false,
-					},
+						trucknumber: true,
+					}
 				}
 			);
 		},

@@ -11,13 +11,49 @@ class TruckRepository implements TruckRepositoryInterface {
     {
        
         $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+        $sortby = isset($params['sortby']) ? $params['sortby'] : 'trucknumber';
+        $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
         
-        return Truck::with('account.accounttype')->paginate($perPage);
-       
+        return Truck::join('account', 'truck.account_id', '=', 'account.id')
+            ->join('accounttype', 'account.accounttype', '=', 'accounttype.id')
+            ->select('truck.id', 'truck.trucknumber', 'truck.fee', 'account.id as account_id', 'account.name as account_name', 'accounttype.name as account_type')
+            ->orderBy($sortby, $orderby)
+            ->paginate($perPage);
+    }
+    
+    public function search($params)
+    {
+        try
+        {
+            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+            $sortby = isset($params['sortby']) ? $params['sortby'] : 'trucknumber';
+            $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
+            $searchWord = $params['search'];
+            
+            return Truck::join('account', 'truck.account_id', '=', 'account.id')
+                ->join('accounttype', 'account.accounttype', '=', 'accounttype.id')
+                ->select('truck.id', 'truck.trucknumber', 'truck.fee', 'account.id as account_id', 'account.name as account_name', 'accounttype.name as account_type')
+                ->where(function ($query) use ($searchWord) {
+                    $query->orWhere('trucknumber','like','%'.$searchWord.'%');
+                    $query->orWhere('account.name','like','%'.$searchWord.'%');
+                })
+                ->orderBy($sortby, $orderby)
+                ->paginate($perPage);
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
     }
     
     public function findById($id)
     {
+//        $truck = Truck::join('account', 'truck.account_id', '=', 'account.id')
+//            ->join('accounttype', 'account.accounttype', '=', 'accounttype.id')
+//            ->select('truck.id', 'truck.trucknumber', 'truck.fee', 'account.id as account_id', 'account.name as account_name', 'accounttype.name as account_type')
+//            ->where('truck.id', '=', $id)
+//            ->first();
+        
         $truck = Truck::with('account.accounttype')->find($id);
         
         if (!$truck) {
