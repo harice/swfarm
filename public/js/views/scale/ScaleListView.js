@@ -68,6 +68,7 @@ define([
 		
 		displayList: function () {
 			var data = {
+                scale_url: '#/'+Const.URL.SCALE,
 				scale_edit_url: '#/'+Const.URL.SCALE+'/'+Const.CRUD.EDIT,
 				scales: this.collection.models,
 				_: _ 
@@ -80,8 +81,18 @@ define([
 		},
 		
 		events: {
+            'click .sort-name' : 'sortName',
+            'click .sort-account-name' : 'sortAccountName',
 			'click .delete-scale': 'preShowConfirmationWindow',
 			'click #confirm-delete-scale': 'deleteScale'
+		},
+                
+        sortName: function () {
+			this.sortByField('name');
+		},
+                
+        sortAccountName: function () {
+			this.sortByField('account_name');
 		},
 		
 		preShowConfirmationWindow: function (ev) {

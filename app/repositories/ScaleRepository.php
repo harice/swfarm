@@ -12,8 +12,13 @@ class ScaleRepository implements ScaleRepositoryInterface {
         try
         {
             $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+            $sortby = isset($params['sortby']) ? $params['sortby'] : 'name';
+            $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
             
-            return Scale::with('account')->paginate($perPage);
+            return Scale::join('account', 'scale.account_id', '=', 'account.id')
+                ->select('scale.id', 'scale.name as name', 'scale.rate as rate','account.name as account_name')
+                ->orderBy($sortby, $orderby)
+                ->paginate($perPage);
         }
         catch (Exception $e)
         {
@@ -21,18 +26,22 @@ class ScaleRepository implements ScaleRepositoryInterface {
         }
     }
     
-    public function search($_search)
+    public function search($params)
     {
         try
         {
-            $perPage = isset($_search['perpage']) ? $_search['perpage'] : 15;
+            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+            $sortby = isset($params['sortby']) ? $params['sortby'] : 'name';
+            $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
+            $searchWord = $params['search'];
             
-            $searchWord = $_search['search'];
-            
-            return Scale::with('account')
+            return Scale::join('account', 'scale.account_id', '=', 'account.id')
+                ->select('scale.id', 'scale.name as name', 'scale.rate as rate','account.name as account_name')
                 ->where(function ($query) use ($searchWord) {
-                    $query->where('name','like','%'.$searchWord.'%');
+                    $query->orWhere('scale.name','like','%'.$searchWord.'%');
+                    $query->orWhere('account.name','like','%'.$searchWord.'%');
                 })
+                ->orderBy($sortby, $orderby)
                 ->paginate($perPage);
         }
         catch (Exception $e)
@@ -54,7 +63,9 @@ class ScaleRepository implements ScaleRepositoryInterface {
     
     public function store($data)
     {
+        $data['rate'] = (int)str_replace(array('.', ','), '' , $data['rate']);
         $this->validate($data);
+        $data['rate'] = number_format(($data['rate'] / 100), 2, '.', '');
         
         try
         {
@@ -140,14 +151,15 @@ class ScaleRepository implements ScaleRepositoryInterface {
     public function validate($data, $id = null)
     {
         $rules = Scale::$rules;
+        $messages = array(
+            'rate.max' => 'The fee may not be greater than 100.00 .'
+        );
         
         if ($id) {
-            $rules['account_id'] = 'required';
             $rules['name'] = 'required|unique:scale,name,'.$id;
-            $rules['rate'] = 'required';
         }
         
-        $validator = Validator::make($data, $rules);
+        $validator = Validator::make($data, $rules, $messages);
         
         if ($validator->fails()) {
             throw new ValidationException($validator);
