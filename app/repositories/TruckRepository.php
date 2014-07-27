@@ -65,7 +65,10 @@ class TruckRepository implements TruckRepositoryInterface {
     
     public function store($data)
     {
+        $data['fee'] = (int)str_replace(array('.', ','), '' , $data['fee']);
         $this->validate($data);
+        $data['fee'] = number_format(($data['fee'] / 100), 2, '.', '');
+        
         $truck = $this->instance();
         $truck->fill($data);
         
@@ -87,8 +90,10 @@ class TruckRepository implements TruckRepositoryInterface {
     
     public function update($id, $data)
     {
-      
+        $data['fee'] = (int)str_replace(array('.', ','), '' , $data['fee']);
         $this->validate($data, $id);
+        $data['fee'] = number_format(($data['fee'] / 100), 2, '.', '');
+        
         $truck = $this->findById($id);
         $truck->fill($data);
         
@@ -133,14 +138,15 @@ class TruckRepository implements TruckRepositoryInterface {
     public function validate($data, $id = null)
     {
         $rules = Truck::$rules;
+        $messages = array(
+            'fee.max' => 'The fee may not be greater than 1,000.00 .'
+        );
         
         if ($id) {
-            $rules['account_id'] = 'required';
             $rules['trucknumber'] = 'required|unique:truck,trucknumber,'.$id;
-            $rules['fee'] = 'required';
         }
         
-        $validator = Validator::make($data, $rules);
+        $validator = Validator::make($data, $rules, $messages);
         
         if ($validator->fails()) {
             throw new ValidationException($validator);
