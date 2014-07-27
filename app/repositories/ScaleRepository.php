@@ -127,20 +127,29 @@ class ScaleRepository implements ScaleRepositoryInterface {
         {
             $scale = $this->findById($id);
 
-            if (!$scale->delete()) {
-                return array(
-                    'error' => true,
-                    'message' => 'Scale was not deleted.'
-                );
+            if ($scale) {
+                $weightticket_scale = WeightTicketScale::where('scale_id', '=', $id)->get();
+                
+                if (!$weightticket_scale->count()) {
+                    $scale->forceDelete();
+                    
+                    return array(
+                        'error' => false,
+                        'message' => Lang::get('messages.success.deleted', array('entity' => 'Scale')),
+                        'data' => null
+                    );
+                } else {
+                    return array(
+                        'error' => true,
+                        'message' => 'Scale has weight ticket.'
+                    );
+                }
             }
-
-            $response = array(
-                'error' => false,
-                'message' => Lang::get('messages.success.deleted', array('entity' => 'Scale')),
-                'data' => $scale
-            );
             
-            return $response;
+            return array(
+                'error' => true,
+                'message' => 'Scale was not deleted.'
+            );
         }
         catch (Exception $e)
         {
