@@ -1,7 +1,19 @@
 <tr class="product-stack-item">
 	<td>
 		<input type="hidden" class="id" name="id" value="" />
-		<input class="form-control stacknumber" name="stacknumber" type="text" maxlength="20">
+		<div class="styled-select">
+			<select class="form-control stacknumber width-160 display-inline" name="stacknumber">
+				<option value="">Select a stack number</option>
+			</select>
+			<span class="throbber_wrap" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
+		</div>
+	</td>
+	<td>
+		<div class="styled-select">
+			<select class="form-control section_id width-160" name="section_id">
+				<option value="">Select a stack location</option>
+			</select>
+		</div>
 	</td>
 	<td><input class="form-control description" name="description" maxlength="80"></td>
 	<td><input class="form-control text-right tons" name="tons" type="text" maxlength="12"></td>

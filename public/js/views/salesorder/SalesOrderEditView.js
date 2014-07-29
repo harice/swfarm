@@ -59,8 +59,11 @@ define([
 			this.h1Title = 'Sales Order';
 			this.h1Small = 'edit';
 			this.isInitProcess = true;
+			this.soProducts = [];
+			this.soProductsIndex = 0;
+			this.inits();
 			
-			this.currentCustomerId = null;
+			/*this.currentCustomerId = null;
 			this.customerAccountContactId = null;
 			
 			this.productAutoCompletePool = [];
@@ -112,6 +115,8 @@ define([
 					});
 				});
 				
+				if()
+				
 				if(thisObj.subContainerExist()) {
 					thisObj.isInitProcess = false;
 					thisObj.displayForm();
@@ -132,7 +137,7 @@ define([
 				//this.off('sync');
 			});
 			this.contractProductsCollection.on('error', function(collection, response, options) {
-				this.off('error');
+				//this.off('error');
 			});
 			
 			this.customerAccountCollection = new ContactCollection();
@@ -142,14 +147,21 @@ define([
 			});
 			this.customerAccountCollection.on('error', function(collection, response, options) {
 				//this.off('error');
-			});
+			});*/
 			
 			this.model = new SalesOrderModel({id:this.soId});
 			this.model.on('change', function() {
+				_.each(this.get('productsummary'), function (product) {
+					thisObj.soProducts.push(product.productname.id);
+				});
+				
+				console.log(thisObj.soProducts);
+				
 				if(this.get('contract_id'))
 					thisObj.contractByAccountCollection.getContractByAccount(this.get('account').id);
 				else
-					thisObj.natureOfSaleCollection.getModels();
+					thisObj.stackNumberCollection.getStackNumbersByProduct({id:thisObj.soProducts[thisObj.soProductsIndex]});
+					//thisObj.natureOfSaleCollection.getModels();
 				
 				this.off('change');
 			});
@@ -227,7 +239,8 @@ define([
 					j++;
 					
 					productSubFields.find('.id').val(productSub.id);
-					productSubFields.find('.stacknumber').val(productSub.stacknumber);
+					//productSubFields.find('.stacknumber').val(productSub.stacknumber);
+					thisObj.generateStackNumberDropdown(productSubFields.find('.stacknumber'), product.productname.id, productSub.stacknumber);
 					productSubFields.find('.description').val(productSub.description);
 					productSubFields.find('.tons').val(productSub.tons);
 					productSubFields.find('.bales').val(productSub.bales);
@@ -235,6 +248,11 @@ define([
 			});
 			
 			this.computeTotals();
+		},
+		
+		postDisplayForm: function () {
+			if(this.subContainerExist())
+				this.supplySOData();
 		},
 	});
 

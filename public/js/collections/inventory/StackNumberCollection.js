@@ -10,9 +10,9 @@ define([
 			this.setDefaultURL(this.url);
 		},
 		
-		getStackNumbersByProduct: function (id) {
-			this.url = this.getDefaultURL()+'?productId='+id;
-			this.getModels();
+		getStackNumbersByProduct: function (option) {
+			this.url = this.getDefaultURL()+'?productId='+option.id;
+			this.getModels(option);
 		},
 	});
 

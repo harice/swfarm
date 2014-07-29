@@ -56,15 +56,22 @@ define([
 		
 		initialize: function() {
 			this.initSubContainer();
-			var thisObj = this;
 			this.soId = null;
 			this.h1Title = 'Sales Order';
 			this.h1Small = 'add';
-			
+			this.isInitProcess = false;
+			this.soProducts = [];
+			this.soProductsIndex = 0;
+			this.inits();
+		},
+		
+		inits: function () {
+			var thisObj = this;
 			this.currentCustomerId = null;
 			this.customerAccountContactId = null;
 			
 			this.productAutoCompletePool = [];
+			this.stackNumberByProductPool = [];
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
@@ -74,8 +81,8 @@ define([
 				productFieldSeparator: '.',
 				productSubFieldClone: null,
 				productSubFieldCounter: 0,
-				productSubFieldClass: ['stacknumber', 'description', 'tons', 'bales', 'id'],
-				productSubFieldClassRequired: ['stacknumber', 'tons', 'bales'],
+				productSubFieldClass: ['stacknumber', 'section_id', 'description', 'tons', 'bales', 'id'],
+				productSubFieldClassRequired: ['stacknumber', 'section_id', 'tons', 'bales'],
 				productSubFieldExempt: [],
 				productSubFieldSeparator: '.',
 				removeComma: ['unitprice', 'tons', 'bales'],
@@ -92,7 +99,10 @@ define([
             
             this.contractByAccountCollection = new ContractByAccountCollection();
             this.contractByAccountCollection.on('sync', function() {
-				thisObj.generateContract();
+				if(!thisObj.isInitProcess)
+					thisObj.generateContract();
+				else
+					thisObj.contractProductsCollection.getContractProducts(thisObj.model.get('contract_id'));
 				//this.off('sync');
 			});
 			this.contractByAccountCollection.on('error', function(collection, response, options) {
@@ -110,8 +120,11 @@ define([
 					});
 				});
 				
-				if(thisObj.subContainerExist())
+				if(thisObj.subContainerExist()) {
+					thisObj.isInitProcess = false;
+					console.log(thisObj.stackNumberByProductPool);
 					thisObj.displayForm();
+				}
 				
 				this.off('sync');
 			});
@@ -121,7 +134,11 @@ define([
 			
 			this.contractProductsCollection = new ProductCollection();
 			this.contractProductsCollection.on('sync', function() {
-				thisObj.generateContractProductDropdown();
+				if(!thisObj.isInitProcess)
+					thisObj.generateContractProductDropdown();
+				else
+					thisObj.stackNumberCollection.getStackNumbersByProduct({id:thisObj.soProducts[thisObj.soProductsIndex]});
+					//thisObj.natureOfSaleCollection.getModels();
 				//this.off('sync');
 			});
 			this.contractProductsCollection.on('error', function(collection, response, options) {
@@ -131,19 +148,47 @@ define([
 			this.customerAccountCollection = new ContactCollection();
 			this.customerAccountCollection.on('sync', function() {
 				thisObj.generateCustomerAccountContacts();
-                thisObj.hideFieldThrobber();
+                thisObj.hideFieldThrobber('#contact_id');
 			});
 			this.customerAccountCollection.on('error', function(collection, response, options) {
 				//this.off('error');
 			});
 			
 			this.stackNumberCollection = new StackNumberCollection();
-			this.stackNumberCollection.on('sync', function() {
+			this.stackNumberCollection.on('sync', function(data, textStatus, jqXHR, option) {
 				
-				//this.off('sync');
+				var autocompleteData = [];
+				_.each(data, function (s) {
+					
+					var location = [];
+					
+					_.each(s.stacklocation, function (sl) {
+						location.push({
+							id:sl.section[0].id,
+							name:sl.section[0].name,
+						});
+					});
+					
+					autocompleteData.push({
+						value:s.stacknumber,
+						location:location,
+					});
+				});
+				thisObj.stackNumberByProductPool[option.id] = autocompleteData;
+				
+				if(!thisObj.isInitProcess) {
+					thisObj.generateStackNumberDropdown(thisObj.subContainer.find('.product-stack-table tbody[data-id="'+option.dataId+'"] .stacknumber'), option.id);
+					thisObj.hideFieldThrobber('.product-stack-table tbody[data-id="'+option.dataId+'"] .stacknumber');
+				}
+				else {
+					thisObj.soProductsIndex++;
+					if(thisObj.soProductsIndex < thisObj.soProducts.length)
+						this.getStackNumbersByProduct({id:thisObj.soProducts[thisObj.soProductsIndex]});
+					else
+						thisObj.natureOfSaleCollection.getModels();
+				}
 			});
 			this.stackNumberCollection.on('error', function(collection, response, options) {
-				//this.off('error');
 			});
 		},
 		
@@ -182,6 +227,7 @@ define([
 			this.initCalendar();
 			this.addProduct();
 			this.otherInitializations();
+			this.postDisplayForm();
 		},
 		
 		initValidateForm: function () {
@@ -194,7 +240,7 @@ define([
 					data['transportdatestart'] = thisObj.convertDateFormat(data['transportdatestart'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					data['transportdateend'] = thisObj.convertDateFormat(data['transportdateend'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					
-                    console.log(data);
+                    //console.log(data);
 					
 					var salesOrderModel = new SalesOrderModel(data);
 					
@@ -384,6 +430,7 @@ define([
 				clone = this.options.productSubFieldClone.clone();
 				this.addIndexToProductSubFields(clone, parentId);
 				tableElement.find('tbody').append(clone);
+				this.generateStackNumberDropdown(clone.find('.stacknumber'));
 			}
 			
 			return clone;
@@ -625,6 +672,7 @@ define([
 			'click #verify-so': 'showVerifyConfirmationWindow',
 			'click #confirm-verify-order': 'verifySo',
 			'change .product_id': 'generateStackNumberSuggestions',
+			'change .stacknumber': 'generateLocationFromDropDown',
 		},
 		
 		removeProduct: function (ev) {
@@ -795,7 +843,70 @@ define([
 		},
 		
 		generateStackNumberSuggestions: function (ev) {
-			this.stackNumberCollection.getStackNumbersByProduct($(ev.currentTarget).val());
+			var productId = $(ev.currentTarget).val();
+			var stackTBODY = $(ev.currentTarget).closest('.product-item').next('.product-stack').find('.product-stack-table tbody');
+			
+			this.resetSelect(stackTBODY.find('.stacknumber'));
+			this.resetSelect(stackTBODY.find('.section_id'));
+			
+			if(productId != '') {
+				if(typeof this.stackNumberByProductPool[productId] === 'undefined') {
+					this.showFieldThrobber(stackTBODY.find('.stacknumber'));
+					this.stackNumberCollection.getStackNumbersByProduct({id:productId, dataId:stackTBODY.attr('data-id')});
+				}
+				else
+					this.generateStackNumberDropdown(stackTBODY.find('.stacknumber'));
+			}
+		},
+		
+		generateStackNumberDropdown: function (select, productId, stacknumber) {
+			if(productId == null || typeof productId === 'undefined')
+				productId = select.closest('.product-stack').prev('.product-item').find('.product_id').val();
+			
+			if(typeof this.stackNumberByProductPool[productId] !== 'undefined') {
+				var dropdown = '';
+				_.each(this.stackNumberByProductPool[productId], function (s) {
+					dropdown += '<option value="'+s.value+'">'+s.value+'</option>';
+				});
+				select.append(dropdown);
+				
+				if(stacknumber != null && typeof stacknumber !== 'undefined')
+					select.val(stacknumber).trigger('change');
+				else {
+					if(this.stackNumberByProductPool[productId].length == 1)
+						select.val(this.stackNumberByProductPool[productId][0].value).trigger('change');
+				}
+			}
+		},
+		
+		getLocationByStockNumberDropdown: function (stacknumber, productId) {
+			var dropdown = '';
+			
+			for(var key in this.stackNumberByProductPool[productId]) {
+				if(typeof this.stackNumberByProductPool[productId][key] !== 'function' 
+					&& typeof this.stackNumberByProductPool[productId][key] !== 'undefined' 
+					&& this.stackNumberByProductPool[productId][key].value == stacknumber){
+					
+					_.each(this.stackNumberByProductPool[productId][key].location, function (location) {
+						dropdown += '<option value="'+location.id+'">'+location.name+'</option>';
+					});
+				}
+			}
+			
+			return dropdown;
+		},
+		
+		generateLocationFromDropDown: function (ev) {
+			var stacknumber = $(ev.currentTarget).val();
+			var productId = $(ev.currentTarget).closest('.product-stack').prev('.product-item').find('.product_id').val();
+			var dropdown = this.getLocationByStockNumberDropdown(stacknumber, productId);
+			var locationFromSelect = $(ev.currentTarget).closest('tr.product-stack-item').find('.section_id');
+			
+			this.resetSelect(locationFromSelect);
+			locationFromSelect.append(dropdown);
+			
+			if(locationFromSelect.find('option').length == 2)
+				locationFromSelect.find('option:last').attr('selected', true);
 		},
 		
 		showVerifyConfirmationWindow: function () {
@@ -815,6 +926,7 @@ define([
 		},
 		
 		otherInitializations: function () {},
+		postDisplayForm: function () {},
 	});
 
   return SalesOrderAddView;

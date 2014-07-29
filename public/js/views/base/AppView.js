@@ -348,7 +348,7 @@ define([
         
         hideFieldThrobber: function (element) {
             if (typeof element !== "undefined") {
-                $(element).parent().children('.throbber_wrap').show();
+                $(element).parent().children('.throbber_wrap').hide();
             } else {
                 $('.throbber_wrap').each(function () {
                     $(this).hide();
