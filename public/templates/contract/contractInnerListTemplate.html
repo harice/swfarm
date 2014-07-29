@@ -6,7 +6,7 @@
 			<%= contract.get("contract_number") %>
 			<span class="throbber_wrap" style="display: none;"><i class="fa fa-spinner fa-spin throbber_ajax"></i></span>
 		</td>
-		<td><%= contract.get("account").name %></td>
+		<td><%= contract.get("account_name") %></td>
 		<td><%= contract.get("contract_date_start") %></td>
 		<td><%= contract.get("contract_date_end") %></td>
         <td><%= numberFormatTons(contract.get("total_expected")) %></td>

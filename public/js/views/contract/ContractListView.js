@@ -99,8 +99,13 @@ define([
 		},
 		
 		events: {
+            'click .sort-contract-number' : 'sortContractNumber',
 			'click #contract-accordion tr.collapse-trigger': 'toggleAccordion',
 			'click .stop-propagation': 'linkStopPropagation',
+		},
+        
+        sortContractNumber: function () {
+			this.sortByField('contract_number');
 		},
 		
 		toggleAccordion: function (ev) {

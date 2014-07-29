@@ -18,13 +18,22 @@ class ContractRepository implements ContractRepositoryInterface {
             $offset   = $page * $perPage - $perPage;
             $account_id = isset($params['account']) ? $params['account'] : null;
             
-            $contracts = Contract::with('salesorders', 'schedules', 'products', 'productorders', 'account', 'account.address', 'status');
+            $contracts = Contract::join('account', 'contract.account_id', '=', 'account.id')
+                ->select(
+                    'contract.id',
+                    'contract.contract_number',
+                    'contract.contract_date_start',
+                    'contract.contract_date_end',
+                    'contract.status_id',
+                    'account.name as account_name'
+                )
+                ->with('salesorders', 'schedules', 'products', 'productorders', 'account', 'account.address', 'status');
             
             if ($account_id) {
                 $contracts = $contracts->where('account_id', '=', $account_id);
             }
             
-            $_contracts = $contracts->get();
+            $_contracts = $contracts->orderBy($sortby, $orderby)->get();
             $total_contracts = $_contracts->count();
             
             $contracts_array = $_contracts->toArray();
@@ -62,27 +71,46 @@ class ContractRepository implements ContractRepositoryInterface {
             
             // Set date filters
             $filter = FALSE;
-            if (isset($params['date_start']) && isset($params['date_end'])) {
+            if (isset($params['contract_date_start']) && isset($params['contract_date_end'])) {
                 $filter = TRUE;
             }
                 
-            $result = Contract::with('products', 'account', 'account.address')
-                ->whereHas('account', function($query) use ($searchWord) {
-                    $query->where('name', 'like', '%'.$searchWord.'%');
+            $contracts = Contract::join('account', 'contract.account_id', '=', 'account.id')
+                ->select(
+                    'contract.id',
+                    'contract.contract_number',
+                    'contract.contract_date_start',
+                    'contract.contract_date_end',
+                    'contract.status_id',
+                    'account.name as account_name'
+                )
+                ->with('salesorders', 'schedules', 'products', 'productorders', 'account', 'account.address', 'status')
+                ->where(function ($query) use ($searchWord) {
+                    $query->orWhere('contract_number','like','%'.$searchWord.'%')
+                          ->orWhere('account.name','like','%'.$searchWord.'%');
                 });
                 
             // Filter by date
             if ($filter) {
                 $result = $result->whereBetween('contract_date_start', array($params['date_start'], $params['date_end']));
             }
+            
+            $_contracts = $contracts->orderBy($sortby, $orderby)->get();
+            $total_contracts = $_contracts->count();
+            
+            $contracts_array = $_contracts->toArray();
+            foreach ($contracts_array as &$contract) {
+                $contract['total_expected'] = 0.0000;
+                foreach ($contract['products'] as $product) {
+                    $contract['total_expected'] += $product['pivot']['tons'];
+                }
                 
-            $result = $result->orWhere(function ($query) use ($searchWord) {
-                        $query->where('contract_number','like','%'.$searchWord.'%');
-                    })
-                    ->take($perPage)
-                    ->offset($offset)
-                    ->orderBy($sortby, $orderby)
-                    ->paginate($perPage);
+                $contract['total_delivered'] = $this->getDeliveredTons($contract['id']);
+                $contract['total_delivered_percentage'] = number_format((($contract['total_delivered'] / $contract['total_expected']) * 100));
+            }
+            
+            $contracts_array = array_slice($contracts_array, $offset, $perPage);
+            $result = Paginator::make($contracts_array, $total_contracts, $perPage);
             
             return $result;
         }
