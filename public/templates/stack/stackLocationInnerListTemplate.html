@@ -1,7 +1,11 @@
 <% if (!_.isEmpty(sls)) { %>
 	<% _.each(sls, function(sl){ %>
 	<tr class="collapse-trigger cursor-pointer" data-id="<%= sl.get("id") %>">
-        <td><%= sl.get("account_name") %></td>
+        <td>
+			<i class="fa fa-angle-right width-10 accordion-carret"></i>
+			<%= sl.get("account_name") %>
+			<span class="throbber_wrap" style="display: none;"><i class="fa fa-spinner fa-spin throbber_ajax"></i></span>
+		</td>
 		<td><%= sl.get("name") %></td>
 		<td><%= sl.get("description") %></td>
 	</tr>
