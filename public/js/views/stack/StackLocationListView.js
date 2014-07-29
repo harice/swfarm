@@ -66,6 +66,7 @@ define([
 		displayList: function () {
 			
 			var data = {
+                sl_url: '#/'+Const.URL.STACKLOCATION,
 				sl_edit_url: '#/'+Const.URL.STACKLOCATION+'/'+Const.CRUD.EDIT,
 				sls: this.collection.models,
 				collapsible_id: Const.PO.COLLAPSIBLE.ID,
@@ -86,9 +87,19 @@ define([
 		},
 		
 		events: {
+            'click .sort-name' : 'sortName',
+            'click .sort-account-name' : 'sortAccountName',
 			'click tr.collapse-trigger': 'toggleAccordion',
 			'click .delete-sl': 'preShowConfirmationWindow',
 			'click #confirm-delete-sl': 'deleteStockLocation'
+		},
+                
+        sortName: function () {
+			this.sortByField('name');
+		},
+                
+        sortAccountName: function () {
+			this.sortByField('account_name');
 		},
 		
 		toggleAccordion: function (ev) {
