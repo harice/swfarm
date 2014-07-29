@@ -13,6 +13,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
                         ->with('trailer.account')
                         ->with('transportscheduleproduct.productorder.product')
                         ->with('weightticket')
+                        ->with('weightticket.status')
                         ->where('id', '=', $id)->first();
       if($transportSchedule){
           $transportSchedule = $transportSchedule->toArray();
