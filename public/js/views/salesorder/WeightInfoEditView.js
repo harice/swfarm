@@ -82,13 +82,13 @@ define([
 				}
 				
 				var weightInfoBales = (typeof weightInfo.bales != 'undefined' && weightInfo.bales != null)? this.addCommaToNumber(weightInfo.bales) : '';
-				this.$el.find('#weight-info .bales').val(weightInfoBales);
+				this.$el.find('.bales').val(weightInfoBales);
 				var weightInfoGross = (typeof weightInfo.gross != 'undefined' && weightInfo.gross != null)? this.addCommaToNumber(weightInfo.gross) : '';
-				this.$el.find('#weight-info .gross').val(weightInfoGross);
+				this.$el.find('.gross').val(weightInfoGross);
 				var weightInfoTare = (typeof weightInfo.tare != 'undefined' && weightInfo.tare != null)? this.addCommaToNumber(weightInfo.tare) : '';
-				this.$el.find('#weight-info .tare').val(weightInfoTare);
+				this.$el.find('.tare').val(weightInfoTare);
 				var wiNet = (typeof weightInfo.gross != 'undefined' && weightInfo.gross != null && typeof weightInfo.tare != 'undefined' && weightInfo.tare != null)? parseFloat(weightInfo.gross) - parseFloat(weightInfo.tare) : 0;
-				this.$el.find('#weight-info .net').text(this.addCommaToNumber(wiNet.toFixed(4)));
+				this.$el.find('.net').text(this.addCommaToNumber(wiNet.toFixed(4)));
 				
 				var productsBalesTotal = 0;
 				var productsPoundsTotal = 0;
