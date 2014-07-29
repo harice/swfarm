@@ -179,7 +179,7 @@ define([
 			'click #add-section': 'addSection',
 			'click .remove-section': 'removeSection',
 			'click #go-to-previous-page': 'goToPreviousPage',
-			'click #delete-sl': 'showConfirmationWindow',
+			'click #delete-sl': 'showDeleteConfirmationWindow',
 			'click #confirm-delete-sl': 'deleteStockLocation'
 		},
 		
@@ -250,6 +250,10 @@ define([
 			
 			return formData;
 		},
+                
+        showDeleteConfirmationWindow: function () {
+            this.showConfirmationWindow();
+        },
 		
 		otherInitializations: function () {},
 	});
