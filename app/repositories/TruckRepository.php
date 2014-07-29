@@ -139,11 +139,12 @@ class TruckRepository implements TruckRepositoryInterface {
     {
         $rules = Truck::$rules;
         $messages = array(
-            'fee.max' => 'The fee may not be greater than 1,000.00 .'
+            'fee.max' => 'Admin Fee must not be greater than 1,000.00 .',
+            'trucknumber.alpha_num' => 'Truck Name must only contain letters and numbers.'
         );
         
         if ($id) {
-            $rules['trucknumber'] = 'required|unique:truck,trucknumber,'.$id;
+            $rules['trucknumber'] = 'required|alpha_num|unique:truck,trucknumber,'.$id;
         }
         
         $validator = Validator::make($data, $rules, $messages);
