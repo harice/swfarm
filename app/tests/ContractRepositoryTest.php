@@ -82,7 +82,7 @@ class ContractRepositoryTest extends TestCase {
             return;
         }
 
-//        $this->fail('NotFoundException was not raised');
+        $this->fail('NotFoundException was not raised');
     }
     
     public function testValidatePasses()

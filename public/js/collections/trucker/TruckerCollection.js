@@ -11,12 +11,17 @@ define([
 			this.setDefaultURL(this.url);
 			this.setSortOptions(
 				{
-					currentSort: 'created_at',
+					currentSort: 'trucknumber',
 					sort: {
-						created_at: false,
-					},
+						trucknumber: true,
+					}
 				}
 			);
+		},
+		
+		getTruckerNumbersByAccount: function (id) {
+			this.url = '/apiv1/truck/listByAccount?accountId='+id;
+			this.getModels();
 		},
 	});
 

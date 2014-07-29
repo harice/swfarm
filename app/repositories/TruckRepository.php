@@ -11,13 +11,49 @@ class TruckRepository implements TruckRepositoryInterface {
     {
        
         $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+        $sortby = isset($params['sortby']) ? $params['sortby'] : 'trucknumber';
+        $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
         
-        return Truck::with('account.accounttype')->paginate($perPage);
-       
+        return Truck::join('account', 'truck.account_id', '=', 'account.id')
+            ->join('accounttype', 'account.accounttype', '=', 'accounttype.id')
+            ->select('truck.id', 'truck.trucknumber', 'truck.fee', 'account.id as account_id', 'account.name as account_name', 'accounttype.name as account_type')
+            ->orderBy($sortby, $orderby)
+            ->paginate($perPage);
+    }
+    
+    public function search($params)
+    {
+        try
+        {
+            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+            $sortby = isset($params['sortby']) ? $params['sortby'] : 'trucknumber';
+            $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
+            $searchWord = $params['search'];
+            
+            return Truck::join('account', 'truck.account_id', '=', 'account.id')
+                ->join('accounttype', 'account.accounttype', '=', 'accounttype.id')
+                ->select('truck.id', 'truck.trucknumber', 'truck.fee', 'account.id as account_id', 'account.name as account_name', 'accounttype.name as account_type')
+                ->where(function ($query) use ($searchWord) {
+                    $query->orWhere('trucknumber','like','%'.$searchWord.'%');
+                    $query->orWhere('account.name','like','%'.$searchWord.'%');
+                })
+                ->orderBy($sortby, $orderby)
+                ->paginate($perPage);
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
     }
     
     public function findById($id)
     {
+//        $truck = Truck::join('account', 'truck.account_id', '=', 'account.id')
+//            ->join('accounttype', 'account.accounttype', '=', 'accounttype.id')
+//            ->select('truck.id', 'truck.trucknumber', 'truck.fee', 'account.id as account_id', 'account.name as account_name', 'accounttype.name as account_type')
+//            ->where('truck.id', '=', $id)
+//            ->first();
+        
         $truck = Truck::with('account.accounttype')->find($id);
         
         if (!$truck) {
@@ -29,7 +65,10 @@ class TruckRepository implements TruckRepositoryInterface {
     
     public function store($data)
     {
+        $data['fee'] = (int)str_replace(array('.', ','), '' , $data['fee']);
         $this->validate($data);
+        $data['fee'] = number_format(($data['fee'] / 100), 2, '.', '');
+        
         $truck = $this->instance();
         $truck->fill($data);
         
@@ -42,17 +81,19 @@ class TruckRepository implements TruckRepositoryInterface {
         
         $response = array(
             'error' => false,
-            'message' => Lang::get('messages.success.created', array('entity' => 'Truck'))
+            'message' => Lang::get('messages.success.created', array('entity' => 'Truck')),
+            'data' => $truck
         );
         
         return $response;
-   
     }
     
     public function update($id, $data)
     {
-      
+        $data['fee'] = (int)str_replace(array('.', ','), '' , $data['fee']);
         $this->validate($data, $id);
+        $data['fee'] = number_format(($data['fee'] / 100), 2, '.', '');
+        
         $truck = $this->findById($id);
         $truck->fill($data);
         
@@ -65,7 +106,8 @@ class TruckRepository implements TruckRepositoryInterface {
         
         $response = array(
             'error' => false,
-            'message' => Lang::get('messages.success.updated', array('entity' => 'Truck'))
+            'message' => Lang::get('messages.success.updated', array('entity' => 'Truck')),
+            'data' => $truck
         );
         
         return $response;
@@ -85,7 +127,8 @@ class TruckRepository implements TruckRepositoryInterface {
 
         $response = array(
             'error' => false,
-            'message' => Lang::get('messages.success.deleted', array('entity' => 'Truck'))
+            'message' => Lang::get('messages.success.deleted', array('entity' => 'Truck')),
+            'data' => $truck
         );
         
         return $response;
@@ -95,14 +138,15 @@ class TruckRepository implements TruckRepositoryInterface {
     public function validate($data, $id = null)
     {
         $rules = Truck::$rules;
+        $messages = array(
+            'fee.max' => 'The fee may not be greater than 1,000.00 .'
+        );
         
         if ($id) {
-            $rules['account_id'] = 'required';
             $rules['trucknumber'] = 'required|unique:truck,trucknumber,'.$id;
-            $rules['fee'] = 'required';
         }
         
-        $validator = Validator::make($data, $rules);
+        $validator = Validator::make($data, $rules, $messages);
         
         if ($validator->fails()) {
             throw new ValidationException($validator);
@@ -114,6 +158,11 @@ class TruckRepository implements TruckRepositoryInterface {
     public function instance($data = array())
     {
         return new Truck($data);
+    }
+
+    public function getTruckerListByAccount($accountId){
+        $trucks =  Truck::where('account_id', '=', $accountId)->get(array('id', 'trucknumber', 'fee'));
+        return $trucks->toArray();
     }
     
 }

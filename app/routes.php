@@ -66,6 +66,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('account/contact', 'APIv1\AccountController@getAllContactOnAccount');
 	Route::resource('account', 'APIv1\AccountController');
 
+    Route::get('contact/hasRate/{id}', 'APIv1\ContactController@hasRate');
 	Route::get('contact/search', 'APIv1\ContactController@search');
 	Route::resource('contact', 'APIv1\ContactController');
 
@@ -144,6 +145,8 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('trailer', 'APIv1\TrailerController');
     
     // Truck
+    Route::get('truck/listByAccount', 'APIv1\TruckController@getTruckerListByAccount');
+    Route::get('truck/search', 'APIv1\TruckController@search');
     Route::resource('truck', 'APIv1\TruckController');
     
     // Fee
@@ -173,6 +176,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 
     // Storage location
     Route::get('storagelocation/locationlist', 'APIv1\StorageLocationController@locationList');
+    Route::get('storagelocation/search', 'APIv1\StorageLocationController@search');
     Route::resource('storagelocation', 'APIv1\StorageLocationController');
 
     // Inventory

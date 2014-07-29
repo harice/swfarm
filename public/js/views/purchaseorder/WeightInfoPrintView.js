@@ -9,7 +9,7 @@ define([
 	'models/purchaseorder/POWeightInfoModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
-	'text!templates/weightinfo/weightInfoPrintTemplate.html',
+	'text!templates/purchaseorder/weightInfoPrintTemplate.html',
 	'text!templates/purchaseorder/weightInfoViewProductItemTemplate.html',
 	'global',
 	'constant',
@@ -92,22 +92,14 @@ define([
         
                 weightticket : this.model,
                 so : this.purchaseOrderModel,
-                schedule : this.poScheduleModel,
-                
-                pickup_products : this.model.get("weightticketscale_pickup").weightticketproducts,
-                dropoff_products : this.model.get("weightticketscale_pickup").weightticketproducts
+                schedule : this.poScheduleModel
 			};
             
             _.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
 			
 			if((!this.model.get('status') || (this.model.get('status') && this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)) && 
 				this.purchaseOrderModel.get('status').name.toLowerCase() == Const.STATUS.OPEN)
-				innerTemplateVariables['editable'] = true;
-			
-			if(this.model.get('weightticketscale_pickup') != null)
-				innerTemplateVariables['has_pickup_info'] = true;
-			if(this.model.get('weightticketscale_dropoff') != null)
-				innerTemplateVariables['has_dropoff_info'] = true;
+                innerTemplateVariables['editable'] = true;
 			
 			var innerTemplate = _.template(weightInfoViewTemplate, innerTemplateVariables);
 			

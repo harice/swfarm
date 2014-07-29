@@ -1,7 +1,7 @@
 <% if (!_.isEmpty(trailers)) { %>
 	<% _.each(trailers, function(trailer){ %>
 	<tr>
-		<td><%= trailer.get("account").name %></td>
+        <td><a href="<%= trailer_url %>/<%= trailer.get('id') %>"><%= trailer.get("name") %></a></td>
 		<td><%= trailer.get("number") %></td>
 		<td>
 			<a href="<%= trailer_edit_url %>/<%= trailer.get("id") %>" class="text-primary" title="edit">

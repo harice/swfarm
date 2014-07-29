@@ -9,18 +9,17 @@
 		<td><%= contract.get("account").name %></td>
 		<td><%= contract.get("contract_date_start") %></td>
 		<td><%= contract.get("contract_date_end") %></td>
-        <% var total_tons = 0.0 %>
-        <% _.each(contract.get("products"), function(product) { %>
-            <% total_tons = total_tons + parseFloat(product.pivot.tons) %>
-        <% }); %>
-        <td><%= numberFormatTons(total_tons) %></td>
-        <td>
-            <%= numberFormatTons(contract.get("total_delivered")) %>
-        </td>
+        <td><%= numberFormatTons(contract.get("total_expected")) %></td>
+        <td><%= numberFormatTons(contract.get("total_delivered")) %></td>
         <td><label class="label label-<%= contract.get("status").class %>"><%= contract.get("status").name %></label></td>
+        <td>
+            <div class="progress">
+				<div style="width: <%= contract.get("total_delivered_percentage") %>%" class="progress-bar progress-bar-<%= contract.get("status").class %>"><%= contract.get("total_delivered_percentage") %>%</div>
+			</div>
+        </td>
 	</tr>
 	<tr>
-		<td colspan="7" style="padding:0;">
+		<td colspan="8" style="padding:0;">
 			<div class="contract-collapsible-item list-view-collapse collapse" id="<%= collapsible_id %><%= contract.get("id") %>">
 				<div style="width:100%; padding:8px;">
 					<div style="width:100%; padding:8px; background-color:#fff;">

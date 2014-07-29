@@ -30,6 +30,17 @@ class TruckController extends BaseController {
         $result = $this->repo->findAll( Input::all() );
         return Response::json($result);
 	}
+    
+    /**
+	 * Search for a specfic record.
+	 *
+	 * @return Response
+	 */
+	public function search()
+	{
+        $result = $this->repo->search( Input::all() );
+        return Response::json($result);
+	}
 
 	/**
 	 * Store a newly created resource in storage.
@@ -76,6 +87,11 @@ class TruckController extends BaseController {
 	{
 		$response = $this->repo->destroy($id);
         return Response::json($response);
+	}
+
+	public function getTruckerListByAccount(){
+		$response = $this->repo->getTruckerListByAccount(Input::get('accountId'));
+		return Response::json($response);
 	}
 
 }

@@ -1,6 +1,7 @@
 <% if (!_.isEmpty(sls)) { %>
 	<% _.each(sls, function(sl){ %>
 	<tr class="collapse-trigger cursor-pointer" data-id="<%= sl.get("id") %>">
+        <td><%= sl.get("account_name") %></td>
 		<td><%= sl.get("name") %></td>
 		<td><%= sl.get("description") %></td>
 	</tr>

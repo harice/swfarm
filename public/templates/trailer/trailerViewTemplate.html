@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="block-flat">
+            <dl id="view-trailer" class="dl-horizontal">
+                <dt>Trailer Number</dt>
+                <dd><%= trailer.get("number") %></dd>
+                <dt>Trailer Account</dt>
+                <dd><%= trailer.get("account").name %></dd>
+                <dd>
+                    <div class="clearfix"></div>
+                    <a href="<%= trailer_edit_url %>/<%= trailer.get('id') %>" class="btn btn-primary">Edit</a>
+                    <button id="delete-trailer" type="button" class="btn btn-danger">Delete</button>
+                    <a id="go-to-previous-page" href="#" class="btn btn-default">Cancel</a>
+                </dd>
+            </dl>
+        </div>
+    </div>
+</div>

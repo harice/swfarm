@@ -3,8 +3,9 @@ define([
 	'views/trucker/TruckerListView',
 	'views/trucker/TruckerAddView',
 	'views/trucker/TruckerEditView',
+    'views/trucker/TruckerView',
 	'constant',
-], function(Backbone, TruckerListView, TruckerAddView, TruckerEditView, Const){
+], function(Backbone, TruckerListView, TruckerAddView, TruckerEditView, TruckerView, Const){
 	
 	function TruckerController () {	
 		
@@ -21,8 +22,10 @@ define([
 					break;
 				
 				default:
-					return this.listView();
-					break;
+					if(action != null && this.IsInt(action))
+						return this.view(action);
+					else
+						return this.listView();
 			}
 		};
 		
@@ -36,6 +39,10 @@ define([
 		
 		this.listView = function () {
 			return new TruckerListView();
+		};
+        
+        this.view = function (id) {
+			return new TruckerView({'id':id});
 		};
 		
 		this.IsInt = function (i) {

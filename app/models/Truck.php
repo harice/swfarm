@@ -31,7 +31,7 @@ class Truck extends BaseModel {
 	public static $rules = array(
         'account_id' => 'required',
         'trucknumber' => 'required|unique:truck,trucknumber',
-        'fee' => 'required'
+        'fee' => 'required|numeric|min:0|max:100000'
     );
 
     public function account(){

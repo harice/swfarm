@@ -18,6 +18,7 @@ class OrderRepository implements OrderRepositoryInterface {
         $order = Order::with('productorder')
                         ->with('productorder.product')
                         ->with('account')
+                        ->with('contact')
                         ->with('orderaddress', 'orderaddress.addressStates')
                         ->with('location')
                         ->with('status')
@@ -194,6 +195,7 @@ class OrderRepository implements OrderRepositoryInterface {
         $order = Order::with('productorder')
                 ->with('productorder.product')
                 ->with('account')
+                ->with('contact')
                 ->with('orderaddress', 'orderaddress.addressStates')
                 ->with('location')
                 ->with('status')
@@ -244,13 +246,21 @@ class OrderRepository implements OrderRepositoryInterface {
             $data['status_id'] = 4; //Pending status
         else
             $data['status_id'] = 1; //Open status
+        
+        if (isset($data['natureofsale_id'])) {
+            if ($data['natureofsale_id'] != Config::get('constants.NOS_RESERVED')) {
+                unset($data['contract_id']);
+            }
+        }
+
+        $this->validate($data, 'Order', $data['ordertype']);
 
         $data['businessaddress'] = $this->getBusinessAddress($data['account_id']);
         
         if(!isset($data['contract_id']) || $data['contract_id'] == '')
             $data['contract_id'] = null;
          
-        $this->validate($data, 'Order', $data['ordertype']);
+        
        
         $result = DB::transaction(function() use ($data)
         {
@@ -294,14 +304,20 @@ class OrderRepository implements OrderRepositoryInterface {
         $data['createPO'] = isset($data['createPO']) ? $data['createPO'] : 0;
         if($data['createPO']) //update PO status when true
             $data['status_id'] = 1; //Open status
+        
+        if (isset($data['natureofsale_id'])) {
+            if ($data['natureofsale_id'] != Config::get('constants.NOS_RESERVED')) {
+                unset($data['contract_id']);
+            }
+        }
+
+        $this->validate($data, 'Order', $data['ordertype']);
 
         $data['businessaddress'] = $this->getBusinessAddress($data['account_id']);
         
         if(!isset($data['contract_id']) || $data['contract_id'] == '')
             $data['contract_id'] = null;
         
-        $this->validate($data, 'Order', $data['ordertype']);
-       
         $result = DB::transaction(function() use ($id, $data)
         {   
             $productResult = null;
@@ -402,7 +418,7 @@ class OrderRepository implements OrderRepositoryInterface {
     }
     
     public function validate($data, $entity, $orderType = null)
-    {   
+    {
         $messages = array(
             'rfv.required_if' => 'The RFV field is required when product is on hold.',
         );
@@ -413,6 +429,10 @@ class OrderRepository implements OrderRepositoryInterface {
                 $validator = Validator::make($data, $entity::$po_rules, $messages);
             } else { //SO rules need to used
                 $validator = Validator::make($data, $entity::$so_rules, $messages);
+                $validator->sometimes('contract_id', 'required', function($data)
+                {
+                    return $data->natureofsale_id == Config::get('constants.NOS_RESERVED');
+                });
             }
         }
         
