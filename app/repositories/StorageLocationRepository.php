@@ -117,11 +117,15 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         foreach ($sections as $section) {
             $section['storagelocation_id'] = $storagelocation_id;
             
-            $this->validate($section, 'Section', $storagelocation_id);
-            if(isset($section['id']))
+            
+            if(isset($section['id'])) {
+                $this->validate($section, 'Section', $section['id']);
                 $sectionLocation = Section::find($section['id']);
-            else
+            }
+            else {
+                $this->validate($section, 'Section');
                 $sectionLocation = new Section();
+            }
 
             $sectionLocation->fill($section);
             $sectionLocation->save();
@@ -253,11 +257,11 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         
         if ($entity == 'Section') {
             $messages['name.unique'] = 'Section name should be unique.';
-            $entity::$rules['name'] = 'required|unique:section,name,NULL,id,storagelocation_id,' .$data['storagelocation_id'];
+            $entity::$rules['name'] = 'required|unique:section,name';
             
             if ($id) {
                 // To Do: Modify this rule to enforce unique Section name in each Storage Location.
-                $entity::$rules['name'] = 'required';
+                $entity::$rules['name'] = 'required|unique:section,name,' .$id;
             }
         }
         
