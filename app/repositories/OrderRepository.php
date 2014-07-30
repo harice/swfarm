@@ -384,6 +384,14 @@ class OrderRepository implements OrderRepositoryInterface {
                 }
                 $order->save();
             }
+            //update verified column
+            if(isset($data['verified'])){
+               if($data['verified'] == 1) {
+                    $order->verified = 1;
+                    $order->save();
+                } 
+            }
+            
 
             return $order;
         });
@@ -635,6 +643,10 @@ class OrderRepository implements OrderRepositoryInterface {
                 // var_dump($productorder);
             } else {
                 $productorder = new ProductOrder;
+            }
+
+            if($product['section_id'] == ''){
+                $product['section_id'] = null;
             }
 
 
