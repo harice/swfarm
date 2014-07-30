@@ -92,7 +92,7 @@ define([
 				dropoff_weight_info_add_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD+'/'+Const.WEIGHTINFO.DROPOFF,
 				previous_so_sched_url: '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId,
                 weightticket : this.model,
-                so : this.salesOrderModel,
+                order : this.salesOrderModel,
                 schedule : this.soScheduleModel,
 			};
             

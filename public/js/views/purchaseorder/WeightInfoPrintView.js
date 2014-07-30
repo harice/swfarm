@@ -91,7 +91,7 @@ define([
 				previous_so_sched_url: '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.poId,
         
                 weightticket : this.model,
-                so : this.purchaseOrderModel,
+                order : this.purchaseOrderModel,
                 schedule : this.poScheduleModel
 			};
             
