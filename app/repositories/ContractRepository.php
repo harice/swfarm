@@ -16,6 +16,7 @@ class ContractRepository implements ContractRepositoryInterface {
             $sortby   = isset($params['sortby']) ? $params['sortby'] : 'contract_number';
             $orderby  = isset($params['orderby']) ? $params['orderby'] :'DSC';
             $offset   = $page * $perPage - $perPage;
+            
             $account_id = isset($params['account']) ? $params['account'] : null;
             
             $contracts = Contract::join('account', 'contract.account_id', '=', 'account.id')
@@ -25,12 +26,20 @@ class ContractRepository implements ContractRepositoryInterface {
                     'contract.contract_date_start',
                     'contract.contract_date_end',
                     'contract.status_id',
+                    'contract.created_at',
                     'account.name as account_name'
                 )
                 ->with('salesorders', 'schedules', 'products', 'productorders', 'account', 'account.address', 'status');
             
+            // Filter by Account
             if ($account_id) {
                 $contracts = $contracts->where('account_id', '=', $account_id);
+            }
+            
+            // Filter by Date
+            if (isset($params['contract_date_start']) && isset($params['contract_date_end']))
+            {
+                $contracts = $contracts->whereBetween('contract_date_start', array($params['contract_date_start'], $params['contract_date_end']));
             }
             
             $_contracts = $contracts->orderBy($sortby, $orderby)->get();
@@ -68,12 +77,6 @@ class ContractRepository implements ContractRepositoryInterface {
             $orderby  = isset($params['orderby']) ? $params['orderby'] :'DSC';
             $offset   = $page * $perPage - $perPage;
             $searchWord = $params['search'];
-            
-            // Set date filters
-            $filter = FALSE;
-            if (isset($params['contract_date_start']) && isset($params['contract_date_end'])) {
-                $filter = TRUE;
-            }
                 
             $contracts = Contract::join('account', 'contract.account_id', '=', 'account.id')
                 ->select(
@@ -82,6 +85,7 @@ class ContractRepository implements ContractRepositoryInterface {
                     'contract.contract_date_start',
                     'contract.contract_date_end',
                     'contract.status_id',
+                    'contract.created_at',
                     'account.name as account_name'
                 )
                 ->with('salesorders', 'schedules', 'products', 'productorders', 'account', 'account.address', 'status')
@@ -90,9 +94,10 @@ class ContractRepository implements ContractRepositoryInterface {
                           ->orWhere('account.name','like','%'.$searchWord.'%');
                 });
                 
-            // Filter by date
-            if ($filter) {
-                $result = $result->whereBetween('contract_date_start', array($params['date_start'], $params['date_end']));
+            // Filter by Date
+            if (isset($params['contract_date_start']) && isset($params['contract_date_end']))
+            {
+                $contracts = $contracts->whereBetween('contract_date_start', array($params['contract_date_start'], $params['contract_date_end']));
             }
             
             $_contracts = $contracts->orderBy($sortby, $orderby)->get();
