@@ -24,7 +24,8 @@ class ProductOrder extends Eloquent {
         'unitprice',
         'ishold',
         'rfv',
-        'productordersummary_id'
+        'productordersummary_id',
+        'section_id'
     );
     
     public static $rules = array(
