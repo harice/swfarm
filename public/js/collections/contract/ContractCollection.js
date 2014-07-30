@@ -15,7 +15,10 @@ define([
 			sort: {
 				contract_number: false
 			},
-			filters: {},
+			filters: {
+                contract_date_start: '',
+                contract_date_end: ''
+            },
 			filter: '',
 			date: '',
 			lookUpIds: {},

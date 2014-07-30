@@ -69,6 +69,7 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
 			
+            this.initCalendars();
 			this.setListOptions();
 		},
 		
@@ -96,6 +97,50 @@ define([
 			
 			if(options.search != '')
 				this.$el.find('#search-keyword').val(options.search);
+            
+            if(options.filters.contract_date_start != '')
+				this.$el.find('#filter-contract-date-start .input-group.date').datepicker('update', this.convertDateFormat(options.filters.contract_date_start, 'yyyy-mm-dd', this.dateFormat, '-'));
+				
+			if(options.filters.contract_date_end != '')
+				this.$el.find('#filter-contract-date-end .input-group.date').datepicker('update', this.convertDateFormat(options.filters.contract_date_end, 'yyyy-mm-dd', this.dateFormat, '-'));
+		},
+                
+        initCalendars: function () {
+			var thisObj = this;
+			
+			this.$el.find('#filter-contract-date-start .input-group.date').datepicker({
+				orientation: "top left",
+				autoclose: true,
+				clearBtn: true,
+				todayHighlight: true,
+				format: this.dateFormat,
+			}).on('changeDate', function (ev) {
+				var selectedDate = $('#filter-contract-date-start .input-group.date input').val();
+				thisObj.$el.find('#filter-contract-date-end .input-group.date').datepicker('setStartDate', selectedDate);
+				var date = '';
+				if(selectedDate != '' && typeof selectedDate != 'undefined')
+					date = thisObj.convertDateFormat(selectedDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
+				
+				thisObj.collection.setFilter('contract_date_start', date);
+				thisObj.renderList(1);
+			});
+			
+			this.$el.find('#filter-contract-date-end .input-group.date').datepicker({
+				orientation: "top left",
+				autoclose: true,
+				clearBtn: true,
+				todayHighlight: true,
+				format: this.dateFormat,
+			}).on('changeDate', function (ev) {
+				var selectedDate = $('#filter-contract-date-end .input-group.date input').val();
+				thisObj.$el.find('#filter-contract-date-start .input-group.date').datepicker('setEndDate', selectedDate);
+				var date = '';
+				if(selectedDate != '' && typeof selectedDate != 'undefined')
+					date = thisObj.convertDateFormat(selectedDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
+				
+				thisObj.collection.setFilter('contract_date_end', date);
+				thisObj.renderList(1);
+			});
 		},
 		
 		events: {
