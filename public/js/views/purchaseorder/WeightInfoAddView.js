@@ -11,6 +11,7 @@ define([
 	'collections/account/AccountCollection',
 	'collections/scale/ScaleCollection',
 	'text!templates/layout/contentTemplate.html',
+	'text!templates/layout/tabsContentTemplate.html',
 	'text!templates/purchaseorder/weightInfoAddTemplate.html',
 	'text!templates/purchaseorder/weightInfoProductItemTemplate.html',
 	'global',
@@ -27,6 +28,7 @@ define([
 			AccountCollection,
 			ScaleCollection,
 			contentTemplate,
+			tabsContentTemplate,
 			weightInfoAddTemplate,
 			weightInfoProductItemTemplate,
 			Global,
@@ -50,6 +52,8 @@ define([
 		
 		inits: function () {
 			var thisObj = this;
+
+			this.subContainer.html(_.template(tabsContentTemplate, {'tabs':this.generatePOTabs(this.poId, 3)}));
 			
 			this.options = {
 				routeType: ['pickup', 'dropoff'],
@@ -103,7 +107,7 @@ define([
 		
 		render: function(){
 			this.purchaseOrderModel.runFetch();
-			Backbone.View.prototype.refreshTitle('Weight Info','add');
+			Backbone.View.prototype.refreshTitle('Weight Ticket','add');
 		},
 		
 		displayForm: function () {
@@ -112,14 +116,18 @@ define([
 			var innerTemplateVariables = {
 				scaler_account_list: this.getScalerDropDown(),
 				cancel_url: (this.wiId == null && this.type != Const.WEIGHTINFO.PICKUP && this.type != Const.WEIGHTINFO.DROPOFF)? '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId : '#/'+Const.URL.POWEIGHTINFO+'/'+this.poId+'/'+this.schedId,
+				po: this.purchaseOrderModel,
+				schedule: this.poScheduleModel,
 			};
 			
 			if(this.wiId != null)
 				innerTemplateVariables['wiId'] = this.wiId;
 			
 			if(this.type == Const.WEIGHTINFO.PICKUP || this.type == Const.WEIGHTINFO.DROPOFF)
-				innerTemplateVariables['wiType'] = this.type.charAt(0).toUpperCase() + this.type.slice(1);
+				innerTemplateVariables['wiType'] = this.type;
 			
+			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
+
 			var innerTemplate = _.template(weightInfoAddTemplate, innerTemplateVariables);
 			
 			var variables = {
@@ -128,7 +136,8 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.subContainer.html(compiledTemplate);
+			this.subContainer.find('#with-tab-content').html(compiledTemplate);
+			// this.subContainer.html(compiledTemplate);
 			
 			this.initValidateForm();
 			this.supplyPOInfo();
@@ -140,14 +149,8 @@ define([
 		},
 		
 		supplyPOInfo: function () {
-			var dateAndTime = this.convertDateFormat(this.poScheduleModel.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-')
-								+' '+this.poScheduleModel.get('scheduletimeHour')
-								+':'+this.poScheduleModel.get('scheduletimeMin')
-								+' '+this.poScheduleModel.get('scheduletimeAmPm');
-			
 			this.$el.find('#po-number').val(this.purchaseOrderModel.get('order_number'));
 			this.$el.find('#producer').val(this.purchaseOrderModel.get('account').name);
-			this.$el.find('#date-and-time').val(dateAndTime);
 			
 			if(this.wiId != null) {
 				this.$el.find('#weight-ticket-no').val(this.model.get('weightTicketNumber'));
@@ -160,9 +163,9 @@ define([
 			
 			var validate = $('#poWeightInfoFrom').validate({
 				submitHandler: function(form) {
-					//console.log($(form).serializeObject());
+					// console.log($(form).serializeObject());
 					var dataTemp = thisObj.formatFormField($(form).serializeObject());
-					//console.log(dataTemp);
+					// console.log(dataTemp);
 					var type = dataTemp.weightinfo_type;
 					delete dataTemp.weightinfo_type;
 					
@@ -173,7 +176,7 @@ define([
 					if(thisObj.wiId != null)
 						data['id'] = thisObj.schedId;
 					
-					//console.log(data);
+					// console.log(data); return;
 					
 					var poWeightInfoModel = new POWeightInfoModel(data);
 					
@@ -182,7 +185,6 @@ define([
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
-								//Global.getGlobalVars().app_router.navigate(Const.URL.SO, {trigger: true});
 								Backbone.history.history.back();
 							},
 							error: function (model, response, options) {
@@ -327,7 +329,7 @@ define([
 			var scaleId = $(ev.currentTarget).val();
 			if(scaleId != '') {
 				var scaleModel = this.scaleCollection.get(scaleId);
-				$(ev.currentTarget).closest('tr').find('.fee').val(this.addCommaToNumber(scaleModel.get('rate')));
+				this.$el.find('.fee').val(this.addCommaToNumber(scaleModel.get('rate')));
 			}
 		},
 		
@@ -336,11 +338,11 @@ define([
 			
 			var gross = this.removeCommaFromNumber($(ev.target).val());
 			gross = (isNaN(gross))? 0 : gross;
-			var tare = this.removeCommaFromNumber($(ev.target).closest('tr').find('.tare').val());
+			var tare = this.removeCommaFromNumber(this.$el.find('.tare').val());
 			tare = (isNaN(tare))? 0 : tare;
 			var net = gross - tare;
 			
-			$(ev.target).closest('tr').find('.net').text(this.addCommaToNumber(net.toFixed(4), 4));
+			this.$el.find('.net').text(this.addCommaToNumber(net.toFixed(4), 4));
 		},
 		
 		onKeyUpTare: function (ev) {
@@ -348,11 +350,11 @@ define([
 			
 			var tare = this.removeCommaFromNumber($(ev.target).val());
 			tare = (isNaN(tare))? 0 : tare;
-			var gross = this.removeCommaFromNumber($(ev.target).closest('tr').find('.gross').val());
+			var gross = this.removeCommaFromNumber(this.$el.find('.gross').val());
 			gross = (isNaN(gross))? 0 : gross;
 			var net = gross - tare;
 			
-			$(ev.target).closest('tr').find('.net').text(this.addCommaToNumber(net.toFixed(4), 4));
+			this.$el.find('.net').text(this.addCommaToNumber(net.toFixed(4), 4));
 		},
 		
 		onKeyUpProductBales: function (ev) {

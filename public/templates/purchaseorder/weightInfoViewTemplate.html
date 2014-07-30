@@ -1,197 +1,342 @@
 <div class="content padding-top-0">
 	<% if(!wi.get("weightTicketNumber")) { %>
-		<h2 class="ponumber margin-bottom-0"><%= po.get("order_number") %></h2>
-		Scheduled Date: <span class="text-danger"><%= formatDateAMPM(schedule.get("date")) %></span><br>
-		Status: <label class="label label-<%= schedule.get("status").class %>"><%= schedule.get("status").name %></label><br>
-	<% } else { %>
-		<h2 class="ponumber margin-bottom-0"><%= wi.get("weightTicketNumber") %></h2>
-		Loading Ticket No.: <span class="text-danger"><%= wi.get("loadingTicketNumber") %></span><br>
-		Status: <label class="label label-<%= wi.get("status").class %>"><%= wi.get("status").name %></label><br>
-		PO No.: <span class="text-danger"><%= po.get("order_number") %></span><br>
-		Scheduled Date: <span class="text-danger"><%= formatDateAMPM(schedule.get("date")) %></span><br>
-		Created: <span class="text-danger"><%= formatDateAMPM(wi.get("created_at")) %></span>
-	<% } %>
-	<!-- <div class="row">
-		<div class="col-md-12">
-			<div class="tab-container">
-				<ul class="nav nav-tabs flat-tabs">
-				  <li class="active"><a data-toggle="tab" href="#pt">Pickup</a></li>
-				  <li class=""><a data-toggle="tab" href="#dt">Dropoff</a></li>
-				</ul>
-				<div class="tab-content">
-					<div id="pt" class="tab-pane cont active">
-						<% if (typeof editable !== "undefined") { if (typeof has_pickup_info !== "undefined") { %>
-							<a class="btn btn-primary btn-sm btn-trans btn-rad margin-left-0 editable-button" href="<%= pickup_weight_info_edit_url %>">
-								<i class="fa fa-pencil width-10"></i> Edit Ticket
-							</a>
-						<% } else { %>
-							<a class="btn btn-primary btn-sm btn-trans btn-rad editable-button margin-left-0" href="<%= pickup_weight_info_add_url %>">
-								+ Add Ticket
-							</a>
-						<% } } %>
+	<h2 class="ponumber margin-bottom-0"><%= formatDateAMPM(schedule.get("date")) %></h2>
+	Status: <label class="label label-<%= schedule.get("status").class %>"><%= schedule.get("status").name %></label><br>
+	PO No.: <span class="text-danger"><%= po.get("order_number") %></span><br>
+
+	<div class="row">
+	<div class="col-md-12">
+		<div class="tab-container">
+			<ul class="nav nav-tabs inner-tabs-menu flat-tabs">
+				<li class="active margin-bottom-n2">
+					<a data-toggle="tab" href="#pt"><i class="fa fa-ticket width-10"></i> Pickup Ticket</a>
+				</li>
+				<li class="margin-bottom-n2">
+					<a data-toggle="tab" href="#dt"><i class="fa fa-ticket width-10"></i> Dropoff Ticket</a>
+				</li>
+			</ul>
+			<div class="tab-content inner-tab-content margin-bottom-0">
+				<div id="pt" class="tab-pane cont active">
+					<a class="btn btn-primary btn-sm btn-trans btn-rad editable-button margin-left-0" href="<%= pickup_weight_info_add_url %>">
+						+ Add Ticket
+					</a>
+					<div class="alert alert-info alert-white rounded margin-top-10 margin-bottom-0">
+						<div class="icon"><i class="fa fa-info-circle"></i></div>
+						<strong>Info!</strong> No pickup ticket found.
 					</div>
-					<div id="dt" class="tab-pane cont">
-						<% if (typeof editable !== "undefined") { if (typeof has_dropoff_info !== "undefined") { %>
-							<a class="btn btn-success btn-sm btn-trans btn-rad editable-button margin-left-0" href="<%= dropoff_weight_info_edit_url %>">
-								<i class="fa fa-pencil width-10"></i> Edit Ticket
-							</a>
-						<% } else { %>
-							<a class="btn btn-success btn-sm btn-trans btn-rad editable-button margin-left-0" href="<%= dropoff_weight_info_add_url %>">
-								+ Add Ticket
-							</a>
-						<% } } %>
+				</div>
+				<div id="dt" class="tab-pane cont">
+					<a class="btn btn-primary btn-sm btn-trans btn-rad editable-button margin-left-0" href="<%= dropoff_weight_info_add_url %>">
+						+ Add Ticket
+					</a>
+					<div class="alert alert-info alert-white rounded margin-top-10 margin-bottom-0">
+						<div class="icon"><i class="fa fa-info-circle"></i></div>
+						<strong>Info!</strong> No dropoff ticket found.
 					</div>
 				</div>
 			</div>
 		</div>
-	</div> -->
-  <form id="poWeightInfoFrom" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-    <fieldset>
-      <legend>Pickup</legend>
-      <div id="pickup-fields" style="display:none;">
-		  <div class="table-responsive">
-			<table id="pickup-info" class="table table-bordered">
-			  <thead>
-				<tr>
-				  <th style="width:15%;">Scale</th>
-				  <th style="width:15%;">Scale Name</th>
-				  <th style="width:15%;">Scale Fee</th>
-				  <th style="width:15%;">Bales</th>
-				  <th style="width:15%;">Gross</th>
-				  <th style="width:15%;">Tare</th>
-				  <th style="width:10%;">Net</th>
-				</tr>
-			  </thead>
-			  <tbody>
-				<tr>
-				  <td><input class="form-control scale-account" placeholder="" readonly></td>
-				  <td><input class="form-control scale-name" placeholder="" readonly></td>
-				  <td><input class="form-control fee" placeholder="0.00" readonly></td>
-				  <td><input class="form-control bales" placeholder="0" readonly></td>
-				  <td><input class="form-control gross" placeholder="0.0000" readonly></td>
-				  <td><input class="form-control tare" placeholder="0.0000" readonly></td>
-				  <td><span class="net">0.0000</span></td>
-				</tr>
-			  </tbody>
-			</table>
-		  </div>
-		  <div class="table-responsive">
-			<table id="pickup-product-list" class="table table-bordered">
-			  <thead>
-				<tr>
-				  <th style="width:20%;">Stack No.</th>
-				  <th style="width:20%;">Product</th>
-				  <th style="width:20%;">Bales</th>
-				  <th style="width:20%;">Lbs.</th>
-				  <th style="width:20%;">Net Tons</th>
-				</tr>
-			  </thead>
-			  <tfoot>
-				<tr>
-				  <td colspan="2">Total</td>
-				  <td><span class="total-bales">0</span></td>
-				  <td><span class="total-pounds">0.00</span></td>
-				  <td><span class="total-net-tons">0.0000</span></td>
-				</tr>
-			  </tfoot>
-			  <tbody></tbody>
-			</table>
-		  </div>
-	  </div>
-    </fieldset>
-	<div class="form-group form-button-container">
+	</div>
+	</div>
+
+	<% } else { %>
+		<h2 class="ponumber margin-bottom-0"><%= wi.get("weightTicketNumber") %></h2>
+		Created: <span class="text-danger"><%= formatDateAMPM(wi.get("created_at")) %></span><br>
+		Status: <label class="label label-<%= wi.get("status").class %>" id="weight-status"><%= wi.get("status").name %></label><br>
+		PO No.: <span class="text-danger"><%= po.get("order_number") %></span><br>
+		Scheduled Date: <span class="text-danger"><%= formatDateAMPM(schedule.get("date")) %></span>
+
+		<% 
+			if (typeof has_pickup_info !== "undefined" || typeof has_dropoff_info !== "undefined") { 
+			var cl='';var cl1='';
+			if(!wi.get("weightTicketNumber")){cl='active';}else{
+				if(typeof has_pickup_info!=="undefined"){cl='active';}
+			}
+
+  			if(typeof has_pickup_info!=="undefined"){cl1 = '';}else{
+  				if(typeof has_dropoff_info!== "undefined"){cl1='active';}
+  			}
+		%>
+
+		<div class="row">
+		<div class="col-md-12">
+			<div class="tab-container">
+				<ul class="nav nav-tabs inner-tabs-menu flat-tabs">
+					<li class="<%= cl %> margin-bottom-n2">
+						<a data-toggle="tab" href="#pt"><i class="fa fa-ticket width-10"></i> Pickup Ticket</a>
+					</li>
+				
+					<li class="<%= cl1 %> margin-bottom-n2">
+						<a data-toggle="tab" href="#dt"><i class="fa fa-ticket width-10"></i> Dropoff Ticket</a>
+					</li>
+				</ul>
+				<div class="tab-content inner-tab-content margin-bottom-0">
+					
+					<div id="pt" class="tab-pane cont <%= cl %>">
+						<% if (typeof editable !== "undefined") { if (typeof has_pickup_info !== "undefined") { %>
+						<h2 class='margin-bottom-0'>
+							<%= wi.get("loadingTicketNumber") %>
+							<a class="btn btn-primary btn-sm btn-trans btn-rad margin-left-0 margin-bottom-0 pull-right editable-button" href="<%= pickup_weight_info_edit_url %>">
+								<i class="fa fa-pencil width-10"></i> Edit Ticket
+							</a>
+						</h2>
+						<% } else { %>
+						<a class="btn btn-primary btn-sm btn-trans btn-rad editable-button margin-left-0" href="<%= pickup_weight_info_add_url %>">
+							+ Add Ticket
+						</a>
+						<% } } else { if (typeof has_pickup_info !== "undefined") { %>
+							<h2 class='margin-bottom-0'><%= wi.get("loadingTicketNumber") %></h2>
+						<% } } %>
+
+						<% if (typeof has_pickup_info !== "undefined") { %>
+
+						<div class='row margin-top-10'>
+							<div class='col-md-3'>
+								<div class="table-responsive">
+									<table class="table-condensed no-border">
+									<tbody class="no-border-x no-border-y">
+									<tr>
+										<td class="width-100">Scale :</td>
+										<td class="width-150">
+											<% 
+												if(!_.isNull(wi.get("weightticketscale_pickup").scaler_account)) { 
+													print(wi.get("weightticketscale_pickup").scaler_account.name); 
+												} 
+											%>
+										</td>
+									</tr>
+									<tr>
+										<td>Scale Name :</td>
+										<td>
+											<% 
+												if(!_.isNull(wi.get("weightticketscale_pickup").scale)){
+													print(wi.get("weightticketscale_pickup").scale.name);
+												} 
+											%>
+										</td>
+									</tr>
+									<tr>
+										<td>Scale Fee :</td>
+										<td>$ <%= numberFormat(wi.get("weightticketscale_pickup").fee) %></td>
+									</tr>
+									<tr>
+										<td>Bales :</td>
+										<td><%= numberFormatBales(wi.get("weightticketscale_pickup").bales) %></td>
+									</tr>
+									<tr>
+										<td>Gross :</td>
+										<td><%= numberFormatTons(wi.get("weightticketscale_pickup").gross) %></td>
+									</tr>
+									<tr>
+										<td>Tare :</td>
+										<td><%= numberFormatTons(wi.get("weightticketscale_pickup").tare) %></td>
+									</tr>
+									<tr>
+										<td>Net :</td>
+										<td><%= numberFormatTons(wi.get("weightticketscale_pickup").gross - wi.get("weightticketscale_pickup").tare)%></td>
+									</tr>
+									</tbody>
+									</table>
+								</div>
+							</div>
+							<div class='col-md-9'>
+								<div class='table-responsive'>
+									<table class="table-condensed table-bordered table-hover">
+									<thead>
+										<tr>
+											<th class="width-150">Product</th>
+											<th class="width-150">Stack No.</th>
+											<th class="width-110">Bales</th>
+											<th class="width-110">Pounds (lbs)</th>
+											<th class="width-110">Net</th>
+										</tr>
+									</thead>
+									<tbody>
+										<% 
+										var tbales=0;var tpounds=0;var tnet=0;
+										_.each(wi.get("weightticketscale_pickup").weightticketproducts, function (product) {
+											
+											var net = (typeof product.pounds!='undefined' && product.pounds!=null) ? convertLbsToTons(product.pounds) : 0;
+											tnet += parseFloat(net);
+											var bales = (typeof product.bales!='undefined' && product.bales!=null) ? product.bales : 0;
+											tbales += parseFloat(bales);
+											var pounds = (typeof product.pounds!='undefined' && product.pounds!=null) ? product.pounds : 0;
+											tpounds += parseFloat(pounds);
+										%>
+											<tr>
+												<td><%= product.transportscheduleproduct.productorder.product.name %></td>
+												<td><%= product.transportscheduleproduct.productorder.stacknumber %></td>
+												<td class="text-right"><%= numberFormatBales(bales) %></td>
+												<td class="text-right"><%= numberFormatLbs(pounds) %></td>
+												<td class="text-right"><%= numberFormatTons(net) %></td>
+											</tr>
+										<% }); %>
+									</tbody>
+									<tfoot>
+										<tr>
+											<td class="text-right" colspan="2">Total</td>
+											<td class="text-right"><%= numberFormatBales(tbales) %></td>
+											<td class="text-right"><%= numberFormatLbs(tpounds) %></td>
+											<td class="text-right"><%= numberFormatTons(tnet) %></td>
+										</tr>
+									</tfoot>
+									</table>
+								</div>
+							</div>
+						</div>
+
+						<% } else { %>
+						<div class="alert alert-info alert-white rounded margin-top-10 margin-bottom-0">
+							<div class="icon"><i class="fa fa-info-circle"></i></div>
+							<strong>Info!</strong> No pickup ticket found.
+						</div>
+						 <% } %>
+					</div>
+					
+
+					<div id="dt" class="tab-pane cont <%= cl1 %>">
+						<% if (typeof editable !== "undefined") { if (typeof has_dropoff_info !== "undefined") { %>
+						<h2 class='margin-bottom-0'>
+							<%= wi.get("unloadingTicketNumber") %>
+							<a class="btn btn-primary btn-sm btn-trans btn-rad editable-button margin-left-0 margin-bottom-0 pull-right" href="<%= dropoff_weight_info_edit_url %>">
+								<i class="fa fa-pencil width-10"></i> Edit Ticket
+							</a>
+						</h2>
+						<% } else { %> 
+						<a class="btn btn-primary btn-sm btn-trans btn-rad editable-button margin-left-0" href="<%= dropoff_weight_info_add_url %>">
+							+ Add Ticket
+						</a>
+						<% } } else { if (typeof has_dropoff_info !== "undefined") { %>
+							<h2 class='margin-bottom-0'><%= wi.get("unloadingTicketNumber") %></h2>
+						<% } } %>
+
+						<% if (typeof has_dropoff_info !== "undefined") { %>
+
+						<div class='row margin-top-10'>
+							<div class='col-md-3'>
+								<div class="table-responsive">
+									<table class="table-condensed no-border">
+									<tbody class="no-border-x no-border-y">
+									<tr>
+										<td class="width-100">Scale :</td>
+										<td class="width-150">
+											<% 
+												if(!_.isNull(wi.get("weightticketscale_dropoff").scaler_account)) { 
+													print(wi.get("weightticketscale_dropoff").scaler_account.name); 
+												} 
+											%>
+										</td>
+									</tr>
+									<tr>
+										<td>Scale Name :</td>
+										<td>
+											<% 
+												if(!_.isNull(wi.get("weightticketscale_dropoff").scale)){
+													print(wi.get("weightticketscale_dropoff").scale.name);
+												} 
+											%>
+										</td>
+									</tr>
+									<tr>
+										<td>Scale Fee :</td>
+										<td>$ <%= numberFormat(wi.get("weightticketscale_dropoff").fee) %></td>
+									</tr>
+									<tr>
+										<td>Bales :</td>
+										<td><%= numberFormatBales(wi.get("weightticketscale_dropoff").bales) %></td>
+									</tr>
+									<tr>
+										<td>Gross :</td>
+										<td><%= numberFormatTons(wi.get("weightticketscale_dropoff").gross) %></td>
+									</tr>
+									<tr>
+										<td>Tare :</td>
+										<td><%= numberFormatTons(wi.get("weightticketscale_dropoff").tare) %></td>
+									</tr>
+									<tr>
+										<td>Net :</td>
+										<td><%= numberFormatTons(wi.get("weightticketscale_dropoff").gross - wi.get("weightticketscale_dropoff").tare)%></td>
+									</tr>
+									</tbody>
+									</table>
+								</div>
+							</div>
+							<div class='col-md-9'>
+								<div class='table-responsive'>
+									<table class="table-condensed table-bordered table-hover">
+									<thead>
+										<tr>
+											<th class="width-150">Product</th>
+											<th class="width-150">Stack No.</th>
+											<th class="width-110">Bales</th>
+											<th class="width-110">Pounds (lbs)</th>
+											<th class="width-110">Net</th>
+										</tr>
+									</thead>
+									<tbody>
+										<% 
+										var tbales=0;var tpounds=0;var tnet=0;
+										_.each(wi.get("weightticketscale_dropoff").weightticketproducts, function (product) {
+											
+											var net = (typeof product.pounds!='undefined' && product.pounds!=null) ? convertLbsToTons(product.pounds) : 0;
+											tnet += parseFloat(net);
+											var bales = (typeof product.bales!='undefined' && product.bales!=null) ? product.bales : 0;
+											tbales += parseFloat(bales);
+											var pounds = (typeof product.pounds!='undefined' && product.pounds!=null) ? product.pounds : 0;
+											tpounds += parseFloat(pounds);
+										%>
+											<tr>
+												<td><%= product.transportscheduleproduct.productorder.product.name %></td>
+												<td><%= product.transportscheduleproduct.productorder.stacknumber %></td>
+												<td class="text-right"><%= numberFormatBales(bales) %></td>
+												<td class="text-right"><%= numberFormatLbs(pounds) %></td>
+												<td class="text-right"><%= numberFormatTons(net) %></td>
+											</tr>
+										<% }); %>
+									</tbody>
+									<tfoot>
+										<tr>
+											<td class="text-right" colspan="2">Total</td>
+											<td class="text-right"><%= numberFormatBales(tbales) %></td>
+											<td class="text-right"><%= numberFormatLbs(tpounds) %></td>
+											<td class="text-right"><%= numberFormatTons(tnet) %></td>
+										</tr>
+									</tfoot>
+									</table>
+								</div>
+							</div>
+						</div>
+
+						<% } else { %>
+						<div class="alert alert-info alert-white rounded margin-top-10 margin-bottom-0">
+							<div class="icon"><i class="fa fa-info-circle"></i></div>
+							<strong>Info!</strong> No dropoff ticket found.
+						</div>
+						 <% } %>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		</div>
+
+		<% } %>
+
+	<% } %>
+    <div class="row">
         <div class="col-md-12">
-            <div class="pull-right">
-                <% if (typeof editable !== "undefined") { %>
-					<% if (typeof has_pickup_info !== "undefined") { %>
-						<a class="btn btn-primary editable-button" href="<%= pickup_weight_info_edit_url %>">Edit Pickup Weight Ticket</a>
-					<% } else { %>
-						<a class="btn btn-primary editable-button" href="<%= pickup_weight_info_add_url %>">Add Pickup Weight Ticket</a>
-					<% } %>
-				<% } %>
+            <div class="pull-right" id='weight-ticket-actions'>
+            	<% if(wi.get("weightTicketNumber")) { if(wi.get("status").id==2) { %>
+                <a href="<%= weight_info_print_url %>" class="btn btn-primary btn-sm btn-trans btn-rad"><i class='fa fa-print width-10'></i> Print</a>
+                <a id="mail-weight-ticket" class="btn btn-primary btn-sm btn-trans btn-rad"><i class='fa fa-envelope-o width-10'></i> Email</a>
+                <% } if (typeof editable !== "undefined") { %>
+					<a class="btn btn-warning btn-sm btn-trans btn-rad close-weight-ticket editable-button" href="#">
+						<i class='fa fa-times width-10'></i> Close Ticket
+					</a>
+				<% } } %>
+				<a id="go-to-previous-page" class="btn btn-default btn-sm btn-trans btn-rad" href="#"><i class='fa fa-history width-10'></i> Back</a>
             </div>
         </div>
     </div>
-	<fieldset>
-      <legend>Dropoff</legend>
-	  <div id="dropoff-fields" style="display:none;">
-		  <div class="table-responsive">
-			<table id="dropoff-info" class="table table-bordered">
-			  <thead>
-				<tr>
-				  <th style="width:15%;">Scale</th>
-				  <th style="width:15%;">Scale Name</th>
-				  <th style="width:15%;">Scale Fee</th>
-				  <th style="width:15%;">Bales</th>
-				  <th style="width:15%;">Gross</th>
-				  <th style="width:15%;">Tare</th>
-				  <th style="width:10%;">Net</th>
-				</tr>
-			  </thead>
-			  <tbody>
-				<tr>
-				  <td><input class="form-control scale-account" placeholder="" readonly></td>
-				  <td><input class="form-control scale-name" placeholder="" readonly></td>
-				  <td><input class="form-control fee" placeholder="0.00" readonly></td>
-				  <td><input class="form-control bales" placeholder="0" readonly></td>
-				  <td><input class="form-control gross" placeholder="0.0000" readonly></td>
-				  <td><input class="form-control tare" placeholder="0.0000" readonly></td>
-				  <td><span class="net">0.0000</span></td>
-				</tr>
-			  </tbody>
-			</table>
-		  </div>
-		  <div class="table-responsive">
-			<table id="dropoff-product-list" class="table table-bordered">
-			  <thead>
-				<tr>
-				  <th style="width:20%;">Stack No.</th>
-				  <th style="width:20%;">Product</th>
-				  <th style="width:20%;">Bales</th>
-				  <th style="width:20%;">Lbs.</th>
-				  <th style="width:20%;">Net Tons</th>
-				</tr>
-			  </thead>
-			  <tfoot>
-				<tr>
-				  <td colspan="2">Total</td>
-				  <td><span class="total-bales">0</span></td>
-				  <td><span class="total-pounds">0.00</span></td>
-				  <td><span class="total-net-tons">0.0000</span></td>
-				</tr>
-			  </tfoot>
-			  <tbody></tbody>
-			</table>
-		  </div>
-	  </div>
-    </fieldset>
-	<div class="form-group form-button-container">
-        <div class="col-md-12">
-            <div class="pull-right">
-				<% if (typeof editable !== "undefined") { %>
-					<% if (typeof has_dropoff_info !== "undefined") { %>
-						<a class="btn btn-primary editable-button" href="<%= dropoff_weight_info_edit_url %>">Edit Dropoff Weight Ticket</a>
-					<% } else { %>
-						<a class="btn btn-primary editable-button" href="<%= dropoff_weight_info_add_url %>">Add Dropoff Weight Ticket</a>
-					<% } %>
-                <% } %>
-            </div>
-        </div>
-    </div>
-    <div class="form-group form-button-container">
-        <div class="col-md-12">
-            <div class="pull-right">
-                <% if (!wi.get("error") && !(typeof editable !== "undefined")) { %>
-                    <a href="<%= weight_info_print_url %>" class="btn btn-primary">Print</a>
-                    <button id="mail-weight-ticket" class="btn btn-primary">Email</button>
-                <% } %>
-                <% if (typeof editable !== "undefined") { %>
-					<a class="btn btn-primary close-weight-ticket editable-button" href="#">Close Weight Ticket</a>
-				<% } %>
-				<a id="go-to-previous-page" class="btn btn-default" href="#">Back</a>
-            </div>
-        </div>
-    </div>
-  </form>
   
 </div>

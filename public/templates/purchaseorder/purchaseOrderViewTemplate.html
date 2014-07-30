@@ -1,5 +1,8 @@
 <div class="content padding-top-0">
   <h2 class="ponumber margin-bottom-0"><%= po.get("order_number") %></h2>
+  <div class="progress width-150 margin-bottom-0 height-3">
+  <div style="width: <%= po.get("weightPercentageDelivered") %>%" class="progress-bar progress-bar-<%= po.get("status").class %>"></div>
+  </div>
   <div class="row margin-top-0">
     <div class="col-md-6">
       <% if (typeof is_bid === "undefined") { %>
@@ -57,7 +60,7 @@
                 <% } %>
               </th>
 
-              <th class="width-110">Est Tons</span></th>
+              <th class="width-110">Est Tons</th>
               <th class="width-110">Bales</th>
               <th class="width-110">
                 <% if (typeof is_bid === "undefined") { %>
@@ -73,9 +76,9 @@
     		  <tfoot>
     		    <tr>
       			  <td class="text-right" colspan="<% if (typeof is_bid === "undefined") { %>7<% } else { %>4<% } %>">Total</td>
-      			  <td class="text-right"><strong id="total-tons">0.0000</strong></td>
-      			  <td class="text-right"><strong id="total-bales">0</strong></td>
-      			  <td class="text-right"><strong id="total-price">$ 0.00</strong></td>
+      			  <td class="text-right" id="total-tons">0.0000</td>
+      			  <td class="text-right" id="total-bales">0</td>
+      			  <td class="text-right" id="total-price">$ 0.00</td>
       			</tr>
     		  </tfoot>
         </table>
@@ -105,7 +108,7 @@
             </a>
           <% } %>
         <% } %>
-        <a class="btn btn-trans btn-rad btn-sm" href="<%= po_url %>"><i class="fa fa-reply width-10"></i> Back</a>
+        <a class="btn btn-trans btn-rad btn-sm" href="<%= po_url %>"><i class="fa fa-history width-10"></i> Back</a>
       </div>
     </div>
   </div>

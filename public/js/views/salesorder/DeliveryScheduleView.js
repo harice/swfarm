@@ -81,11 +81,15 @@ define([
 			var innerTemplateVariables = {
 				'schedule_edit_url': '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId+'/'+Const.CRUD.EDIT+'/'+this.schedId,
 				'weight_info_url': '#/'+Const.URL.SOWEIGHTINFO+'/'+this.soId+'/'+this.schedId,
+				so : this.salesOrderModel,
+				pu : this.model
 			};
 			
 			if(this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED && this.salesOrderModel.get('status').name.toLowerCase() == Const.STATUS.OPEN)
 				innerTemplateVariables['editable'] = true;
 			
+			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
+
 			var innerTemplate = _.template(deliveryScheduleViewTemplate, innerTemplateVariables);
 			
 			var variables = {
@@ -99,36 +103,7 @@ define([
 		
 		supplyScheduleData: function () {
 			var thisObj = this;
-			var trucker = this.model.get('trucker');
-			var originloader = this.model.get('originloader');
-			var destinationloader = this.model.get('destinationloader');
-			var trailer = this.model.get('trailer');
 			var products = this.model.get('transportscheduleproduct');
-			
-			this.$el.find('#scheduledate').val(this.convertDateFormat(this.model.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-'));
-			this.$el.find('#scheduletimeHour').val(this.model.get('scheduletimeHour'));
-			this.$el.find('#scheduletimeMin').val(this.model.get('scheduletimeMin'));
-			this.$el.find('#scheduletimeAmPm').val(this.model.get('scheduletimeAmPm'));
-			
-			this.$el.find('#distance').val(this.addCommaToNumber(this.model.get('distance')));
-			this.$el.find('#fuelcharge').val(this.addCommaToNumber(this.model.get('fuelcharge')));
-			this.$el.find('#truckingrate').val(this.addCommaToNumber(this.model.get('truckingrate')));
-			this.$el.find('#trailerrate').val(this.addCommaToNumber(this.model.get('trailerrate')));
-			
-			this.$el.find('#originloader').val(originloader.accountidandname.name);
-			this.$el.find('#originloader_id').val(originloader.lastname+', '+originloader.firstname+' '+originloader.suffix);
-			this.$el.find('#originloaderfee').val(this.addCommaToNumber(this.model.get('originloaderfee')));
-			
-			this.$el.find('#destinationloader').val(destinationloader.accountidandname.name);
-			this.$el.find('#destinationloader_id').val(destinationloader.lastname+', '+destinationloader.firstname+' '+destinationloader.suffix);
-			this.$el.find('#destinationloaderfee').val(this.addCommaToNumber(this.model.get('destinationloaderfee')));
-			
-			this.$el.find('#truckerAccountType_id').val(trucker.accountidandname.accounttype[0].name);
-			this.$el.find('#truckerAccount_id').val(trucker.accountidandname.name);
-			this.$el.find('#trucker_id').val(trucker.lastname+', '+trucker.firstname+' '+trucker.suffix);
-			
-			this.$el.find('#trailer').val(trailer.account.name);
-			this.$el.find('#trailer_id').val(trailer.number);
 			
 			var totalQuantity = 0;
 			_.each(products, function (product) {
@@ -138,14 +113,14 @@ define([
 				var variables = {
 					stock_number: product.productorder.stacknumber,
 					product_name: product.productorder.product.name,
-					quantity: thisObj.addCommaToNumber(quantity.toFixed(4)),
+					quantity: Backbone.View.prototype.helpers.numberFormatTons(quantity),
 				};
 				
 				var template = _.template(deliveryScheduleViewProductItemTemplate, variables);
 				thisObj.$el.find('#product-list tbody').append(template);
 			});
 			
-			this.$el.find('#total-quantity').val(this.addCommaToNumber(totalQuantity.toFixed(4)));
+			this.$el.find('#total-quantity').html(Backbone.View.prototype.helpers.numberFormatTons(totalQuantity));
 		},
 		
 		events: {

@@ -11,6 +11,7 @@ define([
 	'collections/account/AccountCollection',
 	'collections/scale/ScaleCollection',
 	'text!templates/layout/contentTemplate.html',
+	'text!templates/layout/tabsContentTemplate.html',
 	'text!templates/salesorder/weightInfoAddTemplate.html',
 	'text!templates/salesorder/weightInfoProductItemTemplate.html',
 	'global',
@@ -27,6 +28,7 @@ define([
 			AccountCollection,
 			ScaleCollection,
 			contentTemplate,
+			tabsContentTemplate,
 			weightInfoAddTemplate,
 			weightInfoProductItemTemplate,
 			Global,
@@ -51,6 +53,8 @@ define([
 		inits: function () {
 			var thisObj = this;
 			
+			this.subContainer.html(_.template(tabsContentTemplate, {'tabs':this.generateSOTabs(this.soId, 3)}));
+
 			this.options = {
 				routeType: ['pickup', 'dropoff'],
 				separator: '-',
@@ -112,14 +116,18 @@ define([
 			var innerTemplateVariables = {
 				scaler_account_list: this.getScalerDropDown(),
 				cancel_url: (this.wiId == null && this.type != Const.WEIGHTINFO.PICKUP && this.type != Const.WEIGHTINFO.DROPOFF)? '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId : '#/'+Const.URL.SOWEIGHTINFO+'/'+this.soId+'/'+this.schedId,
+				so: this.salesOrderModel,
+				schedule: this.soScheduleModel,
 			};
 			
 			if(this.wiId != null)
 				innerTemplateVariables['wiId'] = this.wiId;
 			
 			if(this.type == Const.WEIGHTINFO.PICKUP || this.type == Const.WEIGHTINFO.DROPOFF)
-				innerTemplateVariables['wiType'] = this.type.charAt(0).toUpperCase() + this.type.slice(1);
+				innerTemplateVariables['wiType'] = this.type;
 			
+			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
+
 			var innerTemplate = _.template(weightInfoAddTemplate, innerTemplateVariables);
 			
 			var variables = {
@@ -128,7 +136,8 @@ define([
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
-			this.subContainer.html(compiledTemplate);
+			this.subContainer.find('#with-tab-content').html(compiledTemplate);
+			// this.subContainer.html(compiledTemplate);
 			
 			this.initValidateForm();
 			this.supplySOInfo();
@@ -140,14 +149,8 @@ define([
 		},
 		
 		supplySOInfo: function () {
-			var dateAndTime = this.convertDateFormat(this.soScheduleModel.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-')
-								+' '+this.soScheduleModel.get('scheduletimeHour')
-								+':'+this.soScheduleModel.get('scheduletimeMin')
-								+' '+this.soScheduleModel.get('scheduletimeAmPm');
-			
 			this.$el.find('#so-number').val(this.salesOrderModel.get('order_number'));
 			this.$el.find('#producer').val(this.salesOrderModel.get('account').name);
-			this.$el.find('#date-and-time').val(dateAndTime);
 			
 			if(this.wiId != null) {
 				this.$el.find('#weight-ticket-no').val(this.model.get('weightTicketNumber'));
@@ -361,7 +364,7 @@ define([
 			var scaleId = $(ev.currentTarget).val();
 			if(scaleId != '') {
 				var scaleModel = this.scaleCollection.get(scaleId);
-				$(ev.currentTarget).closest('tr').find('.fee').val(this.addCommaToNumber(scaleModel.get('rate')));
+				this.$el.find('.fee').val(this.addCommaToNumber(scaleModel.get('rate')));
 			}
 		},
 		
@@ -370,11 +373,11 @@ define([
 			
 			var gross = this.removeCommaFromNumber($(ev.target).val());
 			gross = (isNaN(gross))? 0 : gross;
-			var tare = this.removeCommaFromNumber($(ev.target).closest('tr').find('.tare').val());
+			var tare = this.removeCommaFromNumber(this.$el.find('.tare').val());
 			tare = (isNaN(tare))? 0 : tare;
 			var net = gross - tare;
 			
-			$(ev.target).closest('tr').find('.net').text(this.addCommaToNumber(net.toFixed(4), 4));
+			this.$el.find('.net').text(this.addCommaToNumber(net.toFixed(4), 4));
 		},
 		
 		onKeyUpTare: function (ev) {
@@ -382,11 +385,11 @@ define([
 			
 			var tare = this.removeCommaFromNumber($(ev.target).val());
 			tare = (isNaN(tare))? 0 : tare;
-			var gross = this.removeCommaFromNumber($(ev.target).closest('tr').find('.gross').val());
+			var gross = this.removeCommaFromNumber(this.$el.find('.gross').val());
 			gross = (isNaN(gross))? 0 : gross;
 			var net = gross - tare;
 			
-			$(ev.target).closest('tr').find('.net').text(this.addCommaToNumber(net.toFixed(4), 4));
+			this.$el.find('.net').text(this.addCommaToNumber(net.toFixed(4), 4));
 		},
 		
 		onKeyUpProductBales: function (ev) {
