@@ -59,7 +59,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% _.each(pickup_products, function (product) { %>
+                            <% _.each(weightticket.get("weightticketscale_pickup").weightticketproducts, function (product) { %>
                             <tr>
                                 <td><%= product.transportscheduleproduct.productorder.stacknumber %></td>
                                 <td><%= product.transportscheduleproduct.productorder.product.name %></td>
@@ -83,7 +83,7 @@
         </fieldset>
         <% } %>
         
-        <% if (weightticket.get("weightticketscale_dropoff")) { %>
+        <% if (!_.isNull(weightticket.get("weightticketscale_dropoff"))) { %>
         <fieldset>
             <legend>Dropoff</legend>
             <div id="dropoff-fields" style="display:none;">
@@ -125,7 +125,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% _.each(dropoff_products, function (product) { %>
+                            <% _.each(weightticket.get("weightticketscale_dropoff").weightticketproducts, function (product) { %>
                             <tr>
                                 <td><%= product.transportscheduleproduct.productorder.stacknumber %></td>
                                 <td><%= product.transportscheduleproduct.productorder.product.name %></td>
