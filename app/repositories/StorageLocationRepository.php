@@ -35,6 +35,21 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         return $storagelocation->toArray();
         
     }
+
+     public function getStorageLocationByAccount($accountId)
+    {
+        $storagelocation = StorageLocation::with('section')->where('account_id', '=', $accountId)->get();
+        
+        if (!$storagelocation) {
+            return array(
+                'error' => true,
+                'message' => 'Storage location not found.'
+            );
+        }
+        
+        return $storagelocation->toArray();
+        
+    }
     
     public function search($_search)
     {

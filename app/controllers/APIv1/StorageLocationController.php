@@ -65,6 +65,12 @@ class StorageLocationController extends BaseController {
         return Response::json($model);
 	}
 
+	public function getStorageLocationByAccount($accountId)
+	{
+        $model = $this->repo->getStorageLocationByAccount($accountId);
+        return Response::json($model);
+	}
+
 	/**
 	 * Update the specified resource in storage.
 	 *
