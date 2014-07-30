@@ -173,6 +173,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('contract', 'APIv1\ContractController');
 
     // Storage location
+    Route::get('storagelocation/warehouse', 'APIv1\StorageLocationController@getStorageLocationOfWarehouse');
     Route::get('storagelocation/getByAccount/{id}', 'APIv1\StorageLocationController@getStorageLocationByAccount');
     Route::get('storagelocation/locationlist', 'APIv1\StorageLocationController@locationList');
     Route::get('storagelocation/search', 'APIv1\StorageLocationController@search');
@@ -183,7 +184,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('inventory/stackListByProduct', 'APIv1\InventoryController@getStackListByProduct');
     Route::get('inventory/stacklist', 'APIv1\InventoryController@stackList');
     Route::get('inventory/transactiontype', 'APIv1\InventoryController@transactionType');
-    Route::get('inventory/purchaseorder', 'APIv1\InventoryController@store');
+    Route::post('inventory/purchaseorder', 'APIv1\InventoryController@store');
     Route::resource('inventory', 'APIv1\InventoryController');
 });
 

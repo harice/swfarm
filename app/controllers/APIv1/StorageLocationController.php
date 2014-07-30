@@ -71,6 +71,11 @@ class StorageLocationController extends BaseController {
         return Response::json($model);
 	}
 
+	public function getStorageLocationOfWarehouse(){
+		$model = $this->repo->getStorageLocationOfWarehouse();
+        return Response::json($model);
+	}
+
 	/**
 	 * Update the specified resource in storage.
 	 *
