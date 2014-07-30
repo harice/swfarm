@@ -250,6 +250,10 @@ define([
 			
 			return formData;
 		},
+                
+        showDeleteConfirmationWindow: function () {
+            this.showConfirmationWindow();
+        },
 		
 		showDeleteConfirmationWindow: function () {
 			this.showConfirmationWindow();

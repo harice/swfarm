@@ -1,5 +1,8 @@
 <div class="content padding-top-0">
   <h2 class="ponumber margin-bottom-0"><%= po.get("order_number") %></h2>
+  <div class="progress width-150 margin-bottom-0 height-3">
+  <div style="width: <%= po.get("weightPercentageDelivered") %>%" class="progress-bar progress-bar-<%= po.get("status").class %>"></div>
+  </div>
   <div class="row margin-top-0">
     <div class="col-md-6">
       <% if (typeof is_bid === "undefined") { %>
@@ -93,7 +96,7 @@
             </a>
           <% } %>
         <% } %>
-        <a class="btn btn-trans btn-rad btn-sm" href="<%= po_url %>"><i class="fa fa-reply width-10"></i> Back</a>
+        <a class="btn btn-trans btn-rad btn-sm" href="<%= po_url %>"><i class="fa fa-history width-10"></i> Back</a>
       </div>
     </div>
   </div>

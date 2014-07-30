@@ -6,18 +6,20 @@ define([
 	var TrailerCollection = ListViewCollection.extend({
 		url: '/apiv1/trailer',
 		model: TrailerModel,
+        
 		initialize: function(option){
 			this.runInit();
-			this.setDefaultURL(this.url);
+			this.setDefaultURL('/apiv1/trailer');
 			this.setSortOptions(
 				{
-					currentSort: 'created_at',
+					currentSort: 'number',
 					sort: {
-						created_at: false,
-					},
+						number: true,
+                        name: true
+					}
 				}
 			);
-		},
+		}
 	});
 
 	return TrailerCollection;

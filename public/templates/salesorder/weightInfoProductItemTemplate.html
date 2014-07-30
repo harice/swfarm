@@ -1,11 +1,11 @@
 <tr class="product-item">
-	<td>
+	<td class='valign-middle'><span class="product-name"><%= name %></span></td>
+	<td class='valign-middle'>
 		<input type="hidden" class="id" name="id<%= number %>" value="<% if (typeof id !== "undefined") { %><%= id %><% } %>" />
 		<input type="hidden" class="transportScheduleProduct_id" name="transportScheduleProduct_id<%= number %>" value="<%= schedule_product_id %>" />
-		<span class="product-stock-number"><%= stock_number %></span>
+		<code><span class="product-stock-number"><%= stock_number %></span></code>
 	</td>
-	<td><span class="product-name"><%= name %></span></td>
-	<td><input class="form-control product-bales" name="bales<%= number %>" value="<% if (typeof bales !== "undefined") { %><%= bales %><% } %>" maxlength="250" /></td>
-	<td><input class="form-control product-pounds" name="pounds<%= number %>" value="<% if (typeof pounds !== "undefined") { %><%= pounds %><% } %>" maxlength="250" /></td>
-	<td><span class="product-net"><%= net %></span></td>
+	<td><input class="form-control product-bales input-sm" name="bales<%= number %>" value="<% if (typeof bales !== "undefined") { %><%= bales %><% } %>" maxlength="250" /></td>
+	<td><input class="form-control product-pounds input-sm" name="pounds<%= number %>" value="<% if (typeof pounds !== "undefined") { %><%= pounds %><% } %>" maxlength="250" /></td>
+	<td class='valign-middle'><span class="product-net"><%= net %></span></td>
 </tr>

@@ -11,9 +11,9 @@ define([
 			currentPage: 1,
 			maxItem: 0,
 			search: '',
-			currentSort: 'created_at',
+			currentSort: 'contract_number',
 			sort: {
-				created_at: false,
+				contract_number: false
 			},
 			filters: {},
 			filter: '',

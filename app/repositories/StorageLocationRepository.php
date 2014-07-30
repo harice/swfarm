@@ -11,9 +11,21 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
     {
         try
         {
-            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.USERS_PER_LIST');
+            $sortby = isset($params['sortby']) ? $params['sortby'] : 'account_name';
+            $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
             
-            return StorageLocation::with('section')->paginate($perPage);
+            return StorageLocation::join('account', 'account_id', '=', 'account.id')
+                ->select(
+                    'storagelocation.id',
+                    'storagelocation.name',
+                    'storagelocation.description',
+                    'storagelocation.account_id',
+                    'account.name as account_name'
+                )
+                ->with('section')
+                ->orderBy($sortby, $orderby)
+                ->paginate($perPage);
         }
         catch (Exception $e)
         {
@@ -36,17 +48,30 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         
     }
     
-    public function search($_search)
+    public function search($params)
     {
         try
         {
-            $perPage = isset($_search['perpage']) ? $_search['perpage'] : 15;
+            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.USERS_PER_LIST');
+            $sortby = isset($params['sortby']) ? $params['sortby'] : 'account_name';
+            $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
+            $searchWord = $params['search'];
             
-            $searchWord = $_search['search'];
-                
-            return StorageLocation::with('section')
-                                  ->where('name', 'like', '%'.$searchWord.'%')
-                                  ->paginate($perPage);
+            return StorageLocation::join('account', 'account_id', '=', 'account.id')
+                ->select(
+                    'storagelocation.id',
+                    'storagelocation.name',
+                    'storagelocation.description',
+                    'storagelocation.account_id',
+                    'account.name as account_name'
+                )
+                ->where(function ($query) use ($searchWord) {
+                    $query->orWhere('storagelocation.name','like','%'.$searchWord.'%');
+                    $query->orWhere('account.name','like','%'.$searchWord.'%');
+                })
+                ->with('section')
+                ->orderBy($sortby, $orderby)
+                ->paginate($perPage);
         }
         catch (Exception $e)
         {
@@ -92,11 +117,15 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         foreach ($sections as $section) {
             $section['storagelocation_id'] = $storagelocation_id;
             
-            $this->validate($section, 'Section');
-            if(isset($section['id']))
+            
+            if(isset($section['id'])) {
+                $this->validate($section, 'Section', $section['id']);
                 $sectionLocation = Section::find($section['id']);
-            else
+            }
+            else {
+                $this->validate($section, 'Section');
                 $sectionLocation = new Section();
+            }
 
             $sectionLocation->fill($section);
             $sectionLocation->save();
@@ -141,7 +170,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
     public function update($id, $data)
     {   
         DB::beginTransaction();
-        $this->validate($data, 'StorageLocation');
+        $this->validate($data, 'StorageLocation', $id);
         $storagelocation = StorageLocation::find($id);
         // var_dump(storagelocation);
         $storagelocation->fill($data);
@@ -214,9 +243,29 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
     //     return true;
     // }
 
-    public function validate($data, $entity)
-    {   
-        $validator = Validator::make($data, $entity::$rules);
+    public function validate($data, $entity, $id = null)
+    {
+        $messages = array(
+            'name.unique' => 'Location name should be unique.'
+        );
+        
+        if ($entity == 'StorageLocation') {
+            if ($id) {
+                $entity::$rules['name'] = 'required|unique:storagelocation,name,'.$id;
+            }
+        }
+        
+        if ($entity == 'Section') {
+            $messages['name.unique'] = 'Section name should be unique.';
+            $entity::$rules['name'] = 'required|unique:section,name';
+            
+            if ($id) {
+                // To Do: Modify this rule to enforce unique Section name in each Storage Location.
+                $entity::$rules['name'] = 'required|unique:section,name,' .$id;
+            }
+        }
+        
+        $validator = Validator::make($data, $entity::$rules, $messages);
        
         if($validator->fails()) { 
             throw new ValidationException($validator); 

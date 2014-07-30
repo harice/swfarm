@@ -12,9 +12,10 @@ define([
 			currentPage: 1,
 			maxItem: 0,
 			search: '',
-			currentSort: 'created_at',
+			currentSort: 'account_name',
 			sort: {
-				created_at: false,
+				name: true,
+                account_name: true
 			},
 			filters: {},
 			filter: '',

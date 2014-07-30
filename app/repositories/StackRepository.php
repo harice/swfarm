@@ -11,9 +11,13 @@ class StackRepository implements StackRepositoryInterface {
     {
         try
         {
-            $perPage = isset($params['perpage']) ? $params['perpage'] : 10;
+            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+            $sortby = isset($params['sortby']) ? $params['sortby'] : 'account_name';
+            $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
             
-            return Stack::with('product')->paginate($perPage);
+            return Stack::with('product')
+                ->orderBy($sortby, $orderby)
+                ->paginate($perPage);
         }
         catch (Exception $e)
         {
@@ -21,19 +25,21 @@ class StackRepository implements StackRepositoryInterface {
         }
     }
     
-    public function search($_search)
+    public function search($params)
     {
         try
         {
-            $perPage = isset($_search['perpage']) ? $_search['perpage'] : 15;
-            
-            $searchWord = $_search['search'];
+            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+            $sortby = isset($params['sortby']) ? $params['sortby'] : 'account_name';
+            $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
+            $searchWord = $params['search'];
             
             return Stack::with('product')
                 ->where(function ($query) use ($searchWord) {
                     $query->orWhere('stacknumber','like','%'.$searchWord.'%')
-                    ->orWhere('location','like','%'.$searchWord.'%');
+                          ->orWhere('location','like','%'.$searchWord.'%');
                 })
+                ->orderBy($sortby, $orderby)
                 ->paginate($perPage);
         }
         catch (Exception $e)

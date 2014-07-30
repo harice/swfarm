@@ -36,7 +36,7 @@
 			<a href="<%= po_weight_info_url %>/<%= schedule.get("id") %>" title="weight info">
 			 	<span class="fa-stack">
 					<i class="fa fa-square fa-stack-2x"></i>
-					<i class="fa fa-info-circle fa-stack-1x fa-inverse"></i>
+					<i class="fa fa-ticket fa-stack-1x fa-inverse"></i>
 				</span>
 			</a>
 			<% if (schedule.get("status").name.toLowerCase() == "open" && typeof editable !== "undefined") { %>
@@ -67,6 +67,6 @@
 	<% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="8">No result found.</td>
+		<td colspan="7">No result found.</td>
 	</tr>
 <% } %>

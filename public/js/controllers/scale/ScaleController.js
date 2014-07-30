@@ -3,8 +3,9 @@ define([
 	'views/scale/ScaleListView',
 	'views/scale/ScaleAddView',
 	'views/scale/ScaleEditView',
+    'views/scale/ScaleView',
 	'constant',
-], function(Backbone, ScaleListView, ScaleAddView, ScaleEditView, Const){
+], function(Backbone, ScaleListView, ScaleAddView, ScaleEditView, ScaleView, Const){
 	
 	function ScaleController () {	
 		
@@ -20,8 +21,10 @@ define([
 					break;
 				
 				default:
-					return this.listView();
-					break;
+					if(action != null && this.IsInt(action))
+						return this.view(action);
+					else
+						return this.listView();
 			}
 		};
 		
@@ -35,6 +38,10 @@ define([
 		
 		this.listView = function () {
 			return new ScaleListView();
+		};
+        
+        this.view = function (id) {
+			return new ScaleView({'id':id});
 		};
 		
 		this.IsInt = function (i) {

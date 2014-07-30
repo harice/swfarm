@@ -295,14 +295,14 @@ define([
 		
 		filterByDestination: function (ev) {
 			var filter = $(ev.target).val();
-			this.collection.setFilter('location', filter)
+			this.collection.setFilter('location', filter);
 			this.renderList(1);
 			return false;
 		},
 		
 		filterByStatus: function (ev) {
 			var filter = $(ev.target).val();
-			this.collection.setFilter('status', filter)
+			this.collection.setFilter('status', filter);
 			this.renderList(1);
 			return false;
 		},

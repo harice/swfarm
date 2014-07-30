@@ -36,7 +36,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><%= weightticket.get("weightticketscale_pickup").scaler_account[0].name %></td>
+                                <td><%= weightticket.get("weightticketscale_pickup").scaler_account.name %></td>
                                 <td><%= weightticket.get("weightticketscale_pickup").scale.name %></td>
                                 <td><%= weightticket.get("weightticketscale_pickup").fee %></td>
                                 <td><%= weightticket.get("weightticketscale_pickup").bales %></td>
@@ -59,7 +59,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% _.each(weightticket.get("weightticketscale_pickup").weightticketproducts, function (product) { %>
+                            <% _.each(pickup_products, function (product) { %>
                             <tr>
                                 <td><%= product.transportscheduleproduct.productorder.stacknumber %></td>
                                 <td><%= product.transportscheduleproduct.productorder.product.name %></td>
@@ -83,7 +83,7 @@
         </fieldset>
         <% } %>
         
-        <% if (!_.isNull(weightticket.get("weightticketscale_dropoff"))) { %>
+        <% if (weightticket.get("weightticketscale_dropoff")) { %>
         <fieldset>
             <legend>Dropoff</legend>
             <div id="dropoff-fields" style="display:none;">
@@ -102,7 +102,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><%= weightticket.get("weightticketscale_dropoff").scaler_account[0].name %></td>
+                                <td><%= weightticket.get("weightticketscale_dropoff").scaler_account.name %></td>
                                 <td><%= weightticket.get("weightticketscale_dropoff").scale.name %></td>
                                 <td><%= weightticket.get("weightticketscale_dropoff").fee %></td>
                                 <td><%= weightticket.get("weightticketscale_dropoff").bales %></td>
@@ -125,7 +125,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% _.each(weightticket.get("weightticketscale_dropoff").weightticketproducts, function (product) { %>
+                            <% _.each(dropoff_products, function (product) { %>
                             <tr>
                                 <td><%= product.transportscheduleproduct.productorder.stacknumber %></td>
                                 <td><%= product.transportscheduleproduct.productorder.product.name %></td>

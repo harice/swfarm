@@ -1,5 +1,19 @@
 <tr class="product-item">
 	<td><%= productname %></td>
+    <td><%= description %></td>
+	<td><code><%= stacknumber %></code></td>
+
+	<% if (typeof is_bid === "undefined") { %>
+	<td class="text-right"><i class="fa fa-check-square-o <% if(ishold==1) { %>color-success<% } %>"></i></td>
+	<td><%= rfv %></td>
+	<td>
+		<% if (typeof file_path !== "undefined") { %>
+			<a class="attach-pdf color-danger" href="<%= file_path %>" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
+		<% } else { %>
+			<i class="fa fa-file-pdf-o"></i>
+		<% } %>
+	</td>
+	<% } %>
 	<td class="text-right">$ <%= unitprice %></td>
 	<td class="text-right"><%= tons %></td>
 	<td class="text-right">$ <%= totalprice %></td>
