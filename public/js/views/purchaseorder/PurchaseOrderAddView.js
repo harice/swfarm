@@ -12,6 +12,7 @@ define([
 	'collections/product/ProductCollection',
 	'collections/contact/ContactCollection',
 	'collections/inventory/StackNumberCollection',
+	'collections/stack/LocationCollection',
 	'models/purchaseorder/PurchaseOrderModel',
 	'models/file/FileModel',
 	'text!templates/layout/contentTemplate.html',
@@ -35,6 +36,7 @@ define([
 			ProductCollection,
 			ContactCollection,
 			StackNumberCollection,
+			LocationCollection,
 			PurchaseOrderModel,
 			FileModel,
 			contentTemplate,
@@ -157,6 +159,19 @@ define([
 				}
 			});
 			this.stackNumberCollection.on('error', function(collection, response, options) {
+			});
+			
+			this.locationCollection = new LocationCollection();
+			this.locationCollection.on('sync', function() {
+				if(!thisObj.isInitProcess) {
+					thisObj.generateLocationFromDropDown();
+					thisObj.hideFieldThrobber('.section_id');
+				}
+				else
+					thisObj.stackNumberCollection.getStackNumbersByProduct({id:thisObj.soProducts[thisObj.soProductsIndex]});
+			});
+			this.locationCollection.on('error', function(collection, response, options) {
+				
 			});
 		},
 		
@@ -312,6 +327,8 @@ define([
 					thisObj.showFieldThrobber('#contact_id');
 					thisObj.resetSelect(thisObj.subContainer.find('#contact_id'));
 					thisObj.producerAccountCollection.getContactsByAccountId(thisObj.currentProducerId);
+					thisObj.resetSelect(thisObj.subContainer.find('.section_id'));
+					thisObj.locationCollection.getLocationByAccount(thisObj.currentProducerId);
 				}
 			};
 			
@@ -330,6 +347,9 @@ define([
 					thisObj.showFieldThrobber('#contact_id');
 					thisObj.resetSelect(thisObj.subContainer.find('#contact_id'));
 					thisObj.producerAccountCollection.getContactsByAccountId(thisObj.currentProducerId);
+					thisObj.showFieldThrobber('.section_id');
+					thisObj.resetSelect(thisObj.subContainer.find('.section_id'));
+					thisObj.locationCollection.getLocationByAccount(thisObj.currentProducerId);
 				}
 			},
 			
@@ -340,6 +360,7 @@ define([
 				thisObj.$el.find('#zipcode').val('');
 				
 				thisObj.resetSelect(thisObj.subContainer.find('#contact_id'));
+				thisObj.resetSelect(thisObj.subContainer.find('.section_id'));
 			},
 			
 			this.producerAutoCompleteView.render();
@@ -430,6 +451,7 @@ define([
 				this.addIndexToProductSubFields(clone, parentId);
 				tableElement.find('tbody').append(clone);
 				this.initStackNumberAutocomplete(clone.find('.stacknumber'));
+				this.generateLocationFromDropDown(clone.find('.section_id'));
 			}
 			
 			return clone;
@@ -1074,6 +1096,24 @@ define([
 						field.autocomplete('option', 'source', thisObj.stackNumberByProductPool[productId]);
 				}
 			});
+		},
+		
+		generateLocationFromDropDown: function (select) {
+			if(this.subContainer.find('#account_id').val() != '') {
+				var dropdown = '';
+				_.each(this.locationCollection.models, function (model) {
+					var locationName = model.get('name');
+					
+					_.each(model.get('section'), function (section) {
+						dropdown += '<option value="'+section.id+'">'+locationName+' - '+section.name+'</option>';
+					});
+				});
+				
+				if(select != null && typeof select !== 'undefined')
+					select.append(dropdown);
+				else
+					this.subContainer.find('.section_id').append(dropdown);
+			}
 		},
 		
 		otherInitializations: function () {},

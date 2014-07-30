@@ -9,6 +9,11 @@ define([
 		initialize: function() {
 			this.setDefaultURL(this.url);
 		},
+		
+		getLocationByAccount: function (id) {
+			this.url = '/apiv1/storagelocation/getByAccount/'+id;
+			this.getModels();
+		},
 	});
 
 	return LocationCollection;

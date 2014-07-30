@@ -79,11 +79,9 @@ define([
 				}
 				else
 					thisObj.isBid = false;
-				
-				if(!thisObj.isInitProcess)
-					thisObj.destinationCollection.getModels();
-				else
-					thisObj.stackNumberCollection.getStackNumbersByProduct({id:thisObj.soProducts[thisObj.soProductsIndex]});
+
+				thisObj.locationCollection.getLocationByAccount(this.get('account_id'));
+				//thisObj.stackNumberCollection.getStackNumbersByProduct({id:thisObj.soProducts[thisObj.soProductsIndex]});
 				
 				this.off('change');
 			});
@@ -119,6 +117,7 @@ define([
 			this.producerAccountContactId = this.model.get('contact_id');
 			this.showFieldThrobber('#contact_id');
 			this.producerAccountCollection.getContactsByAccountId(account.id);
+			this.generateLocationFromDropDown();
 			
 			if(!this.isBid) {
 				if(this.model.get('transportdatestart')) {
@@ -166,6 +165,7 @@ define([
 					productSubFields.find('.id').val(productSub.id);
 					//thisObj.initStackNumberAutocomplete(productSubFields.find('.stacknumber'), product.productname.id);
 					productSubFields.find('.stacknumber').val(productSub.stacknumber);
+					productSubFields.find('.section_id').val(productSub.section_id);
 					productSubFields.find('.description').val(productSub.description);
 					productSubFields.find('.tons').val(productSub.tons);
 					productSubFields.find('.bales').val(productSub.bales);
@@ -179,31 +179,6 @@ define([
 					}
 				});
 			});
-			
-			/*var i= 0;
-			_.each(products, function (product) {
-				var productFields = (i > 0)? thisObj.addProduct(): thisObj.$el.find('#product-list tbody .product-item:first-child');
-				i++;
-				
-				productFields.find('.id').val(product.id);
-				productFields.find('.product_id').val(product.product.id);
-				productFields.find('.description').val(product.description);
-				productFields.find('.stacknumber').val(product.stacknumber);
-				productFields.find('.unitprice').val(thisObj.addCommaToNumber(parseFloat(product.unitprice).toFixed(2)));
-				productFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(product.tons).toFixed(4)));
-				productFields.find('.bales').val(thisObj.addCommaToNumber(product.bales));
-				productFields.find('.ishold').val(product.ishold);
-				productFields.find('.rfv').val(product.rfv);
-				
-				if(product.upload.length > 0) {
-					productFields.find('.uploadedfile').val(product.upload[0].file_id);
-					productFields.find('.uploadedfile').attr('data-filename', product.upload[0].files[0].name);
-					productFields.find('.attach-pdf').removeClass('no-attachment');
-				}
-				
-				var unitPrice = parseFloat(product.unitprice) * parseFloat(product.tons);
-				productFields.find('.unit-price').val(thisObj.addCommaToNumber(unitPrice.toFixed(2)));
-			});*/
 			
 			this.computeTotals();
 		},
