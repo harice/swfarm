@@ -152,6 +152,11 @@ define(function () {
 				'ID': 'order-list-collapsible-',
 			},
 		},
+        'CONTRACT': {
+			'COLLAPSIBLE': {
+				'ID': 'contract-list-collapsible-',
+			},
+		},
 		'LB2TON': 0.0005,
 		'CANCELLATIONREASON': {
 			'OTHERS': '6'
