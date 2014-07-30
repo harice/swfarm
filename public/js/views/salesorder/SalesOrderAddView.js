@@ -672,7 +672,7 @@ define([
 			'click #verify-so': 'showVerifyConfirmationWindow',
 			'click #confirm-verify-order': 'verifySo',
 			'change .product_id': 'generateStackNumberSuggestions',
-			'change .stacknumber': 'generateLocationFromDropDown',
+			'change .stacknumber': 'onChangeStackNumber',
 		},
 		
 		removeProduct: function (ev) {
@@ -859,7 +859,7 @@ define([
 			}
 		},
 		
-		generateStackNumberDropdown: function (select, productId, stacknumber) { console.log('generateStackNumberDropdown'); console.log('productId: '+productId);
+		generateStackNumberDropdown: function (select, productId, value) { //console.log('generateStackNumberDropdown'); console.log('productId: '+productId);
 			if(productId == null || typeof productId === 'undefined')
 				productId = select.closest('.product-stack').prev('.product-item').find('.product_id').val();
 			
@@ -870,8 +870,8 @@ define([
 				});
 				select.append(dropdown);
 				
-				if(stacknumber != null && typeof stacknumber !== 'undefined')
-					select.val(stacknumber).trigger('change');
+				if(value != null && typeof value !== 'undefined')
+					select.val(value);
 				else {
 					if(this.stackNumberByProductPool[productId].length == 1)
 						select.val(this.stackNumberByProductPool[productId][0].value).trigger('change');
@@ -896,17 +896,27 @@ define([
 			return dropdown;
 		},
 		
-		generateLocationFromDropDown: function (ev) {
+		onChangeStackNumber: function (ev) {
 			var stacknumber = $(ev.currentTarget).val();
 			var productId = $(ev.currentTarget).closest('.product-stack').prev('.product-item').find('.product_id').val();
-			var dropdown = this.getLocationByStockNumberDropdown(stacknumber, productId);
 			var locationFromSelect = $(ev.currentTarget).closest('tr.product-stack-item').find('.section_id');
+			
+			this.generateLocationFromDropDown(stacknumber, productId, locationFromSelect);
+		},
+		
+		generateLocationFromDropDown: function (stacknumber, productId, locationFromSelect, value) {
+			
+			var dropdown = this.getLocationByStockNumberDropdown(stacknumber, productId);
 			
 			this.resetSelect(locationFromSelect);
 			locationFromSelect.append(dropdown);
 			
-			if(locationFromSelect.find('option').length == 2)
-				locationFromSelect.find('option:last').attr('selected', true);
+			if(value != null && typeof value !== 'undefined')
+				locationFromSelect.val(value);
+			else {
+				if(locationFromSelect.find('option').length == 2)
+					locationFromSelect.find('option:last').attr('selected', true);
+			}
 		},
 		
 		showVerifyConfirmationWindow: function () {

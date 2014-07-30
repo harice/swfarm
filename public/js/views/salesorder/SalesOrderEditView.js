@@ -241,6 +241,7 @@ define([
 					productSubFields.find('.id').val(productSub.id);
 					//productSubFields.find('.stacknumber').val(productSub.stacknumber);
 					thisObj.generateStackNumberDropdown(productSubFields.find('.stacknumber'), product.productname.id, productSub.stacknumber);
+					thisObj.generateLocationFromDropDown(productSub.stacknumber, product.productname.id, productSubFields.find('.section_id'), product.productorder[0].section_id);
 					productSubFields.find('.description').val(productSub.description);
 					productSubFields.find('.tons').val(productSub.tons);
 					productSubFields.find('.bales').val(productSub.bales);
