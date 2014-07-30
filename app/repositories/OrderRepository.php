@@ -320,8 +320,11 @@ class OrderRepository implements OrderRepositoryInterface {
             $order->save();
             $productResult = $this->addProductToOrder($order->id, $data['products']);
             // $productResult = $this->addProductOrder($order->id, $data['products']);
-            
-            if($productResult['hasHoldProduct'] && $data['ordertype'] == 1){ //for purchase order only
+            if(isset($productResult['stacknumberError'])){ //duplicate stack number with different product
+                return array(
+                    "error" => true,
+                    'message' => "Stack number ".$productResult['stacknumber']." already taken by different product.");
+            } else if($productResult['hasHoldProduct'] && $data['ordertype'] == 1){ //for purchase order only
                 $order->status_id = 7; //Testing status
                 $order->save();
             }
@@ -330,6 +333,15 @@ class OrderRepository implements OrderRepositoryInterface {
         });
         
         if($result){
+            if(isset($result['error'])){
+                if($result['error']){
+                    return array(
+                        "error" => true,
+                        'message' => $result['message']
+                    );
+                }
+            }
+
             if($data['ordertype'] == 1)
                 return array(
                     "error" => false,
@@ -383,7 +395,12 @@ class OrderRepository implements OrderRepositoryInterface {
                 $this->deleteProductOrderSummary($id, null);
             }
 
-            if($productResult != null && $data['ordertype'] == 1 && $order->status_id != 4){ //for purchase order only, status 4 is pending
+            if(isset($productResult['stacknumberError'])){ //duplicate stack number with different product
+                return array(
+                    "error" => true,
+                    'message' => "Stack number ".$productResult['stacknumber']." already taken by different product."
+                );
+            } else if($productResult != null && $data['ordertype'] == 1 && $order->status_id != 4){ //for purchase order only, status 4 is pending
                 if($productResult['hasHoldProduct']){
                     $order->status_id = 7; //Testing status
                 } else {
@@ -404,6 +421,15 @@ class OrderRepository implements OrderRepositoryInterface {
         });
         
         if($result){
+            if(isset($result['error'])){
+                if($result['error']){
+                    return array(
+                        "error" => true,
+                        'message' => $result['message']
+                    );
+                }
+            }
+
             if($data['ordertype'] == 1)
                 return array(
                     "error" => false,
@@ -614,6 +640,13 @@ class OrderRepository implements OrderRepositoryInterface {
             // } else {
             $stacks = $this->addStacksToOrder($order_id, $product['stacks'], $productordersummary->id);
             // }
+
+            if(isset($stacks['stacknumberError'])){
+                if($stacks['stacknumberError']){
+                    $result['stacknumberError'] = true;
+                    $result['stacknumber'] = $stacks['stacknumber'];
+                }
+            }
             
 
             if(isset($stacks['hasHoldProduct'])){
@@ -630,6 +663,9 @@ class OrderRepository implements OrderRepositoryInterface {
         $result = array('hasHoldProduct' => false);
         // var_dump($products);exit;
         foreach ($products as $product) {
+            if($this->checkIfStackNumberIsTakenByOtherProduct($product['stacknumber'], $product['product_id'])){
+                return array("stacknumberError" => true, "stacknumber"=>$product['stacknumber']);
+            }
             $product['order_id'] = $order_id;
             $product['productordersummary_id'] = $productordersummary_id;
             //set order status to testing when it has product hold with no rfv and file set
@@ -660,12 +696,35 @@ class OrderRepository implements OrderRepositoryInterface {
             $productorder->fill($product);
             $productorder->save();
 
+            if($product['stacknumber'] != ''){ //insert in stack table
+                $this->addToStackTable($product['stacknumber'], $product['product_id']);
+            }
+
             if(isset($product['uploadedfile'])){
                 $this->linkUploadFilesToProductOrder($product['uploadedfile'], $productorder->id);
             }
 
         }
         return $result;
+    }
+
+    private function addToStackTable($stacknumber, $productId){
+        $isExist = Stack::where('stacknumber', '=', $stacknumber)->where('product_id', '=', $productId)->count();
+        if($isExist == 0){
+            $stack = new Stack;
+            $stack->stacknumber = $stacknumber;
+            $stack->product_id = $productId;
+            $stack->save();
+        }
+    }
+
+    public function checkIfStackNumberIsTakenByOtherProduct($stacknumber, $productId){
+        $isExist = Stack::where('stacknumber', '=', $stacknumber)->where('product_id', '!=', $productId)->count();
+        if($isExist > 0){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private function linkUploadFilesToProductOrder($uploadedfile, $productorderid){
