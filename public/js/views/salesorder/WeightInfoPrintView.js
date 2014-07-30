@@ -133,14 +133,8 @@ define([
 			var pickupInfo = this.model.get('weightticketscale_pickup');
 			var dropoffInfo = this.model.get('weightticketscale_dropoff');
 			
-			var dateAndTime = this.convertDateFormat(this.soScheduleModel.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-')
-								+' '+this.soScheduleModel.get('scheduletimeHour')
-								+':'+this.soScheduleModel.get('scheduletimeMin')
-								+' '+this.soScheduleModel.get('scheduletimeAmPm');
-			
 			this.$el.find('#so-number').val(this.salesOrderModel.get('order_number'));
 			this.$el.find('#producer').val(this.salesOrderModel.get('account').name);
-			this.$el.find('#date-and-time').val(dateAndTime);
 			this.$el.find('#weight-ticket-no').val(this.model.get('weightTicketNumber'));
 			this.$el.find('#loading-ticket-no').val(this.model.get('loadingTicketNumber'));
 			
