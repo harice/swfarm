@@ -120,7 +120,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
             DB::rollback();
             $response = array(
             'error' => true,
-            'message' => "A problem was encountered while saving sections.");
+            'message' => "Please enter a unique Section name.");
         }
 
         return $response;
@@ -129,24 +129,50 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
 
     private function addSection($storagelocation_id, $sections = array())
     {
+        $response = false;
         foreach ($sections as $section) {
             $section['storagelocation_id'] = $storagelocation_id;
             
             
             if(isset($section['id'])) {
-                $this->validate($section, 'Section', $section['id']);
+                if (!$this->validateSection($section, 'Section', $section['id'])) {
+                    return false;
+                }
                 $sectionLocation = Section::find($section['id']);
             }
             else {
-                $this->validate($section, 'Section');
+                if (!$this->validateSection($section, 'Section')) {
+                    return false;
+                }
                 $sectionLocation = new Section();
             }
 
             $sectionLocation->fill($section);
             $sectionLocation->save();
-
+            
+            $response = true;
         }
-        return true;
+        
+        return $response;
+    }
+    
+    public function validateSection($data, $entity, $id = null)
+    {
+        $messages = array(
+            'name.unique' => 'Section name should be unique.'
+        );
+        
+        if ($id) {
+            $entity::$rules['name'] = 'required|unique:section,name,' .$id;
+        }
+        
+        $validator = Validator::make($data, $entity::$rules, $messages);
+        
+        if($validator->passes()) {
+            return true;
+        }
+        
+        return false;
     }
 
     private function removeSection($storagelocation_id, $sections = array())
@@ -211,7 +237,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
                 DB::rollback();
                 return Response::json(array(
                     'error' => true,
-                    'message' => "A problem was encountered while saving section"), 500);
+                    'message' => "Please enter a unique Section name."), 500);
             }
         } else {
             DB::rollback();
@@ -238,25 +264,6 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         }
         
     }
-
-    // public function validate($data, $id = null)
-    // {
-    //     $rules = StorageLocation::$rules;
-
-    //     // $rules = array(
-    //     //     'account_id' => 'required',
-    //     //     'name' => 'required|unique:storagelocation,name,'.$data['account_id'].',account_id',
-    //     //     'description' => 'max:250'
-    //     // );
-
-    //     $validator = Validator::make($data, $rules);
-        
-    //     if ($validator->fails()) {
-    //         throw new ValidationException($validator);
-    //     }
-        
-    //     return true;
-    // }
 
     public function validate($data, $entity, $id = null)
     {
