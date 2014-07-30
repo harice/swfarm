@@ -27,7 +27,9 @@
 							<div class="pull-right">
 								<a href="<%= contract_url %>/<%= contract.get("id") %>" class="btn btn-primary btn-sm"><i class="fa fa-eye width-10"></i> View Contract</a>
 								<a href="<%= contract_edit_url %>/<%= contract.get("id") %>" class="btn btn-primary btn-sm editable-button"><i class="fa fa-pencil width-10"></i> Edit Contract</a>
+                                <% if(contract.get("status_id") == 1) { %>
 								<a href="#" class="btn btn-danger btn-sm close-contract editable-button editable-button" data-id="<%= contract.get("id") %>"><i class="fa fa-times width-10"></i> Close Contract</a>
+                                <% } %>
 							</div>
 						</div>
 						<div class="sales-order-details-by-product"></div>

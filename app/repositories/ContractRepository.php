@@ -239,6 +239,14 @@ class ContractRepository implements ContractRepositoryInterface {
         try
         {
             $contract = $this->findById($id);
+            
+            if ($this->hasOpenOrders($id)) {
+                return array(
+                    'error' => true,
+                    'message' => 'Contract cannot be closed while having Open Sales Orders.'
+                );
+            }
+            
             $contract->status_id = $data['status_id'];
             $contract->update();
             
@@ -253,6 +261,18 @@ class ContractRepository implements ContractRepositoryInterface {
         {
             return $e->getMessage();
         }
+    }
+    
+    public function hasOpenOrders($id)
+    {
+        $contract = $this->findById($id);
+        foreach($contract->salesorders as $salesorder) {
+            if ($salesorder->status_id != 2) {
+                return true;
+            }
+        }
+        
+        return false;
     }
     
     /**
