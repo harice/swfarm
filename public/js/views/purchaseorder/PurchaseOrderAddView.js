@@ -89,7 +89,7 @@ define([
 				productSubFieldClone: null,
 				productSubFieldCounter: 0,
 				productSubFieldClass: ['stacknumber', 'section_id', 'description', 'tons', 'bales', 'id', 'ishold', 'rfv', 'uploadedfile'],
-				productSubFieldClassRequired: ['stacknumber', 'section_id', 'tons', 'bales'],
+				productSubFieldClassRequired: ['tons'],
 				productSubFieldExempt: [],
 				productSubFieldSeparator: '.',
 				removeComma: ['unitprice', 'tons', 'bales'],
@@ -454,6 +454,8 @@ define([
 				this.generateLocationFromDropDown(clone.find('.section_id'));
 			}
 			
+			this.addValidationToProductSub(clone);
+			
 			return clone;
 		},
 		
@@ -518,6 +520,16 @@ define([
 				
 				clone.find('.'+productFieldClassRequired[i]).each(function() {
 					$(this).rules('add', rules);
+				});
+			}
+		},
+
+		addValidationToProductSub: function (clone) {
+			var thisObj = this;
+			var productSubFieldClassRequired = this.options.productSubFieldClassRequired;
+			for(var i=0; i < productSubFieldClassRequired.length; i++) {
+				clone.find('.'+productSubFieldClassRequired[i]).each(function() {
+					$(this).rules('add', {required: true});
 				});
 			}
 		},

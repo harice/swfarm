@@ -69,6 +69,8 @@ define([
 			var thisObj = this;
 			this.currentCustomerId = null;
 			this.customerAccountContactId = null;
+			this.verifyOrder = false;
+			this.verified = false;
 			
 			this.productAutoCompletePool = [];
 			this.stackNumberByProductPool = [];
@@ -82,7 +84,7 @@ define([
 				productSubFieldClone: null,
 				productSubFieldCounter: 0,
 				productSubFieldClass: ['stacknumber', 'section_id', 'description', 'tons', 'bales', 'id'],
-				productSubFieldClassRequired: ['stacknumber', 'section_id', 'tons', 'bales'],
+				productSubFieldClassRequired: ['tons'],
 				productSubFieldExempt: [],
 				productSubFieldSeparator: '.',
 				removeComma: ['unitprice', 'tons', 'bales'],
@@ -206,6 +208,8 @@ define([
 			
 			if(this.soId != null)
 				innerTemplateVariables['so_id'] = this.soId;
+			if(this.verified)
+				innerTemplateVariables['verified'] = true;
 			
 			var innerTemplate = _.template(salesOrderAddTemplate, innerTemplateVariables);
 			
@@ -241,6 +245,8 @@ define([
 					data['transportdateend'] = thisObj.convertDateFormat(data['transportdateend'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					
                     //console.log(data);
+					if(thisObj.verifyOrder)
+						data['verified'] = '1';
 					
 					var salesOrderModel = new SalesOrderModel(data);
 					
@@ -248,11 +254,24 @@ define([
 						null, 
 						{
 							success: function (model, response, options) {
-								thisObj.displayMessage(response);
-								//Global.getGlobalVars().app_router.navigate(Const.URL.SO, {trigger: true});
-								Backbone.history.history.back();
+								if(thisObj.verifyOrder) {
+									thisObj.verifyOrder = false;
+									thisObj.hideConfirmationWindow(null, function () {
+										thisObj.displayMessage(response);
+										Backbone.history.history.back();
+									});
+								}
+								else {
+									thisObj.verifyOrder = false;
+									thisObj.displayMessage(response);
+									Backbone.history.history.back();
+								}
 							},
 							error: function (model, response, options) {
+								if(thisObj.verifyOrder)
+									thisObj.hideConfirmationWindow();
+								
+								thisObj.verifyOrder = false;
 								if(typeof response.responseJSON.error == 'undefined')
 									validate.showErrors(response.responseJSON);
 								else
@@ -381,6 +400,14 @@ define([
 			});
 		},
 		
+		onClickAddProductButton: function () {
+			if(!this.verified)
+				this.addProduct();
+			else {
+				this.displayGritter('Sales Order is already verified and products can no longer be modified.');
+			}
+		},
+		
 		addProduct: function () {
 			var clone = null;
 			
@@ -388,6 +415,10 @@ define([
 				var productTemplateVars = {
 					product_list:this.getProductDropdown(),
 				};
+				
+				if(this.verified)
+					productTemplateVars['verified'] = true;
+				
 				var productTemplate = _.template(productItemTemplate, productTemplateVars);
 				
 				this.$el.find('#product-list > tbody').append(productTemplate);
@@ -403,7 +434,7 @@ define([
 				this.$el.find('#product-list > tbody').append(clone);
 			}
 			
-			this.addValidationToProduct();
+			this.addValidationToProduct(clone);
 			this.addProductSub(clone.find('.product-stack-table'));
 			
 			return clone;
@@ -432,6 +463,8 @@ define([
 				tableElement.find('tbody').append(clone);
 				this.generateStackNumberDropdown(clone.find('.stacknumber'));
 			}
+			
+			this.addValidationToProductSub(clone);
 			
 			return clone;
 		},
@@ -524,11 +557,21 @@ define([
 			this.options.productSubFieldCounter++;
 		},
 		
-		addValidationToProduct: function () {
+		addValidationToProduct: function (clone) {
 			var thisObj = this;
 			var productFieldClassRequired = this.options.productFieldClassRequired;
 			for(var i=0; i < productFieldClassRequired.length; i++) {
-				$('#product-list .product-item .'+productFieldClassRequired[i]).each(function() {
+				clone.find('.'+productFieldClassRequired[i]).each(function() {
+					$(this).rules('add', {required: true});
+				});
+			}
+		},
+		
+		addValidationToProductSub: function (clone) {
+			var thisObj = this;
+			var productSubFieldClassRequired = this.options.productSubFieldClassRequired;
+			for(var i=0; i < productSubFieldClassRequired.length; i++) {
+				clone.find('.'+productSubFieldClassRequired[i]).each(function() {
 					$(this).rules('add', {required: true});
 				});
 			}
@@ -616,49 +659,9 @@ define([
 			return stacks;
 		},
 		
-		/*formatFormField: function (data) {
-			var formData = {products:[]};
-			var productFieldClass = this.options.productFieldClass;
-			
-			for(var key in data) {
-				if(typeof data[key] !== 'function'){
-					var value = data[key];
-					var arrayKey = key.split(this.options.productFieldSeparator);
-					
-					if(arrayKey.length < 2)
-						if(this.options.removeComma.indexOf(key) < 0)
-							formData[key] = value;
-						else
-							formData[key] = this.removeCommaFromNumber(value);
-					else {
-						if(arrayKey[0] == productFieldClass[0]) {
-							var index = arrayKey[1];
-							var arrayProductFields = {};
-							
-							for(var i = 0; i < productFieldClass.length; i++) {
-								if(this.options.productFieldExempt.indexOf(productFieldClass[i]) < 0) {
-									var fieldValue = data[productFieldClass[i]+this.options.productFieldSeparator+index];
-									if(!(productFieldClass[i] == 'id' && fieldValue == '')) {
-										if(this.options.removeComma.indexOf(productFieldClass[i]) < 0)
-											arrayProductFields[productFieldClass[i]] = fieldValue;
-										else
-											arrayProductFields[productFieldClass[i]] = this.removeCommaFromNumber(fieldValue);
-									}
-								}
-							}
-								
-							formData.products.push(arrayProductFields);
-						}
-					}
-				}
-			}
-			
-			return formData;
-		},*/
-		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
-			'click #add-product': 'addProduct',
+			'click #add-product': 'onClickAddProductButton',
 			'click .add-product-stack': 'addProductStack',
 			'click .remove-product': 'removeProduct',
 			'click .remove-product-stack': 'removeProductStack',
@@ -675,15 +678,26 @@ define([
 			'change .stacknumber': 'onChangeStackNumber',
 		},
 		
-		removeProduct: function (ev) {
-			var tr = $(ev.currentTarget).closest('tr');
-			tr.next().remove();
-			tr.remove();
-			
-			if(!this.hasProduct())
+		onClickRemoveProductButton: function () {
+			if(!this.verified)
 				this.addProduct();
+			else
+				this.displayGritter('Sales Order is already verified and products can no longer be modified.');
+		},
+		
+		removeProduct: function (ev) {
+			if(!this.verified) {
+				var tr = $(ev.currentTarget).closest('tr');
+				tr.next().remove();
+				tr.remove();
 				
-			this.computeTotals();
+				if(!this.hasProduct())
+					this.addProduct();
+					
+				this.computeTotals();
+			}
+			else
+				this.displayGritter('Sales Order is already verified and products can no longer be modified.');
 		},
 		
 		hasProduct: function () {
@@ -931,7 +945,9 @@ define([
 		},
 		
 		verifySo: function () {
-			this.hideConfirmationWindow();
+			this.verifyOrder = true;
+			this.subContainer.find('#soForm').submit();
+			//this.hideConfirmationWindow();
 			return false;
 		},
 		

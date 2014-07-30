@@ -11,6 +11,8 @@ define([
 	'collections/purchaseorder/DestinationCollection',
 	'collections/product/ProductCollection',
 	'collections/contact/ContactCollection',
+	'collections/inventory/StackNumberCollection',
+	'collections/stack/LocationCollection',
 	'models/purchaseorder/PurchaseOrderModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddTemplate.html',
@@ -31,6 +33,8 @@ define([
 			DestinationCollection,
 			ProductCollection,
 			ContactCollection,
+			StackNumberCollection,
+			LocationCollection,
 			PurchaseOrderModel,
 			contentTemplate,
 			purchaseOrderAddTemplate,
@@ -64,6 +68,7 @@ define([
 			this.producerAccountContactId = null;
 			
 			this.productAutoCompletePool = [];
+			this.stackNumberByProductPool = [];
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
@@ -73,8 +78,8 @@ define([
 				productFieldSeparator: '.',
 				productSubFieldClone: null,
 				productSubFieldCounter: 0,
-				productSubFieldClass: ['stacknumber', 'description', 'tons', 'bales', 'id'],
-				productSubFieldClassRequired: ['stacknumber', 'tons', 'bales'],
+				productSubFieldClass: ['stacknumber', 'section_id', 'description', 'tons', 'bales', 'id'],
+				productSubFieldClassRequired: ['stacknumber', 'section_id', 'tons', 'bales'],
 				productSubFieldExempt: [],
 				productSubFieldSeparator: '.',
 				removeComma: ['unitprice', 'tons', 'bales'],
@@ -118,6 +123,30 @@ define([
 			});
 			this.producerAccountCollection.on('error', function(collection, response, options) {
 				//this.off('error');
+			});
+			
+			this.stackNumberCollection = new StackNumberCollection();
+			this.stackNumberCollection.on('sync', function(data, textStatus, jqXHR, option) {
+				
+				var autocompleteData = [];
+				_.each(data, function (s) {
+					autocompleteData.push(s.stacknumber);
+				});
+				thisObj.stackNumberByProductPool[option.id] = autocompleteData;
+				
+				thisObj.initStackNumberAutocomplete(thisObj.subContainer.find('.product-stack-table tbody[data-id="'+option.dataId+'"] .stacknumber'), option.id);
+				thisObj.hideFieldThrobber('.product-stack-table tbody[data-id="'+option.dataId+'"] .stacknumber');
+			});
+			this.stackNumberCollection.on('error', function(collection, response, options) {
+			});
+			
+			this.locationCollection = new LocationCollection();
+			this.locationCollection.on('sync', function() {
+				thisObj.generateLocationFromDropDown();
+				thisObj.hideFieldThrobber('.section_id');
+			});
+			this.locationCollection.on('error', function(collection, response, options) {
+				
 			});
 		},
 	});

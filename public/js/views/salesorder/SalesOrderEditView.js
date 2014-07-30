@@ -151,11 +151,12 @@ define([
 			
 			this.model = new SalesOrderModel({id:this.soId});
 			this.model.on('change', function() {
+				if(this.get('verified') == 1)
+					thisObj.verified = true;
+				
 				_.each(this.get('productsummary'), function (product) {
 					thisObj.soProducts.push(product.productname.id);
 				});
-				
-				console.log(thisObj.soProducts);
 				
 				if(this.get('contract_id'))
 					thisObj.contractByAccountCollection.getContractByAccount(this.get('account').id);
@@ -227,6 +228,13 @@ define([
 				productFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(product.tons).toFixed(4)));
 				var unitPrice = parseFloat(product.unitprice) * parseFloat(product.tons);
 				productFields.find('.unit-price').val(thisObj.addCommaToNumber(unitPrice.toFixed(2)));
+				
+				if(thisObj.verified) {
+					productFields.find('.product_id_dummy').val(product.productname.id);
+					productFields.find('.unitprice').attr('readonly', true);
+					productFields.siblings('.product-item').find('.tons').attr('readonly', true);
+					productFields.find('.unit-price').attr('readonly', true);
+				}
 				
 				var j = 0;
 				_.each(product.productorder, function (productSub) {
