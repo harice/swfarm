@@ -328,14 +328,6 @@ class OrderRepository implements OrderRepositoryInterface {
                 $order->save();
             }
 
-            //update verified column
-            if(isset($data['verified'])){
-               if($data['verified'] == 1) {
-                    $order->verified = 1;
-                    $order->save();
-                } 
-            }
-
             return $order;
         });
         
