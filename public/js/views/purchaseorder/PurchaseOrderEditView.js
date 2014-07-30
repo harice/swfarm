@@ -11,6 +11,7 @@ define([
 	'collections/purchaseorder/DestinationCollection',
 	'collections/product/ProductCollection',
 	'collections/contact/ContactCollection',
+	'collections/inventory/StackNumberCollection',
 	'models/purchaseorder/PurchaseOrderModel',
 	'models/file/FileModel',
 	'text!templates/layout/contentTemplate.html',
@@ -33,6 +34,7 @@ define([
 			DestinationCollection,
 			ProductCollection,
 			ContactCollection,
+			StackNumberCollection,
 			PurchaseOrderModel,
 			FileModel,
 			contentTemplate,
@@ -58,10 +60,19 @@ define([
 			this.poId = option.id;
 			this.h1Title = 'Purchase Order';
 			this.h1Small = 'edit';
+			this.isInitProcess = true;
+			this.soProducts = [];
+			this.soProductsIndex = 0;
 			this.inits();
 			
 			this.model = new PurchaseOrderModel({id:this.poId});
 			this.model.on('change', function() {
+				_.each(this.get('productsummary'), function (product) {
+					thisObj.soProducts.push(product.productname.id);
+				});
+				
+				console.log(thisObj.soProducts);
+				
 				if(parseInt(this.get('isfrombid')) == 1 && this.get('status').name.toLowerCase() == 'pending') {
 					thisObj.isBid = true;
 					thisObj.h1Title = 'Bid';
@@ -69,7 +80,11 @@ define([
 				else
 					thisObj.isBid = false;
 				
-				thisObj.destinationCollection.getModels();
+				if(!thisObj.isInitProcess)
+					thisObj.destinationCollection.getModels();
+				else
+					thisObj.stackNumberCollection.getStackNumbersByProduct({id:thisObj.soProducts[thisObj.soProductsIndex]});
+				
 				this.off('change');
 			});
 		},
@@ -149,6 +164,7 @@ define([
 					j++;
 					
 					productSubFields.find('.id').val(productSub.id);
+					//thisObj.initStackNumberAutocomplete(productSubFields.find('.stacknumber'), product.productname.id);
 					productSubFields.find('.stacknumber').val(productSub.stacknumber);
 					productSubFields.find('.description').val(productSub.description);
 					productSubFields.find('.tons').val(productSub.tons);

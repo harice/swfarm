@@ -859,7 +859,7 @@ define([
 			}
 		},
 		
-		generateStackNumberDropdown: function (select, productId, stacknumber) {
+		generateStackNumberDropdown: function (select, productId, stacknumber) { console.log('generateStackNumberDropdown'); console.log('productId: '+productId);
 			if(productId == null || typeof productId === 'undefined')
 				productId = select.closest('.product-stack').prev('.product-item').find('.product_id').val();
 			

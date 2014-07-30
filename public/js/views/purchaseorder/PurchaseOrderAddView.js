@@ -11,6 +11,7 @@ define([
 	'collections/purchaseorder/DestinationCollection',
 	'collections/product/ProductCollection',
 	'collections/contact/ContactCollection',
+	'collections/inventory/StackNumberCollection',
 	'models/purchaseorder/PurchaseOrderModel',
 	'models/file/FileModel',
 	'text!templates/layout/contentTemplate.html',
@@ -33,6 +34,7 @@ define([
 			DestinationCollection,
 			ProductCollection,
 			ContactCollection,
+			StackNumberCollection,
 			PurchaseOrderModel,
 			FileModel,
 			contentTemplate,
@@ -57,7 +59,9 @@ define([
 			this.poId = null;
 			this.h1Title = 'Purchase Order';
 			this.h1Small = 'add';
-			
+			this.isInitProcess = false;
+			this.soProducts = [];
+			this.soProductsIndex = 0;
 			this.inits();
 		},
 		
@@ -72,6 +76,7 @@ define([
 			this.producerAccountContactId = null;
 			
 			this.productAutoCompletePool = [];
+			this.stackNumberByProductPool = [];
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
@@ -81,8 +86,8 @@ define([
 				productFieldSeparator: '.',
 				productSubFieldClone: null,
 				productSubFieldCounter: 0,
-				productSubFieldClass: ['stacknumber', 'description', 'tons', 'bales', 'id', 'ishold', 'rfv', 'uploadedfile'],
-				productSubFieldClassRequired: ['stacknumber', 'tons', 'bales'],
+				productSubFieldClass: ['stacknumber', 'section_id', 'description', 'tons', 'bales', 'id', 'ishold', 'rfv', 'uploadedfile'],
+				productSubFieldClassRequired: ['stacknumber', 'section_id', 'tons', 'bales'],
 				productSubFieldExempt: [],
 				productSubFieldSeparator: '.',
 				removeComma: ['unitprice', 'tons', 'bales'],
@@ -110,8 +115,10 @@ define([
 					});
 				});
 				
-				if(thisObj.subContainerExist())
+				if(thisObj.subContainerExist()) {
+					thisObj.isInitProcess = false;
 					thisObj.displayForm();
+				}
 				
 				this.off('sync');
 			});
@@ -126,6 +133,30 @@ define([
 			});
 			this.producerAccountCollection.on('error', function(collection, response, options) {
 				//this.off('error');
+			});
+			
+			this.stackNumberCollection = new StackNumberCollection();
+			this.stackNumberCollection.on('sync', function(data, textStatus, jqXHR, option) {
+				
+				var autocompleteData = [];
+				_.each(data, function (s) {
+					autocompleteData.push(s.stacknumber);
+				});
+				thisObj.stackNumberByProductPool[option.id] = autocompleteData;
+				
+				if(!thisObj.isInitProcess) {
+					thisObj.initStackNumberAutocomplete(thisObj.subContainer.find('.product-stack-table tbody[data-id="'+option.dataId+'"] .stacknumber'), option.id);
+					thisObj.hideFieldThrobber('.product-stack-table tbody[data-id="'+option.dataId+'"] .stacknumber');
+				}
+				else {
+					thisObj.soProductsIndex++;
+					if(thisObj.soProductsIndex < thisObj.soProducts.length)
+						this.getStackNumbersByProduct({id:thisObj.soProducts[thisObj.soProductsIndex]});
+					else
+						thisObj.destinationCollection.getModels();
+				}
+			});
+			this.stackNumberCollection.on('error', function(collection, response, options) {
 			});
 		},
 		
@@ -398,6 +429,7 @@ define([
 				clone = this.options.productSubFieldClone.clone();
 				this.addIndexToProductSubFields(clone, parentId);
 				tableElement.find('tbody').append(clone);
+				this.initStackNumberAutocomplete(clone.find('.stacknumber'));
 			}
 			
 			return clone;
@@ -596,6 +628,7 @@ define([
 			'click #add-product': 'addProduct',
 			'click .add-product-stack': 'addProductStack',
 			'click .remove-product': 'removeProduct',
+			'click .remove-product-stack': 'removeProductStack',
 			//'blur .productname': 'validateProduct',
 			'keyup .unitprice': 'onKeyUpUnitPrice',
 			'blur .unitprice': 'onBlurMoney',
@@ -610,10 +643,14 @@ define([
 			'change #pdf-file': 'readFile',
 			'click #remove-pdf-filename': 'resetImageField',
 			'click #undo-remove': 'undoRemove',
+			
+			'change .product_id': 'generateStackNumberSuggestions',
 		},
 		
 		removeProduct: function (ev) {
-			$(ev.currentTarget).closest('tr').remove();
+			var tr = $(ev.currentTarget).closest('tr');
+			tr.next().remove();
+			tr.remove();
 			
 			if(!this.hasProduct())
 				this.addProduct();
@@ -623,6 +660,21 @@ define([
 		
 		hasProduct: function () {
 			return (this.$el.find('#product-list tbody .product-item').length)? true : false;
+		},
+		
+		removeProductStack: function (ev) {
+			var tr = $(ev.currentTarget).closest('tr');
+			var table = tr.closest('table');
+			tr.remove();
+			
+			if(!this.hasProductSub(table)) {
+				this.addProductSub(table);
+			}
+		},
+		
+		hasProductSub: function (tableElement) {
+			//console.log('hasProductSub: '+tableElement.find('tbody .product-stack-item').length);
+			return (tableElement.find('tbody .product-stack-item').length)? true : false;
 		},
 		
 		computeTotals: function () {
@@ -982,6 +1034,46 @@ define([
 				if(this.producerAccountCollection.models.length == 1)
 					this.$el.find('#contact_id').val(this.producerAccountCollection.models[0].get('id')).change();
 			}
+		},
+		
+		generateStackNumberSuggestions: function (ev) {
+			var productId = $(ev.currentTarget).val();
+			var stackTBODY = $(ev.currentTarget).closest('.product-item').next('.product-stack').find('.product-stack-table tbody');
+			
+			if(productId != '') {
+				if(typeof this.stackNumberByProductPool[productId] === 'undefined') {
+					this.showFieldThrobber(stackTBODY.find('.stacknumber'));
+					this.stackNumberCollection.getStackNumbersByProduct({id:productId, dataId:stackTBODY.attr('data-id')});
+				}
+				else
+					this.initStackNumberAutocomplete(stackTBODY.find('.stacknumber'));
+			}
+		},
+		
+		initStackNumberAutocomplete: function (element, productId) { console.log('initStackNumberAutocomplete'); console.log('productId: '+productId);
+			var thisObj = this;
+			
+			element.each(function() {
+				var field = $(this);
+				
+				if(productId == null || typeof productId === 'undefined')
+					productId = field.closest('.product-stack').prev('.product-item').find('.product_id').val();
+				
+				if(typeof thisObj.stackNumberByProductPool[productId] !== 'undefined') {
+					
+					if(!field.hasClass('ui-autocomplete-input')) {
+						field.autocomplete({
+							source:thisObj.stackNumberByProductPool[productId],
+							messages: {
+								noResults: '',
+								results: function() {},
+							}
+						});
+					}
+					else
+						field.autocomplete('option', 'source', thisObj.stackNumberByProductPool[productId]);
+				}
+			});
 		},
 		
 		otherInitializations: function () {},
