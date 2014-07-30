@@ -28,6 +28,7 @@ class Order extends BaseModel {
         'status_id',
         'user_id',
         'contract_id',
+        'verified',
         'notes',
         'isfrombid',
         'ordertype',
