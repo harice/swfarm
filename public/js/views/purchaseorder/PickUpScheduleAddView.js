@@ -438,6 +438,7 @@ define([
 			if(this.options.productFieldClone == null) {
 				var productTemplateVars = {
 					product_list:this.getProductDropdown(),
+					locationto_list:this.getLocationToDropdown(),
 				};
 				var productTemplate = _.template(purchaseOrderPickUpScheduleProductItemTemplate, productTemplateVars);
 				
@@ -452,7 +453,7 @@ define([
 				this.addIndexToProductFields(clone);
 				this.$el.find('#product-list tbody').append(clone);
 			}
-				
+			
 			return clone;
 		},
 		
@@ -476,6 +477,19 @@ define([
 			});
 			
 			return dropDown;
+		},
+		
+		getLocationToDropdown: function () {
+			var dropdown = '<option value="">Select a stack location</option>';
+			_.each(this.locationCollection.models, function (model) {
+				var locationName = model.get('name');
+				
+				_.each(model.get('section'), function (section) {
+					dropdown += '<option value="'+section.id+'">'+locationName+' - '+section.name+'</option>';
+				});
+			});
+			
+			return dropdown;
 		},
 		
 		addIndexToProductFields: function (bidProductItem) {

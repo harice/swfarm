@@ -51,7 +51,7 @@ define([
 			
 			this.model = new POScheduleModel({id:this.schedId});
 			this.model.on('change', function() {
-				thisObj.orderScheduleVariablesModel.runFetch();
+				thisObj.locationCollection.getWarehouseLocation();
 				thisObj.off('change');
 			});
             
@@ -91,6 +91,7 @@ define([
 				
 				productFields.find('.id').val(product.id);
 				productFields.find('.productorder_id').val(product.productorder_id).change();
+				productFields.find('.sectionto_id').val(product.productorder.section_id);
 				productFields.find('.quantity').val(thisObj.addCommaToNumber(quantity.toFixed(4)));
 			});
 			this.$el.find('#total-quantity').val(this.addCommaToNumber(totalQuantity.toFixed(4)));
