@@ -330,10 +330,13 @@
 	            <a href="<%= weight_info_print_url %>" class="btn btn-primary btn-sm btn-trans btn-rad"><i class='fa fa-print width-10'></i> Print</a>
 	            <a id="mail-weight-ticket" class="btn btn-primary btn-sm btn-trans btn-rad"><i class='fa fa-envelope-o width-10'></i> Email</a>
 	            <% } if (typeof editable !== "undefined") { %>
+					<% if(wi.get("checkout") == 1) {  %>
 					<a class="btn btn-warning btn-sm btn-trans btn-rad close-weight-ticket editable-button" href="#">
 						<i class='fa fa-times width-10'></i> Close Ticket
 					</a>
+					<% } else { %>
 					<a id="checkout-stack" class="btn btn-primary btn-trans btn-rad btn-sm editable-button" href="#">Check-out Stack</a>
+					<% } %>
 				<% } } %>
 				<a id="go-to-previous-page" class="btn btn-default btn-sm btn-trans btn-rad" href="#"><i class='fa fa-history width-10'></i> Back</a>
 	        </div>
