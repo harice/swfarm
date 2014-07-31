@@ -63,4 +63,8 @@ class ProductOrder extends Eloquent {
         return $this->hasOne('ProductOrderSummary', 'id', 'productordersummary_id');
     }
 
+    public function sectionfrom(){
+        return $this->hasOne('Section', 'id', 'section_id');
+    }
+
 }
