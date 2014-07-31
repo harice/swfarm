@@ -672,6 +672,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         // return Response::json($this->getScheduleOrderType($schedule_id));
         try
         {
+            $orderType = $this->getScheduleOrderType($schedule_id);
             $weightticketObj = WeightTicket::with('weightticketscale_dropoff.weightticketproducts')
                             ->with('weightticketscale_pickup.weightticketproducts')
                             ->where('transportSchedule_id', '=', $schedule_id)->first();
@@ -682,6 +683,10 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                 return Response::json(array(
                       'error' => true,
                       'message' => 'This weight ticket is already close.'), 500);
+            } else if($orderType == 2 && $weightticketObj->checkout != 1){ //SO is not checkout yet
+                return Response::json(array(
+                      'error' => true,
+                      'message' => 'Weight ticket has not been checkout from the inventory yet.'), 500);
             }
                 
             $weightticket = $weightticketObj->toArray();
@@ -749,7 +754,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                 }
             }
 
-            if($this->getScheduleOrderType($schedule_id) == 1){ //for PO only
+            if($orderType == 1){ //for PO only
                 $dataInventory = $this->createJsonForInventory($schedule_id);
                 $inventoryResponse = InventoryLibrary::store($dataInventory);
                 if($inventoryResponse['error']){
