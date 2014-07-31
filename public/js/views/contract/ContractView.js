@@ -57,6 +57,7 @@ define([
                 total_bales: total_bales
 			};
             
+            _.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
 			var innerTemplate = _.template(contractViewTemplate, innerTemplateVariables);
 			
 			var variables = {

@@ -190,8 +190,6 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('inventory', 'APIv1\InventoryController');
 });
 
-
-Route::get('/', function(){
-	return View::make('main')->withVersion(Config::get('Constants.VERSION',"1.0"));
-});
+Route::get('/', function(){ return View::make('main')->withVersion(Config::get('Constants.VERSION',"1.0")); });
+Route::get('/{dump}', function(){ return View::make('errors/404'); });
 
