@@ -1,7 +1,7 @@
 <?php
 
 class TransportScheduleProduct extends Eloquent {
-    protected $fillable = array('transportschedule_id', 'productorder_id','quantity');
+    protected $fillable = array('transportschedule_id', 'productorder_id','quantity','sectionto_id');
 
     protected $table = 'transportscheduleproduct';
 
@@ -23,6 +23,10 @@ class TransportScheduleProduct extends Eloquent {
 
     public function weightticketproducts(){
         return $this->hasMany('WeightTicketProducts', 'transportScheduleProduct_id', 'id');
+    }
+
+    public function sectionto(){
+        return $this->hasOne('section', 'id', 'sectionto_id');
     }
 
 }
