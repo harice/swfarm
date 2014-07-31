@@ -326,9 +326,13 @@ class InventoryRepository implements InventoryRepositoryInterface {
         return $inventory->toArray();
         
     }
-    
+
+    public function store($data){
+        return InventoryLibrary::store($data);
+    }
+/*    
     public function store($data)
-    {
+    {   
         DB::beginTransaction();
         $this->validate($data, 'Inventory');
         if($data['notes'] == ""){
@@ -499,20 +503,7 @@ class InventoryRepository implements InventoryRepositoryInterface {
                     $stacklocation->save();
                 }
             }
-            /*
-            $stacklocation = StackLocation::where('stack_id', '=', $stack->id)->first();
-            if($stacklocation){ //if stack number found on a stack location
-                //just add the tons value
-                $stacklocation->tons = $stacklocation->tons + $product['tons'];
-                $stacklocation->save();
-            } else { //create new stack location
-                $stackLocationData['stack_id'] = $stack->id;
-                $stackLocationData['section_id'] = $product['sectionto_id'];
-                $stackLocationData['tons'] = $product['tons'];
-                $stacklocation = new StackLocation;
-                $stacklocation->fill($stackLocationData);
-                $stacklocation->save();
-            }*/
+            
         } else { //if stack with the stack numbers doesn't exist
            return array(
                 'error' => true,
@@ -531,7 +522,7 @@ class InventoryRepository implements InventoryRepositoryInterface {
         
         return $stack->id;
     }
-
+*/
     private function removeSection($storagelocation_id, $sections = array())
     {
         // $existingSectionId = array();
@@ -654,7 +645,7 @@ class InventoryRepository implements InventoryRepositoryInterface {
     
     public function instance($data = array())
     {
-        return new StorageLocation($data);
+        return new Inventory($data);
     }
 
     public function getInventoryTransactionType(){
