@@ -4,7 +4,7 @@ class AuditRepository implements AuditRepositoryInterface {
   
   public function paginate($input) 
   {
-    // $removefields = array('confirmcode', 'validated', 'status', 'deleted', 'deleted_at');
+    $removefields = array('confirmcode', 'validated', 'status', 'deleted', 'deleted_at', 'created_at', 'updated_at');
     $perPage = isset($input['perpage']) ? $input['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
     $page = isset($input['page']) ? $input['page'] : 1;
     $sortby = isset($input['sortby']) ? $input['sortby'] : 'created_at';
@@ -31,8 +31,13 @@ class AuditRepository implements AuditRepositoryInterface {
         if (!is_object($serValue)) $oldValue = $serValue;
         else $oldValue = $serValue->toArray();
         
+        $oldValue = array_filter($oldValue);
+        
         // Remove unnecessary fields
-        unset($oldValue['confirmcode']);
+        foreach ($removefields as $key => $value) {
+          if(array_key_exists($value, $oldValue)) unset($oldValue[$value]);
+        }
+
         $list['data'][$i]["value"] = $oldValue;
       }
     }
