@@ -244,6 +244,7 @@ class OrderRepository implements OrderRepositoryInterface {
         $order = Order::with('productsummary.productname')
                 ->with('productsummary.productorder.product')
                 ->with('productsummary.productorder.upload.files')
+                ->with('productsummary.productorder.sectionfrom.storagelocation')
                 ->with('account')
                 ->with('contact')
                 ->with('orderaddress', 'orderaddress.addressStates')
