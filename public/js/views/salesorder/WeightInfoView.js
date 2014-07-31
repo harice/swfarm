@@ -121,7 +121,9 @@ define([
 			'click #confirm-close-wt': 'closeWeightTicket',
             'click #mail-weight-ticket': 'showMailForm',
             'click #confirm-mail-weight-ticket': 'mailWeightTicket',
-            'click #print-weight-ticket': 'printWeightTicket'
+            'click #print-weight-ticket': 'printWeightTicket',
+			'click #checkout-stack': 'showCheckoutStackConfirmationWindow',
+			'click #confirm-checkout-stack': 'checkoutStack',
 		},
                 
         printWeightTicket: function() {
@@ -176,6 +178,23 @@ define([
 										'confirm-close-wt',
 										'Close Weight Ticket',
 										'Close Weight Ticket',
+										false);
+			this.showConfirmationWindow();
+			
+			return false;
+		},
+		
+		checkoutStack: function () {
+			this.hideConfirmationWindow();
+			
+			return false;
+		},
+		
+		showCheckoutStackConfirmationWindow: function (ev) {
+			this.initConfirmationWindow('Are you sure you want to checkout the stack?',
+										'confirm-checkout-stack',
+										'Check-out Stack',
+										'Check-out Stack',
 										false);
 			this.showConfirmationWindow();
 			
