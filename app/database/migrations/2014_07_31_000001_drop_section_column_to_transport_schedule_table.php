@@ -26,7 +26,10 @@ class DropSectionColumnToTransportScheduleTable extends Migration {
 	 */
 	public function down()
 	{
-		
+		Schema::table('transportschedule', function(Blueprint $table)
+		{
+			
+		});
 	}
 
 }
