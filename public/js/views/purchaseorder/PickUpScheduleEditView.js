@@ -91,7 +91,7 @@ define([
 				
 				productFields.find('.id').val(product.id);
 				productFields.find('.productorder_id').val(product.productorder_id).change();
-				productFields.find('.sectionto_id').val(product.productorder.section_id);
+				productFields.find('.sectionto_id').val(product.sectionto.id);
 				productFields.find('.quantity').val(thisObj.addCommaToNumber(quantity.toFixed(4)));
 			});
 			this.$el.find('#total-quantity').val(this.addCommaToNumber(totalQuantity.toFixed(4)));
