@@ -2,8 +2,8 @@
     <h2 class="ponumber margin-bottom-0"><%= weightticket.get("weightTicketNumber") %></h2>
     <div class="row margin-top-0">
         <div class="col-md-6">
-            SO No: <code><%= so.get("order_number") %></code><br>
-            Customer: <code><%= so.get("account").name %></code><br>
+            <% if(order.get('ordertype') != 1) { print('SO'); } else { print('PO'); } %> No: <code><%= order.get("order_number") %></code><br>
+            Customer: <code><%= order.get("account").name %></code><br>
             Loading Ticket No: <code><%= weightticket.get("loadingTicketNumber") %></code><br>
             Unloading Ticket No: <code><%= weightticket.get("unloadingTicketNumber") %></code><br>
             Date: <code><%= weightticket.get("created_at") %></code>
@@ -59,7 +59,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% _.each(pickup_products, function (product) { %>
+                            <% _.each(weightticket.get("weightticketscale_pickup").weightticketproducts, function (product) { %>
                             <tr>
                                 <td><%= product.transportscheduleproduct.productorder.stacknumber %></td>
                                 <td><%= product.transportscheduleproduct.productorder.product.name %></td>
@@ -83,7 +83,7 @@
         </fieldset>
         <% } %>
         
-        <% if (weightticket.get("weightticketscale_dropoff")) { %>
+        <% if (!_.isNull(weightticket.get("weightticketscale_dropoff"))) { %>
         <fieldset>
             <legend>Dropoff</legend>
             <div id="dropoff-fields" style="display:none;">
@@ -125,7 +125,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% _.each(dropoff_products, function (product) { %>
+                            <% _.each(weightticket.get("weightticketscale_dropoff").weightticketproducts, function (product) { %>
                             <tr>
                                 <td><%= product.transportscheduleproduct.productorder.stacknumber %></td>
                                 <td><%= product.transportscheduleproduct.productorder.product.name %></td>

@@ -196,7 +196,7 @@ define([
 							thisObj.subContainer.find('.editable-button').remove();
 							thisObj.subContainer.find('#weight-status').removeClass('label-success').addClass('label-default').html('Closed');
 
-							var weight_info_print_url = '#/'+Const.URL.POWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+'print';
+							var weight_info_print_url = '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+'print';
 							thisObj.subContainer.find('#weight-ticket-actions').prepend('<a href="'+weight_info_print_url+'" class="btn btn-primary btn-sm btn-trans btn-rad"><i class="fa fa-print width-10"></i> Print</a><a id="mail-weight-ticket" class="btn btn-primary btn-sm btn-trans btn-rad"><i class="fa fa-envelope-o width-10"></i> Email</a>');
 						});
 						thisObj.displayMessage(response);

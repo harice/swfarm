@@ -90,6 +90,7 @@ define([
                     contractModel.fetch({
                         success: function(contract) {
                             $('#view-contract .status').html(contract.get('status').name);
+                            Global.getGlobalVars().app_router.navigate(Const.URL.CONTRACT, {trigger: true});
                         },
                         wait: true,
                         headers: thisObj.model.getAuth()

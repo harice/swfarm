@@ -30,7 +30,7 @@ class Section extends BaseModel {
      */
 	public static $rules = array(
         'storagelocation_id' => 'required',
-        'name' => 'required',
+        'name' => 'required|unique:section,name',
         'description' => 'max:250'
     );
     

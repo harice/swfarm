@@ -31,7 +31,7 @@ class ContractController extends BaseController {
 	 */
 	public function search()
 	{
-        $result = $this->repo->search( Input::all() );
+        $result = $this->repo->findAll( Input::all() );
         return Response::json($result);
 	}
 

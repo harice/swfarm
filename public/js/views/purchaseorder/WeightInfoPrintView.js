@@ -91,11 +91,8 @@ define([
 				previous_so_sched_url: '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.poId,
         
                 weightticket : this.model,
-                so : this.purchaseOrderModel,
-                schedule : this.poScheduleModel,
-                
-                pickup_products : this.model.get("weightticketscale_pickup").weightticketproducts,
-                dropoff_products : this.model.get("weightticketscale_pickup").weightticketproducts
+                order : this.purchaseOrderModel,
+                schedule : this.poScheduleModel
 			};
             
             _.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
@@ -125,14 +122,8 @@ define([
 			var pickupInfo = this.model.get('weightticketscale_pickup');
 			var dropoffInfo = this.model.get('weightticketscale_dropoff');
 			
-			var dateAndTime = this.convertDateFormat(this.poScheduleModel.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-')
-								+' '+this.poScheduleModel.get('scheduletimeHour')
-								+':'+this.poScheduleModel.get('scheduletimeMin')
-								+' '+this.poScheduleModel.get('scheduletimeAmPm');
-			
 			this.$el.find('#so-number').val(this.purchaseOrderModel.get('order_number'));
 			this.$el.find('#producer').val(this.purchaseOrderModel.get('account').name);
-			this.$el.find('#date-and-time').val(dateAndTime);
 			this.$el.find('#weight-ticket-no').val(this.model.get('weightTicketNumber'));
 			this.$el.find('#loading-ticket-no').val(this.model.get('loadingTicketNumber'));
 			
