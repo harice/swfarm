@@ -81,6 +81,11 @@ class WeightTicketController extends BaseController {
         return $result;
 	}
 
+	public function checkoutWeightTicket($transportschedule_id){
+		$result = $this->weightticket->checkoutWeightTicket($transportschedule_id);
+        return $result;
+	}
+
     public function mailWeightTicket($id) {
         $input = Input::all();
         

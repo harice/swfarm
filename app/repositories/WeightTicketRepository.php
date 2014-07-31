@@ -559,19 +559,23 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     }
     
 
-    private function createJsonForInventory($schedule_id){
+    private function createJsonForInventory($schedule_id, $ordertype = 1){ //order type is default to PO
         $transportSchedule = TransportSchedule::with('weightticket.weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder')
                                             ->with('weightticket.weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder')
                                             ->where('id', '=', $schedule_id)->first();
 
         $transportSchedule = $transportSchedule->toArray();
         // return Response::json($transportSchedule);
-
-        if($transportSchedule['weightticket']['dropoff_id'] != null){
-            $weightticketscale = $transportSchedule['weightticket']['weightticketscale_dropoff'];
-        } else if($transportSchedule['weightticket']['pickup_id'] != null){
+        if($ordertype == 1){ //if PO
+            if($transportSchedule['weightticket']['dropoff_id'] != null){
+                $weightticketscale = $transportSchedule['weightticket']['weightticketscale_dropoff'];
+            } else if($transportSchedule['weightticket']['pickup_id'] != null){
+                $weightticketscale = $transportSchedule['weightticket']['weightticketscale_pickup'];
+            }
+        } else { //if SO, SO has always have pick up schedule before calling this method
             $weightticketscale = $transportSchedule['weightticket']['weightticketscale_pickup'];
         }
+        
         $ctr = 0;
         foreach($weightticketscale['weightticketproducts'] as $product){
             $productTemp[$ctr]['tons'] = $product['pounds'] * 0.0005;
@@ -587,6 +591,65 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
         // return Response::json($products);
         return $products;
+    }
+
+    public function checkoutWeightTicket($schedule_id){
+        $weightticket = WeightTicket::where('transportSchedule_id', '=', $schedule_id)->first();
+        if(!$weightticket) {
+            return Response::json(array(
+                  'error' => true,
+                  'message' => 'Weight Info Not Found.'), 500);
+        } else if($weightticket->checkout == 1){ //already checkout
+            return Response::json(array(
+                  'error' => true,
+                  'message' => 'This weight ticket is already close.'), 500);
+        } else if($weightticket->pickup_id == null){
+            return Response::json(array(
+                  'error' => true,
+                  'message' => 'This weight ticket has no pickup details yet.'), 500);
+        } else {
+            $weightticket = $weightticket->toArray();
+
+            if(isset($weightticket['weightticketscale_pickup'])){
+                
+                if($weightticket['weightticketscale_pickup']['scaleAccount_id'] == null ||
+                   $weightticket['weightticketscale_pickup']['scale_id'] == null || 
+                   $weightticket['weightticketscale_pickup']['fee'] == null ||
+                   $weightticket['weightticketscale_pickup']['bales'] == null ||
+                   $weightticket['weightticketscale_pickup']['gross'] ==  null ||
+                   $weightticket['weightticketscale_pickup']['tare'] == null){
+                    return Response::json(array(
+                      'error' => true,
+                      'message' => 'Please complete all the details of pickup weight ticket before checking out.'), 500);
+                }
+
+                if(count($weightticket['weightticketscale_pickup']['weightticketproducts']) > 1){ //require only if more than 1 product is in weight ticket
+                    foreach($weightticket['weightticketscale_pickup']['weightticketproducts'] as $product){
+                        if($product['bales'] == null || $product['pounds'] == null){
+                            return Response::json(array(
+                              'error' => true,
+                              'message' => 'Please complete all the details of pickup weight ticket product details before checking out.'), 500);
+                        }
+                    }
+                }
+                
+            }
+
+            $dataInventory = $this->createJsonForInventory($schedule_id, 2); //set order type to SO
+            $inventoryResponse = InventoryLibrary::store($dataInventory);
+            if($inventoryResponse['error']){
+                return Response::json($inventoryResponse);
+            }
+            
+            //change the status
+            $weightticket->checkout = 1;
+            $weightticket->save();
+            return Response::json(array(
+              'error' => false,
+              'message' => 'Weighticket successfully checkout.'), 200);
+
+
+        }
     }
 
     public function closeWeightTicket($schedule_id)
