@@ -7,6 +7,7 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/contact/contactAddTemplate.html',
 	'models/contact/ContactModel',
+    'models/account/AccountModel',
     'collections/account/AccountNameCollection',
 	'collections/account/AccountAutocompleteCollection',
     'views/autocomplete/AutoCompleteView',
@@ -21,6 +22,7 @@ define([
 			contentTemplate,
 			contactAddTemplate,
 			ContactModel,
+            AccountModel,
 			AccountNameCollection,
 			AccountAutocompleteCollection,
 			AutoCompleteView,
@@ -131,10 +133,53 @@ define([
 			
 			this.accountAutoCompleteView.render();
 		},
+        
+        hasRate: function (account_id) {
+            var account = new AccountModel({id: account_id});
+            
+            account.fetch({
+                success: function (account) {
+                    if (account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.LOADER || account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.OPERATOR) {
+                        $('#rate').attr("disabled", false);
+                    } else {
+                        $('#rate').val('0.00');
+                        $('#rate').attr("disabled", true);
+                    }
+                },
+                error: function (model, response, options) {
+                    console.log('Fail to fetch account.');
+                },
+                headers: account.getAuth(),
+            });
+        },
+        
+        survey: function (selector, callback)
+        {
+            var input = $(selector);
+            var oldvalue = input.val();
+            setInterval(function(){
+                if (input.val()!=oldvalue) {
+                    oldvalue = input.val();
+                    callback();
+                }
+            }, 100);
+        },
 		
 		events: {
+            'change #account': 'toggleRate',
 			'click #go-to-previous-page': 'goToPreviousPage',
 		},
+        
+        toggleRate: function (ev)
+        {
+            var that = this;
+            
+            this.survey('#account_id', function () {
+                var account_id = $('#addContactForm #account_id').val();
+                that.hasRate(account_id);
+            });
+        }
+        
 	});
     
     return ContactAddView;
