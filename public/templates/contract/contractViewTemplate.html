@@ -18,8 +18,8 @@
                 <dd><%= total_bales %> bales &nbsp</dd>
                 <dd>
                     <div class="clearfix"></div>
-                    <a href="<%= contract_edit_url %>/<%= contract.get('id') %>" class="btn btn-primary">Edit</a>
                     <% if(contract.get("status_id") == 1) { %>
+                    <a href="<%= contract_edit_url %>/<%= contract.get('id') %>" class="btn btn-primary">Edit</a>
                     <button id="close-contract" type="button" class="btn btn-danger">Close Contract</button>
                     <% } %>
                     <a id="go-to-previous-page" href="#" class="btn btn-default">Cancel</a>
