@@ -191,8 +191,11 @@ class OrderRepository implements OrderRepositoryInterface {
 
         $result['delivered'] = $result['delivered'];
         $result['expected'] = $result['expected'];
-
-        $result['percentage'] = intval(($result['delivered']/$result['expected']) * 100);
+        if($result['delivered'] != null && $result['delivered'] != 0){
+            $result['percentage'] = intval(($result['delivered']/$result['expected']) * 100);    
+        } else {
+            $result['percentage'] = 0;
+        }
 
         if($result['percentage'] > 100){
             $result['percentage'] = 100;

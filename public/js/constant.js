@@ -152,6 +152,11 @@ define(function () {
 				'ID': 'order-list-collapsible-',
 			},
 		},
+		'SO': {
+			'NATUREOFSALES': {
+				'WITHCONTRACT': 1,
+			},
+		},
         'CONTRACT': {
 			'COLLAPSIBLE': {
 				'ID': 'contract-list-collapsible-',
