@@ -1,0 +1,187 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="block-flat">
+            <div class="content">
+
+                <form id="poForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+                    <% if (typeof po_id !== "undefined") { %>
+                    <input type="hidden" name="id" value="<%= po_id %>" />
+                    <% } %>
+                    <fieldset>
+                        <legend>Details</legend>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <% if (typeof po_id !== "undefined") { %>
+                                <div class="form-group">
+                                    <label for="ponumber" class="col-sm-3 control-label">PO Number</label>
+                                    <div class="col-sm-7">
+                                        <input id="ponumber" type="text" class="form-control ponumber" placeholder="" maxlength="250" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="status" class="col-sm-3 control-label">Status</label>
+                                    <div class="col-sm-7">
+                                        <input id="status" type="text" class="form-control status" placeholder="" maxlength="250" readonly>
+                                    </div>
+                                </div>
+                                <% } %>
+                                <% if (typeof is_bid === "undefined") { %>
+                                <div class="form-group">
+                                    <label for="location_id" class="col-sm-3 control-label">Destination</label>
+                                    <div id="po-destination" class="col-sm-9"></div>
+                                </div>
+                                <% } %>
+                                <div class="form-group">
+                                    <label for="account" class="col-sm-3 control-label">Producer *</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control capitalize" id="account" name="account" maxlength="50" required>
+                                        <input type="hidden" class="form-control" id="account_id" name="account_id" value="" required>
+                                    </div>
+                                </div>
+								<div class="form-group">
+									<label for="contact_id" class="col-sm-3 control-label">Producer Contact *</label>
+									<div class="col-sm-7">
+										<div class="styled-select">
+											<select class="form-control" id="contact_id" name="contact_id" required>
+												<option value="">Select a producer contact</option>
+											</select>
+											<span class="field-throbber throbber_wrap" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
+										</div>
+									</div>
+								</div>
+                                <div class="form-group">
+                                    <label for="street" class="col-sm-3 control-label">Street</label>
+                                    <div class="col-sm-7">
+                                        <input id="street" type="text" class="form-control street" placeholder="" maxlength="250" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="city" class="col-sm-3 control-label">City</label>
+                                    <div class="col-sm-7">
+                                        <input id="city" type="text" class="form-control city" placeholder="" maxlength="250" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="state" class="col-sm-3 control-label">State/Province</label>
+                                    <div class="col-sm-7">
+                                        <input id="state" type="text" class="form-control state" placeholder="" maxlength="250" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="zipcode" class="col-sm-3 control-label">Zip Code</label>
+                                    <div class="col-sm-3">
+                                        <input id="zipcode" type="text" class="form-control zipcode" placeholder="" minlength="5" maxlength="10" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <% if (typeof po_id !== "undefined") { %>
+                                <div class="form-group">
+                                    <label for="dateofpurchase" class="col-sm-3 control-label">Date of Purchase</label>
+                                    <div class="col-sm-9">
+                                        <input id="dateofpurchase" type="text" class="form-control dateofpurchase" placeholder="" maxlength="250" readonly>
+                                    </div>
+                                </div>
+                                <% } %>
+                                <% if (typeof is_bid === "undefined") { %>
+                                <div class="form-group"><label for="" class="col-sm-12">Pick-up Period:</label></div>
+                                <div class="form-group">
+                                    <label for="transportdatestart" class="col-sm-3 control-label">Start</label>
+                                    <div class="col-sm-4">
+                                        <div id="start-date" class="calendar-cont">
+                                            <div class="input-group date datetime margin-bottom-0">
+                                                <input id="transportdatestart" class="form-control form-date" name="transportdatestart" size="16" type="text" value="" required/>
+                                                <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                            </div>
+                                        </div>
+                                        <div class="error-msg-cont"></div>
+                                    </div>
+                                    <label for="transportdateend" class="col-sm-1 control-label">End</label>
+                                    <div class="col-sm-4">
+                                        <div id="end-date" class="calendar-cont">
+                                            <div class="input-group date datetime margin-bottom-0">
+                                                <input id="transportdateend" class="form-control form-date" name="transportdateend" size="16" type="text" value="" required/>
+                                                <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                            </div>
+                                        </div>
+                                        <div class="error-msg-cont"></div>
+                                    </div>
+                                </div>
+                                <% } %>
+                                <div class="form-group">
+                                    <label for="notes" class="col-sm-3 control-label">Notes</label>
+                                    <div class="col-sm-9">
+                                        <textarea class="form-control notes" id="notes" name="notes"></textarea>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>
+                            Products
+                            <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
+                        </legend>
+                        <div class="table-responsive">
+                            <table id="product-list" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Description</th>
+                                        <th>Stack No.</th>
+                                        <th class="width-130"><% if (typeof is_bid === "undefined") { %>Unit Price<% } else { %>Bid Unit Price<% } %></th>
+                                        <th class="width-120">Est Tons</th>
+                                        <th>Bales</th>
+                                        <th class="width-150"><% if (typeof is_bid === "undefined") { %>Total Price<% } else { %>Bid Total Price<% } %></th>
+                                        <% if (typeof is_bid === "undefined") { %>
+                                        <th>Hold for Testing</th>
+										<th class="width-70">RFV</th>
+										<th class="width-50">PDF</th>
+                                        <% } %>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+								<tfoot>
+									<tr>
+										<td class="text-right" colspan="3">Total</td>
+										<td>
+											<div class="input-group margin-0">
+												<span class="input-group-addon">$</span>
+												<input id="total-unitprice" class="form-control text-right" type="text" value="0.00" readonly>
+											</div>
+										</td>
+										<td><input id="total-tons" class="form-control text-right" type="text" value="0.0000" readonly></td>
+										<td><input id="total-bales" class="form-control text-right" type="text" value="0" readonly></td>
+										<td>
+											<div class="input-group margin-0">
+												<span class="input-group-addon">$</span>
+												<input id="total-price" class="form-control text-right" type="text" value="0.00" readonly>
+											</div>
+										</td>
+										<td <% if (typeof is_bid === "undefined") { %>colspan="4"<% } %>>&nbsp;</td>
+									</tr>
+								</tfoot>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </fieldset>
+                    <div class="form-group form-button-container">
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <% if (typeof po_id !== "undefined") { %>
+									<% if (typeof is_bid === "undefined") { %>
+									<% } else { %>
+									<button id="convert-po" type="button" class="save btn btn-warning">Convert to PO</button>
+									<% } %>
+                                <% } %>
+                                <button id="save" type="submit" class="save btn btn-primary">Save</button>
+                                <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div> <!-- /.content -->
+        </div> <!-- /.block-flat -->
+    </div>
+</div>

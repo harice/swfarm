@@ -35,8 +35,8 @@ define([
 			TrailerCollection,
 			contentTemplate,
 			purchaseOrderTabbingTemplate,
-			purchaseOrderAddScheduleTemplate,
-			purchaseOrderPickUpScheduleProductItemTemplate,
+			purchaseOrderViewScheduleTemplate,
+			purchaseOrderViewScheduleProductItemTemplate,
 			Global,
 			Const
 ){
@@ -90,7 +90,7 @@ define([
 
 			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
 			
-			var innerTemplate = _.template(purchaseOrderAddScheduleTemplate, innerTemplateVariables);
+			var innerTemplate = _.template(purchaseOrderViewScheduleTemplate, innerTemplateVariables);
 			
 			var variables = {
 				h1_title: this.h1Title,
@@ -113,10 +113,11 @@ define([
 				var variables = {
 					stock_number: product.productorder.stacknumber,
 					product_name: product.productorder.product.name,
+					location_to: product.sectionto.storagelocation.name+' - '+product.sectionto.name,
 					quantity: Backbone.View.prototype.helpers.numberFormatTons(quantity)
 				};
 				
-				var template = _.template(purchaseOrderPickUpScheduleProductItemTemplate, variables);
+				var template = _.template(purchaseOrderViewScheduleProductItemTemplate, variables);
 				thisObj.$el.find('#product-list tbody').append(template);
 			});
 			

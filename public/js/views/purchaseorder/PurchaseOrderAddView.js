@@ -11,11 +11,14 @@ define([
 	'collections/purchaseorder/DestinationCollection',
 	'collections/product/ProductCollection',
 	'collections/contact/ContactCollection',
+	'collections/inventory/StackNumberCollection',
+	'collections/stack/LocationCollection',
 	'models/purchaseorder/PurchaseOrderModel',
 	'models/file/FileModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderProductItemTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderSubProductItemTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderDestinationTemplate.html',
 	'text!templates/purchaseorder/convertToPOFormTemplate.html',
 	'global',
@@ -32,11 +35,14 @@ define([
 			DestinationCollection,
 			ProductCollection,
 			ContactCollection,
+			StackNumberCollection,
+			LocationCollection,
 			PurchaseOrderModel,
 			FileModel,
 			contentTemplate,
 			purchaseOrderAddTemplate,
 			productItemTemplate,
+			productSubItemTemplate,
 			purchaseOrderDestinationTemplate,
 			convertToPOFormTemplate,
 			Global,
@@ -55,7 +61,9 @@ define([
 			this.poId = null;
 			this.h1Title = 'Purchase Order';
 			this.h1Small = 'add';
-			
+			this.isInitProcess = false;
+			this.soProducts = [];
+			this.soProductsIndex = 0;
 			this.inits();
 		},
 		
@@ -70,13 +78,20 @@ define([
 			this.producerAccountContactId = null;
 			
 			this.productAutoCompletePool = [];
+			this.stackNumberByProductPool = [];
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
-				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'ishold', 'id', 'rfv', 'uploadedfile'],
-				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales'],
+				productFieldClass: ['product_id', 'unitprice', 'tons', 'id'],
+				productFieldClassRequired: ['product_id', 'unitprice', 'tons'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
+				productSubFieldClone: null,
+				productSubFieldCounter: 0,
+				productSubFieldClass: ['stacknumber', 'section_id', 'description', 'tons', 'bales', 'id', 'ishold', 'rfv', 'uploadedfile'],
+				productSubFieldClassRequired: ['tons'],
+				productSubFieldExempt: [],
+				productSubFieldSeparator: '.',
 				removeComma: ['unitprice', 'tons', 'bales'],
 				fileFileClone: null,
 			};
@@ -102,8 +117,10 @@ define([
 					});
 				});
 				
-				if(thisObj.subContainerExist())
+				if(thisObj.subContainerExist()) {
+					thisObj.isInitProcess = false;
 					thisObj.displayForm();
+				}
 				
 				this.off('sync');
 			});
@@ -118,6 +135,43 @@ define([
 			});
 			this.producerAccountCollection.on('error', function(collection, response, options) {
 				//this.off('error');
+			});
+			
+			this.stackNumberCollection = new StackNumberCollection();
+			this.stackNumberCollection.on('sync', function(data, textStatus, jqXHR, option) {
+				
+				var autocompleteData = [];
+				_.each(data, function (s) {
+					autocompleteData.push(s.stacknumber);
+				});
+				thisObj.stackNumberByProductPool[option.id] = autocompleteData;
+				
+				if(!thisObj.isInitProcess) {
+					thisObj.initStackNumberAutocomplete(thisObj.subContainer.find('.product-stack-table tbody[data-id="'+option.dataId+'"] .stacknumber'), option.id);
+					thisObj.hideFieldThrobber('.product-stack-table tbody[data-id="'+option.dataId+'"] .stacknumber');
+				}
+				else {
+					thisObj.soProductsIndex++;
+					if(thisObj.soProductsIndex < thisObj.soProducts.length)
+						this.getStackNumbersByProduct({id:thisObj.soProducts[thisObj.soProductsIndex]});
+					else
+						thisObj.destinationCollection.getModels();
+				}
+			});
+			this.stackNumberCollection.on('error', function(collection, response, options) {
+			});
+			
+			this.locationCollection = new LocationCollection();
+			this.locationCollection.on('sync', function() {
+				if(!thisObj.isInitProcess) {
+					thisObj.generateLocationFromDropDown();
+					thisObj.hideFieldThrobber('.section_id');
+				}
+				else
+					thisObj.stackNumberCollection.getStackNumbersByProduct({id:thisObj.soProducts[thisObj.soProductsIndex]});
+			});
+			this.locationCollection.on('error', function(collection, response, options) {
+				
 			});
 		},
 		
@@ -273,6 +327,8 @@ define([
 					thisObj.showFieldThrobber('#contact_id');
 					thisObj.resetSelect(thisObj.subContainer.find('#contact_id'));
 					thisObj.producerAccountCollection.getContactsByAccountId(thisObj.currentProducerId);
+					thisObj.resetSelect(thisObj.subContainer.find('.section_id'));
+					thisObj.locationCollection.getLocationByAccount(thisObj.currentProducerId);
 				}
 			};
 			
@@ -291,6 +347,9 @@ define([
 					thisObj.showFieldThrobber('#contact_id');
 					thisObj.resetSelect(thisObj.subContainer.find('#contact_id'));
 					thisObj.producerAccountCollection.getContactsByAccountId(thisObj.currentProducerId);
+					thisObj.showFieldThrobber('.section_id');
+					thisObj.resetSelect(thisObj.subContainer.find('.section_id'));
+					thisObj.locationCollection.getLocationByAccount(thisObj.currentProducerId);
 				}
 			},
 			
@@ -301,6 +360,7 @@ define([
 				thisObj.$el.find('#zipcode').val('');
 				
 				thisObj.resetSelect(thisObj.subContainer.find('#contact_id'));
+				thisObj.resetSelect(thisObj.subContainer.find('.section_id'));
 			},
 			
 			this.producerAutoCompleteView.render();
@@ -345,8 +405,8 @@ define([
 				
 				var productTemplate = _.template(productItemTemplate, productTemplateVars);
 				
-				this.$el.find('#product-list tbody').append(productTemplate);
-				var productItem = this.$el.find('#product-list tbody').find('.product-item:first-child');
+				this.$el.find('#product-list > tbody').append(productTemplate);
+				var productItem = this.$el.find('#product-list > tbody').children();
 				this.options.productFieldClone = productItem.clone();
 				//this.initProductAutocomplete(productItem);
 				this.addIndexToProductFields(productItem);
@@ -356,10 +416,46 @@ define([
 				var clone = this.options.productFieldClone.clone();
 				//this.initProductAutocomplete(clone);
 				this.addIndexToProductFields(clone);
-				this.$el.find('#product-list tbody').append(clone);
+				this.$el.find('#product-list > tbody').append(clone);
 			}
 				
 			this.addValidationToProduct(clone);
+			this.addProductSub(clone.find('.product-stack-table'));
+			
+			return clone;
+		},
+		
+		addProductStack: function (ev) {
+			this.addProductSub($(ev.currentTarget).closest('.product-stack').find('table:first'));
+		},
+		
+		addProductSub: function (tableElement) {
+			var clone = null;
+			var parentId = tableElement.find('tbody').attr('data-id');
+			
+			if(this.options.productSubFieldClone == null) {
+				var productSubTemplateVars = {};
+				
+				if(this.isBid)
+					productSubTemplateVars['is_bid'] = true;
+				
+				var productSubTemplate = _.template(productSubItemTemplate, productSubTemplateVars);
+				tableElement.find('tbody').append(productSubTemplate);
+				var productSubItem = tableElement.find('tbody').find('.product-stack-item:first-child');
+				this.options.productSubFieldClone = productSubItem.clone();
+				this.addIndexToProductSubFields(productSubItem, parentId);
+				clone = productSubItem;
+			}
+			else {
+				clone = this.options.productSubFieldClone.clone();
+				this.addIndexToProductSubFields(clone, parentId);
+				tableElement.find('tbody').append(clone);
+				this.initStackNumberAutocomplete(clone.find('.stacknumber'));
+				this.generateLocationFromDropDown(clone.find('.section_id'));
+			}
+			
+			this.addValidationToProductSub(clone);
+			
 			return clone;
 		},
 		
@@ -388,15 +484,27 @@ define([
 			return dropDown;
 		},
 		
-		addIndexToProductFields: function (bidProductItem) {
+		addIndexToProductFields: function (productFieldItem) {
 			var productFieldClass = this.options.productFieldClass;
 			for(var i=0; i < productFieldClass.length; i++) {
-				var field = bidProductItem.find('.'+productFieldClass[i]);
+				var field = productFieldItem.find('.'+productFieldClass[i]);
 				var name = field.attr('name');
 				field.attr('name', name + this.options.productFieldSeparator + this.options.productFieldCounter);
 			}
 			
+			productFieldItem.find('.product-stack-table tbody').attr('data-id', this.options.productFieldCounter);
 			this.options.productFieldCounter++;
+		},
+		
+		addIndexToProductSubFields: function (productSubFieldItem, parentIndex) {
+			var productSubFieldClass = this.options.productSubFieldClass;
+			for(var i=0; i < productSubFieldClass.length; i++) {
+				var field = productSubFieldItem.find('.'+productSubFieldClass[i]);
+				var name = field.attr('name');
+				field.attr('name', name + this.options.productFieldSeparator + parentIndex + this.options.productSubFieldSeparator + this.options.productSubFieldCounter);
+			}
+			
+			this.options.productSubFieldCounter++;
 		},
 		
 		addValidationToProduct: function (clone) {
@@ -415,8 +523,100 @@ define([
 				});
 			}
 		},
+
+		addValidationToProductSub: function (clone) {
+			var thisObj = this;
+			var productSubFieldClassRequired = this.options.productSubFieldClassRequired;
+			for(var i=0; i < productSubFieldClassRequired.length; i++) {
+				clone.find('.'+productSubFieldClassRequired[i]).each(function() {
+					$(this).rules('add', {required: true});
+				});
+			}
+		},
 		
 		formatFormField: function (data) {
+			var formData = {products:[]};
+			var productFieldClass = this.options.productFieldClass;
+			
+			for(var key in data) {
+				if(typeof data[key] !== 'function'){
+					var value = data[key];
+					var arrayKey = key.split(this.options.productFieldSeparator);
+					
+					
+					if(arrayKey.length < 2) {
+						if(this.options.removeComma.indexOf(key) < 0)
+							formData[key] = value;
+						else
+							formData[key] = this.removeCommaFromNumber(value);
+					}
+					else {
+						if(arrayKey[0] == productFieldClass[0]) {
+							var index = arrayKey[1];
+							var arrayProductFields = {};
+							
+							for(var i = 0; i < productFieldClass.length; i++) {
+								if(this.options.productFieldExempt.indexOf(productFieldClass[i]) < 0) {
+									var fieldValue = data[productFieldClass[i]+this.options.productFieldSeparator+index];
+									if(!(productFieldClass[i] == 'id' && fieldValue == '')) {
+										if(this.options.removeComma.indexOf(productFieldClass[i]) < 0)
+											arrayProductFields[productFieldClass[i]] = fieldValue;
+										else
+											arrayProductFields[productFieldClass[i]] = this.removeCommaFromNumber(fieldValue);
+									}
+								}
+							}
+							
+							arrayProductFields['stacks'] = this.getProductStackFields(data, index, {
+								'product_id': arrayProductFields.product_id,
+								'unitprice': arrayProductFields.unitprice,
+							});
+							
+							formData.products.push(arrayProductFields);
+						}
+					}
+				}
+			}
+			
+			return formData;
+		},
+		
+		getProductStackFields: function (data, productIndex, otherData) {
+			var stacks = [];
+			var productFieldClass = this.options.productSubFieldClass;
+			
+			for(var key in data) {
+				if(typeof data[key] !== 'function'){
+					var value = data[key];
+					var arrayKey = key.split(this.options.productFieldSeparator);
+					
+					if(arrayKey.length > 2 && arrayKey[0] == productFieldClass[0] && arrayKey[1] == productIndex) {
+						var index = arrayKey[2];
+						var arrayProductFields = {};
+						
+						for(var i = 0; i < productFieldClass.length; i++) {
+							if(this.options.productSubFieldExempt.indexOf(productFieldClass[i]) < 0) {
+								var fieldValue = data[productFieldClass[i]+this.options.productFieldSeparator+productIndex+this.options.productSubFieldSeparator+index];
+								if(!(productFieldClass[i] == 'id' && fieldValue == '')) {
+									if(this.options.removeComma.indexOf(productFieldClass[i]) < 0)
+										arrayProductFields[productFieldClass[i]] = fieldValue;
+									else
+										arrayProductFields[productFieldClass[i]] = this.removeCommaFromNumber(fieldValue);
+								}
+							}
+						}
+						
+						arrayProductFields = _.extend(arrayProductFields, otherData);
+						
+						stacks.push(arrayProductFields);
+					}
+				}
+			}
+			
+			return stacks;
+		},
+		
+		/*formatFormField: function (data) {
 			var formData = {products:[]};
 			var productFieldClass = this.options.productFieldClass;
 			
@@ -455,12 +655,14 @@ define([
 			}
 			
 			return formData;
-		},
+		},*/
 		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #add-product': 'addProduct',
+			'click .add-product-stack': 'addProductStack',
 			'click .remove-product': 'removeProduct',
+			'click .remove-product-stack': 'removeProductStack',
 			//'blur .productname': 'validateProduct',
 			'keyup .unitprice': 'onKeyUpUnitPrice',
 			'blur .unitprice': 'onBlurMoney',
@@ -470,17 +672,19 @@ define([
 			//'click #convert-po': 'convertPO',
 			'click #convert-po': 'showConvertToPOConfirmationWindow',
 			'click #confirm-convert-po': 'convertPO',
-			'click #cancel-po': 'showConfirmationWindow',
-			'click #confirm-cancel-po': 'cancelPO',
 			'click .attach-pdf': 'attachPDF',
 			
 			'change #pdf-file': 'readFile',
 			'click #remove-pdf-filename': 'resetImageField',
 			'click #undo-remove': 'undoRemove',
+			
+			'change .product_id': 'generateStackNumberSuggestions',
 		},
 		
 		removeProduct: function (ev) {
-			$(ev.currentTarget).closest('tr').remove();
+			var tr = $(ev.currentTarget).closest('tr');
+			tr.next().remove();
+			tr.remove();
 			
 			if(!this.hasProduct())
 				this.addProduct();
@@ -492,10 +696,24 @@ define([
 			return (this.$el.find('#product-list tbody .product-item').length)? true : false;
 		},
 		
+		removeProductStack: function (ev) {
+			var tr = $(ev.currentTarget).closest('tr');
+			var table = tr.closest('table');
+			tr.remove();
+			
+			if(!this.hasProductSub(table)) {
+				this.addProductSub(table);
+			}
+		},
+		
+		hasProductSub: function (tableElement) {
+			//console.log('hasProductSub: '+tableElement.find('tbody .product-stack-item').length);
+			return (tableElement.find('tbody .product-stack-item').length)? true : false;
+		},
+		
 		computeTotals: function () {
-			this.computeTotalUnitPrice();
 			this.computeTotalTons();
-			this.computeTotalBales();
+			//this.computeTotalBales();
 			
 			this.subContainer.find('#product-list tbody .product-item').each(function () {
 				$(this).find('.unitprice').trigger('keyup');
@@ -531,55 +749,34 @@ define([
 			field.siblings('.product_id').val('');
 		},
 		
-		onBlurUnitPrice: function (ev) {
-			var field = $(ev.target);
-			var bidPrice = (!isNaN(parseFloat(field.val())))? parseFloat(field.val()) : 0;
-			var tonsField = field.closest('.product-item').find('.tons');
-			var tons = (!isNaN(parseFloat(tonsField.val())))? parseFloat(tonsField.val()) : 0;
-			
-			field.val(bidPrice);
-			// this.toFixedValue(field, 2);
-			this.computeUnitePrice(bidPrice, tons, field.closest('.product-item').find('.unit-price'));
-		},
-		
 		onKeyUpUnitPrice: function (ev) {
 			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 2);
 			
-			var bidPricefield = $(ev.target);
-			var bidPricefieldVal = this.removeCommaFromNumber(bidPricefield.val());
-			var bidPrice = (!isNaN(parseFloat(bidPricefieldVal)))? parseFloat(bidPricefieldVal) : 0;
-			var tonsField = bidPricefield.closest('.product-item').find('.tons');
+			var unitPricefield = $(ev.target);
+			var unitPricefieldVal = this.removeCommaFromNumber(unitPricefield.val());
+			var unitPrice = (!isNaN(parseFloat(unitPricefieldVal)))? parseFloat(unitPricefieldVal) : 0;
+			var tonsField = unitPricefield.closest('.product-item').find('.tons');
 			var tonsFieldVal = this.removeCommaFromNumber(tonsField.val());
 			var tons = (!isNaN(parseFloat(tonsFieldVal)))? parseFloat(tonsFieldVal) : 0;
 			
-			this.computeUnitePrice(bidPrice, tons, bidPricefield.closest('.product-item').find('.unit-price'));
-			
-			this.computeTotalUnitPrice();
-		},
-		
-		computeTotalUnitPrice: function () {
-			var thisObj = this;
-			var total = 0;
-			this.subContainer.find('#product-list .unitprice').each(function () {
-				var value = thisObj.removeCommaFromNumber($(this).val());
-				total += (!isNaN(parseFloat(value)))? parseFloat(value) : 0;
-			});
-			this.subContainer.find('#total-unitprice').val(thisObj.addCommaToNumber(total.toFixed(2)));
+			this.computeTotalPrice(unitPrice, tons, unitPricefield.closest('.product-item').find('.unit-price'));
 		},
 		
 		onKeyUpTons: function (ev) {
 			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 4);
 			
 			var tonsfield = $(ev.target);
-			var tonsfieldVal = this.removeCommaFromNumber(tonsfield.val());
-			var tons = (!isNaN(parseFloat(tonsfieldVal)))? parseFloat(tonsfieldVal) : 0;
-			var bidPriceField = tonsfield.closest('.product-item').find('.unitprice');
-			var bidPriceFieldVal = this.removeCommaFromNumber(bidPriceField.val());
-			var bidPrice = (!isNaN(parseFloat(bidPriceFieldVal)))? parseFloat(bidPriceFieldVal) : 0;
-			
-			this.computeUnitePrice(bidPrice, tons, tonsfield.closest('.product-item').find('.unit-price'));
-			
-			this.computeTotalTons();
+			if(tonsfield.closest('.product-item').find('.unitprice').length > 0 && tonsfield.closest('.product-item').find('.unit-price').length > 0) {
+				var tonsfieldVal = this.removeCommaFromNumber(tonsfield.val());
+				var tons = (!isNaN(parseFloat(tonsfieldVal)))? parseFloat(tonsfieldVal) : 0;
+				var unitPriceField = tonsfield.closest('.product-item').find('.unitprice');
+				var unitPriceFieldVal = this.removeCommaFromNumber(unitPriceField.val());
+				var unitPrice = (!isNaN(parseFloat(unitPriceFieldVal)))? parseFloat(unitPriceFieldVal) : 0;
+				
+				this.computeTotalPrice(unitPrice, tons, tonsfield.closest('.product-item').find('.unit-price'));
+				
+				this.computeTotalTons();
+			}
 		},
 		
 		computeTotalTons: function () {
@@ -592,15 +789,15 @@ define([
 			this.subContainer.find('#total-tons').val(thisObj.addCommaToNumber(total.toFixed(4)));
 		},
 		
-		computeUnitePrice: function (bidPrice, tonsOrBales, unitePriceField) {
+		computeTotalPrice: function (price, tonsOrBales, unitePriceField) {
 			var unitPrice = 0;
-			unitPrice = tonsOrBales * bidPrice;
+			unitPrice = tonsOrBales * price;
 			unitePriceField.val(this.addCommaToNumber(unitPrice.toFixed(2)));
 			
-			this.computeTotalPrice();
+			this.computeTotalTotalPrice();
 		},
 		
-		computeTotalPrice: function () {
+		computeTotalTotalPrice: function () {
 			var thisObj = this;
 			var total = 0;
 			this.subContainer.find('#product-list .unit-price').each(function () {
@@ -613,7 +810,7 @@ define([
 		onKeyUpBales: function (ev) {
 			this.fieldAddCommaToNumber($(ev.target).val(), ev.target);
 			
-			this.computeTotalBales();
+			//this.computeTotalBales();
 		},
 		
 		computeTotalBales: function () {
@@ -624,32 +821,6 @@ define([
 				total += (!isNaN(parseInt(value)))? parseInt(value) : 0;
 			});
 			this.subContainer.find('#total-bales').val(thisObj.addCommaToNumber(total));
-		},
-		
-		cancelPO: function () {
-			if(this.poId != null) {
-				var thisObj = this;
-				var purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
-                purchaseOrderModel.setCancelURL();
-                purchaseOrderModel.save(
-                    null, 
-                    {
-                        success: function (model, response, options) {
-                            thisObj.displayMessage(response);
-                            //Global.getGlobalVars().app_router.navigate(Const.URL.PO, {trigger: true});
-							Backbone.history.history.back();
-                        },
-                        error: function (model, response, options) {
-                            if(typeof response.responseJSON.error == 'undefined')
-                                validate.showErrors(response.responseJSON);
-                            else
-                                thisObj.displayMessage(response);
-                        },
-                        headers: purchaseOrderModel.getAuth(),
-                    }
-                );
-			}
-			return false;
 		},
 		
 		initPDFUpload: function () {
@@ -896,6 +1067,64 @@ define([
 			else {
 				if(this.producerAccountCollection.models.length == 1)
 					this.$el.find('#contact_id').val(this.producerAccountCollection.models[0].get('id')).change();
+			}
+		},
+		
+		generateStackNumberSuggestions: function (ev) {
+			var productId = $(ev.currentTarget).val();
+			var stackTBODY = $(ev.currentTarget).closest('.product-item').next('.product-stack').find('.product-stack-table tbody');
+			
+			if(productId != '') {
+				if(typeof this.stackNumberByProductPool[productId] === 'undefined') {
+					this.showFieldThrobber(stackTBODY.find('.stacknumber'));
+					this.stackNumberCollection.getStackNumbersByProduct({id:productId, dataId:stackTBODY.attr('data-id')});
+				}
+				else
+					this.initStackNumberAutocomplete(stackTBODY.find('.stacknumber'));
+			}
+		},
+		
+		initStackNumberAutocomplete: function (element, productId) { console.log('initStackNumberAutocomplete'); console.log('productId: '+productId);
+			var thisObj = this;
+			
+			element.each(function() {
+				var field = $(this);
+				
+				if(productId == null || typeof productId === 'undefined')
+					productId = field.closest('.product-stack').prev('.product-item').find('.product_id').val();
+				
+				if(typeof thisObj.stackNumberByProductPool[productId] !== 'undefined') {
+					
+					if(!field.hasClass('ui-autocomplete-input')) {
+						field.autocomplete({
+							source:thisObj.stackNumberByProductPool[productId],
+							messages: {
+								noResults: '',
+								results: function() {},
+							}
+						});
+					}
+					else
+						field.autocomplete('option', 'source', thisObj.stackNumberByProductPool[productId]);
+				}
+			});
+		},
+		
+		generateLocationFromDropDown: function (select) {
+			if(this.subContainer.find('#account_id').val() != '') {
+				var dropdown = '';
+				_.each(this.locationCollection.models, function (model) {
+					var locationName = model.get('name');
+					
+					_.each(model.get('section'), function (section) {
+						dropdown += '<option value="'+section.id+'">'+locationName+' - '+section.name+'</option>';
+					});
+				});
+				
+				if(select != null && typeof select !== 'undefined')
+					select.append(dropdown);
+				else
+					this.subContainer.find('.section_id').append(dropdown);
 			}
 		},
 		

@@ -9,7 +9,7 @@ define([
 	'models/salesorder/SOWeightInfoModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
-	'text!templates/salesorder/weightInfoPrintTemplate.html',
+	'text!templates/weightinfo/weightInfoPrintTemplate.html',
 	'text!templates/salesorder/weightInfoViewProductItemTemplate.html',
     'text!templates/salesorder/serviceTemplate.html',
 	'global',
@@ -91,10 +91,9 @@ define([
 				dropoff_weight_info_edit_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.EDIT+'/'+Const.WEIGHTINFO.DROPOFF,
 				dropoff_weight_info_add_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD+'/'+Const.WEIGHTINFO.DROPOFF,
 				previous_so_sched_url: '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId,
-        
                 weightticket : this.model,
-                so : this.salesOrderModel,
-                schedule : this.soScheduleModel
+                order : this.salesOrderModel,
+                schedule : this.soScheduleModel,
 			};
             
             _.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
@@ -102,6 +101,11 @@ define([
 			if((!this.model.get('status') || (this.model.get('status') && this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)) && 
 				this.salesOrderModel.get('status').name.toLowerCase() == Const.STATUS.OPEN)
 				innerTemplateVariables['editable'] = true;
+			
+			if(this.model.get('weightticketscale_pickup') != null)
+				innerTemplateVariables['has_pickup_info'] = true;
+			if(this.model.get('weightticketscale_dropoff') != null)
+				innerTemplateVariables['has_dropoff_info'] = true;
 			
 			var innerTemplate = _.template(weightInfoViewTemplate, innerTemplateVariables);
 			
@@ -125,14 +129,8 @@ define([
 			var pickupInfo = this.model.get('weightticketscale_pickup');
 			var dropoffInfo = this.model.get('weightticketscale_dropoff');
 			
-			var dateAndTime = this.convertDateFormat(this.soScheduleModel.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-')
-								+' '+this.soScheduleModel.get('scheduletimeHour')
-								+':'+this.soScheduleModel.get('scheduletimeMin')
-								+' '+this.soScheduleModel.get('scheduletimeAmPm');
-			
 			this.$el.find('#so-number').val(this.salesOrderModel.get('order_number'));
 			this.$el.find('#producer').val(this.salesOrderModel.get('account').name);
-			this.$el.find('#date-and-time').val(dateAndTime);
 			this.$el.find('#weight-ticket-no').val(this.model.get('weightTicketNumber'));
 			this.$el.find('#loading-ticket-no').val(this.model.get('loadingTicketNumber'));
 			

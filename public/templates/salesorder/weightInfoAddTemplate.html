@@ -1,140 +1,128 @@
-<div class="row">
+<div class="content padding-top-0">
+  <% if(_.isNull(schedule.get('weightticket'))) { %>
+  <h2 class="ponumber margin-bottom-0"><%= formatDateAMPM(schedule.get('date')) %></h2>
+  Status: <label class="label label-<%= schedule.get("status").class %>"><%= schedule.get("status").name %></label><br>
+  SO No.: <span class='text-danger'><%= so.get("order_number") %></span>
+  <% } else { %>
+  <h2 class="ponumber margin-bottom-0"><%= schedule.get('weightticket').weightTicketNumber %></h2>
+  Created: <span class="text-danger"><%= formatDateAMPM(schedule.get('weightticket').created_at) %></span><br>
+  Status: <label class="label label-<%= schedule.get('weightticket').status.class %>" id="weight-status"><%= schedule.get('weightticket').status.name %></label><br>
+  SO No.: <span class="text-danger"><%= so.get("order_number") %></span><br>
+  Scheduled Date: <span class="text-danger"><%= formatDateAMPM(schedule.get("date")) %></span>
+  <% } %>
+
+  <div class="row">
     <div class="col-md-12">
-        <div class="block-flat">
-            <div class="content">
-              
-              <form id="soWeightInfoFrom" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-				<fieldset>
-                  <legend>Details</legend>
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="so-number" class="col-sm-3 control-label">SO No.</label>
-                        <div class="col-sm-7">
-                          <input id="so-number" type="text" class="form-control" maxlength="250" readonly>
-                        </div>
-                      </div>
-					  <div class="form-group">
-                        <label for="producer" class="col-sm-3 control-label">Customer</label>
-                        <div class="col-sm-7">
-                          <input id="producer" type="text" class="form-control" maxlength="250" readonly>
-                        </div>
-                      </div>
-					  <% if (typeof wiId !== "undefined") { %>
-					  <div class="form-group">
-                        <label for="weight-ticket-no" class="col-sm-3 control-label">Weight Ticket No.</label>
-                        <div class="col-sm-7">
-                          <input id="weight-ticket-no" type="text" class="form-control" maxlength="250" readonly>
-                        </div>
-                      </div>
-					  <div class="form-group">
-                        <label for="loading-ticket-no" class="col-sm-3 control-label">Loading Ticket No.</label>
-                        <div class="col-sm-7">
-                          <input id="loading-ticket-no" type="text" class="form-control" maxlength="250" readonly>
-                        </div>
-                      </div>
-					  <% } %>
-					  <div class="form-group">
-                        <label for="weightinfo_type" class="col-sm-3 control-label">Type</label>
-                        <div class="col-sm-7">
-                          <% if (typeof wiType !== "undefined") { %>
-							<input id="weightinfo_type" type="text" class="form-control width-200 weightinfo_type" maxlength="250" name="weightinfo_type" value="<%= wiType %>" readonly>
-						  <% } else { %>
-						  <div class="styled-select">
-							<select id="weightinfo_type" class="form-contro width-200 weightinfo_type" name="weightinfo_type" value="">
-							  <option value="">Select a type</option>
-							  <option value="pickup">Pickup</option>
-							  <option value="dropoff">Dropoff</option>
-							</select>
-						  </div>
-						  <% } %>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="date-and-time" class="col-sm-3 control-label">Date and Time</label>
-                        <div class="col-sm-7">
-                          <input id="date-and-time" type="text" class="form-control" maxlength="250" readonly>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </fieldset>
-                <fieldset>
-                  <div class="table-responsive">
-                    <table id="weight-info" class="table table-bordered">
-                      <thead>
-                        <tr>
-                          <th style="width:15%;">Scale</th>
-						  <th style="width:15%;">Scale Name</th>
-                          <th style="width:15%;">Scale Fee</th>
-                          <th style="width:15%;">Bales</th>
-                          <th style="width:15%;">Gross</th>
-                          <th style="width:15%;">Tare</th>
-                          <th style="width:10%;">Net</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-					    <tr>
-						  <td>
-							<div class="styled-select">
-							  <select id="scaleAccount_id" class="form-contro width-200 scaleAccount_id" name="scaleAccount_id" value="">
-							    <option value="">Select a scale account</option>
-								<%= scaler_account_list %>
-							  </select>
-							</div>
-						  </td>
-						  <td>
-							<div class="styled-select">
-							  <select id="scales" class="form-control width-200 scale_id" name="scale_id" value="">
-							    <option value="">Select a scale name</option>
-							  </select>
-							</div>
-						  </td>
-						  <td><input id="fee" maxlength="80" name="fee" class="form-control fee" placeholder="0.00" value="" readonly></td>
-						  <td><input maxlength="80" name="bales" class="form-control bales mask-bales" placeholder="0" value=""></td>
-						  <td><input maxlength="80" name="gross" class="form-control gross" placeholder="0.0000" value=""></td>
-						  <td><input maxlength="80" name="tare" class="form-control tare" placeholder="0.0000" value=""></td>
-						  <td><span class="net">0.0000</span></td>
-						</tr>
-					  </tbody>
-                    </table>
-                  </div>
-				  <div class="table-responsive">
-                    <table id="product-list" class="table table-bordered">
-                      <thead>
-                        <tr>
-                          <th style="width:20%;">Stack No.</th>
-                          <th style="width:20%;">Product</th>
-						  <th style="width:20%;">Bales</th>
-                          <th style="width:20%;">Lbs.</th>
-                          <th style="width:20%;">Net Tons</th>
-                        </tr>
-                      </thead>
-					  <tfoot>
-						<tr>
-						  <td colspan="2">Total</td>
-						  <td><span class="total-bales">0</span></td>
-						  <td><span class="total-pounds">0.00</span></td>
-						  <td><span class="total-net-tons">0.0000</span></td>
-						</tr>
-					  </tfoot>
-                      <tbody></tbody>
-                    </table>
-                  </div>
-                </fieldset>
-                <div class="form-group form-button-container">
-                    <div class="col-md-12">
-                        <div class="pull-right">
-                            <button id="save" type="submit" class="save btn btn-primary">Save</button>
-                            <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
-                        </div>
-                    </div>
+      <div class="tab-container">
+        <ul class="nav nav-tabs inner-tabs-menu flat-tabs">
+          <li class="active margin-bottom-n2">
+            <a data-toggle="tab" href="#pt"><i class="fa fa-ticket width-10"></i> <%= ucfirst(wiType) %> Ticket</a>
+          </li>
+        </ul>
+        <div class="tab-content inner-tab-content margin-bottom-0">
+          <div id="pt" class="tab-pane cont active">
+
+          <% if(!_.isNull(schedule.get('weightticket'))) { %>
+          <h2>
+            <% 
+              if(wiType == 'pickup') {  
+                print(schedule.get('weightticket').loadingTicketNumber); 
+              } else { 
+                print(schedule.get('weightticket').unloadingTicketNumber);
+              } 
+            %>
+          </h2>
+          <% } %>
+
+          <form id="soWeightInfoFrom" role="form" method="post" enctype="multipart/form-data">
+          <input id="weightinfo_type" type="hidden" class="weightinfo_type" name="weightinfo_type" value="<%= wiType %>">
+
+          <div class='row margin-top-0'>
+            <div class='col-md-3'>
+              <div class='well padding-10 margin-bottom-0'>
+                <div class='form-group margin-top-0'>
+                  <label class='margin-bottom-0'>Scale</label>
+                  <select id="scaleAccount_id" class="form-control input-sm scaleAccount_id" name="scaleAccount_id" value="">
+                    <option value="">Select scale</option>
+                    <%= scaler_account_list %>
+                  </select>
                 </div>
-              </form>
-              
-            </div> <!-- /.content -->
-        </div> <!-- /.block-flat -->
+
+                <div class='form-group'>
+                  <label class='margin-bottom-0'>Scale Name</label>
+                  <select id="scales" class="form-control input-sm scale_id" name="scale_id" value="">
+                    <option value="">Select scale name</option>
+                  </select>
+                </div>
+
+                <div class='form-group'>
+                  <label class='margin-bottom-0'>Scale Fee</label>
+                  <div class='input-group input-group-sm width-110'>
+                    <span class='input-group-addon'>$</span>
+                    <input type='text' id='fee' name='fee' class='form-control input-sm fee' placeholder='0.00' readonly>
+                  </div>
+                </div>
+
+                <div class='form-group margin-top-0'>
+                  <label class='margin-bottom-0'>Bales</label>
+                  <input type='text' name='bales' class='form-control input-sm width-150 bales mask-bales' placeholder='0'>
+                </div>
+
+                <div class='form-group'>
+                  <label class='margin-bottom-0'>Gross</label>
+                  <input type='text' name='gross' class='form-control input-sm width-150 gross' placeholder='0.0000'>
+                </div>
+
+                <div class='form-group'>
+                  <label class='margin-bottom-0'>Tare</label>
+                  <input type='text' name='tare' class='form-control input-sm width-150 tare' placeholder='0.0000'>
+                </div>
+
+                <div class='form-group'>
+                  <label class='margin-bottom-0'>Net</label>
+                  <div><span class='text-danger net'>0.0000</span></div>
+                </div>
+              </div>
+            </div>
+            <div class='col-md-9'>
+              <h3>Products</h3>
+              <div class="table-responsive">
+                <table id="product-list" class="table-condensed table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">Product</th>
+                      <th style="width:20%;">Stack No.</th>
+                      <th style="width:20%;">Bales</th>
+                      <th style="width:20%;">Lbs.</th>
+                      <th style="width:20%;">Net Tons</th>
+                    </tr>
+                  </thead>
+                  <tfoot>
+                    <tr>
+                      <td colspan="2" class='text-right'>Total</td>
+                      <td><span class="total-bales">0</span></td>
+                      <td><span class="total-pounds">0.00</span></td>
+                      <td><span class="total-net-tons">0.0000</span></td>
+                    </tr>
+                  </tfoot>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-right">
+                <button id="save" type="submit" class="save btn btn-primary btn-sm btn-trans btn-rad"><i class="fa fa-save"></i> Save</button>
+                <a id="go-to-previous-page" class="btn btn-default btn-sm btn-trans btn-rad" href="#"><i class='fa fa-history width-10'></i> Back</a>
+              </div>
+            </div>
+          </div>
+
+          </form>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

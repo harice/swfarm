@@ -16,6 +16,7 @@ define([
 	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/salesorder/salesOrderViewTemplate.html',
 	'text!templates/salesorder/salesOrderViewProductItemTemplate.html',
+	'text!templates/salesorder/salesOrderViewSubProductItemTemplate.html',
 	'text!templates/salesorder/salesOrderOriginTemplate.html',
 	'text!templates/salesorder/salesOrderNatureOfSaleTemplate.html',
 	'global',
@@ -37,6 +38,7 @@ define([
 			purchaseOrderTabbingTemplate,
 			salesOrderViewTemplate,
 			productItemTemplate,
+			productSubItemTemplate,
 			salesOrderOriginTemplate,
 			salesOrderNatureOfSaleTemplate,
 			Global,
@@ -98,11 +100,10 @@ define([
 		
 		supplySOData: function () {
 			var thisObj = this;
-			var products = this.model.get('productorder');
+			var products = this.model.get('productsummary');
 			
 			var totalTons = 0;
 			var totalBales = 0;
-			var totalUnitPrice = 0;
 			var totalTotalPrice = 0;
 			
 			_.each(products, function (product) {
@@ -111,22 +112,35 @@ define([
 				var totalprice = parseFloat(unitprice * tons);
 				
 				totalTons += tons;
-				totalUnitPrice += unitprice;
 				totalTotalPrice += parseFloat(totalprice);
 				totalBales += (!isNaN(parseInt(product.bales)))? parseInt(product.bales) : 0;
 				
 				var variables = {
-					productname: product.product.name,
-					description: product.description,
-					stacknumber: product.stacknumber,
+					productname: product.productname.name,
+					//description: product.description,
+					//stacknumber: product.stacknumber,
 					unitprice: Backbone.View.prototype.helpers.numberFormat(unitprice),
 					tons: Backbone.View.prototype.helpers.numberFormatTons(tons),
-					bales: Backbone.View.prototype.helpers.numberFormatBales(product.bales),
+					//bales: Backbone.View.prototype.helpers.numberFormatBales(product.bales),
 					totalprice: Backbone.View.prototype.helpers.numberFormat(totalprice),
 				};
 				
 				var template = _.template(productItemTemplate, variables);
-				thisObj.$el.find('#product-list tbody').append(template);
+				thisObj.subContainer.find('#product-list > tbody').append(template);
+				
+				var subProductTBODY = thisObj.subContainer.find('#product-list > tbody > .product-stack:last tbody');
+				
+				_.each(product.productorder, function (productSub) {
+					var variablesSub = {
+						stacknumber: productSub.stacknumber,
+						location_from: productSub.sectionfrom.storagelocation.name+' - '+productSub.sectionfrom.name,
+						description: productSub.description,
+						tons: productSub.tons,
+						bales: productSub.bales,
+					};
+					var templateSub = _.template(productSubItemTemplate, variablesSub);
+					subProductTBODY.append(templateSub);
+				});
 			});
 			
 			this.subContainer.find('#total-tons').html(Backbone.View.prototype.helpers.numberFormatTons(totalTons));

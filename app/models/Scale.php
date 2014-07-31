@@ -29,7 +29,7 @@ class Scale extends BaseModel {
 	public static $rules = array(
         'account_id' => 'required',
         'name' => 'required|unique:scale',
-        'rate' => 'required'
+        'rate' => 'required|numeric|min:0|max:10000'
     );
     
     public function account()

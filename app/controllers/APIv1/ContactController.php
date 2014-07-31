@@ -72,5 +72,17 @@ class ContactController extends BaseController {
 		return $this->contact->destroy($id);
 	}
 
-
+    /**
+     * Check if Account has rate.
+     * 
+     * @param type $account_id
+     * @return boolean
+     */
+    public function hasRate($account_id)
+    {
+        $response = array(
+            'has_rate' => $this->contact->hasRate($account_id)
+        );
+        return $response;
+    }
 }

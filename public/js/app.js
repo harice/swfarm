@@ -24,7 +24,15 @@ define([
 			numberFormat 		: function(number) { return Backbone.View.prototype.numberFormat(number,2,'.',','); },
 			numberFormatLbs 	: function(number) { return Backbone.View.prototype.numberFormat(number,2,'.',','); },
 			numberFormatTons 	: function(number) { return Backbone.View.prototype.numberFormat(number,4,'.',','); },
-			numberFormatBales 	: function(number) { return Backbone.View.prototype.numberFormat(number,0,'.',','); }
+			numberFormatBales 	: function(number) { return Backbone.View.prototype.numberFormat(number,0,'.',','); },
+			convertLbsToTons 	: function(number) { return Backbone.View.prototype.numberFormat((number * Const.LB2TON),4,'.',','); },
+			ucfirst				: function(string) { return Backbone.View.prototype.ucfirst(string); }
+		}
+
+		Backbone.View.prototype.ucfirst = function ucfirst(string) {
+			string += '';
+			var f = string.charAt(0).toUpperCase();
+			return f + string.substr(1);
 		}
 
 		Backbone.View.prototype.strToTime = function strtotime(text, now) {

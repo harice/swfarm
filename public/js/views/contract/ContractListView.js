@@ -8,7 +8,8 @@ define([
 	'text!templates/contract/contractListTemplate.html',
 	'text!templates/contract/contractInnerListTemplate.html',
 	'text!templates/contract/salesOrderDetailsByProductItemTemplate.html',
-	'constant'
+	'constant',
+    'global'
 ], function(Backbone,
 			AccordionListView,
 			ContractModel,
@@ -18,7 +19,8 @@ define([
 			contractListTemplate,
 			contractInnerListTemplate,
 			salesOrderDetailsByProductItemTemplate,
-			Const
+			Const,
+            Global
 ){
 
 	var ContractListView = AccordionListView.extend({
@@ -69,6 +71,7 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
 			
+            this.initCalendars();
 			this.setListOptions();
 		},
 		
@@ -96,11 +99,108 @@ define([
 			
 			if(options.search != '')
 				this.$el.find('#search-keyword').val(options.search);
+            
+            if(options.filters.contract_date_start != '')
+				this.$el.find('#filter-contract-date-start .input-group.date').datepicker('update', this.convertDateFormat(options.filters.contract_date_start, 'yyyy-mm-dd', this.dateFormat, '-'));
+				
+			if(options.filters.contract_date_end != '')
+				this.$el.find('#filter-contract-date-end .input-group.date').datepicker('update', this.convertDateFormat(options.filters.contract_date_end, 'yyyy-mm-dd', this.dateFormat, '-'));
+		},
+                
+        initCalendars: function () {
+			var thisObj = this;
+			
+			this.$el.find('#filter-contract-date-start .input-group.date').datepicker({
+				orientation: "top left",
+				autoclose: true,
+				clearBtn: true,
+				todayHighlight: true,
+				format: this.dateFormat,
+			}).on('changeDate', function (ev) {
+				var selectedDate = $('#filter-contract-date-start .input-group.date input').val();
+				thisObj.$el.find('#filter-contract-date-end .input-group.date').datepicker('setStartDate', selectedDate);
+				var date = '';
+				if(selectedDate != '' && typeof selectedDate != 'undefined')
+					date = thisObj.convertDateFormat(selectedDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
+				
+				thisObj.collection.setFilter('contract_date_start', date);
+				thisObj.renderList(1);
+			});
+			
+			this.$el.find('#filter-contract-date-end .input-group.date').datepicker({
+				orientation: "top left",
+				autoclose: true,
+				clearBtn: true,
+				todayHighlight: true,
+				format: this.dateFormat,
+			}).on('changeDate', function (ev) {
+				var selectedDate = $('#filter-contract-date-end .input-group.date input').val();
+				thisObj.$el.find('#filter-contract-date-start .input-group.date').datepicker('setEndDate', selectedDate);
+				var date = '';
+				if(selectedDate != '' && typeof selectedDate != 'undefined')
+					date = thisObj.convertDateFormat(selectedDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
+				
+				thisObj.collection.setFilter('contract_date_end', date);
+				thisObj.renderList(1);
+			});
 		},
 		
 		events: {
+            'click .sort-contract-number' : 'sortContractNumber',
 			'click #contract-accordion tr.collapse-trigger': 'toggleAccordion',
 			'click .stop-propagation': 'linkStopPropagation',
+            'click .close-contract': 'showCloseConfirmationWindow',
+			'click #confirm-close-contract': 'closeContract',
+		},
+        
+        showCloseConfirmationWindow: function (ev) {
+			var id = $(ev.currentTarget).attr('data-id');
+			this.initConfirmationWindow('Are you sure you want to close this contract?',
+										'confirm-close-contract',
+										'Close Contract',
+										'Close Contract',
+										false);
+			this.showConfirmationWindow();
+			this.$el.find('#modal-confirm #confirm-close-contract').attr('data-id', id);
+			return false;
+		},
+                
+        closeContract: function (ev) {
+			var thisObj = this;
+			var id = $(ev.currentTarget).attr('data-id');
+			
+			var contractModel = new ContractModel({id:id});
+			contractModel.setCloseURL();
+			contractModel.save(
+				null,
+				{
+					success: function (model, response, options) {
+						thisObj.hideConfirmationWindow('modal-confirm', function () {
+//							thisObj.subContainer.find('#'+Const.CONTRACT.COLLAPSIBLE.ID+id+' .editable-button').remove();
+//							thisObj.subContainer.find('.collapse-trigger[data-id="'+id+'"] .td-status').html('<label class="label label-default">Closed</label>');
+						});
+                        Backbone.history.stop();
+                        Backbone.history.start();
+                        
+						thisObj.displayMessage(response);
+                        $('body').removeClass('modal-open');
+                        $('.modal-backdrop').hide();
+					},
+					error: function (model, response, options) {
+						thisObj.hideConfirmationWindow();
+						if(typeof response.responseJSON.error == 'undefined')
+							alert(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+                    wait: true,
+					headers: contractModel.getAuth(),
+				}
+			);
+		},
+        
+        sortContractNumber: function () {
+			this.sortByField('contract_number');
 		},
 		
 		toggleAccordion: function (ev) {

@@ -11,9 +11,10 @@ define([
 			this.setDefaultURL(this.url);
 			this.setSortOptions(
 				{
-					currentSort: 'created_at',
+					currentSort: 'name',
 					sort: {
-						created_at: false,
+						name: true,
+                        account_name: true
 					},
 				}
 			);

@@ -128,38 +128,23 @@
                                 <thead>
                                     <tr>
                                         <th>Product</th>
-                                        <th>Description</th>
-                                        <th>Stack No.</th>
-                                        <th class="width-130"><% if (typeof is_bid === "undefined") { %>Unit Price<% } else { %>Bid Unit Price<% } %></th>
-                                        <th class="width-120">Est Tons</th>
-                                        <th>Bales</th>
-                                        <th class="width-150"><% if (typeof is_bid === "undefined") { %>Total Price<% } else { %>Bid Total Price<% } %></th>
-                                        <% if (typeof is_bid === "undefined") { %>
-                                        <th>Hold for Testing</th>
-										<th class="width-70">RFV</th>
-										<th class="width-50">PDF</th>
-                                        <% } %>
+                                        <th><% if (typeof is_bid === "undefined") { %>Unit Price<% } else { %>Bid Unit Price<% } %></th>
+                                        <th>Est Tons</th>
+                                        <th><% if (typeof is_bid === "undefined") { %>Total Price<% } else { %>Bid Total Price<% } %></th>
                                         <th></th>
                                     </tr>
                                 </thead>
 								<tfoot>
 									<tr>
-										<td class="text-right" colspan="3">Total</td>
-										<td>
-											<div class="input-group margin-0">
-												<span class="input-group-addon">$</span>
-												<input id="total-unitprice" class="form-control text-right" type="text" value="0.00" readonly>
-											</div>
-										</td>
+										<td class="text-right" colspan="2">Total</td>
 										<td><input id="total-tons" class="form-control text-right" type="text" value="0.0000" readonly></td>
-										<td><input id="total-bales" class="form-control text-right" type="text" value="0" readonly></td>
 										<td>
 											<div class="input-group margin-0">
 												<span class="input-group-addon">$</span>
 												<input id="total-price" class="form-control text-right" type="text" value="0.00" readonly>
 											</div>
 										</td>
-										<td <% if (typeof is_bid === "undefined") { %>colspan="4"<% } %>>&nbsp;</td>
+										<td>&nbsp;</td>
 									</tr>
 								</tfoot>
                                 <tbody></tbody>
@@ -171,9 +156,7 @@
                             <div class="pull-right">
                                 <% if (typeof po_id !== "undefined") { %>
 									<% if (typeof is_bid === "undefined") { %>
-									<!-- button id="cancel-po" type="button" class="btn btn-danger">Cancel Purchase Order</button -->
 									<% } else { %>
-									<!-- a id="cancel-po" class="btn btn-danger" href="#">Cancel Bid</a -->
 									<button id="convert-po" type="button" class="save btn btn-warning">Convert to PO</button>
 									<% } %>
                                 <% } %>

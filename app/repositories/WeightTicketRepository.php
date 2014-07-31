@@ -30,22 +30,18 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         try
         {
             $weightticket = WeightTicket::with('status')
-                ->with('weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder.product')
-                ->with('weightticketscale_dropoff.scalerAccount')
-                ->with('weightticketscale_dropoff.scale')
-                ->with('weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder.product')
-                ->with('weightticketscale_pickup.scalerAccount')
-                ->with('weightticketscale_pickup.scale')
-                ->where('transportSchedule_id', '=', $schedule_id)->first();
+                            ->with('weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder.product')
+                            ->with('weightticketscale_dropoff.scalerAccount')
+                            ->with('weightticketscale_dropoff.scale')
+                            ->with('weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder.product')
+                            ->with('weightticketscale_pickup.scalerAccount')
+                            ->with('weightticketscale_pickup.scale')
+                            ->where('transportSchedule_id', '=', $schedule_id)->first();
 
-            if($weightticket) {
-                return $weightticket;
-            }
+            if(!$weightticket) 
+                throw new NotFoundException('Weight Info Not Found');
 
-            return array(
-                'error' => true,
-                'message' => 'Weight Ticket Not Found.'
-            );
+            return $weightticket;
         }
         catch (Exception $e)
         {
@@ -760,6 +756,12 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             //change the status
             $weightticketObj->status_id = 2; //close status
             $weightticketObj->save();
+
+            // automatically close the schedule when closing ticket
+            $transportSchedule = TransportSchedule::find($schedule_id);
+            $transportSchedule->status_id = 2;
+            $transportSchedule->save();
+
             return Response::json(array(
               'error' => false,
               'message' => 'Weighticket successfully close.'), 200);

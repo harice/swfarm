@@ -2,17 +2,20 @@
   <% _.each(accounts, function(account){ %>
     <tr>
       <td><a href="<%= account_url %>/<%= account.get("id") %>"><%= account.get("name") %></a></td>
-      <td><%= account.get("accounttype")[0].name %></td>
-      <td><%= account.get("website") %></td>
+      <td>
+        <% _.each(account.get("accounttype"),function(type){
+          print('<span class="label label-default">' + type.name + '</span>');
+        }); %>
+      </td>
       <td><%= account.get("phone") %></td>
       <td>
-        <a href="<%= account_edit_url %>/<%= account.get("id") %>" class="text-primary">
+        <a href="<%= account_edit_url %>/<%= account.get("id") %>">
           <span class="fa-stack">
             <i class="fa fa-square fa-stack-2x"></i>
             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
           </span>
         </a>
-		    <a href="#" class="text-danger delete-account" data-id="<%= account.get("id") %>">
+		    <a href="#" class="color-danger delete-account" data-id="<%= account.get("id") %>">
 		      <span class="fa-stack">
             <i class="fa fa-square fa-stack-2x"></i>
             <i class="fa fa-times fa-stack-1x fa-inverse"></i>
@@ -23,6 +26,6 @@
   <% }); %>
 <% } else { %>
   <tr>
-    <td colspan="5">No results found.</td>
+    <td colspan="4">No results found.</td>
   </tr>
 <% } %>

@@ -108,7 +108,7 @@ define([
 
 		gotoNextPage:function () {
             
-			var lastPage = Math.ceil(this.collection.getMaxItem() / rows);
+			var lastPage = Math.ceil(this.collection.getMaxItem() / this.collection.getNumPerPage());
 			var currentPage = this.collection.getCurrentPage();
 			if(currentPage < lastPage) {
 				var calPage = parseInt(currentPage) + parseInt(1);

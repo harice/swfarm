@@ -57,6 +57,7 @@ define([
                 total_bales: total_bales
 			};
             
+            _.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
 			var innerTemplate = _.template(contractViewTemplate, innerTemplateVariables);
 			
 			var variables = {
@@ -90,6 +91,7 @@ define([
                     contractModel.fetch({
                         success: function(contract) {
                             $('#view-contract .status').html(contract.get('status').name);
+                            Global.getGlobalVars().app_router.navigate(Const.URL.CONTRACT, {trigger: true});
                         },
                         wait: true,
                         headers: thisObj.model.getAuth()

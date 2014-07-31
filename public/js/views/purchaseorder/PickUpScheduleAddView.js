@@ -13,6 +13,7 @@ define([
 	'collections/contact/ContactCollection',
 	'collections/account/TrailerCollection',
 	'collections/trucker/TruckerCollection',
+	'collections/stack/LocationCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddScheduleTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderPickUpScheduleProductItemTemplate.html',
@@ -32,6 +33,7 @@ define([
 			ContactCollection,
 			TrailerCollection,
 			TruckerCollection,
+			LocationCollection,
 			contentTemplate,
 			purchaseOrderAddScheduleTemplate,
 			purchaseOrderPickUpScheduleProductItemTemplate,
@@ -67,7 +69,7 @@ define([
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
-				productFieldClass: ['productorder_id', 'quantity', 'id'],
+				productFieldClass: ['productorder_id', 'sectionto_id', 'quantity', 'id'],
 				productFieldClassRequired: ['productorder_id', 'quantity'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
@@ -180,10 +182,20 @@ define([
 			this.truckerNumberCollection.on('error', function(collection, response, options) {
 				//this.off('error');
 			});
+			
+			this.locationCollection = new LocationCollection();
+			this.locationCollection.on('sync', function() {
+				thisObj.orderScheduleVariablesModel.runFetch();
+				this.off('sync');
+			});
+			this.locationCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 		},
 		
 		render: function(){
-			this.orderScheduleVariablesModel.runFetch();
+			this.locationCollection.getWarehouseLocation();
+			//this.orderScheduleVariablesModel.runFetch();
 			Backbone.View.prototype.refreshTitle('Pickup Schedule','add');
 		},
 		
@@ -426,6 +438,7 @@ define([
 			if(this.options.productFieldClone == null) {
 				var productTemplateVars = {
 					product_list:this.getProductDropdown(),
+					locationto_list:this.getLocationToDropdown(),
 				};
 				var productTemplate = _.template(purchaseOrderPickUpScheduleProductItemTemplate, productTemplateVars);
 				
@@ -440,7 +453,7 @@ define([
 				this.addIndexToProductFields(clone);
 				this.$el.find('#product-list tbody').append(clone);
 			}
-				
+			
 			return clone;
 		},
 		
@@ -464,6 +477,19 @@ define([
 			});
 			
 			return dropDown;
+		},
+		
+		getLocationToDropdown: function () {
+			var dropdown = '<option value="">Select a stack location</option>';
+			_.each(this.locationCollection.models, function (model) {
+				var locationName = model.get('name');
+				
+				_.each(model.get('section'), function (section) {
+					dropdown += '<option value="'+section.id+'">'+locationName+' - '+section.name+'</option>';
+				});
+			});
+			
+			return dropdown;
 		},
 		
 		addIndexToProductFields: function (bidProductItem) {

@@ -11,10 +11,13 @@ define([
 	'collections/purchaseorder/DestinationCollection',
 	'collections/product/ProductCollection',
 	'collections/contact/ContactCollection',
+	'collections/inventory/StackNumberCollection',
+	'collections/stack/LocationCollection',
 	'models/purchaseorder/PurchaseOrderModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderProductItemTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderSubProductItemTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderDestinationTemplate.html',
 	'global',
 	'constant',
@@ -30,10 +33,13 @@ define([
 			DestinationCollection,
 			ProductCollection,
 			ContactCollection,
+			StackNumberCollection,
+			LocationCollection,
 			PurchaseOrderModel,
 			contentTemplate,
 			purchaseOrderAddTemplate,
 			productItemTemplate,
+			productSubItemTemplate,
 			purchaseOrderDestinationTemplate,
 			Global,
 			Const
@@ -62,14 +68,22 @@ define([
 			this.producerAccountContactId = null;
 			
 			this.productAutoCompletePool = [];
+			this.stackNumberByProductPool = [];
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
-				productFieldClass: ['product_id', 'description', 'stacknumber', 'unitprice', 'tons', 'bales', 'ishold', 'id'],
-				productFieldClassRequired: ['product_id', 'stacknumber', 'unitprice', 'tons', 'bales'],
+				productFieldClass: ['product_id', 'unitprice', 'tons', 'id'],
+				productFieldClassRequired: ['product_id', 'unitprice', 'tons'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
+				productSubFieldClone: null,
+				productSubFieldCounter: 0,
+				productSubFieldClass: ['stacknumber', 'section_id', 'description', 'tons', 'bales', 'id'],
+				productSubFieldClassRequired: ['stacknumber', 'section_id', 'tons', 'bales'],
+				productSubFieldExempt: [],
+				productSubFieldSeparator: '.',
 				removeComma: ['unitprice', 'tons', 'bales'],
+				fileFileClone: null,
 			};
 			
 			this.destinationCollection = new DestinationCollection();
@@ -109,6 +123,30 @@ define([
 			});
 			this.producerAccountCollection.on('error', function(collection, response, options) {
 				//this.off('error');
+			});
+			
+			this.stackNumberCollection = new StackNumberCollection();
+			this.stackNumberCollection.on('sync', function(data, textStatus, jqXHR, option) {
+				
+				var autocompleteData = [];
+				_.each(data, function (s) {
+					autocompleteData.push(s.stacknumber);
+				});
+				thisObj.stackNumberByProductPool[option.id] = autocompleteData;
+				
+				thisObj.initStackNumberAutocomplete(thisObj.subContainer.find('.product-stack-table tbody[data-id="'+option.dataId+'"] .stacknumber'), option.id);
+				thisObj.hideFieldThrobber('.product-stack-table tbody[data-id="'+option.dataId+'"] .stacknumber');
+			});
+			this.stackNumberCollection.on('error', function(collection, response, options) {
+			});
+			
+			this.locationCollection = new LocationCollection();
+			this.locationCollection.on('sync', function() {
+				thisObj.generateLocationFromDropDown();
+				thisObj.hideFieldThrobber('.section_id');
+			});
+			this.locationCollection.on('error', function(collection, response, options) {
+				
 			});
 		},
 	});

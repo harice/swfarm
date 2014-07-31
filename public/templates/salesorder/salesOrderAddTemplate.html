@@ -41,10 +41,10 @@
 									<label for="contact_id" class="col-sm-3 control-label">Producer Contact *</label>
 									<div class="col-sm-7">
 										<div class="styled-select">
-											<select class="form-control" id="contact_id" name="contact_id" required>
+											<select class="form-control display-inline" id="contact_id" name="contact_id" required>
 												<option value="">Select a producer contact</option>
 											</select>
-											<span class="field-throbber throbber_wrap" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
+											<span class="throbber_wrap" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
 										</div>
 									</div>
 								</div>
@@ -109,7 +109,7 @@
                                     <label for="contract_id" class="col-sm-3 control-label">Contract</label>
                                     <div class="col-sm-7">
                                         <div class="styled-select">
-                                            <select id="contract_id" class="form-control contract_id width-160" name="contract_id">
+                                            <select id="contract_id" class="form-control contract_id width-160" name="contract_id" disabled>
                                                 <option value="">Select a contract</option>
                                             </select>
                                         </div>
@@ -135,26 +135,16 @@
                                 <thead>
                                     <tr>
                                         <th>Product</th>
-                                        <th>Description</th>
-                                        <th>Stack No.</th>
                                         <th class="width-130">Unit Price</th>
                                         <th>Est Tons</th>
-                                        <th>Bales</th>
                                         <th class="width-130">Total Price</th>
                                         <th></th>
                                     </tr>
                                 </thead>
 								<tfoot>
 									<tr>
-										<td class="text-right" colspan="3">Total</td>
-										<td>
-											<div class="input-group margin-0">
-												<span class="input-group-addon">$</span>
-												<input id="total-unitprice" class="form-control text-right" type="text" value="0.00" readonly>
-											</div>
-										</td>
+										<td class="text-right" colspan="2">Total</td>
 										<td><input id="total-tons" class="form-control text-right" type="text" value="0.0000" readonly></td>
-										<td><input id="total-bales" class="form-control text-right" type="text" value="0" readonly></td>
 										<td>
 											<div class="input-group margin-0">
 												<span class="input-group-addon">$</span>
@@ -171,9 +161,15 @@
                     <div class="form-group form-button-container">
                         <div class="col-md-12">
                             <div class="pull-right">
-                                <% if (typeof so_id !== "undefined") { %>
-                                <!-- a id="cancel-so" class="btn btn-danger" href="#">Cancel Sales Order</a -->
-                                <% } %>
+								<% if (typeof verified === "undefined") { %>
+								<button id="verify-so" type="button" class="save btn btn-primary">
+									<% if (typeof so_id !== "undefined") { %>
+										Verify
+									<% } else { %>
+										Save and Verify
+									<% } %>
+								</button>
+								<% } %>
                                 <button id="save" type="submit" class="save btn btn-primary">Save</button>
                                 <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
                             </div>

@@ -65,6 +65,7 @@ define([
 		displayList: function () {
 			
 			var data = {
+                trailer_url: '#/'+Const.URL.TRAILER,
 				trailer_edit_url: '#/'+Const.URL.TRAILER+'/'+Const.CRUD.EDIT,
 				trailers: this.collection.models,
 				_: _ 
@@ -77,8 +78,18 @@ define([
 		},
 		
 		events: {
+            'click .sort-name' : 'sortName',
+            'click .sort-number' : 'sortNumber',
 			'click .delete-trailer': 'preShowConfirmationWindow',
 			'click #confirm-delete-trailer': 'deleteTrailer'
+		},
+                
+        sortName: function () {
+			this.sortByField('name');
+		},
+                
+        sortNumber: function () {
+			this.sortByField('number');
 		},
 		
 		preShowConfirmationWindow: function (ev) {

@@ -9,7 +9,7 @@ define([
 	'models/purchaseorder/POWeightInfoModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
-	'text!templates/purchaseorder/weightInfoPrintTemplate.html',
+	'text!templates/weightinfo/weightInfoPrintTemplate.html',
 	'text!templates/purchaseorder/weightInfoViewProductItemTemplate.html',
 	'global',
 	'constant',
@@ -91,7 +91,7 @@ define([
 				previous_so_sched_url: '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.poId,
         
                 weightticket : this.model,
-                so : this.purchaseOrderModel,
+                order : this.purchaseOrderModel,
                 schedule : this.poScheduleModel
 			};
             
@@ -100,6 +100,11 @@ define([
 			if((!this.model.get('status') || (this.model.get('status') && this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)) && 
 				this.purchaseOrderModel.get('status').name.toLowerCase() == Const.STATUS.OPEN)
                 innerTemplateVariables['editable'] = true;
+			
+			if(this.model.get('weightticketscale_pickup') != null)
+				innerTemplateVariables['has_pickup_info'] = true;
+			if(this.model.get('weightticketscale_dropoff') != null)
+				innerTemplateVariables['has_dropoff_info'] = true;
 			
 			var innerTemplate = _.template(weightInfoViewTemplate, innerTemplateVariables);
 			
@@ -117,21 +122,15 @@ define([
 			var pickupInfo = this.model.get('weightticketscale_pickup');
 			var dropoffInfo = this.model.get('weightticketscale_dropoff');
 			
-			var dateAndTime = this.convertDateFormat(this.poScheduleModel.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-')
-								+' '+this.poScheduleModel.get('scheduletimeHour')
-								+':'+this.poScheduleModel.get('scheduletimeMin')
-								+' '+this.poScheduleModel.get('scheduletimeAmPm');
-			
 			this.$el.find('#so-number').val(this.purchaseOrderModel.get('order_number'));
 			this.$el.find('#producer').val(this.purchaseOrderModel.get('account').name);
-			this.$el.find('#date-and-time').val(dateAndTime);
 			this.$el.find('#weight-ticket-no').val(this.model.get('weightTicketNumber'));
 			this.$el.find('#loading-ticket-no').val(this.model.get('loadingTicketNumber'));
 			
 			if(pickupInfo != null) {
 				this.$el.find('#pickup-fields').show();
-				if(typeof pickupInfo.scaler_account[0] != 'undefined' && typeof pickupInfo.scaler_account[0].name != 'undefined' && pickupInfo.scaler_account[0].name != null)
-					this.$el.find('#pickup-info .scale-account').val(pickupInfo.scaler_account[0].name);
+				if(typeof pickupInfo.scaler_account != 'undefined' && typeof pickupInfo.scaler_account.name != 'undefined' && pickupInfo.scaler_account.name != null)
+					this.$el.find('#pickup-info .scale-account').val(pickupInfo.scaler_account.name);
 				if(typeof pickupInfo.scale != 'undefined' && pickupInfo.scale != null && typeof pickupInfo.scale.name != 'undefined' && pickupInfo.scale.name != null)
 					this.$el.find('#pickup-info .scale-name').val(pickupInfo.scale.name);
 				if(typeof pickupInfo.fee != 'undefined' && pickupInfo.fee != null)
@@ -178,8 +177,8 @@ define([
 			
 			if(dropoffInfo != null) {
 				this.$el.find('#dropoff-fields').show();
-				if(typeof dropoffInfo.scaler_account[0] != 'undefined' && typeof dropoffInfo.scaler_account[0].name != 'undefined' && dropoffInfo.scaler_account[0].name != null)
-					this.$el.find('#dropoff-info .scale-account').val(dropoffInfo.scaler_account[0].name);
+				if(typeof dropoffInfo.scaler_account != 'undefined' && typeof dropoffInfo.scaler_account.name != 'undefined' && dropoffInfo.scaler_account.name != null)
+					this.$el.find('#dropoff-info .scale-account').val(dropoffInfo.scaler_account.name);
 				if(typeof dropoffInfo.scale != 'undefined' && dropoffInfo.scale != null && typeof dropoffInfo.scale.name != 'undefined' && dropoffInfo.scale.name != null)
 					this.$el.find('#dropoff-info .scale-name').val(dropoffInfo.scale.name);
 				if(typeof dropoffInfo.fee != 'undefined' && dropoffInfo.fee != null)

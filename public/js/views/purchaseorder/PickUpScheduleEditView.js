@@ -51,7 +51,7 @@ define([
 			
 			this.model = new POScheduleModel({id:this.schedId});
 			this.model.on('change', function() {
-				thisObj.orderScheduleVariablesModel.runFetch();
+				thisObj.locationCollection.getWarehouseLocation();
 				thisObj.off('change');
 			});
             
@@ -72,10 +72,10 @@ define([
 			var products = this.model.get('transportscheduleproduct');
 			var truckerNumber = this.model.get('truckvehicle');
 			
-			this.$el.find('#po-sched-start-date .input-group.date').datepicker('update', this.convertDateFormat(this.model.get('scheduledate'), this.dateFormatDB, this.dateFormat, '-'));
-			this.$el.find('#scheduletimeHour').val(this.model.get('scheduletimeHour'));
-			this.$el.find('#scheduletimeMin').val(this.model.get('scheduletimeMin'));
-			this.$el.find('#scheduletimeAmPm').val(this.model.get('scheduletimeAmPm'));
+			this.$el.find('#po-sched-start-date .input-group.date').datepicker('update', Backbone.View.prototype.helpers.formatDate(this.model.get('date')));
+			this.$el.find('#scheduletimeHour').val(Backbone.View.prototype.helpers.formatDateBy(this.model.get('date'),'h'));
+			this.$el.find('#scheduletimeMin').val(Backbone.View.prototype.helpers.formatDateBy(this.model.get('date'),'i'));
+			this.$el.find('#scheduletimeAmPm').val(Backbone.View.prototype.helpers.formatDateBy(this.model.get('date'),'A'));
 			
 			this.$el.find('#distance').val(this.addCommaToNumber(this.model.get('distance')));
 			this.$el.find('#fuelcharge').val(this.addCommaToNumber(this.model.get('fuelcharge')));
@@ -91,6 +91,7 @@ define([
 				
 				productFields.find('.id').val(product.id);
 				productFields.find('.productorder_id').val(product.productorder_id).change();
+				productFields.find('.sectionto_id').val(product.sectionto.id);
 				productFields.find('.quantity').val(thisObj.addCommaToNumber(quantity.toFixed(4)));
 			});
 			this.$el.find('#total-quantity').val(this.addCommaToNumber(totalQuantity.toFixed(4)));

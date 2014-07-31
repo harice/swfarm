@@ -249,42 +249,40 @@ class AccountRepository implements AccountRepositoryInterface {
     $orderby  = isset($_search['orderby']) ? $_search['orderby'] :'ASC';
     $offset   = $page * $perPage - $perPage;
 
-    
+    $_cnt = $_account = Account::with('accounttype');
+
+    if(isset($_search['search']) && $_search['search'] != '') {
       $searchWord = $_search['search'];
-      
-
-      $_cnt = Account::with('accounttype')->where(function ($query) use ($searchWord){
+      $_cnt->where(function ($query) use ($searchWord){
                         $query->orWhere('name','like','%'.$searchWord.'%')
                               ->orWhere('website','like','%'.$searchWord.'%')
                               ->orWhere('description','like','%'.$searchWord.'%');
                       });
 
-      $_account = Account::with('accounttype')->where(function ($query) use ($searchWord){
+      $_account->where(function ($query) use ($searchWord){
                         $query->orWhere('name','like','%'.$searchWord.'%')
                               ->orWhere('website','like','%'.$searchWord.'%')
                               ->orWhere('description','like','%'.$searchWord.'%');
                       });
-
-      if(isset($_search['filter']) && $_search['filter'] != ''){
-        $searchFilter = $_search['filter']; //for filter
-        $_cnt = $_cnt->where(function ($query) use ($searchFilter){
-                          $query->where('accounttype', '=', $searchFilter);
-                        });
-        $_account = $_account->where(function ($query) use ($searchFilter){
-                          $query->where('accounttype', '=', $searchFilter);
-                        });
-      }
-
-      $_cnt = $_cnt->count();
-      $_account = $_account->take($perPage)
-                      ->offset($offset)
-                      ->orderBy($sortby, $orderby)
-                      ->get();
+    }
     
-    return Response::json(array(
-      'data' => $_account->toArray(), 
-      'total' => $_cnt),
-      200);
+    if(isset($_search['filter']) && $_search['filter'] != ''){
+      $searchFilter = $_search['filter']; //for filter
+      $_cnt = $_cnt->where(function ($query) use ($searchFilter){
+                        $query->where('accounttype', '=', $searchFilter);
+                      });
+      $_account = $_account->where(function ($query) use ($searchFilter){
+                        $query->where('accounttype', '=', $searchFilter);
+                      });
+    }
+
+    $_cnt = $_cnt->count();
+    $_account = $_account->take($perPage)
+                    ->offset($offset)
+                    ->orderBy($sortby, $orderby)
+                    ->get();
+    
+    return Response::json(array('data' => $_account->toArray(), 'total' => $_cnt),200);
   }
 
   public function destroy($id){

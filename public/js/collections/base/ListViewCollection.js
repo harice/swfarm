@@ -32,7 +32,7 @@ define([
 			this.getModels();
 		},
 		
-		getModels: function() {
+		getModels: function(option) {
 			var thisObj = this;
 			
 			this.sync('read', this, {
@@ -60,13 +60,13 @@ define([
 							}
 						}
 						
-						thisObj.trigger('sync');
+						thisObj.trigger('sync', data, textStatus, jqXHR, option);
 					}
 					else
 						alert(jqXHR.statusText);
 				},
 				error:  function (jqXHR, textStatus, errorThrown) {
-					thisObj.trigger('error');
+					thisObj.trigger('error', jqXHR, textStatus, errorThrown);
 					alert(jqXHR.statusText);
 				},
 				headers: thisObj.getAuth(),

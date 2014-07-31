@@ -5,32 +5,48 @@
             <select class="form-control product_id width-160" name="product_id"><%= product_list %></select>
         </div>
 	</td>
-    <td><input class="form-control description" name="description" maxlength="80"></td>
-	<td><input class="form-control stacknumber" type="text" name="stacknumber" maxlength="20" required></td>
 	<td>
 		<div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right price unitprice" type="text" name="unitprice" placeholder="0.00" value="" required></div>
 		<div class="error-msg-cont"></div>
 	</td>
 
 	<td><input class="form-control text-right tons" type="text" name="tons" maxlength="12"></td>
-	<td><input class="form-control text-right bales" type="text" name="bales"></td>
 	<td><div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right unit-price" type="text" value="0.00" readonly></div></td>
-	<% if (typeof is_bid === "undefined") { %>
-	<td>
-        <div class="styled-select">
-            <select class="select2 ishold width-80" name="ishold">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
-	</td>
-	<td><input class="form-control text-right rfv" type="text" name="rfv" minlength="3" maxlength="3"></td>
-	<td>
-		<input type="hidden" class="uploadedfile" name="uploadedfile" value="" data-filename="" />
-		<a class="attach-pdf no-attachment" data-id="" href="#"><i class="fa fa-book"></i></a>
-	</td>
-	<% } %>
 	<td>
 		<button title="Remove Product" type="button" class="pull-right btn btn-danger btn-xs remove-product"><span class="glyphicon glyphicon-remove"></span></button>
 	</td>
+</tr>
+<tr class="product-stack">
+	<td></td>
+	<td colspan="3">
+		<div class="row margin-top-0 padding-top-10">
+			<div class="col-md-12">
+				<legend>
+					Stacknumber
+					<button title="Add Product Stack" type="button" class="pull-right btn btn-info btn-xs add-product-stack"><span class="glyphicon glyphicon-plus"></span></button>
+				</legend>
+				<div class="table-responsive">
+					<table class="table table-bordered product-stack-table">
+						<thead>
+							<tr>
+								<th>Stack Number</th>
+								<th>Location From</th>
+								<th>Description</th>
+								<th>Est. Tons</th>
+								<th>Bales</th>
+								<% if (typeof is_bid === "undefined") { %>
+								<th>Hold for Testing</th>
+								<th>RFV</th>
+								<th>PDF</th>
+								<% } %>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody data-id=""></tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</td>
+	<td></td>
 </tr>

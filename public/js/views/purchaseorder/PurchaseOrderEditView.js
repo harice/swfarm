@@ -11,11 +11,15 @@ define([
 	'collections/purchaseorder/DestinationCollection',
 	'collections/product/ProductCollection',
 	'collections/contact/ContactCollection',
+	'collections/inventory/StackNumberCollection',
 	'models/purchaseorder/PurchaseOrderModel',
+	'models/file/FileModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderProductItemTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderSubProductItemTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderDestinationTemplate.html',
+	'text!templates/purchaseorder/convertToPOFormTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -30,11 +34,15 @@ define([
 			DestinationCollection,
 			ProductCollection,
 			ContactCollection,
+			StackNumberCollection,
 			PurchaseOrderModel,
+			FileModel,
 			contentTemplate,
 			purchaseOrderAddTemplate,
 			productItemTemplate,
+			productSubItemTemplate,
 			purchaseOrderDestinationTemplate,
+			convertToPOFormTemplate,
 			Global,
 			Const
 ){
@@ -52,18 +60,29 @@ define([
 			this.poId = option.id;
 			this.h1Title = 'Purchase Order';
 			this.h1Small = 'edit';
+			this.isInitProcess = true;
+			this.soProducts = [];
+			this.soProductsIndex = 0;
 			this.inits();
 			
 			this.model = new PurchaseOrderModel({id:this.poId});
 			this.model.on('change', function() {
+				_.each(this.get('productsummary'), function (product) {
+					thisObj.soProducts.push(product.productname.id);
+				});
+				
+				console.log(thisObj.soProducts);
+				
 				if(parseInt(this.get('isfrombid')) == 1 && this.get('status').name.toLowerCase() == 'pending') {
 					thisObj.isBid = true;
 					thisObj.h1Title = 'Bid';
 				}
 				else
 					thisObj.isBid = false;
+
+				thisObj.locationCollection.getLocationByAccount(this.get('account_id'));
+				//thisObj.stackNumberCollection.getStackNumbersByProduct({id:thisObj.soProducts[thisObj.soProductsIndex]});
 				
-				thisObj.destinationCollection.getModels();
 				this.off('change');
 			});
 		},
@@ -78,7 +97,7 @@ define([
 			
 			var account = this.model.get('account');
 			var address = [this.model.get('orderaddress')];
-			var products = this.model.get('productorder');
+			var products = this.model.get('productsummary');
 			
 			this.$el.find('#ponumber').val(this.model.get('order_number'));
 			this.$el.find('#status').val(this.model.get('status').name);
@@ -98,6 +117,7 @@ define([
 			this.producerAccountContactId = this.model.get('contact_id');
 			this.showFieldThrobber('#contact_id');
 			this.producerAccountCollection.getContactsByAccountId(account.id);
+			this.generateLocationFromDropDown();
 			
 			if(!this.isBid) {
 				if(this.model.get('transportdatestart')) {
@@ -116,42 +136,51 @@ define([
 			
 			var i= 0;
 			_.each(products, function (product) {
-				var productFields = (i > 0)? thisObj.addProduct(): thisObj.$el.find('#product-list tbody .product-item:first-child');
+				var productFields = null;
+				if(i > 0)
+					productFields = thisObj.addProduct();
+				else {
+					productFields = thisObj.$el.find('#product-list > tbody .product-item:first');
+					productFields.find('.product_id').html(thisObj.getProductDropdown());
+				}
 				i++;
 				
 				productFields.find('.id').val(product.id);
-				productFields.find('.product_id').val(product.product.id);
-				productFields.find('.description').val(product.description);
-				productFields.find('.stacknumber').val(product.stacknumber);
+				productFields.find('.product_id').val(product.productname.id);
 				productFields.find('.unitprice').val(thisObj.addCommaToNumber(parseFloat(product.unitprice).toFixed(2)));
 				productFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(product.tons).toFixed(4)));
-				productFields.find('.bales').val(thisObj.addCommaToNumber(product.bales));
-				productFields.find('.ishold').val(product.ishold);
-				productFields.find('.rfv').val(product.rfv);
-				
-				if(product.upload.length > 0) {
-					productFields.find('.uploadedfile').val(product.upload[0].file_id);
-					productFields.find('.uploadedfile').attr('data-filename', product.upload[0].files[0].name);
-					productFields.find('.attach-pdf').removeClass('no-attachment');
-				}
-				
 				var unitPrice = parseFloat(product.unitprice) * parseFloat(product.tons);
 				productFields.find('.unit-price').val(thisObj.addCommaToNumber(unitPrice.toFixed(2)));
+				
+				var j = 0;
+				_.each(product.productorder, function (productSub) {
+					var productSubFields = null;
+					
+					if(j > 0)
+						productSubFields = thisObj.addProductSub(productFields.find('.product-stack-table'));
+					else
+						productSubFields = productFields.next('.product-stack').find('.product-stack-table > tbody .product-stack-item:first');
+					j++;
+					
+					productSubFields.find('.id').val(productSub.id);
+					//thisObj.initStackNumberAutocomplete(productSubFields.find('.stacknumber'), product.productname.id);
+					productSubFields.find('.stacknumber').val(productSub.stacknumber);
+					productSubFields.find('.section_id').val(productSub.section_id);
+					productSubFields.find('.description').val(productSub.description);
+					productSubFields.find('.tons').val(productSub.tons);
+					productSubFields.find('.bales').val(productSub.bales);
+					productSubFields.find('.ishold').val(productSub.ishold);
+					productSubFields.find('.rfv').val(productSub.rfv);
+					
+					if(productSub.upload.length > 0) {
+						productSubFields.find('.uploadedfile').val(productSub.upload[0].file_id);
+						productSubFields.find('.uploadedfile').attr('data-filename', productSub.upload[0].files[0].name);
+						productSubFields.find('.attach-pdf').removeClass('no-attachment');
+					}
+				});
 			});
 			
 			this.computeTotals();
-		},
-		
-		otherInitializations: function () {
-			this.initCancelConfirmation();
-		},
-		
-		initCancelConfirmation: function () {
-			var verifyMsg = (!this.isBid)? 'Are you sure you want to cancel this Purchase Order?' : 'Are you sure you want to cancel this Bid?';
-			var verifyButtonLabel = (!this.isBid)? 'Cancel Purchase Order' : 'Cancel Bid';
-			this.initConfirmationWindow(verifyMsg,
-										'confirm-cancel-po',
-										verifyButtonLabel);
 		},
 		
 		postDisplayForm: function () {

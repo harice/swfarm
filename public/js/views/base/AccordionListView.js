@@ -6,8 +6,7 @@ define([
 
 	var AccordionListView = ListView.extend({
 		collapseSelected: function () {
-			var id = this.collection.getCollapseId(); console.log('id: '+id);
-			
+			var id = this.collection.getCollapseId();
 			if(id)
 				this.$el.find('.collapse-trigger[data-id="'+id+'"]').trigger('click');
 		},

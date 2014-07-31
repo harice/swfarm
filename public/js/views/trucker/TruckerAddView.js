@@ -93,8 +93,8 @@ define([
 			var validate = $('#TruckerForm').validate({
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
-					data['fee'] = thisObj.removeCommaFromNumber(data['fee']);
-					console.log(data);
+					// data['fee'] = thisObj.removeCommaFromNumber(data['fee']);
+					// console.log(data);
 					var truckerModel = new TruckerModel(data);
 					
 					truckerModel.save(

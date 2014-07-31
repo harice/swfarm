@@ -1,6 +1,8 @@
 <div class="content padding-top-0">
   <h2 class="ponumber margin-bottom-0"><%= so.get("order_number") %></h2>
-  
+  <div class="progress width-150 margin-bottom-0 height-3">
+  <div style="width: <%= so.get("weightPercentageDelivered") %>%" class="progress-bar progress-bar-<%= so.get("status").class %>"></div>
+  </div>
   <div class="row margin-top-0">
     <div class="col-md-6">
         Sales Date: <span class="text-danger"><%= formatDateAMPM(so.get("created_at")) %></span><br>
@@ -44,19 +46,15 @@
           <thead>
             <tr>
               <th class="width-150">Product</th>
-              <th>Description</th>
-              <th class="width-150">Stack No.</th>
-               <th class="width-110">Unit Price</th>
-              <th class="width-110">Est Tons</span></th>
-              <th class="width-110">Bales</th>
+              <th>Unit Price</th>
+              <th>Est Tons</th>
               <th class="width-110">Total Price</th>
             </tr>
           </thead>
     		  <tfoot>
     		    <tr>
-      			  <td class="text-right" colspan="4">Total</td>
+      			  <td class="text-right" colspan="2">Total</td>
       			  <td class="text-right"><strong id="total-tons">0.0000</strong></td>
-      			  <td class="text-right"><strong id="total-bales">0</strong></td>
       			  <td class="text-right"><strong id="total-price">$ 0.00</strong></td>
       			</tr>
     		  </tfoot>
@@ -80,7 +78,7 @@
               <i class="fa fa-ban width-10"></i> Cancel SO
             </a>
         <% } %>        
-        <a class="btn btn-trans btn-rad btn-sm" href="<%= so_url %>"><i class="fa fa-reply width-10"></i> Back</a>
+        <a class="btn btn-trans btn-rad btn-sm" href="<%= so_url %>"><i class="fa fa-history width-10"></i> Back</a>
       </div>
     </div>
   </div>

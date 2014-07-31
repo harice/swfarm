@@ -15,12 +15,12 @@
       <ul class="cl-vnavigation">
         <li class="active" ><a href="#/<%= constant.URL.DASHBOARD %>"><i class="fa fa-home"></i><span>Dashboard</span></a></li>
 
-        <% if(_.contains(permission,constant.MENU.CONTACTS.VIEW) || _.isEqual(su,constant.SU)) { %>
-        <li><a href="#/<%= constant.URL.CONTACT %>"><i class="fa fa-users"></i><span>Contacts</span></a></li>
-        <% } %>
-
         <% if(_.contains(permission,constant.MENU.ACCOUNTS.VIEW) || _.isEqual(su,constant.SU)) { %>
         <li><a href="#/<%= constant.URL.ACCOUNT %>"><i class="fa fa-building-o"></i><span>Accounts</span></a></li>
+        <% } %>
+        
+        <% if(_.contains(permission,constant.MENU.CONTACTS.VIEW) || _.isEqual(su,constant.SU)) { %>
+        <li><a href="#/<%= constant.URL.CONTACT %>"><i class="fa fa-users"></i><span>Contacts</span></a></li>
         <% } %>
         
         <% if(_.contains(permission,constant.MENU.CONTRACT.VIEW) || _.isEqual(su,constant.SU)) { %>
@@ -28,11 +28,11 @@
         <% } %>
 
         <% if(_.contains(permission,constant.MENU.PURCHASES.VIEW) || _.isEqual(su,constant.SU)) { %>
-        <li><a href="#/<%= constant.URL.PO %>"><i class="fa fa-file"></i><span>Purchases</span></a></li>
+        <li><a href="#/<%= constant.URL.PO %>"><i class="fa fa-file-text-o"></i><span>Purchases</span></a></li>
         <% } %>
 
         <% if(_.contains(permission,constant.MENU.SALES.VIEW) || _.isEqual(su,constant.SU)) { %>
-        <li><a href="#/<%= constant.URL.SO %>"><i class="fa fa-folder-o"></i><span>Sales</span></a></li>
+        <li><a href="#/<%= constant.URL.SO %>"><i class="fa fa-file-text"></i><span>Sales</span></a></li>
         <% } %>
 
 		<% if(_.contains(permission,constant.MENU.INVENTORY.VIEW) || _.isEqual(su,constant.SU)) { %>

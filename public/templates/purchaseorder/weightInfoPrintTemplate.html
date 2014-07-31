@@ -36,7 +36,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><%= weightticket.get("weightticketscale_pickup").scaler_account[0].name %></td>
+                                <td><%= weightticket.get("weightticketscale_pickup").scaler_account.name %></td>
                                 <td><%= weightticket.get("weightticketscale_pickup").scale.name %></td>
                                 <td><%= weightticket.get("weightticketscale_pickup").fee %></td>
                                 <td><%= weightticket.get("weightticketscale_pickup").bales %></td>
@@ -102,7 +102,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><%= weightticket.get("weightticketscale_dropoff").scaler_account[0].name %></td>
+                                <td><%= weightticket.get("weightticketscale_dropoff").scaler_account.name %></td>
                                 <td><%= weightticket.get("weightticketscale_dropoff").scale.name %></td>
                                 <td><%= weightticket.get("weightticketscale_dropoff").fee %></td>
                                 <td><%= weightticket.get("weightticketscale_dropoff").bales %></td>

@@ -191,8 +191,11 @@ class OrderRepository implements OrderRepositoryInterface {
 
         $result['delivered'] = $result['delivered'];
         $result['expected'] = $result['expected'];
-
-        $result['percentage'] = intval(($result['delivered']/$result['expected']) * 100);
+        if($result['delivered'] != null && $result['delivered'] != 0){
+            $result['percentage'] = intval(($result['delivered']/$result['expected']) * 100);    
+        } else {
+            $result['percentage'] = 0;
+        }
 
         if($result['percentage'] > 100){
             $result['percentage'] = 100;
@@ -229,6 +232,7 @@ class OrderRepository implements OrderRepositoryInterface {
                     });
                 });
             });
+            $response['weightPercentageDelivered'] = $this->getExpectedDeliveredData($response['id']);
           
         } else {
           $response = array(
@@ -364,6 +368,12 @@ class OrderRepository implements OrderRepositoryInterface {
         $data['createPO'] = isset($data['createPO']) ? $data['createPO'] : 0;
         if($data['createPO']) //update PO status when true
             $data['status_id'] = 1; //Open status
+        
+        if (isset($data['natureofsale_id'])) {
+            if ($data['natureofsale_id'] != Config::get('constants.NOS_RESERVED')) {
+                unset($data['contract_id']);
+            }
+        }
 
         $this->validate($data, 'Order', $data['ordertype']);
 
@@ -931,7 +941,7 @@ class OrderRepository implements OrderRepositoryInterface {
    }
 */
     public function getPOStatus(){
-        return Status::whereIn('id',array(1,2,3,4))->get()->toArray(); //return statuses for orders
+        return Status::whereIn('id',array(1,2,4,5,6,7))->get()->toArray(); //return statuses for orders
     }
 
     public function getSOStatus(){

@@ -1,22 +1,28 @@
 <tr class="product-item">
 	<td><%= productname %></td>
-    <td><%= description %></td>
-	<td><code><%= stacknumber %></code></td>
-
-	<% if (typeof is_bid === "undefined") { %>
-	<td class="text-right"><i class="fa fa-check-square-o <% if(ishold==1) { %>color-success<% } %>"></i></td>
-	<td><%= rfv %></td>
-	<td>
-		<% if (typeof file_path !== "undefined") { %>
-			<a class="attach-pdf color-success" href="<%= file_path %>" target="_blank"><i class="fa fa-book"></i></a>
-		<% } else { %>
-			<i class="fa fa-book"></i>
-		<% } %>
-	</td>
-	<% } %>
-
 	<td class="text-right">$ <%= unitprice %></td>
 	<td class="text-right"><%= tons %></td>
-	<td class="text-right"><%= bales %></td>
 	<td class="text-right">$ <%= totalprice %></td>
+</tr>
+<tr class="product-stack">
+	<td></td>
+	<td colspan="3">
+		<div class="table-responsive">
+			<table class="table-condensed table-bordered table-hover product-stack-table">
+				<thead>
+					<th>Stack No.</th>
+					<th>Location From</th>
+					<th>Description</th>
+					<th>Est Tons</th>
+					<th>Bales</th>
+					<% if (typeof is_bid === "undefined") { %>
+					<th>Testing</th>
+					<th>RFV</th>
+					<th>PDF</th>
+					<% } %>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+	</td>
 </tr>

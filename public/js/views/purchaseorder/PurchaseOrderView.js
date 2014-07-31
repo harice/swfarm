@@ -16,6 +16,7 @@ define([
 	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderViewTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderViewProductItemTemplate.html',
+	'text!templates/purchaseorder/purchaseOrderViewSubProductItemTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderDestinationTemplate.html',
 	'global',
 	'constant',
@@ -36,6 +37,7 @@ define([
 			purchaseOrderTabbingTemplate,
 			purchaseOrderAddTemplate,
 			productItemTemplate,
+			productSubItemTemplate,
 			purchaseOrderDestinationTemplate,
 			Global,
 			Const
@@ -151,7 +153,7 @@ define([
 		supplyPOData: function () {
 			var thisObj = this;
 			
-			var products = this.model.get('productorder');
+			var products = this.model.get('productsummary');
 			
 			var totalTons = 0;
 			var totalBales = 0;
@@ -167,23 +169,18 @@ define([
 				totalBales += (!isNaN(parseInt(product.bales)))? parseInt(product.bales) : 0;
 				
 				var variables = {
-					productname: product.product.name,
-					description: product.description,
-					stacknumber: product.stacknumber,
+					productname: product.productname.name,
+					//description: product.description,
+					//stacknumber: product.stacknumber,
 					unitprice: Backbone.View.prototype.helpers.numberFormat(unitprice),
 					tons: Backbone.View.prototype.helpers.numberFormatTons(tons),
-					bales: Backbone.View.prototype.helpers.numberFormatBales(product.bales),
+					//bales: Backbone.View.prototype.helpers.numberFormatBales(product.bales),
 					totalprice: Backbone.View.prototype.helpers.numberFormat(totalprice),
-					ishold: product.ishold,
-					rfv: product.rfv,
+					//ishold: product.ishold,
+					//rfv: product.rfv,
 					//file_id: product.upload[0].file_id,
 					//file_name: product.upload[0].files[0].name,
 				};
-				
-				if(typeof product.upload != 'undefined' && product.upload.length > 0) {
-					if(typeof product.upload[0].files != 'undefined' && product.upload[0].files.length > 0)
-						variables['file_path'] = '/apiv1/file/'+product.upload[0].files[0].auth;
-				}
 				
 				//console.log(variables);
 				
@@ -191,11 +188,35 @@ define([
 					variables['is_bid'] = true;
 				
 				var template = _.template(productItemTemplate, variables);
-				thisObj.$el.find('#product-list tbody').append(template);
+				thisObj.$el.find('#product-list > tbody').append(template);
+				
+				var subProductTBODY = thisObj.subContainer.find('#product-list > tbody > .product-stack:last tbody');
+				
+				_.each(product.productorder, function (productSub) {
+					var variablesSub = {
+						stacknumber: productSub.stacknumber,
+						location_from: productSub.sectionfrom.storagelocation.name+' - '+productSub.sectionfrom.name,
+						description: productSub.description,
+						tons: productSub.tons,
+						bales: productSub.bales,
+						ishold: productSub.ishold,
+						rfv: productSub.rfv,
+					};
+					
+					if(typeof productSub.upload != 'undefined' && productSub.upload.length > 0) {
+						if(typeof productSub.upload[0].files != 'undefined' && productSub.upload[0].files.length > 0)
+							variablesSub['file_path'] = '/apiv1/file/'+productSub.upload[0].files[0].auth;
+					}
+					
+					if(thisObj.isBid)
+						variablesSub['is_bid'] = true;
+					
+					var templateSub = _.template(productSubItemTemplate, variablesSub);
+					subProductTBODY.append(templateSub);
+				});
 			});
 			
 			this.subContainer.find('#total-tons').html(Backbone.View.prototype.helpers.numberFormatTons(totalTons));
-			this.subContainer.find('#total-bales').html(Backbone.View.prototype.helpers.numberFormatBales(totalBales));
 			this.subContainer.find('#total-price').html('$ '+Backbone.View.prototype.helpers.numberFormat(totalTotalPrice));
 		},
 		

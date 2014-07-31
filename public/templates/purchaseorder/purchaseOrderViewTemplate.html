@@ -1,5 +1,8 @@
 <div class="content padding-top-0">
   <h2 class="ponumber margin-bottom-0"><%= po.get("order_number") %></h2>
+  <div class="progress width-150 margin-bottom-0 height-3">
+  <div style="width: <%= po.get("weightPercentageDelivered") %>%" class="progress-bar progress-bar-<%= po.get("status").class %>"></div>
+  </div>
   <div class="row margin-top-0">
     <div class="col-md-6">
       <% if (typeof is_bid === "undefined") { %>
@@ -40,25 +43,14 @@
           <thead>
             <tr>
               <th class="width-150">Product</th>
-              <th>Description</th>
-              <th class="width-150">Stack No.</th>
-              
-              <% if (typeof is_bid === "undefined") { %>
-              <th class="width-60">Testing</th>
-              <th class="width-60">RFV</th>
-              <th class="width-40">PDF</th>
-              <% } %>
-
-              <th class="width-110">
+              <th>
                 <% if (typeof is_bid === "undefined") { %>
                   Unit Price
                 <% } else { %>
                   Bid Unit Price
                 <% } %>
               </th>
-
-              <th class="width-110">Est Tons</span></th>
-              <th class="width-110">Bales</th>
+              <th>Est Tons</th>
               <th class="width-110">
                 <% if (typeof is_bid === "undefined") { %>
                   Total Price
@@ -72,9 +64,8 @@
           <tbody></tbody>
     		  <tfoot>
     		    <tr>
-      			  <td class="text-right" colspan="<% if (typeof is_bid === "undefined") { %>7<% } else { %>4<% } %>">Total</td>
+      			  <td class="text-right" colspan="2">Total</td>
       			  <td class="text-right"><strong id="total-tons">0.0000</strong></td>
-      			  <td class="text-right"><strong id="total-bales">0</strong></td>
       			  <td class="text-right"><strong id="total-price">$ 0.00</strong></td>
       			</tr>
     		  </tfoot>
@@ -105,7 +96,7 @@
             </a>
           <% } %>
         <% } %>
-        <a class="btn btn-trans btn-rad btn-sm" href="<%= po_url %>"><i class="fa fa-reply width-10"></i> Back</a>
+        <a class="btn btn-trans btn-rad btn-sm" href="<%= po_url %>"><i class="fa fa-history width-10"></i> Back</a>
       </div>
     </div>
   </div>

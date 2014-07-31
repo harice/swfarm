@@ -84,7 +84,7 @@ define([
 						activeValue = ' <span class="sr-only">(current)</span>';
 					}
 						
-					$('.pagination .last-page').parent().before('<li'+active+'><a class="page-number" href="#" data-pagenum="'+i+'">'+i+activeValue+'</a></li>');
+					$('.pagination .next-page').parent().before('<li'+active+'><a class="page-number" href="#" data-pagenum="'+i+'">'+i+activeValue+'</a></li>');
 				}
 			}
 			else {

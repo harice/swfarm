@@ -11,11 +11,14 @@ define([
 			currentPage: 1,
 			maxItem: 0,
 			search: '',
-			currentSort: 'created_at',
+			currentSort: 'contract_number',
 			sort: {
-				created_at: false,
+				contract_number: false
 			},
-			filters: {},
+			filters: {
+                contract_date_start: '',
+                contract_date_end: ''
+            },
 			filter: '',
 			date: '',
 			lookUpIds: {},

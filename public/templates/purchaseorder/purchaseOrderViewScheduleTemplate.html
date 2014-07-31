@@ -1,7 +1,7 @@
 <div class="content padding-top-0">
-	<h2 class="ponumber margin-bottom-0"><%= po.get("order_number") %></h2>
-	Scheduled Date: <span class="text-danger"><%= formatDateAMPM(pu.get("date")) %></span><br>
-	Status: <label class="label label-<%= pu.get("status").class %>"><%= pu.get("status").name %></label>
+	<h2 class="ponumber margin-bottom-0"><%= formatDateAMPM(pu.get("date")) %></h2>
+	Status: <label class="label label-<%= pu.get("status").class %>"><%= pu.get("status").name %></label><br>
+	PO No.: <span class="text-danger"><%= po.get("order_number") %></span>
 	<div class="row margin-top-0">
     	<div class="col-md-4">
 			<h3>Loader (<span class="text-danger">Origin</span>)</h3>
@@ -64,14 +64,15 @@
 						<tr>							
 							<th class="width-200">Product</th>
 							<th>Stack No.</th>
+							<th>Location To</th>
 							<th class="width-150">Quantity</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
 					<tfoot>
 						<tr>
-							<td class="text-right" colspan="2">Total</td>
-							<td class="text-right"><strong id="total-quantity"></strong></td>
+							<td class="text-right" colspan="3">Total</td>
+							<td class="text-right" id="total-quantity"></td>
 						</tr>
 					</tfoot>
 				</table>
@@ -85,18 +86,19 @@
 					<a id="edit-schedule" class="btn btn-primary btn-trans btn-rad btn-sm editable-button" href="<%= schedule_edit_url %>">
 						<i class="fa fa-pencil width-10"></i> Edit Schedule
 					</a>
+					<% if(_.isNull(pu.get('weightticket'))) { %>
 					<a id="close-schedule" class="btn btn-warning btn-trans btn-rad btn-sm editable-button" href="#">
 						<i class="fa fa-times width-10"></i> Close Schedule
 					</a>
 					<a id="delete-schedule" class="btn btn-warning btn-trans btn-rad btn-sm editable-button">
-						<i class="fa fa-trash-o"></i> Delete Schedule
+						<i class="fa fa-trash-o width-10"></i> Delete Schedule
 					</a>
-				<% } %>
+				<% } } %>
 				<a id="go-to-weight-info" class="btn btn-primary btn-trans btn-rad btn-sm" href="<%= weight_info_url %>">
-					<i class="fa fa-info"></i> Weight Info
+					<i class="fa fa-ticket width-10"></i> Weight Ticket
 				</a>
 				<a class="btn btn-trans btn-rad btn-sm" id="go-to-previous-page" href="#">
-					<i class="fa fa-reply width-10"></i> Back
+					<i class="fa fa-history width-10"></i> Back
 				</a>
 			</div>
 		</div>

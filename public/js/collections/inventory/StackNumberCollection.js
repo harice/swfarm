@@ -9,6 +9,11 @@ define([
 		initialize: function() {
 			this.setDefaultURL(this.url);
 		},
+		
+		getStackNumbersByProduct: function (option) {
+			this.url = this.getDefaultURL()+'?productId='+option.id;
+			this.getModels(option);
+		},
 	});
 
 	return StackNumberCollection;
