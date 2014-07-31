@@ -151,7 +151,7 @@ class InventoryLibrary {
                     $stacklocation->fill($stackLocationData);
                     $stacklocation->save();
                 }
-            } else if($type == 4){ //issue type - deduct a stack to stackLocaitonFrom
+            } else if($type == 4 || $type == 1){ //issue type - deduct a stack to stackLocaitonFrom
                 $stacklocationFrom = StackLocation::where('stack_id', '=', $stack->id)->where('section_id', '=', $product['sectionfrom_id'])->first();
                 if($stacklocationFrom){
                     if($stacklocationFrom->tons < $product['tons']){

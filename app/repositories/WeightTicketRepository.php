@@ -556,6 +556,11 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     
 
     private function createJsonForInventory($schedule_id, $ordertype = 1){ //order type is default to PO
+        if($ordertype == 1){
+            $transactiontype_id = 2; //PO on inventory type
+        } else {
+            $transactiontype_id = 1; //SO  on inventory type
+        }
         $transportSchedule = TransportSchedule::with('weightticket.weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder')
                                             ->with('weightticket.weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder')
                                             ->where('id', '=', $schedule_id)->first();
@@ -583,28 +588,28 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             $ctr++;
         }
 
-        $products = array("transactiontype_id" => "2", "order_id" =>$transportSchedule['order_id'], "weightticket_id" => $transportSchedule['weightticket']['id'], "products" => $productTemp, "notes" => "");
+        $products = array("transactiontype_id" => $transactiontype_id, "order_id" =>$transportSchedule['order_id'], "weightticket_id" => $transportSchedule['weightticket']['id'], "products" => $productTemp, "notes" => "");
 
         // return Response::json($products);
         return $products;
     }
 
     public function checkoutWeightTicket($schedule_id){
-        $weightticket = WeightTicket::where('transportSchedule_id', '=', $schedule_id)->first();
-        if(!$weightticket) {
+        $weightticketObj = WeightTicket::where('transportSchedule_id', '=', $schedule_id)->first();
+        if(!$weightticketObj) {
             return Response::json(array(
                   'error' => true,
                   'message' => 'Weight Info Not Found.'), 500);
-        } else if($weightticket->checkout == 1){ //already checkout
+        } else if($weightticketObj->checkout == 1){ //already checkout
             return Response::json(array(
                   'error' => true,
-                  'message' => 'This weight ticket is already close.'), 500);
-        } else if($weightticket->pickup_id == null){
+                  'message' => 'This weight ticket is already checked out.'), 500);
+        } else if($weightticketObj->pickup_id == null){
             return Response::json(array(
                   'error' => true,
                   'message' => 'This weight ticket has no pickup details yet.'), 500);
         } else {
-            $weightticket = $weightticket->toArray();
+            $weightticket = $weightticketObj->toArray();
 
             if(isset($weightticket['weightticketscale_pickup'])){
                 
@@ -638,8 +643,8 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             }
             
             //change the status
-            $weightticket->checkout = 1;
-            $weightticket->save();
+            $weightticketObj->checkout = 1;
+            $weightticketObj->save();
             return Response::json(array(
               'error' => false,
               'message' => 'Weighticket successfully checkout.'), 200);
