@@ -174,6 +174,21 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         
         return false;
     }
+    
+    public function hasDuplicateSectionName(array $sections) {
+        $names = array();
+        foreach ($sections as $section) {
+            $names[] = $section['name'];
+        }
+        
+        $dupe_array = array_count_values($names);
+        foreach($dupe_array as $name){
+            if($name > 1){
+                return true;
+            }
+        }
+        return false;
+    }
 
     private function removeSection($storagelocation_id, $sections = array())
     {
@@ -224,6 +239,12 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         }
 
         if(isset($data['sections']) && count($data['sections']) > 0){
+            if ($this->hasDuplicateSectionName($data['sections'])) {
+                return Response::json(array(
+                    'error' => true,
+                    'message' => "Please enter a unique Section name."), 500);
+            }
+            
             $removeSectionResult = $this->removeSection($id, $data['sections']); //delete sections that is remove by client
             $sectionResult = $this->addSection($storagelocation->id, $data['sections']);
             
