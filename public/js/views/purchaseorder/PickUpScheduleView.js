@@ -113,7 +113,7 @@ define([
 				var variables = {
 					stock_number: product.productorder.stacknumber,
 					product_name: product.productorder.product.name,
-					location_to: product.sectionto.storagelocation.name+' '+product.sectionto.name,
+					location_to: product.sectionto.storagelocation.name+' - '+product.sectionto.name,
 					quantity: Backbone.View.prototype.helpers.numberFormatTons(quantity)
 				};
 				

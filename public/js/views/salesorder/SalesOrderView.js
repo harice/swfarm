@@ -133,6 +133,7 @@ define([
 				_.each(product.productorder, function (productSub) {
 					var variablesSub = {
 						stacknumber: productSub.stacknumber,
+						location_from: productSub.sectionfrom.storagelocation.name+' - '+productSub.sectionfrom.name,
 						description: productSub.description,
 						tons: productSub.tons,
 						bales: productSub.bales,
