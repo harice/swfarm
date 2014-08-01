@@ -186,6 +186,7 @@ class InventoryRepository implements InventoryRepositoryInterface {
             $result['last_page'] = $stackList['last_page'];
             $result['from'] = $stackList['from'];
             $result['to'] = $stackList['to'];
+            $result['data'] = array();
             $index = 0;
             foreach($stackList['data'] as $product){
                 if($product['stacklocation'] == null){
@@ -204,8 +205,6 @@ class InventoryRepository implements InventoryRepositoryInterface {
                 $result['data'][$index]['stacklocation'] = substr($result['data'][$index]['stacklocation'], 0, -2); //remove extra | on last
                 $index++;
             }
-        } else {
-            $result['data'] = array();
         }
 
         return $result;
