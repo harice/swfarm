@@ -328,6 +328,11 @@ class OrderRepository implements OrderRepositoryInterface {
                 return array(
                     "error" => true,
                     'message' => "Stack number ".$productResult['stacknumber']." already taken by different product.");
+            } else if(isset($productResult['stacknumberRepeatedError'])){
+                return array(
+                    "error" => true,
+                    'message' => "Stack number ".$productResult['stacknumber']." has been use repeatedly."
+                );
             } else if($productResult['hasHoldProduct'] && $data['ordertype'] == 1){ //for purchase order only
                 $order->status_id = 7; //Testing status
                 $order->save();
@@ -403,6 +408,11 @@ class OrderRepository implements OrderRepositoryInterface {
                 return array(
                     "error" => true,
                     'message' => "Stack number ".$productResult['stacknumber']." already taken by different product."
+                );
+            } else if(isset($productResult['stacknumberRepeatedError'])){
+                return array(
+                    "error" => true,
+                    'message' => "Stack number ".$productResult['stacknumber']." has been use repeatedly."
                 );
             } else if($productResult != null && $data['ordertype'] == 1 && $order->status_id != 4){ //for purchase order only, status 4 is pending
                 if($productResult['hasHoldProduct']){
@@ -628,6 +638,7 @@ class OrderRepository implements OrderRepositoryInterface {
 
     private function addProductToOrder($order_id, $products = array(), $isUpdate = false){
         $result = array('hasHoldProduct' => false);
+        $stacknumbersUsed = array();
         foreach ($products as $product){
             if(isset($product['id'])){
                 $productordersummary = ProductOrderSummary::find($product['id']);
@@ -638,16 +649,27 @@ class OrderRepository implements OrderRepositoryInterface {
             $product['order_id'] = $order_id;
             $productordersummary->fill($product);
             $productordersummary->save();
-            //if operation is update, need to remove the order delete by the user on client side
-            // if($isUpdate){
-            //     $stacks = $this->addStacksToOrder($order_id, $product['stacks'], $productordersummary->id);
-            // } else {
+            
+            //check if same stack number is used in saving order
+            foreach($product['stacks'] as $item){
+                if(!in_array(strtolower($item['stacknumber']), $stacknumbersUsed)){
+                    array_push($stacknumbersUsed, strtolower($item['stacknumber'])); 
+                } else {
+                    return array("stacknumberRepeatedError" => true, "stacknumber"=>$item['stacknumber']);
+                }
+            }
+
+
             $stacks = $this->addStacksToOrder($order_id, $product['stacks'], $productordersummary->id);
-            // }
 
             if(isset($stacks['stacknumberError'])){
                 if($stacks['stacknumberError']){
                     $result['stacknumberError'] = true;
+                    $result['stacknumber'] = $stacks['stacknumber'];
+                }
+            } else if(isset($stacks['stacknumberRepeatedError'])){
+                if($stacks['stacknumberRepeatedError']){
+                    $result['stacknumberRepeatedError'] = true;
                     $result['stacknumber'] = $stacks['stacknumber'];
                 }
             }
@@ -666,10 +688,12 @@ class OrderRepository implements OrderRepositoryInterface {
     private function addStacksToOrder($order_id, $products = array(), $productordersummary_id){
         $result = array('hasHoldProduct' => false);
         // var_dump($products);exit;
+        $stacknumbersUsed = array();
         foreach ($products as $product) {
             if($this->checkIfStackNumberIsTakenByOtherProduct($product['stacknumber'], $product['product_id'])){
                 return array("stacknumberError" => true, "stacknumber"=>$product['stacknumber']);
             }
+            
             $product['order_id'] = $order_id;
             $product['productordersummary_id'] = $productordersummary_id;
             //set order status to testing when it has product hold with no rfv and file set
@@ -684,6 +708,7 @@ class OrderRepository implements OrderRepositoryInterface {
             }
            
             $this->validate($product, 'ProductOrder');
+
             if(isset($product['id'])){
                 $productorder = ProductOrder::find($product['id']);
                 // var_dump($product['id']);
