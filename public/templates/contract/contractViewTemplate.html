@@ -13,9 +13,9 @@
                 <dt>End Date</dt>
                 <dd><%= contract.get("contract_date_end") %>&nbsp</dd>
                 <dt>Total Est Tons</dt>
-                <dd><%= total_tons %> tons &nbsp</dd>
+                <dd><%= numberFormatTons(total_tons) %> tons &nbsp</dd>
                 <dt>Total Est Bales</dt>
-                <dd><%= total_bales %> bales &nbsp</dd>
+                <dd><%= numberFormatBales(total_bales) %> bales &nbsp</dd>
                 <dd>
                     <div class="clearfix"></div>
                     <% if(contract.get("status_id") == 1) { %>
