@@ -1,12 +1,24 @@
 define([
+    'underscore',
 	'backbone',
 	'views/base/AppView',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/contract/contractViewTemplate.html',
 	'models/contract/ContractModel',
+    'collections/contract/SalesOrderDetailsByProductCollection',
 	'global',
 	'constant'
-], function(Backbone, AppView, contentTemplate, contractViewTemplate, ContractModel, Global, Const){
+], function(
+    _,
+    Backbone,
+    AppView,
+    contentTemplate,
+    contractViewTemplate,
+    ContractModel,
+    SalesOrderDetailsByProductCollection,
+    Global,
+    Const
+){
 
 	var ContractView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -50,11 +62,13 @@ define([
             });
             
 			var innerTemplateVariables = {
+                _: _,
 				contract:this.model,
 				contract_url:'#/'+Const.URL.CONTRACT,
 				contract_edit_url:'#/'+Const.URL.CONTRACT+'/'+Const.CRUD.EDIT,
                 total_tons: total_tons.toFixed(4),
-                total_bales: total_bales
+                total_bales: total_bales,
+                salesorders: ''
 			};
             
             _.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
