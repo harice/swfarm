@@ -121,7 +121,9 @@ define([
 			'click #confirm-close-wt': 'closeWeightTicket',
             'click #mail-weight-ticket': 'showMailForm',
             'click #confirm-mail-weight-ticket': 'mailWeightTicket',
-            'click #print-weight-ticket': 'printWeightTicket'
+            'click #print-weight-ticket': 'printWeightTicket',
+			'click #checkout-stack': 'showCheckoutStackConfirmationWindow',
+			'click #confirm-checkout-stack': 'checkoutStack',
 		},
                 
         printWeightTicket: function() {
@@ -198,6 +200,46 @@ define([
 
 							var weight_info_print_url = '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+'print';
 							thisObj.subContainer.find('#weight-ticket-actions').prepend('<a href="'+weight_info_print_url+'" class="btn btn-primary btn-sm btn-trans btn-rad"><i class="fa fa-print width-10"></i> Print</a><a id="mail-weight-ticket" class="btn btn-primary btn-sm btn-trans btn-rad"><i class="fa fa-envelope-o width-10"></i> Email</a>');
+						});
+						thisObj.displayMessage(response);
+					},
+					error: function (model, response, options) {
+						thisObj.hideConfirmationWindow();
+						if(typeof response.responseJSON.error == 'undefined')
+							alert(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: weightInfoModel.getAuth(),
+				}
+			);
+                
+			return false;
+		},
+		
+		showCheckoutStackConfirmationWindow: function (ev) {
+			this.initConfirmationWindow('Are you sure you want to checkout the stack?',
+										'confirm-checkout-stack',
+										'Check-out Stack',
+										'Check-out Stack',
+										false);
+			this.showConfirmationWindow();
+			
+			return false;
+		},
+		
+		checkoutStack: function (ev) {
+			var thisObj = this;
+			
+			var weightInfoModel = new SOWeightInfoModel({id:this.schedId});
+			weightInfoModel.setCheckoutStackURL();
+			weightInfoModel.save(
+				null,
+				{
+					success: function (model, response, options) {
+						thisObj.hideConfirmationWindow('modal-confirm', function () {
+							thisObj.subContainer.find('#checkout-stack').after('<a class="btn btn-warning btn-sm btn-trans btn-rad close-weight-ticket editable-button" href="#"><i class="fa fa-times width-10"></i> Close Ticket</a>');
+							thisObj.subContainer.find('#checkout-stack').remove();
 						});
 						thisObj.displayMessage(response);
 					},

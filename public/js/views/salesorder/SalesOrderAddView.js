@@ -124,7 +124,6 @@ define([
 				
 				if(thisObj.subContainerExist()) {
 					thisObj.isInitProcess = false;
-					console.log(thisObj.stackNumberByProductPool);
 					thisObj.displayForm();
 				}
 				
@@ -524,6 +523,8 @@ define([
 				
 				if(currentValue != '' && $(this).find('option[value="'+currentValue+'"]').length > 0)
 					$(this).val(currentValue);
+				else
+					$(this).val('').trigger('change');
 			});
 		},
 		
@@ -676,6 +677,7 @@ define([
 			'click #confirm-verify-order': 'verifySo',
 			'change .product_id': 'generateStackNumberSuggestions',
 			'change .stacknumber': 'onChangeStackNumber',
+			'change .natureofsale_id': 'onChangeNatureOfSales',
 		},
 		
 		onClickRemoveProductButton: function () {
@@ -931,6 +933,20 @@ define([
 				if(locationFromSelect.find('option').length == 2)
 					locationFromSelect.find('option:last').attr('selected', true);
 			}
+		},
+		
+		onChangeNatureOfSales: function (ev) {
+			var value = parseInt($(ev.currentTarget).val());
+			this.toggleContract(value);
+		},
+		
+		toggleContract: function (nos) {
+			if(nos != Const.SO.NATUREOFSALES.WITHCONTRACT) {
+				$('#contract_id').val('').trigger('change');
+				$('#contract_id').attr('disabled', true);
+			}
+			else
+				$('#contract_id').attr('disabled', false);
 		},
 		
 		showVerifyConfirmationWindow: function () {

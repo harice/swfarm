@@ -189,6 +189,13 @@ class ContractRepository implements ContractRepositoryInterface {
         {
             $contract = $this->findById($id);
             
+            if (!$this->hasDeliveredTons($id)) {
+                return array(
+                    'error' => true,
+                    'message' => 'Contract cannot be closed if orders are not fulfilled.'
+                );
+            }
+            
             if ($this->hasOpenOrders($id)) {
                 return array(
                     'error' => true,
@@ -215,6 +222,10 @@ class ContractRepository implements ContractRepositoryInterface {
     public function hasOpenOrders($id)
     {
         $contract = $this->findById($id);
+        if($contract->salesorders) {
+            return true;
+        }
+        
         foreach($contract->salesorders as $salesorder) {
             if ($salesorder->status_id != 2) {
                 return true;
@@ -326,8 +337,8 @@ class ContractRepository implements ContractRepositoryInterface {
     /**
      * Get delivered tons per Contract
      * 
-     * @param type $id
-     * @return type $float
+     * @param int $id Contract Id
+     * @return float
      */
     public function getDeliveredTons($id)
     {
@@ -348,6 +359,39 @@ class ContractRepository implements ContractRepositoryInterface {
             }
         }
         return $total_tons;
+    }
+    
+    /**
+     * Get expected tons.
+     * 
+     * @param int $id Contract Id
+     * @return float
+     */
+    public function getExpectedTons($id)
+    {
+        $expected_tons = 0.0000;
+        $contract = $this->findById($id);
+        
+        foreach ($contract->products as $product) {
+            $expected_tons += $product->pivot->tons;
+        }
+        
+        return $expected_tons;
+    }
+    
+    /**
+     * Check if delivered tons are greater than expected tons.
+     * 
+     * @param int $id Contract Id
+     * @return boolean
+     */
+    public function hasDeliveredTons($id)
+    {
+        if ($this->getDeliveredTons($id) >= $this->getExpectedTons($id)) {
+            return true;
+        }
+        
+        return false;
     }
     
     public function getSalesOrders($contract_id, $product_id = null)

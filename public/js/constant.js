@@ -152,6 +152,11 @@ define(function () {
 				'ID': 'order-list-collapsible-',
 			},
 		},
+		'SO': {
+			'NATUREOFSALES': {
+				'WITHCONTRACT': 1,
+			},
+		},
         'CONTRACT': {
 			'COLLAPSIBLE': {
 				'ID': 'contract-list-collapsible-',
@@ -181,6 +186,10 @@ define(function () {
 			'LOCATIONFROMREQUIRED': ['transfer','issue'],
 			'LOCATIONTOREQUIRED': ['transfer','receipt'],
 		},
+        'ACCOUNT_TYPE': {
+            'LOADER': 3,
+            'OPERATOR': 4
+        }
 	};
 	
 	return constant;

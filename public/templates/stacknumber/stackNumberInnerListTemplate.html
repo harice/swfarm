@@ -2,9 +2,9 @@
 	<% _.each(stacknumbers, function(stacknumber){ %>
 	<tr>
 		<td><%= formatDate(stacknumber.get("transactionDate")) %></td>
-		<td></td>
+		<td><% if (stacknumber.get("weightticketnumber")) { %><%= stacknumber.get("weightticketnumber") %><% } %></td>
 		<td><%= stacknumber.get("transactionType") %></td>
-		<td></td>
+		<td><% if (stacknumber.get("ordernumber")) { %><%= stacknumber.get("ordernumber") %><% } %></td>
 		<td><%= stacknumber.get("totalDelivered") %></td>
 	</tr>
 	<% }); %>

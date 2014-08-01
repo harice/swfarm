@@ -25,7 +25,11 @@ define([
                 
         setEmailURL: function () {
 			this.urlRoot = '/apiv1/weightticket/mailWeightTicket';
-		}
+		},
+		
+		setCheckoutStackURL: function () {
+			this.urlRoot = '/apiv1/weightticket/checkout';
+		},
 	});
 
 	return SOWeightInfoModel;

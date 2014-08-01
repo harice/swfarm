@@ -415,8 +415,10 @@ define([
 				return false;
 		},
 		
-		resetSelect: function (select) {
+		resetSelect: function (select, trigger) {
 			select.find('option:gt(0)').remove();
+			if(trigger != null && typeof trigger !== 'undefined')
+				select.val('').trigger('change');
 		},
 	});
 

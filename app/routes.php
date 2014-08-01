@@ -80,6 +80,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // Route::get('weightticket/getWeightTicketOfSchedule', 'APIv1\WeightTicketController@getWeightTicketOfSchedule');
     // Route::get('weightticket/getAllBidProductOnBid', 'APIv1\WeightTicketController@getAllBidProductOnBid');
     // Route::get('weightticket/getAllScaleProviderAccount', 'APIv1\WeightTicketController@getAllScaleProviderAccount');
+    Route::put('weightticket/checkout/{id}', 'APIv1\WeightTicketController@checkoutWeightTicket');
     Route::get('weightticket/getAllWeightticketOfOrder', 'APIv1\WeightTicketController@getAllWeightticketOfOrder');
     Route::put('weightticket/closeWeightTicket/{id}', 'APIv1\WeightTicketController@closeWeightTicket');
     Route::get('weightticket/getScheduleProducts', 'APIv1\WeightTicketController@getScheduleProducts');

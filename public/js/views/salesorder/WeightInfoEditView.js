@@ -75,7 +75,7 @@ define([
 				else
 					weightInfo = dropoffInfo;
 					
-				if(typeof weightInfo.scaler_account != 'undefined' && typeof weightInfo.scaler_account.id != 'undefined' && weightInfo.scaler_account.id != null) {
+				if(weightInfo.scaler_account != null && typeof weightInfo.scaler_account != 'undefined' && typeof weightInfo.scaler_account.id != 'undefined' && weightInfo.scaler_account.id != null) {
 					this.$el.find('#scaleAccount_id').val(weightInfo.scaler_account.id);
 					var scaleId = (typeof weightInfo.scale != 'undefined' && typeof weightInfo.scale.id != 'undefined' && weightInfo.scale.id != null)? weightInfo.scale.id : '';
 					this.fetchScale(weightInfo.scaler_account.id, scaleId);

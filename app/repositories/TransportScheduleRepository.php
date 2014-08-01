@@ -266,16 +266,19 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       $result = array();
 
       foreach($productOrder as $item){
-        $transportProduct = TransportScheduleProduct::where('productorder_id','=',$item['id'])->get();
-        $scheduleQuantity = 0;
+          if($item['stacknumber'] == "" || $item['tons'] == 0){
+            continue;
+          }
+          $transportProduct = TransportScheduleProduct::where('productorder_id','=',$item['id'])->get();
+          $scheduleQuantity = 0;
 
-        foreach($transportProduct as $product){
-            $scheduleQuantity += $product->quantity;
-        }
+          foreach($transportProduct as $product){
+              $scheduleQuantity += $product->quantity;
+          }
 
-        $item['quantityRemaining'] = $item['tons'] - $scheduleQuantity;
-        array_push($result, $item);
-        // var_dump('TOtal: '.$item['tons'].' Remaining: '.$item['quantityRemaining']);
+          $item['quantityRemaining'] = $item['tons'] - $scheduleQuantity;
+          array_push($result, $item);
+          // var_dump('TOtal: '.$item['tons'].' Remaining: '.$item['quantityRemaining']);
       }
 
       return $result;

@@ -223,7 +223,9 @@ define([
 		events:{
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #close-order': 'showCloseOrderConfirmationWindow',
-			'click #confirm-close-order': 'closeOrder'
+			'click #confirm-close-order': 'closeOrder',
+			'click #checkin-stack': 'showCheckinStackConfirmationWindow',
+			'click #confirm-checkin-stack': 'checkinStack',
 			//'click .attach-pdf': 'showPDF',
 		},
 		
@@ -263,6 +265,22 @@ define([
 				}
 			);
 			
+			return false;
+		},
+		
+		showCheckinStackConfirmationWindow: function (ev) {
+			this.initConfirmationWindow('Are you sure you want to check-in stack?',
+										'confirm-checkin-stack',
+										'Check-in Stack',
+										'Check-in Stack',
+										false);
+			this.showConfirmationWindow();
+			
+			return false;
+		},
+		
+		checkinStack: function () {
+			this.hideConfirmationWindow();
 			return false;
 		},
 		
