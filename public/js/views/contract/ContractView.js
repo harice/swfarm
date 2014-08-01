@@ -34,6 +34,8 @@ define([
 					thisObj.displayContract();
 				this.off("change");
 			});
+            
+            this.salesorders = new SalesOrderDetailsByProductCollection(option.id);
 		},
 		
 		render: function(){
@@ -61,6 +63,24 @@ define([
                 total_bales = total_bales + product.pivot.bales;
             });
             
+            var salesorders = null;
+            this.salesorders.fetch({
+                success: function (collection, model, response) {
+                    this.salesorders = collection;
+                },
+                error: function (collection, model, reponse) {
+                    console.log('Error in getting salesorders.');
+                },
+                wait: true,
+                headers: this.model.getAuth()
+            });
+            
+            console.log(this.salesorders.models);
+            _.each(this.salesorders.models, function (so) {
+                var salesorder = so.toJSON();
+                console.log(salesorder);
+            });
+            
 			var innerTemplateVariables = {
                 _: _,
 				contract:this.model,
@@ -68,7 +88,7 @@ define([
 				contract_edit_url:'#/'+Const.URL.CONTRACT+'/'+Const.CRUD.EDIT,
                 total_tons: total_tons.toFixed(4),
                 total_bales: total_bales,
-                salesorders: ''
+                salesorders: this.salesorders.models
 			};
             
             _.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
