@@ -38,6 +38,8 @@ class Product extends Eloquent {
 	 */
     protected $table = 'products';
     
+    protected $softDelete = true;
+    
     public static $rules = array(
         'name' => 'required|unique:products',
         'description' => 'max:250'

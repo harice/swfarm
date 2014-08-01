@@ -53,11 +53,6 @@ class ProductRepository implements ProductRepositoryInterface {
             $productList = Product::take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
             
             $data = $productList->toArray();
-            
-//            $desc_len = strlen($data[0]["description"]);
-//            if ($desc_len > 200) {
-//                $data[0]["description"] = substr($data[0]["description"], 0, 200) . '...';
-//            }
 
             $response = Response::json(
                 array(
@@ -205,7 +200,7 @@ class ProductRepository implements ProductRepositoryInterface {
         $product = Product::find($id);
 
         if($product){
-            $product->delete();
+            $product->forceDelete();
 
             $response = Response::json(array(
                 'error' => false,
