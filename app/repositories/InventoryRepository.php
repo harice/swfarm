@@ -204,6 +204,8 @@ class InventoryRepository implements InventoryRepositoryInterface {
                 $result['data'][$index]['stacklocation'] = substr($result['data'][$index]['stacklocation'], 0, -2); //remove extra | on last
                 $index++;
             }
+        } else {
+            $result['data'] = array();
         }
 
         return $result;
