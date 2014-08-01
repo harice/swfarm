@@ -186,8 +186,12 @@ class InventoryRepository implements InventoryRepositoryInterface {
             $result['last_page'] = $stackList['last_page'];
             $result['from'] = $stackList['from'];
             $result['to'] = $stackList['to'];
+            $result['data'] = array();
             $index = 0;
             foreach($stackList['data'] as $product){
+                if($product['stacklocation'] == null){
+                    continue;
+                }
                 $result['data'][$index]['productname'] = $product['product_name']['name'];
                 $result['data'][$index]['stacknumber'] = $product['stacknumber'];
                 $result['data'][$index]['stacklocation'] = "";
@@ -251,10 +255,14 @@ class InventoryRepository implements InventoryRepositoryInterface {
         $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST'); //default, see app/config/constants
         $stacknumber = $params['stacknumber'];
         
-        $inventoryProduct = InventoryProduct::with('inventory.inventorytransactiontype')->with('stack.stacklocation.section')->with('stack.productName')
-                                                ->wherehas('stack', function($stack) use ($stacknumber){
-                                                    $stack->where('stacknumber', 'like', $stacknumber);
-                                                })->paginate($perPage)->toArray();
+        $inventoryProduct = InventoryProduct::with('inventory.inventorytransactiontype')
+                                            ->with('inventory.ordernumber')
+                                            ->with('inventory.weightticketnumber')
+                                            ->with('stack.stacklocation.section')
+                                            ->with('stack.productName')
+                                            ->wherehas('stack', function($stack) use ($stacknumber){
+                                                $stack->where('stacknumber', 'like', $stacknumber);
+                                            })->paginate($perPage)->toArray();
         $result = array();
 
         if($inventoryProduct['data']){
@@ -271,11 +279,13 @@ class InventoryRepository implements InventoryRepositoryInterface {
                 $result['data'][$index]['transactionDate'] = $product['inventory']['created_at'];
                 $result['data'][$index]['transactionType'] = $product['inventory']['inventorytransactiontype']['type'];
                 $result['productname'] = $product['stack']['product_name']['name'];
+                $result['data'][$index]['ordernumber'] = $product['inventory']['ordernumber']['order_number'];
+                $result['data'][$index]['weightticketnumber'] = $product['inventory']['weightticketnumber']['weightTicketNumber'];
                 if($product['inventory']['transactiontype_id'] == 3){
                      $result['data'][$index]['totalDelivered'] = "0"; //as is because its transfer
-                 } else if($product['inventory']['transactiontype_id'] == 4){
+                 } else if($product['inventory']['transactiontype_id'] == 4 || $product['inventory']['transactiontype_id'] == 1){ //issue and SO
                     $result['data'][$index]['totalDelivered'] = "-".$product['tons'];
-                } else if($product['inventory']['transactiontype_id'] == 5){
+                } else if($product['inventory']['transactiontype_id'] == 5  || $product['inventory']['transactiontype_id'] == 2){ //receipt and PO
                     $result['data'][$index]['totalDelivered'] = "+".$product['tons'];
                 }
                 $index++;

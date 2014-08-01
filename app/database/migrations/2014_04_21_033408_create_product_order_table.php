@@ -18,6 +18,7 @@ class CreateProductOrderTable extends Migration {
 			$table->increments('id');
             $table->integer('order_id')->unsigned();
 			$table->integer('product_id')->unsigned();
+			$table->integer('productordersummary_id')->unsigned();
 			$table->text('description')->nullable();
 			$table->string('stacknumber', 20);
 			$table->decimal('tons', 8, 4);
@@ -25,12 +26,15 @@ class CreateProductOrderTable extends Migration {
 			$table->decimal('unitprice', 8, 2)->nullable();
 			$table->boolean('ishold');
             $table->string('rfv', 3);
+            $table->integer('section_id')->unsigned()->nullable();
             $table->integer('stack_id')->unsigned()->nullable();
 			$table->timestamps();
 
 			$table->foreign('product_id')->references('id')->on('products');
             $table->foreign('order_id')->references('id')->on('order');
             $table->foreign('stack_id')->references('id')->on('stack');
+			$table->foreign('productordersummary_id')->references('id')->on('productordersummary')->onDelete('cascade');
+			$table->foreign('section_id')->references('id')->on('section')->onDelete('cascade');
 		});
 	}
 

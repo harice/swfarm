@@ -1,6 +1,28 @@
 <div class="row margin-top-0">
   <div class="col-md-12 no-padding">
 
+    <% if (!_.isEmpty(audit)) { %>
+    <div class="block-transparent padding-10 audit">
+      <ul class="timeline">
+        <% _.each(audit, function(trail){ %>
+        <li>
+          <i class="fa fa-comment"></i>
+          <span class="date"><%= formatDate(trail.get('created_at')) %></span>
+          <div class="content">
+            <p>
+              <strong><%= trail.get("user") %></strong> has <%= strtolower(trail.get("event")) %> 
+              <strong><a href="<%= audittrail_url %>/<%= strtolower(trail.get("type")) %>"><%= strtolower(trail.get("type")) %></a></strong>.
+            </p>
+            <small>A minute ago</small>
+          </div>
+        </li>
+        <% }); %>
+      </ul>
+    </div>
+    <% } else { %>
+      No results found.
+    <% } %>
+
     <div class="block-flat padding-top-0 padding-bottom-0">
       <div class="content padding-top-0">
 

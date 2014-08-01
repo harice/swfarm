@@ -19,9 +19,11 @@ class CreateTransportscheduleproductTable extends Migration {
             $table->integer('transportschedule_id')->unsigned();
             $table->integer('productorder_id')->unsigned();
 			$table->decimal('quantity', 8, 4);
+			$table->integer('sectionto_id')->unsigned()->nullable();
 
 			$table->foreign('transportschedule_id')->references('id')->on('transportschedule')->onDelete('cascade');
             $table->foreign('productorder_id')->references('id')->on('productorder');
+			$table->foreign('sectionto_id')->references('id')->on('section');
 		});
 	}
 
