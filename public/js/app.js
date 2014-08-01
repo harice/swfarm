@@ -26,7 +26,12 @@ define([
 			numberFormatTons 	: function(number) { return Backbone.View.prototype.numberFormat(number,4,'.',','); },
 			numberFormatBales 	: function(number) { return Backbone.View.prototype.numberFormat(number,0,'.',','); },
 			convertLbsToTons 	: function(number) { return Backbone.View.prototype.numberFormat((number * Const.LB2TON),4,'.',','); },
-			ucfirst				: function(string) { return Backbone.View.prototype.ucfirst(string); }
+			ucfirst				: function(string) { return Backbone.View.prototype.ucfirst(string); },
+			strtolower			: function(string) { return Backbone.View.prototype.strtolower(string); }
+		}
+
+		Backbone.View.prototype.strtolower = function strtolower(string) {
+			return (string + '').toLowerCase();
 		}
 
 		Backbone.View.prototype.ucfirst = function ucfirst(string) {
