@@ -23,7 +23,7 @@ class CreateWeightticketscaleTable extends Migration {
 			$table->integer('bales')->nullable();
 			$table->decimal('gross', 8, 4)->nullable();
 			$table->decimal('tare', 8, 4)->nullable();
-			$table->smallInteger('type'); //1 for pickup, 2 for dropoff
+			$table->smallInteger('type')->index(); //1 for pickup, 2 for dropoff
 			$table->timestamps();
             
             //$table->foreign('weightTicket_id')->references('id')->on('weightticket');

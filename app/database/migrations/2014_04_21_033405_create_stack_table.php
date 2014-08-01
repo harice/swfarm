@@ -21,9 +21,6 @@ class CreateStackTable extends Migration {
 			$table->timestamps();
             
             $table->foreign('product_id')->references('id')->on('products');
-            // $table->foreign('farmlocation_id')->references('id')->on('farmlocation');
-            
-            // $table->primary(array('stacknumber', 'farmlocation_id'));
 		});
 	}
 
