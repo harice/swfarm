@@ -63,23 +63,21 @@ define([
                 total_bales = total_bales + product.pivot.bales;
             });
             
-            var salesorders = null;
-            this.salesorders.fetch({
-                success: function (collection, model, response) {
-                    this.salesorders = collection;
+            var sos = this.salesorders.fetch({
+                success: function (collection, response) {
+                    console.log(response);
+//                    _.each(collection.models, function (model) {
+//                        console.log(model.toJSON());
+//                    });
                 },
-                error: function (collection, model, reponse) {
+                error: function (collection, response) {
                     console.log('Error in getting salesorders.');
                 },
                 wait: true,
                 headers: this.model.getAuth()
             });
             
-            console.log(this.salesorders.models);
-            _.each(this.salesorders.models, function (so) {
-                var salesorder = so.toJSON();
-                console.log(salesorder);
-            });
+            console.log(sos);
             
 			var innerTemplateVariables = {
                 _: _,
