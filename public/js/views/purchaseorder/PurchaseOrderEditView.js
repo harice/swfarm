@@ -157,7 +157,7 @@ define([
 					var productSubFields = null;
 					
 					if(j > 0)
-						productSubFields = thisObj.addProductSub(productFields.find('.product-stack-table'));
+						productSubFields = thisObj.addProductSub(productFields.next('.product-stack').find('.product-stack-table'));
 					else
 						productSubFields = productFields.next('.product-stack').find('.product-stack-table > tbody .product-stack-item:first');
 					j++;
