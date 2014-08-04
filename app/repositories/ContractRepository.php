@@ -276,7 +276,6 @@ class ContractRepository implements ContractRepositoryInterface {
                     
                     // Process SO
                     foreach ($_product['salesorders'] as &$_so) {
-                        Log::debug($_so);
                         $_so['tons'] = 0.000;
                         $_so['delivered_tons'] = 0.0000;
                         
