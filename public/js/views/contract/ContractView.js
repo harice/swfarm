@@ -63,22 +63,6 @@ define([
                 total_bales = total_bales + product.pivot.bales;
             });
             
-            var sos = this.salesorders.fetch({
-                success: function (collection, response) {
-                    console.log(response);
-//                    _.each(collection.models, function (model) {
-//                        console.log(model.toJSON());
-//                    });
-                },
-                error: function (collection, response) {
-                    console.log('Error in getting salesorders.');
-                },
-                wait: true,
-                headers: this.model.getAuth()
-            });
-            
-            console.log(sos);
-            
 			var innerTemplateVariables = {
                 _: _,
 				contract:this.model,
@@ -86,8 +70,19 @@ define([
 				contract_edit_url:'#/'+Const.URL.CONTRACT+'/'+Const.CRUD.EDIT,
                 total_tons: total_tons.toFixed(4),
                 total_bales: total_bales,
-                salesorders: this.salesorders.models
+                sales_order_url: '#/'+Const.URL.SO
 			};
+            
+//            this.salesorders.fetch({
+//                success: function (collection, response) {
+//                    console.log(response);
+//                },
+//                error: function (collection, response) {
+//                    console.log('Error in getting salesorders.');
+//                },
+//                wait: true,
+//                headers: this.model.getAuth()
+//            });
             
             _.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
 			var innerTemplate = _.template(contractViewTemplate, innerTemplateVariables);

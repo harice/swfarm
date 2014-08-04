@@ -7,7 +7,7 @@
                     <div class="col-md-6">
                         Status: <span class="status text-danger"><%= contract.get("status").name %></span><br>
                         Customer: <span class="text-danger"><%= contract.get("account").name %></span><br>
-                        Contract Date Start: <span class="text-danger"><%= contract.get("contract_date_start") %></span>
+                        Contract Date Start: <span class="text-danger"><%= contract.get("contract_date_start") %></span><br>
                         Contract Date End: <span class="text-danger"><%= contract.get("contract_date_end") %></span><br>
                         Total Est Tons: <span class="text-danger"><%= numberFormatTons(total_tons) %> tons</span><br>
                         Total Est Bales: <span class="text-danger"><%= numberFormatBales(total_bales) %> bales</span><br>
@@ -17,9 +17,9 @@
 
                 <div class="sales-order-details-by-product">
                     
-                    <% _.each(contract.get("products"), function (product) { %>
+                    <% _.each(contract.get("contract_orders"), function (product) { %>
                     <div class="row margin-top-0 padding-top-10">
-                        <div class="col-md-12">Product: <%= product["name"] %></div>
+                        <div class="col-md-12">Product: <%= product["product_name"] %></div>
                     </div>
                     <div class="row margin-top-0">
                         <div class="col-md-9">
@@ -35,16 +35,24 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                    <% if (!_.isEmpty(product["salesorders"])) { %>
+                                        <% _.each(product["salesorders"], function (order) { %>
+                                        <% console.log(order) %>
                                         <tr class="product-item">
-                                            <td>###</td>
-                                            <td>###</td>
-                                            <td>###</td>
-                                            <td>###</td>
-                                            <td>###</td>
+                                            <td>
+                                                <a href="<%= sales_order_url %>/<%= order['id'] %>" title="view"><%= order["order_number"] %></a>
+                                            </td>
+                                            <td><%= order["stacknumber"] %></td>
+                                            <td><%= numberFormatTons(order["tons"]) %></td>
+                                            <td><%= numberFormatTons(order["delivered_tons"]) %></td>
+                                            <td><label class="label label-<%= order.status['class'] %>"><%= order.status["name"] %></label></td>
                                         </tr>
+                                        <% }); %>
+                                    <% } else { %>
                                         <tr>
                                             <td colspan="5">No Sales Order found.</td>
                                         </tr>
+                                    <% } %>
                                     </tbody>
                                 </table>
                             </div>
@@ -55,15 +63,15 @@
                                     <tbody>
                                         <tr>
                                             <td>Expected</td>
-                                            <td>100.0000</td>
+                                            <td><%= numberFormatTons(product["total_tons"]) %></td>
                                         </tr>
                                         <tr>
                                             <td>Delivered</td>
-                                            <td>0.0000</td>
+                                            <td><%= numberFormatTons(product["delivered_tons"]) %></td>
                                         </tr>
                                         <tr>
                                             <td>Remaining</td>
-                                            <td>100.0000</td>
+                                            <td><%= numberFormatTons(product["remaining_tons"]) %></td>
                                         </tr>
                                     </tbody>
                                 </table>
