@@ -190,7 +190,7 @@ class ContractRepository implements ContractRepositoryInterface {
         
         try
         {
-            $contract = $this->findById($id);
+            $contract = Contract::find($id);
             
             if (!$this->hasDeliveredTons($id)) {
                 return array(
@@ -224,7 +224,7 @@ class ContractRepository implements ContractRepositoryInterface {
     
     public function hasOpenOrders($id)
     {
-        $contract = $this->findById($id);
+        $contract = Contract::find($id);
         if($contract->salesorders) {
             return true;
         }
@@ -378,7 +378,7 @@ class ContractRepository implements ContractRepositoryInterface {
     public function getExpectedTons($id)
     {
         $expected_tons = 0.0000;
-        $contract = $this->findById($id);
+        $contract = Contract::find($id);
         
         foreach ($contract->products as $product) {
             $expected_tons += $product->pivot->tons;
@@ -436,7 +436,7 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         try
         {
-            $contract = $this->findById($id);
+            $contract = Contract::find($id);
 
             if (!$contract->delete()) {
                 return array(
