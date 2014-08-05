@@ -197,35 +197,51 @@ class ProductRepository implements ProductRepositoryInterface {
 	 * @return Response
 	 */
     public function destroy($id){
-        $product = Product::find($id);
-
-        if($product){
-            if ($this->hasTransaction($id)) {
-                return Response::json(
-                    array(
-                        'error' => true,
-                        'message' => 'Product cannot be deleted for it has existing transactions.'
-                    ),
+        $product = Product::with('orders')->with('contracts')->where('id', '=', $id)->first();
+        
+        if ($product) {
+            if (!$this->hasTransaction($id)) {
+                $product->forceDelete();
+                
+                return Response::json(array(
+                    'error' => false,
+                    'message' => Lang::get('messages.success.deleted', array('entity' => 'Product'))),
                     200
                 );
+            } else {
+                if (!$this->hasOpenTransaction($product)) {
+                    $product->delete();
+                    
+                    return Response::json(array(
+                        'error' => false,
+                        'message' => Lang::get('messages.success.deleted', array('entity' => 'Product'))),
+                        200
+                    );
+                } else {
+                    return Response::json(
+                        array(
+                            'error' => true,
+                            'message' => 'Cannot delete product with open transactions.'
+                        ),
+                        200
+                    );
+                }
             }
-            
-            $product->forceDelete();
-
-            $response = Response::json(array(
-                'error' => false,
-                'message' => Lang::get('messages.success.deleted', array('entity' => 'Product'))),
-                200
-            );
         } else {
-            $response = Response::json(array(
+            return Response::json(array(
                 'error' => true,
                 'message' => Lang::get('messages.notfound', array('entity' => 'Product'))),
                 200
             );
         }
-
-        return $response;
+        
+        return Response::json(
+            array(
+                'error' => true,
+                'message' => 'Product was not deleted'
+            ),
+            200
+        );
     }
 
     /**
@@ -277,6 +293,26 @@ class ProductRepository implements ProductRepositoryInterface {
             DB::table('stack')->where('product_id', '=', $id)->count()
         ) {
             return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * 
+     * @param Model $product
+     */
+    public function hasOpenTransaction($product)
+    {
+        foreach ($product->contracts as $contract) {
+            if ($contract->status_id == 2) {
+                return true;
+            }
+        }
+        foreach ($product->orders as $order) {
+            if ($order->status_id == 2) {
+                return true;
+            }
         }
         
         return false;

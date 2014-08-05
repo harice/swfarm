@@ -267,7 +267,8 @@ class ContractRepository implements ContractRepositoryInterface {
                     $_product['total_tons'] = $_product['tons'];
                     $delivered_tons = 0.000;
 
-                    $product = Product::find($_product['product_id']);
+//                    $product = Product::find($_product['product_id']);
+                    $product = Product::where('id', '=', $_product['product_id'])->withTrashed()->first();
                     $_product['product_name'] = $product->name;
 
                     // Get Sales Orders
