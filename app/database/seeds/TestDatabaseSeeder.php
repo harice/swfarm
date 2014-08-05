@@ -28,10 +28,10 @@ class TestDatabaseSeeder extends Seeder {
 
         // Testing
         // --------------------------------------------------------------------
-//        $this->call('ProductsTableSeeder');
-//        $this->call('AccountTableSeeder');
-//        $this->call('AddressTableSeeder');
-//        $this->call('ContactTableSeeder');
+        $this->call('ProductsTableSeeder');
+        $this->call('AccountTableSeeder');
+        $this->call('AddressTableSeeder');
+        $this->call('ContactTableSeeder');
         // $this->call('BidTableSeeder');
         // $this->call('BidProductTableSeeder');
         // $this->call('PurchaseOrderTableSeeder');
@@ -43,12 +43,12 @@ class TestDatabaseSeeder extends Seeder {
         // $this->call('ProductOrderTableSeeder');
         // $this->call('FarmLocationTableSeeder');
         // $this->call('StackTableSeeder');
-//        $this->call('ScaleTableSeeder');
-//        $this->call('TrailerTableSeeder');
-//        $this->call('TruckTableSeeder');
+        $this->call('ScaleTableSeeder');
+        $this->call('TrailerTableSeeder');
+        $this->call('TruckTableSeeder');
         // $this->call('FeeTableSeeder');
-//        $this->call('ContractTableSeeder');
-//        $this->call('ContractProductsTableSeeder');
+        $this->call('ContractTableSeeder');
+        $this->call('ContractProductsTableSeeder');
     }
 
 }

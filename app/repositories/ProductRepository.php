@@ -200,6 +200,16 @@ class ProductRepository implements ProductRepositoryInterface {
         $product = Product::find($id);
 
         if($product){
+            if ($this->hasTransaction($id)) {
+                return Response::json(
+                    array(
+                        'error' => true,
+                        'message' => 'Product cannot be deleted for it has existing transactions.'
+                    ),
+                    200
+                );
+            }
+            
             $product->forceDelete();
 
             $response = Response::json(array(
@@ -250,5 +260,25 @@ class ProductRepository implements ProductRepositoryInterface {
     public function instance($data = array())
     {
         return new Product($data);
+    }
+    
+    /**
+     * Check if Product has existing transaction.
+     * 
+     * @param   type     $id Product Id
+     * @return  boolean
+     */
+    public function hasTransaction($id)
+    {
+        if (
+            DB::table('contract_products')->where('product_id', '=', $id)->count() ||
+            DB::table('productorder')->where('product_id', '=', $id)->count() ||
+            DB::table('productordersummary')->where('product_id', '=', $id)->count() ||
+            DB::table('stack')->where('product_id', '=', $id)->count()
+        ) {
+            return true;
+        }
+        
+        return false;
     }
 }
