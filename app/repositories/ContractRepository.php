@@ -150,7 +150,7 @@ class ContractRepository implements ContractRepositoryInterface {
                 $products = $data['products'];
                 unset($data['products']);
                 
-                $contract = $this->findById($id);
+                $contract = Contract::find($id);
                 $contract->fill($data);
                 $contract->update();
                 
