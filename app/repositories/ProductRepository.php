@@ -306,15 +306,15 @@ class ProductRepository implements ProductRepositoryInterface {
     {
         foreach ($product->contracts as $contract) {
             if ($contract->status_id == 2) {
-                return true;
+                return false;
             }
         }
         foreach ($product->orders as $order) {
             if ($order->status_id == 2) {
-                return true;
+                return false;
             }
         }
         
-        return false;
+        return true;
     }
 }

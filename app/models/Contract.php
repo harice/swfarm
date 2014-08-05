@@ -63,7 +63,7 @@ class Contract extends BaseModel {
      */
     public function products()
     {
-        return $this->belongsToMany('Product', 'contract_products')->withPivot('tons', 'bales');
+        return $this->belongsToMany('Product', 'contract_products')->withPivot('tons', 'bales')->withTrashed();
     }
     
     public function contractproducts()
