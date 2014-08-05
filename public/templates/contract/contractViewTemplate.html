@@ -1,30 +1,99 @@
 <div class="row">
     <div class="col-md-12">
         <div class="block-flat">
-            <dl id="view-contract" class="dl-horizontal">
-                <dt>Contract Number</dt>
-                <dd><%= contract.get("contract_number") %></dd>
-                <dt>Status</dt>
-                <dd class="status"><%= contract.get("status").name %></dd>
-                <dt>Customer</dt>
-                <dd><%= contract.get("account").name %>&nbsp</dd>
-                <dt>Start Date</dt>
-                <dd><%= contract.get("contract_date_start") %>&nbsp</dd>
-                <dt>End Date</dt>
-                <dd><%= contract.get("contract_date_end") %>&nbsp</dd>
-                <dt>Total Est Tons</dt>
-                <dd><%= numberFormatTons(total_tons) %> tons &nbsp</dd>
-                <dt>Total Est Bales</dt>
-                <dd><%= numberFormatBales(total_bales) %> bales &nbsp</dd>
-                <dd>
-                    <div class="clearfix"></div>
-                    <% if(contract.get("status_id") == 1) { %>
-                    <a href="<%= contract_edit_url %>/<%= contract.get('id') %>" class="btn btn-primary">Edit</a>
-                    <button id="close-contract" type="button" class="btn btn-danger">Close Contract</button>
-                    <% } %>
-                    <a id="go-to-previous-page" href="#" class="btn btn-default">Cancel</a>
-                </dd>
-            </dl>
+            <div id="view-contract" class="content padding-top-0">
+                <h2 class="contract-number margin-bottom-0"><%= contract.get("contract_number") %></h2>
+                <div class="row margin-top-0">
+                    <div class="col-md-6">
+                        Status: <span class="status text-danger"><%= contract.get("status").name %></span><br>
+                        Customer: <span class="text-danger"><%= contract.get("account").name %></span><br>
+                        Contract Date Start: <span class="text-danger"><%= contract.get("contract_date_start") %></span><br>
+                        Contract Date End: <span class="text-danger"><%= contract.get("contract_date_end") %></span><br>
+                        Total Est Tons: <span class="text-danger"><%= numberFormatTons(total_tons) %> tons</span><br>
+                        Total Est Bales: <span class="text-danger"><%= numberFormatBales(total_bales) %> bales</span><br>
+                        Status: <label class="label label-<%= contract.get('status').class %>"><%= contract.get("status").name %></label>
+                    </div>
+                </div>
+
+                <div class="sales-order-details-by-product">
+                    
+                    <% _.each(contract.get("contract_orders"), function (product) { %>
+                    <div class="row margin-top-0 padding-top-10">
+                        <div class="col-md-12">Product: <%= product["product_name"] %></div>
+                    </div>
+                    <div class="row margin-top-0">
+                        <div class="col-md-9">
+                            <div class="content-inner table-responsive">
+                                <table class="table-condensed table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>SO No.</th>
+                                            <th>Stack No.</th>
+                                            <th>Expected</th>
+                                            <th>Delivered</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <% if (!_.isEmpty(product["salesorders"])) { %>
+                                        <% _.each(product["salesorders"], function (order) { %>
+                                        <% console.log(order) %>
+                                        <tr class="product-item">
+                                            <td>
+                                                <a href="<%= sales_order_url %>/<%= order['id'] %>" title="view"><%= order["order_number"] %></a>
+                                            </td>
+                                            <td><%= order["stacknumber"] %></td>
+                                            <td><%= numberFormatTons(order["tons"]) %></td>
+                                            <td><%= numberFormatTons(order["delivered_tons"]) %></td>
+                                            <td><label class="label label-<%= order.status['class'] %>"><%= order.status["name"] %></label></td>
+                                        </tr>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="5">No Sales Order found.</td>
+                                        </tr>
+                                    <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="content-inner table-responsive">
+                                <table class="table-condensed table-bordered table-hover">
+                                    <tbody>
+                                        <tr>
+                                            <td>Expected</td>
+                                            <td><%= numberFormatTons(product["total_tons"]) %></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Delivered</td>
+                                            <td><%= numberFormatTons(product["delivered_tons"]) %></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Remaining</td>
+                                            <td><%= numberFormatTons(product["remaining_tons"]) %></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <% }); %>
+
+                </div> <!-- /.sales-order-details-by-product -->
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            <% if(contract.get("status_id") == 1) { %>
+                            <a href="<%= contract_edit_url %>/<%= contract.get('id') %>" class="btn btn-primary">Edit</a>
+                            <button id="close-contract" type="button" class="btn btn-danger">Close Contract</button>
+                            <% } %>
+                            <a id="go-to-previous-page" href="#" class="btn btn-default">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
