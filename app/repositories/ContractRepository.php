@@ -77,6 +77,9 @@ class ContractRepository implements ContractRepositoryInterface {
     public function findById($id)
     {
         $contract = Contract::with('products', 'salesorders', 'productorders', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')->find($id);
+        
+        $contract = $contract->toArray();
+        $contract['contract_orders'] = $this->salesorder($id);
 
         if ($contract) {
             return $contract;
@@ -273,10 +276,6 @@ class ContractRepository implements ContractRepositoryInterface {
                     
                     // Process SO
                     foreach ($_product['salesorders'] as &$_so) {
-                        if ($_product['product_id']) {
-                            
-                        }
-                        
                         $_so['tons'] = 0.000;
                         $_so['delivered_tons'] = 0.0000;
                         
@@ -288,16 +287,24 @@ class ContractRepository implements ContractRepositoryInterface {
                             $_so['status']['class'] = "success";
                         }
                         
+                        $salesorder = Order::with('productorder')->find($_so['id']);
+                        if ($salesorder->productorder) {
+                            foreach ($salesorder->productorder as $product_order) {
+                                if ($product_order->id == $_product['product_id']) {
+                                    $_so['tons'] = $product_order->tons;
+                                }
+                            }
+                        }
+                        
                         if ($_so['transportschedule']) {
                             foreach ($_so['transportschedule'] as $schedule) {
-
                                 foreach ($schedule['transportscheduleproduct'] as $transportscheduleproduct) {
                                     if ($transportscheduleproduct['productorder']['product_id'] == $_product['product_id']) {
                                         // Stack Number
                                         $_so['stacknumber'] = $transportscheduleproduct['productorder']['stacknumber'];
                                         
                                         // Expected Quantity per SO
-                                        $_so['tons'] = $transportscheduleproduct['productorder']['tons'];
+                                        // $_so['tons'] = $transportscheduleproduct['productorder']['tons'];
                                         
                                         // Delivered Quantity per SO
                                         if ($transportscheduleproduct['weightticketproducts']) {

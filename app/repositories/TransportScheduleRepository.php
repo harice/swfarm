@@ -184,6 +184,10 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
               else
                   $transportscheduleproduct = new TransportScheduleProduct();
 
+              if($product['sectionto_id'] == ''){
+                  $product['sectionto_id'] = null;
+              }
+              
               $transportscheduleproduct->fill($product);
               $transportscheduleproduct->save();
           });
