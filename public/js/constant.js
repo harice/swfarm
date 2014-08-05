@@ -188,7 +188,9 @@ define(function () {
 		},
         'ACCOUNT_TYPE': {
             'LOADER': 3,
-            'OPERATOR': 4
+            'OPERATOR': 4,
+            'TRUCKER': 8,
+            'SWFTRUCKER': 9
         }
 	};
 	
