@@ -1084,7 +1084,7 @@ define([
 			}
 		},
 		
-		initStackNumberAutocomplete: function (element, productId) { console.log('initStackNumberAutocomplete'); console.log('productId: '+productId);
+		initStackNumberAutocomplete: function (element, productId) { //console.log('initStackNumberAutocomplete'); console.log('productId: '+productId);
 			var thisObj = this;
 			
 			element.each(function() {

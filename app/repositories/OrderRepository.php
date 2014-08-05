@@ -803,14 +803,19 @@ class OrderRepository implements OrderRepositoryInterface {
     
     public function closeOrder($id)
     {
-        $order = Order::find($id);
-        
+        $order = Order::with('transportschedule')->find($id);
+
         if($order->status_id == 3 || $order->status_id == 5 || $order->status_id == 6){ //order is cancelled
             return array(
                         'error' => true,
                         'message' => 'Order is already cancelled, cannot change the status to close.');
+        } else if($order->transportschedule->toArray() == null){
+            return array(
+                        'error' => true,
+                        'message' => 'Order is has no schedule. Change the status to cancel instead.');
         } else if($order->status_id != 2){
-            $transportSchedules = TransportSchedule::where('order_id', '=', $id)->get()->toArray();
+            // $transportSchedules = TransportSchedule::where('order_id', '=', $id)->get()->toArray();
+            $transportSchedules = $order->transportschedule->toArray();
             $allScheduleIsClose = true;
             foreach($transportSchedules as $schedule){
                 if($schedule['status_id'] != 2){ //if schedule is not in close status
