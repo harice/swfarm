@@ -43,13 +43,6 @@
           <thead>
             <tr>
               <th class="width-150">Product</th>
-              <th>
-                <% if (typeof is_bid === "undefined") { %>
-                  Unit Price
-                <% } else { %>
-                  Bid Unit Price
-                <% } %>
-              </th>
               <th>Est Tons</th>
               <th class="width-110">
                 <% if (typeof is_bid === "undefined") { %>
@@ -64,7 +57,7 @@
           <tbody></tbody>
     		  <tfoot>
     		    <tr>
-      			  <td class="text-right" colspan="2">Total</td>
+      			  <td class="text-right">Total</td>
       			  <td class="text-right"><strong id="total-tons">0.0000</strong></td>
       			  <td class="text-right"><strong id="total-price">$ 0.00</strong></td>
       			</tr>

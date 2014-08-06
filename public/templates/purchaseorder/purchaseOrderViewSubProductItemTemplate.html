@@ -2,8 +2,10 @@
 	<td><code><%= stacknumber %></code></td>
 	<td><%= location_from %></td>
 	<td><%= description %></td>
-	<td class="text-right"><%= tons %></td>
+	<td class="text-right">$ <%= unitprice %></td>
 	<td class="text-right"><%= bales %></td>
+	<td class="text-right"><%= tons %></td>
+	<td class="text-right">$ <%= totalprice %></td>
 	<% if (typeof is_bid === "undefined") { %>
 	<td class="text-right"><i class="fa fa-check-square-o <% if(ishold==1) { %>color-success<% } %>"></i></td>
 	<td><%= rfv %></td>
