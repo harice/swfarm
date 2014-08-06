@@ -1,8 +1,7 @@
 <tr class="product-item">
 	<td><%= productname %></td>
-	<td class="text-right">$ <%= unitprice %></td>
 	<td class="text-right"><%= tons %></td>
-	<td class="text-right">$ <%= totalprice %></td>
+	<td class="text-right totalprice"></td>
 </tr>
 <tr class="product-stack">
 	<td></td>
@@ -13,8 +12,22 @@
 					<th>Stack No.</th>
 					<th>Location From</th>
 					<th>Description</th>
-					<th>Est Tons</th>
+					<th>
+					<% if (typeof is_bid === "undefined") { %>
+					Unit Price
+					<% } else { %>
+					Bid Unit Price
+					<% } %>
+					</th>
 					<th>Bales</th>
+					<th>Est Tons</th>
+					<th>
+					<% if (typeof is_bid === "undefined") { %>
+					Total Price
+					<% } else { %>
+					Bid Total Price
+					<% } %>
+					</th>
 					<% if (typeof is_bid === "undefined") { %>
 					<th>Testing</th>
 					<th>RFV</th>

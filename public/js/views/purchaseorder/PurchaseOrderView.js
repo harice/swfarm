@@ -156,8 +156,7 @@ define([
 			var products = this.model.get('productsummary');
 			
 			var totalTons = 0;
-			var totalBales = 0;
-			var totalTotalPrice = 0;
+			var totalTotalTotalPrice = 0;
 			
 			_.each(products, function (product) {
 				var unitprice = (!isNaN(product.unitprice))? product.unitprice : 0;
@@ -165,24 +164,11 @@ define([
 				var totalprice = parseFloat(unitprice * tons);
 				
 				totalTons += tons;
-				totalTotalPrice += totalprice;
-				totalBales += (!isNaN(parseInt(product.bales)))? parseInt(product.bales) : 0;
 				
 				var variables = {
 					productname: product.productname.name,
-					//description: product.description,
-					//stacknumber: product.stacknumber,
-					unitprice: Backbone.View.prototype.helpers.numberFormat(unitprice),
 					tons: Backbone.View.prototype.helpers.numberFormatTons(tons),
-					//bales: Backbone.View.prototype.helpers.numberFormatBales(product.bales),
-					totalprice: Backbone.View.prototype.helpers.numberFormat(totalprice),
-					//ishold: product.ishold,
-					//rfv: product.rfv,
-					//file_id: product.upload[0].file_id,
-					//file_name: product.upload[0].files[0].name,
 				};
-				
-				//console.log(variables);
 				
 				if(thisObj.isBid)
 					variables['is_bid'] = true;
@@ -192,13 +178,19 @@ define([
 				
 				var subProductTBODY = thisObj.subContainer.find('#product-list > tbody > .product-stack:last tbody');
 				
+				var totalTotalPrice = 0;
 				_.each(product.productorder, function (productSub) {
+					var unitprice = parseFloat(productSub.unitprice);
+					var tons = parseFloat(productSub.tons);
+					var totalprice = unitprice * tons;
 					var variablesSub = {
 						stacknumber: productSub.stacknumber,
 						location_from: productSub.sectionfrom.storagelocation.name+' - '+productSub.sectionfrom.name,
 						description: productSub.description,
-						tons: productSub.tons,
+						unitprice: Backbone.View.prototype.helpers.numberFormat(unitprice),
+						tons: Backbone.View.prototype.helpers.numberFormatTons(tons),
 						bales: productSub.bales,
+						totalprice: Backbone.View.prototype.helpers.numberFormat(totalprice),
 						ishold: productSub.ishold,
 						rfv: productSub.rfv,
 					};
@@ -213,11 +205,16 @@ define([
 					
 					var templateSub = _.template(productSubItemTemplate, variablesSub);
 					subProductTBODY.append(templateSub);
+					
+					totalTotalPrice += totalprice;
 				});
+				thisObj.$el.find('#product-list > tbody > .product-item:last .totalprice').html('$ '+Backbone.View.prototype.helpers.numberFormatTons(totalTotalPrice));
+				totalTotalTotalPrice += totalTotalPrice;
+				
 			});
 			
 			this.subContainer.find('#total-tons').html(Backbone.View.prototype.helpers.numberFormatTons(totalTons));
-			this.subContainer.find('#total-price').html('$ '+Backbone.View.prototype.helpers.numberFormat(totalTotalPrice));
+			this.subContainer.find('#total-price').html('$ '+Backbone.View.prototype.helpers.numberFormat(totalTotalTotalPrice));
 		},
 		
 		events:{
