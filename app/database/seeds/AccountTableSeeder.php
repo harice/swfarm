@@ -81,15 +81,6 @@ class AccountTableSeeder extends Seeder {
                 'updated_at' => $date
             ),
             array(
-                'name' => 'Southwest Farms Trucker',
-                'website' => 'http://www.haysupplier.com',
-                'description' => 'Lorem ipsum set amet.',
-                'phone' => '123-434-4343',
-                'accounttype' => 7,
-                'created_at' => $date,
-                'updated_at' => $date
-            ),
-            array(
                 'name' => 'Hay Trailer',
                 'website' => 'http://www.haysupplier.com',
                 'description' => 'Lorem ipsum set amet.',
@@ -100,6 +91,15 @@ class AccountTableSeeder extends Seeder {
             ),
             array(
                 'name' => 'Hay Trucker',
+                'website' => 'http://www.haysupplier.com',
+                'description' => 'Lorem ipsum set amet.',
+                'phone' => '123-434-4343',
+                'accounttype' => 8,
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
+            array(
+                'name' => 'Southwest Farms Trucker',
                 'website' => 'http://www.haysupplier.com',
                 'description' => 'Lorem ipsum set amet.',
                 'phone' => '123-434-4343',

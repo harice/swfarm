@@ -139,7 +139,13 @@ define([
             
             account.fetch({
                 success: function (account) {
-                    if (account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.LOADER || account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.OPERATOR) {
+                    console.log(account.get("accounttype")[0].id);
+                    if (
+                        account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.LOADER ||
+                        account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.OPERATOR ||
+                        account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.TRUCKER ||
+                        account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.SWFTRUCKER
+                    ) {
                         $('#rate').attr("disabled", false);
                     } else {
                         $('#rate').val('0.00');

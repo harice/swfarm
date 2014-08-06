@@ -77,6 +77,9 @@ class ContractRepository implements ContractRepositoryInterface {
     public function findById($id)
     {
         $contract = Contract::with('products', 'salesorders', 'productorders', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')->find($id);
+        
+        $contract = $contract->toArray();
+        $contract['contract_orders'] = $this->salesorder($id);
 
         if ($contract) {
             return $contract;
@@ -147,7 +150,7 @@ class ContractRepository implements ContractRepositoryInterface {
                 $products = $data['products'];
                 unset($data['products']);
                 
-                $contract = $this->findById($id);
+                $contract = Contract::find($id);
                 $contract->fill($data);
                 $contract->update();
                 
@@ -187,7 +190,7 @@ class ContractRepository implements ContractRepositoryInterface {
         
         try
         {
-            $contract = $this->findById($id);
+            $contract = Contract::find($id);
             
             if (!$this->hasDeliveredTons($id)) {
                 return array(
@@ -221,7 +224,7 @@ class ContractRepository implements ContractRepositoryInterface {
     
     public function hasOpenOrders($id)
     {
-        $contract = $this->findById($id);
+        $contract = Contract::find($id);
         if($contract->salesorders) {
             return true;
         }
@@ -264,7 +267,8 @@ class ContractRepository implements ContractRepositoryInterface {
                     $_product['total_tons'] = $_product['tons'];
                     $delivered_tons = 0.000;
 
-                    $product = Product::find($_product['product_id']);
+//                    $product = Product::find($_product['product_id']);
+                    $product = Product::where('id', '=', $_product['product_id'])->withTrashed()->first();
                     $_product['product_name'] = $product->name;
 
                     // Get Sales Orders
@@ -273,10 +277,6 @@ class ContractRepository implements ContractRepositoryInterface {
                     
                     // Process SO
                     foreach ($_product['salesorders'] as &$_so) {
-                        if ($_product['product_id']) {
-                            
-                        }
-                        
                         $_so['tons'] = 0.000;
                         $_so['delivered_tons'] = 0.0000;
                         
@@ -288,16 +288,24 @@ class ContractRepository implements ContractRepositoryInterface {
                             $_so['status']['class'] = "success";
                         }
                         
+                        $salesorder = Order::with('productorder')->find($_so['id']);
+                        if ($salesorder->productorder) {
+                            foreach ($salesorder->productorder as $product_order) {
+                                if ($product_order->id == $_product['product_id']) {
+                                    $_so['tons'] = $product_order->tons;
+                                }
+                            }
+                        }
+                        
                         if ($_so['transportschedule']) {
                             foreach ($_so['transportschedule'] as $schedule) {
-
                                 foreach ($schedule['transportscheduleproduct'] as $transportscheduleproduct) {
                                     if ($transportscheduleproduct['productorder']['product_id'] == $_product['product_id']) {
                                         // Stack Number
                                         $_so['stacknumber'] = $transportscheduleproduct['productorder']['stacknumber'];
                                         
                                         // Expected Quantity per SO
-                                        $_so['tons'] = $transportscheduleproduct['productorder']['tons'];
+                                        // $_so['tons'] = $transportscheduleproduct['productorder']['tons'];
                                         
                                         // Delivered Quantity per SO
                                         if ($transportscheduleproduct['weightticketproducts']) {
@@ -370,7 +378,7 @@ class ContractRepository implements ContractRepositoryInterface {
     public function getExpectedTons($id)
     {
         $expected_tons = 0.0000;
-        $contract = $this->findById($id);
+        $contract = Contract::find($id);
         
         foreach ($contract->products as $product) {
             $expected_tons += $product->pivot->tons;
@@ -428,7 +436,7 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         try
         {
-            $contract = $this->findById($id);
+            $contract = Contract::find($id);
 
             if (!$contract->delete()) {
                 return array(

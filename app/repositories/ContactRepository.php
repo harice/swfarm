@@ -255,7 +255,7 @@ class ContactRepository implements ContactRepositoryInterface {
     public function hasRate($account_id)
     {
         $account = Account::find($account_id);
-        if ($account->accounttype == 3 || $account->accounttype == 4) {
+        if ($account->accounttype == 3 || $account->accounttype == 4 || $account->accounttype == 8 || $account->accounttype == 9) {
             return true;
         }
 
