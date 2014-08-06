@@ -51,13 +51,7 @@ class ProductController extends BaseController {
 	 */
 	public function index()
 	{
-        $perPage = Input::get('perpage', Config::get('constants.GLOBAL_PER_LIST'));
-		$page = Input::get('page', '1'); //default to page 1
-		$sortby = Input::get('sortby', 'name'); //default sort to lastname
-		$orderby = Input::get('orderby', 'ASC'); //default order is Ascending
-		$offset = $page*$perPage-$perPage;
-		
-		return $this->products->findAll($perPage, $offset, $sortby, $orderby);
+		return $this->products->findAll(Input::all());
 	}
     
     /**
@@ -67,7 +61,7 @@ class ProductController extends BaseController {
 	 */
     public function search()
 	{
-        return $this->products->search( Input::all() );
+        return $this->products->findAll(Input::all());
 	}
 
 	/**

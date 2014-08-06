@@ -11,7 +11,7 @@ class TrailerRepository implements TrailerRepositoryInterface {
     {
         try
         {
-            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.USERS_PER_LIST');
+            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
             $sortby = isset($params['sortby']) ? $params['sortby'] : 'number';
             $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
             
@@ -30,7 +30,7 @@ class TrailerRepository implements TrailerRepositoryInterface {
     {
         try
         {
-            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.USERS_PER_LIST');
+            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
             $sortby = isset($params['sortby']) ? $params['sortby'] : 'number';
             $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
             $searchWord = $params['search'];

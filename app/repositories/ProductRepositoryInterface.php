@@ -30,8 +30,7 @@
  * @link      http://pear.php.net/package/PackageName
  */
 interface ProductRepositoryInterface {
-    public function findAll($perPage, $offset, $sortby, $orderby);
-    public function search($_search);
+    public function findAll($params);
     public function findById($id);
     public function store($data);
 	public function update($id, $data);
