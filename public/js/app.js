@@ -27,7 +27,57 @@ define([
 			numberFormatBales 	: function(number) { return Backbone.View.prototype.numberFormat(number,0,'.',','); },
 			convertLbsToTons 	: function(number) { return Backbone.View.prototype.numberFormat((number * Const.LB2TON),4,'.',','); },
 			ucfirst				: function(string) { return Backbone.View.prototype.ucfirst(string); },
-			strtolower			: function(string) { return Backbone.View.prototype.strtolower(string); }
+			strtolower			: function(string) { return Backbone.View.prototype.strtolower(string); },
+			timelineDate		: function(string) { return Backbone.View.prototype.timelineDate(string); },
+			timelineStamp		: function(string) { return Backbone.View.prototype.timelineStamp(string); },
+		}
+
+		Backbone.View.prototype.timelineStamp = function(string){
+			var timestamp = Backbone.View.prototype.strToTime(string);
+			var i = Backbone.View.prototype.formatDate('i',timestamp);
+			var h = Backbone.View.prototype.formatDate('G',timestamp);
+			var d = Backbone.View.prototype.formatDate('j',timestamp);
+			var m = parseInt(Backbone.View.prototype.formatDate('n',timestamp)) - 1;
+			var y = Backbone.View.prototype.formatDate('Y',timestamp);
+
+			var today = new Date();
+			if(y == today.getFullYear()) {
+				if(m == today.getMonth()) {
+					if(d == today.getDate()) {
+						var startDate = new Date(0, 0, 0, today.getHours(), today.getMinutes(), 0);
+					    var endDate = new Date(0, 0, 0, h, i, 0);
+					    var diff = startDate.getTime() - endDate.getTime();
+					    var hours = Math.floor(diff / 1000 / 60 / 60);
+					    diff -= hours * 1000 * 60 * 60;
+					    var minutes = Math.floor(diff / 1000 / 60);
+
+					    if(hours > 0) {
+					    	return hours + (hours < 2 ? ' hour ago.' : ' hours ago.');
+					    } else {
+					    	if(minutes > 0) { return minutes + (minutes < 2 ? ' minute ago.' : ' minutes ago.'); }
+					    	else { return 'A few seconds ago.'}
+					    }
+					} else {
+						return Backbone.View.prototype.formatDate('l, h:i A',timestamp);
+					}
+				} else {
+					return Backbone.View.prototype.formatDate('l, h:i A',timestamp);
+				}
+			} else {
+				return Backbone.View.prototype.formatDate('l, h:i A',timestamp);
+			}
+		}
+
+		Backbone.View.prototype.timelineDate = function timelineDate(string) {
+			var timestamp = Backbone.View.prototype.strToTime(string);
+			var d = Backbone.View.prototype.formatDate('Y',timestamp);
+			var today = new Date();
+
+			if(d == today.getFullYear()) {
+				return Backbone.View.prototype.formatDate('d M',timestamp);
+			} else {
+				return Backbone.View.prototype.formatDate('d M Y',timestamp);
+			}
 		}
 
 		Backbone.View.prototype.strtolower = function strtolower(string) {
