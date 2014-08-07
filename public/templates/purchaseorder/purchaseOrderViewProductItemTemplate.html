@@ -4,38 +4,41 @@
 	<td class="text-right totalprice"></td>
 </tr>
 <tr class="product-stack">
-	<td></td>
 	<td colspan="3">
-		<div class="table-responsive">
-			<table class="table-condensed table-bordered table-hover product-stack-table">
-				<thead>
-					<th>Stack No.</th>
-					<th>Location From</th>
-					<th>Description</th>
-					<th>
-					<% if (typeof is_bid === "undefined") { %>
-					Unit Price
-					<% } else { %>
-					Bid Unit Price
-					<% } %>
-					</th>
-					<th>Bales</th>
-					<th>Est Tons</th>
-					<th>
-					<% if (typeof is_bid === "undefined") { %>
-					Total Price
-					<% } else { %>
-					Bid Total Price
-					<% } %>
-					</th>
-					<% if (typeof is_bid === "undefined") { %>
-					<th>Testing</th>
-					<th>RFV</th>
-					<th>PDF</th>
-					<% } %>
-				</thead>
-				<tbody></tbody>
-			</table>
+		<div class='container'>
+			<div class='inner-con'>
+				<div class="table-responsive">
+					<table class="table-condensed table-bordered table-hover product-stack-table">
+						<thead>
+							<th class='width-150'>Stack No.</th>
+							<th class='width-150'>Location From</th>
+							<th class='width-150'>Description</th>
+							<% if (typeof is_bid === "undefined") { %>
+							<th class='width-50'>Testing</th>
+							<th class='width-50'>RFV</th>
+							<th class='width-50'>PDF</th>
+							<% } %>
+							<th class='width-100'>Bales</th>
+							<th class='width-110'>Est Tons</th>
+							<th class='width-90'>
+							<% if (typeof is_bid === "undefined") { %>
+							Unit Price
+							<% } else { %>
+							Bid Unit Price
+							<% } %>
+							</th>
+							<th class='width-130'>
+							<% if (typeof is_bid === "undefined") { %>
+							Total Stack Price
+							<% } else { %>
+							Bid Total Stack Price
+							<% } %>
+							</th>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</div>
+			</div>
 		</div>
 	</td>
 </tr>
