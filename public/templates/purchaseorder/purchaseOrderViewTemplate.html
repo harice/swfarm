@@ -26,7 +26,11 @@
     <div class="col-md-6">
       Producer:
       <address>
-        <p class="margin-top-5 margin-bottom-0"><strong><%= po.get("account").name %></strong></p>
+        <p class="margin-top-5 margin-bottom-0">
+          <strong><%= po.get("contact").firstname %> <%= po.get("contact").lastname %> <%= po.get("contact").suffix %></strong>
+        </p>
+        <%= po.get("account").name %>
+        <br>
         <%= po.get("orderaddress").street %>
         <br>
         <%= po.get("orderaddress").city %>,
@@ -42,9 +46,9 @@
         <table id="product-list" class="table-condensed table-bordered table-hover">
           <thead>
             <tr>
-              <th class="width-150">Product</th>
+              <th class="width-200">Product</th>
               <th>Est Tons</th>
-              <th class="width-110">
+              <th class="width-150">
                 <% if (typeof is_bid === "undefined") { %>
                   Total Price
                 <% } else { %>

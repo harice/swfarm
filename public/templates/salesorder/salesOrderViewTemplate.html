@@ -28,7 +28,11 @@
     <div class="col-md-6">
       Producer:
       <address>
-        <p class="margin-top-5 margin-bottom-0"><strong><%= so.get("account").name %></strong></p>
+        <p class="margin-top-5 margin-bottom-0">
+          <strong><%= so.get("contact").firstname %> <%= so.get("contact").lastname %> <%= so.get("contact").suffix %></strong>
+        </p>
+        <%= so.get("account").name %>
+        <br>
         <%= so.get("orderaddress").street %>
         <br>
         <%= so.get("orderaddress").city %>,
@@ -45,17 +49,17 @@
         <table id="product-list" class="table-condensed table-bordered table-hover">
           <thead>
             <tr>
-              <th class="width-150">Product</th>
-              <th>Unit Price</th>
-              <th>Est Tons</th>
-              <th class="width-110">Total Price</th>
+              <th class="width-200">Product</th>
+              <th class="width-150">Est Tons</th>
+              <th class="width-150">Unit Price</th>
+              <th class="width-150">Total Price</th>
             </tr>
           </thead>
     		  <tfoot>
     		    <tr>
       			  <td class="text-right" colspan="2">Total</td>
-      			  <td class="text-right"><strong id="total-tons">0.0000</strong></td>
-      			  <td class="text-right"><strong id="total-price">$ 0.00</strong></td>
+      			  <td class="text-right" id="total-tons">0.0000</td>
+      			  <td class="text-right" id="total-price">$ 0.00</td>
       			</tr>
     		  </tfoot>
           <tbody></tbody>
