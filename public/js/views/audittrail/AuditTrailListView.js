@@ -18,7 +18,7 @@ define([
 			this.collection = new AuditTrailCollection();
 			this.collection.on('sync', function() {
 				thisObj.displayAuditTrail();
-				thisObj.displayList();
+				// thisObj.displayList();
 			});
 			
 			this.collection.on('error', function(collection, response, options) {

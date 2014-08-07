@@ -126,6 +126,16 @@ label.error {
 .audit ul.timeline li .content {
   margin-left: 65px;
 }
+.audit ul.timeline li ul.timeline-value {
+  padding-left: 15px;
+  margin-top: 10px;
+  list-style-type: disc;
+}
+.audit ul.timeline li ul.timeline-value li {
+  min-height: 15px;
+  margin-bottom: 3px;
+  list-style-type: disc;
+}
 .audit ul.timeline li > .date {
   line-height: 18px;
   padding: 0;
