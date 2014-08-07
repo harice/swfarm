@@ -1,5 +1,6 @@
 define(function () {
     var constant = {
+		'GOOGLEMAPSAPIKEY': 'AIzaSyAyTqNUdaMOVp8vYoyheHK4_Hk6ZkUb9Ow',
     	'SU': 1,
 		'URL': {
 			'LOGIN':'login',

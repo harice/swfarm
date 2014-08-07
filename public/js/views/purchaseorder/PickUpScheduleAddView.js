@@ -1,6 +1,7 @@
 define([
 	'backbone',
 	'views/base/AppView',
+	'views/base/GoogleMapsView',
 	'jqueryui',
 	'jqueryvalidate',
 	'jquerytextformatter',
@@ -21,6 +22,7 @@ define([
 	'constant',
 ], function(Backbone,
 			AppView,
+			GoogleMapsView,
 			JqueryUI,
 			Validate,
 			TextFormatter,
@@ -223,6 +225,8 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
+			
+			this.googleMaps = new GoogleMapsView();
 			
 			this.initValidateForm();
 			
@@ -566,7 +570,9 @@ define([
 			'blur .loader': 'onBlurMoney',
 			'keyup .quantity': 'onKeyUpQuantity',
 			'blur .quantity': 'onBlurTon',
-			'click #delete-schedule': 'deleteSchedule'
+			'click #delete-schedule': 'deleteSchedule',
+			
+			'click #map': 'mapTest',
 		},
 		
 		onChangeProduct: function (ev) {
@@ -803,6 +809,12 @@ define([
 					headers: this.model.getAuth(),
 				});
 			}
+			
+			return false;
+		},
+		
+		mapTest: function () { console.log('mapTest');
+			this.googleMaps.showModal();
 			
 			return false;
 		},
