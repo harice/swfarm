@@ -60,7 +60,7 @@ define([
             
             var total_bales = 0;
             _.each(products, function(product) {
-                total_bales = total_bales + product.pivot.bales;
+                total_bales = total_bales + parseInt(product.pivot.bales);
             });
             
 			var innerTemplateVariables = {
