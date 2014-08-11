@@ -7,6 +7,7 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/contact/contactAddTemplate.html',
 	'models/contact/ContactModel',
+    'models/account/AccountModel',
     'collections/account/AccountNameCollection',
 	'collections/account/AccountAutocompleteCollection',
     'views/autocomplete/AutoCompleteView',
@@ -21,6 +22,7 @@ define([
 			contentTemplate,
 			contactAddTemplate,
 			ContactModel,
+            AccountModel,
 			AccountNameCollection,
 			AccountAutocompleteCollection,
 			AutoCompleteView,
@@ -50,6 +52,7 @@ define([
 				}
 				this.off("change");
 			});
+            
 		},
 		
 		render: function(){
@@ -60,6 +63,8 @@ define([
 		supplyContactData: function () {
 			var contact = this.model;
 			var account = this.model.get('account');
+            
+            this.hasRate(contact.get('account').id);
 			
 			this.$el.find('#firstname').val(contact.get('firstname'));
             this.$el.find('#lastname').val(contact.get('lastname'));
@@ -74,6 +79,51 @@ define([
             this.$el.find('#account_id').val(contact.get('account').id);
             this.$el.find('#rate').val(contact.get('rate'));
 		},
+                
+        hasRate: function (account_id) {
+            var account = new AccountModel({id: account_id});
+            
+            account.fetch({
+                success: function (account) {
+                    if (account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.LOADER || account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.OPERATOR) {
+                        $('#rate').attr("disabled", false);
+                    } else {
+                        $('#rate').val('0.00');
+                        $('#rate').attr("disabled", true);
+                    }
+                },
+                error: function (model, response, options) {
+                    console.log('Fail to fetch account.');
+                },
+                headers: account.getAuth(),
+            });
+        },
+        
+        survey: function (selector, callback)
+        {
+            var input = $(selector);
+            var oldvalue = input.val();
+            setInterval(function(){
+                if (input.val()!=oldvalue) {
+                    oldvalue = input.val();
+                    callback();
+                }
+            }, 100);
+        },
+		
+		events: {
+            'change #account': 'toggleRate'
+		},
+        
+        toggleRate: function (ev)
+        {
+            var that = this;
+            
+            this.survey('#account_id', function () {
+                var account_id = $('#addContactForm #account_id').val();
+                that.hasRate(account_id);
+            });
+        }
 	});
 
   return ContactEditView;

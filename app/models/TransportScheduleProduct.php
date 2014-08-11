@@ -26,7 +26,7 @@ class TransportScheduleProduct extends Eloquent {
     }
 
     public function sectionto(){
-        return $this->hasOne('section', 'id', 'sectionto_id');
+        return $this->hasOne('Section', 'id', 'sectionto_id');
     }
 
 }

@@ -140,24 +140,26 @@ define([
 				if(i > 0)
 					productFields = thisObj.addProduct();
 				else {
-					productFields = thisObj.$el.find('#product-list > tbody .product-item:first');
+					productFields = thisObj.$el.find('#product-list > tbody').children();
 					productFields.find('.product_id').html(thisObj.getProductDropdown());
 				}
 				i++;
 				
 				productFields.find('.id').val(product.id);
 				productFields.find('.product_id').val(product.productname.id);
-				productFields.find('.unitprice').val(thisObj.addCommaToNumber(parseFloat(product.unitprice).toFixed(2)));
-				productFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(product.tons).toFixed(4)));
-				var unitPrice = parseFloat(product.unitprice) * parseFloat(product.tons);
-				productFields.find('.unit-price').val(thisObj.addCommaToNumber(unitPrice.toFixed(2)));
+				//productFields.find('.unitprice').val(thisObj.addCommaToNumber(parseFloat(product.unitprice).toFixed(2)));
+				productFields.find('.product-item-field.tons').val(thisObj.addCommaToNumber(parseFloat(product.tons).toFixed(4)));
+				//var unitPrice = parseFloat(product.unitprice) * parseFloat(product.tons);
+				//productFields.find('.unit-price').val(thisObj.addCommaToNumber(unitPrice.toFixed(2)));
 				
+				var totalTonsPerProduct = 0;
+				var totalTotalPriceProduct = 0;
 				var j = 0;
 				_.each(product.productorder, function (productSub) {
 					var productSubFields = null;
 					
 					if(j > 0)
-						productSubFields = thisObj.addProductSub(productFields.find('.product-stack-table'));
+						productSubFields = thisObj.addProductSub(productFields.next('.product-stack').find('.product-stack-table'));
 					else
 						productSubFields = productFields.next('.product-stack').find('.product-stack-table > tbody .product-stack-item:first');
 					j++;
@@ -167,8 +169,21 @@ define([
 					productSubFields.find('.stacknumber').val(productSub.stacknumber);
 					productSubFields.find('.section_id').val(productSub.section_id);
 					productSubFields.find('.description').val(productSub.description);
-					productSubFields.find('.tons').val(productSub.tons);
 					productSubFields.find('.bales').val(productSub.bales);
+					
+					if(productSub.tons != null && typeof productSub.tons !== 'undefined') { console.log('productSub.tons: '+productSub.tons);
+						totalTonsPerProduct += parseFloat(productSub.tons);
+						productSubFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(productSub.tons).toFixed(4)));
+						console.log('totalTonsPerProduct: '+totalTonsPerProduct);
+					}
+					
+					if(productSub.unitprice != null && typeof productSub.unitprice !== 'undefined')
+						productSubFields.find('.unitprice').val(thisObj.addCommaToNumber(parseFloat(productSub.unitprice).toFixed(2)));
+					
+					var unitPriceXTons = parseFloat(productSub.unitprice) * parseFloat(productSub.tons);
+					productSubFields.find('.unit-price').val(thisObj.addCommaToNumber(unitPriceXTons.toFixed(2)));
+					totalTotalPriceProduct += parseFloat(unitPriceXTons);
+					
 					productSubFields.find('.ishold').val(productSub.ishold);
 					productSubFields.find('.rfv').val(productSub.rfv);
 					
@@ -178,6 +193,11 @@ define([
 						productSubFields.find('.attach-pdf').removeClass('no-attachment');
 					}
 				});
+				var formattedTotalTotalPriceProduct = thisObj.addCommaToNumber(totalTotalPriceProduct.toFixed(2));
+				productFields.find('.product-item-field.unit-price').val(formattedTotalTotalPriceProduct);
+				productFields.find('.product-stack-table tfoot .total-price').val(formattedTotalTotalPriceProduct);
+				productFields.find('.product-stack-table tfoot .total-tons').val(thisObj.addCommaToNumber(totalTonsPerProduct.toFixed(4)));
+				
 			});
 			
 			this.computeTotals();

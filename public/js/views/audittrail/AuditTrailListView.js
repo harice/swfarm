@@ -17,15 +17,11 @@ define([
 			
 			this.collection = new AuditTrailCollection();
 			this.collection.on('sync', function() {
-				//console.log('collection.on.sync')
-				thisObj.displayList();
+				thisObj.displayAuditTrail();
+				// thisObj.displayList();
 			});
 			
 			this.collection.on('error', function(collection, response, options) {
-				//console.log('collection.on.error')
-				//console.log(collection);
-				//console.log(response);
-				//console.log(options);
 				this.off('error');
 			});
 			
@@ -37,19 +33,27 @@ define([
 		},
 		
 		render: function(){
-			this.displayAuditTrail();
 			this.collection.options.currentPage = 1;
 			this.collection.getModelsPerPage(this.collection.options.currentPage);
 			Backbone.View.prototype.refreshTitle('Audit Trail','list');
 		},
 		
 		displayAuditTrail: function () {
-			var innerTemplate = _.template(auditTrailListTemplate, {});
+			var innerVar = {
+				audittrail_url: '#/'+Const.URL.AUDITTRAIL,
+				audit: this.collection.models,
+				_: _ 
+			};
+			
+			_.extend(innerVar,Backbone.View.prototype.helpers);
+
+			var innerTemplate = _.template(auditTrailListTemplate, innerVar);
 			
 			var variables = {
 				h1_title: "Audit Trail",
-				sub_content_template: innerTemplate,
+				sub_content_template: innerTemplate
 			};
+
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
 		},

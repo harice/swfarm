@@ -186,6 +186,12 @@ define(function () {
 			'LOCATIONFROMREQUIRED': ['transfer','issue'],
 			'LOCATIONTOREQUIRED': ['transfer','receipt'],
 		},
+        'ACCOUNT_TYPE': {
+            'LOADER': 3,
+            'OPERATOR': 4,
+            'TRUCKER': 8,
+            'SWFTRUCKER': 9
+        }
 	};
 	
 	return constant;

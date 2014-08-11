@@ -67,7 +67,7 @@ define([
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
-				productFieldClass: ['productorder_id', 'quantity', 'id'],
+				productFieldClass: ['productorder_id', 'sectionto_id', 'quantity', 'id'],
 				productFieldClassRequired: ['productorder_id', 'quantity'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
@@ -426,6 +426,7 @@ define([
 			if(this.options.productFieldClone == null) {
 				var productTemplateVars = {
 					product_list:this.getProductDropdown(),
+					locationto_list: '<option value="">Select a stack location</option>',
 				};
 				var productTemplate = _.template(deliveryScheduleProductItemTemplate, productTemplateVars);
 				

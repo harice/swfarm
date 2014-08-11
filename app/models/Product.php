@@ -38,6 +38,8 @@ class Product extends Eloquent {
 	 */
     protected $table = 'products';
     
+    protected $softDelete = true;
+    
     public static $rules = array(
         'name' => 'required|unique:products',
         'description' => 'max:250'
@@ -59,5 +61,13 @@ class Product extends Eloquent {
 
     public function stack(){
         return $this->hasMany('Stack', 'product_id', 'id')->select(array('id', 'stacknumber', 'product_id'));
+    }
+    
+    public function orders() {
+        return $this->belongsToMany('Order', 'productorder', 'product_id', 'order_id');
+    }
+    
+    public function contracts() {
+        return $this->belongsToMany('Contract', 'contract_products', 'contract_id', 'product_id');
     }
 }

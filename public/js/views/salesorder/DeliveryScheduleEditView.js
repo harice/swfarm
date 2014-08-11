@@ -68,6 +68,7 @@ define([
 			var destinationloader = this.model.get('destinationloader');
 			var trailer = this.model.get('trailer');
 			var products = this.model.get('transportscheduleproduct');
+			var truckerNumber = this.model.get('truckvehicle');
 			
 			this.$el.find('#so-sched-start-date .input-group.date').datepicker('update', Backbone.View.prototype.helpers.formatDate(this.model.get('date')));
 			this.$el.find('#scheduletimeHour').val(Backbone.View.prototype.helpers.formatDateBy(this.model.get('date'),'h'));

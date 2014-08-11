@@ -186,6 +186,7 @@ class InventoryRepository implements InventoryRepositoryInterface {
             $result['last_page'] = $stackList['last_page'];
             $result['from'] = $stackList['from'];
             $result['to'] = $stackList['to'];
+            $result['data'] = array();
             $index = 0;
             foreach($stackList['data'] as $product){
                 // echo $product['stacknumber'];

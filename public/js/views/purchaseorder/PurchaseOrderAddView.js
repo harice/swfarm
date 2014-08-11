@@ -82,13 +82,13 @@ define([
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
-				productFieldClass: ['product_id', 'unitprice', 'tons', 'id'],
-				productFieldClassRequired: ['product_id', 'unitprice', 'tons'],
+				productFieldClass: ['product_id', 'tons', 'id'],
+				productFieldClassRequired: ['product_id', 'tons'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
 				productSubFieldClone: null,
 				productSubFieldCounter: 0,
-				productSubFieldClass: ['stacknumber', 'section_id', 'description', 'tons', 'bales', 'id', 'ishold', 'rfv', 'uploadedfile'],
+				productSubFieldClass: ['stacknumber', 'section_id', 'description', 'unitprice', 'tons', 'bales', 'id', 'ishold', 'rfv', 'uploadedfile'],
 				productSubFieldClassRequired: ['tons'],
 				productSubFieldExempt: [],
 				productSubFieldSeparator: '.',
@@ -569,7 +569,7 @@ define([
 							
 							arrayProductFields['stacks'] = this.getProductStackFields(data, index, {
 								'product_id': arrayProductFields.product_id,
-								'unitprice': arrayProductFields.unitprice,
+								//'unitprice': arrayProductFields.unitprice,
 							});
 							
 							formData.products.push(arrayProductFields);
@@ -701,9 +701,10 @@ define([
 			var table = tr.closest('table');
 			tr.remove();
 			
-			if(!this.hasProductSub(table)) {
+			if(!this.hasProductSub(table))
 				this.addProductSub(table);
-			}
+			
+			this.computeTotalsPerProduct(table);
 		},
 		
 		hasProductSub: function (tableElement) {
@@ -713,11 +714,12 @@ define([
 		
 		computeTotals: function () {
 			this.computeTotalTons();
-			//this.computeTotalBales();
-			
-			this.subContainer.find('#product-list tbody .product-item').each(function () {
-				$(this).find('.unitprice').trigger('keyup');
-			});
+			this.computeTotalTotalTotalPrice();
+		},
+		
+		computeTotalsPerProduct: function (tableElement) {
+			this.computeTotalTonsPerProduct(tableElement);
+			this.computeTotalTotalPrice(tableElement);
 		},
 		
 		validateProduct: function (ev) {
@@ -755,38 +757,50 @@ define([
 			var unitPricefield = $(ev.target);
 			var unitPricefieldVal = this.removeCommaFromNumber(unitPricefield.val());
 			var unitPrice = (!isNaN(parseFloat(unitPricefieldVal)))? parseFloat(unitPricefieldVal) : 0;
-			var tonsField = unitPricefield.closest('.product-item').find('.tons');
+			var tonsField = unitPricefield.closest('.product-stack-item').find('.tons');
 			var tonsFieldVal = this.removeCommaFromNumber(tonsField.val());
 			var tons = (!isNaN(parseFloat(tonsFieldVal)))? parseFloat(tonsFieldVal) : 0;
 			
-			this.computeTotalPrice(unitPrice, tons, unitPricefield.closest('.product-item').find('.unit-price'));
+			this.computeTotalPrice(unitPrice, tons, unitPricefield.closest('.product-stack-item').find('.unit-price'));
 		},
 		
 		onKeyUpTons: function (ev) {
 			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 4);
 			
 			var tonsfield = $(ev.target);
-			if(tonsfield.closest('.product-item').find('.unitprice').length > 0 && tonsfield.closest('.product-item').find('.unit-price').length > 0) {
+			if(tonsfield.closest('.product-stack-item').find('.unitprice').length > 0 && tonsfield.closest('.product-stack-item').find('.unit-price').length > 0) {
 				var tonsfieldVal = this.removeCommaFromNumber(tonsfield.val());
 				var tons = (!isNaN(parseFloat(tonsfieldVal)))? parseFloat(tonsfieldVal) : 0;
-				var unitPriceField = tonsfield.closest('.product-item').find('.unitprice');
+				var unitPriceField = tonsfield.closest('.product-stack-item').find('.unitprice');
 				var unitPriceFieldVal = this.removeCommaFromNumber(unitPriceField.val());
 				var unitPrice = (!isNaN(parseFloat(unitPriceFieldVal)))? parseFloat(unitPriceFieldVal) : 0;
 				
-				this.computeTotalPrice(unitPrice, tons, tonsfield.closest('.product-item').find('.unit-price'));
+				this.computeTotalPrice(unitPrice, tons, tonsfield.closest('.product-stack-item').find('.unit-price'));
 				
-				this.computeTotalTons();
+				this.computeTotalTonsPerProduct(tonsfield.closest('table'));
 			}
+			else if(tonsfield.closest('.product-item').length > 0)
+				this.computeTotalTons();
 		},
 		
 		computeTotalTons: function () {
 			var thisObj = this;
 			var total = 0;
-			this.subContainer.find('#product-list .tons').each(function () {
+			this.subContainer.find('.product-item .tons').each(function () {
 				var value = thisObj.removeCommaFromNumber($(this).val());
 				total += (!isNaN(parseFloat(value)))? parseFloat(value) : 0;
 			});
 			this.subContainer.find('#total-tons').val(thisObj.addCommaToNumber(total.toFixed(4)));
+		},
+		
+		computeTotalTonsPerProduct: function (tableElement) {
+			var thisObj = this;
+			var total = 0;
+			tableElement.find('.product-stack-item .tons').each(function () {
+				var value = thisObj.removeCommaFromNumber($(this).val());
+				total += (!isNaN(parseFloat(value)))? parseFloat(value) : 0;
+			});
+			tableElement.find('tfoot .total-tons').val(thisObj.addCommaToNumber(total.toFixed(4)));
 		},
 		
 		computeTotalPrice: function (price, tonsOrBales, unitePriceField) {
@@ -794,16 +808,32 @@ define([
 			unitPrice = tonsOrBales * price;
 			unitePriceField.val(this.addCommaToNumber(unitPrice.toFixed(2)));
 			
-			this.computeTotalTotalPrice();
+			this.computeTotalTotalPrice(unitePriceField.closest('table'));
 		},
 		
-		computeTotalTotalPrice: function () {
+		computeTotalTotalPrice: function (tableElement) {
 			var thisObj = this;
 			var total = 0;
-			this.subContainer.find('#product-list .unit-price').each(function () {
+			tableElement.find('.product-stack-item .unit-price').each(function () {
 				var value = thisObj.removeCommaFromNumber($(this).val());
 				total += (!isNaN(parseFloat(value)))? parseFloat(value) : 0;
 			});
+			
+			var formattedTotal = thisObj.addCommaToNumber(total.toFixed(2));
+			tableElement.find('tfoot .total-price').val(formattedTotal);
+			tableElement.closest('.product-stack').prev('.product-item').find('.unit-price').val(formattedTotal);
+			
+			this.computeTotalTotalTotalPrice();
+		},
+		
+		computeTotalTotalTotalPrice: function () {
+			var thisObj = this;
+			var total = 0;
+			this.subContainer.find('.product-item .unit-price').each(function () {
+				var value = thisObj.removeCommaFromNumber($(this).val());
+				total += (!isNaN(parseFloat(value)))? parseFloat(value) : 0;
+			});
+			
 			this.subContainer.find('#total-price').val(thisObj.addCommaToNumber(total.toFixed(2)));
 		},
 		
@@ -1084,7 +1114,7 @@ define([
 			}
 		},
 		
-		initStackNumberAutocomplete: function (element, productId) { console.log('initStackNumberAutocomplete'); console.log('productId: '+productId);
+		initStackNumberAutocomplete: function (element, productId) { //console.log('initStackNumberAutocomplete'); console.log('productId: '+productId);
 			var thisObj = this;
 			
 			element.each(function() {

@@ -28,6 +28,13 @@ class ProductOrder extends Eloquent {
         'section_id'
     );
     
+    /**
+     * Append custom attributes
+     * 
+     * @var float 
+     */
+    protected $appends = array('total_price');
+
     public static $rules = array(
 		'order_id' => 'required',
         'product_id' => 'required',
@@ -66,5 +73,9 @@ class ProductOrder extends Eloquent {
     public function sectionfrom(){
         return $this->hasOne('Section', 'id', 'section_id');
     }
-
+    
+    public function getTotalPriceAttribute()
+    {
+        return $this->attributes['total_price'] = (float) $this->attributes['tons'] * $this->attributes['unitprice'];
+    }
 }

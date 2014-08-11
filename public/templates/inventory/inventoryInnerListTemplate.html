@@ -5,9 +5,9 @@
 		<td><%= i.get("productname") %></td>
 		<td><%= i.get("stacklocation") %></td>
 		<td class="text-right"><%= numberFormatTons(i.get("onHandTons")) %></td>
-		<td></td>
-		<td></td>
-		<td></td>
+		<td><% if (i.get("committed")) { %><%= i.get("committed") %><% } %></td>
+		<td><% if (i.get("ordered")) { %><%= i.get("ordered") %><% } %></td>
+		<td><% if (i.get("available")) { %><%= i.get("available") %><% } %></td>
 	</tr>
 	<% }); %>
 <% } else { %>

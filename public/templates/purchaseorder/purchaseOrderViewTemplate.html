@@ -26,7 +26,11 @@
     <div class="col-md-6">
       Producer:
       <address>
-        <p class="margin-top-5 margin-bottom-0"><strong><%= po.get("account").name %></strong></p>
+        <p class="margin-top-5 margin-bottom-0">
+          <strong><%= po.get("contact").firstname %> <%= po.get("contact").lastname %> <%= po.get("contact").suffix %></strong>
+        </p>
+        <%= po.get("account").name %>
+        <br>
         <%= po.get("orderaddress").street %>
         <br>
         <%= po.get("orderaddress").city %>,
@@ -42,16 +46,9 @@
         <table id="product-list" class="table-condensed table-bordered table-hover">
           <thead>
             <tr>
-              <th class="width-150">Product</th>
-              <th>
-                <% if (typeof is_bid === "undefined") { %>
-                  Unit Price
-                <% } else { %>
-                  Bid Unit Price
-                <% } %>
-              </th>
+              <th class="width-200">Product</th>
               <th>Est Tons</th>
-              <th class="width-110">
+              <th class="width-150">
                 <% if (typeof is_bid === "undefined") { %>
                   Total Price
                 <% } else { %>
@@ -64,7 +61,7 @@
           <tbody></tbody>
     		  <tfoot>
     		    <tr>
-      			  <td class="text-right" colspan="2">Total</td>
+      			  <td class="text-right">Total</td>
       			  <td class="text-right"><strong id="total-tons">0.0000</strong></td>
       			  <td class="text-right"><strong id="total-price">$ 0.00</strong></td>
       			</tr>
@@ -78,6 +75,9 @@
       <div class="pull-right">
         <% if (typeof editable !== "undefined") { %>
           <% if (typeof is_bid === "undefined") { %>
+			<% if (po.get("location").location == "Dropship") { %>
+				<a id="checkin-stack" class="btn btn-primary btn-trans btn-rad btn-sm editable-button" href="#">Check-in Stack</a>
+			<% } %>
             <a id="edit-po" class="btn btn-primary btn-trans btn-rad btn-sm editable-button" href="<%= po_edit_url %>">
               <i class="fa fa-pencil width-10"></i> Edit PO
             </a>

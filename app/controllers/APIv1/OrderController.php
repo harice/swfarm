@@ -28,25 +28,58 @@ class OrderController extends BaseController {
 	public function addPurchaseOrder()
 	{
 		$model = $this->repo->addOrder(Input::all());
-        return Response::json($model);
+        if(isset($model['error'])){
+            if($model['error']){
+                return Response::json($model, 500);
+            } else {
+                return Response::json($model);    
+            }
+        } else {
+            return Response::json($model);    
+        }
+        
 	}
 
 	public function addSalesOrder()
 	{
 		$model = $this->repo->addOrder(Input::all(), 2); //2 for SO
-        return Response::json($model);
+        if(isset($model['error'])){
+            if($model['error']){
+                return Response::json($model, 500);
+            } else {
+                return Response::json($model);    
+            }
+        } else {
+            return Response::json($model);    
+        }
 	}
 
 	public function updatePurchaseOrder($id)
 	{
 		$model = $this->repo->updateOrder($id, Input::all());
-        return Response::json($model);
+        if(isset($model['error'])){
+            if($model['error']){
+                return Response::json($model, 500);
+            } else {
+                return Response::json($model);    
+            }
+        } else {
+            return Response::json($model);    
+        }
 	}
 
 	public function updateSalesOrder($id)
 	{
 		$model = $this->repo->updateOrder($id, Input::all(), 2);
-        return Response::json($model);
+        if(isset($model['error'])){
+            if($model['error']){
+                return Response::json($model, 500);
+            } else {
+                return Response::json($model);    
+            }
+        } else {
+            return Response::json($model);    
+        }
 	}
 
 

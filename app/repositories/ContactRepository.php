@@ -73,7 +73,7 @@ class ContactRepository implements ContactRepositoryInterface {
             }
             $this->validate($data, $rules);
         } else {
-            $data['rate'] = (int)str_replace(array('.', ','), '' , $data['rate']);
+            $data['rate'] = (int)str_replace(array('.', ','), '' , number_format($data['rate'], 2, '.', ''));
             $this->validate($data, $rules);
             $data['rate'] = number_format(($data['rate'] / 100), 2, '.', '');
         }
@@ -124,7 +124,7 @@ class ContactRepository implements ContactRepositoryInterface {
             }
             $this->validate($data, $rules);
         } else {
-            $data['rate'] = (int)str_replace(array('.', ','), '' , $data['rate']);
+            $data['rate'] = (int)str_replace(array('.', ','), '' , number_format($data['rate'], 2, '.', ''));
             $this->validate($data, $rules);
             $data['rate'] = number_format(($data['rate'] / 100), 2, '.', '');
         }
@@ -255,7 +255,7 @@ class ContactRepository implements ContactRepositoryInterface {
     public function hasRate($account_id)
     {
         $account = Account::find($account_id);
-        if ($account->accounttype == 3 || $account->accounttype == 4) {
+        if ($account->accounttype == 3 || $account->accounttype == 4 || $account->accounttype == 8 || $account->accounttype == 9) {
             return true;
         }
 

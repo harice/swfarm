@@ -5,22 +5,16 @@
             <select class="form-control product_id width-160" name="product_id"><%= product_list %></select>
         </div>
 	</td>
-	<td>
-		<div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right price unitprice" type="text" name="unitprice" placeholder="0.00" value="" required></div>
-		<div class="error-msg-cont"></div>
-	</td>
-
-	<td><input class="form-control text-right tons" type="text" name="tons" maxlength="12"></td>
-	<td><div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right unit-price" type="text" value="0.00" readonly></div></td>
+	<td><input class="form-control text-right product-item-field tons" type="text" name="tons" maxlength="12"></td>
+	<td><div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right product-item-field unit-price" type="text" value="0.00" readonly></div></td>
 	<td>
 		<button title="Remove Product" type="button" class="pull-right btn btn-danger btn-xs remove-product"><span class="glyphicon glyphicon-remove"></span></button>
 	</td>
 </tr>
 <tr class="product-stack">
-	<td></td>
 	<td colspan="3">
 		<div class="row margin-top-0 padding-top-10">
-			<div class="col-md-12">
+			<div class="col-md-11 col-md-offset-1">
 				<legend>
 					Stacknumber
 					<button title="Add Product Stack" type="button" class="pull-right btn btn-info btn-xs add-product-stack"><span class="glyphicon glyphicon-plus"></span></button>
@@ -32,8 +26,10 @@
 								<th>Stack Number</th>
 								<th>Location From</th>
 								<th>Description</th>
-								<th>Est. Tons</th>
+								<th><% if (typeof is_bid === "undefined") { %>Unit Price<% } else { %>Bid Unit Price<% } %></th>
 								<th>Bales</th>
+								<th>Est. Tons</th>
+								<th><% if (typeof is_bid === "undefined") { %>Total Price<% } else { %>Bid Total Price<% } %></th>
 								<% if (typeof is_bid === "undefined") { %>
 								<th>Hold for Testing</th>
 								<th>RFV</th>
@@ -42,6 +38,19 @@
 								<th></th>
 							</tr>
 						</thead>
+						<tfoot>
+							<tr>
+								<td class="text-right" colspan="5">Total</td>
+								<td><input class="form-control text-right total-tons" type="text" value="0.0000" readonly></td>
+								<td>
+									<div class="input-group margin-0">
+										<span class="input-group-addon">$</span>
+										<input class="form-control text-right total-price" type="text" value="0.00" readonly>
+									</div>
+								</td>
+								<td <% if (typeof is_bid !== "undefined") { %>colspan="4"<% } %>>&nbsp;</td>
+							</tr>
+						</tfoot>
 						<tbody data-id=""></tbody>
 					</table>
 				</div>

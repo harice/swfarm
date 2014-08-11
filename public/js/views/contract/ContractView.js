@@ -1,12 +1,24 @@
 define([
+    'underscore',
 	'backbone',
 	'views/base/AppView',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/contract/contractViewTemplate.html',
 	'models/contract/ContractModel',
+    'collections/contract/SalesOrderDetailsByProductCollection',
 	'global',
 	'constant'
-], function(Backbone, AppView, contentTemplate, contractViewTemplate, ContractModel, Global, Const){
+], function(
+    _,
+    Backbone,
+    AppView,
+    contentTemplate,
+    contractViewTemplate,
+    ContractModel,
+    SalesOrderDetailsByProductCollection,
+    Global,
+    Const
+){
 
 	var ContractView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -22,6 +34,8 @@ define([
 					thisObj.displayContract();
 				this.off("change");
 			});
+            
+            this.salesorders = new SalesOrderDetailsByProductCollection(option.id);
 		},
 		
 		render: function(){
@@ -46,16 +60,29 @@ define([
             
             var total_bales = 0;
             _.each(products, function(product) {
-                total_bales = total_bales + product.pivot.bales;
+                total_bales = total_bales + parseInt(product.pivot.bales);
             });
             
 			var innerTemplateVariables = {
+                _: _,
 				contract:this.model,
 				contract_url:'#/'+Const.URL.CONTRACT,
 				contract_edit_url:'#/'+Const.URL.CONTRACT+'/'+Const.CRUD.EDIT,
                 total_tons: total_tons.toFixed(4),
-                total_bales: total_bales
+                total_bales: total_bales,
+                sales_order_url: '#/'+Const.URL.SO
 			};
+            
+//            this.salesorders.fetch({
+//                success: function (collection, response) {
+//                    console.log(response);
+//                },
+//                error: function (collection, response) {
+//                    console.log('Error in getting salesorders.');
+//                },
+//                wait: true,
+//                headers: this.model.getAuth()
+//            });
             
             _.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
 			var innerTemplate = _.template(contractViewTemplate, innerTemplateVariables);

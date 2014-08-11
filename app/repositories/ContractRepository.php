@@ -55,12 +55,16 @@ class ContractRepository implements ContractRepositoryInterface {
             $contracts_array = $_contracts->toArray();
             foreach ($contracts_array as &$contract) {
                 $contract['total_expected'] = 0.0000;
+                $contract['total_delivered_percentage'] = 0;
+                
                 foreach ($contract['products'] as $product) {
                     $contract['total_expected'] += $product['pivot']['tons'];
                 }
                 
                 $contract['total_delivered'] = $this->getDeliveredTons($contract['id']);
-                $contract['total_delivered_percentage'] = number_format((($contract['total_delivered'] / $contract['total_expected']) * 100));
+                if ($contract['total_expected']) {
+                    $contract['total_delivered_percentage'] = number_format((($contract['total_delivered'] / $contract['total_expected']) * 100));
+                }
             }
             
             $contracts_array = array_slice($contracts_array, $offset, $perPage);
@@ -77,6 +81,9 @@ class ContractRepository implements ContractRepositoryInterface {
     public function findById($id)
     {
         $contract = Contract::with('products', 'salesorders', 'productorders', 'account', 'account.address', 'account.address.addressStates', 'account.address.addressType', 'status')->find($id);
+        
+        $contract = $contract->toArray();
+        $contract['contract_orders'] = $this->salesorder($id);
 
         if ($contract) {
             return $contract;
@@ -147,7 +154,7 @@ class ContractRepository implements ContractRepositoryInterface {
                 $products = $data['products'];
                 unset($data['products']);
                 
-                $contract = $this->findById($id);
+                $contract = Contract::find($id);
                 $contract->fill($data);
                 $contract->update();
                 
@@ -187,7 +194,14 @@ class ContractRepository implements ContractRepositoryInterface {
         
         try
         {
-            $contract = $this->findById($id);
+            $contract = Contract::find($id);
+            
+            if (!$this->hasDeliveredTons($id)) {
+                return array(
+                    'error' => true,
+                    'message' => 'Contract cannot be closed if orders are not fulfilled.'
+                );
+            }
             
             if ($this->hasOpenOrders($id)) {
                 return array(
@@ -214,7 +228,11 @@ class ContractRepository implements ContractRepositoryInterface {
     
     public function hasOpenOrders($id)
     {
-        $contract = $this->findById($id);
+        $contract = Contract::find($id);
+        if($contract->salesorders) {
+            return true;
+        }
+        
         foreach($contract->salesorders as $salesorder) {
             if ($salesorder->status_id != 2) {
                 return true;
@@ -253,7 +271,8 @@ class ContractRepository implements ContractRepositoryInterface {
                     $_product['total_tons'] = $_product['tons'];
                     $delivered_tons = 0.000;
 
-                    $product = Product::find($_product['product_id']);
+//                    $product = Product::find($_product['product_id']);
+                    $product = Product::where('id', '=', $_product['product_id'])->withTrashed()->first();
                     $_product['product_name'] = $product->name;
 
                     // Get Sales Orders
@@ -262,10 +281,6 @@ class ContractRepository implements ContractRepositoryInterface {
                     
                     // Process SO
                     foreach ($_product['salesorders'] as &$_so) {
-                        if ($_product['product_id']) {
-                            
-                        }
-                        
                         $_so['tons'] = 0.000;
                         $_so['delivered_tons'] = 0.0000;
                         
@@ -277,16 +292,24 @@ class ContractRepository implements ContractRepositoryInterface {
                             $_so['status']['class'] = "success";
                         }
                         
+                        $salesorder = Order::with('productorder')->find($_so['id']);
+                        if ($salesorder->productorder) {
+                            foreach ($salesorder->productorder as $product_order) {
+                                if ($product_order->id == $_product['product_id']) {
+                                    $_so['tons'] = $product_order->tons;
+                                }
+                            }
+                        }
+                        
                         if ($_so['transportschedule']) {
                             foreach ($_so['transportschedule'] as $schedule) {
-
                                 foreach ($schedule['transportscheduleproduct'] as $transportscheduleproduct) {
                                     if ($transportscheduleproduct['productorder']['product_id'] == $_product['product_id']) {
                                         // Stack Number
                                         $_so['stacknumber'] = $transportscheduleproduct['productorder']['stacknumber'];
                                         
                                         // Expected Quantity per SO
-                                        $_so['tons'] = $transportscheduleproduct['productorder']['tons'];
+                                        // $_so['tons'] = $transportscheduleproduct['productorder']['tons'];
                                         
                                         // Delivered Quantity per SO
                                         if ($transportscheduleproduct['weightticketproducts']) {
@@ -326,8 +349,8 @@ class ContractRepository implements ContractRepositoryInterface {
     /**
      * Get delivered tons per Contract
      * 
-     * @param type $id
-     * @return type $float
+     * @param int $id Contract Id
+     * @return float
      */
     public function getDeliveredTons($id)
     {
@@ -348,6 +371,39 @@ class ContractRepository implements ContractRepositoryInterface {
             }
         }
         return $total_tons;
+    }
+    
+    /**
+     * Get expected tons.
+     * 
+     * @param int $id Contract Id
+     * @return float
+     */
+    public function getExpectedTons($id)
+    {
+        $expected_tons = 0.0000;
+        $contract = Contract::find($id);
+        
+        foreach ($contract->products as $product) {
+            $expected_tons += $product->pivot->tons;
+        }
+        
+        return $expected_tons;
+    }
+    
+    /**
+     * Check if delivered tons are greater than expected tons.
+     * 
+     * @param int $id Contract Id
+     * @return boolean
+     */
+    public function hasDeliveredTons($id)
+    {
+        if ($this->getDeliveredTons($id) >= $this->getExpectedTons($id)) {
+            return true;
+        }
+        
+        return false;
     }
     
     public function getSalesOrders($contract_id, $product_id = null)
@@ -384,7 +440,7 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         try
         {
-            $contract = $this->findById($id);
+            $contract = Contract::find($id);
 
             if (!$contract->delete()) {
                 return array(
