@@ -25,9 +25,20 @@ class ReportController extends BaseController {
 	 *
 	 * @return Response
 	 */
-	public function getSales()
+	public function generateSales()
 	{
-        $result = $this->report->getSales(Input::all());
+        $result = $this->report->generateSales(Input::all());
         return Response::json($result);
 	}
+    
+    /**
+     * Generate a Producer Statement Report
+     * 
+     * @return Reponse
+     */
+    public function generateProducerStatement()
+    {
+        $result = $this->report->generateProducerStatement(Input::all());
+        return Response::json($result);
+    }
 }

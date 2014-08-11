@@ -5,10 +5,10 @@ class ReportRepository implements ReportRepositoryInterface {
     /**
      * Generate a Customer Sales Report
      *
-     * @param mixed $params Input
-     * @return Collection
+     * @param array $params Input
+     * @return array
      */
-    public function getSales($params)
+    public function generateSales($params)
     {
         try {
             $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
@@ -33,7 +33,7 @@ class ReportRepository implements ReportRepositoryInterface {
                 $report = $report->where('name', 'like', '%' . $params['search'] . '%');
             }
             
-            $result = $report->select(
+            $report = $report->select(
                     'productorder.id as id',
                     'productorder.order_id',
                     'productorder.product_id',
@@ -54,18 +54,31 @@ class ReportRepository implements ReportRepositoryInterface {
                 ->paginate($perPage)
                 ->toArray();
             
-            $result['summary_total'] = 0.0;
-            $result['summary_total_tons'] = 0.0;
-            $result['summary_total_bales'] = 0;
-            foreach ($result['data'] as $data) {
-                $result['summary_total'] += $data['total_price'];
-                $result['summary_total_tons'] += $data['tons'];
-                $result['summary_total_bales'] += $data['bales'];
+            $report['summary_total'] = 0.0;
+            $report['summary_total_tons'] = 0.0;
+            $report['summary_total_bales'] = 0;
+            foreach ($report['data'] as $data) {
+                $report['summary_total'] += $data['total_price'];
+                $report['summary_total_tons'] += $data['tons'];
+                $report['summary_total_bales'] += $data['bales'];
             }
             
-            return $result;
+            return $report;
         } catch (Exception $e) {
             return $e->getMessage();
         }
+    }
+    
+    /**
+     * Generate a Producer Statement Report
+     * 
+     * @param array $params Input
+     * @return array
+     */
+    public function generateProducerStatement($params)
+    {
+        $report = WeightTicketProducts::all();
+        
+        return $report;
     }
 }
