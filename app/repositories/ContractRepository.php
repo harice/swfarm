@@ -55,12 +55,16 @@ class ContractRepository implements ContractRepositoryInterface {
             $contracts_array = $_contracts->toArray();
             foreach ($contracts_array as &$contract) {
                 $contract['total_expected'] = 0.0000;
+                $contract['total_delivered_percentage'] = 0;
+                
                 foreach ($contract['products'] as $product) {
                     $contract['total_expected'] += $product['pivot']['tons'];
                 }
                 
                 $contract['total_delivered'] = $this->getDeliveredTons($contract['id']);
-                $contract['total_delivered_percentage'] = number_format((($contract['total_delivered'] / $contract['total_expected']) * 100));
+                if ($contract['total_expected']) {
+                    $contract['total_delivered_percentage'] = number_format((($contract['total_delivered'] / $contract['total_expected']) * 100));
+                }
             }
             
             $contracts_array = array_slice($contracts_array, $offset, $perPage);
