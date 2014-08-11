@@ -56,6 +56,8 @@ define([
 
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
+
+			this.generatePagination(this.collection.options.maxItem, Const.MAXITEMPERPAGE);
 		},
 		
 		displayList: function () {
@@ -67,8 +69,6 @@ define([
 			
 			var innerListTemplate = _.template(auditTrailInnerListTemplate, data);
 			this.subContainer.find("#audit-trail-list tbody").html(innerListTemplate);
-			
-			this.generatePagination(this.collection.options.maxItem, Const.MAXITEMPERPAGE);
 		},
 		
 		generatePagination: function (maxItem, maxItemPerPage) {
