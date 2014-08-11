@@ -74,6 +74,11 @@ class ProductOrder extends Eloquent {
         return $this->hasOne('Section', 'id', 'section_id');
     }
     
+    /**
+     * Get total price
+     * 
+     * @return float
+     */
     public function getTotalPriceAttribute()
     {
         return $this->attributes['total_price'] = (float) $this->attributes['tons'] * $this->attributes['unitprice'];
