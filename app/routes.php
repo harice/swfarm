@@ -189,6 +189,9 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('inventory/transactiontype', 'APIv1\InventoryController@transactionType');
     Route::post('inventory/purchaseorder', 'APIv1\InventoryController@store');
     Route::resource('inventory', 'APIv1\InventoryController');
+    
+    // Reports
+    Route::get('report/sales', 'APIv1\ReportController@getSales');
 });
 
 Route::get('/', function(){ return View::make('main')->withVersion(Config::get('Constants.VERSION',"1.0")); });
