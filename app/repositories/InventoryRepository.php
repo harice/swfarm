@@ -188,6 +188,8 @@ class InventoryRepository implements InventoryRepositoryInterface {
             $result['to'] = $stackList['to'];
             $index = 0;
             foreach($stackList['data'] as $product){
+                // echo $product['stacknumber'];
+                return $this->getCommittedUsingStackId($product['stacknumber']);
                 if($product['stacklocation'] == null){
                     continue;
                 }
@@ -207,6 +209,95 @@ class InventoryRepository implements InventoryRepositoryInterface {
         }
 
         return $result;
+    }
+
+
+    private function getCommittedUsingStackId($stacknumber){
+        // echo $stackNumber;
+        /*$data = Order::with('productorder')
+                    // with('productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_pickup')
+                    //  ->with('productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_dropoff')
+                    ->whereHas('productorder', function($productorder) use ($stacknumber){
+                        $productorder->where('stacknumber', '=', $stacknumber);
+                    })
+                     // ->whereHas('productorder', function($productorder) use ($stackNumber){
+                     //    $productorder->wherehas('transportscheduleproduct', function($transportscheduleproduct){
+                     //        $transportscheduleproduct->whereHas('transportschedule', function($transportschedule){
+                     //            $transportschedule->whereHas('weightticket', function($weightticket){
+                     //                $weightticket->where('status_id', '=', 1);
+                     //            });
+                     //        });
+                     //    });
+                     // })
+                     ->where('ordertype', '=', 2)
+                     ->where('status_id', '=', 1)->get();
+*/
+        $data = ProductOrder::with('order.transportschedule.weightticket.weightticketscale_pickup.weightticketproducts')
+                            ->with('order.transportschedule.weightticket.weightticketscale_dropoff.weightticketproducts')
+                            ->whereHas('order', function($order) {
+                                $order->where('status_id', '=', 1);
+                                $order->where('ordertype', '=', 2);
+                            })->where('stacknumber', 'like', $stacknumber)->get();
+
+        $data = $data->toArray();
+        // return $data;
+        $totalWeightDelivered = 0;
+        $totalQuantity = 0;
+        foreach($data as $productOrder){
+            $order = $productOrder['order'];
+            $schedules = $productOrder['order']['transportschedule'];
+
+            foreach($schedules as $transportschedule){
+                $totalQuantity += $this->getScheduleQuantity($transportschedule['id'], $productOrder['id']);
+
+                if($transportschedule['weightticket'] != null){
+                    if($transportschedule['weightticket']['pickup_id'] != null){
+                        $scale = $transportschedule['weightticket']['weightticketscale_pickup'];
+                    } else if($transportschedule['weightticket']['dropoff_id'] != null) {
+                        $scale = $transportschedule['weightticket']['weightticketscale_dropoff'];
+                    } else {
+                        $scale = null;
+                    }
+
+                    if($scale != null){
+                        $totalWeightDelivered += $this->getWeightOfStackInWeighTicket($scale['id'], $transportschedule['id']);
+                    }
+                }
+            }
+        }
+        
+        $commited = $totalQuantity - ($totalWeightDelivered * 0.0005);
+        return $commited;
+        // return Response::json($data);
+        // var_dump($data);
+    }
+
+    private function getWeightOfStackInWeighTicket($scaleId, $transportscheduleId){
+        $scaleData = WeightTicket::where('pickup_id', '=', $scaleId)
+                                    ->orWhere('dropoff_id', '=', $scaleId)
+                                    ->first(array('id', 'checkout'));
+        if($scaleData->checkout == 1) { //already push in inventory
+            $result = WeightTicketProducts::where('weightTicketScale_id', '=', $scaleId)
+                                    ->where('transportScheduleProduct_id', '=', $transportscheduleId)
+                                    ->first(array('id', 'pounds'));
+            if($result != null){
+                return $result->pounds;    
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+      
+        
+
+    }
+
+    private function getScheduleQuantity($transportscheduleId, $productorderId){
+        $result = TransportScheduleProduct::where('transportschedule_id', '=', $transportscheduleId)
+                    ->where('productorder_id', '=', $productorderId)->first(array('id','quantity'));
+
+        return $result->quantity;
     }
 /*
     public function getInventorySummaryByStack($params){
