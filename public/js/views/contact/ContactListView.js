@@ -56,6 +56,7 @@ define([
 			var data = {
 				contact_url: '#/'+Const.URL.CONTACT,
 				contact_edit_url: '#/'+Const.URL.CONTACT+'/'+Const.CRUD.EDIT,
+				account_url: '#/'+Const.URL.ACCOUNT,
 				contacts: this.collection.models,
 				_: _ 
 			};

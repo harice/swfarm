@@ -2,23 +2,18 @@
   <% _.each(contacts, function(contact){ %>
     <tr>
       <td><a href="<%= contact_url %>/<%= contact.get("id") %>"><%= contact.get("lastname") %>, <%= contact.get("firstname") %></a></td>
-      <td><%= contact.get("account").name %></td>
+      <td><a href="<%= account_url %>/<%= contact.get("account").id %>"><%= contact.get("account").name %></a></td>
       <td><%= contact.get("position") %></td>
-      <td><%= contact.get("email") %></td>
+      <td><a href='mailto:<%= contact.get("email") %>'><%= contact.get("email") %></a></td>
       <td><%= contact.get("phone") %></td>
       <td>
-          <% if(!_.isEmpty(contact.get("rate"))) { %>
-              <%= contact.get("rate") %> %
-          <% } %>
-      </td>
-      <td>
-        <a href="<%= contact_edit_url %>/<%= contact.get("id") %>" class="text-primary">
+        <a href="<%= contact_edit_url %>/<%= contact.get("id") %>">
           <span class="fa-stack">
             <i class="fa fa-square fa-stack-2x"></i>
             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
           </span>
         </a>
-        <a href="#" class="text-danger delete-contact" data-id="<%= contact.get("id") %>">
+        <a href="#" class="color-danger delete-contact" data-id="<%= contact.get("id") %>">
     		  <span class="fa-stack">
             <i class="fa fa-square fa-stack-2x"></i>
             <i class="fa fa-times fa-stack-1x fa-inverse"></i>
@@ -29,6 +24,6 @@
   <% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="7">No results found.</td>
+		<td colspan="6">No results found.</td>
 	</tr>
 <% } %>

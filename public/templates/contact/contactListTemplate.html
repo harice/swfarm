@@ -5,7 +5,7 @@
 
                 <div id="content-top" class="row margin-top-0">
                     <div class="col-md-9 col-xs-8 padding-top-10 padding-right-0">
-                        <a href="<%= contact_add_url %>" class="btn btn-primary btn-sm margin-left-0">+ Add Contact</a>
+                        <a href="<%= contact_add_url %>" class="btn btn-primary btn-sm btn-rad margin-left-0">+ Add Contact</a>
                     </div>
                     <div class="col-md-3 col-xs-4">
                         <form class="form-inline" role="form">
@@ -13,7 +13,7 @@
                                 <label class="sr-only" for="search">Search</label>
                                 <input type="text" class="search form-control" id="search-keyword" placeholder="" style="border-radius:3px 0 0 3px;">
                                 <span class="input-group-btn">
-                                    <button type="button" class="btn btn-primary search-local">Search</button>
+                                    <button type="button" class="btn btn-trans search-local">Search</button>
                                 </span>
                             </div>
                         </form>
@@ -29,7 +29,6 @@
                                 <th>Position</th>
                                 <th>Email Address</th>
                                 <th class="width-110">Phone No.</th>
-                                <th class="width-70">Rate</th>
                                 <th class="width-110">Action</th>
                             </tr>
                         </thead>
@@ -37,13 +36,11 @@
                     </table>
 
                     <div class="clearfix">
-                        <div class="styled-select pull-left margin-top-10 margin-bottom-0 margin-left-0 margin-right-0 display-items" style="display:none;">
-                            <select class="form-control width-100" id="perpage" name="perpage">
-                                <option value="15">15 rows</option>
-                                <option value="25">25 rows</option>
-                                <option value="50">50 rows</option>
-                            </select>
-                        </div>
+                        <select class="form-control width-100 pull-left margin-top-10 margin-bottom-0 margin-left-0 margin-right-0 input-sm display-items" id="perpage" name="perpage" style="display:none;">
+                            <option value="15">15 rows</option>
+                            <option value="25">25 rows</option>
+                            <option value="50">50 rows</option>
+                        </select>
                         <ul class="pagination pagination-sm pull-right margin-top-10 margin-bottom-0 margin-left-0 margin-right-0" style="display:none;">
                             <li><a class="first-page btn" href="#"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
                             <li><a class="prev-page btn" href="#"><span class="glyphicon glyphicon-step-backward"></span></a></li>
