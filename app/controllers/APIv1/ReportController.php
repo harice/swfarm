@@ -4,7 +4,7 @@ namespace APIv1;
 
 use BaseController;
 use Illuminate\Support\Facades\Response;
-use ProductRepositoryInterface;
+use ReportRepositoryInterface;
 use Input;
 
 /**
@@ -15,20 +15,19 @@ use Input;
 
 class ReportController extends BaseController {
     
-    public function __construct(
-        ProductRepositoryInterface $product
-    ) {
-        $this->product = $product;
+    public function __construct(ReportRepositoryInterface $report)
+    {
+        $this->report = $report;
     }
 
 	/**
-	 * Display a listing of the resource.
+	 * Generate a Customer Sales Report
 	 *
 	 * @return Response
 	 */
 	public function getSales()
 	{
-        $result = $this->product->findAll( Input::all() );
+        $result = $this->report->getSales(Input::all());
         return Response::json($result);
 	}
 }
