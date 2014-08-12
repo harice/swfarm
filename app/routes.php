@@ -99,6 +99,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 
     //Purchase Order
     // Route::post('purchaseorder/product/upload', 'APIv1\OrderController@uploadFileToProductOrder');
+    Route::get('purchaseorder/getPurchaseOrderProductsForSalesOrder','APIv1\OrderController@getPurchaseOrderProductsForSalesOrder');
     Route::get('purchaseorder/getOrderWeightDetailsByStack', 'APIv1\OrderController@getOrderWeightDetailsByStack');
     Route::get('purchaseorder/getStatuses', 'APIv1\OrderController@getPOStatus');
     Route::get('purchaseorder/getDestinationList', 'APIv1\OrderController@getDestinationList');

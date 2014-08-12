@@ -1134,5 +1134,63 @@ class OrderRepository implements OrderRepositoryInterface {
         $netWeight = number_format($weightticketproducts['pounds'] * 0.0005, 4, '.', ''); //lbs to tons
         return $netWeight;
     }
+
+    //used in creating dropship, need to copy all the product details on PO to be used in SO
+    public function getPurchaseOrderProductsForSalesOrder($purchaseOrderId){
+        $order = Order::with('productsummary.productname')
+                        ->with('productsummary.productorder.product')
+                        // ->with('productsummary.productorder.upload.files')
+                        ->with('productsummary.productorder.sectionfrom.storagelocation')
+                        ->where('id', '=', $purchaseOrderId)
+                        ->first(array('id', 'order_number'));
+
+        if($order){
+            $order->status_id = 2; //close the PO before creating SO
+            $order->save();
+            return $order->toArray();
+        } else {
+            return array(
+                "error" => true,
+                'message' => "No orders found."
+            );
+        }
+    }
     
+
+    private function createJsonForInventory($data, $ordertype = 1){ //order type is default to PO
+        if($ordertype == 1){
+            $transactiontype_id = 2; //PO on inventory type
+        } else {
+            $transactiontype_id = 1; //SO  on inventory type
+        }
+
+        $ctr = 0;
+        foreach($data['productsummary'] as $product) {
+            foreach($product['productorder'] as $stack){
+                $productTemp[$ctr]['tons'] = $stack['tons'] * 0.0005;
+                $productTemp[$ctr]['stacknumber'] = $stack['stacknumber'];
+                $productTemp[$ctr]['product_id'] = $stack['product_id'];
+                $productTemp[$ctr]['price'] = $stack['unitprice'];
+                $productTemp[$ctr]['sectionto_id'] = $stack['sectionfrom']['id'];
+                $productTemp[$ctr]['sectionfrom_id'] = $stack['sectionfrom']['id'];
+                $ctr++;
+            }
+        }
+        
+        $products = array("transactiontype_id" => $transactiontype_id, "order_id" => $data['id'], "products" => $productTemp, "notes" => "");
+
+        return $products;
+    }
+
+    public function checkInPurchaseOrder($id){
+        $order = Order::with('productsummary.productorder.sectionfrom')
+                // with('productsummary.productname')
+                // ->with('productsummary.productorder.product')
+                // ->with('productsummary.productorder.sectionfrom.storagelocation')
+                ->find($id);
+
+        if($order){
+            $jsonResult = $this->createJsonForInventory($order->toArray());
+        }
+    }
 }

@@ -170,5 +170,10 @@ class OrderController extends BaseController {
         return Response::json($model);
     }
 
+    public function getPurchaseOrderProductsForSalesOrder(){
+        $collection = $this->repo->getPurchaseOrderProductsForSalesOrder( Input::get('order_id') );
+        return Response::json($collection);
+    }
+
 
 }

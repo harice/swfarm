@@ -61,6 +61,9 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
   public function addOrUpdateTransportSchedule($data, $transportScheduleId = null){
       $this->validate($data, 'TransportSchedule');
       DB::beginTransaction();
+          if(!$this->checkIfAllowedToCreateSchedule($data['order_id'])){
+              return Response::json(array('error' => true, 'message' => 'Cannot create schedule if destination of order is not Southwest Farms'), 500);
+          }
       // $result = DB::transaction(function() use ($data, $transportScheduleId){
           if($transportScheduleId == null)
               $transportschedule = new TransportSchedule;
@@ -130,6 +133,17 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       return Response::json(array(
           'error' => false,
           'message' => $message), 200);
+  }
+
+  private function checkIfAllowedToCreateSchedule($orderId){
+      $result = Order::where('id', '=', $orderId)->first(array('id', 'location_id', 'ordertype'));
+      $bool = true;
+      if($result){
+          if($result->ordertype == 1 && $result->location_id == 3){
+              $bool = false; //cannot create schedule if dropship
+          }
+      }
+      return $bool;
   }
 
   private function getTotalWeightOfSchedule($products){
