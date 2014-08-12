@@ -2,17 +2,20 @@ define([
 	'backbone',
 	'views/base/AppView',
 	'text!templates/layout/googleMapsModalTemplate.html',
+	'text!templates/layout/googleMapsDistanceLegTemplate.html',
 	'constant',
 	'async!http://maps.googleapis.com/maps/api/js?key=AIzaSyAyTqNUdaMOVp8vYoyheHK4_Hk6ZkUb9Ow'
 ], function(Backbone,
 			AppView,
 			googleMapsModalTemplate,
+			googleMapsDistanceLegTemplate,
 			Const
 ){
 	var GoogleMapsView = AppView.extend({
 		
 		modelId: 'google-maps-model',
 		el: '.modal-alert-cont',
+		milesInKM: 0.000621371,
 		
 		initialize: function(options) {
 			this.map = null;
@@ -23,6 +26,19 @@ define([
 			
 			this.markers = [];
 			this.initModal('Maps');
+			
+			this.destinationLeg = []
+			
+			if(typeof options.distanceElement !== 'undefined' && options.distanceElement != null)
+				this.distanceElement = options.distanceElement;
+			
+			if(typeof options.loadedDistanceElement !== 'undefined' && options.loadedDistanceElement != null)
+				this.loadedDistanceElement = options.loadedDistanceElement;
+			
+			this.markerIconDefault = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+			this.markerIconAlphabetPre = 'http://www.google.com/mapfiles/marker';
+			this.markerIconAlphabets = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+			this.markerIconAlphabetPost = '.png';
 		},
 		
 		initMap: function() {
@@ -33,18 +49,15 @@ define([
 			
 			if(this.map == null) {
 				this.map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-				this.initDropPinOriginDestination();
+				this.initDropMarker(10);
 				this.initMapDirectionService();
 			}
-			/*else {
-				this.map.setCenter(center);
-			}*/
 		},
 		
-		initDropPinOriginDestination: function () {
+		initDropMarker: function (limit) {
 			var thisObj = this;
 			google.maps.event.addListener(this.map, 'click', function(event) {
-				thisObj.addMarker(event.latLng, 2);
+				thisObj.addMarker(event.latLng, limit);
 			});
 		},
 		
@@ -77,11 +90,19 @@ define([
 		
 		addMarker: function (location, limit) {
 			if((limit != null && this.markers.length < limit) || limit == null) {
+				var icon;
+				
+				if(this.markers.length < this.markerIconAlphabets.length)
+					icon = this.markerIconAlphabetPre + this.markerIconAlphabets[this.markers.length] + this.markerIconAlphabetPost;
+				else
+					icon = this.markerIconDefault;
+				
 				this.markers.push(new google.maps.Marker({
 					position: location, 
 					map: this.map,
 					draggable:true,
 					animation: google.maps.Animation.DROP,
+					icon:icon,
 				}));
 			}
 		},
@@ -90,24 +111,74 @@ define([
 			'click .get-direction-map': 'calcRoute',
 			'click .clear-map': 'clearMap',
 			'click .center-map': 'centerMap',
+			'click .use-data': 'useData',
+		},
+		
+		useData: function () { console.log('useData'); console.log(this.distanceElement);
+			
+			if(typeof this.distanceElement !== 'undefined' && this.distanceElement != null) {
+				var distance = 0;
+				for(var i = 0; i < this.destinationLeg.length; i++)
+					distance += parseFloat(this.destinationLeg[i].distance);
+				
+				this.distanceElement.val(distance.toFixed(2));
+			}
+			
+			$('#'+this.modelId).modal('hide');
+			
+			return false;
 		},
 		
 		calcRoute: function () { console.log('calcRoute');
-			if(this.markers.length == 2) {
+			if(this.markers.length > 1) {
 				var thisObj = this;
+				
 				var request = {
 					origin:this.markers[0].getPosition(),
-					destination:this.markers[1].getPosition(),
+					destination:this.markers[this.markers.length - 1].getPosition(),
 					travelMode: google.maps.TravelMode.DRIVING,
 					avoidHighways: false,
 					avoidTolls: false,
 				};
 				
+				if(this.markers.length > 2) {
+					var wayPoints = [];
+					for(var i = 1; i < (this.markers.length - 1); i++) {
+						wayPoints.push({
+							location:this.markers[i].getPosition(),
+							stopover:true,
+						});
+					}
+					
+					request['waypoints'] = wayPoints;
+				}
+				
 				this.directionsService.route(request, function(result, status) { console.log(result); console.log(status);
 					if (status == google.maps.DirectionsStatus.OK) {
 						thisObj.directionsDisplay.setDirections(result);
-						thisObj.directionDistance = result.routes[0].legs[0].distance.value;
-						$('#direction-map').text(parseFloat(thisObj.directionDistance) * 0.000621371);
+						
+						var directionDistance = 0;
+						var legDisplay = '';
+						for(var i = 0; i < result.routes[0].legs.length; i++) {
+							var legDistance = parseFloat(result.routes[0].legs[i].distance.value * thisObj.milesInKM).toFixed(2);
+							directionDistance += parseFloat(legDistance);
+							
+							thisObj.destinationLeg.push({origin:thisObj.markers[i].getPosition(), destination:thisObj.markers[i+1].getPosition(), distance:legDistance})
+							
+							var googleMapsDistanceLegTemplateVariables = {
+								leg: thisObj.markerIconAlphabets[i]+' - '+thisObj.markerIconAlphabets[i+1],
+								distance: legDistance,
+								loaded_distance: i,
+							};
+			
+							legDisplay += _.template(googleMapsDistanceLegTemplate, googleMapsDistanceLegTemplateVariables);
+						}
+						thisObj.directionDistance = directionDistance;
+						$('#distance-list tbody').html(legDisplay);
+						$('#direction-map').text(directionDistance.toFixed(2));
+					}
+					else {
+						console.log('error direction service');
 					}
 				});
 			}
@@ -133,6 +204,8 @@ define([
 			this.removeMarkers();
 			this.removeDirections();
 			$('#direction-map').text('0.0');
+			$('#distance-list tbody').html('<tr><td colspan="3">No data</td></tr>');
+			this.destinationLeg = [];
 			
 			return false;
 		},

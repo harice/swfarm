@@ -226,7 +226,7 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
 			
-			this.googleMaps = new GoogleMapsView();
+			this.googleMaps = new GoogleMapsView({distanceElement:this.subContainer.find('#distance')});
 			
 			this.initValidateForm();
 			

@@ -189,7 +189,7 @@
 						<div class="form-group">
 							<label for="distance" class="col-sm-4 control-label">Distance</label>
 							<div class="col-sm-8">
-								<input type="text" class="form-control text-right width-100 input-sm" id="distance" name="distance" required>
+								<input type="text" class="form-control text-right width-100 input-sm" id="distance" name="distance" style="display:inline-block" required>  <span id="map" style="display:inline-block;cursor:pointer;margin-left:10px;" class="glyphicon glyphicon-map-marker"></span>
 							</div>
 						</div>
 
@@ -223,6 +223,22 @@
 								</div>
 							</div>
 						</div>
+						
+						<h4>Distance</h4>
+						<div class="form-group">
+							<label for="distance" class="col-sm-4 control-label">Pickup</label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control text-right width-100 input-sm" id="distance" name="distance" required>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label for="distance" class="col-sm-4 control-label">Drop-off</label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control text-right width-100 input-sm" id="distance" name="distance" required>
+							</div>
+						</div>
+						
 					</div>
 					
 
@@ -266,7 +282,6 @@
 						
 						<div class="form-group form-button-container">
 							<div class="pull-right">
-								<button id="map" type="button" class="save btn btn-default">Map Test</button>
 								<button id="save" type="submit" class="save btn btn-primary"><i class="fa fa-save"></i> Save</button>
 								<a id="delete-schedule" class="btn btn-danger" href="#" style="display:none;">Delete</a>
 								<a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
