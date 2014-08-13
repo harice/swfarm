@@ -2,6 +2,7 @@ define([
 	'backbone',
 	'bootstrapdatepicker',
 	'views/base/AppView',
+	'views/base/GoogleMapsView',
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'models/stack/StackLocationModel',
@@ -14,6 +15,7 @@ define([
 ], function(Backbone,
 			DatePicker,
 			AppView,
+			GoogleMapsView,
 			Validate,
 			TextFormatter,
 			StackLocationModel,
@@ -81,6 +83,11 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
+			
+			this.googleMaps = new GoogleMapsView();
+			this.googleMaps.initGetMapLocation(function () {
+				
+			});
 			
 			this.initValidateForm();
 			this.generateAccount();
@@ -180,7 +187,9 @@ define([
 			'click .remove-section': 'removeSection',
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #delete-sl': 'showDeleteConfirmationWindow',
-			'click #confirm-delete-sl': 'deleteStockLocation'
+			'click #confirm-delete-sl': 'deleteStockLocation',
+			
+			'click #map': 'showMap',
 		},
 		
 		removeSection: function (ev) {
@@ -257,6 +266,11 @@ define([
 		
 		showDeleteConfirmationWindow: function () {
 			this.showConfirmationWindow();
+		},
+		
+		showMap: function () {
+			this.googleMaps.showModalGetLocation();
+			return false;
 		},
 		
 		otherInitializations: function () {},

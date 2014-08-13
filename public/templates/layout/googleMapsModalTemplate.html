@@ -1,5 +1,5 @@
 <!-- Modal -->
-<div class="modal fade" id="<%= modal_id %>" tabindex="-1" role="dialog">
+<div data-backdrop="static" class="modal fade" id="<%= modal_id %>" tabindex="-1" role="dialog">
 	<div class="modal-dialog width-90-percent">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -8,7 +8,7 @@
 			</div>
 			<div class="modal-body" style="width:100%;overflow:hidden;">
 				<div style="width:75%;height:600px;float:left;clear:none;">
-					<div id="map-canvas" style="width:100%;height:100%;"></div>
+					<div id="<%= modal_map_canvas_id %>" style="width:100%;height:100%;"></div>
 				</div>
 				<div style="width:25%;height:600px;float:left;clear:none;">
 					<div style="padding-left:20px;">
@@ -43,8 +43,7 @@
 				<button type="button" class="btn btn-default btn-sm btn-flat clear-map">Clear</button>
 				<button type="button" class="btn btn-default btn-sm btn-flat center-map">Center</button>
 				<button type="button" class="btn btn-default btn-sm btn-flat get-direction-map">Get Direction</button>
-				<button type="button" class="btn btn-default btn-sm btn-flat close-window" data-dismiss="modal">Cancel</button>
-				<button type="button" class="btn btn-warning btn-sm btn-flat use-data">Use Data</button>
+				<button type="button" class="btn btn-warning btn-sm btn-flat googlemaps-ok">Use Data</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->

@@ -226,7 +226,19 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
 			
-			this.googleMaps = new GoogleMapsView({distanceElement:this.subContainer.find('#distance')});
+			this.googleMaps = new GoogleMapsView();
+			this.googleMaps.initMapGetDestinationDistance(function (data) {
+				
+				if(typeof data.destinationLeg !== 'undefined' && data.destinationLeg != null) {
+					var distance = 0;
+					for(var i = 0; i < data.destinationLeg.length; i++)
+						distance += parseFloat(data.destinationLeg[i].distance);
+					
+					thisObj.subContainer.find('#distance').val(distance.toFixed(2));
+				}
+				else
+					thisObj.subContainer.find('#distance').val('');
+			});
 			
 			this.initValidateForm();
 			
@@ -235,7 +247,6 @@ define([
 			this.addProduct();
 			
 			this.postDisplayForm();
-            //this.maskInputs();
 		},
 		
 		initValidateForm: function () {
@@ -572,7 +583,7 @@ define([
 			'blur .quantity': 'onBlurTon',
 			'click #delete-schedule': 'deleteSchedule',
 			
-			'click #map': 'mapTest',
+			'click #map': 'showMap',
 		},
 		
 		onChangeProduct: function (ev) {
@@ -813,9 +824,8 @@ define([
 			return false;
 		},
 		
-		mapTest: function () { console.log('mapTest');
-			this.googleMaps.showModal();
-			
+		showMap: function () {
+			this.googleMaps.showModalGetDestinationDistance();
 			return false;
 		},
 		
