@@ -71,7 +71,7 @@ class WeightTicketProducts extends BaseModel {
      */
     public function getTotalPriceAttribute()
     {
-//        return $this->attributes['total_price'] = $this->attributes['tons'] * $this->attributes['unitprice'];
+        //return $this->attributes['total_price'] = $this->attributes['tons'] * $this->attributes['unitprice'];
         return 0;
     }
 }
