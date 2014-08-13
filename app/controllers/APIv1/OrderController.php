@@ -171,8 +171,18 @@ class OrderController extends BaseController {
     }
 
     public function getPurchaseOrderProductsForSalesOrder(){
-        $collection = $this->repo->getPurchaseOrderProductsForSalesOrder( Input::get('order_id') );
-        return Response::json($collection);
+        $model = $this->repo->getPurchaseOrderProductsForSalesOrder( Input::get('order_id') );
+        return Response::json($model);
+    }
+
+    public function checkInDropshipOrderProducts(){
+        $model = $this->repo->checkInPurchaseOrderProducts(Input::get('order_id'));
+        return Response::json($model);
+    }
+
+    public function checkInProducerOrderProducts(){
+        $model = $this->repo->checkInPurchaseOrderProducts(Input::get('order_id'), false);
+        return Response::json($model);
     }
 
 

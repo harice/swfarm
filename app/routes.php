@@ -99,6 +99,8 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 
     //Purchase Order
     // Route::post('purchaseorder/product/upload', 'APIv1\OrderController@uploadFileToProductOrder');
+    Route::get('purchaseorder/checkInDropshipProducts', 'APIv1\OrderController@checkInDropshipOrderProducts');
+    Route::get('purchaseorder/checkInProducerProducts', 'APIv1\OrderController@checkInProducerOrderProducts');
     Route::get('purchaseorder/getPurchaseOrderProductsForSalesOrder','APIv1\OrderController@getPurchaseOrderProductsForSalesOrder');
     Route::get('purchaseorder/getOrderWeightDetailsByStack', 'APIv1\OrderController@getOrderWeightDetailsByStack');
     Route::get('purchaseorder/getStatuses', 'APIv1\OrderController@getPOStatus');
@@ -111,7 +113,6 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::post('purchaseorder', 'APIv1\OrderController@addPurchaseOrder');
     Route::put('purchaseorder/{id}', 'APIv1\OrderController@updatePurchaseOrder');
     Route::get('purchaseorder/{id}', 'APIv1\OrderController@getPurchaseOrder');
-    
     Route::delete('purchaseorder/{id}', 'APIv1\OrderController@destroy');
     // Route::resource('purchaseorder', 'APIv1\OrderController');
 

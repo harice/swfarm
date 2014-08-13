@@ -331,7 +331,7 @@ class OrderRepository implements OrderRepositoryInterface {
             } else if(isset($productResult['stacknumberRepeatedError'])){
                 return array(
                     "error" => true,
-                    'message' => "Stack number ".$productResult['stacknumber']." has been use repeatedly."
+                    'message' => "Stack number ".$productResult['stacknumber']." has been use repeatedly in this order."
                 );
             } else if($productResult['hasHoldProduct'] && $data['ordertype'] == 1){ //for purchase order only
                 $order->status_id = 7; //Testing status
@@ -1145,8 +1145,6 @@ class OrderRepository implements OrderRepositoryInterface {
                         ->first(array('id', 'order_number'));
 
         if($order){
-            $order->status_id = 2; //close the PO before creating SO
-            $order->save();
             return $order->toArray();
         } else {
             return array(
@@ -1167,7 +1165,7 @@ class OrderRepository implements OrderRepositoryInterface {
         $ctr = 0;
         foreach($data['productsummary'] as $product) {
             foreach($product['productorder'] as $stack){
-                $productTemp[$ctr]['tons'] = $stack['tons'] * 0.0005;
+                $productTemp[$ctr]['tons'] = $stack['tons'];
                 $productTemp[$ctr]['stacknumber'] = $stack['stacknumber'];
                 $productTemp[$ctr]['product_id'] = $stack['product_id'];
                 $productTemp[$ctr]['price'] = $stack['unitprice'];
@@ -1176,13 +1174,21 @@ class OrderRepository implements OrderRepositoryInterface {
                 $ctr++;
             }
         }
+        if($ctr > 0){
+            $products = array("transactiontype_id" => $transactiontype_id, "order_id" => $data['id'], "products" => $productTemp, "notes" => "From Dropship");    
+            return $products;
+        } else {
+            return array(
+                "error" => true,
+                'message' => "No product found."
+            );
+        }
         
-        $products = array("transactiontype_id" => $transactiontype_id, "order_id" => $data['id'], "products" => $productTemp, "notes" => "");
 
-        return $products;
+        
     }
 
-    public function checkInPurchaseOrder($id){
+    public function checkInPurchaseOrderProducts($id, $dropship = true){
         $order = Order::with('productsummary.productorder.sectionfrom')
                 // with('productsummary.productname')
                 // ->with('productsummary.productorder.product')
@@ -1190,7 +1196,38 @@ class OrderRepository implements OrderRepositoryInterface {
                 ->find($id);
 
         if($order){
-            $jsonResult = $this->createJsonForInventory($order->toArray());
+            if($order->status_id == 2){ //order already close, cannot checkin
+                return array(
+                  'error' => true,
+                  'message' => 'Cannot check in products because PO is already close.');
+            } else {
+                $dataInventory = $this->createJsonForInventory($order->toArray());
+            if(isset($dataInventory['error'])){
+                return $dataInventory;
+                } else {
+                    //insert to inventory
+                    $inventoryResponse = InventoryLibrary::store($dataInventory);
+                    if($inventoryResponse['error']){
+                        return $inventoryResponse;
+                    }
+                    //TODO: call the close function for PO
+                    //close the PO before creating SO
+                    $order->status_id = 2; 
+                    $order->save();
+                    if($dropship){ //for dropship type, needs to return products to be use in creating SO
+                        return $this->getPurchaseOrderProductsForSalesOrder($id);    
+                    } else { //for producer type
+                        return array(
+                          'error' => false,
+                          'message' => 'Product(s) successfully checked in to inventory.');
+                    }
+                }
+            }
+        } else {
+            return array(
+                "error" => true,
+                'message' => "There is a problem while checking in the products."
+            );
         }
     }
 }
