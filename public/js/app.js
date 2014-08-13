@@ -8,8 +8,7 @@ define([
 	'views/layout/HeaderView',
 	'views/layout/SideMenuView',
 	'global',
-	'constant',
-    'throbber'
+	'constant'
 ], function(Backbone, Bootstrap, Router, AppView, SessionModel, HeaderView, SideMenuView, Global, Const){
 	var initialize = function(){
 		
