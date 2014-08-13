@@ -205,7 +205,7 @@ class InventoryRepository implements InventoryRepositoryInterface {
                         $result['data'][$index]['onHandTons'] += $stacklocation['tons'];
                     }                        
                 }
-                $result['data'][$index]['available'] = $result['data'][$index]['onHandTons'] - $result['data'][$index]['committed'] + $result['data'][$index]['ordered'];
+                $result['data'][$index]['available'] = number_format($result['data'][$index]['onHandTons'] - $result['data'][$index]['committed'] + $result['data'][$index]['ordered'], 4);
                 $result['data'][$index]['stacklocation'] = substr($result['data'][$index]['stacklocation'], 0, -2); //remove extra | on last
                 $index++;
             }
