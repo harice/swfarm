@@ -85,12 +85,16 @@ class ReportRepository implements ReportRepositoryInterface {
     public function generateProducerStatement($params)
     {
         $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
-        $sortby = isset($params['sortby']) ? $params['sortby'] : 'weightticket.created_at';
+        $sortby = isset($params['sortby']) ? $params['sortby'] : 'productorder.created_at';
         $orderby = isset($params['orderby']) ? $params['orderby'] : 'dsc';
         
+        $statement = array();
+        $statements = array();
+        
         $productorder = ProductOrder::with(
-                'order.account.address',
-                'transportscheduleproduct.weightticketproducts.weightticketscale'
+                'order.account',
+                'transportscheduleproduct.weightticketproducts',
+                'transportscheduleproduct.transportschedule.weightticket'
             )
             ->join('products', 'productorder.product_id', '=', 'products.id')
             ->join('section', 'section.id', '=', 'productorder.section_id')
@@ -112,77 +116,47 @@ class ReportRepository implements ReportRepositoryInterface {
             });
         });
         
+        if (isset($params['dateStart']) && isset($params['dateEnd'])) {
+            $productorder = $productorder->whereBetween('productorder.created_at', array($params['dateStart'], $params['dateEnd']));
+        }
+        
         $productorder = $productorder->select(
-                'productorder.id as id',
-                'productorder.order_id as order_id',
-                'productorder.bales as bales',
-                'productorder.tons as tons',
-                'productorder.unitprice as unitprice',
-                'productorder.created_at as created_at',
-                'section.storagelocation_id as storagelocation_id',
-                'storagelocation.name as storagelocation_name'
-            );
+            'productorder.id as id',
+            'productorder.order_id as order_id',
+            'productorder.unitprice as price',
+            'productorder.created_at as created_at',
+            'section.storagelocation_id as storagelocation_id',
+            'storagelocation.name as storagelocation_name'
+        );
         
-        $productorder = $productorder->get();
+        $productorders = $productorder->get()->toArray();
         
-        return $productorder;
+        foreach ($productorders as &$productorder) {
+            foreach ($productorder['transportscheduleproduct'] as $transportscheduleproduct) {
+                if ($transportscheduleproduct['weightticketproducts']) {
+                    $statement = array(
+                        'storagelocation_name' => $productorder['storagelocation_name'],
+                        'date' => $productorder['order']['created_at'],
+                        'order_number' => $productorder['order']['order_number'],
+                        'weightticket_number' => $transportscheduleproduct['transportschedule']['weightticket']['weightTicketNumber'],
+                        'bales' => $transportscheduleproduct['weightticketproducts'][0]['bales'],
+                        'tons' => $transportscheduleproduct['weightticketproducts'][0]['pounds'] * 0.0005,
+                        'price' => $productorder['price'],
+                        'amount' => $transportscheduleproduct['weightticketproducts'][0]['pounds'] * 0.0005 * $productorder['price']
+                    );
+                    
+                    $statements[] = $statement;
+                }
+            }
+        }
         
-//        $report = WeightTicketProducts::join('transportscheduleproduct', 'weightticketproducts.transportScheduleProduct_id', '=', 'transportscheduleproduct.id')
-//            
-////            ->join('productorder', 'transportscheduleproduct.productorder_id', '=', 'productorder.id')
-//            
-//            ->join('transportschedule', 'transportscheduleproduct.transportschedule_id', '=', 'transportschedule.id')
-//            ->join('weightticket', 'transportschedule.id', '=', 'weightticket.transportSchedule_id')
-//            
-//            ->join('productorder', 'transportscheduleproduct.productorder_id', '=', 'productorder.id')
-//            ->join('products', 'productorder.product_id', '=', 'products.id')
-//            ->join('order', 'productorder.order_id', '=', 'order.id')
-//            
-//            ->join('account', 'order.account_id', '=', 'account.id')
-//            ->join('stack', 'productorder.stacknumber', '=', 'stack.stacknumber');
-//        
-//        if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-//            $report = $report->whereBetween('weightticket.created_at', array($params['dateStart'], $params['dateEnd']));
-//        }
-//
-//        if (isset($params['accountId'])) {
-//            $report = $report->where('order.account_id', '=', $params['accountId']);
-//        }
-//        
-//        $report = $report->select(
-//                'weightticketproducts.id as id',
-//                'weightticketproducts.weightTicketScale_id as weightticketscale_id',
-//                'weightticketproducts.transportScheduleProduct_id as transportscheduleproduct_id',
-//                'weightticketproducts.bales as bales',
-//                'weightticketproducts.pounds as pounds',
-//                'transportscheduleproduct.transportschedule_id as transportschedule_id',
-//                'transportscheduleproduct.productorder_id as productorder_id',
-////                'transportscheduleproduct.sectionto_id as section_id',
-//                'transportschedule.order_id as order_id',
-//                'productorder.unitprice as unitprice',
-//                'products.name as product_name',
-//                'weightticket.weightTicketNumber as wtn',
-//                'weightticket.created_at as created_at',
-//                'order.order_number as order_number',
-//                'order.status_id as order_status_id',
-//                'order.account_id as account_id',
-//                'account.name as account_name',
-//                'stack.id as stack_id',
-//                'stack.stacknumber as stack_number'
-//            )
-//            ->orderBy($sortby, $orderby)
-////            ->paginate($perPage)
-//            ->get();
-//        $weightticket_products = $report->toArray();
-//        
-//        foreach ($weightticket_products as &$weightticket_product) {
-//            $weightticket_product['storagelocation_name'] = $this->getLocationName($weightticket_product['account_id'], $weightticket_product['stack_id']);
-//        }
-//        
-////        $result['weightticket_products'] = $weightticket_products;
-////        $result['storagelocations'] = $storagelocations;
-//        
-//        return $weightticket_products;
+        if (isset($params['accountId'])) {
+            $report['account'] = Account::with('address')->find($params['accountId'])->toArray();
+        }
+        $report['statements'] = $statements;
+//        $report['productorders'] = $productorders;
+        
+        return $report;
     }
     
     /**
