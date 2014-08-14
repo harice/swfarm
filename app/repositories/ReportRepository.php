@@ -160,27 +160,98 @@ class ReportRepository implements ReportRepositoryInterface {
     }
     
     /**
-     * Get Storage Location Name
+     * Generate an Operator Pay Report
      * 
-     * @param int $account_id
-     * @return string
+     * @param int $id Contact ID
+     * @return mixed $report
      */
-    public function getLocationName($account_id, $stack_id)
+    public function generateOperatorPay($id, $params)
     {
-        $stacklocation = StackLocation::where('stack_id', '=', $stack_id)->first();
-        Log::debug($stacklocation);
-        
-        $params = array(
-            'accountId' => 21
+        // Get load origin
+        $contact_origin = Contact::with(
+            array(
+                'loadOrigin' => function($q) use ($params) {
+                    $q->with('order.account');
+                    if (isset($params['dateStart']) && isset($params['dateEnd'])) {
+                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                        $q->whereBetween('created_at', array($params['dateStart'], $date_end));
+                    } elseif (isset($params['dateStart'])) {
+                        $q->where('created_at', '>=', $params['dateStart']);
+                    } elseif (isset($params['dateEnd'])) {
+                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                        $q->where('created_at', '<=', $date_end);
+                    }
+                }
+            )
         );
-        $storagelocations = $this->storagelocation->findAll($params)->toArray();
         
-        foreach ($storagelocations['data'] as $storagelocation) {
-            foreach ($storagelocation['section'] as $section) {
-                
-            }
+        $contact_origin = $contact_origin->where('id', '=', $id);
+        
+        $contact_origin = $contact_origin->first();
+        if (!$contact_origin) {
+            throw new Exception('Contact not found.');
         }
         
-        return 'Location Name';
+        $contact_origin = $contact_origin->toArray();
+        
+        // Get load destination
+        $contact_destination = Contact::with(
+            array(
+                'loadDestination' => function($q) use ($params) {
+                    $q->with('order.account');
+                    if (isset($params['dateStart']) && isset($params['dateEnd'])) {
+                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                        $q->whereBetween('created_at', array($params['dateStart'], $date_end));
+                    } elseif (isset($params['dateStart'])) {
+                        $q->where('created_at', '>=', $params['dateStart']);
+                    } elseif (isset($params['dateEnd'])) {
+                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                        $q->where('created_at', '<=', $date_end);
+                    }
+                }
+            )
+        );
+        
+        $contact_destination = $contact_destination->where('id', '=', $id);
+        
+        $contact_destination = $contact_destination->first();
+        if (!$contact_destination) {
+            throw new Exception('Contact not found.');
+        }
+        
+        $contact_destination = $contact_destination->toArray();
+        
+        $loads = array();
+        $i = 0;
+        $total = 0.00;
+        foreach ($contact_origin['load_origin'] as $load) {
+            $item['id'] = $i;
+            $item['type'] = 'Load';
+            $item['amount'] = $load['originloaderfee'];
+            $item['account_name'] = $load['order']['account']['name'];
+            $item['created_at'] = date('Y-m-d', strtotime($load['created_at']));
+            
+            $loads[] = $item;
+            $total += $item['amount'];
+            $i++;
+        }
+        
+        foreach ($contact_destination['load_destination'] as $load) {
+            $item['id'] = $i;
+            $item['type'] = 'Unload';
+            $item['amount'] = $load['destinationloaderfee'];
+            $item['account_name'] = $load['order']['account']['name'];
+            $item['created_at'] = date('Y-m-d', strtotime($load['created_at']));
+            
+            $loads[] = $item;
+            $total += $item['amount'];
+            $i++;
+        }
+        
+        $report['operator'] = Contact::find($id)->toArray();
+        $report['loads'] = $loads;
+        $report['summary']['total'] = $total;
+        
+        return $report;
     }
 }

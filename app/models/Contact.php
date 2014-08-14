@@ -14,4 +14,14 @@ class Contact extends Eloquent {
     public function accountidandname(){
     	return $this->belongsTo('Account', 'account', 'id')->select(array('id', 'name','accounttype'));
     }
+    
+    public function loadOrigin()
+    {
+        return $this->hasMany('TransportSchedule', 'originloader_id', 'id');
+    }
+    
+    public function loadDestination()
+    {
+        return $this->hasMany('TransportSchedule', 'destinationloader_id', 'id');
+    }
 }

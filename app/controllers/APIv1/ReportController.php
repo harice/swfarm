@@ -41,4 +41,15 @@ class ReportController extends BaseController {
         $result = $this->report->generateProducerStatement(Input::all());
         return Response::json($result);
     }
+    
+    /**
+     * Generate an Operator Pay Report
+     * 
+     * @return type
+     */
+    public function generateOperatorPay($id)
+    {
+        $result = $this->report->generateOperatorPay($id, Input::all());
+        return Response::json($result);
+    }
 }
