@@ -88,7 +88,13 @@ class ReportRepository implements ReportRepositoryInterface {
         $sortby = isset($params['sortby']) ? $params['sortby'] : 'weightticket.created_at';
         $orderby = isset($params['orderby']) ? $params['orderby'] : 'dsc';
         
-        $productorder = ProductOrder::with('order.account.address', 'transportscheduleproduct.weightticketproducts.weightticketscale');
+        $productorder = ProductOrder::with(
+                'order.account.address',
+                'transportscheduleproduct.weightticketproducts.weightticketscale'
+            )
+            ->join('products', 'productorder.product_id', '=', 'products.id')
+            ->join('section', 'section.id', '=', 'productorder.section_id')
+            ->join('storagelocation', 'section.storagelocation_id', '=', 'storagelocation.id');
         
         if (isset($params['accountId'])) {
             $productorder = $productorder->whereHas('order', function($q) use ($params)
@@ -106,7 +112,18 @@ class ReportRepository implements ReportRepositoryInterface {
             });
         });
         
-        $productorder = $productorder->paginate($perPage);
+        $productorder = $productorder->select(
+                'productorder.id as id',
+                'productorder.order_id as order_id',
+                'productorder.bales as bales',
+                'productorder.tons as tons',
+                'productorder.unitprice as unitprice',
+                'productorder.created_at as created_at',
+                'section.storagelocation_id as storagelocation_id',
+                'storagelocation.name as storagelocation_name'
+            );
+        
+        $productorder = $productorder->get();
         
         return $productorder;
         
