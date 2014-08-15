@@ -193,6 +193,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('inventory', 'APIv1\InventoryController');
     
     // Reports
+    Route::get('report/reportPerLocation', 'APIv1\ReportController@inventoryReportPerLocation');
     Route::get('report/sales', 'APIv1\ReportController@generateSales');
     Route::get('report/producer-statement', 'APIv1\ReportController@generateProducerStatement');
 });

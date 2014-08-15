@@ -1167,6 +1167,7 @@ class OrderRepository implements OrderRepositoryInterface {
             foreach($product['productorder'] as $stack){
                 $productTemp[$ctr]['tons'] = $stack['tons'];
                 $productTemp[$ctr]['stacknumber'] = $stack['stacknumber'];
+                $productTemp[$ctr]['bales'] = $stack['bales'];
                 $productTemp[$ctr]['product_id'] = $stack['product_id'];
                 $productTemp[$ctr]['price'] = $stack['unitprice'];
                 $productTemp[$ctr]['sectionto_id'] = $stack['sectionfrom']['id'];
