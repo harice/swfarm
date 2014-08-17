@@ -6,6 +6,8 @@ class Contact extends Eloquent {
     protected $table = 'contact';
 
     protected $softDelete = true;
+    
+    protected $appends = array('fullname');
 
     public function account(){
     	return $this->belongsTo('Account', 'account', 'id');
@@ -23,5 +25,10 @@ class Contact extends Eloquent {
     public function loadDestination()
     {
         return $this->hasMany('TransportSchedule', 'destinationloader_id', 'id');
+    }
+    
+    public function getFullnameAttribute()
+    {
+        return $this->attributes['lastname'] .', ' .$this->attributes['firstname'] .$this->attributes['suffix'];
     }
 }

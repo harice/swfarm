@@ -52,4 +52,16 @@ class ReportController extends BaseController {
         $result = $this->report->generateOperatorPay($id, Input::all());
         return Response::json($result);
     }
+    
+    /**
+     * Generate a Trucking Statement Report
+     * 
+     * @param int $id
+     * @return Response
+     */
+    public function generateTruckingStatement($id)
+    {
+        $result = $this->report->generateTruckingStatement($id, Input::all());
+        return Response::json($result);
+    }
 }
