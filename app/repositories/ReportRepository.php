@@ -174,7 +174,9 @@ class ReportRepository implements ReportRepositoryInterface {
                     $q->with('order.account');
                     if (isset($params['dateStart']) && isset($params['dateEnd'])) {
                         $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                        $q->whereBetween('created_at', array($params['dateStart'], $date_end));
+//                        $q->whereBetween('created_at', array($params['dateStart'], $date_end));
+                        $q->where('created_at', '>', $params['dateStart']);
+                        $q->where('created_at', '<', $date_end);
                     } elseif (isset($params['dateStart'])) {
                         $q->where('created_at', '>=', $params['dateStart']);
                     } elseif (isset($params['dateEnd'])) {
