@@ -29,7 +29,6 @@ define(function () {
 			'TRUCKER': 'administration/trucker',
 			'INVENTORY': 'inventory',
 			'STACKNUMBER': 'stacknumber',
-			'TEST': 'test',
 		},
 		'MENU': {
 			'PURCHASES': {
@@ -120,9 +119,6 @@ define(function () {
 				'ADD'	:55,
 				'EDIT'	:56,
 				'DELETE':57
-			},
-			'TEST': {
-				'VIEW'	:58
 			},
 		},
 		'CRUD': {

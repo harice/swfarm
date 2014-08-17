@@ -223,12 +223,6 @@ define([
 	
 	//stacknumber
 	routerRoutes[Const.URL.STACKNUMBER+'/:id'] = 'showStackNumberPage';
-
-	//test
-	routerRoutes[Const.URL.TEST] = 'showTestPage';
-	routerRoutes[Const.URL.TEST+'/'] = 'showTestPage';
-	routerRoutes[Const.URL.TEST+'/:action'] = 'showTestPage';
-	routerRoutes[Const.URL.TEST+'/:action/:id'] = 'showTestPage';
 	
 	routerRoutes['*actions'] = 'defaultAction';
 
@@ -511,21 +505,13 @@ define([
 			this.currView = stackNumberController.setAction(id);
 			this.currView.render();
 		});
-
-		//Test
-		app_router.on('route:showTestPage', function (id) {
-			this.closeView();
-			var testController = new TestController();
-			this.currView = testController.setAction(id);
-			this.currView.render();
-		});
 		
 		app_router.on('route:defaultAction', function (actions) {
 			this.closeView();
 			console.log('default page');
 			this.currView = new HomePageView();
 			this.currView.render();
-		});		
+		});
 		
 		Global.getGlobalVars().app_router = app_router;
 		Backbone.history.start();
