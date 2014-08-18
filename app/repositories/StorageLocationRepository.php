@@ -15,8 +15,13 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
             $sortby = isset($params['sortby']) ? $params['sortby'] : 'account_name';
             $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
             
-            return StorageLocation::join('account', 'account_id', '=', 'account.id')
-                ->select(
+            $result = StorageLocation::join('account', 'account_id', '=', 'account.id');
+            
+            if (isset($params['accountId'])) {
+                $result = $result->where('account_id', '=', $params['accountId']);
+            }
+            
+            $result = $result->select(
                     'storagelocation.id',
                     'storagelocation.name',
                     'storagelocation.description',
@@ -24,8 +29,11 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
                     'account.name as account_name'
                 )
                 ->with('section')
+                ->with('section.stacklocation')
                 ->orderBy($sortby, $orderby)
                 ->paginate($perPage);
+            
+            return $result;
         }
         catch (Exception $e)
         {

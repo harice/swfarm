@@ -73,7 +73,7 @@ class ContactRepository implements ContactRepositoryInterface {
             }
             $this->validate($data, $rules);
         } else {
-            $data['rate'] = (int)str_replace(array('.', ','), '' , number_format($data['rate'], 2, '.', ''));
+            $data['rate'] = (int)str_replace(array('.', ','), '' , number_format(floatval($data['rate']), 2, '.', ''));
             $this->validate($data, $rules);
             $data['rate'] = number_format(($data['rate'] / 100), 2, '.', '');
         }
@@ -124,7 +124,7 @@ class ContactRepository implements ContactRepositoryInterface {
             }
             $this->validate($data, $rules);
         } else {
-            $data['rate'] = (int)str_replace(array('.', ','), '' , number_format($data['rate'], 2, '.', ''));
+            $data['rate'] = (int)str_replace(array('.', ','), '' , number_format(floatval($data['rate']), 2, '.', ''));
             $this->validate($data, $rules);
             $data['rate'] = number_format(($data['rate'] / 100), 2, '.', '');
         }

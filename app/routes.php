@@ -193,10 +193,11 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('inventory', 'APIv1\InventoryController');
     
     // Reports
+    Route::get('report/trucking-statement/{id}', 'APIv1\ReportController@generateTruckingStatement');
+    Route::get('report/operator-pay/{id}', 'APIv1\ReportController@generateOperatorPay');
     Route::get('report/sales', 'APIv1\ReportController@generateSales');
     Route::get('report/producer-statement', 'APIv1\ReportController@generateProducerStatement');
 });
 
 Route::get('/', function(){ return View::make('main')->withVersion(Config::get('Constants.VERSION',"1.0")); });
 Route::get('/{dump}', function(){ return View::make('errors/404'); });
-
