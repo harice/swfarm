@@ -343,8 +343,12 @@ class InventoryRepository implements InventoryRepositoryInterface {
     private function getScheduleQuantity($transportscheduleId, $productorderId){
         $result = TransportScheduleProduct::where('transportschedule_id', '=', $transportscheduleId)
                     ->where('productorder_id', '=', $productorderId)->first(array('id','quantity'));
-
-        return $result->quantity;
+        if($result){
+            return $result->quantity;    
+        } else {
+            return 0;
+        }
+        
     }
 /*
     public function getInventorySummaryByStack($params){

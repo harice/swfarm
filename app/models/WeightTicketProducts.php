@@ -29,6 +29,13 @@ class WeightTicketProducts extends BaseModel {
     );
     
     /**
+     * Append custom attributes
+     * 
+     * @var array
+     */
+    protected $appends = array('tons', 'total_price');
+
+    /**
      * Define the relationship with the weightinfo table
      * @return Collection collection of WeightInfo Models
      */
@@ -45,5 +52,26 @@ class WeightTicketProducts extends BaseModel {
     public function transportscheduleproduct()
     {
         return $this->hasOne('TransportScheduleProduct','id', 'transportScheduleProduct_id');
+    }
+    
+    /**
+     * Get the product's weight in tons through pounds
+     * 
+     * @return float
+     */
+    public function getTonsAttribute()
+    {
+        return $this->attributes['tons'] = $this->attributes['pounds'] * 0.0005;
+    }
+    
+    /**
+     * Get total price
+     * 
+     * @return float
+     */
+    public function getTotalPriceAttribute()
+    {
+        //return $this->attributes['total_price'] = $this->attributes['tons'] * $this->attributes['unitprice'];
+        return 0;
     }
 }

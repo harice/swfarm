@@ -45,7 +45,7 @@ class ProductRepository implements ProductRepositoryInterface {
             $sortby = isset($params['sortby']) ? $params['sortby'] : 'name';
             $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
 
-            $product = Product::orderBy($sortby, $orderby)->withTrashed();
+            $product = Product::orderBy($sortby, $orderby);
 
             if (isset($params['search'])) {
                 $product = $product->where('name', 'like', '%' . $params['search'] . '%');

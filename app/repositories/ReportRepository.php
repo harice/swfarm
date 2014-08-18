@@ -77,7 +77,45 @@ class ReportRepository implements ReportRepositoryInterface {
      */
     public function generateProducerStatement($params)
     {
-        $report = WeightTicketProducts::all();
+        $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+        $sortby = isset($params['sortby']) ? $params['sortby'] : 'order.created_at';
+        $orderby = isset($params['orderby']) ? $params['orderby'] : 'dsc';
+        
+        $report = WeightTicketProducts::join('weightticketscale', 'weightticketproducts.weightTicketScale_id', '=', 'weightticketscale.id')
+            ->join('transportscheduleproduct', 'weightticketproducts.transportScheduleProduct_id', '=', 'transportscheduleproduct.id')
+            ->join('productorder', 'transportscheduleproduct.productorder_id', '=', 'productorder.id')
+            ->join('products', 'productorder.product_id', '=', 'products.id')
+            ->join('transportschedule', 'transportscheduleproduct.transportschedule_id', '=', 'transportschedule.id')
+            ->join('weightticket', 'transportschedule.id', '=', 'weightticket.transportSchedule_id')
+            ->join('order', 'transportschedule.order_id', '=', 'order.id');
+//            ->join('stack', 'productorder.stacknumber', '=', 'stack.stacknumber')
+//            ->leftJoin('stacklocation', 'stack.id', '=', 'stacklocation.stack_id')
+//            ->leftJoin('section', 'stacklocation.section_id', '=', 'section.id')
+//            ->leftJoin('storagelocation', 'section.storagelocation_id', '=', 'storagelocation.id');
+        
+        $report = $report
+            ->select(
+                'weightticketproducts.id as id',
+                'weightticketproducts.weightTicketScale_id as weightticketscale_id',
+                'weightticketproducts.transportScheduleProduct_id as transportscheduleproduct_id',
+                'weightticketproducts.bales as bales',
+                'weightticketproducts.pounds as pounds',
+                'transportscheduleproduct.transportschedule_id as transportschedule_id',
+                'transportscheduleproduct.productorder_id as productorder_id',
+                'transportscheduleproduct.sectionto_id as section_id',
+                'transportschedule.order_id as order_id',
+                'productorder.unitprice as unitprice',
+                'products.name as product_name',
+                'weightticket.weightTicketNumber as wtn',
+                'order.order_number as order_number',
+                'order.status_id as order_status_id',
+                'order.created_at as created_at'
+//                'stack.stacknumber as stack_number',
+//                'storagelocation.name as storagelocation_name'
+            )
+            ->orderBy($sortby, $orderby)
+            ->paginate($perPage)
+            ->toArray();
         
         return $report;
     }

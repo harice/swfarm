@@ -35,7 +35,7 @@ define([
 			this.collection = new InventoryCollection();
 			this.collection.listView.searchURLForFilter = false;
 			this.collection.on('sync', function() {
-				if(thisObj.subContainerExist())
+				if(thisObj.subContainerExist()) 
 					thisObj.displayList();
 			});
 			this.collection.on('error', function(collection, response, options) {
@@ -61,9 +61,10 @@ define([
 		displayInventory: function () {
 			var productTemplate = _.template(productFilterTemplate, {'products': this.productCollection.models});
 			var innerTemplateVar = {
-				'inventory_add_url' : '#/'+Const.URL.INVENTORY+'/'+Const.CRUD.ADD,
-				'product_filters' : productTemplate,
+				inventory_add_url : '#/'+Const.URL.INVENTORY+'/'+Const.CRUD.ADD,
+				product_filters : productTemplate,
 			};
+
 			var innerTemplate = _.template(inventoryListTemplate, innerTemplateVar);
 			
 			var variables = {
@@ -71,7 +72,6 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
-			
 			this.setListOptions();
 		},
 		
