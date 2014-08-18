@@ -82,7 +82,7 @@ class InventoryLibrary {
             }
 
 
-            if($product['sectionfrom_id'] == $product['sectionto_id']) {
+            if($type != 2 && ($product['sectionfrom_id'] == $product['sectionto_id'])) { //PO can have the same section from and to
                 return array(
                     'error' => true,
                     'message' => "Stack location from and to cannot be the same.");
