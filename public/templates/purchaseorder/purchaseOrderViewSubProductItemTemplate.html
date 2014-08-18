@@ -2,19 +2,19 @@
 	<td><code><%= stacknumber %></code></td>
 	<td><%= location_from %></td>
 	<td><%= description %></td>
-	<td class="text-right">$ <%= unitprice %></td>
-	<td class="text-right"><%= bales %></td>
-	<td class="text-right"><%= tons %></td>
-	<td class="text-right">$ <%= totalprice %></td>
 	<% if (typeof is_bid === "undefined") { %>
 	<td class="text-right"><i class="fa fa-check-square-o <% if(ishold==1) { %>color-success<% } %>"></i></td>
-	<td><%= rfv %></td>
+	<td class="text-right"><%= rfv %></td>
 	<td>
 		<% if (typeof file_path !== "undefined") { %>
-			<a class="attach-pdf color-success" href="<%= file_path %>" target="_blank"><i class="fa fa-book"></i></a>
+			<a class="attach-pdf color-danger" href="<%= file_path %>" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
 		<% } else { %>
-			<i class="fa fa-book"></i>
+			<i class="fa fa-file-pdf-o"></i>
 		<% } %>
 	</td>
 	<% } %>
+	<td class="text-right"><%= bales %></td>
+	<td class="text-right"><%= tons %></td>
+	<td class="text-right">$ <%= unitprice %></td>
+	<td class="text-right">$ <%= totalprice %></td>
 </tr>

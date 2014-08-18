@@ -61,6 +61,9 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
   public function addOrUpdateTransportSchedule($data, $transportScheduleId = null){
       $this->validate($data, 'TransportSchedule');
       DB::beginTransaction();
+          if(!$this->checkIfAllowedToCreateSchedule($data['order_id'])){
+              return Response::json(array('error' => true, 'message' => 'Cannot create schedule if destination of order is not Southwest Farms'), 500);
+          }
       // $result = DB::transaction(function() use ($data, $transportScheduleId){
           if($transportScheduleId == null)
               $transportschedule = new TransportSchedule;
@@ -132,6 +135,18 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           'message' => $message), 200);
   }
 
+  private function checkIfAllowedToCreateSchedule($orderId){
+      $result = Order::where('id', '=', $orderId)->first(array('id', 'location_id', 'ordertype'));
+      $bool = true;
+      if($result){
+        //cannot create schedule if the location of order is dropship  or producer
+          if($result->ordertype == 1 && ($result->location_id == 3 || $result->location_id == 2)){
+              $bool = false; 
+          }
+      }
+      return $bool;
+  }
+
   private function getTotalWeightOfSchedule($products){
       $totalWeightInTons = 0;
       foreach ($products as $product) {
@@ -160,7 +175,13 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
   }
 
   private function addProductToSchedule($schedule_id, $products = array())
-  {
+  {   
+      if($this->checkRepeatedProductOrderUsed($products)){
+          return array(
+                'error' => true,
+                'message' => "Cannot select the same stack number in creating a schedule.");
+      }
+
       foreach ($products as $product) {
           $product['transportschedule_id'] = $schedule_id;
 
@@ -175,7 +196,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
               $productOrderDetails = ProductOrder::find($product['productorder_id']);
               return array(
                       'error' => true,
-                      'message' => "Weight inputed exceeded for product: ".$productOrderDetails['stacknumber'].". <br />Weight already scheduled: ".$result['totalQuantitySchedule']." <br />Weight remaining: ".$result['quantityRemaining']." <br />Total weight allowed for this product: ".$productOrderDetails['tons']);
+                      'message' => "Weight inputed exceeded for ".$productOrderDetails['stacknumber'].". <br />Weight already scheduled: ".number_format($result['totalQuantitySchedule'], 4)." <br />Weight remaining: ".number_format($result['quantityRemaining'], 4)." <br />Total weight allowed for this product: ".$productOrderDetails['tons']);
           }
 
           $result = DB::transaction(function() use ($product){
@@ -191,6 +212,20 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
               $transportscheduleproduct->fill($product);
               $transportscheduleproduct->save();
           });
+      }
+
+      return false;
+  }
+
+  private function checkRepeatedProductOrderUsed($stacks){
+      $stacknumbersUsed = array();
+      //check if same stack number is used in saving schedule
+      foreach($stacks as $item){
+          if(!in_array(strtolower($item['productorder_id']), $stacknumbersUsed)){
+              array_push($stacknumbersUsed, strtolower($item['productorder_id'])); 
+          } else {
+              return true;
+          }
       }
 
       return false;
@@ -230,21 +265,38 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
   }
 
   public function deleteTransportSchedule($id){
-      $transportschedule = TransportSchedule::find($id);
-
-      if($transportschedule){
-        $transportschedule->delete();
-
-        $response = array(
-            'error' => false,
-            'message' => 'Schedule successfully deleted.');
+      //check if has weight ticket, cannot delete schedule with a weight ticket
+      if($this->checkIfScheduleHasWeightTicket($id)){
+          $response = array(
+              'error' => true,
+              'message' => 'Cannot delete a schedule with weight ticket.');
       } else {
-        $response = array(
-            'error' => true,
-            'message' => "Schedule not found");
+          $transportschedule = TransportSchedule::find($id);
+
+          if($transportschedule){
+            $transportschedule->delete();
+
+            $response = array(
+                'error' => false,
+                'message' => 'Schedule successfully deleted.');
+          } else {
+            $response = array(
+                'error' => true,
+                'message' => "Schedule not found");
+          }
       }
 
       return $response;
+  }
+
+  private function checkIfScheduleHasWeightTicket($transportscheduleId){
+      $weightTicketCount = WeightTicket::where('transportSchedule_id', '=', $transportscheduleId)->count();
+
+      if($weightTicketCount > 0){
+          return true;
+      } else {
+          return false;
+      }
   }
   
   public function validate($data, $entity){

@@ -32,3 +32,4 @@ App::bind('ContractRepositoryInterface', 'ContractRepository');
 App::bind('ContractProductsRepositoryInterface', 'ContractProductsRepository');
 App::bind('StorageLocationRepositoryInterface', 'StorageLocationRepository');
 App::bind('InventoryRepositoryInterface', 'InventoryRepository');
+App::bind('ReportRepositoryInterface', 'ReportRepository');

@@ -7,23 +7,41 @@
         <% _.each(audit, function(trail){ %>
         <li>
           <i class="fa fa-comment"></i>
-          <span class="date"><%= formatDate(trail.get('created_at')) %></span>
+          <span class='date'><%= timelineDate(trail.get('created_at')) %></span>
           <div class="content">
+            <a href='<%= audittrail_url %>/<%= strtolower(trail.get("type")) %>/<%= trail.get("data_id") %>' class='pull-right color-primary'>
+              <i class='fa fa-history'></i>
+            </a>
             <p>
               <strong><%= trail.get("user") %></strong> has <%= strtolower(trail.get("event")) %> 
               <strong><a href="<%= audittrail_url %>/<%= strtolower(trail.get("type")) %>"><%= strtolower(trail.get("type")) %></a></strong>.
             </p>
-            <small>A minute ago</small>
+            <small><%= timelineStamp(trail.get('created_at')) %></small>
+
+            <ul class='timeline-value'>
+            <% _.each(trail.get("value"), function(value, key){ %>
+              <li><%= key %>: <%= value %></li>
+            <% }); %>
+            <ul>
+
           </div>
         </li>
         <% }); %>
+      </ul>
+    </div>
+    <div class="clearfix text-center">
+      <ul class="pagination pagination-sm margin-top-10 margin-bottom-0 margin-left-0 margin-right-0" style="display:none;">
+        <li><a class="first-page btn" href="#"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
+        <li><a class="prev-page btn" href="#"><span class="glyphicon glyphicon-step-backward"></span></a></li>
+        <li><a class="next-page btn" href="#"><span class="glyphicon glyphicon-step-forward"></span></a></li>
+        <li><a class="last-page btn" href="#"><span class="glyphicon glyphicon-fast-forward"></span></a></li>
       </ul>
     </div>
     <% } else { %>
       No results found.
     <% } %>
 
-    <div class="block-flat padding-top-0 padding-bottom-0">
+    <!-- <div class="block-flat padding-top-0 padding-bottom-0">
       <div class="content padding-top-0">
 
         <div id="content-top" class="row margin-top-0">
@@ -58,7 +76,7 @@
         </div>
 
       </div>
-    </div>
+    </div> -->
 
   </div>
 </div>

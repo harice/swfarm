@@ -19,6 +19,7 @@ class TestDatabaseSeeder extends Seeder {
         $this->call('AddressTypeTableSeeder');
         $this->call('ReasonsTableSeeder');
         $this->call('AddressStatesTableSeeder');
+        $this->call('InventoryTransactionTypeTableSeeder');
 
         // Sales Order
         $this->call('LocationTableSeeder');
@@ -48,6 +49,8 @@ class TestDatabaseSeeder extends Seeder {
         // $this->call('FeeTableSeeder');
         $this->call('ContractTableSeeder');
         $this->call('ContractProductsTableSeeder');
+        $this->call('StorageLocationTableSeeder');
+        $this->call('SectionTableSeeder');
     }
 
 }

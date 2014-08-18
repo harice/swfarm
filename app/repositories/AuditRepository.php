@@ -4,7 +4,7 @@ class AuditRepository implements AuditRepositoryInterface {
   
   public function paginate($input) 
   {
-    $removefields = array('confirmcode', 'validated', 'status', 'deleted', 'deleted_at', 'created_at', 'updated_at');
+    $removefields = array('confirmcode', 'validated', 'status', 'deleted', 'deleted_at', 'created_at', 'updated_at', 'id');
     $perPage = isset($input['perpage']) ? $input['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
     $page = isset($input['page']) ? $input['page'] : 1;
     $sortby = isset($input['sortby']) ? $input['sortby'] : 'created_at';

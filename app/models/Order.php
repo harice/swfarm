@@ -32,6 +32,7 @@ class Order extends BaseModel {
         'notes',
         'isfrombid',
         'ordertype',
+        'purchaseorder_id',
         'user_id',
         'created_at',
         'updated_at'
@@ -98,6 +99,10 @@ class Order extends BaseModel {
     public function contract()
     {
         return $this->belongsTo('Contract');
+    }
+
+    public function contractnumber(){
+        return $this->belongsTo('Contract')->select(array('id', 'contract_number'));   
     }
 
     public function contact(){

@@ -208,7 +208,7 @@ define([
 					
 					totalTotalPrice += totalprice;
 				});
-				thisObj.$el.find('#product-list > tbody > .product-item:last .totalprice').html('$ '+Backbone.View.prototype.helpers.numberFormatTons(totalTotalPrice));
+				thisObj.$el.find('#product-list > tbody > .product-item:last .totalprice').html('$ '+Backbone.View.prototype.helpers.numberFormat(totalTotalPrice));
 				totalTotalTotalPrice += totalTotalPrice;
 				
 			});

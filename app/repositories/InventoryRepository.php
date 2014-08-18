@@ -192,6 +192,9 @@ class InventoryRepository implements InventoryRepositoryInterface {
                 if($product['stacklocation'] == null){
                     continue;
                 }
+                $result['data'][$index]['committed'] = number_format($this->getCommittedByStack($product['stacknumber']), 4);
+                $result['data'][$index]['ordered'] = number_format($this->getOrderedByStack($product['stacknumber']), 4);
+
                 $result['data'][$index]['productname'] = $product['product_name']['name'];
                 $result['data'][$index]['stacknumber'] = $product['stacknumber'];
                 $result['data'][$index]['stacklocation'] = "";
@@ -202,12 +205,146 @@ class InventoryRepository implements InventoryRepositoryInterface {
                         $result['data'][$index]['onHandTons'] += $stacklocation['tons'];
                     }                        
                 }
+                $result['data'][$index]['available'] = number_format($result['data'][$index]['onHandTons'] - $result['data'][$index]['committed'] + $result['data'][$index]['ordered'], 4);
                 $result['data'][$index]['stacklocation'] = substr($result['data'][$index]['stacklocation'], 0, -2); //remove extra | on last
                 $index++;
             }
         }
 
         return $result;
+    }
+
+    private function getOrderedByStack($stacknumber){
+        $data = ProductOrder::with('order.transportschedule.weightticket.weightticketscale_pickup.weightticketproducts')
+                            ->with('order.transportschedule.weightticket.weightticketscale_dropoff.weightticketproducts')
+                            ->whereHas('order', function($order) {
+                                $order->where('status_id', '=', 1);
+                                $order->where('ordertype', '=', 1);
+                            })->where('stacknumber', 'like', $stacknumber)->get();
+
+        $data = $data->toArray();
+        
+        $totalWeightDelivered = 0;
+        $totalQuantity = 0;
+        foreach($data as $productOrder){
+            $order = $productOrder['order'];
+            $schedules = $productOrder['order']['transportschedule'];
+
+            foreach($schedules as $transportschedule){
+                $totalQuantity += $this->getScheduleQuantity($transportschedule['id'], $productOrder['id']);
+
+                if($transportschedule['weightticket'] != null){
+                    if($transportschedule['weightticket']['pickup_id'] != null){
+                        $scale = $transportschedule['weightticket']['weightticketscale_pickup'];
+                    } else if($transportschedule['weightticket']['dropoff_id'] != null) {
+                        $scale = $transportschedule['weightticket']['weightticketscale_dropoff'];
+                    } else {
+                        $scale = null;
+                    }
+
+                    if($scale != null){
+                        $transportScheduleProductId = $this->getTransportScheduleProductId($transportschedule['id'], $productOrder['id']);
+                        $totalWeightDelivered += $this->getWeightOfStackInInventoryGoesThroughPO($scale['id'], $transportScheduleProductId);
+                    }
+                }
+            }
+        }
+        
+        $ordered = $totalQuantity - ($totalWeightDelivered * 0.0005);
+        return $ordered;
+    }
+
+    private function getTransportScheduleProductId($transportscheduleId, $productorderId){
+        $result = TransportScheduleProduct::where('transportschedule_id', '=', $transportscheduleId)
+                                            ->where('productorder_id', '=', $productorderId)
+                                            ->first(array('id'));
+
+        return $result['id'];
+    }
+
+    private function getWeightOfStackInInventoryGoesThroughPO($scaleId, $transportscheduleproductId){
+        $scaleData = WeightTicket::where('pickup_id', '=', $scaleId)
+                                    ->orWhere('dropoff_id', '=', $scaleId)
+                                    ->first(array('id', 'status_id'));
+        if($scaleData->status_id == 2) { //already push in inventory
+            $result = WeightTicketProducts::where('weightTicketScale_id', '=', $scaleId)
+                                    ->where('transportScheduleProduct_id', '=', $transportscheduleproductId)
+                                    ->first(array('id', 'pounds'));
+
+            if($result != null){
+                return $result->pounds;    
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
+
+
+    private function getCommittedByStack($stacknumber){
+        $data = ProductOrder::with('order.transportschedule.weightticket.weightticketscale_pickup.weightticketproducts')
+                            ->with('order.transportschedule.weightticket.weightticketscale_dropoff.weightticketproducts')
+                            ->whereHas('order', function($order) {
+                                $order->where('status_id', '=', 1);
+                                $order->where('ordertype', '=', 2);
+                            })->where('stacknumber', 'like', $stacknumber)->get();
+
+        $data = $data->toArray();
+        
+        $totalWeightDelivered = 0;
+        $totalQuantity = 0;
+        foreach($data as $productOrder){
+            $order = $productOrder['order'];
+            $schedules = $productOrder['order']['transportschedule'];
+
+            foreach($schedules as $transportschedule){
+                $totalQuantity += $this->getScheduleQuantity($transportschedule['id'], $productOrder['id']);
+
+                if($transportschedule['weightticket'] != null){
+                    if($transportschedule['weightticket']['pickup_id'] != null){
+                        $scale = $transportschedule['weightticket']['weightticketscale_pickup'];
+                    } else if($transportschedule['weightticket']['dropoff_id'] != null) {
+                        $scale = $transportschedule['weightticket']['weightticketscale_dropoff'];
+                    } else {
+                        $scale = null;
+                    }
+
+                    if($scale != null){
+                        $transportScheduleProductId = $this->getTransportScheduleProductId($transportschedule['id'], $productOrder['id']);
+                        $totalWeightDelivered += $this->getWeightOfStackInInventoryGoesThroughSO($scale['id'], $transportScheduleProductId);
+                    }
+                }
+            }
+        }
+        
+        $commited = $totalQuantity - ($totalWeightDelivered * 0.0005);
+        return $commited;
+    }
+
+    private function getWeightOfStackInInventoryGoesThroughSO($scaleId, $transportscheduleId){
+        $scaleData = WeightTicket::where('pickup_id', '=', $scaleId)
+                                    ->orWhere('dropoff_id', '=', $scaleId)
+                                    ->first(array('id', 'checkout'));
+        if($scaleData->checkout == 1) { //already push in inventory
+            $result = WeightTicketProducts::where('weightTicketScale_id', '=', $scaleId)
+                                    ->where('transportScheduleProduct_id', '=', $transportscheduleId)
+                                    ->first(array('id', 'pounds'));
+            if($result != null){
+                return $result->pounds;    
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
+
+    private function getScheduleQuantity($transportscheduleId, $productorderId){
+        $result = TransportScheduleProduct::where('transportschedule_id', '=', $transportscheduleId)
+                    ->where('productorder_id', '=', $productorderId)->first(array('id','quantity'));
+
+        return $result->quantity;
     }
 /*
     public function getInventorySummaryByStack($params){
@@ -305,9 +442,9 @@ class InventoryRepository implements InventoryRepositoryInterface {
             $inventoryProduct = $inventoryProduct->toArray();
             foreach($inventoryProduct as $product){
                 $transactionType = $product['inventory']['transactiontype_id'];
-                if($transactionType == 4){
+                if($transactionType == 4 || $transactionType == 1){
                     $totalDelivered -= $product['tons'];
-                } else if($transactionType == 5){
+                } else if($transactionType == 5 || $transactionType == 2){
                     $totalDelivered += $product['tons'];
                 }
             }
@@ -678,6 +815,78 @@ class InventoryRepository implements InventoryRepositoryInterface {
         
         return $stackList->toArray();
     }
+
+    /*public function inventoryReportPerLocation($stacklocationId){
+        $result = StorageLocation::with('section.inventoryproduct_sectionto.inventory.inventorytransactiontype')
+                                ->with('section.inventoryproduct_sectionto.inventory.ordernumberForInventory.account')
+                                ->with('section.inventoryproduct_sectionfrom.inventory.inventorytransactiontype')
+                                ->with('section.inventoryproduct_sectionfrom.inventory.ordernumberForInventory.contractnumber')
+                                ->with('section.inventoryproduct_sectionto.inventory.weightticketnumber')
+                                // ->wherehas('section', function($section){
+                                //     $section->whereHas('inventoryproduct_sectionto', function($inventoryproduct_sectionto){
+                                //         $inventoryproduct_sectionto->whereHas('order', function($order){
+                                //             //$order->where('created_at', '>=', );
+                                //         });
+                                //     });
+                                // })
+                                ->find($stacklocationId);
+        // return $result->toArray();
+        if($result){
+            $data = array();
+            $index = 0;
+            $data['location'] = $result['name'];
+            $data['totalBales'] = 0;
+            $data['totalTons'] = 0;
+            $data['totalCost'] = 0;
+            foreach($result['section'] as $section){
+                foreach($section['inventoryproduct_sectionto'] as $inventoryproduct){
+                    $date = $inventoryproduct['inventory']['created_at'];
+                    $data['data'][$index]['section'] = $section['name'];
+                    $data['data'][$index]['date'] = $date->createFromFormat('Y-m-d H:i:s', $date)->format('Y-m-d H:i:s');
+                    $data['data'][$index]['ordernumber'] = $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] : "";
+                    $data['data'][$index]['weightticketnumber'] = $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] != null ? $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] : "";
+                    $data['data'][$index]['producer'] = $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['account']['name'] : "";
+                    $data['data'][$index]['contract'] = $inventoryproduct['inventory']['ordernumberForInventory']['contract_id'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['contract']['contract_number'] : "";
+                    $data['data'][$index]['bales'] = $inventoryproduct['bales'] != null ? $inventoryproduct['bales'] : "0";
+                    $data['data'][$index]['tons'] = $inventoryproduct['tons'];
+                    $data['data'][$index]['price'] = $inventoryproduct['price'];
+                    $data['data'][$index]['cost'] = number_format($inventoryproduct['tons'] * $inventoryproduct['price'], 2);
+                    $data['data'][$index]['operation'] = $inventoryproduct['inventory']['inventorytransactiontype']['type'];
+                    $data['totalBales'] += $data['data'][$index]['bales'];
+                    $data['totalTons'] += $data['data'][$index]['tons'];
+                    $data['totalCost'] += $data['data'][$index]['cost'];
+                    $index++;
+                }
+                foreach($section['inventoryproduct_sectionfrom'] as $inventoryproduct){
+                    $date = $inventoryproduct['inventory']['created_at'];
+                    $data['data'][$index]['section'] = $section['name'];
+                    $data['data'][$index]['date'] = $date->createFromFormat('Y-m-d H:i:s', $date)->format('Y-m-d H:i:s');
+                    $data['data'][$index]['ordernumber'] = $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] : "";
+                    $data['data'][$index]['weightticketnumber'] = $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] != null ? $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] : "";
+                    $data['data'][$index]['producer'] = $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['account']['name'] : "";
+                    $data['data'][$index]['contract'] = $inventoryproduct['inventory']['ordernumberForInventory']['contract_id'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['contract']['contract_number'] : "";
+                    $data['data'][$index]['bales'] = $inventoryproduct['bales'] != null ? $inventoryproduct['bales'] : 0;
+                    $data['data'][$index]['tons'] = $inventoryproduct['tons'];
+                    $data['data'][$index]['price'] = $inventoryproduct['price'];
+                    $data['data'][$index]['cost'] = number_format($inventoryproduct['tons'] * $inventoryproduct['price'], 2);
+                    $data['data'][$index]['operation'] = $inventoryproduct['inventory']['inventorytransactiontype']['type'];
+                    $data['totalBales'] += $data['data'][$index]['bales'];
+                    $data['totalTons'] += $data['data'][$index]['tons'];
+                    $data['totalCost'] += $data['data'][$index]['cost'];
+                    $index++;
+                }
+
+            }
+
+            $data['totalBales'] = number_format($data['totalBales'], 0, '.', '');
+            $data['totalTons'] = number_format($data['totalTons'], 2, '.', '');
+            $data['totalCost'] = number_format($data['totalCost'], 2, '.', '');
+            return $data;
+        } else {
+            return array('error' => true, 'message' => 'Location not found.');
+        }
+        
+    }*/
 
     private function displayLastQuery(){
       $queries = DB::getQueryLog();

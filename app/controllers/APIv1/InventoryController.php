@@ -98,4 +98,9 @@ class InventoryController extends BaseController {
         return Response::json($response);
 	}
 
+	/*public function inventoryReportPerLocation(){
+		$response = $this->repo->inventoryReportPerLocation( Input::get('storagelocationId') );
+        return Response::json($response);
+	}*/
+
 }
