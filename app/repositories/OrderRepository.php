@@ -1258,7 +1258,8 @@ class OrderRepository implements OrderRepositoryInterface {
                         //return $this->getPurchaseOrderProductsForSalesOrder($id);    
                         return array(
                           'error' => false,
-                          'message' => 'Product(s) successfully checked in to inventory. You can now create sales order for this dropship');
+                          'message' => 'Product(s) successfully checked in to inventory. You can now create sales order for this dropship',
+                          'purchaseorder_id' => $id);
                     } else { //for producer type
                         return array(
                           'error' => false,
