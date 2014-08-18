@@ -276,8 +276,9 @@ class OrderRepository implements OrderRepositoryInterface {
                     });
                 });
             });
+            //if dropship
             if($response['location_id'] == Config::get('constants.LOCATION_DROPSHIP')){
-                $reponse['hasSalesOrder'] = $this->checkIfhasSalesOrder($id);
+                $response['salesorder_id'] = $this->getSalesOrderId($id);
             }
             
         } else {
@@ -289,12 +290,13 @@ class OrderRepository implements OrderRepositoryInterface {
         return $response;
     }
 
-    private function checkIfhasSalesOrder($id){
-        $result = Order::where('purchaseorder_id', '=', $id)->count();
-        if($result > 0)
-            return true;
+    private function getSalesOrderId($id){
+        $result = Order::where('purchaseorder_id', '=', $id)->first(array('id'));
+        // var_dump($result);
+        if($result)
+            return $result->id;
         else 
-            return false;
+            return null;
     }
     
     public function addOrder($data, $orderType = 1)
