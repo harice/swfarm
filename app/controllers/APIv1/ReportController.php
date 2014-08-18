@@ -25,9 +25,9 @@ class ReportController extends BaseController {
 	 *
 	 * @return Response
 	 */
-	public function generateSales()
+	public function generateSales($id)
 	{
-        $result = $this->report->generateSales(Input::all());
+        $result = $this->report->generateSales($id, Input::all());
         return Response::json($result);
 	}
     
@@ -36,9 +36,9 @@ class ReportController extends BaseController {
      * 
      * @return Reponse
      */
-    public function generateProducerStatement()
+    public function generateProducerStatement($id)
     {
-        $result = $this->report->generateProducerStatement(Input::all());
+        $result = $this->report->generateProducerStatement($id, Input::all());
         return Response::json($result);
     }
     
@@ -50,6 +50,19 @@ class ReportController extends BaseController {
     public function generateOperatorPay($id)
     {
         $result = $this->report->generateOperatorPay($id, Input::all());
+        return Response::json($result);
+    }
+    
+    /**
+     * Generate driver's pay
+     * 
+     * @param int $id Contact Id
+     * @param array $params
+     * @return mixed
+     */
+    public function generateDriverPay($id)
+    {
+        $result = $this->report->generateDriverPay($id, Input::all());
         return Response::json($result);
     }
     

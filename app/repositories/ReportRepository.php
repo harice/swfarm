@@ -15,79 +15,68 @@ class ReportRepository implements ReportRepositoryInterface {
      * @param array $params Input
      * @return array
      */
-    public function generateSales($params)
+    public function generateSales($id, $params)
     {
-        try {
-            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
-            $sortby = isset($params['sortby']) ? $params['sortby'] : 'order.created_at';
-            $orderby = isset($params['orderby']) ? $params['orderby'] : 'dsc';
-
-            $report = ProductOrder::leftJoin('products', 'productorder.id', '=', 'products.id')
-                ->join('order', 'productorder.order_id', '=', 'order.id')
-                ->join('natureofsale', 'order.natureofsale_id', '=', 'natureofsale.id')
-                ->join('account', 'order.account_id', '=', 'account.id')
-                ->where('order.ordertype', '=', 2);
-            
-            if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                $report = $report->whereBetween('order.created_at', array($params['dateStart'], $params['dateEnd']));
-            }
-            
-            if (isset($params['accountId'])) {
-                $report = $report->where('order.account_id', '=', $params['accountId']);
-            }
-            
-            if (isset($params['search'])) {
-                $report = $report->where('name', 'like', '%' . $params['search'] . '%');
-            }
-            
-            $report = $report->select(
-                    'productorder.id as id',
-                    'productorder.order_id',
-                    'productorder.product_id',
-                    'productorder.tons as tons',
-                    'productorder.bales as bales',
-                    'productorder.unitprice as unitprice',
-                    'productorder.created_at as created_at',
-                    'products.name as product_name',
-                    'order.order_number as order_number',
-                    'order.account_id as account_id',
-                    'order.natureofsale_id as natureofsale_id',
-                    'order.created_at as order_created_at',
-                    'order.ordertype as order_type',
-                    'natureofsale.name as natureofsale_name',
-                    'account.name as account_name'
-                )
-                ->orderBy($sortby, $orderby)
-                ->paginate($perPage)
-                ->toArray();
-            
-            $report['summary_total'] = 0.0;
-            $report['summary_total_tons'] = 0.0;
-            $report['summary_total_bales'] = 0;
-            foreach ($report['data'] as $data) {
-                $report['summary_total'] += $data['total_price'];
-                $report['summary_total_tons'] += $data['tons'];
-                $report['summary_total_bales'] += $data['bales'];
-            }
-            
-            return $report;
-        } catch (Exception $e) {
-            return $e->getMessage();
+        $productorder = ProductOrder::leftJoin('products', 'productorder.product_id', '=', 'products.id')
+            ->join('order', 'productorder.order_id', '=', 'order.id')
+            ->join('natureofsale', 'order.natureofsale_id', '=', 'natureofsale.id')
+            ->join('account', 'order.account_id', '=', 'account.id')
+            ->where('order.ordertype', '=', 2);
+        
+        if (isset($params['dateStart']) && isset($params['dateEnd'])) {
+            $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+            $productorder = $productorder->where('order.created_at', '>', $params['dateStart']);
+            $productorder = $productorder->where('order.created_at', '<', $date_end);
+        } elseif (isset($params['dateStart'])) {
+            $productorder = $productorder->where('order.created_at', '>=', $params['dateStart']);
+        } elseif (isset($params['dateEnd'])) {
+            $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+            $productorder = $productorder->where('order.created_at', '<=', $date_end);
         }
+
+        $productorder = $productorder->where('order.account_id', '=', $id);
+
+        $productorder = $productorder->select(
+                'productorder.id as id',
+                'productorder.order_id',
+                'productorder.product_id',
+                'productorder.tons as tons',
+                'productorder.bales as bales',
+                'productorder.unitprice as unitprice',
+                'productorder.created_at as created_at',
+                'products.name as product_name',
+                'order.order_number as order_number',
+                'order.account_id as account_id',
+                'order.natureofsale_id as natureofsale_id',
+                'order.created_at as order_created_at',
+                'natureofsale.name as natureofsale_name',
+                'account.name as account_name'
+            );
+        
+        $total_transactions = $productorder->count();
+        $total_bales = $productorder->sum('productorder.bales');
+        $total_tons = $productorder->sum('productorder.tons');
+        
+        $transactions = $productorder->get();
+
+        $report['customer'] = Account::find($id)->toArray();
+        $report['summary']['total_transactions'] = $total_transactions;
+        $report['summary']['total_bales'] = $total_bales;
+        $report['summary']['total_tons'] = $total_tons;
+        $report['transactions'] = $transactions->toArray();
+
+        return $report;
     }
     
     /**
      * Generate a Producer Statement Report
      * 
+     * @param int $id Producer Id
      * @param array $params Input
      * @return array
      */
-    public function generateProducerStatement($params)
+    public function generateProducerStatement($id, $params)
     {
-        $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
-        $sortby = isset($params['sortby']) ? $params['sortby'] : 'productorder.created_at';
-        $orderby = isset($params['orderby']) ? $params['orderby'] : 'dsc';
-        
         $statement = array();
         $statements = array();
         
@@ -100,12 +89,10 @@ class ReportRepository implements ReportRepositoryInterface {
             ->join('section', 'section.id', '=', 'productorder.section_id')
             ->join('storagelocation', 'section.storagelocation_id', '=', 'storagelocation.id');
         
-        if (isset($params['accountId'])) {
-            $productorder = $productorder->whereHas('order', function($q) use ($params)
-            {
-                $q->where('account_id', '=', $params['accountId']);
-            });
-        }
+        $productorder = $productorder->whereHas('order', function($q) use ($id)
+        {
+            $q->where('account_id', '=', $id);
+        });
         
         $productorder = $productorder->whereHas('transportscheduleproduct', function($q)
         {
@@ -117,7 +104,14 @@ class ReportRepository implements ReportRepositoryInterface {
         });
         
         if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-            $productorder = $productorder->whereBetween('productorder.created_at', array($params['dateStart'], $params['dateEnd']));
+            $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+            $productorder = $productorder->where('productorder.created_at', '>', $params['dateStart']);
+            $productorder = $productorder->where('productorder.created_at', '<', $date_end);
+        } elseif (isset($params['dateStart'])) {
+            $productorder = $productorder->where('productorder.created_at', '>=', $params['dateStart']);
+        } elseif (isset($params['dateEnd'])) {
+            $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+            $productorder = $productorder->where('productorder.created_at', '<=', $date_end);
         }
         
         $productorder = $productorder->select(
@@ -128,6 +122,8 @@ class ReportRepository implements ReportRepositoryInterface {
             'section.storagelocation_id as storagelocation_id',
             'storagelocation.name as storagelocation_name'
         );
+        
+        $total_transactions = $productorder->count();
         
         $productorders = $productorder->get()->toArray();
         
@@ -150,11 +146,9 @@ class ReportRepository implements ReportRepositoryInterface {
             }
         }
         
-        if (isset($params['accountId'])) {
-            $report['account'] = Account::with('address')->find($params['accountId'])->toArray();
-        }
-        $report['statements'] = $statements;
-//        $report['productorders'] = $productorders;
+        $report['account'] = Account::with('address')->find($id)->toArray();
+        $report['summary']['total_transactions'] = $total_transactions;
+        $report['transactions'] = $statements;
         
         return $report;
     }
@@ -203,7 +197,8 @@ class ReportRepository implements ReportRepositoryInterface {
                     $q->with('order.account');
                     if (isset($params['dateStart']) && isset($params['dateEnd'])) {
                         $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                        $q->whereBetween('created_at', array($params['dateStart'], $date_end));
+                        $q->where('created_at', '>', $params['dateStart']);
+                        $q->where('created_at', '<', $date_end);
                     } elseif (isset($params['dateStart'])) {
                         $q->where('created_at', '>=', $params['dateStart']);
                     } elseif (isset($params['dateEnd'])) {
@@ -251,8 +246,8 @@ class ReportRepository implements ReportRepositoryInterface {
         }
         
         $report['operator'] = Contact::find($id)->toArray();
-        $report['loads'] = $loads;
         $report['summary']['total'] = $total;
+        $report['transactions'] = $loads;
         
         return $report;
     }
@@ -358,103 +353,6 @@ class ReportRepository implements ReportRepositoryInterface {
     }
     
     /**
-     * Generate an Operator Pay Report
-     * 
-     * @param int $id Contact ID
-     * @return mixed $report
-     */
-    public function generateAllOperatorPay($params)
-    {
-        // Get load origin
-        $contact_origin = Contact::with(
-            array(
-                'loadOrigin' => function($q) use ($params) {
-                    $q->with('order.account');
-                    if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-//                        $q->whereBetween('created_at', array($params['dateStart'], $date_end));
-                        $q->where('created_at', '>', $params['dateStart']);
-                        $q->where('created_at', '<', $date_end);
-                    } elseif (isset($params['dateStart'])) {
-                        $q->where('created_at', '>=', $params['dateStart']);
-                    } elseif (isset($params['dateEnd'])) {
-                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                        $q->where('created_at', '<=', $date_end);
-                    }
-                }
-            )
-        );
-        
-        $contact_origin = $contact_origin->get();
-        if (!$contact_origin) {
-            throw new Exception('Contact not found.');
-        }
-        
-        $contact_origin = $contact_origin->toArray();
-        
-        // Get load destination
-        $contact_destination = Contact::with(
-            array(
-                'loadDestination' => function($q) use ($params) {
-                    $q->with('order.account');
-                    if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                        $q->whereBetween('created_at', array($params['dateStart'], $date_end));
-                    } elseif (isset($params['dateStart'])) {
-                        $q->where('created_at', '>=', $params['dateStart']);
-                    } elseif (isset($params['dateEnd'])) {
-                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                        $q->where('created_at', '<=', $date_end);
-                    }
-                }
-            )
-        );
-        
-        $contact_destination = $contact_destination->get();
-        if (!$contact_destination) {
-            throw new Exception('Contact not found.');
-        }
-        
-        $contact_destination = $contact_destination->toArray();
-        
-        $loads = array();
-        $i = 0;
-        $total = 0.00;
-        foreach ($contact_origin as $contact) {
-            foreach ($contact['load_origin'] as $load) {
-                $item['id'] = $i;
-                $item['type'] = 'Load';
-                $item['amount'] = $load['originloaderfee'];
-                $item['account_name'] = $load['order']['account']['name'];
-                $item['created_at'] = date('Y-m-d', strtotime($load['created_at']));
-
-                $loads[] = $item;
-                $total += $item['amount'];
-                $i++;
-            }
-        }
-        
-        foreach ($contact_destination as $contact) {
-            foreach ($contact['load_destination'] as $load) {
-                $item['id'] = $i;
-                $item['type'] = 'Unload';
-                $item['amount'] = $load['destinationloaderfee'];
-                $item['account_name'] = $load['order']['account']['name'];
-                $item['created_at'] = date('Y-m-d', strtotime($load['created_at']));
-
-                $loads[] = $item;
-                $total += $item['amount'];
-                $i++;
-            }
-        } 
-        
-        $report['loads'] = $loads;
-        $report['summary']['total'] = $total;
-        
-        return $report;
-    }
-    
-    /**
      * Generate all transport schedules.
      * 
      * @param array $params
@@ -506,5 +404,58 @@ class ReportRepository implements ReportRepositoryInterface {
         $transactions['weightticket_products'] = $weightticket_products->toArray();
         
         return $transactions;
+    }
+    
+    /**
+     * Generate driver's pay
+     * 
+     * @param int $id Contact Id
+     * @param array $params
+     * @return mixed
+     */
+    public function generateDriverPay($id, $params)
+    {
+        $transactions = TransportSchedule::join('contact', 'trucker_id', '=', 'contact.id')
+            ->join('account', 'contact.account', '=', 'account.id')
+            ->join('transportscheduleproduct', 'transportschedule_id', '=', 'transportschedule.id')
+            ->join('weightticketproducts', function($q) use ($params)
+            {
+                $q->on('transportScheduleProduct_id', '=', 'transportscheduleproduct.id');
+                
+                if (isset($params['dateStart']) && isset($params['dateEnd'])) {
+                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                    $q->where('weightticketproducts.created_at', '>', $params['dateStart']);
+                    $q->where('weightticketproducts.created_at', '<', $date_end);
+                } elseif (isset($params['dateStart'])) {
+                    $q->where('weightticketproducts.created_at', '>=', $params['dateStart']);
+                } elseif (isset($params['dateEnd'])) {
+                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                    $q->where('weightticketproducts.created_at', '<=', $date_end);
+                }
+            });
+        
+        $transactions = $transactions->where('transportschedule.trucker_id', '=', $id);
+        
+        $transactions = $transactions->select(
+            'account.name as account_name',
+            'weightticketproducts.bales',
+            'weightticketproducts.pounds',
+            'weightticketproducts.created_at',
+            'transportschedule.truckingrate as trucking_rate',
+            'contact.rate as driver_rate'
+        );
+        
+        $total_bales = $transactions->sum('weightticketproducts.bales');
+        $total_pounds = $transactions->sum('weightticketproducts.pounds');
+        
+        $transactions = $transactions->get();
+        
+        $report['driver'] = Contact::find($id)->toArray();
+        $report['summary']['total_transactions'] = $transactions->count();
+        $report['summary']['total_bales'] = $total_bales;
+        $report['summary']['total_pounds'] = $total_pounds;
+        $report['transactions'] = $transactions->toArray();
+        
+        return $report;
     }
 }

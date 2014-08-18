@@ -195,8 +195,9 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // Reports
     Route::get('report/trucking-statement/{id}', 'APIv1\ReportController@generateTruckingStatement');
     Route::get('report/operator-pay/{id}', 'APIv1\ReportController@generateOperatorPay');
-    Route::get('report/sales', 'APIv1\ReportController@generateSales');
-    Route::get('report/producer-statement', 'APIv1\ReportController@generateProducerStatement');
+    Route::get('report/driver-pay/{id}', 'APIv1\ReportController@generateDriverPay');
+    Route::get('report/sales/{id}', 'APIv1\ReportController@generateSales');
+    Route::get('report/producer-statement/{id}', 'APIv1\ReportController@generateProducerStatement');
 });
 
 Route::get('/', function(){ return View::make('main')->withVersion(Config::get('Constants.VERSION',"1.0")); });
