@@ -29,6 +29,14 @@ define(function () {
 			'TRUCKER': 'administration/trucker',
 			'INVENTORY': 'inventory',
 			'STACKNUMBER': 'stacknumber',
+			'OPERATOR': 'report/operator-pay',
+			'PRODUCER': 'report/producer-statement',
+			'TRUCKING': 'report/trucking-statement',
+			'INVENTORY': 'report/operator-pay',
+			'SALES': 'report/sales',
+			'COMMISSION': 'report/commission',
+			'GROSS': 'report/gross-profit',
+			'DRIVER': 'report/driver-pay'
 		},
 		'MENU': {
 			'PURCHASES': {
@@ -120,6 +128,30 @@ define(function () {
 				'EDIT'	:56,
 				'DELETE':57
 			},
+			'OPERATOR': {
+				'GENERATE': 58
+			}
+			'PRODUCER': {
+				'GENERATE': 59
+			},
+			'TRUCKING': {
+				'GENERATE': 60
+			},
+			'INVENTORY': {
+				'GENERATE': 61
+			},
+			'SALES': {
+				'GENERATE': 62
+			},
+			'COMMISSION': {
+				'GENERATE': 63
+			},
+			'GROSS': {
+				'GENERATE': 64
+			},
+			'DRIVER': {
+				'GENERATE': 65
+			}
 		},
 		'CRUD': {
 			'ADD': 'add',
@@ -191,6 +223,16 @@ define(function () {
             'OPERATOR': 4,
             'TRUCKER': 8,
             'SWFTRUCKER': 9
+        },
+        'REPORT': {
+        	'OPERATOR': 'operator',
+        	'PRODUCT': 'product',
+        	'TRUCKING': 'trucking',
+        	'INVENTORY': 'inventory',
+        	'SALES': 'sales',
+        	'COMMISSION': 'commission',
+        	'GROSS': 'gross',
+        	'DRIVER': 'driver'
         }
 	};
 	

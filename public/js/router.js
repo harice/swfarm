@@ -220,6 +220,12 @@ define([
 	routerRoutes[Const.URL.INVENTORY+'/'] = 'showInventoryPage';
 	routerRoutes[Const.URL.INVENTORY+'/:action'] = 'showInventoryPage';
 	routerRoutes[Const.URL.INVENTORY+'/:action/:id'] = 'showInventoryPage';
+
+	//report
+	routerRoutes[Const.URL.REPORT] = 'showReportsPage';
+	routerRoutes[Const.URL.REPORT+'/'] = 'showReportsPage';
+	routerRoutes[Const.URL.REPORT+'/:action'] = 'showReportsPage';
+	routerRoutes[Const.URL.REPORT+'/:action/:id'] = 'showReportsPage';
 	
 	//stacknumber
 	routerRoutes[Const.URL.STACKNUMBER+'/:id'] = 'showStackNumberPage';
@@ -503,6 +509,13 @@ define([
 			this.closeView();
 			var stackNumberController = new StackNumberController();
 			this.currView = stackNumberController.setAction(id);
+			this.currView.render();
+		});
+
+		app_router.on('route:showReportsPage', function (action) {
+			this.closeView();
+			var reportController = new ReportController();
+			this.currView = reportController.setAction(action);
 			this.currView.render();
 		});
 		
