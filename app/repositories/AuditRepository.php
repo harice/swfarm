@@ -42,7 +42,6 @@ class AuditRepository implements AuditRepositoryInterface {
       }
     }
 
-    $response = Response::json( array( 'data' => $list['data'], 'total' => $list['total'] ) );
-    return $response;
+    return Response::json( array( 'data' => $list['data'], 'total' => $list['total'] ) );
   }
 }

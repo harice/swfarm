@@ -139,7 +139,6 @@ define([
             
             account.fetch({
                 success: function (account) {
-                    console.log(account.get("accounttype")[0].id);
                     if (
                         account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.LOADER ||
                         account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.OPERATOR ||

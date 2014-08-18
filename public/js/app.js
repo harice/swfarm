@@ -304,8 +304,8 @@ define([
 				var type = (error == false)? 'success' : 'error';
 				var message = type;
 				
-				if(typeof responseJSON.message != 'undefined')
-					message = responseJSON.message;
+				if(typeof error.message != 'undefined')
+					message = error.message;
 				
 				if(typeof message == 'string') {
                     message = '<p>' + message + '</p>';

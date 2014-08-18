@@ -4,6 +4,7 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
+	'bootstrapmultiselect',
 	'models/account/AccountModel',
 	'models/account/AccountExtrasModel',
 	'collections/address/CityCollection',
@@ -18,6 +19,7 @@ define([
 			Validate,
 			TextFormatter,
 			PhoneNumber,
+			bootstrapMultiSelect,
 			AccountModel,
 			AccountExtrasModel,
 			CityCollection,
@@ -88,6 +90,23 @@ define([
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
 			this.$el.find('.lowercase').textFormatter({type:'lowercase'});
 			// this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
+			this.$el.find('#accounttype').multiselect({
+				buttonClass: 'btn btn-default btn-sm',
+				includeSelectAllOption: true,
+				includeSelectAllIfMoreThan:5,
+	        	enableFiltering: true,
+	        	enableCaseInsensitiveFiltering: true,
+	        	disableIfEmpty: true,
+	        	maxHeight: 250,
+	        	nonSelectedText: 'Select account type',
+	        	nSelectedText: 'types selected',
+	        	selectedClass: null,
+	        	selectAllValue: '',
+	        	checkboxName: 'accounttype',
+	            templates: {
+	            	filter: '<div class="input-group input-group-sm margin-right-10 margin-left-5"><span class="input-group-addon"><i class="fa fa-search"></i></span><input class="form-control multiselect-search" type="text"></div>',
+	            }
+			});
             this.maskInputs();
 			
 			this.initValidateForm();
