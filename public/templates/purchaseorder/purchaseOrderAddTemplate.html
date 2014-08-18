@@ -153,11 +153,11 @@
                     <div class="form-group form-button-container">
                         <div class="col-md-12">
                             <div class="pull-right">
-                                <% if (typeof po_id !== "undefined") { %>
-									<% if (typeof is_bid === "undefined") { %>
-									<% } else { %>
+								<% if (typeof is_bid === "undefined") { %>
+									<button id="save-and-check-in" type="button" class="save-and-close btn btn-primary">Save & Close</button>
+								<% } %>
+                                <% if (typeof po_id !== "undefined" && typeof is_bid !== "undefined") { %>
 									<button id="convert-po" type="button" class="save btn btn-warning">Convert to PO</button>
-									<% } %>
                                 <% } %>
                                 <button id="save" type="submit" class="save btn btn-primary">Save</button>
                                 <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>

@@ -68,11 +68,11 @@ define([
 		},
 		
 		initConfirmationWindow: function (content, buttonId, buttonLabel, title, dismissModal, modalId) {
-			if($(this.modalAlertContainer).find('#modal-confirm').length)
-				$(this.modalAlertContainer).find('#modal-confirm').remove();
-			
 			if(modalId == null || typeof modalId == 'undefined')
-			modalId = 'modal-confirm';
+				modalId = 'modal-confirm';
+			
+			if($(this.modalAlertContainer).find('#'+modalId).length)
+				$(this.modalAlertContainer).find('#'+modalId).remove();
 			
 			var confirmTemplateVariables = {
 				confirm_title: title,

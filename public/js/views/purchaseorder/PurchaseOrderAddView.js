@@ -70,6 +70,8 @@ define([
 		inits: function () {
 			var thisObj = this;
 			
+			this.isSaveAndCheckIn = false;
+			
 			this.bidTransportdateStart = null;
 			this.bidTransportdateEnd = null;
 			this.bidLocationId = null;
@@ -89,7 +91,7 @@ define([
 				productSubFieldClone: null,
 				productSubFieldCounter: 0,
 				productSubFieldClass: ['stacknumber', 'section_id', 'description', 'unitprice', 'tons', 'bales', 'id', 'ishold', 'rfv', 'uploadedfile'],
-				productSubFieldClassRequired: ['tons'],
+				productSubFieldClassRequired: ['section_id', 'unitprice', 'tons', 'bales'],
 				productSubFieldExempt: [],
 				productSubFieldSeparator: '.',
 				removeComma: ['unitprice', 'tons', 'bales'],
@@ -232,6 +234,8 @@ define([
 						data['transportdateend'] = thisObj.bidTransportdateEnd;
 						data['location_id'] = thisObj.bidLocationId;
 					}
+					else if(thisObj.isSaveAndCheckIn)
+						data['checkingorder'] = true;
 					
 					if(typeof data['transportdatestart'] != 'undefined')
 						data['transportdatestart'] = thisObj.convertDateFormat(data['transportdatestart'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
@@ -253,6 +257,13 @@ define([
 										Backbone.history.history.back();
 									});
 								}
+								else if(thisObj.isSaveAndCheckIn) {
+									thisObj.isSaveAndCheckIn = false;
+									thisObj.hideConfirmationWindow('modal-confirm', function () {
+										Global.getGlobalVars().fromPOId = response.purchaseorder_id;
+										Backbone.navigate(Const.URL.SO+'/'+Const.CRUD.ADD, {trigger: true});
+									});
+								}
 								else {
 									thisObj.isConvertToPO = false;
 									thisObj.displayMessage(response);
@@ -261,10 +272,14 @@ define([
 							},
 							error: function (model, response, options) {
 								if(thisObj.isConvertToPO) {
+									thisObj.isConvertToPO = false;
 									thisObj.hideConfirmationWindow('modal-with-form-confirm');
 								}
+								else if(thisObj.isSaveAndCheckIn) {
+									thisObj.isSaveAndCheckIn = false;
+									thisObj.hideConfirmationWindow();
+								}
 								
-								thisObj.isConvertToPO = false;
 								if(typeof response.responseJSON.error == 'undefined')
 									validate.showErrors(response.responseJSON);
 								else
@@ -275,7 +290,14 @@ define([
 					);
 				},
 				invalidHandler: function (event, validator) {
-					thisObj.isConvertToPO = false;
+					if(thisObj.isConvertToPO) {
+						thisObj.isConvertToPO = false;
+						thisObj.hideConfirmationWindow('modal-with-form-confirm');
+					}
+					else if(thisObj.isSaveAndCheckIn) {
+						thisObj.isSaveAndCheckIn = false;
+						thisObj.hideConfirmationWindow();
+					}
 				},
 				errorPlacement: function(error, element) {
 					if(element.hasClass('form-date')) {
@@ -679,6 +701,9 @@ define([
 			'click #undo-remove': 'undoRemove',
 			
 			'change .product_id': 'generateStackNumberSuggestions',
+			
+			'click #save-and-check-in': 'showSaveAndCheckInConfirmationWindow',
+			'click #confirm-save-and-check-in-order': 'saveAndCheckIn',
 		},
 		
 		removeProduct: function (ev) {
@@ -1156,6 +1181,28 @@ define([
 				else
 					this.subContainer.find('.section_id').append(dropdown);
 			}
+		},
+		
+		showSaveAndCheckInConfirmationWindow: function (ev) {
+			var destinationId = this.subContainer.find('input[name=location_id]:checked').val();
+			if(Const.PO.SAVEANDCLOSE.indexOf(destinationId) >= 0) {			
+				this.initConfirmationWindow('Are you sure you want to save and check-in this purchase order?',
+											'confirm-save-and-check-in-order',
+											'Save And Check-In',
+											'Save And Check-In Purchase Order',
+											false);
+				this.showConfirmationWindow();
+			}
+			else
+				this.displayGritter('Save and check-in is only allowed to destination type dropship and producer.');
+			
+			return false;
+		},
+		
+		saveAndCheckIn: function () {
+			this.isSaveAndCheckIn = true;
+			this.subContainer.find('#poForm').submit();
+			return false;
 		},
 		
 		otherInitializations: function () {},
