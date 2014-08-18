@@ -338,6 +338,23 @@ class OrderRepository implements OrderRepositoryInterface {
                 $order->save();
             }
 
+            if(isset($data['location_id']) && isset($data['checkinorder'])){
+                if($order->status_id == 7){ //has testing products on order
+                    return array(
+                        "error" => true,
+                        'message' => "Cannot do check in to inventory when order contains hold product(s)."
+                    );
+                }
+                //if dropship and client click the button to create SO
+                if($data['location_id'] == Config::get('constants.LOCATION_DROPSHIP') && $data['checkinorder'] == true){
+                    $dropshipResult = $this->checkInPurchaseOrderProducts($order->id, true);  
+                    return array('dropship' => true, 'data' => $dropshipResult);  
+                } else if($data['location_id'] == Config::get('constants.LOCATION_PRODUCER') && $data['checkinorder'] == true){
+                    $producerResult = $this->checkInPurchaseOrderProducts($order->id, false);  
+                    return array('producer' => true, 'data' => $producerResult);
+                }
+            }
+            
             return $order;
         });
         
@@ -349,6 +366,8 @@ class OrderRepository implements OrderRepositoryInterface {
                         'message' => $result['message']
                     );
                 }
+            } else if(isset($result['dropship']) || isset($result['producer'])){
+                return $result['data'];
             }
 
             if($data['ordertype'] == 1)
@@ -429,6 +448,23 @@ class OrderRepository implements OrderRepositoryInterface {
                     $order->save();
                 } 
             }
+
+            if(isset($data['location_id']) && isset($data['checkinorder'])){
+                if($order->status_id == 7){ //has testing products on order
+                    return array(
+                        "error" => true,
+                        'message' => "Cannot do check in to inventory when order contains hold product(s)."
+                    );
+                }
+                //if dropship and client click the button to create SO
+                if($data['location_id'] == Config::get('constants.LOCATION_DROPSHIP') && $data['checkinorder'] == true){
+                    $dropshipResult = $this->checkInPurchaseOrderProducts($order->id, true);  
+                    return array('dropship' => true, 'data' => $dropshipResult);  
+                } else if($data['location_id'] == Config::get('constants.LOCATION_PRODUCER') && $data['checkinorder'] == true){
+                    $producerResult = $this->checkInPurchaseOrderProducts($order->id, false);  
+                    return array('producer' => true, 'data' => $producerResult);
+                }
+            }
             
 
             return $order;
@@ -442,6 +478,8 @@ class OrderRepository implements OrderRepositoryInterface {
                         'message' => $result['message']
                     );
                 }
+            } else if(isset($result['dropship']) || isset($result['producer'])){
+                return $result['data'];
             }
 
             if($data['ordertype'] == 1)
@@ -1215,8 +1253,12 @@ class OrderRepository implements OrderRepositoryInterface {
                     //close the PO before creating SO
                     $order->status_id = 2; 
                     $order->save();
-                    if($dropship){ //for dropship type, needs to return products to be use in creating SO
-                        return $this->getPurchaseOrderProductsForSalesOrder($id);    
+                    if($dropship){ 
+                        //for dropship type, needs to return products to be use in creating SO
+                        //return $this->getPurchaseOrderProductsForSalesOrder($id);    
+                        return array(
+                          'error' => false,
+                          'message' => 'Product(s) successfully checked in to inventory. You can now create sales order for this dropship');
                     } else { //for producer type
                         return array(
                           'error' => false,

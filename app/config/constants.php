@@ -16,6 +16,9 @@ return array(
     
     'NOS_RESERVED' => 1,
 
+    'LOCATION_DROPSHIP' => 3,
+    'LOCATION_PRODUCER' => 2,
+
     'VERSION' => "3.0"
 
 );
