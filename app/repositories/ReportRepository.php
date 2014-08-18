@@ -1,7 +1,5 @@
 <?php
 
-use \StorageLocationRepositoryInterface;
-
 class ReportRepository implements ReportRepositoryInterface {
     
     /**
