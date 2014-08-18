@@ -412,4 +412,57 @@ class ReportRepository implements ReportRepositoryInterface {
         
         return $transactions;
     }
+    
+    /**
+     * Generate driver's pay
+     * 
+     * @param int $id Contact Id
+     * @param array $params
+     * @return mixed
+     */
+    public function generateDriverPay($id, $params)
+    {
+        $transactions = TransportSchedule::join('contact', 'trucker_id', '=', 'contact.id')
+            ->join('account', 'contact.account', '=', 'account.id')
+            ->join('transportscheduleproduct', 'transportschedule_id', '=', 'transportschedule.id')
+            ->join('weightticketproducts', function($q) use ($params)
+            {
+                $q->on('transportScheduleProduct_id', '=', 'transportscheduleproduct.id');
+                
+                if (isset($params['dateStart']) && isset($params['dateEnd'])) {
+                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                    $q->where('weightticketproducts.created_at', '>', $params['dateStart']);
+                    $q->where('weightticketproducts.created_at', '<', $date_end);
+                } elseif (isset($params['dateStart'])) {
+                    $q->where('weightticketproducts.created_at', '>=', $params['dateStart']);
+                } elseif (isset($params['dateEnd'])) {
+                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                    $q->where('weightticketproducts.created_at', '<=', $date_end);
+                }
+            });
+        
+        $transactions = $transactions->where('transportschedule.trucker_id', '=', $id);
+        
+        $transactions = $transactions->select(
+            'account.name as account_name',
+            'weightticketproducts.bales',
+            'weightticketproducts.pounds',
+            'weightticketproducts.created_at',
+            'transportschedule.truckingrate as trucking_rate',
+            'contact.rate as driver_rate'
+        );
+        
+        $total_bales = $transactions->sum('weightticketproducts.bales');
+        $total_pounds = $transactions->sum('weightticketproducts.pounds');
+        
+        $transactions = $transactions->get();
+        
+        $report['driver'] = Contact::find($id)->toArray();
+        $report['summary']['total_transactions'] = $transactions->count();
+        $report['summary']['total_bales'] = $total_bales;
+        $report['summary']['total_pounds'] = $total_pounds;
+        $report['transactions'] = $transactions->toArray();
+        
+        return $report;
+    }
 }

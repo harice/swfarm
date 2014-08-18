@@ -54,6 +54,19 @@ class ReportController extends BaseController {
     }
     
     /**
+     * Generate driver's pay
+     * 
+     * @param int $id Contact Id
+     * @param array $params
+     * @return mixed
+     */
+    public function generateDriverPay($id)
+    {
+        $result = $this->report->generateDriverPay($id, Input::all());
+        return Response::json($result);
+    }
+    
+    /**
      * Generate a Trucking Statement Report
      * 
      * @param int $id
