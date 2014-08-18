@@ -235,7 +235,7 @@ define([
 						data['location_id'] = thisObj.bidLocationId;
 					}
 					else if(thisObj.isSaveAndCheckIn)
-						data['checkingorder'] = true;
+						data['checkinorder'] = true;
 					
 					if(typeof data['transportdatestart'] != 'undefined')
 						data['transportdatestart'] = thisObj.convertDateFormat(data['transportdatestart'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
@@ -249,7 +249,7 @@ define([
 					purchaseOrderModel.save(
 						null, 
 						{
-							success: function (model, response, options) {
+							success: function (model, response, options) { //console.log(response);
 								if(thisObj.isConvertToPO) {
 									thisObj.isConvertToPO = false;
 									thisObj.hideConfirmationWindow('modal-with-form-confirm', function () {
@@ -260,8 +260,14 @@ define([
 								else if(thisObj.isSaveAndCheckIn) {
 									thisObj.isSaveAndCheckIn = false;
 									thisObj.hideConfirmationWindow('modal-confirm', function () {
-										Global.getGlobalVars().fromPOId = response.purchaseorder_id;
-										Backbone.navigate(Const.URL.SO+'/'+Const.CRUD.ADD, {trigger: true});
+										thisObj.displayMessage(response);
+										var destinationId = thisObj.subContainer.find('input[name=location_id]:checked').val();
+										if(destinationId == Const.PO.DESTINATION.DROPSHIP) {
+											Global.getGlobalVars().fromPOId = parseInt(response.purchaseorder_id);
+											Backbone.history.navigate(Const.URL.SO+'/'+Const.CRUD.ADD, {trigger: true});
+										}
+										else
+											Backbone.history.history.back();
 									});
 								}
 								else {
@@ -383,6 +389,8 @@ define([
 				
 				thisObj.resetSelect(thisObj.subContainer.find('#contact_id'));
 				thisObj.resetSelect(thisObj.subContainer.find('.section_id'));
+				
+				thisObj.currentProducerId = null;
 			},
 			
 			this.producerAutoCompleteView.render();
@@ -1185,7 +1193,7 @@ define([
 		
 		showSaveAndCheckInConfirmationWindow: function (ev) {
 			var destinationId = this.subContainer.find('input[name=location_id]:checked').val();
-			if(Const.PO.SAVEANDCLOSE.indexOf(destinationId) >= 0) {			
+			if(destinationId == Const.PO.DESTINATION.PRODUCER || destinationId == Const.PO.DESTINATION.DROPSHIP) {			
 				this.initConfirmationWindow('Are you sure you want to save and check-in this purchase order?',
 											'confirm-save-and-check-in-order',
 											'Save And Check-In',

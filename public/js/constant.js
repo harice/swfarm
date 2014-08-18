@@ -152,7 +152,10 @@ define(function () {
 			'COLLAPSIBLE': {
 				'ID': 'order-list-collapsible-',
 			},
-			'SAVEANDCLOSE': ['2','3'],
+			'DESTINATION': {
+				'PRODUCER': '2',
+				'DROPSHIP': '3',
+			},
 		},
 		'SO': {
 			'NATUREOFSALES': {

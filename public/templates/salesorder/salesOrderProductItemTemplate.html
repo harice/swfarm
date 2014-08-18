@@ -1,15 +1,15 @@
 <tr class="product-item">
 	<td>
 		<input type="hidden" class="id" name="id" value="" />
-        <% if (typeof verified === "undefined") { %>
-		<div class="styled-select">
-            <select class="form-control product_id width-160" name="product_id"><%= product_list %></select>
-        </div>
-		<% } else { %>
+        <% if (typeof verified !== "undefined" || readonly_products !== "undefined") { %>
 		<div class="styled-select">
             <select class="form-control product_id_dummy width-160" disabled><%= product_list %></select>
         </div>
 		<input type="hidden" class="product_id" name="product_id" value="" />
+		<% } else { %>
+		<div class="styled-select">
+            <select class="form-control product_id width-160" name="product_id"><%= product_list %></select>
+        </div>
 		<% } %>
 	</td>
 	<td>

@@ -14,6 +14,7 @@ define([
     'collections/contract/ContractByAccountCollection',
 	'collections/inventory/StackNumberCollection',
 	'models/salesorder/SalesOrderModel',
+	'models/purchaseorder/PurchaseOrderModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/salesorder/salesOrderAddTemplate.html',
 	'text!templates/salesorder/salesOrderProductItemTemplate.html',
@@ -38,6 +39,7 @@ define([
             ContractByAccountCollection,
 			StackNumberCollection,
 			SalesOrderModel,
+			PurchaseOrderModel,
 			contentTemplate,
 			salesOrderAddTemplate,
 			productItemTemplate,
@@ -72,6 +74,11 @@ define([
 			this.verifyOrder = false;
 			this.verified = false;
 			
+			this.fromPOId = 10;
+			//this.fromPOId = Global.getGlobalVars().fromPOId;
+			//if(Global.getGlobalVars().fromPOId != 0)
+				//Global.getGlobalVars().fromPOId = 0;
+			
 			this.productAutoCompletePool = [];
 			this.stackNumberByProductPool = [];
 			this.options = {
@@ -90,9 +97,20 @@ define([
 				removeComma: ['unitprice', 'tons', 'bales'],
 			};
 			
+			this.POProductsModel = new PurchaseOrderModel();
+			this.POProductsModel.on('change', function() { //console.log(this);
+				thisObj.productCollection.getAllModel();
+				this.off('change');
+			});
+			
 			this.natureOfSaleCollection = new NatureOfSaleCollection();
 			this.natureOfSaleCollection.on('sync', function() {
-				thisObj.productCollection.getAllModel();
+				
+				if(thisObj.fromPOId > 0)
+					thisObj.POProductsModel.getPurchaseOrderProducts(thisObj.fromPOId);
+				else
+					thisObj.productCollection.getAllModel();
+				
 				this.off('sync');
 			});
 			this.natureOfSaleCollection.on('error', function(collection, response, options) {
@@ -220,17 +238,18 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
 			
-			
 			this.initValidateForm();
 			
-			// this.generateOrigin();
 			this.generateNatureOfSale();
-            //this.generateContract();
 			this.initCustomerAutocomplete();
 			this.initCalendar();
 			this.addProduct();
 			this.otherInitializations();
 			this.postDisplayForm();
+			
+			if(this.fromPOId > 0) { console.log(112233); console.log(this.POProductsModel.get('productsummary'));
+				this.usePOProductData(this.POProductsModel.get('productsummary'));
+			}
 		},
 		
 		initValidateForm: function () {
@@ -246,6 +265,9 @@ define([
                     //console.log(data);
 					if(thisObj.verifyOrder)
 						data['verified'] = '1';
+					
+					if(thisObj.fromPOId > 0)
+						data['purchaseorder_id'] = thisObj.fromPOId;
 					
 					var salesOrderModel = new SalesOrderModel(data);
 					
@@ -368,6 +390,7 @@ define([
 				thisObj.$el.find('#contract_id').trigger('change');
 				
 				thisObj.resetSelect(thisObj.subContainer.find('#contact_id'));
+				thisObj.currentCustomerId = null;
 			},
 			
 			this.customerAutoCompleteView.render();
@@ -417,6 +440,8 @@ define([
 				
 				if(this.verified)
 					productTemplateVars['verified'] = true;
+				if(!this.isProductEditable())
+					productTemplateVars['readonly_products'] = true;
 				
 				var productTemplate = _.template(productItemTemplate, productTemplateVars);
 				
@@ -449,6 +474,10 @@ define([
 			
 			if(this.options.productSubFieldClone == null) {
 				var productSubTemplateVars = {};
+				
+				if(!this.isProductEditable())
+					productSubTemplateVars['readonly_products'] = true;
+				
 				var productSubTemplate = _.template(productSubItemTemplate, productSubTemplateVars);
 				tableElement.find('tbody').append(productSubTemplate);
 				var productSubItem = tableElement.find('tbody').find('.product-stack-item:first-child');
@@ -965,6 +994,63 @@ define([
 			this.subContainer.find('#soForm').submit();
 			//this.hideConfirmationWindow();
 			return false;
+		},
+		
+		usePOProductData: function (products) { console.log('usePOProductData'); console.log(products);
+			var thisObj = this;
+			var i= 0;
+			_.each(products, function (product) {
+				var productFields = null;
+				if(i > 0)
+					productFields = thisObj.addProduct();
+				else {
+					productFields = thisObj.$el.find('#product-list > tbody .product-item:first');
+					productFields.find('.product_id').html(thisObj.getProductDropdown());
+				}
+				i++;
+				
+				productFields.find('.product_id').val(product.productname.id);
+				thisObj.convertProductFieldToReadOnly(productFields, product.productname.id, true);
+				productFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(product.tons).toFixed(4)));
+				
+				var j = 0;
+				_.each(product.productorder, function (productSub) {
+					var productSubFields = null;
+					
+					if(j > 0)
+						productSubFields = thisObj.addProductSub(productFields.next('.product-stack').find('.product-stack-table'));
+					else
+						productSubFields = productFields.next('.product-stack').find('.product-stack-table > tbody .product-stack-item:first');
+					j++;
+					
+					productSubFields.find('.stacknumber_dummy').val(productSub.stacknumber);
+					productSubFields.find('.stacknumber').val(productSub.stacknumber);
+					productSubFields.find('.section_id_dummy').val(productSub.sectionfrom.storagelocation.name+' - '+productSub.sectionfrom.name);
+					productSubFields.find('.section_id').val(productSub.sectionfrom.id);
+					productSubFields.find('.tons').val(productSub.tons);
+					productSubFields.find('.bales').val(productSub.bales);
+				});
+			});
+		},
+		
+		convertProductFieldToReadOnly: function (productFields, productId, allowUnitPrice) {
+			if(allowUnitPrice == null || allowUnitPrice != true)
+				allowUnitPrice = false;
+			
+			productFields.find('.product_id_dummy').val(productId);
+			
+			if(!allowUnitPrice)
+				productFields.find('.unitprice').attr('readonly', true);
+			
+			productFields.siblings('.product-item').find('.tons').attr('readonly', true);
+			productFields.find('.unit-price').attr('readonly', true);
+		},
+		
+		isProductEditable: function () {
+			if(this.fromPOId > 0)
+				return false;
+			
+			return true;
 		},
 		
 		otherInitializations: function () {},
