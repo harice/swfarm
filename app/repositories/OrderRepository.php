@@ -276,6 +276,10 @@ class OrderRepository implements OrderRepositoryInterface {
                     });
                 });
             });
+            if($response['location_id'] == Config::get('constants.LOCATION_DROPSHIP')){
+                $reponse['hasSalesOrder'] = $this->checkIfhasSalesOrder($id);
+            }
+            
         } else {
           $response = array(
             'error' => true,
@@ -283,6 +287,14 @@ class OrderRepository implements OrderRepositoryInterface {
         }
 
         return $response;
+    }
+
+    private function checkIfhasSalesOrder($id){
+        $result = Order::where('purchaseorder_id', '=', $id)->count();
+        if($result > 0)
+            return true;
+        else 
+            return false;
     }
     
     public function addOrder($data, $orderType = 1)

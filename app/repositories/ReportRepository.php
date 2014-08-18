@@ -84,29 +84,29 @@ class ReportRepository implements ReportRepositoryInterface {
 
     public function inventoryReportPerLocation($data){
         $storageLocationId = $data['storagelocationId'];
-        // var_dump($data['dateFrom']);
-        // var_dump($data['dateTo']);
+        // var_dump(date( 'Y-m-d'. ' 00:00:00', strtotime($data['dateFrom'])));
+        // var_dump(date( 'Y-m-d'.' 23:59:59', strtotime($data['dateTo'])));
         // var_dump(date('Y-m-d', strtotime($data['dateFrom'])));
-        $result = StorageLocation::with('section.inventoryproduct_sectionto.inventory.inventorytransactiontype')
-                                ->with('section.inventoryproduct_sectionto.inventory.ordernumberForInventory.account')
-                                ->with('section.inventoryproduct_sectionfrom.inventory.inventorytransactiontype')
-                                ->with('section.inventoryproduct_sectionfrom.inventory.ordernumberForInventory.contractnumber')
-                                ->with('section.inventoryproduct_sectionto.inventory.weightticketnumber')
-                                ->wherehas('section', function($section) use ($data){
-                                    $section->whereHas('inventoryproduct_sectionto', function($inventoryproduct_sectionto) use ($data){
-                                        $from = date( 'Y-m-d'. '00:00:00', strtotime($data['dateFrom']));
-                                        $to = date( 'Y-m-d'.' 23:59:59', strtotime($data['dateTo']));
-                                        $inventoryproduct_sectionto->whereBetween('created_at', array($from, $to));
-                                        // $inventoryproduct_sectionto->whereHas('inventory', function($inventory) use ($data){
-                                        //     // $inventory->where('created_atx', '>=', date('Y-m-d'.' 00:00:00', strtotime($data['dateFrom'])))
-                                        //     //           ->where('created_at', '<=', date('Y-m-d'.' 23:59:59', strtotime($data['dateTo'])));
-                                        //     $inventory->whereBetween('created_at', array(date('Y-m-d'.' 00:00:00', strtotime($data['dateFrom'])), date('Y-m-d'.' 23:59:59', strtotime($data['dateTo']))));
-                                        // });
+        $storageLocation = StorageLocation::with('section.inventoryproduct_sectionto.inventory.inventorytransactiontype')
+                                        ->with('section.inventoryproduct_sectionto.inventory.ordernumberForInventory.account')
+                                        ->with('section.inventoryproduct_sectionto.inventory.weightticketnumber')
+                                        ->with('section.inventoryproduct_sectionfrom.inventory.inventorytransactiontype')
+                                        ->with('section.inventoryproduct_sectionfrom.inventory.ordernumberForInventory.contractnumber');
+        if(isset($data['dateFrom']) && isset($data['dateTo'])){
+            $storageLocation = $storageLocation->where(function($subQuery) use ($data){
+                                    $subQuery->wherehas('section', function($section) use ($data){
+                                       $section->whereHas('inventoryproduct_sectionto', function($inventoryproduct_sectionto) use ($data){
+                                            $from = date( 'Y-m-d'. ' 00:00:00', strtotime($data['dateFrom']));
+                                            $to = date( 'Y-m-d'.' 23:59:59', strtotime($data['dateTo']));
+                                            $inventoryproduct_sectionto->whereBetween('created_at', array($from, $to));
+                                        // $inventoryproduct_sectionto->where('created_at', 'like', "'".$data['dateFrom']." %'");
+                                        });
                                     });
-                                })
-                                ->where('id', '=', $storageLocationId)
-                                ->get();
-        return $result->toArray();
+                                });
+        }
+
+        $storageLocation = $storageLocation->where('id', '=', $storageLocationId)->get();
+        return $storageLocation->toArray();
         if($result){
             $data = array();
             $index = 0;
