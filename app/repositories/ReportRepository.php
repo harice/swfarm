@@ -79,15 +79,12 @@ class ReportRepository implements ReportRepositoryInterface {
     /**
      * Generate a Producer Statement Report
      * 
+     * @param int $id Producer Id
      * @param array $params Input
      * @return array
      */
-    public function generateProducerStatement($params)
+    public function generateProducerStatement($id, $params)
     {
-        $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
-        $sortby = isset($params['sortby']) ? $params['sortby'] : 'productorder.created_at';
-        $orderby = isset($params['orderby']) ? $params['orderby'] : 'dsc';
-        
         $statement = array();
         $statements = array();
         
@@ -100,12 +97,10 @@ class ReportRepository implements ReportRepositoryInterface {
             ->join('section', 'section.id', '=', 'productorder.section_id')
             ->join('storagelocation', 'section.storagelocation_id', '=', 'storagelocation.id');
         
-        if (isset($params['accountId'])) {
-            $productorder = $productorder->whereHas('order', function($q) use ($params)
-            {
-                $q->where('account_id', '=', $params['accountId']);
-            });
-        }
+        $productorder = $productorder->whereHas('order', function($q) use ($id)
+        {
+            $q->where('account_id', '=', $id);
+        });
         
         $productorder = $productorder->whereHas('transportscheduleproduct', function($q)
         {
@@ -117,7 +112,14 @@ class ReportRepository implements ReportRepositoryInterface {
         });
         
         if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-            $productorder = $productorder->whereBetween('productorder.created_at', array($params['dateStart'], $params['dateEnd']));
+            $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+            $productorder = $productorder->where('productorder.created_at', '>', $params['dateStart']);
+            $productorder = $productorder->where('productorder.created_at', '<', $date_end);
+        } elseif (isset($params['dateStart'])) {
+            $productorder = $productorder->where('productorder.created_at', '>=', $params['dateStart']);
+        } elseif (isset($params['dateEnd'])) {
+            $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+            $productorder = $productorder->where('productorder.created_at', '<=', $date_end);
         }
         
         $productorder = $productorder->select(
@@ -128,6 +130,8 @@ class ReportRepository implements ReportRepositoryInterface {
             'section.storagelocation_id as storagelocation_id',
             'storagelocation.name as storagelocation_name'
         );
+        
+        $total_transactions = $productorder->count();
         
         $productorders = $productorder->get()->toArray();
         
@@ -150,11 +154,9 @@ class ReportRepository implements ReportRepositoryInterface {
             }
         }
         
-        if (isset($params['accountId'])) {
-            $report['account'] = Account::with('address')->find($params['accountId'])->toArray();
-        }
-        $report['statements'] = $statements;
-//        $report['productorders'] = $productorders;
+        $report['account'] = Account::with('address')->find($id)->toArray();
+        $report['summary']['total_transactions'] = $total_transactions;
+        $report['transactions'] = $statements;
         
         return $report;
     }
