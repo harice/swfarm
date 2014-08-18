@@ -1,0 +1,45 @@
+<% if (!_.isEmpty(operators)) { %>
+  <div class="row margin-top-0">
+    <div class="col-md-7">
+        <h4>Operator: <strong><%= operators.get('operator').fullname %></strong></h4>
+    </div>
+    <div class="col-md-5">
+        <div class="date-filter">
+
+        </div>
+    </div>
+  </div>
+
+  <div class="content-inner table-responsive">
+      <table id="operators-list" class="table-condensed table-bordered table-hover">
+          <thead>
+              <tr>
+                  <th class="sortable sort-name cursor-pointer width-250">Receipt #</th>
+                  <th class="sortable sort-type cursor-pointer width-350">Invoice #</th>
+                  <th class="width-110">Cust Name</th>
+                  <th class="width-110">Load Type</th>
+                  <th class="width-110">Squeeze</th>
+                  <th class="width-110">Amount</th>
+              </tr>
+          </thead>
+          <tbody></tbody>
+      </table>
+                         
+  </div> <!-- /.content-inner -->
+  <% _.each(operator.get('loads'), function(load){ %>
+    <tr>
+      <td><!-- Receipt # --></td>
+      <td><!-- Invoice # --></td>
+      <td><a href="<%= account_url %>/<%= account.get("id") %>"><%= load.get("account_name") %></a></td>
+      <td>
+        <%= load.get("type") %>
+      </td>
+      <td><!-- Squeeze # --></td>
+      <td><%= load.get("amount") %></td>
+    </tr>
+  <% }); %>
+<% } else { %>
+  <tr>
+    <td colspan="6">No results found.</td>
+  </tr>
+<% } %>

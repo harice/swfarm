@@ -1,0 +1,89 @@
+define([
+	'backbone',
+	'views/reports/OperatorsPayListView',
+	'views/reports/ProductStatementListView',
+	'views/reports/TruckingStatementListView',
+	'views/reports/InventoryListView',
+	'views/reports/SalesListView',
+	'views/reports/CommissionListView',
+	'views/reports/GrossListView',
+	'views/reports/DriverListView',
+	'constant',
+], function(Backbone, Operator, Product, Trucking, Inventory, Sales, Commission, Gross, Driver, Const){
+	
+	function ReportController () {	
+		
+		this.setAction = function (action) {
+			
+			switch (action) {
+				case Const.REPORT.OPERATOR:
+					return this.operatorsPay();
+					break;
+				
+				case Const.CRUD.TRUCKING:
+					return this.truckingStatement();
+					break;
+
+				case Const.CRUD.PRODUCT:
+					return this.productStatement();
+					break;
+
+				case Const.CRUD.INVENTORY:
+					return this.inventory();
+					break;
+
+				case Const.CRUD.GROSS:
+					return this.grossProfit();
+					break;
+
+				case Const.CRUD.COMMISSION:
+					return this.commission();
+					break;
+
+				case Const.CRUD.DRIVER:
+					return this.driver();
+					break;
+				
+				default:
+					//Default: SALES
+					return this.sales();
+					break;
+			}
+		};
+		
+		this.operatorsPay = function () {
+			return new Operator();
+		};
+		
+		this.truckingStatement = function () {
+			return new Trucking();
+		};
+		
+		this.productStatement = function () {
+			return new Product();
+		};
+		
+		this.inventory = function () {
+			return new Inventory();
+		}; 
+
+		this.grossProfit = function () {
+			return new Gross();
+		}
+
+		this.commission = function () {
+			return Commission();
+		}
+
+		this.driver = function () {
+			return Driver();
+		}
+
+		this.sales = function () {
+			return Sales();
+		}
+		
+	};
+
+	return ReportController;
+});

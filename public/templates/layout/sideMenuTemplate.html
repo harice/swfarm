@@ -35,7 +35,9 @@
         <li><a href="#/<%= constant.URL.SO %>"><i class="fa fa-file-text"></i><span>Sales</span></a></li>
         <% } %>
 
-		
+		<% if(_.contains(permission,constant.MENU.INVENTORY.VIEW) || _.isEqual(su,constant.SU)) { %>
+        <li><a href="#/<%= constant.URL.INVENTORY %>"><i class="fa fa-folder-o"></i><span>Inventory</span></a></li>
+        <% } %>
 
         <% if(_.contains(permission,constant.MENU.PRODUCTS.VIEW) || _.isEqual(su,constant.SU)) { %>
         <li><a href="#/<%= constant.URL.PRODUCT %>"><i class="fa fa-barcode"></i><span>Products</span></a></li>
