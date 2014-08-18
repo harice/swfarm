@@ -4,67 +4,59 @@ use \StorageLocationRepositoryInterface;
 
 class ReportRepository implements ReportRepositoryInterface {
     
-    public function __construct(StorageLocationRepositoryInterface $storagelocation)
-    {
-        $this->storagelocation = $storagelocation;
-    }
-
     /**
-     * Generate a Customer Sales Report
-     *
+     * Generate a Producer Statement Report
+     * 
+     * @param int $id Producer Id
      * @param array $params Input
-     * @return array
+     * @return mixed
      */
-    public function generateSales($id, $params)
+    public function generateCustomerSales($id, $params)
     {
-        $productorder = ProductOrder::leftJoin('products', 'productorder.product_id', '=', 'products.id')
-            ->join('order', 'productorder.order_id', '=', 'order.id')
+        $transactions = TransportSchedule::join('transportscheduleproduct', 'transportschedule_id', '=', 'transportschedule.id')
+             ->join('weightticketproducts', function($q) use ($params)
+            {
+                $q->on('transportScheduleProduct_id', '=', 'transportscheduleproduct.id');
+                
+                if (isset($params['dateStart']) && isset($params['dateEnd'])) {
+                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                    $q->where('weightticketproducts.created_at', '>', $params['dateStart']);
+                    $q->where('weightticketproducts.created_at', '<', $date_end);
+                } elseif (isset($params['dateStart'])) {
+                    $q->where('weightticketproducts.created_at', '>=', $params['dateStart']);
+                } elseif (isset($params['dateEnd'])) {
+                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                    $q->where('weightticketproducts.created_at', '<=', $date_end);
+                }
+            })
+            ->join('productorder', 'transportscheduleproduct.productorder_id', '=', 'productorder.id')
+            ->join('products', 'productorder.product_id', '=', 'products.id')
+            ->join('order', 'transportschedule.order_id', '=', 'order.id')
             ->join('natureofsale', 'order.natureofsale_id', '=', 'natureofsale.id')
-            ->join('account', 'order.account_id', '=', 'account.id')
-            ->where('order.ordertype', '=', 2);
+            ->join('weightticket', 'transportschedule.id', '=', 'weightticket.transportSchedule_id')
+            ->leftJoin('section', 'section.id', '=', 'productorder.section_id')
+            ->leftJoin('storagelocation', 'section.storagelocation_id', '=', 'storagelocation.id');
         
-        if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-            $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-            $productorder = $productorder->where('order.created_at', '>', $params['dateStart']);
-            $productorder = $productorder->where('order.created_at', '<', $date_end);
-        } elseif (isset($params['dateStart'])) {
-            $productorder = $productorder->where('order.created_at', '>=', $params['dateStart']);
-        } elseif (isset($params['dateEnd'])) {
-            $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-            $productorder = $productorder->where('order.created_at', '<=', $date_end);
-        }
-
-        $productorder = $productorder->where('order.account_id', '=', $id);
-
-        $productorder = $productorder->select(
-                'productorder.id as id',
-                'productorder.order_id',
-                'productorder.product_id',
-                'productorder.tons as tons',
-                'productorder.bales as bales',
-                'productorder.unitprice as unitprice',
-                'productorder.created_at as created_at',
-                'products.name as product_name',
-                'order.order_number as order_number',
-                'order.account_id as account_id',
-                'order.natureofsale_id as natureofsale_id',
-                'order.created_at as order_created_at',
-                'natureofsale.name as natureofsale_name',
-                'account.name as account_name'
-            );
+        $transactions = $transactions->where('order.account_id', '=', $id);
+            
+        $transactions = $transactions->select(
+            'storagelocation.id as storagelocation_id',
+            'storagelocation.name as storagelocation_name',
+            'natureofsale.name as natureofsale',
+            'weightticketproducts.created_at',
+            'weightticket.weightTicketNumber',
+            'products.name as product_name',
+            'weightticketproducts.bales',
+            'weightticketproducts.pounds',
+            'productorder.unitprice'
+        );
         
-        $total_transactions = $productorder->count();
-        $total_bales = $productorder->sum('productorder.bales');
-        $total_tons = $productorder->sum('productorder.tons');
+        $report['customer'] = Account::with('address')->find($id)->toArray();
+        $report['summary']['total_transactions'] = $transactions->count();
+        $report['summary']['total_bales'] = $transactions->sum('weightticketproducts.bales');
+        $report['summary']['total_pounds'] = $transactions->sum('weightticketproducts.pounds');
+        $report['transactions'] = $transactions->get()->toArray();
         
-        $transactions = $productorder->get();
-
-        $report['customer'] = Account::find($id)->toArray();
-        $report['summary']['total_transactions'] = $total_transactions;
-        $report['summary']['total_bales'] = $total_bales;
-        $report['summary']['total_tons'] = $total_tons;
-        $report['transactions'] = $transactions->toArray();
-
         return $report;
     }
     
