@@ -25,9 +25,9 @@ class ReportController extends BaseController {
 	 *
 	 * @return Response
 	 */
-	public function generateSales()
+	public function generateSales($id)
 	{
-        $result = $this->report->generateSales(Input::all());
+        $result = $this->report->generateSales($id, Input::all());
         return Response::json($result);
 	}
     

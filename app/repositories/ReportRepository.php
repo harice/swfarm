@@ -15,65 +15,57 @@ class ReportRepository implements ReportRepositoryInterface {
      * @param array $params Input
      * @return array
      */
-    public function generateSales($params)
+    public function generateSales($id, $params)
     {
-        try {
-            $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
-            $sortby = isset($params['sortby']) ? $params['sortby'] : 'order.created_at';
-            $orderby = isset($params['orderby']) ? $params['orderby'] : 'dsc';
-
-            $report = ProductOrder::leftJoin('products', 'productorder.id', '=', 'products.id')
-                ->join('order', 'productorder.order_id', '=', 'order.id')
-                ->join('natureofsale', 'order.natureofsale_id', '=', 'natureofsale.id')
-                ->join('account', 'order.account_id', '=', 'account.id')
-                ->where('order.ordertype', '=', 2);
-            
-            if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                $report = $report->whereBetween('order.created_at', array($params['dateStart'], $params['dateEnd']));
-            }
-            
-            if (isset($params['accountId'])) {
-                $report = $report->where('order.account_id', '=', $params['accountId']);
-            }
-            
-            if (isset($params['search'])) {
-                $report = $report->where('name', 'like', '%' . $params['search'] . '%');
-            }
-            
-            $report = $report->select(
-                    'productorder.id as id',
-                    'productorder.order_id',
-                    'productorder.product_id',
-                    'productorder.tons as tons',
-                    'productorder.bales as bales',
-                    'productorder.unitprice as unitprice',
-                    'productorder.created_at as created_at',
-                    'products.name as product_name',
-                    'order.order_number as order_number',
-                    'order.account_id as account_id',
-                    'order.natureofsale_id as natureofsale_id',
-                    'order.created_at as order_created_at',
-                    'order.ordertype as order_type',
-                    'natureofsale.name as natureofsale_name',
-                    'account.name as account_name'
-                )
-                ->orderBy($sortby, $orderby)
-                ->paginate($perPage)
-                ->toArray();
-            
-            $report['summary_total'] = 0.0;
-            $report['summary_total_tons'] = 0.0;
-            $report['summary_total_bales'] = 0;
-            foreach ($report['data'] as $data) {
-                $report['summary_total'] += $data['total_price'];
-                $report['summary_total_tons'] += $data['tons'];
-                $report['summary_total_bales'] += $data['bales'];
-            }
-            
-            return $report;
-        } catch (Exception $e) {
-            return $e->getMessage();
+        $productorder = ProductOrder::leftJoin('products', 'productorder.product_id', '=', 'products.id')
+            ->join('order', 'productorder.order_id', '=', 'order.id')
+            ->join('natureofsale', 'order.natureofsale_id', '=', 'natureofsale.id')
+            ->join('account', 'order.account_id', '=', 'account.id')
+            ->where('order.ordertype', '=', 2);
+        
+        if (isset($params['dateStart']) && isset($params['dateEnd'])) {
+            $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+            $productorder = $productorder->where('order.created_at', '>', $params['dateStart']);
+            $productorder = $productorder->where('order.created_at', '<', $date_end);
+        } elseif (isset($params['dateStart'])) {
+            $productorder = $productorder->where('order.created_at', '>=', $params['dateStart']);
+        } elseif (isset($params['dateEnd'])) {
+            $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+            $productorder = $productorder->where('order.created_at', '<=', $date_end);
         }
+
+        $productorder = $productorder->where('order.account_id', '=', $id);
+
+        $productorder = $productorder->select(
+                'productorder.id as id',
+                'productorder.order_id',
+                'productorder.product_id',
+                'productorder.tons as tons',
+                'productorder.bales as bales',
+                'productorder.unitprice as unitprice',
+                'productorder.created_at as created_at',
+                'products.name as product_name',
+                'order.order_number as order_number',
+                'order.account_id as account_id',
+                'order.natureofsale_id as natureofsale_id',
+                'order.created_at as order_created_at',
+                'natureofsale.name as natureofsale_name',
+                'account.name as account_name'
+            );
+        
+        $total_transactions = $productorder->count();
+        $total_bales = $productorder->sum('productorder.bales');
+        $total_tons = $productorder->sum('productorder.tons');
+        
+        $transactions = $productorder->get();
+
+        $report['customer'] = Account::find($id)->toArray();
+        $report['summary']['total_transactions'] = $total_transactions;
+        $report['summary']['total_bales'] = $total_bales;
+        $report['summary']['total_tons'] = $total_tons;
+        $report['transactions'] = $transactions->toArray();
+
+        return $report;
     }
     
     /**
