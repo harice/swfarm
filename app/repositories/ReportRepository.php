@@ -154,6 +154,60 @@ class ReportRepository implements ReportRepositoryInterface {
     }
     
     /**
+     * Generate a Producer Statement Report
+     * 
+     * @param int $id Producer Id
+     * @param array $params Input
+     * @return mixed
+     */
+    public function _generateProducerStatement($id, $params)
+    {
+        $transactions = TransportSchedule::join('transportscheduleproduct', 'transportschedule_id', '=', 'transportschedule.id')
+             ->join('weightticketproducts', function($q) use ($params)
+            {
+                $q->on('transportScheduleProduct_id', '=', 'transportscheduleproduct.id');
+                
+                if (isset($params['dateStart']) && isset($params['dateEnd'])) {
+                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                    $q->where('weightticketproducts.created_at', '>', $params['dateStart']);
+                    $q->where('weightticketproducts.created_at', '<', $date_end);
+                } elseif (isset($params['dateStart'])) {
+                    $q->where('weightticketproducts.created_at', '>=', $params['dateStart']);
+                } elseif (isset($params['dateEnd'])) {
+                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                    $q->where('weightticketproducts.created_at', '<=', $date_end);
+                }
+            })
+            ->join('productorder', 'transportscheduleproduct.productorder_id', '=', 'productorder.id')
+            ->join('products', 'productorder.product_id', '=', 'products.id')
+            ->join('order', 'transportschedule.order_id', '=', 'order.id')
+            ->join('weightticket', 'transportschedule.id', '=', 'weightticket.transportSchedule_id')
+            ->leftJoin('section', 'section.id', '=', 'productorder.section_id')
+            ->leftJoin('storagelocation', 'section.storagelocation_id', '=', 'storagelocation.id');
+        
+        $transactions = $transactions->where('order.account_id', '=', $id);
+            
+        $transactions = $transactions->select(
+            'storagelocation.id as storagelocation_id',
+            'storagelocation.name as storagelocation_name',
+            'weightticketproducts.created_at',
+            'weightticket.weightTicketNumber',
+            'products.name as product_name',
+            'weightticketproducts.bales',
+            'weightticketproducts.pounds',
+            'productorder.unitprice'
+        );
+        
+        $report['producer'] = Account::with('address')->find($id)->toArray();
+        $report['summary']['total_transactions'] = $transactions->count();
+        $report['summary']['total_bales'] = $transactions->sum('weightticketproducts.bales');
+        $report['summary']['total_pounds'] = $transactions->sum('weightticketproducts.pounds');
+        $report['transactions'] = $transactions->get()->toArray();
+        
+        return $report;
+    }
+    
+    /**
      * Generate an Operator Pay Report
      * 
      * @param int $id Contact ID

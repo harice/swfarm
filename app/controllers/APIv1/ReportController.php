@@ -38,7 +38,7 @@ class ReportController extends BaseController {
      */
     public function generateProducerStatement($id)
     {
-        $result = $this->report->generateProducerStatement($id, Input::all());
+        $result = $this->report->_generateProducerStatement($id, Input::all());
         return Response::json($result);
     }
     
