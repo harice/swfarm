@@ -203,7 +203,9 @@ class ReportRepository implements ReportRepositoryInterface {
                     $q->with('order.account');
                     if (isset($params['dateStart']) && isset($params['dateEnd'])) {
                         $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                        $q->whereBetween('created_at', array($params['dateStart'], $date_end));
+//                        $q->whereBetween('created_at', array($params['dateStart'], $date_end));
+                        $q->where('created_at', '>', $params['dateStart']);
+                        $q->where('created_at', '<', $date_end);
                     } elseif (isset($params['dateStart'])) {
                         $q->where('created_at', '>=', $params['dateStart']);
                     } elseif (isset($params['dateEnd'])) {
@@ -353,103 +355,6 @@ class ReportRepository implements ReportRepositoryInterface {
         $report['summary']['total_hauling_fee'] = $total_hauling_fee;
         $report['summary']['total_statement'] = $total_bales + $total_pounds + $total_hauling_fee;
         $report['transactions'] = $transactions->toArray();
-        
-        return $report;
-    }
-    
-    /**
-     * Generate an Operator Pay Report
-     * 
-     * @param int $id Contact ID
-     * @return mixed $report
-     */
-    public function generateAllOperatorPay($params)
-    {
-        // Get load origin
-        $contact_origin = Contact::with(
-            array(
-                'loadOrigin' => function($q) use ($params) {
-                    $q->with('order.account');
-                    if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-//                        $q->whereBetween('created_at', array($params['dateStart'], $date_end));
-                        $q->where('created_at', '>', $params['dateStart']);
-                        $q->where('created_at', '<', $date_end);
-                    } elseif (isset($params['dateStart'])) {
-                        $q->where('created_at', '>=', $params['dateStart']);
-                    } elseif (isset($params['dateEnd'])) {
-                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                        $q->where('created_at', '<=', $date_end);
-                    }
-                }
-            )
-        );
-        
-        $contact_origin = $contact_origin->get();
-        if (!$contact_origin) {
-            throw new Exception('Contact not found.');
-        }
-        
-        $contact_origin = $contact_origin->toArray();
-        
-        // Get load destination
-        $contact_destination = Contact::with(
-            array(
-                'loadDestination' => function($q) use ($params) {
-                    $q->with('order.account');
-                    if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                        $q->whereBetween('created_at', array($params['dateStart'], $date_end));
-                    } elseif (isset($params['dateStart'])) {
-                        $q->where('created_at', '>=', $params['dateStart']);
-                    } elseif (isset($params['dateEnd'])) {
-                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                        $q->where('created_at', '<=', $date_end);
-                    }
-                }
-            )
-        );
-        
-        $contact_destination = $contact_destination->get();
-        if (!$contact_destination) {
-            throw new Exception('Contact not found.');
-        }
-        
-        $contact_destination = $contact_destination->toArray();
-        
-        $loads = array();
-        $i = 0;
-        $total = 0.00;
-        foreach ($contact_origin as $contact) {
-            foreach ($contact['load_origin'] as $load) {
-                $item['id'] = $i;
-                $item['type'] = 'Load';
-                $item['amount'] = $load['originloaderfee'];
-                $item['account_name'] = $load['order']['account']['name'];
-                $item['created_at'] = date('Y-m-d', strtotime($load['created_at']));
-
-                $loads[] = $item;
-                $total += $item['amount'];
-                $i++;
-            }
-        }
-        
-        foreach ($contact_destination as $contact) {
-            foreach ($contact['load_destination'] as $load) {
-                $item['id'] = $i;
-                $item['type'] = 'Unload';
-                $item['amount'] = $load['destinationloaderfee'];
-                $item['account_name'] = $load['order']['account']['name'];
-                $item['created_at'] = date('Y-m-d', strtotime($load['created_at']));
-
-                $loads[] = $item;
-                $total += $item['amount'];
-                $i++;
-            }
-        } 
-        
-        $report['loads'] = $loads;
-        $report['summary']['total'] = $total;
         
         return $report;
     }
