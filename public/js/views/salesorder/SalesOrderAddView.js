@@ -72,10 +72,10 @@ define([
 			this.verifyOrder = false;
 			this.verified = false;
 			
-			//this.fromPOId = 14;
-			this.fromPOId = Global.getGlobalVars().fromPOId;
+			this.fromPOId = 14;
+			/*this.fromPOId = Global.getGlobalVars().fromPOId;
 			if(Global.getGlobalVars().fromPOId != 0)
-				Global.getGlobalVars().fromPOId = 0;
+				Global.getGlobalVars().fromPOId = 0;*/
 			
 			this.productAutoCompletePool = [];
 			this.stackNumberByProductPool = [];
@@ -993,7 +993,11 @@ define([
 		
 		usePOData: function () {
 			var thisObj = this;
-			var i= 0;
+			var contract = this.POProductsModel.get('contractnumber');
+			var adddress = [];
+			adddress.push({
+				street:contract.accountname.businessaddress.street,
+			});
 			
 			this.subContainer.find('[name="natureofsale_id"][value="'+Const.SO.NATUREOFSALES.WITHCONTRACT+'"]').attr('checked', true).trigger('change');
 			this.subContainer.find('[name="natureofsale_id"]').each(function () {
@@ -1001,6 +1005,15 @@ define([
 					$(this).closest('.radio-inline').remove();
 			});
 			
+			this.customerAutoCompleteView.autoCompleteResult = [{name:contract.accountname.name, id:contract.accountname.id, address:address}];
+			this.$el.find('#account').val(contract.accountname.name);
+			this.$el.find('#account_id').val(contract.accountname.id);
+			this.$el.find('#street').val(contract.accountname.businessaddress.street);
+			this.$el.find('#state').val(address[0].address_states.state);
+			this.$el.find('#city').val(address[0].city);
+			this.$el.find('#zipcode').val(address[0].zipcode);
+			
+			var i= 0;
 			_.each(this.POProductsModel.get('productsummary'), function (product) {
 				var productFields = null;
 				if(i > 0)
