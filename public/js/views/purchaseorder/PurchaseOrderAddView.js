@@ -14,7 +14,7 @@ define([
 	'collections/inventory/StackNumberCollection',
 	'collections/stack/LocationCollection',
 	'models/purchaseorder/PurchaseOrderModel',
-	'models/file/FileModel',
+	'models/document/DocumentModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderProductItemTemplate.html',
@@ -38,7 +38,7 @@ define([
 			StackNumberCollection,
 			LocationCollection,
 			PurchaseOrderModel,
-			FileModel,
+			DocumentModel,
 			contentTemplate,
 			purchaseOrderAddTemplate,
 			productItemTemplate,
@@ -937,7 +937,7 @@ define([
 			this.showFieldThrobber('#pdf-file');
 			
 			var thisObj = this;
-			var fileModel = new FileModel(data);
+			var fileModel = new DocumentModel(data);
 			fileModel.save(
 				null, 
 				{

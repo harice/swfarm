@@ -731,7 +731,7 @@ class OrderRepository implements OrderRepositoryInterface {
             }
 
             if(isset($product['uploadedfile'])){
-                $this->linkUploadFilesToProductOrder($product['uploadedfile'], $productorder->id);
+                $this->linkUploadDocumentToProductOrder($product['uploadedfile'], $productorder->id);
             }
 
         }
@@ -757,21 +757,21 @@ class OrderRepository implements OrderRepositoryInterface {
         }
     }
 
-    private function linkUploadFilesToProductOrder($uploadedfile, $productorderid)
+    private function linkUploadDocumentToProductOrder($uploadedfile, $productorderid)
     {
         $prd_o = ProductOrder::find($productorderid);
         if($prd_o)
         {
             // var_dump(get_class($prd_o));exit();
-            if(is_array($prd_o->fileable)) {
+            if(is_array($prd_o->documentable)) {
                 foreach ($prd_o->fileable as $k => $v) {
                     $v->delete();
                 }
             } else {
-                $file = File::find($uploadedfile);
+                $file = Document::find($uploadedfile);
                 $file->issave = 1;
-                $file->fileable_id = $prd_o->id;
-                $file->fileable_type = get_class($prd_o);
+                $file->documentable_id = $prd_o->id;
+                $file->documentable_type = get_class($prd_o);
                 $file->save;
             }
         }

@@ -2,8 +2,8 @@ define([
 	'backbone',
 ], function(Backbone) {
 
-	var FileModel = Backbone.Model.extend({
-		urlRoot: '/apiv1/file',
+	var DocumentModel = Backbone.Model.extend({
+		urlRoot: '/apiv1/document',
 		defaults: {
         },
 		runFetch: function () {
@@ -29,5 +29,5 @@ define([
 			});
 		},
 	});
-	return FileModel;
+	return DocumentModel;
 });

@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Description of FileRepository
+ * Description of DocumentRepository
  *
  * @author Avs
  */
-class FileRepository implements FileRepositoryInterface {
+class DocumentRepository implements DocumentRepositoryInterface {
     
-    public function uploadFile($data){
+    public function uploadDocument($data){
           // var_dump($data);
           $this->validate($data);
 
@@ -23,7 +23,7 @@ class FileRepository implements FileRepositoryInterface {
               );
           }
           
-          $file = new File;
+          $file = new Document;
           $file->fill($data);
           $file->save();
 
@@ -38,7 +38,7 @@ class FileRepository implements FileRepositoryInterface {
  
     }
 
-    public function displayFile($dataEncrypted){
+    public function displayDocument($dataEncrypted){
         $data = base64_decode($dataEncrypted);
         
         $data = explode(',', $data);
@@ -67,7 +67,7 @@ class FileRepository implements FileRepositoryInterface {
               );
         }
       
-        $file = File::where('issave', '=', 1)->where('id', '=', $fileId)->first();
+        $file = Document::where('issave', '=', 1)->where('id', '=', $fileId)->first();
         if($file){
             header('Content-Type: '.$file->type);
             // return $file->content;
@@ -80,8 +80,8 @@ class FileRepository implements FileRepositoryInterface {
         }
     }
 
-    public function filesCleanUp(){
-        $files = File::where('issave', '=', 0)->where('created_at', '<', 'NOW() - INTERVAL 1 DAY')->get();
+    public function documentsCleanUp(){
+        $files = Document::where('issave', '=', 0)->where('created_at', '<', 'NOW() - INTERVAL 1 DAY')->get();
 
         if($files != null){
             foreach($files as $file){
@@ -149,7 +149,6 @@ class FileRepository implements FileRepositoryInterface {
     public function validate($data, $id = null)
     {
         $rules = array(
-            'name' => 'required',
             'type' => 'required',
             'size' => 'required',
             'content' => 'required'
@@ -172,7 +171,7 @@ class FileRepository implements FileRepositoryInterface {
     
     public function instance($data = array())
     {
-        return new File($data);
+        return new Document($data);
     }
     
 }

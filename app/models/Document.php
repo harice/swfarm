@@ -1,6 +1,6 @@
 <?php
 
-class File extends BaseModel 
+class Document extends BaseModel 
 {
 	public static $rules = array(
         'type' => 'required',
@@ -25,7 +25,7 @@ class File extends BaseModel
         'size'
     );
 
-    public function fileable()
+    public function documentable()
     {
         return $this->morphTo();
     }

@@ -4,7 +4,7 @@
  *
  * @author Avs
  */
-interface FileRepositoryInterface {
+interface DocumentRepositoryInterface {
     public function uploadFile($params);
     public function store($data);
     public function destroy($id);
