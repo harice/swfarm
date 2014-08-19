@@ -774,7 +774,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
             return Response::json(array(
               'error' => false,
-              'message' => 'Weighticket successfully close.'), 200);
+              'message' => 'Weighticket successfully closed.'), 200);
             // return $weightticket;
         }
         catch (Exception $e)
