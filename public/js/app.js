@@ -298,11 +298,11 @@ define([
 				responseJSON = data.responseJSON;
 			else
 				responseJSON = data;
-			
+
 			if(responseJSON.error != 'undefined') {
 				var error = responseJSON.error;
 				var type = (error == false)? 'success' : 'error';
-				var message = type;
+				var message = responseJSON.message;
 				
 				if(typeof error.message != 'undefined')
 					message = error.message;

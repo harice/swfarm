@@ -334,7 +334,7 @@ class AccountRepository implements AccountRepositoryInterface {
 
   public function getAllContactOnAccount($accountId)
   {
-    $contacts = Contact::whereHas('Account', function($query) use ($accountId){ $query->where('id', '=', $accountId); })->get(array('id','firstname','lastname'));
+    $contacts = Contact::whereHas('Account', function($query) use ($accountId){ $query->where('id', '=', $accountId); })->get(array('id','firstname','lastname','suffix'));
     return Response::json( $contacts->toArray(), 200 );
   }
 
