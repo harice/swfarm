@@ -139,17 +139,15 @@ define([
             
             account.fetch({
                 success: function (account) {
-                    if (
-                        account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.LOADER ||
-                        account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.OPERATOR ||
-                        account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.TRUCKER ||
-                        account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.SWFTRUCKER
-                    ) {
-                        $('#rate').attr("disabled", false);
-                    } else {
-                        $('#rate').val('0.00');
+                	var ids = _.pluck(account.get("accounttype"), 'id');
+                	var accountwithrates = [ Const.ACCOUNT_TYPE.LOADER, Const.ACCOUNT_TYPE.OPERATOR, Const.ACCOUNT_TYPE.TRUCKER, Const.ACCOUNT_TYPE.SWFTRUCKER ];
+                	var hasrate = _.find(ids, function(t){ return _.contains(accountwithrates,parseInt(t)); });
+
+                	if(hasrate) $('#rate').attr("disabled", false);
+                	else {
+                		$('#rate').val('0.00');
                         $('#rate').attr("disabled", true);
-                    }
+                	}
                 },
                 error: function (model, response, options) {
                     console.log('Fail to fetch account.');

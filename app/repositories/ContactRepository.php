@@ -254,11 +254,11 @@ class ContactRepository implements ContactRepositoryInterface {
      */
     public function hasRate($account_id)
     {
-        $types = array(3,4,8,9);
+        $types = array(3,4,8,9); // Loader, Operator, Trucker, Southwest Farms
         $account = Account::where('id','=',$account_id)
                         ->whereHas('accounttype', function($q) use($types) { $q->whereIn('accounttype_id', $types); } )
                         ->groupBy('id')->count();
-
+        
         if($account) return true;
         return false;
     }

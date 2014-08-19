@@ -31,7 +31,7 @@ class CreateAccountAccounttype extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('accountpivottypes');
+		Schema::dropIfExists('account_accounttype');
 	}
 
 }
