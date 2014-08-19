@@ -12,6 +12,7 @@ require.config({
 		jqueryphonenumber: 'libs/jquery/jquery.phonenumber',
 		bootstrap: 'libs/bootstrap/bootstrap.min',
 		bootstrapdatepicker: 'libs/bootstrap/bootstrap-datepicker',
+		bootstrapmultiselect: 'libs/bootstrap.multiselect/js/bootstrap-multiselect',
 		underscore: 'libs/underscore/underscore-min',
 		backbone: 'libs/backbone/backbone-min',
         autocomplete: 'libs/fatiherikli/backbone-autocomplete/src/backbone.autocomplete',
@@ -41,8 +42,13 @@ require.config({
 			exports: 'Backbone'
 		},
 		'bootstrapdatepicker': {
-			deps: ['jquery'],
+			deps: ['jquery', 'bootstrap'],
 			exports: 'DatePicker',
+		},
+
+		'bootstrapmultiselect': {
+			deps: ['jquery', 'bootstrap'],
+			exports: 'bootstrapMultiSelect',
 		},
 
 		'behaviourcore': {

@@ -22,11 +22,11 @@ return array(
 	"array"            => "The :attribute must be an array.",
 	"before"           => "The :attribute must be a date before :date.",
 	"between"          => array(
-		"numeric" => "The :attribute must be between :min and :max.",
-		"file"    => "The :attribute must be between :min and :max kilobytes.",
-		"string"  => "The :attribute must be between :min and :max characters.",
-		"array"   => "The :attribute must have between :min and :max items.",
-	),
+							"numeric" => "The :attribute must be between :min and :max.",
+							"file"    => "The :attribute must be between :min and :max kilobytes.",
+							"string"  => "The :attribute must be between :min and :max characters.",
+							"array"   => "The :attribute must have between :min and :max items.",
+						),
 	"confirmed"        => "The :attribute confirmation does not match.",
 	"date"             => "The :attribute is not a valid date.",
 	"date_format"      => "The :attribute does not match the format :format.",
@@ -40,18 +40,18 @@ return array(
 	"integer"          => "The :attribute must be an integer.",
 	"ip"               => "The :attribute must be a valid IP address.",
 	"max"              => array(
-		"numeric" => "The :attribute may not be greater than :max.",
-		"file"    => "The :attribute may not be greater than :max kilobytes.",
-		"string"  => "The :attribute may not be greater than :max characters.",
-		"array"   => "The :attribute may not have more than :max items.",
-	),
+							"numeric" => "The :attribute may not be greater than :max.",
+							"file"    => "The :attribute may not be greater than :max kilobytes.",
+							"string"  => "The :attribute may not be greater than :max characters.",
+							"array"   => "The :attribute may not have more than :max items.",
+						),
 	"mimes"            => "The :attribute must be a file of type: :values.",
 	"min"              => array(
-		"numeric" => "The :attribute must be at least :min.",
-		"file"    => "The :attribute must be at least :min kilobytes.",
-		"string"  => "The :attribute must be at least :min characters.",
-		"array"   => "The :attribute must have at least :min items.",
-	),
+							"numeric" => "The :attribute must be at least :min.",
+							"file"    => "The :attribute must be at least :min kilobytes.",
+							"string"  => "The :attribute must be at least :min characters.",
+							"array"   => "The :attribute must have at least :min items.",
+						),
 	"not_in"           => "The selected :attribute is invalid.",
 	"numeric"          => "The :attribute must be a number.",
 	"regex"            => "The :attribute format is invalid.",
@@ -61,13 +61,15 @@ return array(
 	"required_without" => "The :attribute field is required when :values is not present.",
 	"same"             => "The :attribute and :other must match.",
 	"size"             => array(
-		"numeric" => "The :attribute must be :size.",
-		"file"    => "The :attribute must be :size kilobytes.",
-		"string"  => "The :attribute must be :size characters.",
-		"array"   => "The :attribute must contain :size items.",
-	),
+							"numeric" => "The :attribute must be :size.",
+							"file"    => "The :attribute must be :size kilobytes.",
+							"string"  => "The :attribute must be :size characters.",
+							"array"   => "The :attribute must contain :size items.",
+						),
 	"unique"           => "The :attribute has already been taken.",
 	"url"              => "The :attribute format is invalid.",
+
+	"contains"			=> "The :attribute must have at least :contains items.",
 
 	/*
 	|--------------------------------------------------------------------------
@@ -102,7 +104,8 @@ return array(
 		'phone' =>'phone number',
 		'contact_id' =>'contact',
 		'account_id' =>'account',
-		'truck_id' =>'truck'
-		),
+		'accounttype' =>'account type',
+		'truck_id' =>'truck',
+	),
 
 );

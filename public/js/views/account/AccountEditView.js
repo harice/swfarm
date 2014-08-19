@@ -4,6 +4,7 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
+	'bootstrapmultiselect',
 	'models/account/AccountModel',
 	'models/account/AccountExtrasModel',
 	'collections/address/CityCollection',
@@ -18,6 +19,7 @@ define([
 			Validate,
 			TextFormatter,
 			PhoneNumber,
+			bootstrapMultiSelect,
 			AccountModel,
 			AccountExtrasModel,
 			CityCollection,
@@ -73,7 +75,14 @@ define([
 			var thisObj = this;
 			
 			$('#name').val(this.model.get('name'));
-			$('#accounttype').val(this.model.get('accounttype')[0].id);
+			
+			var acctype = [];
+			_.each(this.model.get('accounttype'), function(t){
+				acctype.push(t.id);
+			});
+			$('#accounttype').val(acctype);
+			$('#accounttype').multiselect('refresh');
+
 			$('#website').val(this.model.get('website'));
 			$('#description').val(this.model.get('description'));
 			$('#phone').val(this.model.get('phone'));

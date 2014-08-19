@@ -13,7 +13,6 @@ class AccountTableSeeder extends Seeder {
                 'website' => 'http://www.haysupplier.com',
                 'description' => 'Lorem ipsum set amet.',
                 'phone' => '123-434-4343',
-                'accounttype' => 1,
                 'created_at' => $date,
                 'updated_at' => $date
             ),
@@ -22,7 +21,6 @@ class AccountTableSeeder extends Seeder {
                 'website' => 'http://www.haysupplier.com',
                 'description' => 'Lorem ipsum set amet.',
                 'phone' => '123-434-4343',
-                'accounttype' => 2,
                 'created_at' => $date,
                 'updated_at' => $date
             ),
@@ -31,7 +29,6 @@ class AccountTableSeeder extends Seeder {
                 'website' => 'http://www.haysupplier.com',
                 'description' => 'Lorem ipsum set amet.',
                 'phone' => '123-434-4343',
-                'accounttype' => 3,
                 'created_at' => $date,
                 'updated_at' => $date
             ),
@@ -40,7 +37,6 @@ class AccountTableSeeder extends Seeder {
                 'website' => 'http://www.haysupplier.com',
                 'description' => 'Lorem ipsum set amet.',
                 'phone' => '123-434-4343',
-                'accounttype' => 3,
                 'created_at' => $date,
                 'updated_at' => $date
             ),
@@ -49,7 +45,6 @@ class AccountTableSeeder extends Seeder {
                 'website' => 'http://www.haysupplier.com',
                 'description' => 'Lorem ipsum set amet.',
                 'phone' => '123-434-4343',
-                'accounttype' => 4,
                 'created_at' => $date,
                 'updated_at' => $date
             ),
@@ -58,7 +53,6 @@ class AccountTableSeeder extends Seeder {
                 'website' => 'http://www.haysupplier.com',
                 'description' => 'Lorem ipsum set amet.',
                 'phone' => '123-434-4343',
-                'accounttype' => 5,
                 'created_at' => $date,
                 'updated_at' => $date
             ),
@@ -67,7 +61,6 @@ class AccountTableSeeder extends Seeder {
                 'website' => 'http://www.haysupplier.com',
                 'description' => 'Lorem ipsum set amet.',
                 'phone' => '123-434-4343',
-                'accounttype' => 6,
                 'created_at' => $date,
                 'updated_at' => $date
             ),
@@ -76,7 +69,6 @@ class AccountTableSeeder extends Seeder {
                 'website' => 'http://www.haysupplier.com',
                 'description' => 'Lorem ipsum set amet.',
                 'phone' => '123-434-4343',
-                'accounttype' => 6,
                 'created_at' => $date,
                 'updated_at' => $date
             ),
@@ -85,7 +77,6 @@ class AccountTableSeeder extends Seeder {
                 'website' => 'http://www.haysupplier.com',
                 'description' => 'Lorem ipsum set amet.',
                 'phone' => '123-434-4343',
-                'accounttype' => 7,
                 'created_at' => $date,
                 'updated_at' => $date
             ),
@@ -94,7 +85,6 @@ class AccountTableSeeder extends Seeder {
                 'website' => 'http://www.haysupplier.com',
                 'description' => 'Lorem ipsum set amet.',
                 'phone' => '123-434-4343',
-                'accounttype' => 8,
                 'created_at' => $date,
                 'updated_at' => $date
             ),
@@ -103,7 +93,6 @@ class AccountTableSeeder extends Seeder {
                 'website' => 'http://www.haysupplier.com',
                 'description' => 'Lorem ipsum set amet.',
                 'phone' => '123-434-4343',
-                'accounttype' => 9,
                 'created_at' => $date,
                 'updated_at' => $date
             ),
@@ -112,7 +101,6 @@ class AccountTableSeeder extends Seeder {
                 'website' => 'http://www.haysupplier.com',
                 'description' => 'Lorem ipsum set amet.',
                 'phone' => '123-434-4343',
-                'accounttype' => 1,
                 'created_at' => $date,
                 'updated_at' => $date
             ),
@@ -121,7 +109,6 @@ class AccountTableSeeder extends Seeder {
                 'website' => 'http://www.haysupplier.com',
                 'description' => 'Lorem ipsum set amet.',
                 'phone' => '123-434-4343',
-                'accounttype' => 1,
                 'created_at' => $date,
                 'updated_at' => $date
             ),
@@ -130,7 +117,6 @@ class AccountTableSeeder extends Seeder {
                 'website' => 'http://www.haysupplier.com',
                 'description' => 'Lorem ipsum set amet.',
                 'phone' => '123-434-4343',
-                'accounttype' => 1,
                 'created_at' => $date,
                 'updated_at' => $date
             ),
@@ -139,7 +125,6 @@ class AccountTableSeeder extends Seeder {
                 'website' => 'http://www.producer-a.com',
                 'description' => 'Lorem ipsum set amet.',
                 'phone' => '123-434-4343',
-                'accounttype' => 5,
                 'created_at' => $date,
                 'updated_at' => $date
             ),
@@ -148,7 +133,6 @@ class AccountTableSeeder extends Seeder {
                 'website' => 'http://www.producer-b.com',
                 'description' => 'Lorem ipsum set amet.',
                 'phone' => '123-434-4343',
-                'accounttype' => 5,
                 'created_at' => $date,
                 'updated_at' => $date
             ),
@@ -157,7 +141,6 @@ class AccountTableSeeder extends Seeder {
                 'website' => 'http://www.producer-c.com',
                 'description' => 'Lorem ipsum set amet.',
                 'phone' => '123-434-4343',
-                'accounttype' => 5,
                 'created_at' => $date,
                 'updated_at' => $date
             ),
