@@ -153,6 +153,7 @@ define(function () {
 				'ID': 'order-list-collapsible-',
 			},
 			'DESTINATION': {
+				'SWFARMS': '1',
 				'PRODUCER': '2',
 				'DROPSHIP': '3',
 			},

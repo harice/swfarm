@@ -1,7 +1,7 @@
 <tr class="product-stack-item">
 	<td>
 		<input type="hidden" class="id" name="id" value="" />
-		<% if (readonly_products !== "undefined") { %>
+		<% if (typeof readonly_products !== "undefined") { %>
 		<input class="form-control stacknumber_dummy" type="text" readonly>
 		<input type="hidden" class="stacknumber" name="stacknumber" value="" />
 		<% } else { %>
@@ -14,7 +14,7 @@
 		<% } %>
 	</td>
 	<td>
-		<% if (readonly_products !== "undefined") { %>
+		<% if (typeof readonly_products !== "undefined") { %>
 		<input class="form-control section_id_dummy" type="text" readonly>
 		<input type="hidden" class="section_id" name="section_id" value="" />
 		<% } else { %>
@@ -26,8 +26,8 @@
 		<% } %>
 	</td>
 	<td><input class="form-control description" name="description" maxlength="80"></td>
-	<td><input class="form-control text-right tons" name="tons" type="text" maxlength="12"<% if (readonly_products !== "undefined") { %> readonly<% } %>></td>
-	<td><input class="form-control text-right bales" name="bales" type="text"<% if (readonly_products !== "undefined") { %> readonly<% } %>></td>
+	<td><input class="form-control text-right tons" name="tons" type="text" maxlength="12"<% if (typeof readonly_products !== "undefined") { %> readonly<% } %>></td>
+	<td><input class="form-control text-right bales" name="bales" type="text"<% if (typeof readonly_products !== "undefined") { %> readonly<% } %>></td>
 	<td>
 		<button title="Remove Product Stack" type="button" class="pull-right btn btn-danger btn-xs remove-product-stack"><span class="glyphicon glyphicon-remove"></span></button>
 	</td>

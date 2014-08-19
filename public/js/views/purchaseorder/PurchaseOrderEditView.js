@@ -79,9 +79,12 @@ define([
 				}
 				else
 					thisObj.isBid = false;
+				
+				if(parseInt(this.get('location').id) == parseInt(Const.PO.DESTINATION.DROPSHIP))
+					thisObj.contractByAccountCollection.getContractByAccount(this.get('contract').account.id);
+				else
+					thisObj.locationCollection.getLocationByAccount(this.get('account_id'));
 
-				thisObj.locationCollection.getLocationByAccount(this.get('account_id'));
-				//thisObj.stackNumberCollection.getStackNumbersByProduct({id:thisObj.soProducts[thisObj.soProductsIndex]});
 				
 				this.off('change');
 			});
@@ -98,6 +101,7 @@ define([
 			var account = this.model.get('account');
 			var address = [this.model.get('orderaddress')];
 			var products = this.model.get('productsummary');
+			var contract = this.model.get('contract');
 			
 			this.$el.find('#ponumber').val(this.model.get('order_number'));
 			this.$el.find('#status').val(this.model.get('status').name);
@@ -112,6 +116,16 @@ define([
 			this.$el.find('#city').val(address[0].city);
 			this.$el.find('#zipcode').val(address[0].zipcode);
 			this.$el.find('#dateofpurchase').val(this.convertDateFormat(this.model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
+			
+			if(parseInt(this.model.get('location').id) == parseInt(Const.PO.DESTINATION.DROPSHIP)) {
+				this.toggleSOFields(this.model.get('location').id);
+				this.customerAutoCompleteView.autoCompleteResult = [{name:contract.account.name, id:contract.account.id}];
+				this.$el.find('#account_customer').val(contract.account.name);
+				this.$el.find('#account_id_customer').val(contract.account.id);
+				this.generateContract();
+				if(this.model.get('contract') && typeof this.model.get('contract').id != 'undefined')
+					this.$el.find('#contract_id').val(this.model.get('contract').id);
+			}
 			
 			this.currentProducerId = account.id;
 			this.producerAccountContactId = this.model.get('contact_id');

@@ -54,8 +54,6 @@ define([
 	var SalesOrderAddView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
-		customerAutoCompleteView: null,
-		
 		initialize: function() {
 			this.initSubContainer();
 			this.soId = null;
@@ -74,10 +72,10 @@ define([
 			this.verifyOrder = false;
 			this.verified = false;
 			
-			this.fromPOId = 10;
-			//this.fromPOId = Global.getGlobalVars().fromPOId;
-			//if(Global.getGlobalVars().fromPOId != 0)
-				//Global.getGlobalVars().fromPOId = 0;
+			//this.fromPOId = 14;
+			this.fromPOId = Global.getGlobalVars().fromPOId;
+			if(Global.getGlobalVars().fromPOId != 0)
+				Global.getGlobalVars().fromPOId = 0;
 			
 			this.productAutoCompletePool = [];
 			this.stackNumberByProductPool = [];
@@ -247,8 +245,8 @@ define([
 			this.otherInitializations();
 			this.postDisplayForm();
 			
-			if(this.fromPOId > 0) { console.log(112233); console.log(this.POProductsModel.get('productsummary'));
-				this.usePOProductData(this.POProductsModel.get('productsummary'));
+			if(this.fromPOId > 0) {
+				this.usePOData();
 			}
 		},
 		
@@ -334,9 +332,6 @@ define([
 		
 		initCustomerAutocomplete: function () {
 			var thisObj = this;
-			
-			if(this.customerAutoCompleteView != null)
-				this.customerAutoCompleteView.deAlloc();
 			
 			var accountCustomerCollection = new AccountCustomerCollection();
 			this.customerAutoCompleteView = new CustomAutoCompleteView({
@@ -996,10 +991,17 @@ define([
 			return false;
 		},
 		
-		usePOProductData: function (products) { console.log('usePOProductData'); console.log(products);
+		usePOData: function () {
 			var thisObj = this;
 			var i= 0;
-			_.each(products, function (product) {
+			
+			this.subContainer.find('[name="natureofsale_id"][value="'+Const.SO.NATUREOFSALES.WITHCONTRACT+'"]').attr('checked', true).trigger('change');
+			this.subContainer.find('[name="natureofsale_id"]').each(function () {
+				if($(this).val() != Const.SO.NATUREOFSALES.WITHCONTRACT)
+					$(this).closest('.radio-inline').remove();
+			});
+			
+			_.each(this.POProductsModel.get('productsummary'), function (product) {
 				var productFields = null;
 				if(i > 0)
 					productFields = thisObj.addProduct();
@@ -1055,6 +1057,10 @@ define([
 		
 		otherInitializations: function () {},
 		postDisplayForm: function () {},
+		
+		destroySubViews: function () {
+			this.customerAutoCompleteView.destroyView();
+		},
 	});
 
   return SalesOrderAddView;

@@ -418,9 +418,12 @@ define([
 		
 		resetSelect: function (select, trigger) {
 			select.find('option:gt(0)').remove();
-			if(trigger != null && typeof trigger !== 'undefined')
+			if(trigger != null && typeof trigger !== 'undefined' && trigger == true)
 				select.val('').trigger('change');
 		},
+		
+		destroyView: function () {},
+		destroySubViews: function () {},
 	});
 
 	return AppView;

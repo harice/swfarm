@@ -1,7 +1,7 @@
 <tr class="product-item">
 	<td>
 		<input type="hidden" class="id" name="id" value="" />
-        <% if (typeof verified !== "undefined" || readonly_products !== "undefined") { %>
+        <% if (typeof verified !== "undefined" || typeof readonly_products !== "undefined") { %>
 		<div class="styled-select">
             <select class="form-control product_id_dummy width-160" disabled><%= product_list %></select>
         </div>
