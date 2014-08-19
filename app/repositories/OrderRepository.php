@@ -1190,7 +1190,7 @@ class OrderRepository implements OrderRepositoryInterface {
 
     //used in creating dropship, need to copy all the product details on PO to be used in SO
     public function getPurchaseOrderProductsForSalesOrder($purchaseOrderId){
-        $order = Order::with('contractnumber.accountname.businessaddress')
+        $order = Order::with('contractnumber.accountname.businessaddress.addressstates')
                         ->with('productsummary.productname')
                         ->with('productsummary.productorder.product')
                         // ->with('productsummary.productorder.upload.files')
