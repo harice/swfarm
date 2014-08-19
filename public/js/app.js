@@ -8,8 +8,7 @@ define([
 	'views/layout/HeaderView',
 	'views/layout/SideMenuView',
 	'global',
-	'constant',
-    'throbber'
+	'constant'
 ], function(Backbone, Bootstrap, Router, AppView, SessionModel, HeaderView, SideMenuView, Global, Const){
 	var initialize = function(){
 		
@@ -305,8 +304,8 @@ define([
 				var type = (error == false)? 'success' : 'error';
 				var message = type;
 				
-				if(typeof responseJSON.message != 'undefined')
-					message = responseJSON.message;
+				if(typeof error.message != 'undefined')
+					message = error.message;
 				
 				if(typeof message == 'string') {
                     message = '<p>' + message + '</p>';

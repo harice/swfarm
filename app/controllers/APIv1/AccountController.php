@@ -58,7 +58,7 @@ class AccountController extends BaseController {
 
 	public function search()
 	{
-		return $this->account->search( Input::all() );
+		return $this->account->paginate( Input::all() );
 	}
 
 	/**
@@ -101,11 +101,6 @@ class AccountController extends BaseController {
 		return $this->account->getAddress(Input::get('accountId'));
 	}
 
-	// public function getTruckerAccount(){
-	// 	//return $this->account->getTruckerAccount(Input::get('search'));
-	// 	return $this->account->getTruckerAccount(Input::get('accountTypeId'));
-	// }
-
 	public function getAccountsByType(){
 		return $this->account->getAccountsByType(Input::get('accountTypeId'));
 	}
@@ -139,7 +134,6 @@ class AccountController extends BaseController {
 	}
 
 	public function getTruckerAccountTypes(){
-		//return $this->account->getTruckerAccount(Input::get('search'));
 		return $this->account->getTruckerAccountTypes();
 	}
     

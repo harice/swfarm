@@ -2,290 +2,193 @@
  
 class AccountRepository implements AccountRepositoryInterface {
 
-  public function findAll(){
-    $account = Account::all();
+  public function findAll() { return Response::json(Account::all()->toArray(),200); }
 
-    return Response::json(
-        $account->toArray(),
-        200
-      );
-  }
+  public function findById($id)
+  {
+    $account = Account::with('accounttype', 'address', 'address.addressStates', 'address.addressType')->find($id);          
 
-  public function findById($id){
-    $account = Account::with('accounttype')->with('address', 'address.addressStates', 'address.addressType')->find($id);          
-
-    if($account){
-      $response = Response::json(
-        $account->toArray(),
-        200
-      );
-    } else {
-      $response = Response::json(array(
-        'error' => true,
-        'message' => "Account not found"),
-        200
-      );
-    }
+    if($account)
+      $response = Response::json($account->toArray(),200);
+    else
+      $response = Response::json(array('error' => array('message' => "Account not found")),500);
 
     return $response;
   }
 
-  public function paginate($params){
-    $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST'); //default to 10 items, see app/config/constants
-    $page = isset($params['page']) ? $params['page'] : '1'; //default to page 1
-    $sortby = isset($params['sortby']) ? $params['sortby'] : 'name'; //default sort to account name
-    $orderby = isset($params['orderby']) ? $params['orderby'] : 'ASC'; //default order is Ascending
-    $offset = $page*$perPage-$perPage;
+  public function paginate($params)
+  {
+    $params = array_filter($params);
 
-    //pulling of data
-    if(!isset($params['filter']) || $params['filter'] == ''){
-      $count = Account::count();
-      $accountList = Account::with('accounttype')
-                    ->take($perPage)->offset($offset)
-                    ->orderBy($sortby, $orderby)
-                    ->get();
-    } else {
-      $filter = $params['filter']; // accounttype id
-      $count = Account::where(function ($query) use ($filter){
-                        $query->where('accounttype', '=', $filter);
-                      })->count();
-      $accountList = Account::with('accounttype')
-                      ->where(function ($query) use ($filter){
-                        $query->where('accounttype', '=', $filter);
-                      })
-                      ->take($perPage)
-                      ->offset($offset)
-                      ->orderBy($sortby, $orderby)
-                      ->get();
+    $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+    $page = isset($params['page']) ? $params['page'] : 1;
+    $sortby = isset($params['sortby']) ? $params['sortby'] : 'name';
+    $orderby = isset($params['orderby']) ? $params['orderby'] : 'ASC';
+    $offset = $page * $perPage - $perPage;
+
+    $accounts = Account::with('accounttype')->orderBy($sortby,$orderby)->offset($offset);
+    
+    if(isset($params['filter'])) {
+      $filter = $params['filter'];
+      $accounts->whereHas('accounttype', function($q) use($filter) { $q->where('accounttype_id','=', $filter); } );
     }
 
-    return Response::json(array(
-      'data'=>$accountList->toArray(),
-      'total'=>$count
-    ));
+    if(isset($params['search'])) {
+      $search = $params['search'];
+      $accounts->where(function($q) use($search) { 
+        $q->orWhere('name','like','%'.$search.'%')
+          ->orWhere('website','like','%'.$search.'%')
+          ->orWhere('description','like','%'.$search.'%');
+      });
+    }
 
+    $result = $accounts->paginate($perPage)->toArray();
+
+    return Response::json( array( 'data' => $result['data'], 'total' => $result['total'] ) );
   }
 
-  public function store($data){
+  private function validateExtras() 
+  {
+    Validator::extend('contains',function($attribute, $value, $parameters){ 
+      if(!is_array($value)) $value = explode(',',$value);
+      return sizeof(array_filter($value)) > intval($parameters[0]) - 1 ? true : false;
+    });
+    Validator::replacer('contains', function($message, $attribute, $rule, $parameters){ return str_replace(':contains', $parameters[0], $message); });
+  }
+
+  public function store($data) 
+  {
+    $this->validateExtras();
+
     $rules = array(
-      //'name' => 'required|unique:account',
-      'name' => 'required',
-      'accounttype' => 'required',
-      'phone' => 'required|between:14,14'
+      'name' => 'required|unique:account',
+      'phone' => 'required|between:14,14',
+      'accounttype' => 'required|contains:1',
+      'address' => 'required|array|contains:1'
     );
 
     $this->validate($data, $rules);
 
-    $result = DB::transaction(function() use ($data){
-
-      if(!$this->checkAccountNameExistAndAccountType($data['name'], $data['accounttype'])){ //account name with the same type exist
-          return array(
-              'name' => "Account name with the same type exist.");
-      }
+    DB::transaction(function() use ($data){
 
       $account = new Account;
       $account->name = $data['name'];
       $account->website = isset($data['website']) ? $data['website'] : '';
       $account->description = isset($data['description']) ? $data['description'] : '';
       $account->phone = isset($data['phone']) ? $data['phone'] : '';
-      $account->accounttype = $data['accounttype'];
-
       $account->save();
 
-      if(isset($data['address'])){
-        $addressRules = array(
-          'street' => 'required_with:city,state,country,type,zipcode',
-          'city' => 'required_with:street,state,country,type,zipcode',
-          'state' => 'required_with:street,city,country,type,zipcode',
-          'country' => 'required_with:street,city,state,type,zipcode',
-          'zipcode' => 'required_with:street,city,state,type',
-          'type' => 'required_with:street,city,state,country'
-        );
+      if(!is_array($data['accounttype'])) $data['accounttype'] = explode(',',$data['accounttype']);
+      $account->accountType()->sync(array_filter($data['accounttype']));
 
-        foreach($data['address'] as $addressData){
-          //$addressData = (array)json_decode($item);
+      $addressRules = array(
+        'street' => 'required_with:city,state,country,type,zipcode',
+        'city' => 'required_with:street,state,country,type,zipcode',
+        'state' => 'required_with:street,city,country,type,zipcode',
+        'country' => 'required_with:street,city,state,type,zipcode',
+        'zipcode' => 'required_with:street,city,state,type',
+        'type' => 'required_with:street,city,state,country'
+      );
 
-          $this->validate($addressData, $addressRules);
+      foreach($data['address'] as $addressData){
+        $this->validate($addressData, $addressRules);
 
-          $address = new Address;
-          $address->street = $addressData['street'];
-          $address->city = $addressData['city'];
-          $address->state = $addressData['state'];
-          $address->country = $addressData['country'];
-          $address->type = $addressData['type'];
-          $address->zipcode = $addressData['zipcode'];
-          $address->account = $account->id;
+        $address = new Address;
+        $address->street = $addressData['street'];
+        $address->city = $addressData['city'];
+        $address->state = $addressData['state'];
+        $address->country = $addressData['country'];
+        $address->type = $addressData['type'];
+        $address->zipcode = $addressData['zipcode'];
+        $address->account = $account->id;
 
-          $address->save();
-
-        }
+        $address->save();
       }
-
+      
     });
 
-    if(is_array($result)){
-      return Response::json($result, 500);
-    }
-
-    return Response::json(array(
-        'error' => false,
-        'message' => Lang::get('messages.success.created', array('entity' => 'Account'))),
-        200
-    );
+    return Response::json(array( 'error' => false, 'message' => Lang::get('messages.success.created', array('entity' => 'Account'))), 200);
   }
 
-  public function update($id, $data){
+  public function update($id, $data)
+  {
+    $this->validateExtras();
+
     $rules = array(
-      //'name' => 'required|unique:account,name,'.$id,
-      'name' => 'required',
-      'accounttype' => 'required',
+      'name' => 'required|unique:account,name,'.$id,
       'phone' => 'required|between:14,14',
+      'accounttype' => 'required|contains:1',
+      'address' => 'required|array|contains:1'
     );
 
     $this->validate($data, $rules);
 
-    if(!$this->checkAccountNameExistAndAccountType($data['name'], $data['accounttype'], $id)){ //account name with the same type exist
-          return Response::json(array(
-              'name' => "Account name with the same type exist."), 500);
-    }
-
-    $result = DB::transaction(function() use ($id, $data){
-      
+    DB::transaction(function() use ($id, $data){
 
       $account = Account::find($id);
       $account->name = $data['name'];
       $account->website = isset($data['website']) ? $data['website'] : '';
       $account->description = isset($data['description']) ? $data['description'] : '';
       $account->phone = isset($data['phone']) ? $data['phone'] : '';
-      $account->accounttype = $data['accounttype'];
-
       $account->save();
 
+      if(!is_array($data['accounttype'])) $data['accounttype'] = explode(',',$data['accounttype']);
+      $account->accountType()->sync(array_filter($data['accounttype']));
+
       $addressesList = array();
+      $addressRules = array(
+        'street' => 'required_with:city,state,country,type,zipcode',
+        'city' => 'required_with:street,state,country,type,zipcode',
+        'state' => 'required_with:street,city,country,type,zipcode',
+        'country' => 'required_with:street,city,state,type,zipcode',
+        'zipcode' => 'required_with:street,city,state,type',
+        'type' => 'required_with:street,city,state,country'
+      );
+
+      //deleting addresses
+      $existingAddressId = array();
+      foreach($data['address'] as $addressData){
+        if(isset($addressData['id'])) $existingAddressId[] = $addressData['id'];
+      }
       
+      $this->deleteAddresses($account->id, $existingAddressId); //delete addresses that is not pass excluding the new addresses
 
-      if(isset($data['address'])){
-        $addressRules = array(
-          'street' => 'required_with:city,state,country,type,zipcode',
-          'city' => 'required_with:street,state,country,type,zipcode',
-          'state' => 'required_with:street,city,country,type,zipcode',
-          'country' => 'required_with:street,city,state,type,zipcode',
-          'zipcode' => 'required_with:street,city,state,type',
-          'type' => 'required_with:street,city,state,country'
-        );
-
-        //deleting addresses
-        $existingAddressId = array();
-
-        foreach($data['address'] as $addressData){
-          //$addressData = (array)json_decode($item);
-          if(isset($addressData['id'])){
-            $existingAddressId[] = $addressData['id'];
-          }
-        }
+      foreach($data['address'] as $addressData) {
+        $this->validate($addressData, $addressRules);
         
-        $this->deleteAddresses($account->id, $existingAddressId); //delete addresses that is not pass excluding the new addresses
+        if(isset($addressData['id'])) $address = Address::find($addressData['id']);
+        else $address = new Address;
+        
+        $address->street = $addressData['street'];
+        $address->city = $addressData['city'];
+        $address->state = $addressData['state'];
+        $address->country = $addressData['country'];
+        $address->type = $addressData['type'];
+        $address->zipcode = $addressData['zipcode'];
+        $address->account = $account->id;
 
-        foreach($data['address'] as $addressData){
-          //$addressData = (array)json_decode($item);
-          $this->validate($addressData, $addressRules);
-          
-          if(isset($addressData['id'])){
-            $address = Address::find($addressData['id']);
-          } else {
-            $address = new Address;
-          }
-          
-          $address->street = $addressData['street'];
-          $address->city = $addressData['city'];
-          $address->state = $addressData['state'];
-          $address->country = $addressData['country'];
-          $address->type = $addressData['type'];
-          $address->zipcode = $addressData['zipcode'];
-          $address->account = $account->id;
-
-          $address->save();
-        } 
-      } else{
-        $this->deleteAddresses($account->id); //no address data pass, so delete all addresses
+        $address->save();
       }
 
     });
 
-    return Response::json(array(
-        'error' => false,
-        'message' => Lang::get('messages.success.updated', array('entity' => 'Account'))),
-        200
-    );
+    return Response::json( array( 'error' => false, 'message' => Lang::get('messages.success.updated', array('entity' => 'Account'))), 200 );
   }
 
-  private function deleteAddresses($account, $addressIdList = null){
-    if($addressIdList == null){
-      $address = Address::with('account')
-                ->whereHas('account', function($query) use ($account)
-                {
-                    $query->where('id', '=', $account);
-
-                })
-                ->delete();
+  private function deleteAddresses($account, $addressIdList = null)
+  {
+    if(is_null($addressIdList)) {
+      $address = Address::with('account')->whereHas('account', function($query) use ($account) { $query->where('id', '=', $account); })->delete();
     } else {
-      $address = Address::with('account')
-                ->whereHas('account', function($query) use ($account)
-                {
-                    $query->where('id', '=', $account);
-
-                })
-                ->whereNotIn('id',$addressIdList)
-                ->delete();
+      $address = Address::with('account')->whereHas('account', function($query) use ($account) { $query->where('id', '=', $account); })
+                    ->whereNotIn('id',$addressIdList)
+                    ->delete();
     }
     return $address;
   }
 
-  public function search($_search)
+  public function destroy($id)
   {
-    $perPage  = isset($_search['perpage']) ? $_search['perpage'] : Config::get('constants.USERS_PER_LIST');
-    $page     = isset($_search['page']) ? $_search['page'] : 1;
-    $sortby   = isset($_search['sortby']) ? $_search['sortby'] : 'name';
-    $orderby  = isset($_search['orderby']) ? $_search['orderby'] :'ASC';
-    $offset   = $page * $perPage - $perPage;
-
-    $_cnt = $_account = Account::with('accounttype');
-
-    if(isset($_search['search']) && $_search['search'] != '') {
-      $searchWord = $_search['search'];
-      $_cnt->where(function ($query) use ($searchWord){
-                        $query->orWhere('name','like','%'.$searchWord.'%')
-                              ->orWhere('website','like','%'.$searchWord.'%')
-                              ->orWhere('description','like','%'.$searchWord.'%');
-                      });
-
-      $_account->where(function ($query) use ($searchWord){
-                        $query->orWhere('name','like','%'.$searchWord.'%')
-                              ->orWhere('website','like','%'.$searchWord.'%')
-                              ->orWhere('description','like','%'.$searchWord.'%');
-                      });
-    }
-    
-    if(isset($_search['filter']) && $_search['filter'] != ''){
-      $searchFilter = $_search['filter']; //for filter
-      $_cnt = $_cnt->where(function ($query) use ($searchFilter){
-                        $query->where('accounttype', '=', $searchFilter);
-                      });
-      $_account = $_account->where(function ($query) use ($searchFilter){
-                        $query->where('accounttype', '=', $searchFilter);
-                      });
-    }
-
-    $_cnt = $_cnt->count();
-    $_account = $_account->take($perPage)
-                    ->offset($offset)
-                    ->orderBy($sortby, $orderby)
-                    ->get();
-    
-    return Response::json(array('data' => $_account->toArray(), 'total' => $_cnt),200);
-  }
-
-  public function destroy($id){
     $account = Account::find($id);
 
     if($account){
@@ -297,18 +200,13 @@ class AccountRepository implements AccountRepositoryInterface {
           'account' => $account->toArray()),
           200
       );
-    } else {
-      $response = Response::json(array(
-          'error' => true,
-          'message' => Lang::get('messages.notfound', array('entity' => 'Account'))),
-          200
-      );
-    }
+    } else $response = Response::json(array('error' => array('message' => Lang::get('messages.notfound', array('entity' => 'Account')))),500);
 
     return $response;
   }
   
-  public function validate($data, $rules){
+  public function validate($data, $rules)
+  {
     $validator = Validator::make($data, $rules);
 
     if($validator->fails()) { 
@@ -322,183 +220,127 @@ class AccountRepository implements AccountRepositoryInterface {
     return new Account($data);
   }
 
-  public function getFormData(){
+  public function getFormData()
+  {
       $accountTypes = AccountType::orderby('name', 'asc')->get();
       $addressTypes = AddressType::orderby('name', 'asc')->get();
       $states = AddressStates::orderby('state', 'asc')->get();
 
       return Response::json(
           array(
-          'accountTypes' => $accountTypes->toArray(),
-          'addressTypes' => $addressTypes->toArray(),
-          'states' => $states->toArray()
+            'accountTypes' => $accountTypes->toArray(),
+            'addressTypes' => $addressTypes->toArray(),
+            'states' => $states->toArray()
           ),
           200
       );
   }
 
-  // public function getCitiesByState($stateId){
-  //   $cities = AddressCity::where('state', '=', $stateId)->get();
-    
-  //     return Response::json(
-  //         $cities->toArray(),
-  //         200
-  //     );
-  // }
-
-  public function getAccountsByName($name){
-    if(isset($name)){
-      $account = Account::with('accounttype')
-                  ->where('name','like','%'.$name.'%')
-                  ->orderBy('name', 'asc')
-                  ->get();
-    } else {
+  public function getAccountsByName($name)
+  {
+    if(isset($name))
+      $account = Account::with('accounttype')->where('name','like','%'.$name.'%')->orderBy('name', 'asc')->get();
+    else
       $account = Account::orderBy('name', 'asc')->all()->get(array('id','name'));
-    }
+
     return Response::json($account);
   }
 
-  // public function getZipcodeUsingCity($city){
-  //   $zips = AddressZip::where('city','=', $city)
-  //                 ->orderBy('zip', 'asc')
-  //                 ->get(array('zip'));
-  //   return Response::json(
-  //         $zips->toArray(),
-  //         200
-  //     );
-  // }
-  
-  public function getCustomerAccount($search){
-    $producers = Account::with('address')
-                  ->with('address.addressStates')
-				          ->where('accounttype', '=', 1)
-                  ->where('name','like', '%'.$search.'%')
-                  ->orderBy('name', 'asc')
-                  ->get();
-
-    return Response::json(
-          $producers->toArray(),
-          200
-      );
-  }
-
-  public function getProducerAccount($search){
-    $producers = Account::with('address')
-                  ->with('address.addressStates')
-                  ->where('accounttype', '=', 5)
-                  ->where('name','like', '%'.$search.'%')
-                  ->orderBy('name', 'asc')
-                  ->get();
-
-    return Response::json(
-          $producers->toArray(),
-          200
-      );
-  }
-
-  public function getAddress($accountId){
-    $addresses = Address::with('addressType')
-                  ->with('addressStates')
-                  ->where('account', '=', $accountId)
-                  ->get();
-
-    return Response::json(
-          $addresses->toArray(),
-          200
-      );
-  }
-
-
-  // public function getTruckerAccount($search){
-  //   if($search == ''){
-  //     return Response::json(array(
-  //         'error' => true,
-  //         'message' => "Search word is required"),
-  //         200
-  //     );
-  //   } else{
-  //     $accountIds = array(2, 4, 9); //operator, hauler and Southwest Farms trucker accounts ids
-  //     $truckers = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($search, $accountIds){
-  //                   $query->whereIn('id', $accountIds);
-  //                 })->where('name', 'like', '%'.$search.'%')->get(array('id', 'name', 'accounttype'));
-      
-  //     return Response::json(
-  //       $truckers->toArray(),
-  //       200);
-  //     }
-  // }
-
-  // public function getTruckerAccount(){
-  //     $accountIds = array(2, 4, 9); //operator, hauler and Southwest Farms trucker accounts ids
-  //     $truckers = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($accountIds){
-  //                   $query->whereIn('id', $accountIds);
-  //                 })->get(array('id', 'name', 'accounttype'));
-
-  //   return Response::json(
-  //         $truckers->toArray(),
-  //         200
-  //     );
-  // }
-
-  public function getAccountsByType($accountTypeId){
-      $accounts = Account::with('accounttype')
-                  ->whereHas('accounttype', function ($query) use ($accountTypeId){
-                      $query->where('id', '=', $accountTypeId);
-                  })->get(array('id', 'name','accounttype'));
-
-      return Response::json(
-            $accounts->toArray(),
-            200
-        );
-  }
-  
-  public function getContracts($account_id)
+  private function filterByNameAndType($search,$type=1)
   {
-      $contracts = Contract::where('account_id', '=', $account_id)->get(array('id', 'contract_number'));
-      
-      return Response::json(
-          $contracts->toArray(),
-          200
-      );
+    $accounts = Account::with('address')
+                  ->with('address.addressStates')
+                  ->whereHas('accounttype', function($q) use($type) { $q->where('accounttype_id','=', $type); } )
+                  ->where('name','like', '%'.$search.'%')
+                  ->orderBy('name', 'asc')
+                  ->get();
+
+    return Response::json($accounts->toArray(),200);
+  }
+  
+  public function getCustomerAccount($search)
+  {
+    return $this->filterByNameAndType($search);
   }
 
-  public function getTrailerAccount(){
-      $accountIds = array(7); //operator, hauler and Southwest Farms trucker accounts ids
-      $truckers = Account::with('accounttype')->with('trailer')->whereHas('accounttype', function ($query) use ($accountIds){
-                    $query->whereIn('id', $accountIds);
-                  })->get(array('id', 'name', 'accounttype'));
+  public function getProducerAccount($search)
+  {
+    return $this->filterByNameAndType($search,5);
+  }
 
-    return Response::json(
-          $truckers->toArray(),
-          200
-      );
+  public function getAddress($accountId)
+  {
+    $addresses = Address::with('addressType')->with('addressStates')->where('account', '=', $accountId)->get();
+    return Response::json( $addresses->toArray(), 200 );
+  }
+
+  public function getAccountsByType($types)
+  {
+    $accounts = Account::with('accounttype')
+                  ->whereHas('accounttype', function($q) use($types) { $q->where('accounttype_id', '=', $types); } )
+                  ->get(array('id', 'name'));
+
+    return Response::json( $accounts->toArray(), 200 );
+  }
+
+  public function getTrailerAccount()
+  {
+    $types = array(7); //operator, hauler, Southwest Farms trucker [accounttype ids]
+    $accounts = Account::with('accounttype','trailer')
+                  ->whereHas('accounttype', function($q) use($types) { $q->whereIn('accounttype_id', $types); } )
+                  ->groupBy('id')
+                  ->get(array('id', 'name'));
+
+    return Response::json( $accounts->toArray(), 200 );
   }
 
   public function getScalerAccount(){
-      $accountIds = array(6); //scale accounts
-      $truckers = Account::with('accounttype')->with('scaler')->whereHas('accounttype', function ($query) use ($accountIds){
-                    $query->whereIn('id', $accountIds);
-                  })->get(array('id', 'name', 'accounttype'));
+    $types = array(6); //scale [accounttype ids]
+    $accounts = Account::with('accounttype','scaler')
+                ->whereHas('accounttype', function($q) use($types) { $q->whereIn('accounttype_id', $types); } )
+                ->groupBy('id')
+                ->get(array('id', 'name'));
 
-    return Response::json(
-          $truckers->toArray(),
-          200
-      );
+    return Response::json( $accounts->toArray(), 200 );
   }
 
   public function getProducerAndWarehouseAccount(){
-      $accountIds = array(5, 10); //producer and wearehouse accounts
-      $accounts = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($accountIds){
-                    $query->whereIn('id', $accountIds);
-                  })->get(array('id', 'name', 'accounttype'));
+    $types = array(5, 10); //scale [accounttype ids]
+    $accounts = Account::with('accounttype')
+                ->whereHas('accounttype', function($q) use($types) { $q->whereIn('accounttype_id', $types); } )
+                ->groupBy('id')
+                ->orderBy('name', 'asc')
+                ->get(array('id', 'name'));
 
-    return Response::json(
-          $accounts->toArray(),
-          200
-      );
+    return Response::json( $accounts->toArray(), 200 );
   }
 
-  public function getScaleList($scalerAccount_id){
+  public function getLoaderAccount()
+  {
+    $types = array(3); //scale [accounttype ids]
+    $accounts = Account::with('accounttype')
+                ->whereHas('accounttype', function($q) use($types) { $q->whereIn('accounttype_id', $types); } )
+                ->groupBy('id')
+                ->get(array('id', 'name'));
+
+    return Response::json( $accounts->toArray(), 200 );
+  }
+
+  public function getTruckerAccountTypes()
+  {
+    $accountTypeIds = array(2, 4, 9); //operator, hauler and Southwest Farms trucker accounts ids
+    $truckerTypes = AccountType::whereIn('id', $accountTypeIds)->get(array('id', 'name'));
+    return Response::json( $truckerTypes->toArray(), 200 );
+  }
+
+  public function getAllContactOnAccount($accountId)
+  {
+    $contacts = Contact::whereHas('Account', function($query) use ($accountId){ $query->where('id', '=', $accountId); })->get(array('id','firstname','lastname'));
+    return Response::json( $contacts->toArray(), 200 );
+  }
+
+  public function getScaleList($scalerAccount_id)
+  {
       $scaleList = Scale::where('account_id', '=', $scalerAccount_id)->get();
       return Response::json(
           $scaleList->toArray(),
@@ -506,74 +348,10 @@ class AccountRepository implements AccountRepositoryInterface {
       );
   }
 
-  public function getLoaderAccount(){
-      $accountIds = array(3); //loader id
-      $truckers = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($accountIds){
-                    $query->whereIn('id', $accountIds);
-                  })->get(array('id', 'name', 'accounttype'));
-
-    return Response::json(
-          $truckers->toArray(),
-          200
-      );
-  }
-
-  public function getTruckerAccountTypes(){
-      $accountTypeIds = array(2, 4, 9); //operator, hauler and Southwest Farms trucker accounts ids
-      // $truckerTypes = Account::with('accounttype')->whereHas('accounttype', function ($query) use ($accountIds){
-      //               $query->whereIn('id', $accountIds);
-      //             })->get(array('id', 'name', 'accounttype'));
-      $truckerTypes = AccountType::whereIn('id', $accountTypeIds)->get(array('id', 'name'));
-
-    return Response::json(
-          $truckerTypes->toArray(),
-          200
-      );
-  }
-
-  // public function getLoaderAccount($search){
-  //   if($search == '') {
-  //     return Response::json(array(
-  //         'error' => true,
-  //         'message' => "Search word is required"),
-  //         200
-  //     );
-  //   } else {
-  //     $accountIds = array(3); //loader id
-  //     $loader = Account::whereHas('accounttype', function ($query) use ($search, $accountIds){
-  //                   $query->whereIn('id', $accountIds);
-  //                 })->where('name', 'like', '%'.$search.'%')->get(array('id', 'name'));
-      
-  //     return Response::json(
-  //       $loader->toArray(),
-  //       200);
-  //     }
-  // }
-
-  public function getAllContactOnAccount($accountId){
-    $truckerList = Contact::whereHas('Account', function($query) use ($accountId){
-                    $query->where('id', '=', $accountId);
-                  })->get(array('id','firstname','lastname'));
-    
-    return Response::json(
-        $truckerList->toArray(),
-        200);
-  }
-
-  private function checkAccountNameExistAndAccountType($accountName, $accountType, $id = null){
-      if($id == null) {
-        $result = Account::where('name', 'like', $accountName)->where('accounttype', '=', $accountType)->count();
-        if($result > 0){ //account name with the same account type exist
-            return false;
-        } 
-     } else { //when update
-        $result = Account::where('name', 'like', $accountName)->where('accounttype', '=', $accountType)->where('id', '!=', $id)->count();
-        if($result == 1){ //account name with the same account type exist
-            return false;
-        }
-     }
-
-     return true;
+  public function getContracts($account_id)
+  {
+    $contracts = Contract::where('account_id', '=', $account_id)->get(array('id', 'contract_number'));
+    return Response::json( $contracts->toArray(), 200);
   }
 
 }

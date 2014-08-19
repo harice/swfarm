@@ -44,28 +44,19 @@ class ContractRepository implements ContractRepositoryInterface {
             }
             
             // Filter by Date
-            if (isset($params['contract_date_start']) && isset($params['contract_date_end']))
+            if (isset($params['contract_date_start']))
             {
-                $contracts = $contracts->whereBetween('contract_date_start', array($params['contract_date_start'], $params['contract_date_end']));
+                $contracts->where('contract.contract_date_start', '>', $params['contract_date_start']);
             }
             
-            if (isset($params['contract_date_start']) && isset($params['contract_date_end']))
+            if (isset($params['contract_date_end']))
             {
                 $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['contract_date_end'])));
-                $contracts->where('contract_date_start', '>', $params['contract_date_start']);
-                $contracts->where('contract_date_end', '<', $date_end);
-            }
-            elseif (isset($params['contract_date_start']))
-            {
-                $contracts->where('contract_date_start', '>=', $params['dateStart']);
-            }
-            elseif (isset($params['contract_date_end']))
-            {
-                $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['contract_date_end'])));
-                $contracts->where('contract_date_end', '<=', $date_end);
+                $contracts->where('contract.contract_date_end', '<', $date_end);
             }
             
             $_contracts = $contracts->orderBy($sortby, $orderby)->get();
+            
             $total_contracts = $_contracts->count();
             
             $contracts_array = $_contracts->toArray();

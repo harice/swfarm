@@ -21,7 +21,7 @@ class ContactController extends BaseController {
 	 */
 	public function index()
 	{
-		return $this->contact->paginate( Input::all() );
+		return $this->contact->findAll( Input::all() );
 	}
 
 	/**

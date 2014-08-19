@@ -2,13 +2,28 @@
 
 class ContactRepository implements ContactRepositoryInterface {
 
-    public function findAll()
+    public function findAll($params)
     {
-        $contact = Contact::all();
+        $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+        $sortby = isset($params['sortby']) ? $params['sortby'] : 'lastname';
+        $orderby = isset($params['orderby']) ? $params['orderby'] : 'ASC';
+        
+        $contacts = Contact::with('account.accounttype');
+        
+        if (isset($params['accountType'])) {
+            $contacts = $contacts->whereHas('account', function($q)
+            use ($params) {
+                $q->whereHas('accounttype', function($q)
+                use ($params) {
+                    $q->where('accounttype_id', '=', $params['accountType']);
+                });
+            });
+        }
+        
+        $contacts = $contacts->orderBy($sortby, $orderby)
+            ->paginate($perPage);
 
-        return Response::json(
-                $contact->toArray(), 200
-        );
+        return $contacts;
     }
 
     public function findById($id)
@@ -34,24 +49,6 @@ class ContactRepository implements ContactRepositoryInterface {
         }
 
         return $response;
-    }
-
-    public function paginate($params)
-    {
-        $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST'); //default to 10 items, see app/config/constants
-        $page = isset($params['page']) ? $params['page'] : '1'; //default to page 1
-        $sortby = isset($params['sortby']) ? $params['sortby'] : 'lastname'; //default sort to contact lastname
-        $orderby = isset($params['orderby']) ? $params['orderby'] : 'ASC'; //default order is Ascending
-        $offset = $page * $perPage - $perPage;
-
-        //pulling of data
-        $count = Contact::count();
-        $contactList = Contact::with('account', 'account.accounttype')->take($perPage)->offset($offset)->orderBy($sortby, $orderby)->get();
-
-        return Response::json(array(
-                'data' => $contactList->toArray(),
-                'total' => $count
-        ));
     }
 
     public function store($data)
