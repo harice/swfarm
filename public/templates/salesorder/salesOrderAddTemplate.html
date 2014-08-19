@@ -105,16 +105,30 @@
                                         <div class="error-msg-cont"></div>
                                     </div>
                                 </div>
+								<% if (typeof readonly_products !== "undefined") { %>
+								<div class="form-group">
+                                    <label for="contract_id_dummy" class="col-sm-3 control-label">Contract</label>
+                                    <div class="col-sm-7">
+										<div class="styled-select">
+                                            <select id="contract_id_dummy" class="form-control contract_id_dummy width-160" disabled>
+                                                <option value="">Select a contract</option>
+                                            </select>
+											<input type="hidden" id="contract_id" class="contract_id" name="contract_id" value="" />
+                                        </div>
+                                    </div>
+                                </div>
+								<% } else { %>
                                 <div class="form-group">
                                     <label for="contract_id" class="col-sm-3 control-label">Contract</label>
                                     <div class="col-sm-7">
-                                        <div class="styled-select">
+										<div class="styled-select">
                                             <select id="contract_id" class="form-control contract_id width-160" name="contract_id" disabled>
                                                 <option value="">Select a contract</option>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
+								<% } %>
                                 <div class="form-group">
                                     <label for="notes" class="col-sm-3 control-label">Notes</label>
                                     <div class="col-sm-9">
