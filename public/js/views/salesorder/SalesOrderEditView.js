@@ -89,10 +89,11 @@ define([
 			var account = this.model.get('account');
 			var address = [this.model.get('orderaddress')];
 			var products = this.model.get('productsummary');
+			var nos = this.model.get('natureofsale').id;
 			
 			this.$el.find('#sonumber').val(this.model.get('order_number'));
 			this.$el.find('#status').val(this.model.get('status').name);
-			this.$el.find('[name="natureofsale_id"][value="'+this.model.get('natureofsale').id+'"]').attr('checked', true);
+			this.$el.find('[name="natureofsale_id"][value="'+nos+'"]').attr('checked', true);
 			this.customerAutoCompleteView.autoCompleteResult = [{name:account.name, id:account.id, address:address}];
 			this.$el.find('#account').val(account.name);
 			this.$el.find('#account_id').val(account.id);
@@ -111,6 +112,7 @@ define([
 			this.generateContract();
 			if(this.model.get('contract') && typeof this.model.get('contract').id != 'undefined')
 				this.$el.find('#contract_id').val(this.model.get('contract').id);
+			this.toggleContract(nos);
 			
 			this.$el.find('#notes').val(this.model.get('notes'));
 			
@@ -134,17 +136,29 @@ define([
 				
 				productFields.find('.id').val(product.id);
 				productFields.find('.product_id').val(product.productname.id);
-				productFields.find('.unitprice').val(thisObj.addCommaToNumber(parseFloat(product.unitprice).toFixed(2)));
-				productFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(product.tons).toFixed(4)));
-				var unitPrice = parseFloat(product.unitprice) * parseFloat(product.tons);
+				
+				var unitprice = 0;
+				if(typeof product.unitprice !== 'undefined' && product.unitprice != null) {
+					unitprice = parseFloat(product.unitprice);
+					productFields.find('.unitprice').val(thisObj.addCommaToNumber(unitprice.toFixed(2)));
+				}
+				
+				var tons = 0
+				if(typeof product.tons !== 'undefined' && product.tons != null) {
+					tons = parseFloat(product.tons);
+					productFields.find('.tons').val(thisObj.addCommaToNumber(tons.toFixed(4)));
+				}
+				
+				var unitPrice = unitprice * tons;
 				productFields.find('.unit-price').val(thisObj.addCommaToNumber(unitPrice.toFixed(2)));
 				
-				if(thisObj.verified) {
+				thisObj.convertProductFieldToReadOnly(productFields, product.productname.id);
+				/*if(thisObj.verified) {
 					productFields.find('.product_id_dummy').val(product.productname.id);
 					productFields.find('.unitprice').attr('readonly', true);
 					productFields.siblings('.product-item').find('.tons').attr('readonly', true);
 					productFields.find('.unit-price').attr('readonly', true);
-				}
+				}*/
 				
 				var j = 0;
 				_.each(product.productorder, function (productSub) {
@@ -157,7 +171,6 @@ define([
 					j++;
 					
 					productSubFields.find('.id').val(productSub.id);
-					//productSubFields.find('.stacknumber').val(productSub.stacknumber);
 					thisObj.generateStackNumberDropdown(productSubFields.find('.stacknumber'), product.productname.id, productSub.stacknumber);
 					thisObj.generateLocationFromDropDown(productSub.stacknumber, product.productname.id, productSubFields.find('.section_id'), product.productorder[0].section_id);
 					productSubFields.find('.description').val(productSub.description);

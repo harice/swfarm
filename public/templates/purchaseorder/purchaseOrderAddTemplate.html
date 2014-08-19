@@ -31,6 +31,23 @@
                                     <div id="po-destination" class="col-sm-9"></div>
                                 </div>
                                 <% } %>
+								<div class="form-group so-field" style="display:none;">
+                                    <label for="account_customer" class="col-sm-3 control-label">Customer *</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control capitalize" id="account_customer" name="account_customer" maxlength="50">
+                                        <input type="hidden" class="form-control" id="account_id_customer" name="account_id_customer" value="">
+                                    </div>
+                                </div>
+								<div class="form-group so-field" style="display:none;">
+                                    <label for="contract_id" class="col-sm-3 control-label">Contract *</label>
+                                    <div class="col-sm-7">
+                                        <div class="styled-select">
+                                            <select id="contract_id" class="form-control contract_id width-160" name="contract_id" required>
+                                                <option value="">Select a contract</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="form-group">
                                     <label for="account" class="col-sm-3 control-label">Producer *</label>
                                     <div class="col-sm-7">
@@ -153,11 +170,11 @@
                     <div class="form-group form-button-container">
                         <div class="col-md-12">
                             <div class="pull-right">
-                                <% if (typeof po_id !== "undefined") { %>
-									<% if (typeof is_bid === "undefined") { %>
-									<% } else { %>
+								<% if (typeof is_bid === "undefined") { %>
+									<button id="save-and-check-in" type="button" class="save-and-close btn btn-primary">Save & Close</button>
+								<% } %>
+                                <% if (typeof po_id !== "undefined" && typeof is_bid !== "undefined") { %>
 									<button id="convert-po" type="button" class="save btn btn-warning">Convert to PO</button>
-									<% } %>
                                 <% } %>
                                 <button id="save" type="submit" class="save btn btn-primary">Save</button>
                                 <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>

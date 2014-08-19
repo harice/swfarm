@@ -121,7 +121,7 @@ define([
 			return false;
 		},
 		
-		deAlloc: function () {
+		destroyView: function () {
 			this.input.off('blur');
 			this.close();
 		},

@@ -254,7 +254,8 @@ class OrderRepository implements OrderRepositoryInterface {
                 ->with('orderaddress', 'orderaddress.addressStates')
                 ->with('location')
                 ->with('status')
-                ->with('ordercancellingreason.reason');
+                ->with('ordercancellingreason.reason')
+				->with('contract.account');
 
         if($orderType == 2) //for SO only
             $order = $order->with('natureofsale', 'contract');
@@ -1189,12 +1190,13 @@ class OrderRepository implements OrderRepositoryInterface {
 
     //used in creating dropship, need to copy all the product details on PO to be used in SO
     public function getPurchaseOrderProductsForSalesOrder($purchaseOrderId){
-        $order = Order::with('productsummary.productname')
+        $order = Order::with('contractnumber.accountname.businessaddress')
+                        ->with('productsummary.productname')
                         ->with('productsummary.productorder.product')
                         // ->with('productsummary.productorder.upload.files')
                         ->with('productsummary.productorder.sectionfrom.storagelocation')
                         ->where('id', '=', $purchaseOrderId)
-                        ->first(array('id', 'order_number'));
+                        ->first(array('id', 'order_number', 'contract_id'));
 
         if($order){
             return $order->toArray();
