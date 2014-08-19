@@ -11,7 +11,7 @@ define([
 	'collections/purchaseorder/DestinationCollection',
 	'collections/product/ProductCollection',
 	'models/purchaseorder/PurchaseOrderModel',
-	'models/file/FileModel',
+	'models/document/DocumentModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderViewTemplate.html',
@@ -32,7 +32,7 @@ define([
 			DestinationCollection,
 			ProductCollection,
 			PurchaseOrderModel,
-			FileModel,
+			DocumentModel,
 			contentTemplate,
 			purchaseOrderTabbingTemplate,
 			purchaseOrderAddTemplate,
@@ -283,7 +283,7 @@ define([
 		
 		showPDF: function (ev) {
 			// console.log('showPDF');
-			this.model = new FileModel({id:$(ev.currentTarget).attr('data-id')});
+			this.model = new DocumentModel({id:$(ev.currentTarget).attr('data-id')});
 			this.model.on('change', function() {
 				
 			});
