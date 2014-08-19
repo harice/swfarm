@@ -21,6 +21,8 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
                     'storagelocation.name',
                     'storagelocation.description',
                     'storagelocation.account_id',
+                    'storagelocation.longitude',
+                    'storagelocation.latitude',
                     'account.name as account_name'
                 )
                 ->with('section')

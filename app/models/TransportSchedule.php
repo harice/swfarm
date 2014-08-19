@@ -67,9 +67,9 @@ class TransportSchedule extends Eloquent {
     //     return $this->hasMany('Account', 'id', 'originloader_id');
     // }
 
-    // public function destinationLoader(){
-    //     return $this->hasMany('Account', 'id', 'destinationloader_id');
-    // }
+    public function transportmap(){
+        return $this->hasMany('TransportMap', 'transportschedule_id', 'id');
+    }
 
     public function trucker(){
         return $this->hasOne('Contact', 'id', 'trucker_id')->select(array('id','firstname','lastname','suffix','account'));

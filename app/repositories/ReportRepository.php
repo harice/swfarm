@@ -134,8 +134,8 @@ class ReportRepository implements ReportRepositoryInterface {
             $storageLocation = $storageLocation->where(function($subQuery) use ($data){
                                     $subQuery->wherehas('section', function($section) use ($data){
                                        $section->whereHas('inventoryproduct_sectionto', function($inventoryproduct_sectionto) use ($data){
-                                            $from = date( 'Y-m-d'. ' 00:00:00', strtotime($data['dateFrom']));
-                                            $to = date( 'Y-m-d'.' 23:59:59', strtotime($data['dateTo']));
+                                            $from = "'".date( 'Y-m-d'.' 00:00:00', strtotime($data['dateFrom']))."'";
+                                            $to = "'".date( 'Y-m-d'.' 23:59:59', strtotime($data['dateTo']))."'";
                                             $inventoryproduct_sectionto->whereBetween('created_at', array($from, $to));
                                         // $inventoryproduct_sectionto->where('created_at', 'like', "'".$data['dateFrom']." %'");
                                         });

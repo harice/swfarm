@@ -1,6 +1,7 @@
 define([
 	'backbone',
 	'views/base/AppView',
+	'views/base/GoogleMapsView',
 	'jqueryui',
 	'jqueryvalidate',
 	'jquerytextformatter',
@@ -21,6 +22,7 @@ define([
 	'constant',
 ], function(Backbone,
 			AppView,
+			GoogleMapsView,
 			JqueryUI,
 			Validate,
 			TextFormatter,
@@ -224,6 +226,20 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
 			
+			this.googleMaps = new GoogleMapsView();
+			this.googleMaps.initMapGetDestinationDistance(function (data) {
+				
+				if(typeof data.destinationLeg !== 'undefined' && data.destinationLeg != null) {
+					var distance = 0;
+					for(var i = 0; i < data.destinationLeg.length; i++)
+						distance += parseFloat(data.destinationLeg[i].distance);
+					
+					thisObj.subContainer.find('#distance').val(distance.toFixed(2));
+				}
+				else
+					thisObj.subContainer.find('#distance').val('');
+			});
+			
 			this.initValidateForm();
 			
 			this.populateTimeOptions();
@@ -231,7 +247,6 @@ define([
 			this.addProduct();
 			
 			this.postDisplayForm();
-            //this.maskInputs();
 		},
 		
 		initValidateForm: function () {
@@ -566,7 +581,9 @@ define([
 			'blur .loader': 'onBlurMoney',
 			'keyup .quantity': 'onKeyUpQuantity',
 			'blur .quantity': 'onBlurTon',
-			'click #delete-schedule': 'deleteSchedule'
+			'click #delete-schedule': 'deleteSchedule',
+			
+			'click #map': 'showMap',
 		},
 		
 		onChangeProduct: function (ev) {
@@ -804,6 +821,11 @@ define([
 				});
 			}
 			
+			return false;
+		},
+		
+		showMap: function () {
+			this.googleMaps.showModalGetDestinationDistance();
 			return false;
 		},
 		
