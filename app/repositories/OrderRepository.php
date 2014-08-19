@@ -757,41 +757,24 @@ class OrderRepository implements OrderRepositoryInterface {
         }
     }
 
-    private function linkUploadFilesToProductOrder($uploadedfile, $productorderid){
-        $oldFileUploaded = Upload::where('entityname', '=', 'productorder')->where('entity_id', '=', $productorderid)->first();
-        
-        if($oldFileUploaded){ //if has existing file uploaded
-            if($uploadedfile == ""){ //pass empty value, need to delete existing file
-                if($oldFileUploaded != null) {
-                    $oldFileUploaded->delete();
+    private function linkUploadFilesToProductOrder($uploadedfile, $productorderid)
+    {
+        $prd_o = ProductOrder::find($productorderid);
+        if($prd_o)
+        {
+            // var_dump(get_class($prd_o));exit();
+            if(is_array($prd_o->fileable)) {
+                foreach ($prd_o->fileable as $k => $v) {
+                    $v->delete();
                 }
-            } else if($uploadedfile != $oldFileUploaded->file_id){ //new file to be uploaded but there is old file already uploaded
-                $oldFileUploaded->delete();
-
-                $upload = new Upload;
-                $upload->file_id = $uploadedfile;
-                $upload->entityname = 'productorder';
-                $upload->entity_id = $productorderid;
-                $upload->save();
-
-                $file = Files::find($uploadedfile);
+            } else {
+                $file = File::find($uploadedfile);
                 $file->issave = 1;
-                $file->save();
-            }
-        } else { 
-            if($uploadedfile != ""){ //pass empty value
-                $upload = new Upload;
-                $upload->file_id = $uploadedfile;
-                $upload->entityname = 'productorder';
-                $upload->entity_id = $productorderid;
-                $upload->save();
-                
-                $file = Files::find($uploadedfile);
-                $file->issave = 1;
-                $file->save();    
+                $file->fileable_id = $prd_o->id;
+                $file->fileable_type = get_class($prd_o);
+                $file->save;
             }
         }
-
     }
    
     private function getBusinessAddress($account_id)

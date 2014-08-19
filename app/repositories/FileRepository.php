@@ -23,7 +23,7 @@ class FileRepository implements FileRepositoryInterface {
               );
           }
           
-          $file = new Files;
+          $file = new File;
           $file->fill($data);
           $file->save();
 
@@ -67,7 +67,7 @@ class FileRepository implements FileRepositoryInterface {
               );
         }
       
-        $file = Files::where('issave', '=', 1)->where('id', '=', $fileId)->first();
+        $file = File::where('issave', '=', 1)->where('id', '=', $fileId)->first();
         if($file){
             header('Content-Type: '.$file->type);
             // return $file->content;
@@ -81,7 +81,7 @@ class FileRepository implements FileRepositoryInterface {
     }
 
     public function filesCleanUp(){
-        $files = Files::where('issave', '=', 0)->where('created_at', '<', 'NOW() - INTERVAL 1 DAY')->get();
+        $files = File::where('issave', '=', 0)->where('created_at', '<', 'NOW() - INTERVAL 1 DAY')->get();
 
         if($files != null){
             foreach($files as $file){

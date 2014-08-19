@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateFileTable extends Migration {
+class CreateFilesTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,7 +12,7 @@ class CreateFileTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('file', function(Blueprint $table)
+		Schema::create('files', function(Blueprint $table)
 		{
 			$table->engine = 'InnoDB';
             $table->increments('id');
@@ -33,7 +33,7 @@ class CreateFileTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('file');
+		Schema::dropIfExists('files');
 	}
 
 }
