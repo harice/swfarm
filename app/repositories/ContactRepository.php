@@ -8,12 +8,18 @@ class ContactRepository implements ContactRepositoryInterface {
         $sortby = isset($params['sortby']) ? $params['sortby'] : 'lastname';
         $orderby = isset($params['orderby']) ? $params['orderby'] : 'ASC';
         
-        $contacts = Contact::with('account', 'account.accounttype');
+        $contacts = Contact::with('account.accounttype');
         
         if (isset($params['accountType'])) {
-            $contacts = $contacts->where('accounttype', '=', $params['accountType']);
+            $contacts = $contacts->whereHas('account', function($q)
+            use ($params) {
+                $q->whereHas('accounttype', function($q)
+                use ($params) {
+                    $q->where('accounttype_id', '=', $params['accountType']);
+                });
+            });
         }
-            
+        
         $contacts = $contacts->orderBy($sortby, $orderby)
             ->paginate($perPage);
 
