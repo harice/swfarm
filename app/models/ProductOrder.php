@@ -70,9 +70,9 @@ class ProductOrder extends Eloquent {
         return $this->hasOne('Section', 'id', 'section_id');
     }
 
-    public function documents()
+    public function document()
     {
-        return $this->morphMany('Document','documentable');
+        return $this->morphOne('Document','documentable');
     }
     
     /**

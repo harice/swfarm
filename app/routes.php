@@ -197,5 +197,6 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 });
 
 Route::get('/', function(){ return View::make('main')->withVersion(Config::get('Constants.VERSION',"1.0")); });
+Route::resource('/file','FileController');
 Route::get('/{dump}', function(){ return View::make('errors/404'); });
 

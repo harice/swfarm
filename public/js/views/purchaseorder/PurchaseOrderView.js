@@ -5,6 +5,7 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
+	'base64',
 	'views/purchaseorder/PurchaseOrderAddView',
 	'views/autocomplete/CustomAutoCompleteView',
 	'collections/account/AccountProducerCollection',
@@ -26,6 +27,7 @@ define([
 			Validate,
 			TextFormatter,
 			PhoneNumber,
+			Base64,
 			PurchaseOrderAddView,
 			CustomAutoCompleteView,
 			AccountProducerCollection,
@@ -195,14 +197,15 @@ define([
 						rfv: productSub.rfv,
 					};
 					
-					if(typeof productSub.upload != 'undefined' && productSub.upload.length > 0) {
-						if(typeof productSub.upload[0].files != 'undefined' && productSub.upload[0].files.length > 0)
-							variablesSub['file_path'] = '/apiv1/file/'+productSub.upload[0].files[0].auth;
+					if(productSub.document != null) {
+						var dl = {i:productSub.document.id, m:'document'};
+						variablesSub['file_path'] = Const.URL.FILE +'?dl='+ Base64.encode(Backbone.View.prototype.serialize(dl));
+						// variablesSub['file_path'] = Const.URL.FILE +'?dl='+ Base64.encode('[id:'+productSub.document.id+',m:document]');
 					}
 					
 					if(thisObj.isBid)
 						variablesSub['is_bid'] = true;
-					
+
 					var templateSub = _.template(productSubItemTemplate, variablesSub);
 					subProductTBODY.append(templateSub);
 					

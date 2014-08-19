@@ -26,7 +26,7 @@ class OrderRepository implements OrderRepositoryInterface {
 
         $order = Order::with('productsummary.productname')
                 ->with('productsummary.productorder.product')
-                ->with('productsummary.productorder.upload.files')
+                ->with('productsummary.productorder.document')
                 ->with('account')
                 ->with('contact')
                 ->with('orderaddress', 'orderaddress.addressStates')
@@ -247,7 +247,7 @@ class OrderRepository implements OrderRepositoryInterface {
     {
         $order = Order::with('productsummary.productname')
                 ->with('productsummary.productorder.product')
-                ->with('productsummary.productorder.upload.files')
+                ->with('productsummary.productorder.document')
                 ->with('productsummary.productorder.sectionfrom.storagelocation')
                 ->with('account')
                 ->with('contact')
@@ -264,18 +264,6 @@ class OrderRepository implements OrderRepositoryInterface {
         if($order){
             $response = array();
             $response = $order->toArray();
-            //adding new index in file array for passing auth
-            array_walk($response['productsummary'], function(&$productsummary) {
-                array_walk($productsummary['productorder'], function(&$productorder) {
-                    array_walk($productorder['upload'], function (&$upload){
-                        array_walk($upload['files'], function (&$files){
-                            $userEmail = Auth::user()->email;
-                            $userPassword = Request::header('php-auth-pw');
-                            $files['auth'] = base64_encode($files['id'].','.$userEmail.','.$userPassword);
-                        });
-                    });
-                });
-            });
         } else {
           $response = array(
             'error' => true,
@@ -314,7 +302,7 @@ class OrderRepository implements OrderRepositoryInterface {
         
         if(!isset($data['contract_id']) || $data['contract_id'] == '')
             $data['contract_id'] = null;
-         
+
         $result = DB::transaction(function() use ($data)
         {
             $result = array();
@@ -323,8 +311,8 @@ class OrderRepository implements OrderRepositoryInterface {
             $order = $this->instance();
             $order->fill($data);
             $order->save();
+
             $productResult = $this->addProductToOrder($order->id, $data['products']);
-            // $productResult = $this->addProductOrder($order->id, $data['products']);
             if(isset($productResult['stacknumberError'])){ //duplicate stack number with different product
                 return array(
                     "error" => true,
@@ -637,7 +625,8 @@ class OrderRepository implements OrderRepositoryInterface {
         return $prefix.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
     }
 
-    private function addProductToOrder($order_id, $products = array(), $isUpdate = false){
+    private function addProductToOrder($order_id, $products = array(), $isUpdate = false)
+    {
         $result = array('hasHoldProduct' => false);
         $stacknumbersUsed = array();
         foreach ($products as $product){
@@ -650,7 +639,7 @@ class OrderRepository implements OrderRepositoryInterface {
             $product['order_id'] = $order_id;
             $productordersummary->fill($product);
             $productordersummary->save();
-            
+
             //check if same stack number is used in saving order
             foreach($product['stacks'] as $item){
                 if(!in_array(strtolower($item['stacknumber']), $stacknumbersUsed)){
@@ -659,7 +648,6 @@ class OrderRepository implements OrderRepositoryInterface {
                     return array("stacknumberRepeatedError" => true, "stacknumber"=>$item['stacknumber']);
                 }
             }
-
 
             $stacks = $this->addStacksToOrder($order_id, $product['stacks'], $productordersummary->id);
 
@@ -688,13 +676,15 @@ class OrderRepository implements OrderRepositoryInterface {
     
     private function addStacksToOrder($order_id, $products = array(), $productordersummary_id){
         $result = array('hasHoldProduct' => false);
-        // var_dump($products);exit;
+        
         $stacknumbersUsed = array();
-        foreach ($products as $product) {
+        foreach ($products as $product) 
+        {
+            // tocheck
             if($this->checkIfStackNumberIsTakenByOtherProduct($product['stacknumber'], $product['product_id'])){
                 return array("stacknumberError" => true, "stacknumber"=>$product['stacknumber']);
             }
-            
+
             $product['order_id'] = $order_id;
             $product['productordersummary_id'] = $productordersummary_id;
             //set order status to testing when it has product hold with no rfv and file set
@@ -712,8 +702,6 @@ class OrderRepository implements OrderRepositoryInterface {
 
             if(isset($product['id'])){
                 $productorder = ProductOrder::find($product['id']);
-                // var_dump($product['id']);
-                // var_dump($productorder);
             } else {
                 $productorder = new ProductOrder;
             }
@@ -721,7 +709,6 @@ class OrderRepository implements OrderRepositoryInterface {
             if($product['section_id'] == ''){
                 $product['section_id'] = null;
             }
-
 
             $productorder->fill($product);
             $productorder->save();
@@ -762,17 +749,26 @@ class OrderRepository implements OrderRepositoryInterface {
         $prd_o = ProductOrder::find($productorderid);
         if($prd_o)
         {
-            // var_dump(get_class($prd_o));exit();
-            if(is_array($prd_o->documentable)) {
-                foreach ($prd_o->fileable as $k => $v) {
-                    $v->delete();
+            if($prd_o->document) 
+            {
+                if($prd_o->document->id != $uploadedfile) 
+                {
+                    $prd_o->document->delete();
+
+                    if(!empty($uploadedfile)) {
+                        $file = Document::find($uploadedfile);
+                        $file->issave = 1;
+                        $file->documentable_id = $prd_o->id;
+                        $file->documentable_type = get_class($prd_o);
+                        $file->save();
+                    }
                 }
             } else {
                 $file = Document::find($uploadedfile);
                 $file->issave = 1;
                 $file->documentable_id = $prd_o->id;
                 $file->documentable_type = get_class($prd_o);
-                $file->save;
+                $file->save();
             }
         }
     }

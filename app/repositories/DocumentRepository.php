@@ -26,14 +26,6 @@ class DocumentRepository implements DocumentRepositoryInterface {
           $file = new Document;
           $file->fill($data);
           $file->save();
-
-          // $user->profileimg = $this->saveImage($data['imagedata'], $data['imagetype'], $data['username']);
-          //define('UPLOAD_DIR', 'images/profile/');
-          // $base64img = str_replace('data:'.$data['imagetype'].';base64,', '', $data['imagedata']);
-          // $filedecode = base64_decode($base64img);
-          // $file = UPLOAD_DIR . $data['username'] . '.jpg';
-          // file_put_contents($file, $filedecode);
-
           return $file->id;
  
     }

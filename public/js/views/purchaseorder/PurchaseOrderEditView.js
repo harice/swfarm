@@ -71,8 +71,6 @@ define([
 					thisObj.soProducts.push(product.productname.id);
 				});
 				
-				console.log(thisObj.soProducts);
-				
 				if(parseInt(this.get('isfrombid')) == 1 && this.get('status').name.toLowerCase() == 'pending') {
 					thisObj.isBid = true;
 					thisObj.h1Title = 'Bid';
@@ -171,10 +169,9 @@ define([
 					productSubFields.find('.description').val(productSub.description);
 					productSubFields.find('.bales').val(productSub.bales);
 					
-					if(productSub.tons != null && typeof productSub.tons !== 'undefined') { console.log('productSub.tons: '+productSub.tons);
+					if(productSub.tons != null && typeof productSub.tons !== 'undefined') { 
 						totalTonsPerProduct += parseFloat(productSub.tons);
 						productSubFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(productSub.tons).toFixed(4)));
-						console.log('totalTonsPerProduct: '+totalTonsPerProduct);
 					}
 					
 					if(productSub.unitprice != null && typeof productSub.unitprice !== 'undefined')
@@ -187,9 +184,8 @@ define([
 					productSubFields.find('.ishold').val(productSub.ishold);
 					productSubFields.find('.rfv').val(productSub.rfv);
 					
-					if(productSub.upload.length > 0) {
-						productSubFields.find('.uploadedfile').val(productSub.upload[0].file_id);
-						productSubFields.find('.uploadedfile').attr('data-filename', productSub.upload[0].files[0].name);
+					if(productSub.document != null) {
+						productSubFields.find('.uploadedfile').val(productSub.document.id);
 						productSubFields.find('.attach-pdf').removeClass('no-attachment');
 					}
 				});
