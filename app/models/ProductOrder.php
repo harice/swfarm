@@ -62,7 +62,7 @@ class ProductOrder extends Eloquent {
     public function sectionfrom(){
         return $this->hasOne('Section', 'id', 'section_id');
     }
-
+    
     public function document()
     {
         return $this->morphOne('Document','documentable');
