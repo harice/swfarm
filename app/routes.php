@@ -161,8 +161,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('settings', 'APIv1\SettingsController');
 
     // File
-    // Route::get('file/displayFile', 'APIv1\FileController@displayFile');
-    Route::resource('file', 'APIv1\FileController');
+    Route::resource('document', 'APIv1\DocumentController');
     
     // Contract
     Route::put('contract/close/{id}', 'APIv1\ContractController@closeContract');
@@ -201,4 +200,5 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 });
 
 Route::get('/', function(){ return View::make('main')->withVersion(Config::get('Constants.VERSION',"1.0")); });
+Route::resource('/file','FileController');
 Route::get('/{dump}', function(){ return View::make('errors/404'); });

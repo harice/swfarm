@@ -31,11 +31,11 @@ class ContactRepository implements ContactRepositoryInterface {
         $contact = Contact::with('account')->find($id);
 
         $contact = $contact->toArray();
-        $accounttype = AccountType::where('id', '=', $contact["account"]["accounttype"])->get(array('name'));
-        $accounttype = $accounttype->toArray();
-        $account_name = $accounttype["0"]["name"];
+        // $accounttype = AccountType::where('id', '=', $contact["account"]["accounttype"])->get(array('name'));
+        // $accounttype = $accounttype->toArray();
+        // $account_name = $accounttype["0"]["name"];
 
-        $contact["account"]["account_name"] = $account_name;
+        // $contact["account"]["account_name"] = $account_name;
 
         if ($contact) {
             $response = Response::json(
@@ -224,7 +224,7 @@ class ContactRepository implements ContactRepositoryInterface {
     public function validate($data, $rules)
     {
         $messages = array(
-            'rate.max' => 'The fee may not be greater than 100.00 .'
+            'rate.max' => 'The fee may not be greater than 100.00'
         );
         $validator = Validator::make($data, $rules, $messages);
 
@@ -251,11 +251,12 @@ class ContactRepository implements ContactRepositoryInterface {
      */
     public function hasRate($account_id)
     {
-        $account = Account::find($account_id);
-        if ($account->accounttype == 3 || $account->accounttype == 4 || $account->accounttype == 8 || $account->accounttype == 9) {
-            return true;
-        }
-
+        $types = array(3,4,8,9); // Loader, Operator, Trucker, Southwest Farms
+        $account = Account::where('id','=',$account_id)
+                        ->whereHas('accounttype', function($q) use($types) { $q->whereIn('accounttype_id', $types); } )
+                        ->groupBy('id')->count();
+        
+        if($account) return true;
         return false;
     }
 }
