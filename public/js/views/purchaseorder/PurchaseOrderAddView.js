@@ -1325,7 +1325,8 @@ define([
 		postDisplayForm: function () {},
 		
 		destroySubViews: function () {
-			this.producerAutoCompleteView.destroyView();
+			if(this.producerAutoCompleteView != null)
+				this.producerAutoCompleteView.destroyView();
 			
 			if(this.isInitCustomerAutoCompleteView)
 				this.customerAutoCompleteView.destroyView();

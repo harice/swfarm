@@ -61,13 +61,16 @@ define([
 			this.isInitProcess = true;
 			this.soProducts = [];
 			this.soProductsIndex = 0;
+			this.fromPOId = 0;
 			this.inits();
 			
 			this.model = new SalesOrderModel({id:this.soId});
 			this.model.on('change', function() {
 				if(this.get('verified') == 1)
 					thisObj.verified = true;
-				
+				if(this.get('purchaseorder_id') != null)
+					thisObj.fromPOId = this.get('purchaseorder_id');
+					
 				_.each(this.get('productsummary'), function (product) {
 					thisObj.soProducts.push(product.productname.id);
 				});
@@ -90,6 +93,7 @@ define([
 			var address = [this.model.get('orderaddress')];
 			var products = this.model.get('productsummary');
 			var nos = this.model.get('natureofsale').id;
+			var contract = this.model.get('contract');
 			
 			this.$el.find('#sonumber').val(this.model.get('order_number'));
 			this.$el.find('#status').val(this.model.get('status').name);
@@ -107,6 +111,9 @@ define([
 			this.$el.find('#city').val(address[0].city);
 			this.$el.find('#zipcode').val(address[0].zipcode);
 			
+			if(this.isFromPODropship())
+				this.$el.find('#account').attr('readonly', true).off();
+			
 			this.currentCustomerId = account.id;
 			this.customerAccountContactId = this.model.get('contact_id');
 			this.showFieldThrobber('#contact_id');
@@ -114,10 +121,16 @@ define([
 			
 			this.$el.find('#dateofsale').val(this.convertDateFormat(this.model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
             
-			this.generateContract();
-			if(this.model.get('contract') && typeof this.model.get('contract').id != 'undefined')
-				this.$el.find('#contract_id').val(this.model.get('contract').id);
-			this.toggleContract(nos);
+			if(!this.isFromPODropship()) {
+				this.generateContract();
+				if(contract && typeof contract.id != 'undefined')
+					this.$el.find('#contract_id').val(contract.id);
+				this.toggleContract(nos);
+			}
+			else {
+				this.subContainer.find('#contract_id_dummy').append('<option value="'+contract.id+'">'+contract.contract_number+'</option>').val(contract.id);
+				this.subContainer.find('#contract_id').val(contract.id)
+			}
 			
 			this.$el.find('#notes').val(this.model.get('notes'));
 			
@@ -157,14 +170,12 @@ define([
 				var unitPrice = unitprice * tons;
 				productFields.find('.unit-price').val(thisObj.addCommaToNumber(unitPrice.toFixed(2)));
 				
-				thisObj.convertProductFieldToReadOnly(productFields, product.productname.id);
-				/*if(thisObj.verified) {
-					productFields.find('.product_id_dummy').val(product.productname.id);
-					productFields.find('.unitprice').attr('readonly', true);
-					productFields.siblings('.product-item').find('.tons').attr('readonly', true);
-					productFields.find('.unit-price').attr('readonly', true);
-				}*/
 				
+				if(thisObj.isFromPODropship())
+					thisObj.convertProductFieldToReadOnly(productFields, product.productname.id, true);
+				else if(thisObj.verified)
+					thisObj.convertProductFieldToReadOnly(productFields, product.productname.id);
+					
 				var j = 0;
 				_.each(product.productorder, function (productSub) {
 					var productSubFields = null;
@@ -176,8 +187,18 @@ define([
 					j++;
 					
 					productSubFields.find('.id').val(productSub.id);
-					thisObj.generateStackNumberDropdown(productSubFields.find('.stacknumber'), product.productname.id, productSub.stacknumber);
-					thisObj.generateLocationFromDropDown(productSub.stacknumber, product.productname.id, productSubFields.find('.section_id'), product.productorder[0].section_id);
+					
+					if(!thisObj.isFromPODropship()) {
+						thisObj.generateStackNumberDropdown(productSubFields.find('.stacknumber'), product.productname.id, productSub.stacknumber);
+						thisObj.generateLocationFromDropDown(productSub.stacknumber, product.productname.id, productSubFields.find('.section_id'), product.productorder[0].section_id);
+					}
+					else {
+						productSubFields.find('.stacknumber_dummy').val(productSub.stacknumber);
+						productSubFields.find('.stacknumber').val(productSub.stacknumber);
+						productSubFields.find('.section_id_dummy').val(productSub.sectionfrom.storagelocation.name+' - '+productSub.sectionfrom.name);
+						productSubFields.find('.section_id').val(productSub.sectionfrom.id);
+					}
+					
 					productSubFields.find('.description').val(productSub.description);
 					productSubFields.find('.tons').val(productSub.tons);
 					productSubFields.find('.bales').val(productSub.bales);

@@ -62,6 +62,12 @@ define([
 			this.isInitProcess = false;
 			this.soProducts = [];
 			this.soProductsIndex = 0;
+			
+			this.fromPOId = 14;
+			//this.fromPOId = Global.getGlobalVars().fromPOId;
+			//if(Global.getGlobalVars().fromPOId != 0)
+				//Global.getGlobalVars().fromPOId = 0;
+			
 			this.inits();
 		},
 		
@@ -71,11 +77,6 @@ define([
 			this.customerAccountContactId = null;
 			this.verifyOrder = false;
 			this.verified = false;
-			
-			//this.fromPOId = 14;
-			this.fromPOId = Global.getGlobalVars().fromPOId;
-			if(Global.getGlobalVars().fromPOId != 0)
-				Global.getGlobalVars().fromPOId = 0;
 			
 			this.productAutoCompletePool = [];
 			this.stackNumberByProductPool = [];
@@ -247,9 +248,8 @@ define([
 			this.otherInitializations();
 			this.postDisplayForm();
 			
-			if(this.fromPOId > 0) {
+			if(this.fromPOId > 0 && this.soId == null)
 				this.usePOData();
-			}
 		},
 		
 		initValidateForm: function () {
@@ -559,7 +559,7 @@ define([
 		},
 		
 		getProductDropdown: function () {//console.log('getProductDropdown');
-			if(this.subContainer.find('#contract_id').val() == '' || this.fromPOId > 0)
+			if(this.subContainer.find('#contract_id').val() == '' || this.isFromPODropship())
 				return this.getAllProductDropdown();
 			else
 				return this.getContractProductDropdown();
@@ -1082,13 +1082,12 @@ define([
 			if(!allowUnitPrice)
 				productFields.find('.unitprice').attr('readonly', true);
 			
-			productFields.siblings('.product-item').find('.tons').attr('readonly', true);
+			productFields.find('.tons').attr('readonly', true);
 			productFields.find('.unit-price').attr('readonly', true);
 		},
 		
 		isFromPODropship: function () {
-			if(this.fromPOId > 0 || (typeof this.model !== 'undefined' && this.model.get('purchaseorder_id') != null))
-			//if(this.fromPOId > 0)
+			if(this.fromPOId > 0)
 				return true;
 			
 			return false;
@@ -1098,7 +1097,8 @@ define([
 		postDisplayForm: function () {},
 		
 		destroySubViews: function () {
-			this.customerAutoCompleteView.destroyView();
+			if(this.customerAutoCompleteView != null)
+				this.customerAutoCompleteView.destroyView();
 		},
 	});
 
