@@ -25,6 +25,7 @@ class InventoryProduct extends BaseModel {
             'inventory_id', 
             'stack_id', 
             'price',
+            'bales',
             'tons',
             'sectionfrom_id',
             'sectionto_id'

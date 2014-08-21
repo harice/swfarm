@@ -820,6 +820,78 @@ class InventoryRepository implements InventoryRepositoryInterface {
         return $stackList->toArray();
     }
 
+    /*public function inventoryReportPerLocation($stacklocationId){
+        $result = StorageLocation::with('section.inventoryproduct_sectionto.inventory.inventorytransactiontype')
+                                ->with('section.inventoryproduct_sectionto.inventory.ordernumberForInventory.account')
+                                ->with('section.inventoryproduct_sectionfrom.inventory.inventorytransactiontype')
+                                ->with('section.inventoryproduct_sectionfrom.inventory.ordernumberForInventory.contractnumber')
+                                ->with('section.inventoryproduct_sectionto.inventory.weightticketnumber')
+                                // ->wherehas('section', function($section){
+                                //     $section->whereHas('inventoryproduct_sectionto', function($inventoryproduct_sectionto){
+                                //         $inventoryproduct_sectionto->whereHas('order', function($order){
+                                //             //$order->where('created_at', '>=', );
+                                //         });
+                                //     });
+                                // })
+                                ->find($stacklocationId);
+        // return $result->toArray();
+        if($result){
+            $data = array();
+            $index = 0;
+            $data['location'] = $result['name'];
+            $data['totalBales'] = 0;
+            $data['totalTons'] = 0;
+            $data['totalCost'] = 0;
+            foreach($result['section'] as $section){
+                foreach($section['inventoryproduct_sectionto'] as $inventoryproduct){
+                    $date = $inventoryproduct['inventory']['created_at'];
+                    $data['data'][$index]['section'] = $section['name'];
+                    $data['data'][$index]['date'] = $date->createFromFormat('Y-m-d H:i:s', $date)->format('Y-m-d H:i:s');
+                    $data['data'][$index]['ordernumber'] = $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] : "";
+                    $data['data'][$index]['weightticketnumber'] = $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] != null ? $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] : "";
+                    $data['data'][$index]['producer'] = $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['account']['name'] : "";
+                    $data['data'][$index]['contract'] = $inventoryproduct['inventory']['ordernumberForInventory']['contract_id'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['contract']['contract_number'] : "";
+                    $data['data'][$index]['bales'] = $inventoryproduct['bales'] != null ? $inventoryproduct['bales'] : "0";
+                    $data['data'][$index]['tons'] = $inventoryproduct['tons'];
+                    $data['data'][$index]['price'] = $inventoryproduct['price'];
+                    $data['data'][$index]['cost'] = number_format($inventoryproduct['tons'] * $inventoryproduct['price'], 2);
+                    $data['data'][$index]['operation'] = $inventoryproduct['inventory']['inventorytransactiontype']['type'];
+                    $data['totalBales'] += $data['data'][$index]['bales'];
+                    $data['totalTons'] += $data['data'][$index]['tons'];
+                    $data['totalCost'] += $data['data'][$index]['cost'];
+                    $index++;
+                }
+                foreach($section['inventoryproduct_sectionfrom'] as $inventoryproduct){
+                    $date = $inventoryproduct['inventory']['created_at'];
+                    $data['data'][$index]['section'] = $section['name'];
+                    $data['data'][$index]['date'] = $date->createFromFormat('Y-m-d H:i:s', $date)->format('Y-m-d H:i:s');
+                    $data['data'][$index]['ordernumber'] = $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] : "";
+                    $data['data'][$index]['weightticketnumber'] = $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] != null ? $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] : "";
+                    $data['data'][$index]['producer'] = $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['account']['name'] : "";
+                    $data['data'][$index]['contract'] = $inventoryproduct['inventory']['ordernumberForInventory']['contract_id'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['contract']['contract_number'] : "";
+                    $data['data'][$index]['bales'] = $inventoryproduct['bales'] != null ? $inventoryproduct['bales'] : 0;
+                    $data['data'][$index]['tons'] = $inventoryproduct['tons'];
+                    $data['data'][$index]['price'] = $inventoryproduct['price'];
+                    $data['data'][$index]['cost'] = number_format($inventoryproduct['tons'] * $inventoryproduct['price'], 2);
+                    $data['data'][$index]['operation'] = $inventoryproduct['inventory']['inventorytransactiontype']['type'];
+                    $data['totalBales'] += $data['data'][$index]['bales'];
+                    $data['totalTons'] += $data['data'][$index]['tons'];
+                    $data['totalCost'] += $data['data'][$index]['cost'];
+                    $index++;
+                }
+
+            }
+
+            $data['totalBales'] = number_format($data['totalBales'], 0, '.', '');
+            $data['totalTons'] = number_format($data['totalTons'], 2, '.', '');
+            $data['totalCost'] = number_format($data['totalCost'], 2, '.', '');
+            return $data;
+        } else {
+            return array('error' => true, 'message' => 'Location not found.');
+        }
+        
+    }*/
+
     private function displayLastQuery(){
       $queries = DB::getQueryLog();
       $last_query = end($queries);

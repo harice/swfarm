@@ -1,5 +1,6 @@
 define(function () {
     var constant = {
+		'GOOGLEMAPSAPIKEY': 'AIzaSyAyTqNUdaMOVp8vYoyheHK4_Hk6ZkUb9Ow',
     	'SU': 1,
 		'URL': {
 			'LOGIN':'login',
@@ -151,6 +152,11 @@ define(function () {
 			},
 			'COLLAPSIBLE': {
 				'ID': 'order-list-collapsible-',
+			},
+			'DESTINATION': {
+				'SWFARMS': '1',
+				'PRODUCER': '2',
+				'DROPSHIP': '3',
 			},
 		},
 		'SO': {

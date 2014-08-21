@@ -34,8 +34,6 @@ define([
 	var ContactAddView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
-		accountAutoCompleteView: null,
-		
 		initialize: function() {
 			this.initSubContainer();
 			this.contactId = null;
@@ -50,6 +48,8 @@ define([
 		
 		displayForm: function(){
 			var thisObj = this;
+			
+			this.accountAutoCompleteView = null;
 			
             var innerTemplateVariables = {
 				'contact_url' : '#/'+Const.URL.CONTACT
@@ -121,9 +121,6 @@ define([
 		initAccountAutocomplete: function () {
 			var thisObj = this;
 			
-			if(this.accountAutoCompleteView != null)
-				this.accountAutoCompleteView.deAlloc();
-			
 			var accountAutocompleteCollection = new AccountAutocompleteCollection();
 			this.accountAutoCompleteView = new AccountCustomAutoCompleteView({
                 input: $('#account'),
@@ -181,8 +178,11 @@ define([
                 var account_id = $('#addContactForm #account_id').val();
                 that.hasRate(account_id);
             });
-        }
+        },
         
+		destroySubViews: function () {
+			this.accountAutoCompleteView.destroyView();
+		},
 	});
     
     return ContactAddView;

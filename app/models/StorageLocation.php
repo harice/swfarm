@@ -17,7 +17,9 @@ class StorageLocation extends Eloquent {
     protected $fillable = array(
 		'account_id',
         'name',
-        'description'
+        'description',
+        'longitude',
+        'latitude'
     );
     
     public static $rules = array(

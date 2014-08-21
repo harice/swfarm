@@ -21,6 +21,7 @@ define([
 		
 		dateFormat: 'mm-dd-yyyy',
 		dateFormatDB: 'yyyy-mm-dd',
+		modalAlertContainer: '.modal-alert-cont',
 		
 		initSubContainer: function () {
 			this.timestamp = new Date().getTime();
@@ -67,11 +68,11 @@ define([
 		},
 		
 		initConfirmationWindow: function (content, buttonId, buttonLabel, title, dismissModal, modalId) {
-			if($('.modal-alert-cont').find('#modal-confirm').length)
-				$('.modal-alert-cont').find('#modal-confirm').remove();
-			
 			if(modalId == null || typeof modalId == 'undefined')
-			modalId = 'modal-confirm';
+				modalId = 'modal-confirm';
+			
+			if($(this.modalAlertContainer).find('#'+modalId).length)
+				$(this.modalAlertContainer).find('#'+modalId).remove();
 			
 			var confirmTemplateVariables = {
 				confirm_title: title,
@@ -85,12 +86,12 @@ define([
 				confirmTemplateVariables['confirm_dismiss_modal'] = 1;
 			
 			var confirmTemplate = _.template(confirmModalTemplate, confirmTemplateVariables);
-			this.$el.find('.modal-alert-cont').append(confirmTemplate);
+			this.$el.find(this.modalAlertContainer).append(confirmTemplate);
 		},
 		
 		initConfirmationWindowWithForm: function (content, buttonId, buttonLabel, contentForm, title) {
-			if($('.modal-alert-cont').find('#modal-with-form-confirm').length)
-				$('.modal-alert-cont').find('#modal-with-form-confirm').remove();
+			if($(this.modalAlertContainer).find('#modal-with-form-confirm').length)
+				$(this.modalAlertContainer).find('#modal-with-form-confirm').remove();
 				
 			var confirmTemplateVariables = {
 				confirm_title: title,
@@ -101,12 +102,12 @@ define([
 			};
 			
 			var confirmTemplate = _.template(confirmModalWithFormTemplate, confirmTemplateVariables);
-			this.$el.find('.modal-alert-cont').append(confirmTemplate);
+			this.$el.find(this.modalAlertContainer).append(confirmTemplate);
 		},
 		
 		initAttachPDFWindow: function () {
 			var confirmTemplate = _.template(attachPDFTemplate, {});
-			this.$el.find('.modal-alert-cont').append(confirmTemplate);
+			this.$el.find(this.modalAlertContainer).append(confirmTemplate);
 		},
                 
         
@@ -131,8 +132,8 @@ define([
 		},
                 
         initModalForm: function (content, buttonId, buttonLabel, title, dismissModal, modalId) {
-			if($('.modal-alert-cont').find('#modal-confirm').length)
-				$('.modal-alert-cont').find('#modal-confirm').remove();
+			if($(this.modalAlertContainer).find('#modal-confirm').length)
+				$(this.modalAlertContainer).find('#modal-confirm').remove();
 			
 			if(modalId == null || typeof modalId == 'undefined')
 			modalId = 'modal-confirm';
@@ -149,7 +150,7 @@ define([
 				modalTemplateVariables['confirm_dismiss_modal'] = 1;
 			
 			var modalTemplate = _.template(modalFormTemplate, modalTemplateVariables);
-			this.$el.find('.modal-alert-cont').append(modalTemplate);
+			this.$el.find(this.modalAlertContainer).append(modalTemplate);
 		},
                 
         showModalForm: function (id) {
@@ -183,11 +184,11 @@ define([
 			//console.log('showNavigationAwayConfirmationWindow');
 			var runCallback = false;
 			
-			if($('.modal-alert-cont').find('#modal-confirm-navigate-away').length)
-				$('.modal-alert-cont').find('#modal-confirm-navigate-away').remove();
+			if($(this.modalAlertContainer).find('#modal-confirm-navigate-away').length)
+				$(this.modalAlertContainer).find('#modal-confirm-navigate-away').remove();
 			
 			var confirmTemplate = _.template(confirmNavigateAwayFromFormModalTemplate, {});
-			$('.modal-alert-cont').append(confirmTemplate);
+			$(this.modalAlertContainer).append(confirmTemplate);
 			
 			$('#confirm-navigate').on('click', function () {
 				runCallback = true;
@@ -417,9 +418,12 @@ define([
 		
 		resetSelect: function (select, trigger) {
 			select.find('option:gt(0)').remove();
-			if(trigger != null && typeof trigger !== 'undefined')
+			if(trigger != null && typeof trigger !== 'undefined' && trigger == true)
 				select.val('').trigger('change');
 		},
+		
+		destroyView: function () {},
+		destroySubViews: function () {},
 	});
 
 	return AppView;

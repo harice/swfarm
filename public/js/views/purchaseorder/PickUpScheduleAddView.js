@@ -1,6 +1,7 @@
 define([
 	'backbone',
 	'views/base/AppView',
+	'views/base/GoogleMapsView',
 	'jqueryui',
 	'jqueryvalidate',
 	'jquerytextformatter',
@@ -17,10 +18,12 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddScheduleTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderPickUpScheduleProductItemTemplate.html',
+	'text!templates/layout/googleMapsDistanceMarkerTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
 			AppView,
+			GoogleMapsView,
 			JqueryUI,
 			Validate,
 			TextFormatter,
@@ -37,6 +40,7 @@ define([
 			contentTemplate,
 			purchaseOrderAddScheduleTemplate,
 			purchaseOrderPickUpScheduleProductItemTemplate,
+			googleMapsDistanceMarkerTemplate,
 			Global,
 			Const
 ){
@@ -224,6 +228,33 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
 			
+			this.googleMaps = new GoogleMapsView();
+			this.googleMaps.initMapGetDestinationDistance(function (data) {
+				
+				var distanceMarker = '';
+				if(typeof data.destinationLeg !== 'undefined' && data.destinationLeg != null) {
+					var distance = 0;
+					for(var i = 0; i < data.destinationLeg.length; i++) { console.log('data.destinationLeg'); console.log(data.destinationLeg);
+						distanceMarker += _.template(googleMapsDistanceMarkerTemplate, {
+							longitudeFrom:data.destinationLeg[i].origin.lng(),
+							latitudeFrom:data.destinationLeg[i].origin.lat(),
+							longitudeTo:data.destinationLeg[i].destination.lng(),
+							latitudeTo:data.destinationLeg[i].destination.lat(),
+							distance:data.destinationLeg[i].distance,
+							isLoadedDistance:(data.destinationLeg[i].loaded)? 1 : 0,
+						});
+						distance += parseFloat(data.destinationLeg[i].distance);
+					}
+					
+					thisObj.subContainer.find('#distance').val(distance.toFixed(2));
+				}
+				else
+					thisObj.subContainer.find('#distance').val('');
+				
+				console.log('distanceMarker: '+distanceMarker);
+				thisObj.subContainer.find('#marker-data-cont').html(distanceMarker);
+			});
+			
 			this.initValidateForm();
 			
 			this.populateTimeOptions();
@@ -231,7 +262,6 @@ define([
 			this.addProduct();
 			
 			this.postDisplayForm();
-            //this.maskInputs();
 		},
 		
 		initValidateForm: function () {
@@ -542,6 +572,8 @@ define([
 				}
 			}
 			
+			formData['scheduleMap'] = this.getformattedDistanceMarkerFormField();
+			
 			return formData;
 		},
 		
@@ -566,7 +598,9 @@ define([
 			'blur .loader': 'onBlurMoney',
 			'keyup .quantity': 'onKeyUpQuantity',
 			'blur .quantity': 'onBlurTon',
-			'click #delete-schedule': 'deleteSchedule'
+			'click #delete-schedule': 'deleteSchedule',
+			
+			'click #map': 'showMap',
 		},
 		
 		onChangeProduct: function (ev) {
@@ -805,6 +839,31 @@ define([
 			}
 			
 			return false;
+		},
+		
+		showMap: function () {
+			this.googleMaps.showModalGetDestinationDistance();
+			return false;
+		},
+		
+		getformattedDistanceMarkerFormField: function () {
+			markerData = [];
+			
+			this.subContainer.find('#marker-data-cont .destination-marker').each(function () {
+				var element = $(this)
+				
+				markerData.push({
+					longitudeFrom: element.attr('data-longitudeFrom'),
+					latitudeFrom: element.attr('data-latitudeFrom'),
+					longitudeTo: element.attr('data-longitudeTo'),
+					latitudeTo: element.attr('data-latitudeTo'),
+					distance: element.attr('data-distance'),
+					longitudeFrom: element.attr('data-longitudeFrom'),
+					isLoadedDistance: element.attr('data-isLoadedDistance'),
+				});
+			});
+			
+			return markerData;
 		},
 		
 		postDisplayForm: function () {},

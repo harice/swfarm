@@ -1,23 +1,33 @@
 <tr class="product-stack-item">
 	<td>
 		<input type="hidden" class="id" name="id" value="" />
+		<% if (typeof readonly_products !== "undefined") { %>
+		<input class="form-control stacknumber_dummy" type="text" readonly>
+		<input type="hidden" class="stacknumber" name="stacknumber" value="" />
+		<% } else { %>
 		<div class="styled-select">
 			<select class="form-control stacknumber width-160 display-inline" name="stacknumber">
 				<option value="">Select a stack number</option>
 			</select>
 			<span class="throbber_wrap" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
 		</div>
+		<% } %>
 	</td>
 	<td>
+		<% if (typeof readonly_products !== "undefined") { %>
+		<input class="form-control section_id_dummy" type="text" readonly>
+		<input type="hidden" class="section_id" name="section_id" value="" />
+		<% } else { %>
 		<div class="styled-select">
 			<select class="form-control section_id width-160" name="section_id">
 				<option value="">Select a stack location</option>
 			</select>
 		</div>
+		<% } %>
 	</td>
 	<td><input class="form-control description" name="description" maxlength="80"></td>
-	<td><input class="form-control text-right tons" name="tons" type="text" maxlength="12"></td>
-	<td><input class="form-control text-right bales" name="bales" type="text"></td>
+	<td><input class="form-control text-right tons" name="tons" type="text" maxlength="12"<% if (typeof readonly_products !== "undefined") { %> readonly<% } %>></td>
+	<td><input class="form-control text-right bales" name="bales" type="text"<% if (typeof readonly_products !== "undefined") { %> readonly<% } %>></td>
 	<td>
 		<button title="Remove Product Stack" type="button" class="pull-right btn btn-danger btn-xs remove-product-stack"><span class="glyphicon glyphicon-remove"></span></button>
 	</td>

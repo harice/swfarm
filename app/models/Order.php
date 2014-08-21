@@ -101,6 +101,10 @@ class Order extends BaseModel {
         return $this->belongsTo('Contract');
     }
 
+    public function contractnumber(){
+        return $this->belongsTo('Contract', 'contract_id', 'id')->select(array('id', 'contract_number','account_id'));   
+    }
+
     public function contact(){
         return $this->hasOne('Contact', 'id', 'contact_id')->select(array('id', 'firstname', 'lastname', 'suffix'));
     }

@@ -41,4 +41,9 @@ class ReportController extends BaseController {
         $result = $this->report->generateProducerStatement(Input::all());
         return Response::json($result);
     }
+
+    public function inventoryReportPerLocation(){
+        $response = $this->report->inventoryReportPerLocation( Input::all() );
+        return Response::json($response);
+    }
 }

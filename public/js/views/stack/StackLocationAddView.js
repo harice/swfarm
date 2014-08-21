@@ -2,6 +2,7 @@ define([
 	'backbone',
 	'bootstrapdatepicker',
 	'views/base/AppView',
+	'views/base/GoogleMapsView',
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'models/stack/StackLocationModel',
@@ -14,6 +15,7 @@ define([
 ], function(Backbone,
 			DatePicker,
 			AppView,
+			GoogleMapsView,
 			Validate,
 			TextFormatter,
 			StackLocationModel,
@@ -81,6 +83,18 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
+			
+			this.googleMaps = new GoogleMapsView();
+			this.googleMaps.initGetMapLocation(function (data) {
+				if(typeof data.location !== 'undefined') {
+					thisObj.subContainer.find('#latitude').val(data.location.lat());
+					thisObj.subContainer.find('#longitude').val(data.location.lng());
+				}
+				else {
+					thisObj.subContainer.find('#latitude').val('');
+					thisObj.subContainer.find('#longitude').val('');
+				}
+			});
 			
 			this.initValidateForm();
 			this.generateAccount();
@@ -180,7 +194,9 @@ define([
 			'click .remove-section': 'removeSection',
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #delete-sl': 'showDeleteConfirmationWindow',
-			'click #confirm-delete-sl': 'deleteStockLocation'
+			'click #confirm-delete-sl': 'deleteStockLocation',
+			
+			'click #map': 'showMap',
 		},
 		
 		removeSection: function (ev) {
@@ -259,7 +275,17 @@ define([
 			this.showConfirmationWindow();
 		},
 		
+		showMap: function () {console.log('showMap');
+			this.googleMaps.showModalGetLocation({lat:this.subContainer.find('#latitude').val(),lng:this.subContainer.find('#longitude').val()});
+			return false;
+		},
+		
 		otherInitializations: function () {},
+		
+		destroySubViews: function () {
+			if(this.googleMaps != null)
+				this.googleMaps.destroyView();
+		},
 	});
 
 	return StackLocationAddView;
