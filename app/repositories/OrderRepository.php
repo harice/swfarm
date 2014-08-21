@@ -717,7 +717,7 @@ class OrderRepository implements OrderRepositoryInterface {
                 $this->addToStackTable($product['stacknumber'], $product['product_id']);
             }
 
-            if(isset($product['uploadedfile'])){
+            if(isset($product['uploadedfile']) && !empty($product['uploadedfile'])){
                 $this->linkUploadDocumentToProductOrder($product['uploadedfile'], $productorder->id);
             }
 
