@@ -82,11 +82,13 @@ class OrderRepository implements OrderRepositoryInterface {
         foreach($result as $item){
           $item['totalPrice'] = 0.00;
           $item['weightPercentageDelivered'] = $this->getExpectedDeliveredData($item['id']);
-          foreach($item['productorder'] as $productorder){
+          foreach($item['productsummary'] as $productsummary){
+            foreach($productsummary['productorder'] as $productorder){
             if($productorder['unitprice'] != null){
               $item['totalPrice'] += $productorder['unitprice'] * $productorder['tons'];
             }
           }
+        }
         }
 
         return $result;
@@ -254,7 +256,8 @@ class OrderRepository implements OrderRepositoryInterface {
                 ->with('orderaddress', 'orderaddress.addressStates')
                 ->with('location')
                 ->with('status')
-                ->with('ordercancellingreason.reason');
+                ->with('ordercancellingreason.reason')
+		->with('contract.account');
 
         if($orderType == 2) //for SO only
             $order = $order->with('natureofsale', 'contract');
@@ -264,6 +267,11 @@ class OrderRepository implements OrderRepositoryInterface {
         if($order){
             $response = array();
             $response = $order->toArray();
+            
+            //if dropship
+            if($response['location_id'] == Config::get('constants.LOCATION_DROPSHIP')){
+                $response['salesorder_id'] = $this->getSalesOrderId($id);
+            }
         } else {
           $response = array(
             'error' => true,
@@ -271,6 +279,15 @@ class OrderRepository implements OrderRepositoryInterface {
         }
 
         return $response;
+    }
+    
+    private function getSalesOrderId($id){
+        $result = Order::where('purchaseorder_id', '=', $id)->first(array('id'));
+        // var_dump($result);
+        if($result)
+            return $result->id;
+        else 
+            return null;
     }
     
     public function addOrder($data, $orderType = 1)
@@ -327,6 +344,23 @@ class OrderRepository implements OrderRepositoryInterface {
                 $order->save();
             }
 
+            if(isset($data['location_id']) && isset($data['checkinorder'])){
+                if($order->status_id == 7){ //has testing products on order
+                    return array(
+                        "error" => true,
+                        'message' => "Cannot do check in to inventory when order contains hold product(s)."
+                    );
+                }
+                //if dropship and client click the button to create SO
+                if($data['location_id'] == Config::get('constants.LOCATION_DROPSHIP') && $data['checkinorder'] == true){
+                    $dropshipResult = $this->checkInPurchaseOrderProducts($order->id, true);  
+                    return array('dropship' => true, 'data' => $dropshipResult);  
+                } else if($data['location_id'] == Config::get('constants.LOCATION_PRODUCER') && $data['checkinorder'] == true){
+                    $producerResult = $this->checkInPurchaseOrderProducts($order->id, false);  
+                    return array('producer' => true, 'data' => $producerResult);
+                }
+            }
+            
             return $order;
         });
         
@@ -338,6 +372,8 @@ class OrderRepository implements OrderRepositoryInterface {
                         'message' => $result['message']
                     );
                 }
+            } else if(isset($result['dropship']) || isset($result['producer'])){
+                return $result['data'];
             }
 
             if($data['ordertype'] == 1)
@@ -419,6 +455,23 @@ class OrderRepository implements OrderRepositoryInterface {
                 } 
             }
             
+            if(isset($data['location_id']) && isset($data['checkinorder'])){
+                if($order->status_id == 7){ //has testing products on order
+                    return array(
+                        "error" => true,
+                        'message' => "Cannot do check in to inventory when order contains hold product(s)."
+                    );
+                }
+                //if dropship and client click the button to create SO
+                if($data['location_id'] == Config::get('constants.LOCATION_DROPSHIP') && $data['checkinorder'] == true){
+                    $dropshipResult = $this->checkInPurchaseOrderProducts($order->id, true);  
+                    return array('dropship' => true, 'data' => $dropshipResult);  
+                } else if($data['location_id'] == Config::get('constants.LOCATION_PRODUCER') && $data['checkinorder'] == true){
+                    $producerResult = $this->checkInPurchaseOrderProducts($order->id, false);  
+                    return array('producer' => true, 'data' => $producerResult);
+                }
+            }
+            
 
             return $order;
         });
@@ -431,6 +484,8 @@ class OrderRepository implements OrderRepositoryInterface {
                         'message' => $result['message']
                     );
                 }
+            } else if(isset($result['dropship']) || isset($result['producer'])){
+                return $result['data'];
             }
 
             if($data['ordertype'] == 1)
@@ -1117,12 +1172,13 @@ class OrderRepository implements OrderRepositoryInterface {
 
     //used in creating dropship, need to copy all the product details on PO to be used in SO
     public function getPurchaseOrderProductsForSalesOrder($purchaseOrderId){
-        $order = Order::with('productsummary.productname')
+        $order = Order::with('contractnumber.accountname.businessaddress.addressstates')
+                        ->with('productsummary.productname')
                         ->with('productsummary.productorder.product')
                         // ->with('productsummary.productorder.upload.files')
                         ->with('productsummary.productorder.sectionfrom.storagelocation')
                         ->where('id', '=', $purchaseOrderId)
-                        ->first(array('id', 'order_number'));
+                        ->first(array('id', 'order_number', 'contract_id'));
 
         if($order){
             return $order->toArray();
@@ -1147,6 +1203,7 @@ class OrderRepository implements OrderRepositoryInterface {
             foreach($product['productorder'] as $stack){
                 $productTemp[$ctr]['tons'] = $stack['tons'];
                 $productTemp[$ctr]['stacknumber'] = $stack['stacknumber'];
+                $productTemp[$ctr]['bales'] = $stack['bales'];
                 $productTemp[$ctr]['product_id'] = $stack['product_id'];
                 $productTemp[$ctr]['price'] = $stack['unitprice'];
                 $productTemp[$ctr]['sectionto_id'] = $stack['sectionfrom']['id'];
@@ -1194,8 +1251,13 @@ class OrderRepository implements OrderRepositoryInterface {
                     //close the PO before creating SO
                     $order->status_id = 2; 
                     $order->save();
-                    if($dropship){ //for dropship type, needs to return products to be use in creating SO
-                        return $this->getPurchaseOrderProductsForSalesOrder($id);    
+                    if($dropship){ 
+                        //for dropship type, needs to return products to be use in creating SO
+                        //return $this->getPurchaseOrderProductsForSalesOrder($id);    
+                        return array(
+                          'error' => false,
+                          'message' => 'Product(s) successfully checked in to inventory. You can now create sales order for this dropship',
+                          'purchaseorder_id' => $id);
                     } else { //for producer type
                         return array(
                           'error' => false,
