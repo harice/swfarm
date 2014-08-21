@@ -82,9 +82,11 @@ class OrderRepository implements OrderRepositoryInterface {
         foreach($result as $item){
           $item['totalPrice'] = 0.00;
           $item['weightPercentageDelivered'] = $this->getExpectedDeliveredData($item['id']);
-          foreach($item['productorder'] as $productorder){
-            if($productorder['unitprice'] != null){
-              $item['totalPrice'] += $productorder['unitprice'] * $productorder['tons'];
+          foreach($item['productsummary'] as $productsummary){
+            foreach($productsummary['productorder'] as $productorder){
+                if($productorder['unitprice'] != null){
+                  $item['totalPrice'] += $productorder['unitprice'] * $productorder['tons'];
+                }
             }
           }
         }
