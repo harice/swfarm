@@ -35,7 +35,7 @@ class Truck extends BaseModel {
     );
 
     public function account(){
-        return $this->hasOne('Account', 'id', 'account_id')->select(array('id', 'name', 'accounttype'));
+        return $this->hasOne('Account', 'id', 'account_id')->select(array('id', 'name'));
     }
     
 }

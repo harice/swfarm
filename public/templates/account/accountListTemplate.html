@@ -4,23 +4,21 @@
             <div class="content padding-top-0">
 
                 <div class="row margin-top-0">
-                    <div class="col-md-9 col-xs-9 padding-top-10 padding-right-0">
+                    <div class="col-md-9 padding-top-10 padding-right-0">
                         <a href="<%= account_add_url %>" class="btn btn-primary btn-sm btn-rad margin-left-0">+ Add Account</a>
                     </div>
-                    <div class="col-md-3 col-xs-3 padding-top-10">
+                    <div class="col-md-3 padding-top-10">
                         <form class="form-inline" role="form">
-                            <div class="pull-right">
-                                <div class="input-group input-group-sm">
-                                    <label class="sr-only" for="search">Search</label>
-                                    <input type="text" class="search form-control" id="search-keyword" placeholder="" style="border-radius:3px 0 0 3px;">
+                            <div class="input-group input-group-sm">
+                                <label class="sr-only" for="search">Search</label>
+                                <input type="text" class="search form-control" id="search-keyword" placeholder="" style="border-radius:3px 0 0 3px;">
 
-                                    <div class="input-group-btn">
-                                        <button type="button" class="btn btn-trans dropdown-toggle" data-toggle="dropdown" style="border-radius:0;">
-                                            <span class="caret"></span>
-                                        </button>
-                                        <%= type_filters %>
-                                        <button type="button" class="btn btn-trans search-local">Search</button>
-                                    </div>
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-trans dropdown-toggle" data-toggle="dropdown" style="border-radius:0;">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <%= type_filters %>
+                                    <button type="button" class="btn btn-trans search-local">Search</button>
                                 </div>
                             </div>
                         </form>

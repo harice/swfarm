@@ -89,6 +89,11 @@ Route::filter('auth.basic', function()
 	return Auth::basic();
 });
 
+Route::filter('auth.session', function()
+{
+	if(Request::ajax()) return App::abort(501,'Not implemented');
+});
+
 Route::filter('basic', function()
 {
 	$auth = Auth::once(

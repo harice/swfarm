@@ -1,5 +1,11 @@
 <?php
 
+// Display all SQL executed in Eloquent
+// Event::listen('illuminate.query', function($query)
+// {
+//     var_dump($query);
+// });
+
 // Event::listen('*', function($param) {
 //     var_dump(Event::firing());
 //     if(Event::firing() == 'sync.roles') {

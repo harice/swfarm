@@ -1,17 +1,10 @@
 <?php
 
-class AccountType extends Eloquent {
+class Accounttype extends Eloquent {
     protected $fillable = [];
 
-    /**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
+    protected $touches = array('account');
+    
 	protected $table = 'accounttype';
-
-    public function account(){
-        return $this->belongsTo('Account');
-    }
 
 }
