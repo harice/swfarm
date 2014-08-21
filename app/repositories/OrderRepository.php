@@ -241,15 +241,6 @@ class OrderRepository implements OrderRepositoryInterface {
             return null;
     }
     
-    private function getSalesOrderId($id){
-        $result = Order::where('purchaseorder_id', '=', $id)->first(array('id'));
-        // var_dump($result);
-        if($result)
-            return $result->id;
-        else 
-            return null;
-    }
-    
     public function addOrder($data, $orderType = 1)
     {
         // var_dump($data);exit;
