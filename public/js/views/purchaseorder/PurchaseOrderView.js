@@ -198,9 +198,8 @@ define([
 					};
 					
 					if(productSub.document != null) {
-						var dl = {i:productSub.document.id, m:'document'};
-						variablesSub['file_path'] = Const.URL.FILE +'?dl='+ Base64.encode(Backbone.View.prototype.serialize(dl));
-						// variablesSub['file_path'] = Const.URL.FILE +'?dl='+ Base64.encode('[id:'+productSub.document.id+',m:document]');
+						var dl = {i:productSub.document.id, t:'v', m:'doc'};
+						variablesSub['file_path'] = Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize(dl));
 					}
 					
 					if(thisObj.isBid)
