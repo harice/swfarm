@@ -42,8 +42,7 @@ class ContractController extends BaseController {
 	 */
 	public function store()
 	{
-		$response = $this->repo->store(Input::all());
-        return Response::json($response);
+		return $this->repo->store(Input::all());
 	}
 
 	/**

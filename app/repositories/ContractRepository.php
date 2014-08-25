@@ -108,38 +108,50 @@ class ContractRepository implements ContractRepositoryInterface {
         
         try
         {
-            $contract = DB::transaction(function() use ($data){
-                if (!isset($data['products'])) {
-                    return array(
-                        'error' => true,
-                        'message' => 'Please add products for this contract.'
-                    );
-                }
-                $products = $data['products'];
-                unset($data['products']);
-                
-                $contract = $this->instance();
-                $contract->fill($data);
-                $contract->save();
-                
-                $new_products = array();
-                foreach ($products as $product)
-                {
-                    $new_products[$product['product_id']] = array(
-                        'tons' => $product['tons'],
-                        'bales' => $product['bales']
-                    );
-                }
-                
-                $contract->products()->sync($new_products);
-                
-                return $contract;
-            });
+            if (!isset($data['products'])) {
+                return Response::json(array(
+                    'error' => true,
+                    'message' => 'Please add products for this contract.'
+                ), 500);
+            }
+
+            $products = $data['products'];
+
+            $product_ids = array();
+            foreach ($products as $product)
+            {
+                $product_ids[] = $product['product_id'];
+            }
+
+            if (count(array_unique($product_ids)) < count($product_ids))
+            {
+                return Response::json(array(
+                    'error' => true,
+                    'message' => 'Please select unique products.'
+                ), 400);
+            }
+            unset($data['products']);
+
+            $contract = $this->instance();
+            $contract->fill($data);
+            $contract->save();
+
+            $new_products = array();
+            foreach ($products as $product)
+            {
+                $new_products[$product['product_id']] = array(
+                    'tons' => $product['tons'],
+                    'bales' => $product['bales']
+                );
+            }
             
-            $response = array(
-                'error' => false,
-                'message' => Lang::get('messages.success.created', array('entity' => 'Contract')),
-                'data' => $contract
+            $contract->products()->sync($new_products);
+            
+            $response = Response::json(array(
+                    'error' => false,
+                    'message' => Lang::get('messages.success.created', array('entity' => 'Contract')),
+                    'data' => $contract
+                ), 200
             );
             
             return $response;
@@ -159,6 +171,11 @@ class ContractRepository implements ContractRepositoryInterface {
             $contract = DB::transaction(function() use ($data, $id){
             
                 $products = $data['products'];
+                Log::debug($products);
+                Log::debug(count($products));
+                $unique = array_unique($products);
+                Log::debug($unique);
+                die();
                 unset($data['products']);
                 
                 $contract = Contract::find($id);
@@ -174,6 +191,10 @@ class ContractRepository implements ContractRepositoryInterface {
                     );
                 }
                 
+                if (count(array_unique($new_products)) < count($new_products)) {
+                    Log::debug($new_products);
+                }
+                Log::debug('fsfasfsfs');
                 $contract->products()->sync($new_products);
                 
                 return $contract;
