@@ -267,8 +267,11 @@ define([
 			if ((s[1] || '').length < prec) { s[1] = s[1] || ''; s[1] += new Array(prec - s[1].length + 1).join('0'); }
 			return s.join(dec);
 		}
-
+		
+		Backbone.View.prototype.destroySubViews = function () {};
+		
 		Backbone.View.prototype.close = function () {
+			this.destroySubViews();
 			this.$el.empty();
 			this.unbind();
 			this.undelegateEvents();

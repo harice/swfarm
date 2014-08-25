@@ -1,6 +1,7 @@
 define([
 	'backbone',
 	'views/base/AccordionListView',
+	'views/base/GoogleMapsView',
 	'models/stack/StackLocationModel',
 	'collections/stack/StackLocationCollection',
 	'text!templates/layout/contentTemplate.html',
@@ -9,6 +10,7 @@ define([
 	'constant',
 ], function(Backbone,
 			AccordionListView,
+			GoogleMapsView,
 			StackLocationModel,
 			StackLocationCollection,
 			contentTemplate,
@@ -55,6 +57,9 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
 			
+			this.googleMaps = new GoogleMapsView();
+			this.googleMaps.initSetMapLocation();
+			
 			this.initConfirmationWindow('Are you sure you want to delete this Stock Location?',
 										'confirm-delete-sl',
 										'Delete',
@@ -91,7 +96,9 @@ define([
             'click .sort-account-name' : 'sortAccountName',
 			'click tr.collapse-trigger': 'toggleAccordion',
 			'click .delete-sl': 'preShowConfirmationWindow',
-			'click #confirm-delete-sl': 'deleteStockLocation'
+			'click #confirm-delete-sl': 'deleteStockLocation',
+			'click .show-map': 'showMap',
+			'click #show-map-all': 'showMapAll',
 		},
                 
         sortName: function () {
@@ -130,6 +137,37 @@ define([
                 wait: true,
                 headers: stackLocationModel.getAuth(),
             });
+		},
+		
+		showMap: function (ev) {
+			var element = $(ev.currentTarget);
+			var id = element.attr('data-id');
+			var model = this.collection.get(id);
+			
+			if(model.get('latitude') && model.get('longitude')) {
+				var markers = [{accountName:model.get('account_name'),name:model.get('name'),lat:model.get('latitude'),lng:model.get('longitude')}];
+				this.googleMaps.showModalSetLocation(markers);
+			}
+			else
+				this.displayGritter('Map location not set for this stack location. Edit this stack location and add a map location.');
+		},
+		
+		showMapAll: function (ev) {
+			var markers = [];
+			var i = 0;
+			
+			_.each(this.collection.models, function (model) {
+				if(model.get('latitude') && model.get('longitude')) {
+					markers.push({accountName:model.get('account_name'),name:model.get('name'),lat:model.get('latitude'),lng:model.get('longitude')});
+				}
+			});
+			
+			this.googleMaps.showModalSetLocation(markers);
+		},
+		
+		destroySubViews: function () {
+			if(this.googleMaps != null)
+				this.googleMaps.destroyView();
 		},
 	});
 

@@ -79,7 +79,7 @@ define([
 				productSubFieldClone: null,
 				productSubFieldCounter: 0,
 				productSubFieldClass: ['stacknumber', 'section_id', 'description', 'unitprice', 'tons', 'bales', 'id'],
-				productSubFieldClassRequired: ['tons'],
+				productSubFieldClassRequired: ['section_id', 'unitprice', 'tons', 'bales'],
 				productSubFieldExempt: [],
 				productSubFieldSeparator: '.',
 				removeComma: ['unitprice', 'tons', 'bales'],

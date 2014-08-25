@@ -197,6 +197,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('report/driver-pay/{id}', 'APIv1\ReportController@generateDriverPay');
     Route::get('report/sales/{id}', 'APIv1\ReportController@generateSales');
     Route::get('report/producer-statement/{id}', 'APIv1\ReportController@generateProducerStatement');
+    Route::get('report/inventoryPerLocation', 'APIv1\ReportController@inventoryReportPerLocation');
 });
 
 Route::group(array('before' => 'auth.session'),function(){

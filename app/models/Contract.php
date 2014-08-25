@@ -82,6 +82,11 @@ class Contract extends BaseModel {
     {
         return $this->belongsTo('Account');
     }
+
+    public function accountname()
+    {
+        return $this->belongsTo('Account', 'account_id', 'id')->select(array('id', 'name'));
+    }
     
     /**
      * The user who created this contract
