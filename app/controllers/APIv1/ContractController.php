@@ -65,8 +65,7 @@ class ContractController extends BaseController {
 	 */
 	public function update($id)
 	{
-		$response = $this->repo->update($id, Input::all());
-        return Response::json($response);
+		return $this->repo->update($id, Input::all());
 	}
     
     /**
