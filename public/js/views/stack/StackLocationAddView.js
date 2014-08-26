@@ -85,8 +85,15 @@ define([
 			this.subContainer.html(compiledTemplate);
 			
 			this.googleMaps = new GoogleMapsView();
-			this.googleMaps.initGetMapLocation(function () {
-				
+			this.googleMaps.initGetMapLocation(function (data) {
+				if(typeof data.location !== 'undefined') {
+					thisObj.subContainer.find('#latitude').val(data.location.lat());
+					thisObj.subContainer.find('#longitude').val(data.location.lng());
+				}
+				else {
+					thisObj.subContainer.find('#latitude').val('');
+					thisObj.subContainer.find('#longitude').val('');
+				}
 			});
 			
 			this.initValidateForm();
@@ -268,12 +275,17 @@ define([
 			this.showConfirmationWindow();
 		},
 		
-		showMap: function () {
-			this.googleMaps.showModalGetLocation();
+		showMap: function () {console.log('showMap');
+			this.googleMaps.showModalGetLocation({lat:this.subContainer.find('#latitude').val(),lng:this.subContainer.find('#longitude').val()});
 			return false;
 		},
 		
 		otherInitializations: function () {},
+		
+		destroySubViews: function () {
+			if(this.googleMaps != null)
+				this.googleMaps.destroyView();
+		},
 	});
 
 	return StackLocationAddView;

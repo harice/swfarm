@@ -168,7 +168,20 @@ define([
 			this.showModal(this.modalIdGetDD);
 		},
 		
-		showModalGetLocation: function () {
+		showModalGetLocation: function (marker) {
+			var thisObj = this;
+			
+			this.shownModalCallback = function () {
+				thisObj.removeMarkers();
+				
+				if(marker.lat != '' && marker.lng != '') {
+					var location = new google.maps.LatLng(marker.lat, marker.lng);
+					thisObj.addMarker(location);
+				}
+				
+				thisObj.centerMap();
+			};
+			
 			this.showModal(this.modalIdGetLocation);
 		},
 		
@@ -247,6 +260,8 @@ define([
 				this.markers.push(marker);
 			}
 			
+			//console.log('lat: '+this.markers[this.markers.length-1].getPosition().lat());
+			
 			return marker;
 		},
 		
@@ -296,6 +311,7 @@ define([
 			
 			$('#'+modalId).on('hidden.bs.modal', function (e) {
 				thisObj.hiddenModalCallback(returnData);
+				$(this).off('hidden.bs.modal');
 			});
 			
 			$('#'+modalId).modal('hide');
@@ -303,7 +319,7 @@ define([
 			return false;
 		},
 		
-		calcRoute: function () { console.log('calcRoute');
+		calcRoute: function () { //console.log('calcRoute');
 			if(this.markers.length > 1) {
 				var thisObj = this;
 				
@@ -327,7 +343,7 @@ define([
 					request['waypoints'] = wayPoints;
 				}
 				
-				this.directionsService.route(request, function(result, status) { console.log(result); console.log(status);
+				this.directionsService.route(request, function(result, status) { //console.log(result); console.log(status);
 					if (status == google.maps.DirectionsStatus.OK) {
 						thisObj.directionsDisplay.setDirections(result);
 						
@@ -441,6 +457,10 @@ define([
 		
 		hiddenModalCallback: function () {},
 		shownModalCallback: function () {},
+		
+		destroyView: function () {
+			this.close();
+		},
 	});
 
 	return GoogleMapsView;

@@ -62,6 +62,12 @@ define([
 			this.isInitProcess = false;
 			this.soProducts = [];
 			this.soProductsIndex = 0;
+			
+			this.fromPOId = 14;
+			//this.fromPOId = Global.getGlobalVars().fromPOId;
+			//if(Global.getGlobalVars().fromPOId != 0)
+				//Global.getGlobalVars().fromPOId = 0;
+			
 			this.inits();
 		},
 		
@@ -71,11 +77,6 @@ define([
 			this.customerAccountContactId = null;
 			this.verifyOrder = false;
 			this.verified = false;
-			
-			//this.fromPOId = 14;
-			this.fromPOId = Global.getGlobalVars().fromPOId;
-			if(Global.getGlobalVars().fromPOId != 0)
-				Global.getGlobalVars().fromPOId = 0;
 			
 			this.productAutoCompletePool = [];
 			this.stackNumberByProductPool = [];
@@ -225,6 +226,8 @@ define([
 				innerTemplateVariables['so_id'] = this.soId;
 			if(this.verified)
 				innerTemplateVariables['verified'] = true;
+			if(this.isFromPODropship())
+				innerTemplateVariables['readonly_products'] = true;
 			
 			var innerTemplate = _.template(salesOrderAddTemplate, innerTemplateVariables);
 			
@@ -245,9 +248,8 @@ define([
 			this.otherInitializations();
 			this.postDisplayForm();
 			
-			if(this.fromPOId > 0) {
+			if(this.fromPOId > 0 && this.soId == null)
 				this.usePOData();
-			}
 		},
 		
 		initValidateForm: function () {
@@ -418,11 +420,12 @@ define([
 		},
 		
 		onClickAddProductButton: function () {
-			if(!this.verified)
+			if(!this.verified && !this.isFromPODropship())
 				this.addProduct();
-			else {
+			else if(this.isFromPODropship())
+				this.displayGritter('Products can no longer be modified.');
+			else
 				this.displayGritter('Sales Order is already verified and products can no longer be modified.');
-			}
 		},
 		
 		addProduct: function () {
@@ -435,7 +438,7 @@ define([
 				
 				if(this.verified)
 					productTemplateVars['verified'] = true;
-				if(!this.isProductEditable())
+				if(this.isFromPODropship())
 					productTemplateVars['readonly_products'] = true;
 				
 				var productTemplate = _.template(productItemTemplate, productTemplateVars);
@@ -460,7 +463,10 @@ define([
 		},
 		
 		addProductStack: function (ev) {
-			this.addProductSub($(ev.currentTarget).closest('.product-stack').find('table:first'));
+			if(!this.isFromPODropship())
+				this.addProductSub($(ev.currentTarget).closest('.product-stack').find('table:first'));
+			else if(this.isFromPODropship())
+				this.displayGritter('Products can no longer be modified.');
 		},
 		
 		addProductSub: function (tableElement) {
@@ -470,7 +476,7 @@ define([
 			if(this.options.productSubFieldClone == null) {
 				var productSubTemplateVars = {};
 				
-				if(!this.isProductEditable())
+				if(this.isFromPODropship())
 					productSubTemplateVars['readonly_products'] = true;
 				
 				var productSubTemplate = _.template(productSubItemTemplate, productSubTemplateVars);
@@ -553,7 +559,7 @@ define([
 		},
 		
 		getProductDropdown: function () {//console.log('getProductDropdown');
-			if(this.subContainer.find('#contract_id').val() == '')
+			if(this.subContainer.find('#contract_id').val() == '' || this.isFromPODropship())
 				return this.getAllProductDropdown();
 			else
 				return this.getContractProductDropdown();
@@ -712,7 +718,7 @@ define([
 		},
 		
 		removeProduct: function (ev) {
-			if(!this.verified) {
+			if(!this.verified && !this.isFromPODropship()) {
 				var tr = $(ev.currentTarget).closest('tr');
 				tr.next().remove();
 				tr.remove();
@@ -722,6 +728,8 @@ define([
 					
 				this.computeTotals();
 			}
+			else if(this.isFromPODropship())
+				this.displayGritter('Products can no longer be modified.');
 			else
 				this.displayGritter('Sales Order is already verified and products can no longer be modified.');
 		},
@@ -731,13 +739,17 @@ define([
 		},
 		
 		removeProductStack: function (ev) {
-			var tr = $(ev.currentTarget).closest('tr');
-			var table = tr.closest('table');
-			tr.remove();
-			
-			if(!this.hasProductSub(table)) {
-				this.addProductSub(table);
+			if(!this.isFromPODropship()) {
+				var tr = $(ev.currentTarget).closest('tr');
+				var table = tr.closest('table');
+				tr.remove();
+				
+				if(!this.hasProductSub(table)) {
+					this.addProductSub(table);
+				}
 			}
+			else if(this.isFromPODropship())
+				this.displayGritter('Products can no longer be modified.');
 		},
 		
 		hasProductSub: function (tableElement) {
@@ -993,14 +1005,32 @@ define([
 		
 		usePOData: function () {
 			var thisObj = this;
-			var i= 0;
-			
-			this.subContainer.find('[name="natureofsale_id"][value="'+Const.SO.NATUREOFSALES.WITHCONTRACT+'"]').attr('checked', true).trigger('change');
-			this.subContainer.find('[name="natureofsale_id"]').each(function () {
-				if($(this).val() != Const.SO.NATUREOFSALES.WITHCONTRACT)
-					$(this).closest('.radio-inline').remove();
+			var contract = this.POProductsModel.get('contractnumber');
+			var address = [];
+			address.push({
+				street:contract.accountname.businessaddress.street,
+				city:contract.accountname.businessaddress.city,
+				zipcode:contract.accountname.businessaddress.zipcode,
+				address_states:{
+					state:contract.accountname.businessaddress.addressstates[0].state,
+				},
 			});
 			
+			this.showOnlyReservation();
+			
+			this.customerAutoCompleteView.autoCompleteResult = [{name:contract.accountname.name, id:contract.accountname.id, address:address}];
+			this.subContainer.find('#contract_id_dummy').append('<option value="'+contract.id+'">'+contract.contract_number+'</option>').val(contract.id);
+			this.subContainer.find('#contract_id').val(contract.id)
+			this.subContainer.find('#account').val(contract.accountname.name).attr('readonly', true).off('blur');
+			this.subContainer.find('#account_id').val(contract.accountname.id);
+			this.subContainer.find('#street').val(address[0].street);
+			this.subContainer.find('#state').val(address[0].address_states.state);
+			this.subContainer.find('#city').val(address[0].city);
+			this.subContainer.find('#zipcode').val(address[0].zipcode);
+			
+			this.customerAccountCollection.getContactsByAccountId(contract.accountname.id);
+			
+			var i= 0;
 			_.each(this.POProductsModel.get('productsummary'), function (product) {
 				var productFields = null;
 				if(i > 0)
@@ -1035,6 +1065,14 @@ define([
 			});
 		},
 		
+		showOnlyReservation: function () {
+			this.subContainer.find('[name="natureofsale_id"][value="'+Const.SO.NATUREOFSALES.WITHCONTRACT+'"]').attr('checked', true).trigger('change');
+			this.subContainer.find('[name="natureofsale_id"]').each(function () {
+				if($(this).val() != Const.SO.NATUREOFSALES.WITHCONTRACT)
+					$(this).closest('.radio-inline').remove();
+			});
+		},
+		
 		convertProductFieldToReadOnly: function (productFields, productId, allowUnitPrice) {
 			if(allowUnitPrice == null || allowUnitPrice != true)
 				allowUnitPrice = false;
@@ -1044,22 +1082,23 @@ define([
 			if(!allowUnitPrice)
 				productFields.find('.unitprice').attr('readonly', true);
 			
-			productFields.siblings('.product-item').find('.tons').attr('readonly', true);
+			productFields.find('.tons').attr('readonly', true);
 			productFields.find('.unit-price').attr('readonly', true);
 		},
 		
-		isProductEditable: function () {
+		isFromPODropship: function () {
 			if(this.fromPOId > 0)
-				return false;
+				return true;
 			
-			return true;
+			return false;
 		},
 		
 		otherInitializations: function () {},
 		postDisplayForm: function () {},
 		
 		destroySubViews: function () {
-			this.customerAutoCompleteView.destroyView();
+			if(this.customerAutoCompleteView != null)
+				this.customerAutoCompleteView.destroyView();
 		},
 	});
 

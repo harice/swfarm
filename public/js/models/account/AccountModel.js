@@ -8,7 +8,7 @@ define([
 		urlRoot: '/apiv1/account',
 		defaults: {
             name: '',
-            accounttype: '',
+            accounttype: [],
 			website: '',
 			description: '',
 			phone: '',

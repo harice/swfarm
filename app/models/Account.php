@@ -11,8 +11,8 @@ class Account extends Eloquent {
 	 */
 	protected $table = 'account';
 
-    public function accountType(){
-        return $this->hasMany('AccountType', 'id', 'accounttype');
+    public function accounttype(){
+        return $this->belongsToMany('Accounttype')->withTimestamps();
     }
 
     public function address(){

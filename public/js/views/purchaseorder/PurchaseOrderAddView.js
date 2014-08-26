@@ -16,7 +16,7 @@ define([
 	'collections/stack/LocationCollection',
 	'collections/contract/ContractByAccountCollection',
 	'models/purchaseorder/PurchaseOrderModel',
-	'models/file/FileModel',
+	'models/document/DocumentModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderProductItemTemplate.html',
@@ -43,7 +43,7 @@ define([
 			LocationCollection,
 			ContractByAccountCollection,
 			PurchaseOrderModel,
-			FileModel,
+			DocumentModel,
 			contentTemplate,
 			purchaseOrderAddTemplate,
 			productItemTemplate,
@@ -100,7 +100,7 @@ define([
 				productSubFieldClone: null,
 				productSubFieldCounter: 0,
 				productSubFieldClass: ['stacknumber', 'section_id', 'description', 'unitprice', 'tons', 'bales', 'id', 'ishold', 'rfv', 'uploadedfile'],
-				productSubFieldClassRequired: ['section_id', 'unitprice', 'tons', 'bales'],
+				productSubFieldClassRequired: ['stacknumber', 'section_id', 'unitprice', 'tons', 'bales'],
 				productSubFieldExempt: [],
 				productSubFieldSeparator: '.',
 				removeComma: ['unitprice', 'tons', 'bales'],
@@ -988,7 +988,7 @@ define([
 			this.showFieldThrobber('#pdf-file');
 			
 			var thisObj = this;
-			var fileModel = new FileModel(data);
+			var fileModel = new DocumentModel(data);
 			fileModel.save(
 				null, 
 				{
@@ -1137,7 +1137,7 @@ define([
 		generateProducerAccountContacts: function () {
 			var dropDown = '';
 			_.each(this.producerAccountCollection.models, function (model) {
-				dropDown += '<option value="'+model.get('id')+'">'+model.get('lastname')+', '+model.get('firstname')+'</option>';
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('lastname')+', '+model.get('firstname')+' '+model.get('suffix')+'</option>';
 			});
 			this.$el.find('#contact_id').append(dropDown);
 			
@@ -1325,7 +1325,8 @@ define([
 		postDisplayForm: function () {},
 		
 		destroySubViews: function () {
-			this.producerAutoCompleteView.destroyView();
+			if(this.producerAutoCompleteView != null)
+				this.producerAutoCompleteView.destroyView();
 			
 			if(this.isInitCustomerAutoCompleteView)
 				this.customerAutoCompleteView.destroyView();

@@ -5,13 +5,14 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
+	'base64',
 	'views/purchaseorder/PurchaseOrderAddView',
 	'views/autocomplete/CustomAutoCompleteView',
 	'collections/account/AccountProducerCollection',
 	'collections/purchaseorder/DestinationCollection',
 	'collections/product/ProductCollection',
 	'models/purchaseorder/PurchaseOrderModel',
-	'models/file/FileModel',
+	'models/document/DocumentModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderViewTemplate.html',
@@ -26,13 +27,14 @@ define([
 			Validate,
 			TextFormatter,
 			PhoneNumber,
+			Base64,
 			PurchaseOrderAddView,
 			CustomAutoCompleteView,
 			AccountProducerCollection,
 			DestinationCollection,
 			ProductCollection,
 			PurchaseOrderModel,
-			FileModel,
+			DocumentModel,
 			contentTemplate,
 			purchaseOrderTabbingTemplate,
 			purchaseOrderAddTemplate,
@@ -195,14 +197,14 @@ define([
 						rfv: productSub.rfv,
 					};
 					
-					if(typeof productSub.upload != 'undefined' && productSub.upload.length > 0) {
-						if(typeof productSub.upload[0].files != 'undefined' && productSub.upload[0].files.length > 0)
-							variablesSub['file_path'] = '/apiv1/file/'+productSub.upload[0].files[0].auth;
+					if(productSub.document != null) {
+						var dl = {i:productSub.document.id, t:'v', m:'doc'};
+						variablesSub['file_path'] = Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize(dl));
 					}
 					
 					if(thisObj.isBid)
 						variablesSub['is_bid'] = true;
-					
+
 					var templateSub = _.template(productSubItemTemplate, variablesSub);
 					subProductTBODY.append(templateSub);
 					
@@ -283,7 +285,7 @@ define([
 		
 		showPDF: function (ev) {
 			// console.log('showPDF');
-			this.model = new FileModel({id:$(ev.currentTarget).attr('data-id')});
+			this.model = new DocumentModel({id:$(ev.currentTarget).attr('data-id')});
 			this.model.on('change', function() {
 				
 			});

@@ -75,13 +75,15 @@ define([
 			var thisObj = this;
 			var section = this.model.get('section');
 			
-			this.$el.find('#account_id').val(this.model.get('account_id'));
-			this.$el.find('#name').val(this.model.get('name'));
-			this.$el.find('#description').val(this.model.get('description'));
+			this.subContainer.find('#account_id').val(this.model.get('account_id'));
+			this.subContainer.find('#name').val(this.model.get('name'));
+			this.subContainer.find('#description').val(this.model.get('description'));
+			this.subContainer.find('#latitude').val(this.model.get('latitude'));
+			this.subContainer.find('#longitude').val(this.model.get('longitude'));
 			
 			var i= 0;
 			_.each(section, function (s) {
-				var sectionFields = (i > 0)? thisObj.addSection(): thisObj.$el.find('#section-list tbody .section-item:first-child');
+				var sectionFields = (i > 0)? thisObj.addSection(): thisObj.subContainer.find('#section-list tbody .section-item:first-child');
 				i++;
 				
 				sectionFields.find('.id').val(s.id);

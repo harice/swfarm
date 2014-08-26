@@ -144,23 +144,30 @@ define([
 			var id = element.attr('data-id');
 			var model = this.collection.get(id);
 			
-			var markers = [{accountName:model.get('account_name'),name:model.get('name'),lat:33.393532,lng:-112.315880}];
-			
-			this.googleMaps.showModalSetLocation(markers);
+			if(model.get('latitude') && model.get('longitude')) {
+				var markers = [{accountName:model.get('account_name'),name:model.get('name'),lat:model.get('latitude'),lng:model.get('longitude')}];
+				this.googleMaps.showModalSetLocation(markers);
+			}
+			else
+				this.displayGritter('Map location not set for this stack location. Edit this stack location and add a map location.');
 		},
 		
 		showMapAll: function (ev) {
 			var markers = [];
-			var lat = 33.393532;
-			var lng = -112.315880;
 			var i = 0;
 			
 			_.each(this.collection.models, function (model) {
-				markers.push({accountName:model.get('account_name'),name:model.get('name'),lat:lat+i,lng:lng+i});
-				i++;
+				if(model.get('latitude') && model.get('longitude')) {
+					markers.push({accountName:model.get('account_name'),name:model.get('name'),lat:model.get('latitude'),lng:model.get('longitude')});
+				}
 			});
 			
 			this.googleMaps.showModalSetLocation(markers);
+		},
+		
+		destroySubViews: function () {
+			if(this.googleMaps != null)
+				this.googleMaps.destroyView();
 		},
 	});
 
