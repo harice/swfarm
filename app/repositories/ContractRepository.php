@@ -44,12 +44,19 @@ class ContractRepository implements ContractRepositoryInterface {
             }
             
             // Filter by Date
-            if (isset($params['contract_date_start']) && isset($params['contract_date_end']))
+            if (isset($params['contract_date_start']))
             {
-                $contracts = $contracts->whereBetween('contract_date_start', array($params['contract_date_start'], $params['contract_date_end']));
+                $contracts->where('contract.contract_date_start', '>', $params['contract_date_start']);
+            }
+            
+            if (isset($params['contract_date_end']))
+            {
+                $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['contract_date_end'])));
+                $contracts->where('contract.contract_date_end', '<', $date_end);
             }
             
             $_contracts = $contracts->orderBy($sortby, $orderby)->get();
+            
             $total_contracts = $_contracts->count();
             
             $contracts_array = $_contracts->toArray();
@@ -101,38 +108,49 @@ class ContractRepository implements ContractRepositoryInterface {
         
         try
         {
-            $contract = DB::transaction(function() use ($data){
-                if (!isset($data['products'])) {
-                    return array(
-                        'error' => true,
-                        'message' => 'Please add products for this contract.'
-                    );
-                }
-                $products = $data['products'];
-                unset($data['products']);
-                
-                $contract = $this->instance();
-                $contract->fill($data);
-                $contract->save();
-                
-                $new_products = array();
-                foreach ($products as $product)
-                {
-                    $new_products[$product['product_id']] = array(
-                        'tons' => $product['tons'],
-                        'bales' => $product['bales']
-                    );
-                }
-                
-                $contract->products()->sync($new_products);
-                
-                return $contract;
-            });
+            if (!isset($data['products'])) {
+                return Response::json(array(
+                    'error' => true,
+                    'message' => 'Please add products for this contract.'
+                ), 400);
+            }
+
+            $products = $data['products'];
+            $product_ids = array();
+            foreach ($products as $product)
+            {
+                $product_ids[] = $product['product_id'];
+            }
+
+            if (count(array_unique($product_ids)) < count($product_ids))
+            {
+                return Response::json(array(
+                    'error' => true,
+                    'message' => 'Please select unique products.'
+                ), 400);
+            }
+            unset($data['products']);
+
+            $contract = $this->instance();
+            $contract->fill($data);
+            $contract->save();
+
+            $new_products = array();
+            foreach ($products as $product)
+            {
+                $new_products[$product['product_id']] = array(
+                    'tons' => $product['tons'],
+                    'bales' => $product['bales']
+                );
+            }
             
-            $response = array(
-                'error' => false,
-                'message' => Lang::get('messages.success.created', array('entity' => 'Contract')),
-                'data' => $contract
+            $contract->products()->sync($new_products);
+            
+            $response = Response::json(array(
+                    'error' => false,
+                    'message' => Lang::get('messages.success.created', array('entity' => 'Contract')),
+                    'data' => $contract->toArray()
+                ), 200
             );
             
             return $response;
@@ -149,33 +167,42 @@ class ContractRepository implements ContractRepositoryInterface {
         
         try
         {
-            $contract = DB::transaction(function() use ($data, $id){
+            $products = $data['products'];
+            $product_ids = array();
+            foreach ($products as $product)
+            {
+                $product_ids[] = $product['product_id'];
+            }
+
+            if (count(array_unique($product_ids)) < count($product_ids))
+            {
+                return Response::json(array(
+                    'error' => true,
+                    'message' => 'Please select unique products.'
+                ), 400);
+            }
+            unset($data['products']);
+
+            $contract = Contract::find($id);
+            $contract->fill($data);
+            $contract->update();
+
+            $new_products = array();
+            foreach ($products as $product)
+            {
+                $new_products[$product['product_id']] = array(
+                    'tons' => $product['tons'],
+                    'bales' => $product['bales']
+                );
+            }
             
-                $products = $data['products'];
-                unset($data['products']);
-                
-                $contract = Contract::find($id);
-                $contract->fill($data);
-                $contract->update();
-                
-                $new_products = array();
-                foreach ($products as $product)
-                {
-                    $new_products[$product['product_id']] = array(
-                        'tons' => $product['tons'],
-                        'bales' => $product['bales']
-                    );
-                }
-                
-                $contract->products()->sync($new_products);
-                
-                return $contract;
-            });
+            $contract->products()->sync($new_products);
             
-            $response = array(
-                'error' => false,
-                'message' => Lang::get('messages.success.updated', array('entity' => 'Contract')),
-                'data' => $contract
+            $response = Response::json(array(
+                    'error' => false,
+                    'message' => Lang::get('messages.success.updated', array('entity' => 'Contract')),
+                    'data' => $contract->toArray()
+                ), 200
             );
             
             return $response;
