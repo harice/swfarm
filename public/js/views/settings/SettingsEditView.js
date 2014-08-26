@@ -96,6 +96,7 @@ define([
 			this.$el.find('#loading_rate').val(this.model.get('loading_rate'));
 			this.$el.find('#unloading_rate').val(this.model.get('unloading_rate'));
 			this.$el.find('#trailer_percentage_rate').val(this.model.get('trailer_percentage_rate'));
+			this.$el.find('#fuel_rate').val(this.model.get('fuel_rate'));
 		},
 	});
 
