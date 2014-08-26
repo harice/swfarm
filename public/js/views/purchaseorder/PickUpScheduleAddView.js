@@ -70,6 +70,32 @@ define([
 			
 			this.truckingRateEditable = false;
 			
+			this.distanceMarkers = [];
+			/*this.distanceMarkers.push({
+				distance:0.53,
+				isLoadedDistance:0,
+				latitudeFrom:33.39511751728097,
+				latitudeTo:33.39110448743527,
+				longitudeFrom:-112.33581232998404,
+				longitudeTo:-112.33130621883902,
+			});
+			this.distanceMarkers.push({
+				distance:0.84,
+				isLoadedDistance:1,
+				latitudeFrom:33.39110448743527,
+				latitudeTo:	33.394902538236444,
+				longitudeFrom:-112.33130621883902,
+				longitudeTo:-112.32263731930288,
+			});
+			this.distanceMarkers.push({
+				distance:1.46,
+				isLoadedDistance:0,
+				latitudeFrom:33.394902538236444,
+				latitudeTo:33.39443674848234,
+				longitudeFrom:-112.32263731930288,
+				longitudeTo:-112.306629895902,
+			});*/
+			
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
@@ -234,8 +260,9 @@ define([
 				var distanceMarker = '';
 				if(typeof data.destinationLeg !== 'undefined' && data.destinationLeg != null) {
 					var distance = 0;
-					for(var i = 0; i < data.destinationLeg.length; i++) { console.log('data.destinationLeg'); console.log(data.destinationLeg);
-						distanceMarker += _.template(googleMapsDistanceMarkerTemplate, {
+					thisObj.distanceMarkers = [];
+					for(var i = 0; i < data.destinationLeg.length; i++) {
+						thisObj.distanceMarkers.push({
 							longitudeFrom:data.destinationLeg[i].origin.lng(),
 							latitudeFrom:data.destinationLeg[i].origin.lat(),
 							longitudeTo:data.destinationLeg[i].destination.lng(),
@@ -243,16 +270,18 @@ define([
 							distance:data.destinationLeg[i].distance,
 							isLoadedDistance:(data.destinationLeg[i].loaded)? 1 : 0,
 						});
+						
 						distance += parseFloat(data.destinationLeg[i].distance);
 					}
 					
 					thisObj.subContainer.find('#distance').val(distance.toFixed(2));
 				}
-				else
-					thisObj.subContainer.find('#distance').val('');
+				else {
+					thisObj.subContainer.find('#distance').val(0.00);
+					thisObj.distanceMarkers = [];
+				}
 				
-				console.log('distanceMarker: '+distanceMarker);
-				thisObj.subContainer.find('#marker-data-cont').html(distanceMarker);
+				console.log(thisObj.distanceMarkers);
 			});
 			
 			this.initValidateForm();
@@ -842,7 +871,7 @@ define([
 		},
 		
 		showMap: function () {
-			this.googleMaps.showModalGetDestinationDistance();
+			this.googleMaps.showModalGetDestinationDistance(this.distanceMarkers);
 			return false;
 		},
 		
