@@ -63,10 +63,10 @@ define([
 			this.soProducts = [];
 			this.soProductsIndex = 0;
 			
-			this.fromPOId = 14;
-			//this.fromPOId = Global.getGlobalVars().fromPOId;
-			//if(Global.getGlobalVars().fromPOId != 0)
-				//Global.getGlobalVars().fromPOId = 0;
+			//this.fromPOId = 14;
+			this.fromPOId = Global.getGlobalVars().fromPOId;
+			if(Global.getGlobalVars().fromPOId != 0)
+				Global.getGlobalVars().fromPOId = 0;
 			
 			this.inits();
 		},

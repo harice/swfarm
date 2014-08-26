@@ -170,6 +170,7 @@ define([
 			var thisObj = this;
 			
 			this.shownModalCallback = function () {
+				thisObj.loadedDistances = [];
 				
 				if(distanceMarkers.length > 0) {
 					thisObj.clearMap();
