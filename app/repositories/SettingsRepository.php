@@ -11,12 +11,14 @@ class SettingsRepository implements SettingsRepositoryInterface {
         $loadingRate = $this->getSettings('loading_rate');
         $unloadingRate = $this->getSettings('unloading_rate');
         $trailerpercentagerate = $this->getSettings('trailer_percentage_rate');
+		$fuelrate = $this->getSettings('fuel_rate');
 
         $settings = array(
                         "freight_rate" => $freightRate['value'],
                         "loading_rate" => $loadingRate['value'],
                         "unloading_rate" => $unloadingRate['value'],
                         "trailer_percentage_rate" => $trailerpercentagerate['value'],
+						"fuel_rate" => $fuelrate['value']
             );
 
         return $settings;

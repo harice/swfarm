@@ -258,9 +258,10 @@ define([
 			this.googleMaps.initMapGetDestinationDistance(function (data) {
 				
 				var distanceMarker = '';
+				thisObj.distanceMarkers = [];
 				if(typeof data.destinationLeg !== 'undefined' && data.destinationLeg != null) {
 					var distance = 0;
-					thisObj.distanceMarkers = [];
+					var loadedDistance = 0;
 					for(var i = 0; i < data.destinationLeg.length; i++) {
 						thisObj.distanceMarkers.push({
 							longitudeFrom:data.destinationLeg[i].origin.lng(),
@@ -272,13 +273,16 @@ define([
 						});
 						
 						distance += parseFloat(data.destinationLeg[i].distance);
+						if(data.destinationLeg[i].loaded)
+							loadedDistance += parseFloat(data.destinationLeg[i].distance);
 					}
 					
 					thisObj.subContainer.find('#distance').val(distance.toFixed(2));
+					thisObj.subContainer.find('#distance-loaded').val(loadedDistance.toFixed(2));
 				}
 				else {
 					thisObj.subContainer.find('#distance').val(0.00);
-					thisObj.distanceMarkers = [];
+					thisObj.subContainer.find('#distance-loaded').val(0.00);
 				}
 				
 				console.log(thisObj.distanceMarkers);
@@ -301,6 +305,7 @@ define([
 					var data = thisObj.formatFormField($(form).serializeObject());
 					
 					data['scheduledate'] = thisObj.convertDateFormat(data['scheduledate'], thisObj.dateFormat, thisObj.dateFormatDB, '-');
+					data['scheduleMap'] = thisObj.distanceMarkers;
 					
 					var poScheduleModel = new POScheduleModel(data);
 					
@@ -601,8 +606,6 @@ define([
 				}
 			}
 			
-			formData['scheduleMap'] = this.getformattedDistanceMarkerFormField();
-			
 			return formData;
 		},
 		
@@ -621,8 +624,8 @@ define([
 			'blur #truckingrate': 'onBlurMoney',
 			'keyup #distance': 'onKeyUpDistance',
 			'blur #distance': 'onBlurMoney',
-			'keyup #fuelcharge': 'formatMoney',
-			'blur #fuelcharge': 'onBlurMoney',
+			//'keyup #fuelcharge': 'formatMoney',
+			//'blur #fuelcharge': 'onBlurMoney',
 			'keyup .loader': 'formatMoney',
 			'blur .loader': 'onBlurMoney',
 			'keyup .quantity': 'onKeyUpQuantity',
@@ -873,26 +876,6 @@ define([
 		showMap: function () {
 			this.googleMaps.showModalGetDestinationDistance(this.distanceMarkers);
 			return false;
-		},
-		
-		getformattedDistanceMarkerFormField: function () {
-			markerData = [];
-			
-			this.subContainer.find('#marker-data-cont .destination-marker').each(function () {
-				var element = $(this)
-				
-				markerData.push({
-					longitudeFrom: element.attr('data-longitudeFrom'),
-					latitudeFrom: element.attr('data-latitudeFrom'),
-					longitudeTo: element.attr('data-longitudeTo'),
-					latitudeTo: element.attr('data-latitudeTo'),
-					distance: element.attr('data-distance'),
-					longitudeFrom: element.attr('data-longitudeFrom'),
-					isLoadedDistance: element.attr('data-isLoadedDistance'),
-				});
-			});
-			
-			return markerData;
 		},
 		
 		postDisplayForm: function () {},
