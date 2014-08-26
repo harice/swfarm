@@ -258,9 +258,15 @@ class OrderRepository implements OrderRepositoryInterface {
         else
             $data['status_id'] = 1; //Open status
         
-        if (isset($data['natureofsale_id'])) {
-            if ($data['natureofsale_id'] != Config::get('constants.NOS_RESERVED')) {
+        if ($orderType == 1) {
+            if ($data['location_id'] != 3) {
                 unset($data['contract_id']);
+            }
+        } else {
+            if (isset($data['natureofsale_id'])) {
+                if ($data['natureofsale_id'] != Config::get('constants.NOS_RESERVED')) {
+                    unset($data['contract_id']);
+                }
             }
         }
 
@@ -355,9 +361,15 @@ class OrderRepository implements OrderRepositoryInterface {
         if($data['createPO']) //update PO status when true
             $data['status_id'] = 1; //Open status
         
-        if (isset($data['natureofsale_id'])) {
-            if ($data['natureofsale_id'] != Config::get('constants.NOS_RESERVED')) {
+        if ($orderType == 1) {
+            if ($data['location_id'] != 3) {
                 unset($data['contract_id']);
+            }
+        } else {
+            if (isset($data['natureofsale_id'])) {
+                if ($data['natureofsale_id'] != Config::get('constants.NOS_RESERVED')) {
+                    unset($data['contract_id']);
+                }
             }
         }
 

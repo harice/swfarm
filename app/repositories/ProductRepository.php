@@ -154,27 +154,33 @@ class ProductRepository implements ProductRepositoryInterface {
             if (!$this->hasTransaction($id)) {
                 $product->forceDelete();
 
-                return Response::json(array(
-                        'error' => false,
-                        'message' => Lang::get('messages.success.deleted', array('entity' => 'Product'))), 200
-                );
+//                return Response::json(array(
+//                        'error' => false,
+//                        'message' => Lang::get('messages.success.deleted', array('entity' => 'Product'))), 200
+//                );
             } else {
-                if (!$this->hasOpenTransaction($product)) {
-                    $product->delete();
-
-                    return Response::json(array(
-                            'error' => false,
-                            'message' => Lang::get('messages.success.deleted', array('entity' => 'Product'))), 200
-                    );
-                } else {
-                    return Response::json(
-                            array(
-                            'error' => true,
-                            'message' => 'Cannot delete product with open transactions.'
-                            ), 200
-                    );
-                }
+                $product->delete();
+//                if (!$this->hasOpenTransaction($product)) {
+//                    $product->delete();
+//
+//                    return Response::json(array(
+//                            'error' => false,
+//                            'message' => Lang::get('messages.success.deleted', array('entity' => 'Product'))), 200
+//                    );
+//                } else {
+//                    return Response::json(
+//                            array(
+//                            'error' => true,
+//                            'message' => 'Cannot delete product with open transactions.'
+//                            ), 200
+//                    );
+//                }
             }
+            
+            return Response::json(array(
+                'error' => false,
+                'message' => Lang::get('messages.success.deleted', array('entity' => 'Product'))), 200
+            );
         } else {
             return Response::json(array(
                     'error' => true,

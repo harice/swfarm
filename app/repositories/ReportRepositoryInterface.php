@@ -1,6 +1,6 @@
 <?php
 
 interface ReportRepositoryInterface {
-    public function generateSales($params);
-    public function generateProducerStatement($params);
+    public function generateCustomerSales($id, $params);
+    public function generateProducerStatement($id, $params);
 }

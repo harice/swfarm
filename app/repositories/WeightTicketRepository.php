@@ -683,7 +683,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             } else if($weightticketObj->status_id == 2){ //already close
                 return Response::json(array(
                       'error' => true,
-                      'message' => 'This weight ticket is already close.'), 500);
+                      'message' => 'This weight ticket was already closed.'), 500);
             } else if($orderType == 2 && $weightticketObj->checkout != 1){ //SO is not checkout yet
                 return Response::json(array(
                       'error' => true,
@@ -710,7 +710,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                    $weightticket['weightticketscale_pickup']['tare'] == null){
                     return Response::json(array(
                       'error' => true,
-                      'message' => 'Please complete all the details of pickup weight ticket before changing the status to close.'), 500);
+                      'message' => 'Please complete all the details of pickup weight ticket before changing the status to closed.'), 500);
                 }
 
                 if(count($weightticket['weightticketscale_pickup']['weightticketproducts']) > 1){ //require only if more than 1 product is in weight ticket
@@ -718,7 +718,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                         if($product['bales'] == null || $product['pounds'] == null){
                             return Response::json(array(
                               'error' => true,
-                              'message' => 'Please complete all the details of pickup weight ticket product details before you can change the status to close.'), 500);
+                              'message' => 'Please complete all the details of pickup weight ticket product details before you can change the status to closed.'), 500);
                         }
                     }
                 }
@@ -741,7 +741,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                    $weightticket['weightticketscale_dropoff']['tare'] == null){
                     return Response::json(array(
                       'error' => true,
-                      'message' => 'Please complete all the details of dropoff weight ticket before changing the status to close.'), 500);
+                      'message' => 'Please complete all the details of dropoff weight ticket before changing the status to closed.'), 500);
                 }
 
                 if(count($weightticket['weightticketscale_dropoff']['weightticketproducts']) > 1){ //require only if more than 1 product is in weight ticket
@@ -749,7 +749,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                         if($product['bales'] == null || $product['pounds'] == null){
                             return Response::json(array(
                               'error' => true,
-                              'message' => 'Please complete all the details of dropoff weight ticket product details before you can change the status to close.'), 500);
+                              'message' => 'Please complete all the details of dropoff weight ticket product details before you can change the status to closed.'), 500);
                         }
                     }
                 }
@@ -775,7 +775,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
             return Response::json(array(
               'error' => false,
-              'message' => 'Weighticket successfully close.'), 200);
+              'message' => 'Weighticket successfully closed.'), 200);
             // return $weightticket;
         }
         catch (Exception $e)
