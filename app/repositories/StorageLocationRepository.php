@@ -50,7 +50,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         if (!$storagelocation) {
             return array(
                 'error' => true,
-                'message' => 'Storage location not found.'
+                'message' => 'Stack location not found.'
             );
         }
         
@@ -65,7 +65,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         if (!$storagelocation) {
             return array(
                 'error' => true,
-                'message' => 'Storage location not found.'
+                'message' => 'Stack location not found.'
             );
         }
         
@@ -84,7 +84,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         if (!$storagelocation) {
             return array(
                 'error' => true,
-                'message' => 'Storage location not found.'
+                'message' => 'Stack location not found.'
             );
         }
         
@@ -135,7 +135,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         if (!$storagelocation->save()) {
             return array(
                 'error' => true,
-                'message' => 'Storage location was not created.'
+                'message' => 'Stack location was not created.'
             );
         }
 
@@ -145,7 +145,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
             DB::commit();
             $response = array(
                 'error' => false,
-                'message' => Lang::get('messages.success.created', array('entity' => 'Storage location'))
+                'message' => Lang::get('messages.success.created', array('entity' => 'Stack location'))
             );
         } else {
             DB::rollback();
@@ -265,7 +265,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         if (!$storagelocation->update()) {
             return array(
                 'error' => true,
-                'message' => 'Storage location was not updated.'
+                'message' => 'Stack location was not updated.'
             );
         }
 
@@ -283,7 +283,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
                 DB::commit();
                 return Response::json(array(
                     'error' => false,
-                    'message' => Lang::get('messages.success.updated', array('entity' => 'Storage location'))
+                    'message' => Lang::get('messages.success.updated', array('entity' => 'Stack location'))
                 ));
             } else {
                 DB::rollback();
@@ -306,12 +306,12 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
             $storagelocation->delete();
             return array(
             'error' => false,
-            'message' => Lang::get('messages.success.deleted', array('entity' => 'Storage location'))
+            'message' => Lang::get('messages.success.deleted', array('entity' => 'Stack location'))
         );
         } else {
              return array(
                 'error' => true,
-                'message' => 'Storage location was not found.'
+                'message' => 'Stack location was not found.'
             );
         }
         
