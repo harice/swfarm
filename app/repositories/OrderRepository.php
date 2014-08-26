@@ -290,6 +290,11 @@ class OrderRepository implements OrderRepositoryInterface {
                     "error" => true,
                     'message' => "Stack number ".$productResult['stacknumber']." has been use repeatedly in this order."
                 );
+            } else if(isset($productResult['productTypeRepeatedError'])){
+                return array(
+                    "error" => true,
+                    'message' => "Cannot use the same product type in an order."
+                );
             } else if($productResult['hasHoldProduct'] && $data['ordertype'] == 1){ //for purchase order only
                 $order->status_id = 7; //Testing status
                 $order->save();
@@ -389,6 +394,11 @@ class OrderRepository implements OrderRepositoryInterface {
                 return array(
                     "error" => true,
                     'message' => "Stack number ".$productResult['stacknumber']." has been use repeatedly."
+                );
+            } else if(isset($productResult['productTypeRepeatedError'])){
+                return array(
+                    "error" => true,
+                    'message' => "Cannot use the same product type in an order."
                 );
             } else if($productResult != null && $data['ordertype'] == 1 && $order->status_id != 4){ //for purchase order only, status 4 is pending
                 if($productResult['hasHoldProduct']){
@@ -616,7 +626,10 @@ class OrderRepository implements OrderRepositoryInterface {
     }
 
     private function addProductToOrder($order_id, $products = array(), $isUpdate = false)
-    {
+    {   
+        if($this->checkIfHasRepeatingProductType($products)){
+            return array("productTypeRepeatedError" => true);
+        }
         $result = array('hasHoldProduct' => false);
         $stacknumbersUsed = array();
         foreach ($products as $product){
@@ -723,6 +736,21 @@ class OrderRepository implements OrderRepositoryInterface {
             $stack->product_id = $productId;
             $stack->save();
         }
+    }
+
+    private function checkIfHasRepeatingProductType($products){
+        $hasRepeatingProductType = false;
+        $productTypeIds = array();
+        //check if same stack number is used in saving order
+        foreach($products as $item){
+            if(!in_array(strtolower($item['product_id']), $productTypeIds)){
+                array_push($productTypeIds, strtolower($item['product_id'])); 
+            } else {
+                $hasRepeatingProductType = true;
+                break;
+            }
+        }
+        return $hasRepeatingProductType;
     }
 
     public function checkIfStackNumberIsTakenByOtherProduct($stacknumber, $productId){
