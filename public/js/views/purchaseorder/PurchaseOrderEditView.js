@@ -78,7 +78,7 @@ define([
 				else
 					thisObj.isBid = false;
 				
-				if(parseInt(this.get('location').id) == parseInt(Const.PO.DESTINATION.DROPSHIP))
+				if(this.get('location') && parseInt(this.get('location').id) == parseInt(Const.PO.DESTINATION.DROPSHIP))
 					thisObj.contractByAccountCollection.getContractByAccount(this.get('contract').account.id);
 				else
 					thisObj.locationCollection.getLocationByAccount(this.get('account_id'));
