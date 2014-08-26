@@ -15,8 +15,13 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
             $sortby = isset($params['sortby']) ? $params['sortby'] : 'account_name';
             $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
             
-            return StorageLocation::join('account', 'account_id', '=', 'account.id')
-                ->select(
+            $result = StorageLocation::join('account', 'account_id', '=', 'account.id');
+            
+            if (isset($params['accountId'])) {
+                $result = $result->where('account_id', '=', $params['accountId']);
+            }
+            
+            $result = $result->select(
                     'storagelocation.id',
                     'storagelocation.name',
                     'storagelocation.description',
@@ -26,8 +31,11 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
                     'account.name as account_name'
                 )
                 ->with('section')
+                ->with('section.stacklocation')
                 ->orderBy($sortby, $orderby)
                 ->paginate($perPage);
+            
+            return $result;
         }
         catch (Exception $e)
         {
@@ -42,7 +50,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         if (!$storagelocation) {
             return array(
                 'error' => true,
-                'message' => 'Storage location not found.'
+                'message' => 'Stack location not found.'
             );
         }
         
@@ -57,7 +65,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         if (!$storagelocation) {
             return array(
                 'error' => true,
-                'message' => 'Storage location not found.'
+                'message' => 'Stack location not found.'
             );
         }
         
@@ -76,7 +84,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         if (!$storagelocation) {
             return array(
                 'error' => true,
-                'message' => 'Storage location not found.'
+                'message' => 'Stack location not found.'
             );
         }
         
@@ -127,7 +135,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         if (!$storagelocation->save()) {
             return array(
                 'error' => true,
-                'message' => 'Storage location was not created.'
+                'message' => 'Stack location was not created.'
             );
         }
 
@@ -137,7 +145,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
             DB::commit();
             $response = array(
                 'error' => false,
-                'message' => Lang::get('messages.success.created', array('entity' => 'Storage location'))
+                'message' => Lang::get('messages.success.created', array('entity' => 'Stack location'))
             );
         } else {
             DB::rollback();
@@ -257,7 +265,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         if (!$storagelocation->update()) {
             return array(
                 'error' => true,
-                'message' => 'Storage location was not updated.'
+                'message' => 'Stack location was not updated.'
             );
         }
 
@@ -275,7 +283,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
                 DB::commit();
                 return Response::json(array(
                     'error' => false,
-                    'message' => Lang::get('messages.success.updated', array('entity' => 'Storage location'))
+                    'message' => Lang::get('messages.success.updated', array('entity' => 'Stack location'))
                 ));
             } else {
                 DB::rollback();
@@ -298,12 +306,12 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
             $storagelocation->delete();
             return array(
             'error' => false,
-            'message' => Lang::get('messages.success.deleted', array('entity' => 'Storage location'))
+            'message' => Lang::get('messages.success.deleted', array('entity' => 'Stack location'))
         );
         } else {
              return array(
                 'error' => true,
-                'message' => 'Storage location was not found.'
+                'message' => 'Stack location was not found.'
             );
         }
         

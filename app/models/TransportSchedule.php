@@ -78,6 +78,10 @@ class TransportSchedule extends Eloquent {
     public function truckvehicle(){
         return $this->hasOne('Truck', 'id', 'truck_id')->select(array('id','trucknumber','fee'));
     }
+    
+    public function truck(){
+        return $this->hasOne('Truck', 'id', 'truck_id')->select(array('id','trucknumber','fee'));
+    }
 
     public function originloader(){
         return $this->hasOne('Contact', 'id', 'originloader_id')->select(array('id','firstname','lastname','suffix','account'));
