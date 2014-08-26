@@ -44,34 +44,7 @@
         <% } %>
 
         <% if(_.contains(permission,constant.MENU.REPORTS.VIEW) || _.isEqual(su,constant.SU)) { %>
-        <li class"parent"><a href="#"><i class="fa fa-bar-chart-o"></i><span>Reports</span></a>
-          <ul class="sub-menu">
-            <% if(_.contains(permission,constant.MENU.OPERATOR.GENERATE) || _.isEqual(su,constant.SU)) { %>
-            <li><a href="#/<%= constant.URL.OPERATOR %>">Operator's Pay Report</a></li>
-            <% } %>
-            <% if(_.contains(permission,constant.MENU.PRODUCER.GENERATE) || _.isEqual(su,constant.SU)) { %>
-            <li><a href="#/<%= constant.URL.PRODUCER %>">Product Statement Report</a></li>
-            <% } %>
-            <% if(_.contains(permission,constant.MENU.TRUCKING.GENERATE) || _.isEqual(su,constant.SU)) { %>
-            <li><a href="#/<%= constant.URL.TRUCKING %>">Trucking Statement Report</a></li>
-            <% } %>
-            <% if(_.contains(permission,constant.MENU.INVENTORY.GENERATE) || _.isEqual(su,constant.SU)) { %>
-            <li><a href="#/<%= constant.URL.INVENTORY %>">Inventory Report</a></li>
-            <% } %>
-            <% if(_.contains(permission,constant.MENU.SALES.GENERATE) || _.isEqual(su,constant.SU)) { %>
-            <li><a href="#/<%= constant.URL.SALES %>">Customer Sales Report</a></li>
-            <% } %>
-            <% if(_.contains(permission,constant.MENU.COMMISSION.GENERATE) || _.isEqual(su,constant.SU)) { %>
-            <li><a href="#/<%= constant.URL.COMMISSION %>">Product Statement Report</a></li>
-            <% } %>
-            <% if(_.contains(permission,constant.MENU.GROSS.GENERATE) || _.isEqual(su,constant.SU)) { %>
-            <li><a href="#/<%= constant.URL.GROSS %>">Gross Profit Report</a></li>
-            <% } %>
-            <% if(_.contains(permission,constant.MENU.DRIVER.GENERATE) || _.isEqual(su,constant.SU)) { %>
-            <li><a href="#/<%= constant.URL.DRIVER %>">Driver Statement Report</a></li>
-            <% } %>
-          </ul>
-        </li>
+        <li><a href="#/<%= constant.URL.REPORT %>"><i class="fa fa-bar-chart-o"></i><span>Reports</span></a></li>
         <% } %>
 
         <% 

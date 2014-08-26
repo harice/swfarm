@@ -287,7 +287,8 @@ class OrderRepository implements OrderRepositoryInterface {
     
     public function addOrder($data, $orderType = 1)
     {
-        // var_dump($data['products'][0]['summary']['tons']);exit;
+        var_dump($data);exit;
+        
         $now = new DateTime('NOW');
         $date = $now->format('Y-m-d H:i:s');
         

@@ -1,61 +1,48 @@
-<div class="row margin-top-0">
-    <div class="col-md-12 no-padding">
-        <div class="block-flat padding-top-0 padding-bottom-0">
-            <div class="content padding-top-0">
-
-                <div class="row margin-top-0">
-                    <div class="col-md-9 col-xs-9 padding-top-10 padding-right-0">
-                        <a href="<%= account_add_url %>" class="btn btn-primary btn-sm btn-rad margin-left-0">Admin - Operator Pay</a>
-                        <p>Date: </p>
-                    </div>
-                </div>
-
-                <div class="row margin-top-0">
-                    <div class="col-md-12">
-                        <form id="searchOperatorForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-                            <div class="form-group">
-                                <label for="name" class="col-sm-3 control-label">Operator Name *</label>
-                                <div class="col-sm-5">
-                                    <input type="text" class="form-control capitalize input-sm" id="name" name="name" placeholder="" minlength="2" maxlength="50" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="name" class="col-sm-3 control-label">Date From *</label>
-                                <div class="col-sm-5">
-                                    <div id="filter-operator-date-start" class="search-filter-field calendar-cont">
-                                        <div class="input-group input-group-sm date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
-                                            <input class="form-control" size="16" type="text" value="" />
-                                            <div class="input-group-btn">
-                                                <button class="btn btn-trans"><span class="fa fa-calendar"></span></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="name" class="col-sm-3 control-label">Date To *</label>
-                                <div class="col-sm-5">
-                                    <div id="filter-operator-date-to" class="search-filter-field calendar-cont">
-                                        <div class="input-group input-group-sm date datetime margin-bottom-0" data-start-view="2" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
-                                            <input class="form-control" size="16" type="text" value="" />
-                                            <div class="input-group-btn">
-                                                <button class="btn btn-trans"><span class="fa fa-calendar"></span></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group form-button-container" style="display:none;">
-                                <label for="" class="col-sm-3 control-label"></label>
-                                <div class="col-sm-5">
-                                     <button id="generate" type="submit" class="generate btn btn-primary btn-sm"> Generate</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-            </div> <!-- /.content -->
-        </div> <!-- /.block-flat -->
+<div class="header">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>
+                Operator:
+                <strong>
+                    <%= operators.get('operator').firstname %> <%= operators.get('operator').lastname %>
+                </strong>
+            </h3> 
+        </div>
+        <div class="col-md-6 text-right">
+            <p><strong><%= date_from %></strong> - <strong><%= date_to %></strong></p>
+        </div>
     </div>
+</div>
+<div class="content">
+    <% if (!_.isEmpty(operators)) { %>         
+    <div class="content-inner table-responsive">
+        <table id="operator-list" class="table-condensed table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Receipt #</th>
+                    <th>Invoice #</th>
+                    <th>Cust Name</th>
+                    <th>Load Type</th>
+                    <th>Sqeeze</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <%= operators.summary %>
+                <% _.each(operators.get('transactions'),function(transaction){ %>    
+                    <tr>                        
+                        <td></td>
+                        <td></td>
+                        <td><%= transaction.account_name %></td>
+                        <td><%= transaction.type %></td>
+                        <td></td>
+                        <td><%= transaction.amount %></td>                       
+                    </tr>   
+                <%}); %>                     
+            </tbody>
+        </table>                   
+    </div>
+    <% } else { %>
+      <p>No transactions found.</p>
+    <% } %>
 </div>

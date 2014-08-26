@@ -4,9 +4,8 @@ define([
 	'collections/audittrail/AuditTrailCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/audittrail/auditTrailListTemplate.html',
-	'text!templates/audittrail/auditTrailInnerListTemplate.html',
 	'constant',
-], function(Backbone, AppView, AuditTrailCollection, contentTemplate, auditTrailListTemplate, auditTrailInnerListTemplate, Const){
+], function(Backbone, AppView, AuditTrailCollection, contentTemplate, auditTrailListTemplate, Const){
 
 	var AuditTrailListView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -18,7 +17,6 @@ define([
 			this.collection = new AuditTrailCollection();
 			this.collection.on('sync', function() {
 				thisObj.displayAuditTrail();
-				// thisObj.displayList();
 			});
 			
 			this.collection.on('error', function(collection, response, options) {
@@ -58,17 +56,6 @@ define([
 			this.subContainer.html(compiledTemplate);
 
 			this.generatePagination(this.collection.options.maxItem, Const.MAXITEMPERPAGE);
-		},
-		
-		displayList: function () {
-			var data = {
-				audittrail_url: '#/'+Const.URL.AUDITTRAIL,
-				audittrail: this.collection.models,
-				_: _ 
-			};
-			
-			var innerListTemplate = _.template(auditTrailInnerListTemplate, data);
-			this.subContainer.find("#audit-trail-list tbody").html(innerListTemplate);
 		},
 		
 		generatePagination: function (maxItem, maxItemPerPage) {

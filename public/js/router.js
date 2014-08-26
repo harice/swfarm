@@ -31,6 +31,7 @@ define([
 	'controllers/trucker/TruckerController',
 	'controllers/inventory/InventoryController',
 	'controllers/stacknumber/StackNumberController',
+	'controllers/reports/ReportController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
@@ -65,6 +66,7 @@ define([
 			TruckerController,
 			InventoryController,
 			StackNumberController,
+			ReportController,
 			Global,
 			Const,
 			Session) {
@@ -225,7 +227,6 @@ define([
 	routerRoutes[Const.URL.REPORT] = 'showReportsPage';
 	routerRoutes[Const.URL.REPORT+'/'] = 'showReportsPage';
 	routerRoutes[Const.URL.REPORT+'/:action'] = 'showReportsPage';
-	routerRoutes[Const.URL.REPORT+'/:action/:id'] = 'showReportsPage';
 	
 	//stacknumber
 	routerRoutes[Const.URL.STACKNUMBER+'/:id'] = 'showStackNumberPage';
@@ -514,16 +515,16 @@ define([
 
 		app_router.on('route:showReportsPage', function (action) {
 			this.closeView();
-			var reportController = new ReportController();
+			var reportController = new ReportController();			
 			this.currView = reportController.setAction(action);
 			this.currView.render();
+
 		});
 		
 		app_router.on('route:defaultAction', function (actions) {
 			this.closeView();
-			console.log('default page');
 			this.currView = new HomePageView();
-			this.currView.render();
+			this.currView.render();			
 		});
 		
 		Global.getGlobalVars().app_router = app_router;

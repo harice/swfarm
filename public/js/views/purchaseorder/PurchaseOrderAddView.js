@@ -1086,7 +1086,7 @@ define([
 		generateProducerAccountContacts: function () {
 			var dropDown = '';
 			_.each(this.producerAccountCollection.models, function (model) {
-				dropDown += '<option value="'+model.get('id')+'">'+model.get('lastname')+', '+model.get('firstname')+'</option>';
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('lastname')+', '+model.get('firstname')+' '+model.get('suffix')+'</option>';
 			});
 			this.$el.find('#contact_id').append(dropDown);
 			

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAccountAccountType extends Migration {
+class CreateAccountAccounttype extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -31,7 +31,7 @@ class CreateAccountAccountType extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('accountpivottypes');
+		Schema::dropIfExists('account_accounttype');
 	}
 
 }

@@ -5,6 +5,7 @@ define([
 ], function(Backbone, Global, Const) {
 
 	var OperatorModel = Backbone.Model.extend({
+		
 		urlRoot: '/apiv1/report/operator-pay',
 		defaults: {
 
