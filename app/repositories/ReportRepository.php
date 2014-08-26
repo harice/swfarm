@@ -121,31 +121,36 @@ class ReportRepository implements ReportRepositoryInterface {
     }
 
     public function inventoryReportPerLocation($data){
+        $perPage = isset($data['perpage']) ? $data['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
         $storageLocationId = $data['storagelocationId'];
         // var_dump(date( 'Y-m-d'. ' 00:00:00', strtotime($data['dateFrom'])));
         // var_dump(date( 'Y-m-d'.' 23:59:59', strtotime($data['dateTo'])));
         // var_dump(date('Y-m-d', strtotime($data['dateFrom'])));
         $storageLocation = StorageLocation::with('section.inventoryproduct_sectionto.inventory.inventorytransactiontype')
-                                        ->with('section.inventoryproduct_sectionto.inventory.ordernumberForInventory.account')
+                                        ->with('section.inventoryproduct_sectionto.inventory.ordernumberforinventory.account')
                                         ->with('section.inventoryproduct_sectionto.inventory.weightticketnumber')
                                         ->with('section.inventoryproduct_sectionfrom.inventory.inventorytransactiontype')
-                                        ->with('section.inventoryproduct_sectionfrom.inventory.ordernumberForInventory.contractnumber');
+                                        ->with('section.inventoryproduct_sectionfrom.inventory.ordernumberforinventory.account')
+                                        ->with('section.inventoryproduct_sectionfrom.inventory.weightticketnumber');
+                                        
         if(isset($data['dateFrom']) && isset($data['dateTo'])){
-            $storageLocation = $storageLocation->where(function($subQuery) use ($data){
-                                    $subQuery->wherehas('section', function($section) use ($data){
-                                       $section->whereHas('inventoryproduct_sectionto', function($inventoryproduct_sectionto) use ($data){
-                                            $from = "'".date( 'Y-m-d'.' 00:00:00', strtotime($data['dateFrom']))."'";
-                                            $to = "'".date( 'Y-m-d'.' 23:59:59', strtotime($data['dateTo']))."'";
-                                            $inventoryproduct_sectionto->whereBetween('created_at', array($from, $to));
-                                        // $inventoryproduct_sectionto->where('created_at', 'like', "'".$data['dateFrom']." %'");
-                                        });
-                                    });
-                                });
+                $storageLocation->with(array('section.inventoryproduct_sectionto' => function ($query) use ($data){
+                        $from = date('Y-m-d'. ' 00:00:00', strtotime($data['dateFrom']));
+                        $to = date('Y-m-d'. ' 23:59:59', strtotime($data['dateTo']));
+                        $query->whereBetween('created_at', array($from, $to));
+                }));
+                $storageLocation->with(array('section.inventoryproduct_sectionfrom' => function ($query) use ($data){
+                        $from = date('Y-m-d'. ' 00:00:00', strtotime($data['dateFrom']));
+                        $to = date('Y-m-d'. ' 23:59:59', strtotime($data['dateTo']));
+                        $query->whereBetween('created_at', array($from, $to));
+                }));
         }
 
-        $storageLocation = $storageLocation->where('id', '=', $storageLocationId)->get();
-        return $storageLocation->toArray();
-        if($result){
+        $storageLocation = $storageLocation->where('id', '=', $storageLocationId)->first();
+        // exit;
+        // return $storageLocation->toArray();
+        if($storageLocation){
+            $result = $storageLocation->toArray();
             $data = array();
             $index = 0;
             $data['location'] = $result['name'];
@@ -154,13 +159,12 @@ class ReportRepository implements ReportRepositoryInterface {
             $data['totalCost'] = 0;
             foreach($result['section'] as $section){
                 foreach($section['inventoryproduct_sectionto'] as $inventoryproduct){
-                    $date = $inventoryproduct['inventory']['created_at'];
                     $data['data'][$index]['section'] = $section['name'];
-                    $data['data'][$index]['date'] = $date->createFromFormat('Y-m-d H:i:s', $date)->format('Y-m-d H:i:s');
-                    $data['data'][$index]['ordernumber'] = $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] : "";
+                    $data['data'][$index]['date'] = $inventoryproduct['inventory']['created_at'];
+                    $data['data'][$index]['ordernumber'] = $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] : "";
                     $data['data'][$index]['weightticketnumber'] = $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] != null ? $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] : "";
-                    $data['data'][$index]['producer'] = $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['account']['name'] : "";
-                    $data['data'][$index]['contract'] = $inventoryproduct['inventory']['ordernumberForInventory']['contract_id'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['contract']['contract_number'] : "";
+                    $data['data'][$index]['producer'] = $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['account']['name'] : "";
+                    $data['data'][$index]['contract'] = $inventoryproduct['inventory']['ordernumberforinventory']['contract_id'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['contract']['contract_number'] : "";
                     $data['data'][$index]['bales'] = $inventoryproduct['bales'] != null ? $inventoryproduct['bales'] : "0";
                     $data['data'][$index]['tons'] = $inventoryproduct['tons'];
                     $data['data'][$index]['price'] = $inventoryproduct['price'];
@@ -172,14 +176,13 @@ class ReportRepository implements ReportRepositoryInterface {
                     $index++;
                 }
                 foreach($section['inventoryproduct_sectionfrom'] as $inventoryproduct){
-                    $date = $inventoryproduct['inventory']['created_at'];
                     $data['data'][$index]['section'] = $section['name'];
-                    $data['data'][$index]['date'] = $date->createFromFormat('Y-m-d H:i:s', $date)->format('Y-m-d H:i:s');
-                    $data['data'][$index]['ordernumber'] = $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] : "";
+                    $data['data'][$index]['date'] = $inventoryproduct['inventory']['created_at'];
+                    $data['data'][$index]['ordernumber'] = $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] : "";
                     $data['data'][$index]['weightticketnumber'] = $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] != null ? $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] : "";
-                    $data['data'][$index]['producer'] = $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['account']['name'] : "";
-                    $data['data'][$index]['contract'] = $inventoryproduct['inventory']['ordernumberForInventory']['contract_id'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['contract']['contract_number'] : "";
-                    $data['data'][$index]['bales'] = $inventoryproduct['bales'] != null ? $inventoryproduct['bales'] : 0;
+                    $data['data'][$index]['producer'] = $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['account']['name'] : "";
+                    $data['data'][$index]['contract'] = $inventoryproduct['inventory']['ordernumberforinventory']['contract_id'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['contract']['contract_number'] : "";
+                    $data['data'][$index]['bales'] = $inventoryproduct['bales'] != null ? $inventoryproduct['bales'] : "0";
                     $data['data'][$index]['tons'] = $inventoryproduct['tons'];
                     $data['data'][$index]['price'] = $inventoryproduct['price'];
                     $data['data'][$index]['cost'] = number_format($inventoryproduct['tons'] * $inventoryproduct['price'], 2);

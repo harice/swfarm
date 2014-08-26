@@ -7,6 +7,11 @@
 //     }
 // });
 
+// Event::listen('illuminate.query', function($query)
+// {
+//     var_dump($query);
+// });
+
 foreach(Config::get('constants.AUDIT') as $class) {
     $class::created(function($_data){
         
