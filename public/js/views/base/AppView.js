@@ -324,6 +324,11 @@ define([
 			return parseFloat(number.replace(/,/g,''));
 		},
 		
+		getFloatValueFromField: function (element) {
+			var elementValue = this.removeCommaFromNumber(element.val());
+			return (!isNaN(elementValue))? elementValue : 0;
+		},
+		
 		//caret functions
 		setSelectionRange: function (input, selectionStart, selectionEnd) {
 			if(input.setSelectionRange) {
