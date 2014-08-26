@@ -48,7 +48,6 @@ class TransportSchedule extends Eloquent {
       'trucker_id' => 'required',
       'truck_id' => 'required',
       'distance' => 'required',
-      'fuelcharge' => 'required',
       'originloader_id' => 'required',
       'originloaderfee' => 'required',
       'destinationloader_id' => 'required',
