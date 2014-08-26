@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Description of FileRepository
+ * Description of DocumentRepository
  *
  * @author Avs
  */
-class FileRepository implements FileRepositoryInterface {
+class DocumentRepository implements DocumentRepositoryInterface {
     
-    public function uploadFile($data){
+    public function uploadDocument($data){
           // var_dump($data);
           $this->validate($data);
 
@@ -23,22 +23,14 @@ class FileRepository implements FileRepositoryInterface {
               );
           }
           
-          $file = new Files;
+          $file = new Document;
           $file->fill($data);
           $file->save();
-
-          // $user->profileimg = $this->saveImage($data['imagedata'], $data['imagetype'], $data['username']);
-          //define('UPLOAD_DIR', 'images/profile/');
-          // $base64img = str_replace('data:'.$data['imagetype'].';base64,', '', $data['imagedata']);
-          // $filedecode = base64_decode($base64img);
-          // $file = UPLOAD_DIR . $data['username'] . '.jpg';
-          // file_put_contents($file, $filedecode);
-
           return $file->id;
  
     }
 
-    public function displayFile($dataEncrypted){
+    public function displayDocument($dataEncrypted){
         $data = base64_decode($dataEncrypted);
         
         $data = explode(',', $data);
@@ -67,7 +59,7 @@ class FileRepository implements FileRepositoryInterface {
               );
         }
       
-        $file = Files::where('issave', '=', 1)->where('id', '=', $fileId)->first();
+        $file = Document::where('issave', '=', 1)->where('id', '=', $fileId)->first();
         if($file){
             header('Content-Type: '.$file->type);
             // return $file->content;
@@ -80,8 +72,8 @@ class FileRepository implements FileRepositoryInterface {
         }
     }
 
-    public function filesCleanUp(){
-        $files = Files::where('issave', '=', 0)->where('created_at', '<', 'NOW() - INTERVAL 1 DAY')->get();
+    public function documentsCleanUp(){
+        $files = Document::where('issave', '=', 0)->where('created_at', '<', 'NOW() - INTERVAL 1 DAY')->get();
 
         if($files != null){
             foreach($files as $file){
@@ -149,7 +141,6 @@ class FileRepository implements FileRepositoryInterface {
     public function validate($data, $id = null)
     {
         $rules = array(
-            'name' => 'required',
             'type' => 'required',
             'size' => 'required',
             'content' => 'required'
@@ -172,7 +163,7 @@ class FileRepository implements FileRepositoryInterface {
     
     public function instance($data = array())
     {
-        return new File($data);
+        return new Document($data);
     }
     
 }

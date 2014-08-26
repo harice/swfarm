@@ -7,6 +7,7 @@ class ContactRepository implements ContactRepositoryInterface {
         $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
         $sortby = isset($params['sortby']) ? $params['sortby'] : 'lastname';
         $orderby = isset($params['orderby']) ? $params['orderby'] : 'ASC';
+        $paginated = isset($params['paginated']) ? $params['paginated'] : true;
         
         $contacts = Contact::with('account.accounttype');
         
@@ -20,9 +21,14 @@ class ContactRepository implements ContactRepositoryInterface {
             });
         }
         
-        $contacts = $contacts->orderBy($sortby, $orderby)
-            ->paginate($perPage);
-
+        $contacts = $contacts->orderBy($sortby, $orderby);
+        
+        if (!$paginated) {
+            $perPage = $contacts->count();
+        }
+        
+        $contacts = $contacts->paginate($perPage);
+        
         return $contacts;
     }
 

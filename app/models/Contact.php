@@ -12,7 +12,7 @@ class Contact extends Eloquent {
     }
 
     public function accountidandname(){
-    	return $this->belongsTo('Account', 'account', 'id')->select(array('id', 'name','accounttype'));
+    	return $this->belongsTo('Account', 'account', 'id')->select(array('id', 'name'));
     }
     
     public function loadOrigin()

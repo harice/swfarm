@@ -62,4 +62,19 @@ class ProductOrder extends Eloquent {
     public function sectionfrom(){
         return $this->hasOne('Section', 'id', 'section_id');
     }
+    
+    public function document()
+    {
+        return $this->morphOne('Document','documentable');
+    }
+    
+    /**
+     * Get total price
+     * 
+     * @return float
+     */
+    public function getTotalPriceAttribute()
+    {
+        return $this->attributes['total_price'] = (float) $this->attributes['tons'] * $this->attributes['unitprice'];
+    }
 }

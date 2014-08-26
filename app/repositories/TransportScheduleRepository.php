@@ -7,6 +7,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
                         ->with('status')
                         ->with('originloader')
                         ->with('destinationloader')
+                        ->with('transportmap')
                         ->with('trucker.accountidandname.accounttype')
                         ->with('truckvehicle')
                         ->with('originloader.accountidandname')
@@ -19,6 +20,10 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
                         ->where('id', '=', $id)->first();
       if($transportSchedule){
           $transportSchedule = $transportSchedule->toArray();
+          //get map data
+          if(isset($transportSchedule['transportmap'])){
+              $transportSchedule['mapData'] = $this->getTotalLoadedDistance($transportSchedule['transportmap']);
+          }
           return $transportSchedule;
         
       } else {
@@ -26,6 +31,18 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
             'error' => true,
             'message' => "Schedule not found.");
       }
+  }
+
+  private function getTotalLoadedDistance($mapData){
+       $totalLoadedDistance = 0;
+       $totalDistance = 0;
+       foreach($mapData as $item){
+          if($item['isLoadedDistance']){
+              $totalLoadedDistance += $item['distance'];
+          }
+          $totalDistance += $item['distance'];
+       }
+       return array('totalLoadedDistance' => $totalLoadedDistance, 'totalDistance' => $totalDistance);
   }
 
   public function getAllTransportSchedules($params, $scheduleType = 1){ //default schedule type to pull is pickup
@@ -73,20 +90,12 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           //convert pass date parameters to timestamp
           $data['scheduletimeMin'] = str_pad($data['scheduletimeMin'], 2, '0', STR_PAD_LEFT); //adding leading zero
           $data['date'] = Date('Y-m-d H:i:s', strtotime($data['scheduledate'].' '.$data['scheduletimeHour'].':'.$data['scheduletimeMin'].' '.$data['scheduletimeAmPm']));
-          //$data['truckingrate'] = isset($data['truckingrate']) ? $data['truckingrate'] : Config::get('constants.GLOBAL_PER_LIST');
           $data['type'] = isset($data['type']) ? $data['type'] : 1;
-          // $data['trailerrate'] = isset($data['trailerrate']) ? $data['trailerrate'] : null;
           $data['status_id'] = 1; //open status - default
           $trailerPercentageRateArr = Settings::where('name','=','trailer_percentage_rate')->first(array('value'))->toArray();
           $trailerPercentageRate = floatval($trailerPercentageRateArr['value'])/100; //get trailer perentage and convert it to decimal
           $data['trailerrate'] = $trailerPercentageRate * $data['truckingrate'];
 
-          //computations
-          // if($data['truckerAccountType_id'] == 2){ //for hauler account type only
-          //     $trailerPercentageRateArr = Settings::where('name','=','trailer_percentage_rate')->first(array('value'))->toArray();
-          //     $trailerPercentageRate = floatval($trailerPercentageRateArr['value'])/100; //get trailer perentage and convert it to decimal
-          //     $data['trailerrate'] = $trailerPercentageRate * $data['truckingrate'];
-          // } else 
           if($data['truckerAccountType_id'] == 9) { //for SFS account type
               $freightRateArr = Settings::where('name','=','freight_rate')->first(array('value'))->toArray();
               $freightRate = floatval($freightRateArr['value']);
@@ -107,16 +116,25 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           //when updating only
           if($transportScheduleId != null){
               $this->deleteProductToSchedule($transportschedule->id, $data['products']);
+              $isAddOperation = false;
+          } else {
+              $isAddOperation = true;
           }
 
           $addProductResult = $this->addProductToSchedule($transportschedule->id, $data['products']);
           if($addProductResult != false){
             DB::rollback();
             return Response::json($addProductResult, 500);
-            // return $addProductResult;
           }
-          // return $transportschedule->id;
-      // });
+         
+         //save schedule map points
+          if(isset($data['scheduleMap'])){
+              if(!$this->saveMapPointsForSchedule($transportschedule->id, $data['scheduleMap'], $isAddOperation)){
+                DB::rollback();
+                return Response::json(array('error' => true, 'message' => 'Problem encountered during adding map data.'), 500);
+              }
+          }
+          
 
       DB::commit();
 
@@ -124,7 +142,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       //   return Response::json($result, 500);
       // }
 
-      if($transportschedule->id == null){
+      if($transportScheduleId == null){
           $message = 'Schedule successfully created.';
       } else {
           $message = 'Schedule successfully updated.';
@@ -133,6 +151,54 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       return Response::json(array(
           'error' => false,
           'message' => $message), 200);
+  }
+
+  private function saveMapPointsForSchedule($transportscheduleId, $scheduleMapData, $isAddOperation = true){
+      //when update operation only
+      if(!$isAddOperation){
+          $clearMapData = false;
+          foreach($scheduleMapData as $item){
+            if(isset($item['id'])){
+              continue;
+            } else {
+              $clearMapData = true;
+              break;
+            }
+          }
+
+          if($clearMapData){
+              $transportMap = TransportMap::where('transportschedule_id', '=', $transportscheduleId)->delete();
+              $sequenceNo = 1;
+              foreach($scheduleMapData as $item){
+                  $transportMap = new TransportMap;
+                  $item['transportschedule_id'] = $transportscheduleId;
+                  $item['sequenceNo'] = $sequenceNo;
+                  if($item['isLoadedDistance'] == '1'){
+                      $item['isLoadedDistance'] = true;
+                  }
+                  $transportMap->fill($item);
+                  $transportMap->save();
+
+                  $sequenceNo++;
+              }
+          }
+      } else {
+          $sequenceNo = 1;
+          foreach($scheduleMapData as $item){
+              $transportMap = new TransportMap;
+              $item['transportschedule_id'] = $transportscheduleId;
+              $item['sequenceNo'] = $sequenceNo;
+              if($item['isLoadedDistance'] == '1'){
+                  $item['isLoadedDistance'] = true;
+              }
+              $transportMap->fill($item);
+              $transportMap->save();
+
+              $sequenceNo++;
+          }
+      }
+
+      return true;
   }
 
   private function checkIfAllowedToCreateSchedule($orderId){

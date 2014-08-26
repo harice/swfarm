@@ -34,7 +34,6 @@ class Truck extends BaseModel {
         'fee' => 'required|numeric|min:0|max:100000'
     );
 
-
     public function account(){
         return $this->hasOne('Account', 'id', 'account_id')->select(array('id', 'name'));
     }

@@ -47,5 +47,13 @@ class Section extends BaseModel {
     public function stacklocation(){
         return $this->belongsTo('StackLocation', 'id', 'section_id');
     }
+
+    public function inventoryproduct_sectionfrom(){
+        return $this->hasMany('InventoryProduct', 'sectionfrom_id', 'id');
+    }
+
+    public function inventoryproduct_sectionto(){
+        return $this->hasMany('InventoryProduct', 'sectionto_id', 'id');
+    }
     
 }

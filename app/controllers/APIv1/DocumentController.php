@@ -4,18 +4,18 @@ namespace APIv1;
 
 use BaseController;
 use Illuminate\Support\Facades\Response;
-use FileRepositoryInterface;
+use DocumentRepositoryInterface;
 use Input;
 
 /**
- * Description of TruckController
+ * Description of DocumentController
  *
  * @author Das
  */
 
-class FileController extends BaseController {
+class DocumentController extends BaseController {
     
-    public function __construct(FileRepositoryInterface $repo)
+    public function __construct(DocumentRepositoryInterface $repo)
     {
         $this->repo = $repo;
     }
@@ -38,7 +38,7 @@ class FileController extends BaseController {
 	 */
 	public function store()
 	{
-		$response = $this->repo->uploadFile( Input::all() );
+		$response = $this->repo->uploadDocument( Input::all() );
         return Response::json($response);
 	}
 
@@ -50,7 +50,7 @@ class FileController extends BaseController {
 	 */
 	public function show($id)
 	{
-        $response = $this->repo->displayFile($id);
+        $response = $this->repo->displayDocument($id);
         return Response::json($response);
 	}
 
@@ -78,8 +78,8 @@ class FileController extends BaseController {
   //       return Response::json($response);
 	}
 
-	public function filesCleanUp(){
-		$this->repo->filesCleanUp();
+	public function documentsCleanUp(){
+		$this->repo->documentsCleanUp();
 	}
 
 

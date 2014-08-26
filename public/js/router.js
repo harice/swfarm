@@ -241,73 +241,34 @@ define([
 		preventAccessWhenAuth : ['#/login'],
 
 		before : function(params, next){
-			/*console.log('router.before!!!');
-			//console.log(params);
-			//console.log(next);
-			
-			this.previousFragment = this.currentFragment;
-			this.currentFragment = Backbone.history.fragment;
-			
-			console.log('this.previousFragment: '+this.previousFragment);
-			console.log('this.currentFragment: '+this.currentFragment);
-			
-			var arrayFragment = [];
-			if(this.previousFragment != null && !this.fromNavigateAway)
-				arrayFragment = this.previousFragment.split('/');
-			
-			if(this.fromNavigateAway)
-				this.fromNavigateAway = false;
-			
-			var c = true;
-			if((arrayFragment.indexOf(Const.CRUD.ADD) >= 0 || arrayFragment.indexOf(Const.CRUD.EDIT) >= 0) && !overrideNavigateAwayFromForm) {
-				console.log('with add');
-				//new AppView().showNavigationAwayConfirmationWindow();
-				c = confirm("Are your sure blah blah blah!!!");
+			var isAuth = Session.get('token');
+			var path = Backbone.history.location.hash;
+			var needAuth = _.contains(this.requiresAuthExcept, path);
+			var cancelAccess = _.contains(this.preventAccessWhenAuth, path);
+
+			if(!isAuth) {
+				Backbone.View.prototype.showLogin();
+			} else {
+				Backbone.View.prototype.refreshTitle('','');
+				Backbone.View.prototype.showContent();
 			}
-			else {
-				//console.log('no add');
+
+			if(path === '#/'+Const.URL.LOGOUT && isAuth)
+			{
+				Session.clear();
+				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
 			}
-			
-			if(c) {
-				console.log('continue');
-				overrideNavigateAwayFromForm = false;*/
-			
-				var isAuth = Session.get('token');
-				var path = Backbone.history.location.hash;
-				var needAuth = _.contains(this.requiresAuthExcept, path);
-				var cancelAccess = _.contains(this.preventAccessWhenAuth, path);
 
-				if(!isAuth) {
-					Backbone.View.prototype.showLogin();
-				} else {
-					Backbone.View.prototype.refreshTitle('','');
-					Backbone.View.prototype.showContent();
-				}
+			if(!needAuth && !isAuth){
+				if(path != '#/'+Const.URL.LOGOUT)
+					Session.set('redirectFrom', path);
 
-				if(path === '#/'+Const.URL.LOGOUT && isAuth)
-				{
-					Session.clear();
-					Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
-				}
-
-				if(!needAuth && !isAuth){
-					if(path != '#/'+Const.URL.LOGOUT)
-						Session.set('redirectFrom', path);
-
-					Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
-				}else if(isAuth && cancelAccess){
-					Global.getGlobalVars().app_router.navigate('#/'+Const.URL.DASHBOARD, { trigger : true });
-				}else{
-					return next();
-				}
-			
-			/*}
-			else {
-				console.log('not continue');
-				this.currentFragment = this.previousFragment;
-				this.fromNavigateAway = true;
-				Global.getGlobalVars().app_router.navigate('#/'+this.currentFragment,  { trigger : false });
-			}*/
+				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.LOGIN, { trigger : true });
+			}else if(isAuth && cancelAccess){
+				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.DASHBOARD, { trigger : true });
+			}else{
+				return next();
+			}
 		},
 
 		after : function(){

@@ -15,18 +15,10 @@ class OrderRepository implements OrderRepositoryInterface {
         $transportend = isset($params['transportend']) ? $params['transportend'] : null;
         $filter = isset($params['search']) ? $params['search'] : null;
         
-        // $order = Order::with('productorder')
-        //                 ->with('productorder.product')
-        //                 ->with('account')
-        //                 ->with('contact')
-        //                 ->with('orderaddress', 'orderaddress.addressStates')
-        //                 ->with('location')
-        //                 ->with('status')
-        //                 ->with('ordercancellingreason.reason');
 
         $order = Order::with('productsummary.productname')
                 ->with('productsummary.productorder.product')
-                ->with('productsummary.productorder.upload.files')
+                ->with('productsummary.productorder.document')
                 ->with('account')
                 ->with('contact')
                 ->with('orderaddress', 'orderaddress.addressStates')
@@ -82,11 +74,13 @@ class OrderRepository implements OrderRepositoryInterface {
         foreach($result as $item){
           $item['totalPrice'] = 0.00;
           $item['weightPercentageDelivered'] = $this->getExpectedDeliveredData($item['id']);
-          foreach($item['productorder'] as $productorder){
+          foreach($item['productsummary'] as $productsummary){
+            foreach($productsummary['productorder'] as $productorder){
             if($productorder['unitprice'] != null){
               $item['totalPrice'] += $productorder['unitprice'] * $productorder['tons'];
             }
           }
+        }
         }
 
         return $result;
@@ -202,59 +196,20 @@ class OrderRepository implements OrderRepositoryInterface {
         }
         return $result['percentage'];
     }
-    
-    /*public function getOrder($id, $orderType = 1)
-    {
-        $order = Order::with('productorder.product')
-                ->with('account')
-                ->with('contact')
-                ->with('orderaddress', 'orderaddress.addressStates')
-                ->with('location')
-                ->with('status')
-                ->with('ordercancellingreason.reason')
-                ->with('productorder.upload.files');
-
-        if($orderType == 2) //for SO only
-            $order = $order->with('natureofsale', 'contract');
-
-        $order = $order->where('ordertype', '=', $orderType)->find($id);
-
-        if($order){
-            $response = array();
-            $response = $order->toArray();
-            //adding new index in file array for passing auth
-            array_walk($response['productorder'], function(&$productorder) {
-                array_walk($productorder['upload'], function (&$upload){
-                    array_walk($upload['files'], function (&$files){
-                        $userEmail = Auth::user()->email;
-                        $userPassword = Request::header('php-auth-pw');
-                        $files['auth'] = base64_encode($files['id'].','.$userEmail.','.$userPassword);
-                    });
-                });
-            });
-            $response['weightPercentageDelivered'] = $this->getExpectedDeliveredData($response['id']);
-          
-        } else {
-          $response = array(
-            'error' => true,
-            'message' => "Order not found");
-        }
-
-        return $response;
-    }*/
 
     public function getOrder($id, $orderType = 1)
     {
         $order = Order::with('productsummary.productname')
                 ->with('productsummary.productorder.product')
-                ->with('productsummary.productorder.upload.files')
+                ->with('productsummary.productorder.document')
                 ->with('productsummary.productorder.sectionfrom.storagelocation')
                 ->with('account')
                 ->with('contact')
                 ->with('orderaddress', 'orderaddress.addressStates')
                 ->with('location')
                 ->with('status')
-                ->with('ordercancellingreason.reason');
+                ->with('ordercancellingreason.reason')
+				->with('contract.account');
 
         if($orderType == 2) //for SO only
             $order = $order->with('natureofsale', 'contract');
@@ -264,18 +219,10 @@ class OrderRepository implements OrderRepositoryInterface {
         if($order){
             $response = array();
             $response = $order->toArray();
-            //adding new index in file array for passing auth
-            array_walk($response['productsummary'], function(&$productsummary) {
-                array_walk($productsummary['productorder'], function(&$productorder) {
-                    array_walk($productorder['upload'], function (&$upload){
-                        array_walk($upload['files'], function (&$files){
-                            $userEmail = Auth::user()->email;
-                            $userPassword = Request::header('php-auth-pw');
-                            $files['auth'] = base64_encode($files['id'].','.$userEmail.','.$userPassword);
-                        });
-                    });
-                });
-            });
+            //if dropship
+            if($response['location_id'] == Config::get('constants.LOCATION_DROPSHIP')){
+                $response['salesorder_id'] = $this->getSalesOrderId($id);
+            }
         } else {
           $response = array(
             'error' => true,
@@ -284,10 +231,19 @@ class OrderRepository implements OrderRepositoryInterface {
 
         return $response;
     }
+
+    private function getSalesOrderId($id){
+        $result = Order::where('purchaseorder_id', '=', $id)->first(array('id'));
+        // var_dump($result);
+        if($result)
+            return $result->id;
+        else 
+            return null;
+    }
     
     public function addOrder($data, $orderType = 1)
     {
-        var_dump($data);exit;
+        // var_dump($data);exit;
         
         $now = new DateTime('NOW');
         $date = $now->format('Y-m-d H:i:s');
@@ -320,7 +276,7 @@ class OrderRepository implements OrderRepositoryInterface {
         
         if(!isset($data['contract_id']) || $data['contract_id'] == '')
             $data['contract_id'] = null;
-         
+
         $result = DB::transaction(function() use ($data)
         {
             $result = array();
@@ -329,8 +285,8 @@ class OrderRepository implements OrderRepositoryInterface {
             $order = $this->instance();
             $order->fill($data);
             $order->save();
+
             $productResult = $this->addProductToOrder($order->id, $data['products']);
-            // $productResult = $this->addProductOrder($order->id, $data['products']);
             if(isset($productResult['stacknumberError'])){ //duplicate stack number with different product
                 return array(
                     "error" => true,
@@ -345,6 +301,23 @@ class OrderRepository implements OrderRepositoryInterface {
                 $order->save();
             }
 
+            if(isset($data['location_id']) && isset($data['checkinorder'])){
+                if($order->status_id == 7){ //has testing products on order
+                    return array(
+                        "error" => true,
+                        'message' => "Cannot do check in to inventory when order contains hold product(s)."
+                    );
+                }
+                //if dropship and client click the button to create SO
+                if($data['location_id'] == Config::get('constants.LOCATION_DROPSHIP') && $data['checkinorder'] == true){
+                    $dropshipResult = $this->checkInPurchaseOrderProducts($order->id, true);  
+                    return array('dropship' => true, 'data' => $dropshipResult);  
+                } else if($data['location_id'] == Config::get('constants.LOCATION_PRODUCER') && $data['checkinorder'] == true){
+                    $producerResult = $this->checkInPurchaseOrderProducts($order->id, false);  
+                    return array('producer' => true, 'data' => $producerResult);
+                }
+            }
+            
             return $order;
         });
         
@@ -356,6 +329,8 @@ class OrderRepository implements OrderRepositoryInterface {
                         'message' => $result['message']
                     );
                 }
+            } else if(isset($result['dropship']) || isset($result['producer'])){
+                return $result['data'];
             }
 
             if($data['ordertype'] == 1)
@@ -442,6 +417,40 @@ class OrderRepository implements OrderRepositoryInterface {
                     $order->save();
                 } 
             }
+
+            if(isset($data['location_id']) && isset($data['checkinorder'])){
+                if($order->status_id == 7){ //has testing products on order
+                    return array(
+                        "error" => true,
+                        'message' => "Cannot do check in to inventory when order contains hold product(s)."
+                    );
+                }
+                //if dropship and client click the button to create SO
+                if($data['location_id'] == Config::get('constants.LOCATION_DROPSHIP') && $data['checkinorder'] == true){
+                    $dropshipResult = $this->checkInPurchaseOrderProducts($order->id, true);  
+                    return array('dropship' => true, 'data' => $dropshipResult);  
+                } else if($data['location_id'] == Config::get('constants.LOCATION_PRODUCER') && $data['checkinorder'] == true){
+                    $producerResult = $this->checkInPurchaseOrderProducts($order->id, false);  
+                    return array('producer' => true, 'data' => $producerResult);
+                }
+            }
+            
+            if(isset($data['location_id']) && isset($data['checkinorder'])){
+                if($order->status_id == 7){ //has testing products on order
+                    return array(
+                        "error" => true,
+                        'message' => "Cannot do check in to inventory when order contains hold product(s)."
+                    );
+                }
+                //if dropship and client click the button to create SO
+                if($data['location_id'] == Config::get('constants.LOCATION_DROPSHIP') && $data['checkinorder'] == true){
+                    $dropshipResult = $this->checkInPurchaseOrderProducts($order->id, true);  
+                    return array('dropship' => true, 'data' => $dropshipResult);  
+                } else if($data['location_id'] == Config::get('constants.LOCATION_PRODUCER') && $data['checkinorder'] == true){
+                    $producerResult = $this->checkInPurchaseOrderProducts($order->id, false);  
+                    return array('producer' => true, 'data' => $producerResult);
+                }
+            }
             
 
             return $order;
@@ -455,6 +464,8 @@ class OrderRepository implements OrderRepositoryInterface {
                         'message' => $result['message']
                     );
                 }
+            } else if(isset($result['dropship']) || isset($result['producer'])){
+                return $result['data'];
             }
 
             if($data['ordertype'] == 1)
@@ -482,39 +493,6 @@ class OrderRepository implements OrderRepositoryInterface {
 
         return $orderaddress->id;
     }
-
-    /*private function deleteProductOrder($orderId, $products){
-      //deleting bidproduct
-      $existingProductOrderId = array();
-      if($products != null){
-          foreach($products as $item){
-            $productOrderData = $item;
-            if(isset($productOrderData['id'])){
-              $existingProductOrderId[] = $productOrderData['id'];
-            }
-          }
-        }
-    if($existingProductOrderId == null){ //delete all product order associated with this order
-      $productOrder = ProductOrder::with('order')
-                ->whereHas('order', function($query) use ($orderId)
-                {
-                    $query->where('id', '=', $orderId);
-
-                })
-                ->delete();
-        $productOrderSummary = ProductOrderSummary::find($productOrder->productordersummary_id)->delete();
-    } else { //delete product order that is included in array
-      $productOrder = ProductOrder::with('order')
-                ->whereHas('order', function($query) use ($orderId)
-                {
-                    $query->where('id', '=', $orderId);
-
-                })
-                ->whereNotIn('id',$existingProductOrderId)
-                ->delete();
-    }
-    return $productOrder;
-  }*/
 
     private function deleteProductOrderSummary($orderId, $products){
         //deleting bidproduct
@@ -649,7 +627,8 @@ class OrderRepository implements OrderRepositoryInterface {
         return $prefix.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
     }
 
-    private function addProductToOrder($order_id, $products = array(), $isUpdate = false){
+    private function addProductToOrder($order_id, $products = array(), $isUpdate = false)
+    {
         $result = array('hasHoldProduct' => false);
         $stacknumbersUsed = array();
         foreach ($products as $product){
@@ -662,7 +641,7 @@ class OrderRepository implements OrderRepositoryInterface {
             $product['order_id'] = $order_id;
             $productordersummary->fill($product);
             $productordersummary->save();
-            
+
             //check if same stack number is used in saving order
             foreach($product['stacks'] as $item){
                 if(!in_array(strtolower($item['stacknumber']), $stacknumbersUsed)){
@@ -671,7 +650,6 @@ class OrderRepository implements OrderRepositoryInterface {
                     return array("stacknumberRepeatedError" => true, "stacknumber"=>$item['stacknumber']);
                 }
             }
-
 
             $stacks = $this->addStacksToOrder($order_id, $product['stacks'], $productordersummary->id);
 
@@ -700,13 +678,15 @@ class OrderRepository implements OrderRepositoryInterface {
     
     private function addStacksToOrder($order_id, $products = array(), $productordersummary_id){
         $result = array('hasHoldProduct' => false);
-        // var_dump($products);exit;
+        
         $stacknumbersUsed = array();
-        foreach ($products as $product) {
+        foreach ($products as $product) 
+        {
+            // tocheck
             if($this->checkIfStackNumberIsTakenByOtherProduct($product['stacknumber'], $product['product_id'])){
                 return array("stacknumberError" => true, "stacknumber"=>$product['stacknumber']);
             }
-            
+
             $product['order_id'] = $order_id;
             $product['productordersummary_id'] = $productordersummary_id;
             //set order status to testing when it has product hold with no rfv and file set
@@ -724,8 +704,6 @@ class OrderRepository implements OrderRepositoryInterface {
 
             if(isset($product['id'])){
                 $productorder = ProductOrder::find($product['id']);
-                // var_dump($product['id']);
-                // var_dump($productorder);
             } else {
                 $productorder = new ProductOrder;
             }
@@ -734,7 +712,6 @@ class OrderRepository implements OrderRepositoryInterface {
                 $product['section_id'] = null;
             }
 
-
             $productorder->fill($product);
             $productorder->save();
 
@@ -742,8 +719,8 @@ class OrderRepository implements OrderRepositoryInterface {
                 $this->addToStackTable($product['stacknumber'], $product['product_id']);
             }
 
-            if(isset($product['uploadedfile'])){
-                $this->linkUploadFilesToProductOrder($product['uploadedfile'], $productorder->id);
+            if(isset($product['uploadedfile']) && !empty($product['uploadedfile'])){
+                $this->linkUploadDocumentToProductOrder($product['uploadedfile'], $productorder->id);
             }
 
         }
@@ -769,41 +746,33 @@ class OrderRepository implements OrderRepositoryInterface {
         }
     }
 
-    private function linkUploadFilesToProductOrder($uploadedfile, $productorderid){
-        $oldFileUploaded = Upload::where('entityname', '=', 'productorder')->where('entity_id', '=', $productorderid)->first();
-        
-        if($oldFileUploaded){ //if has existing file uploaded
-            if($uploadedfile == ""){ //pass empty value, need to delete existing file
-                if($oldFileUploaded != null) {
-                    $oldFileUploaded->delete();
+    private function linkUploadDocumentToProductOrder($uploadedfile, $productorderid)
+    {
+        $prd_o = ProductOrder::find($productorderid);
+        if($prd_o)
+        {
+            if($prd_o->document) 
+            {
+                if($prd_o->document->id != $uploadedfile) 
+                {
+                    $prd_o->document->delete();
+
+                    if(!empty($uploadedfile)) {
+                        $file = Document::find($uploadedfile);
+                        $file->issave = 1;
+                        $file->documentable_id = $prd_o->id;
+                        $file->documentable_type = get_class($prd_o);
+                        $file->save();
+                    }
                 }
-            } else if($uploadedfile != $oldFileUploaded->file_id){ //new file to be uploaded but there is old file already uploaded
-                $oldFileUploaded->delete();
-
-                $upload = new Upload;
-                $upload->file_id = $uploadedfile;
-                $upload->entityname = 'productorder';
-                $upload->entity_id = $productorderid;
-                $upload->save();
-
-                $file = Files::find($uploadedfile);
+            } else {
+                $file = Document::find($uploadedfile);
                 $file->issave = 1;
+                $file->documentable_id = $prd_o->id;
+                $file->documentable_type = get_class($prd_o);
                 $file->save();
             }
-        } else { 
-            if($uploadedfile != ""){ //pass empty value
-                $upload = new Upload;
-                $upload->file_id = $uploadedfile;
-                $upload->entityname = 'productorder';
-                $upload->entity_id = $productorderid;
-                $upload->save();
-                
-                $file = Files::find($uploadedfile);
-                $file->issave = 1;
-                $file->save();    
-            }
         }
-
     }
    
     private function getBusinessAddress($account_id)
@@ -931,58 +900,7 @@ class OrderRepository implements OrderRepositoryInterface {
         }
         return $hasWeightTicket;
     }
-/*
-    public function uploadFile($data, $entityname){
-          // var_dump($data);
-          //$this->validate($data, 'File');
 
-          $rules = array(
-            'name' => 'required',
-            'type' => 'required',
-            'size' => 'required',
-            'content' => 'required'
-          );
-
-          $validator = Validator::make($data,$rules);
-        
-          if($validator->fails()) { 
-            throw new ValidationException($validator); 
-          }
-
-          if(!(strstr($data['type'], 'application/pdf'))){
-            return  array(
-              'error' => true,
-              'message' => 'file extension must be in pdf'
-              );
-          } else if(intval($data['size']) > 3145728) { //3mb max file size
-            return array(
-              'error' => true,
-              'message' => 'file size exceeded(3MB).'
-              );
-          }
-          
-          // $file = new File;
-          // $file->fill($data);
-          // $file->save();
-
-          $file = new Files;
-          $file->name = $data['name'];
-          $file->type = $data['type'];
-          $file->size = $data['size'];
-          $file->content = $data['content'];
-          $file->save();
-
-          // $user->profileimg = $this->saveImage($data['imagedata'], $data['imagetype'], $data['username']);
-          //define('UPLOAD_DIR', 'images/profile/');
-          // $base64img = str_replace('data:'.$data['imagetype'].';base64,', '', $data['imagedata']);
-          // $filedecode = base64_decode($base64img);
-          // $file = UPLOAD_DIR . $data['username'] . '.jpg';
-          // file_put_contents($file, $filedecode);
-
-          return $file->id;
- 
-   }
-*/
     public function getPOStatus(){
         return Status::whereIn('id',array(1,2,4,5,6,7))->get()->toArray(); //return statuses for orders
     }
@@ -1150,12 +1068,13 @@ class OrderRepository implements OrderRepositoryInterface {
 
     //used in creating dropship, need to copy all the product details on PO to be used in SO
     public function getPurchaseOrderProductsForSalesOrder($purchaseOrderId){
-        $order = Order::with('productsummary.productname')
+        $order = Order::with('contractnumber.accountname.businessaddress.addressstates')
+                        ->with('productsummary.productname')
                         ->with('productsummary.productorder.product')
                         // ->with('productsummary.productorder.upload.files')
                         ->with('productsummary.productorder.sectionfrom.storagelocation')
                         ->where('id', '=', $purchaseOrderId)
-                        ->first(array('id', 'order_number'));
+                        ->first(array('id', 'order_number', 'contract_id'));
 
         if($order){
             return $order->toArray();
@@ -1180,6 +1099,7 @@ class OrderRepository implements OrderRepositoryInterface {
             foreach($product['productorder'] as $stack){
                 $productTemp[$ctr]['tons'] = $stack['tons'];
                 $productTemp[$ctr]['stacknumber'] = $stack['stacknumber'];
+                $productTemp[$ctr]['bales'] = $stack['bales'];
                 $productTemp[$ctr]['product_id'] = $stack['product_id'];
                 $productTemp[$ctr]['price'] = $stack['unitprice'];
                 $productTemp[$ctr]['sectionto_id'] = $stack['sectionfrom']['id'];
@@ -1227,8 +1147,13 @@ class OrderRepository implements OrderRepositoryInterface {
                     //close the PO before creating SO
                     $order->status_id = 2; 
                     $order->save();
-                    if($dropship){ //for dropship type, needs to return products to be use in creating SO
-                        return $this->getPurchaseOrderProductsForSalesOrder($id);    
+                    if($dropship){ 
+                        //for dropship type, needs to return products to be use in creating SO
+                        //return $this->getPurchaseOrderProductsForSalesOrder($id);    
+                        return array(
+                          'error' => false,
+                          'message' => 'Product(s) successfully checked in to inventory. You can now create sales order for this dropship',
+                          'purchaseorder_id' => $id);
                     } else { //for producer type
                         return array(
                           'error' => false,

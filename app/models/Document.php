@@ -1,14 +1,7 @@
 <?php
 
-class Files extends BaseModel {
-    
-    /**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'file';
-
+class Document extends BaseModel 
+{
 	public static $rules = array(
         'type' => 'required',
         'size' => 'required',
@@ -31,5 +24,10 @@ class Files extends BaseModel {
         'type', 
         'size'
     );
+
+    public function documentable()
+    {
+        return $this->morphTo();
+    }
 
 }

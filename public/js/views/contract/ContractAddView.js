@@ -36,14 +36,14 @@ define([
 	var ContractAddView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
-		customerAutoCompleteView: null,
-		
 		initialize: function() {
 			this.initSubContainer();
 			var thisObj = this;
 			this.soId = null;
 			this.h1Title = 'Contract';
 			this.h1Small = 'add';
+			
+			this.customerAutoCompleteView = null;
 			
 			this.productAutoCompletePool = [];
 			this.options = {
@@ -155,9 +155,6 @@ define([
 		
 		initCustomerAutocomplete: function () {
 			var thisObj = this;
-			
-			if(this.customerAutoCompleteView !== null)
-				this.customerAutoCompleteView.deAlloc();
 			
 			var accountCustomerCollection = new AccountCustomerCollection();
 			this.customerAutoCompleteView = new CustomAutoCompleteView({
@@ -343,7 +340,11 @@ define([
 			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 4);
 		},
 		
-		otherInitializations: function () {}
+		otherInitializations: function () {},
+		
+		destroySubViews: function () {
+			this.customerAutoCompleteView.destroyView();
+		},
 	});
 
   return ContractAddView;

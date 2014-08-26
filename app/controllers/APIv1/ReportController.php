@@ -77,4 +77,9 @@ class ReportController extends BaseController {
         $result = $this->report->generateTruckingStatement($id, Input::all());
         return Response::json($result);
     }
+
+    public function inventoryReportPerLocation(){
+        $response = $this->report->inventoryReportPerLocation( Input::all() );
+        return Response::json($response);
+    }
 }

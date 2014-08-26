@@ -161,8 +161,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('settings', 'APIv1\SettingsController');
 
     // File
-    // Route::get('file/displayFile', 'APIv1\FileController@displayFile');
-    Route::resource('file', 'APIv1\FileController');
+    Route::resource('document', 'APIv1\DocumentController');
     
     // Contract
     Route::put('contract/close/{id}', 'APIv1\ContractController@closeContract');
@@ -198,6 +197,11 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('report/driver-pay/{id}', 'APIv1\ReportController@generateDriverPay');
     Route::get('report/sales/{id}', 'APIv1\ReportController@generateSales');
     Route::get('report/producer-statement/{id}', 'APIv1\ReportController@generateProducerStatement');
+    Route::get('report/inventoryPerLocation', 'APIv1\ReportController@inventoryReportPerLocation');
+});
+
+Route::group(array('before' => 'auth.session'),function(){
+    Route::resource('file','FileController', array('only' => array('index')));
 });
 
 Route::get('/', function(){ return View::make('main')->withVersion(Config::get('Constants.VERSION',"1.0")); });

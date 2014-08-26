@@ -583,6 +583,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             $productTemp[$ctr]['stacknumber'] = $product['transportscheduleproduct']['productorder']['stacknumber'];
             $productTemp[$ctr]['product_id'] = $product['transportscheduleproduct']['productorder']['product_id'];
             $productTemp[$ctr]['price'] = $product['transportscheduleproduct']['productorder']['unitprice'];
+            $productTemp[$ctr]['bales'] = $product['bales'];
             $productTemp[$ctr]['sectionto_id'] = $product['transportscheduleproduct']['sectionto_id'];
             $productTemp[$ctr]['sectionfrom_id'] = $product['transportscheduleproduct']['productorder']['section_id'];
             $ctr++;

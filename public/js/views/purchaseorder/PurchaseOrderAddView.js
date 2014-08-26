@@ -8,19 +8,22 @@ define([
 	'jqueryphonenumber',
 	'views/autocomplete/CustomAutoCompleteView',
 	'collections/account/AccountProducerCollection',
+	'collections/account/AccountCustomerCollection',
 	'collections/purchaseorder/DestinationCollection',
 	'collections/product/ProductCollection',
 	'collections/contact/ContactCollection',
 	'collections/inventory/StackNumberCollection',
 	'collections/stack/LocationCollection',
+	'collections/contract/ContractByAccountCollection',
 	'models/purchaseorder/PurchaseOrderModel',
-	'models/file/FileModel',
+	'models/document/DocumentModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderProductItemTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderSubProductItemTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderDestinationTemplate.html',
 	'text!templates/purchaseorder/convertToPOFormTemplate.html',
+	'text!templates/salesorder/salesOrderContractTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -32,27 +35,28 @@ define([
 			PhoneNumber,
 			CustomAutoCompleteView,
 			AccountProducerCollection,
+			AccountCustomerCollection,
 			DestinationCollection,
 			ProductCollection,
 			ContactCollection,
 			StackNumberCollection,
 			LocationCollection,
+			ContractByAccountCollection,
 			PurchaseOrderModel,
-			FileModel,
+			DocumentModel,
 			contentTemplate,
 			purchaseOrderAddTemplate,
 			productItemTemplate,
 			productSubItemTemplate,
 			purchaseOrderDestinationTemplate,
 			convertToPOFormTemplate,
+			contractTemplate,
 			Global,
 			Const
 ){
 
 	var PurchaseOrderAddView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
-		
-		producerAutoCompleteView: null,
 		
 		initialize: function() {
 			this.initSubContainer();
@@ -70,11 +74,18 @@ define([
 		inits: function () {
 			var thisObj = this;
 			
+			this.producerAutoCompleteView = null;
+			this.customerAutoCompleteView = null;
+			this.isInitCustomerAutoCompleteView = false;
+			
+			this.isSaveAndCheckIn = false;
+			
 			this.bidTransportdateStart = null;
 			this.bidTransportdateEnd = null;
 			this.bidLocationId = null;
 			
 			this.currentProducerId = null;
+			this.currentCustomerId = null;
 			this.producerAccountContactId = null;
 			
 			this.productAutoCompletePool = [];
@@ -89,7 +100,7 @@ define([
 				productSubFieldClone: null,
 				productSubFieldCounter: 0,
 				productSubFieldClass: ['stacknumber', 'section_id', 'description', 'unitprice', 'tons', 'bales', 'id', 'ishold', 'rfv', 'uploadedfile'],
-				productSubFieldClassRequired: ['tons'],
+				productSubFieldClassRequired: ['stacknumber', 'section_id', 'unitprice', 'tons', 'bales'],
 				productSubFieldExempt: [],
 				productSubFieldSeparator: '.',
 				removeComma: ['unitprice', 'tons', 'bales'],
@@ -173,6 +184,30 @@ define([
 			this.locationCollection.on('error', function(collection, response, options) {
 				
 			});
+			
+			this.contractByAccountCollection = new ContractByAccountCollection();
+            this.contractByAccountCollection.on('sync', function() {
+				if(!thisObj.isInitProcess)
+					thisObj.generateContract();
+				else
+					thisObj.contractProductsCollection.getContractProducts(thisObj.model.get('contract_id'));
+				//this.off('sync');
+			});
+			this.contractByAccountCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
+			
+			this.contractProductsCollection = new ProductCollection();
+			this.contractProductsCollection.on('sync', function() {
+				if(!thisObj.isInitProcess)
+					thisObj.generateContractProductDropdown();
+				else
+					thisObj.locationCollection.getLocationByAccount(thisObj.model.get('account_id'));
+				//this.off('sync');
+			});
+			this.contractProductsCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 		},
 		
 		render: function(){
@@ -214,6 +249,8 @@ define([
 			
 			this.otherInitializations();
 			this.postDisplayForm();
+			
+			this.toggleSOFields(thisObj.subContainer.find('input[name=location_id]:checked').val());
 		},
 		
 		initValidateForm: function () {
@@ -232,6 +269,8 @@ define([
 						data['transportdateend'] = thisObj.bidTransportdateEnd;
 						data['location_id'] = thisObj.bidLocationId;
 					}
+					else if(thisObj.isSaveAndCheckIn)
+						data['checkinorder'] = true;
 					
 					if(typeof data['transportdatestart'] != 'undefined')
 						data['transportdatestart'] = thisObj.convertDateFormat(data['transportdatestart'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
@@ -245,12 +284,25 @@ define([
 					purchaseOrderModel.save(
 						null, 
 						{
-							success: function (model, response, options) {
+							success: function (model, response, options) { //console.log(response);
 								if(thisObj.isConvertToPO) {
 									thisObj.isConvertToPO = false;
 									thisObj.hideConfirmationWindow('modal-with-form-confirm', function () {
 										thisObj.displayMessage(response);
 										Backbone.history.history.back();
+									});
+								}
+								else if(thisObj.isSaveAndCheckIn) {
+									thisObj.isSaveAndCheckIn = false;
+									thisObj.hideConfirmationWindow('modal-confirm', function () {
+										thisObj.displayMessage(response);
+										var destinationId = thisObj.subContainer.find('input[name=location_id]:checked').val();
+										if(destinationId == Const.PO.DESTINATION.DROPSHIP) {
+											Global.getGlobalVars().fromPOId = parseInt(response.purchaseorder_id);
+											Backbone.history.navigate(Const.URL.SO+'/'+Const.CRUD.ADD, {trigger: true});
+										}
+										else
+											Backbone.history.history.back();
 									});
 								}
 								else {
@@ -261,10 +313,14 @@ define([
 							},
 							error: function (model, response, options) {
 								if(thisObj.isConvertToPO) {
+									thisObj.isConvertToPO = false;
 									thisObj.hideConfirmationWindow('modal-with-form-confirm');
 								}
+								else if(thisObj.isSaveAndCheckIn) {
+									thisObj.isSaveAndCheckIn = false;
+									thisObj.hideConfirmationWindow();
+								}
 								
-								thisObj.isConvertToPO = false;
 								if(typeof response.responseJSON.error == 'undefined')
 									validate.showErrors(response.responseJSON);
 								else
@@ -275,7 +331,14 @@ define([
 					);
 				},
 				invalidHandler: function (event, validator) {
-					thisObj.isConvertToPO = false;
+					if(thisObj.isConvertToPO) {
+						thisObj.isConvertToPO = false;
+						thisObj.hideConfirmationWindow('modal-with-form-confirm');
+					}
+					else if(thisObj.isSaveAndCheckIn) {
+						thisObj.isSaveAndCheckIn = false;
+						thisObj.hideConfirmationWindow();
+					}
 				},
 				errorPlacement: function(error, element) {
 					if(element.hasClass('form-date')) {
@@ -298,14 +361,11 @@ define([
 		generateDestination: function () {
 			var destinationTemplate = this.getDestination();
 			this.$el.find('#po-destination').html(destinationTemplate);
-			this.$el.find('#po-destination .radio-inline:first-child input[type="radio"]').attr('checked', true);
+			this.subContainer.find('[name="location_id"][value="'+Const.PO.DESTINATION.SWFARMS+'"]').attr('checked', true);
 		},
 		
 		initProducerAutocomplete: function () {
 			var thisObj = this;
-			
-			if(this.producerAutoCompleteView != null)
-				this.producerAutoCompleteView.deAlloc();
 			
 			var accountProducerCollection = new AccountProducerCollection();
 			this.producerAutoCompleteView = new CustomAutoCompleteView({
@@ -361,9 +421,38 @@ define([
 				
 				thisObj.resetSelect(thisObj.subContainer.find('#contact_id'));
 				thisObj.resetSelect(thisObj.subContainer.find('.section_id'));
+				
+				thisObj.currentProducerId = null;
 			},
 			
 			this.producerAutoCompleteView.render();
+		},
+		
+		initCustomerAutocomplete: function () {
+			var thisObj = this;
+			
+			var accountCustomerCollection = new AccountCustomerCollection();
+			this.customerAutoCompleteView = new CustomAutoCompleteView({
+                input: $('#account_customer'),
+				hidden: $('#account_id_customer'),
+                collection: accountCustomerCollection,
+            });
+			
+			this.customerAutoCompleteView.onSelect = function (model) {
+				thisObj.contractByAccountCollection.getContractByAccount(model.get('id'));
+			};
+			
+			this.customerAutoCompleteView.typeInCallback = function (result) {
+				thisObj.contractByAccountCollection.getContractByAccount(result.id);
+			},
+			
+			this.customerAutoCompleteView.typeInEmptyCallback = function () { console.log('typeInEmptyCallback');
+				thisObj.currentProducerId = null;
+				thisObj.resetSelect(thisObj.subContainer.find('#contract_id'), true);
+			},
+			
+			this.customerAutoCompleteView.render();
+			this.isInitCustomerAutoCompleteView = true;
 		},
 		
 		initCalendar: function () {
@@ -414,8 +503,8 @@ define([
 			}
 			else {
 				var clone = this.options.productFieldClone.clone();
-				//this.initProductAutocomplete(clone);
 				this.addIndexToProductFields(clone);
+				clone.find('.product_id').html(this.getProductDropdown());
 				this.$el.find('#product-list > tbody').append(clone);
 			}
 				
@@ -476,12 +565,10 @@ define([
 		},
 		
 		getProductDropdown: function () {
-			var dropDown = '<option value="">Select a product</option>';
-			_.each(this.productCollection.models, function (model) {
-				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
-			});
-			
-			return dropDown;
+			if(this.subContainer.find('#contract_id').val() == '')
+				return this.getAllProductDropdown();
+			else
+				return this.getContractProductDropdown();
 		},
 		
 		addIndexToProductFields: function (productFieldItem) {
@@ -616,47 +703,6 @@ define([
 			return stacks;
 		},
 		
-		/*formatFormField: function (data) {
-			var formData = {products:[]};
-			var productFieldClass = this.options.productFieldClass;
-			
-			for(var key in data) {
-				if(typeof data[key] !== 'function'){
-					var value = data[key];
-					var arrayKey = key.split(this.options.productFieldSeparator);
-					
-					if(arrayKey.length < 2)
-						if(this.options.removeComma.indexOf(key) < 0)
-							formData[key] = value;
-						else
-							formData[key] = this.removeCommaFromNumber(value);
-					else {
-						if(arrayKey[0] == productFieldClass[0]) {
-							var index = arrayKey[1];
-							var arrayProductFields = {};
-							
-							for(var i = 0; i < productFieldClass.length; i++) {
-								if(this.options.productFieldExempt.indexOf(productFieldClass[i]) < 0) {
-									var fieldValue = data[productFieldClass[i]+this.options.productFieldSeparator+index];
-									
-									if(!(productFieldClass[i] == 'id' && fieldValue == '')) {
-										if(this.options.removeComma.indexOf(productFieldClass[i]) < 0)
-											arrayProductFields[productFieldClass[i]] = fieldValue;
-										else
-											arrayProductFields[productFieldClass[i]] = this.removeCommaFromNumber(fieldValue);
-									}
-								}
-							}
-								
-							formData.products.push(arrayProductFields);
-						}
-					}
-				}
-			}
-			
-			return formData;
-		},*/
-		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #add-product': 'addProduct',
@@ -679,6 +725,11 @@ define([
 			'click #undo-remove': 'undoRemove',
 			
 			'change .product_id': 'generateStackNumberSuggestions',
+			
+			'click #save-and-check-in': 'showSaveAndCheckInConfirmationWindow',
+			'click #confirm-save-and-check-in-order': 'saveAndCheckIn',
+			'change .location_id': 'onChangeDestination',
+			'change #contract_id': 'onChangeContract',
 		},
 		
 		removeProduct: function (ev) {
@@ -937,7 +988,7 @@ define([
 			this.showFieldThrobber('#pdf-file');
 			
 			var thisObj = this;
-			var fileModel = new FileModel(data);
+			var fileModel = new DocumentModel(data);
 			fileModel.save(
 				null, 
 				{
@@ -1158,8 +1209,128 @@ define([
 			}
 		},
 		
+		showSaveAndCheckInConfirmationWindow: function (ev) {
+			var destinationId = this.subContainer.find('input[name=location_id]:checked').val();
+			if(destinationId == Const.PO.DESTINATION.PRODUCER || destinationId == Const.PO.DESTINATION.DROPSHIP) {			
+				this.initConfirmationWindow('Are you sure you want to save and check-in this purchase order?',
+											'confirm-save-and-check-in-order',
+											'Save And Check-In',
+											'Save And Check-In Purchase Order',
+											false);
+				this.showConfirmationWindow();
+			}
+			else
+				this.displayGritter('Save and check-in is only allowed to destination type dropship and producer.');
+			
+			return false;
+		},
+		
+		saveAndCheckIn: function () {
+			this.isSaveAndCheckIn = true;
+			this.subContainer.find('#poForm').submit();
+			return false;
+		},
+		
+		onChangeDestination: function (ev) {
+			var value = parseInt($(ev.currentTarget).val());
+			this.toggleSOFields(value);
+		},
+		
+		toggleSOFields: function (destinationId) {
+			if(destinationId == Const.PO.DESTINATION.DROPSHIP) {
+				this.subContainer.find('.so-field').attr('disabled', false);
+				this.subContainer.find('.so-field').show();
+				if(!this.isInitCustomerAutoCompleteView)
+					this.initCustomerAutocomplete();
+			}
+			else {
+				this.subContainer.find('.so-field').attr('disabled', true);
+				this.subContainer.find('.so-field').hide();
+				if(this.isInitCustomerAutoCompleteView) {
+					$('#account_customer').val('');
+					$('#account_id_customer').val('');
+					this.customerAutoCompleteView.typeInEmptyCallback();
+				}
+			}
+		},
+		
+		generateContract: function () {
+			var contractList = _.template(contractTemplate, {'contracts': this.contractByAccountCollection.models});
+			var contractElement = this.subContainer.find('#contract_id')
+			var currentValue = contractElement.val();
+			this.resetSelect(contractElement);
+			contractElement.append(contractList);
+			
+			if(currentValue != '' && contractElement.find('option[value="'+currentValue+'"]').length > 0)
+				contractElement.val(currentValue);
+			else if(this.contractByAccountCollection.models.length == 1)
+				contractElement.val(this.contractByAccountCollection.models[0].id).trigger('change');
+		},
+		
+		onChangeContract: function (ev) {
+			var val = $(ev.target).val();
+			if(val != '')
+				this.contractProductsCollection.getContractProducts($(ev.target).val());
+			else
+				this.generateAllProductDropdown();
+		},
+		
+		generateContractProductDropdown: function () { console.log('generateContractProductDropdown');
+			var thisObj = this;
+			this.subContainer.find('#product-list .product_id').each(function () {
+				var currentValue = $(this).val();
+				$(this).html(thisObj.getContractProductDropdown());
+				
+				if(currentValue != '' && $(this).find('option[value="'+currentValue+'"]').length > 0)
+					$(this).val(currentValue);
+				else
+					$(this).val('').trigger('change');
+			});
+		},
+		
+		getContractProductDropdown: function () { console.log('getContractProductDropdown');
+			var dropDown = '<option value="">Select a product</option>';
+			_.each(this.contractProductsCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('product_id')+'">'+model.get('name')+'</option>';
+			});
+			
+			return dropDown;
+		},
+		
+		generateAllProductDropdown: function () {
+			var thisObj = this;
+			this.subContainer.find('#product-list .product_id').each(function () {
+				var currentValue = $(this).val();
+				$(this).html(thisObj.getAllProductDropdown());
+				
+				if(currentValue != '' && $(this).find('option[value="'+currentValue+'"]').length > 0)
+					$(this).val(currentValue);
+			});
+		},
+		
+		getAllProductDropdown: function () {
+			var dropDown = '<option value="">Select a product</option>';
+			_.each(this.productCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
+			});
+			
+			return dropDown;
+		},
+		
+		isDropShip: function () {
+			
+		},
+		
 		otherInitializations: function () {},
 		postDisplayForm: function () {},
+		
+		destroySubViews: function () {
+			if(this.producerAutoCompleteView != null)
+				this.producerAutoCompleteView.destroyView();
+			
+			if(this.isInitCustomerAutoCompleteView)
+				this.customerAutoCompleteView.destroyView();
+		},
 	});
 
   return PurchaseOrderAddView;
