@@ -49,8 +49,7 @@ class StorageLocationController extends BaseController {
 	 */
 	public function store()
 	{
-		$response = $this->repo->store( Input::all() );
-        return Response::json($response);
+		return $this->repo->store( Input::all() );
 	}
 
 	/**
@@ -84,8 +83,7 @@ class StorageLocationController extends BaseController {
 	 */
 	public function update($id)
 	{
-		$response = $this->repo->update($id, Input::all());
-        return $response;
+		return $this->repo->update($id, Input::all());
 	}
 
 	/**
