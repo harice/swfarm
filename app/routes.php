@@ -192,6 +192,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('inventory', 'APIv1\InventoryController');
     
     // Reports
+    Route::get('report/gross-profit', 'APIv1\ReportController@generateGrossProfit');
     Route::get('report/trucking-statement/{id}', 'APIv1\ReportController@generateTruckingStatement');
     Route::get('report/operator-pay/{id}', 'APIv1\ReportController@generateOperatorPay');
     Route::get('report/driver-pay/{id}', 'APIv1\ReportController@generateDriverPay');

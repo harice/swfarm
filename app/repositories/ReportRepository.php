@@ -121,28 +121,14 @@ class ReportRepository implements ReportRepositoryInterface {
     public function generateOperatorPay($id, $params)
     {
         // Get load origin
-        $contact_origin = Contact::with(
-            array(
-                'loadOrigin' => function($q) use ($params) {
-                    $q->with('order.account');
-                    if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-//                        $q->whereBetween('created_at', array($params['dateStart'], $date_end));
-                        $q->where('created_at', '>', $params['dateStart']);
-                        $q->where('created_at', '<', $date_end);
-                    } elseif (isset($params['dateStart'])) {
-                        $q->where('created_at', '>=', $params['dateStart']);
-                    } elseif (isset($params['dateEnd'])) {
-                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                        $q->where('created_at', '<=', $date_end);
-                    }
-                }
-            )
-        );
+        $contact_origin = Contact::with('loadOrigin.order.account');
         
-        $contact_origin = $contact_origin->where('id', '=', $id);
+        $contact_origin = $contact_origin->whereHas('loadOrigin',
+            function($q) use ($id, $params) {
+                $q->where('trucker_id', '=', $id);
+            });
         
-        $contact_origin = $contact_origin->first();
+        $contact_origin = $contact_origin->get();
         if (!$contact_origin) {
             throw new Exception('Contact not found.');
         }
@@ -150,58 +136,53 @@ class ReportRepository implements ReportRepositoryInterface {
         $contact_origin = $contact_origin->toArray();
         
         // Get load destination
-        $contact_destination = Contact::with(
-            array(
-                'loadDestination' => function($q) use ($params) {
-                    $q->with('order.account');
-                    if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                        $q->where('created_at', '>', $params['dateStart']);
-                        $q->where('created_at', '<', $date_end);
-                    } elseif (isset($params['dateStart'])) {
-                        $q->where('created_at', '>=', $params['dateStart']);
-                    } elseif (isset($params['dateEnd'])) {
-                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                        $q->where('created_at', '<=', $date_end);
-                    }
-                }
-            )
-        );
+        $contact_destination = Contact::with('loadDestination.order.account');
+        $contact_destination = $contact_destination->whereHas('loadOrigin',
+            function($q) use ($id, $params) {
+                $q->where('trucker_id', '=', $id);
+            });
         
-        $contact_destination = $contact_destination->where('id', '=', $id);
-        
-        $contact_destination = $contact_destination->first();
+        $contact_destination = $contact_destination->get();
         if (!$contact_destination) {
             throw new Exception('Contact not found.');
         }
         
         $contact_destination = $contact_destination->toArray();
         
+        // Contruct transactions
         $loads = array();
         $i = 0;
         $total = 0.00;
-        foreach ($contact_origin['load_origin'] as $load) {
-            $item['id'] = $i;
-            $item['type'] = 'Load';
-            $item['amount'] = $load['originloaderfee'];
-            $item['account_name'] = $load['order']['account']['name'];
-            $item['created_at'] = date('Y-m-d', strtotime($load['created_at']));
-            
-            $loads[] = $item;
-            $total += $item['amount'];
-            $i++;
+        foreach ($contact_origin as $contact)
+        {
+            foreach ($contact['load_origin'] as $load) {
+                $item['id'] = $i;
+                $item['type'] = 'Load';
+                $item['amount'] = $load['originloaderfee'];
+                $item['account_name'] = $load['order']['account']['name'];
+                $item['loader'] = $contact['lastname'] . ', ' .$contact['firstname'];
+                $item['created_at'] = date('Y-m-d', strtotime($load['created_at']));
+
+                $loads[] = $item;
+                $total += $item['amount'];
+                $i++;
+            }
         }
         
-        foreach ($contact_destination['load_destination'] as $load) {
-            $item['id'] = $i;
-            $item['type'] = 'Unload';
-            $item['amount'] = $load['destinationloaderfee'];
-            $item['account_name'] = $load['order']['account']['name'];
-            $item['created_at'] = date('Y-m-d', strtotime($load['created_at']));
-            
-            $loads[] = $item;
-            $total += $item['amount'];
-            $i++;
+        foreach ($contact_destination as $contact)
+        {
+            foreach ($contact['load_destination'] as $load) {
+                $item['id'] = $i;
+                $item['type'] = 'Unload';
+                $item['amount'] = $load['destinationloaderfee'];
+                $item['account_name'] = $load['order']['account']['name'];
+                $item['loader'] = $contact['lastname'] . ', ' .$contact['firstname'];
+                $item['created_at'] = date('Y-m-d', strtotime($load['created_at']));
+
+                $loads[] = $item;
+                $total += $item['amount'];
+                $i++;
+            }
         }
         
         $report['operator'] = Contact::find($id)->toArray();
@@ -413,6 +394,26 @@ class ReportRepository implements ReportRepositoryInterface {
         $report['summary']['total_transactions'] = $transactions->count();
         $report['summary']['total_bales'] = $total_bales;
         $report['summary']['total_pounds'] = $total_pounds;
+        $report['transactions'] = $transactions->toArray();
+        
+        return $report;
+    }
+    
+    /**
+     * Generate Gross Profit Report
+     * 
+     * @param array $params
+     * @return mixed
+     */
+    public function generateGrossProfit($params)
+    {
+        $transactions = 'fsdfsdf';
+        
+        $report['summary']['total_cost'] = '';
+        $report['summary']['hay_cost'] = '';
+        $report['summary']['freight_cost'] = '';
+        $report['summary']['profit'] = '';
+        $report['summary']['profit_percentage'] = '';
         $report['transactions'] = $transactions->toArray();
         
         return $report;
