@@ -407,8 +407,13 @@ class ReportRepository implements ReportRepositoryInterface {
      */
     public function generateGrossProfit($params)
     {
-        $transactions = 'fsdfsdf';
+        $transactions = Order::with('account');
         
+        $transactions = $transactions->where('ordertype', '=', 2);
+        
+        $transactions = $transactions->get();
+        
+        $report['summary']['total_transactions'] = $transactions->count();
         $report['summary']['total_cost'] = '';
         $report['summary']['hay_cost'] = '';
         $report['summary']['freight_cost'] = '';
