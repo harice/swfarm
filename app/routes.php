@@ -202,4 +202,5 @@ Route::group(array('before' => 'auth.session'),function(){
 });
 
 Route::get('/', function(){ return View::make('main')->withVersion(Config::get('Constants.VERSION',"1.0")); });
-Route::get('/{dump}', function(){ return View::make('errors/404'); });
+Route::get('/404', function(){ return View::make('errors/404'); });
+Route::get('/{dump}', function(){ return Redirect::to('404'); });

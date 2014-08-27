@@ -6,7 +6,7 @@ class DownloadRepository implements DownloadInterface
 	{
 		if(is_array($params) && array_key_exists('q', $params)) {
 			var_dump(Request::header());
-			var_dump(Cookie::get('laravel_session'));
+			var_dump(Cookie::get('ihYF23kouGY'));
 			var_dump(Session::all());
 			exit();
 			$q = unserialize(base64_decode($params['q']));

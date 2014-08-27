@@ -29,7 +29,7 @@ return array(
 	|
 	*/
 
-	'lifetime' => 120,
+	'lifetime' => 10,
 
 	'expire_on_close' => false,
 
@@ -96,7 +96,7 @@ return array(
 	|
 	*/
 
-	'cookie' => '5wf4rM',
+	'cookie' => 'ihYF23kouGY',
 
 	/*
 	|--------------------------------------------------------------------------
