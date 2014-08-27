@@ -25,10 +25,7 @@ class AddTruckerAccountTypeColumnToTransportscheduleTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::table('transportschedule', function(Blueprint $table)
-		{
-			$table->drop('truckerAccountType_id');
-		});
+		Schema::dropIfExists('transportschedule');
 	}
 
 }
