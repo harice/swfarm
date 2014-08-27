@@ -17,6 +17,7 @@ class TransportSchedule extends Eloquent {
     protected $fillable = array(
         'order_id',
         'date',
+        'truckerAccountType_id',
         'trucker_id',
         'truck_id',
         'trailer_id',
@@ -45,10 +46,10 @@ class TransportSchedule extends Eloquent {
       'scheduletimeHour' => 'required',
       'scheduletimeMin' => 'required',
       'scheduletimeAmPm' => 'required',
+      'truckerAccountType_id' => 'required',
       'trucker_id' => 'required',
       'truck_id' => 'required',
       'distance' => 'required',
-      'fuelcharge' => 'required',
       'originloader_id' => 'required',
       'originloaderfee' => 'required',
       'destinationloader_id' => 'required',
@@ -76,6 +77,10 @@ class TransportSchedule extends Eloquent {
     }
 
     public function truckvehicle(){
+        return $this->hasOne('Truck', 'id', 'truck_id')->select(array('id','trucknumber','fee'));
+    }
+    
+    public function truck(){
         return $this->hasOne('Truck', 'id', 'truck_id')->select(array('id','trucknumber','fee'));
     }
 

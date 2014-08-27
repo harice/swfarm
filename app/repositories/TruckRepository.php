@@ -20,7 +20,7 @@ class TruckRepository implements TruckRepositoryInterface {
             ->join('account_accounttype', 'account.id','=','account_accounttype.account_id')
             ->join('accounttype', 'account_accounttype.accounttype_id', '=', 'accounttype.id')
             ->select('truck.id', 'truck.trucknumber', 'truck.fee', 'account.id as account_id', 'account.name as account_name', 'accounttype.name as account_type')
-            ->groupBy('account.id')
+//            ->groupBy('account.id')
             ->orderBy($sortby, $orderby)
             ->paginate($perPage);
     }
@@ -42,7 +42,7 @@ class TruckRepository implements TruckRepositoryInterface {
                     $query->orWhere('trucknumber','like','%'.$searchWord.'%');
                     $query->orWhere('account.name','like','%'.$searchWord.'%');
                 })
-                ->groupBy('account.id')
+//                ->groupBy('account.id')
                 ->orderBy($sortby, $orderby)
                 ->paginate($perPage);
         }
@@ -75,13 +75,13 @@ class TruckRepository implements TruckRepositoryInterface {
         if (!$truck->save()) {
             return array(
                 'error' => true,
-                'message' => 'Truck was not created.'
+                'message' => 'Trucker was not created.'
             );
         }
         
         $response = array(
             'error' => false,
-            'message' => Lang::get('messages.success.created', array('entity' => 'Truck')),
+            'message' => Lang::get('messages.success.created', array('entity' => 'Trucker')),
             'data' => $truck
         );
         
@@ -100,13 +100,13 @@ class TruckRepository implements TruckRepositoryInterface {
         if (!$truck->update()) {
             return array(
                 'error' => true,
-                'message' => 'Truck was not updated.'
+                'message' => 'Trucker was not updated.'
             );
         }
         
         $response = array(
             'error' => false,
-            'message' => Lang::get('messages.success.updated', array('entity' => 'Truck')),
+            'message' => Lang::get('messages.success.updated', array('entity' => 'Trucker')),
             'data' => $truck
         );
         
@@ -121,13 +121,13 @@ class TruckRepository implements TruckRepositoryInterface {
         if (!$truck->delete()) {
             return array(
                 'error' => true,
-                'message' => 'Truck was not deleted.'
+                'message' => 'Trucker was not deleted.'
             );
         }
 
         $response = array(
             'error' => false,
-            'message' => Lang::get('messages.success.deleted', array('entity' => 'Truck')),
+            'message' => Lang::get('messages.success.deleted', array('entity' => 'Trucker')),
             'data' => $truck
         );
         
@@ -140,7 +140,7 @@ class TruckRepository implements TruckRepositoryInterface {
         $rules = Truck::$rules;
         $messages = array(
             'fee.max' => 'Admin Fee must not be greater than 1,000.00 .',
-            'trucknumber.alpha_num' => 'Truck Name must only contain letters and numbers.'
+            'trucknumber.alpha_num' => 'Trucker Name must only contain letters and numbers.'
         );
         
         if ($id) {

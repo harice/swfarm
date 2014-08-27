@@ -28,6 +28,7 @@ define([
 		
 		el: '.modal-alert-cont',
 		milesInKM: 0.000621371,
+		googleMapsDestinationMarkerLimit: 10,
 		
 		initialize: function(options) {
 			this.map = null;
@@ -38,6 +39,7 @@ define([
 			
 			this.markers = [];
 			this.destinationLeg = [];
+			this.loadedDistances = [];
 			
 			this.markerIconDefault = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
 			this.markerIconAlphabetPre = 'http://www.google.com/mapfiles/marker';
@@ -70,7 +72,7 @@ define([
 			$('#'+this.modalIdGetDD).on('shown.bs.modal', function (e) {
 				if(!thisObj.isInitMap) {
 					thisObj.initMap(thisObj.mapCanvasIdGetDD, function () {
-						thisObj.initDropMarker(10);
+						thisObj.initDropMarker(thisObj.googleMapsDestinationMarkerLimit);
 						thisObj.initMapDirectionService();
 					});
 				}
@@ -164,7 +166,30 @@ define([
 			this.directionsDisplay.setMap(this.map);
 		},
 		
-		showModalGetDestinationDistance: function () {
+		showModalGetDestinationDistance: function (distanceMarkers) {
+			var thisObj = this;
+			
+			this.shownModalCallback = function () {
+				thisObj.loadedDistances = [];
+				
+				if(distanceMarkers.length > 0) {
+					thisObj.clearMap();
+					
+					for(var i = 0; i < distanceMarkers.length; i++) {
+						var locationFrom = new google.maps.LatLng(distanceMarkers[i].latitudeFrom, distanceMarkers[i].longitudeFrom);
+						thisObj.addMarker(locationFrom, thisObj.googleMapsDestinationMarkerLimit);
+						thisObj.loadedDistances.push(distanceMarkers[i].isLoadedDistance);
+						
+						if(i == distanceMarkers.length - 1) {
+							var locationTo = new google.maps.LatLng(distanceMarkers[i].latitudeTo, distanceMarkers[i].longitudeTo);
+							thisObj.addMarker(locationTo, thisObj.googleMapsDestinationMarkerLimit);
+						}
+					}
+					
+					thisObj.calcRoute();
+				}
+			}
+			
 			this.showModal(this.modalIdGetDD);
 		},
 		
@@ -365,16 +390,18 @@ define([
 								distance: legDistance,
 								loaded_distance: i,
 							};
-			
+							
+							if(typeof thisObj.loadedDistances[i] !== 'undefined' && thisObj.loadedDistances[i] == 1)
+								googleMapsDistanceLegTemplateVariables['checked'] = true;
+								
 							legDisplay += _.template(googleMapsDistanceLegTemplate, googleMapsDistanceLegTemplateVariables);
 						}
 						thisObj.directionDistance = directionDistance;
 						$('#distance-list tbody').html(legDisplay);
 						$('#direction-map').text(directionDistance.toFixed(2));
 					}
-					else {
+					else
 						console.log('error direction service');
-					}
 				});
 			}
 		},

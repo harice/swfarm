@@ -1,9 +1,8 @@
 <?php
  
 interface ContactRepositoryInterface {
-	public function findAll();
+	public function findAll($params);
 	public function findById($id);
-	public function paginate($params);
 	public function store($data);
 	public function update($id, $data);
 	public function destroy($id);
