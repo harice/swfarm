@@ -18,7 +18,6 @@ define([
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderAddScheduleTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderPickUpScheduleProductItemTemplate.html',
-	'text!templates/layout/googleMapsDistanceMarkerTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -40,7 +39,6 @@ define([
 			contentTemplate,
 			purchaseOrderAddScheduleTemplate,
 			purchaseOrderPickUpScheduleProductItemTemplate,
-			googleMapsDistanceMarkerTemplate,
 			Global,
 			Const
 ){
@@ -628,8 +626,6 @@ define([
 			
 			'keyup #truckingrate': 'onKeyUpTrackingRate',
 			'blur #truckingrate': 'onBlurMoney',
-			//'keyup #distance': 'onKeyUpDistance',
-			//'blur #distance': 'onBlurMoney',
 			'change #has-fuel-charge': 'changeHasFuelCharge',
 			'keyup .loader': 'formatMoney',
 			'blur .loader': 'onBlurMoney',
@@ -889,11 +885,16 @@ define([
 		computeFuelCharge: function () {
 			var fuelRate = (this.fuelRate != null)? this.fuelRate : 0;
 			var loadedDistance = this.getFloatValueFromField(this.subContainer.find('#distance-loaded'));
-			var fuelCharge = fuelRate * loadedDistance; console.log(fuelRate+' * '+loadedDistance);
+			var fuelCharge = fuelRate * loadedDistance;
 			this.subContainer.find('#fuelcharge').val(this.addCommaToNumber(fuelCharge.toFixed(2)));
 		},
 		
 		postDisplayForm: function () {},
+		
+		destroySubViews: function () {
+			if(this.googleMaps != null)
+				this.googleMaps.destroyView();
+		},
 	});
 
 	return PickUpScheduleAddView;

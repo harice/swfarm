@@ -121,7 +121,9 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
               $isAddOperation = true;
           }
 
-          $addProductResult = $this->addProductToSchedule($transportschedule->id, $data['products']);
+          $ordertype = $this->getOrderType($data['order_id']);
+          
+          $addProductResult = $this->addProductToSchedule($transportschedule->id, $data['products'], $ordertype);
           if($addProductResult != false){
             DB::rollback();
             return Response::json($addProductResult, 500);
@@ -213,6 +215,11 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       return $bool;
   }
 
+  private function getOrderType($orderId){
+      $result = Order::where('id', '=', $orderId)->first(array('id','ordertype'));
+      return $result->ordertype;
+  }
+
   private function getTotalWeightOfSchedule($products){
       $totalWeightInTons = 0;
       foreach ($products as $product) {
@@ -240,7 +247,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       return $result; //total weight remaining to be scheduled
   }
 
-  private function addProductToSchedule($schedule_id, $products = array())
+  private function addProductToSchedule($schedule_id, $products = array(), $ordertype = null)
   {   
       if($this->checkRepeatedProductOrderUsed($products)){
           return array(
@@ -251,7 +258,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       foreach ($products as $product) {
           $product['transportschedule_id'] = $schedule_id;
 
-          $this->validate($product, 'TransportScheduleProduct');
+          $this->validate($product, 'TransportScheduleProduct', $ordertype);
           if(isset($product['id'])){
             $result = $this->getTotalWeightScheduleForProduct($product['productorder_id'], $product['id']);  
           } else {
@@ -365,8 +372,18 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       }
   }
   
-  public function validate($data, $entity){
-      $validator = Validator::make($data, $entity::$rules);
+  public function validate($data, $entity, $ordertype = null){
+      if(strcmp($entity, 'TransportScheduleProduct') == 0){
+          if($ordertype == 1){ //PO
+              $validator = Validator::make($data, $entity::$po_rules);
+          } else if($ordertype == 2){ //SO
+              $validator = Validator::make($data, $entity::$so_rules);
+          } else {
+              $validator = Validator::make($data, $entity::$rules);    
+          }
+      } else{
+          $validator = Validator::make($data, $entity::$rules);  
+      }
       
       if($validator->fails()) { 
           throw new ValidationException($validator); 

@@ -259,8 +259,10 @@ class OrderRepository implements OrderRepositoryInterface {
             $data['status_id'] = 1; //Open status
         
         if ($orderType == 1) {
-            if ($data['location_id'] != 3) {
-                unset($data['contract_id']);
+            if(isset($data['location_id'])){
+                if ($data['location_id'] != 3) {
+                    unset($data['contract_id']);
+                }
             }
         } else {
             if (isset($data['natureofsale_id'])) {

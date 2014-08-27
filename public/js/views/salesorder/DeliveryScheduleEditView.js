@@ -69,6 +69,7 @@ define([
 			var trailer = this.model.get('trailer');
 			var products = this.model.get('transportscheduleproduct');
 			var truckerNumber = this.model.get('truckvehicle');
+			var mapData = this.model.get('mapData');
 			var truckerAccountTypeId = this.model.get('truckerAccountType_id');
 			
 			this.$el.find('#so-sched-start-date .input-group.date').datepicker('update', Backbone.View.prototype.helpers.formatDate(this.model.get('date')));
@@ -77,7 +78,13 @@ define([
 			this.$el.find('#scheduletimeAmPm').val(Backbone.View.prototype.helpers.formatDateBy(this.model.get('date'),'A'));
 			
 			this.$el.find('#distance').val(this.addCommaToNumber(this.model.get('distance')));
-			this.$el.find('#fuelcharge').val(this.addCommaToNumber(this.model.get('fuelcharge')));
+			this.distanceMarkers = this.model.get('transportmap');
+			if(typeof mapData.totalLoadedDistance !== 'undefined' && mapData.totalLoadedDistance > 0) {
+				this.$el.find('#distance-loaded').val(this.addCommaToNumber(mapData.totalLoadedDistance));
+				this.$el.find('#has-fuel-charge').attr('checked', true);
+				this.$el.find('#fuelcharge').val(this.addCommaToNumber(this.model.get('fuelcharge')));
+				this.hasFuelCharge = true;
+			}
 			
 			var i= 0;
 			var totalQuantity = 0;
