@@ -38,7 +38,7 @@ class ProductOrderSummary extends Eloquent {
 
     public function productname()
     {
-        return $this->hasOne('Product', 'id', 'product_id')->select(array('id', 'name'));
+        return $this->hasOne('Product', 'id', 'product_id')->withTrashed()->select(array('id', 'name'));
     }
 
     public function order()

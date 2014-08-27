@@ -138,7 +138,7 @@ define([
 				schedule_url: '#/'+Const.URL.DELIVERYSCHEDULE,
 				add: Const.CRUD.ADD,
 				collapsible_id: Const.PO.COLLAPSIBLE.ID,
-				so_status_open: Const.STATUS.OPEN,
+				so_status_open: Const.STATUSID.OPEN,
 				_: _ 
 			};
 			
