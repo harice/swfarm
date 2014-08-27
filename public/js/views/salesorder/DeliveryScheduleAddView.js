@@ -827,12 +827,12 @@ define([
 			return false;
 		},
 		
-		changeHasFuelCharge: function (ev) { console.log('changeHasFuelCharge');
-			if($(ev.currentTarget).is(':checked')) { console.log('if');
+		changeHasFuelCharge: function (ev) {
+			if($(ev.currentTarget).is(':checked')) {
 				this.hasFuelCharge = true;
 				this.computeFuelCharge();
 			}
-			else { console.log('else');
+			else {
 				this.hasFuelCharge = false;
 				this.subContainer.find('#fuelcharge').val('');
 			}
@@ -841,7 +841,7 @@ define([
 		computeFuelCharge: function () {
 			var fuelRate = (this.fuelRate != null)? this.fuelRate : 0;
 			var loadedDistance = this.getFloatValueFromField(this.subContainer.find('#distance-loaded'));
-			var fuelCharge = fuelRate * loadedDistance; console.log(fuelRate+' * '+loadedDistance);
+			var fuelCharge = fuelRate * loadedDistance;
 			this.subContainer.find('#fuelcharge').val(this.addCommaToNumber(fuelCharge.toFixed(2)));
 		},
 		

@@ -374,6 +374,7 @@ define([
 						
 						var directionDistance = 0;
 						var legDisplay = '';
+						thisObj.destinationLeg = [];
 						for(var i = 0; i < result.routes[0].legs.length; i++) {
 							var legDistance = parseFloat(result.routes[0].legs[i].distance.value * thisObj.milesInKM).toFixed(2);
 							directionDistance += parseFloat(legDistance);
@@ -402,6 +403,8 @@ define([
 					}
 					else
 						console.log('error direction service');
+						
+					thisObj.loadedDistances = [];
 				});
 			}
 		},
