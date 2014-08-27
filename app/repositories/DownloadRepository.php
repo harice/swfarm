@@ -5,10 +5,10 @@ class DownloadRepository implements DownloadInterface
 	public function download($params)
 	{
 		if(is_array($params) && array_key_exists('q', $params)) {
-			var_dump(Request::header());
-			var_dump(Cookie::get('ihYF23kouGY'));
-			var_dump(Session::all());
-			exit();
+			// var_dump(Request::header());
+			// var_dump(Cookie::get('ihYF23kouGY'));
+			// var_dump(Session::all());
+			// exit();
 			$q = unserialize(base64_decode($params['q']));
 			switch ($q['m']) {
 				case 'doc':
