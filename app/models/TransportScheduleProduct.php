@@ -7,11 +7,17 @@ class TransportScheduleProduct extends Eloquent {
 
     public $timestamps = false;
 
-    public static $rules = array(
+    public static $po_rules = array(
       'transportschedule_id' => 'required',
       'productorder_id' => 'required',
       'quantity' => 'required',
       'sectionto_id'=> 'required'
+    );
+
+    public static $so_rules = array(
+      'transportschedule_id' => 'required',
+      'productorder_id' => 'required',
+      'quantity' => 'required'
     );
 
     public function transportschedule(){
