@@ -38,4 +38,8 @@ class Truck extends BaseModel {
         return $this->hasOne('Account', 'id', 'account_id')->select(array('id', 'name'));
     }
     
+    public function transportschedule()
+    {
+        return $this->hasMany('TransportSchedule', 'truck_id', 'id');
+    }
 }

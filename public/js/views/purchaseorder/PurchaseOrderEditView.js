@@ -78,7 +78,7 @@ define([
 				else
 					thisObj.isBid = false;
 				
-				if(parseInt(this.get('location').id) == parseInt(Const.PO.DESTINATION.DROPSHIP))
+				if(this.get('location') && parseInt(this.get('location').id) == parseInt(Const.PO.DESTINATION.DROPSHIP))
 					thisObj.contractByAccountCollection.getContractByAccount(this.get('contract').account.id);
 				else
 					thisObj.locationCollection.getLocationByAccount(this.get('account_id'));
@@ -115,7 +115,7 @@ define([
 			this.$el.find('#zipcode').val(address[0].zipcode);
 			this.$el.find('#dateofpurchase').val(this.convertDateFormat(this.model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
 			
-			if(parseInt(this.model.get('location').id) == parseInt(Const.PO.DESTINATION.DROPSHIP)) {
+			if(this.model.get('location') && parseInt(this.model.get('location').id) == parseInt(Const.PO.DESTINATION.DROPSHIP)) {
 				this.toggleSOFields(this.model.get('location').id);
 				this.customerAutoCompleteView.autoCompleteResult = [{name:contract.account.name, id:contract.account.id}];
 				this.$el.find('#account_customer').val(contract.account.name);
