@@ -16,15 +16,16 @@ class ReportRepository implements ReportRepositoryInterface {
             {
                 $q->on('transportScheduleProduct_id', '=', 'transportscheduleproduct.id');
                 
-                if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                // Filter by Date
+                if (isset($params['dateStart']))
+                {
                     $q->where('weightticketproducts.created_at', '>', $params['dateStart']);
-                    $q->where('weightticketproducts.created_at', '<', $date_end);
-                } elseif (isset($params['dateStart'])) {
-                    $q->where('weightticketproducts.created_at', '>=', $params['dateStart']);
-                } elseif (isset($params['dateEnd'])) {
+                }
+
+                if (isset($params['dateEnd']))
+                {
                     $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                    $q->where('weightticketproducts.created_at', '<=', $date_end);
+                    $q->where('weightticketproducts.created_at', '<', $date_end);
                 }
             })
             ->join('productorder', 'transportscheduleproduct.productorder_id', '=', 'productorder.id')
@@ -72,15 +73,16 @@ class ReportRepository implements ReportRepositoryInterface {
             {
                 $q->on('transportScheduleProduct_id', '=', 'transportscheduleproduct.id');
                 
-                if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                // Filter by Date
+                if (isset($params['dateStart']))
+                {
                     $q->where('weightticketproducts.created_at', '>', $params['dateStart']);
-                    $q->where('weightticketproducts.created_at', '<', $date_end);
-                } elseif (isset($params['dateStart'])) {
-                    $q->where('weightticketproducts.created_at', '>=', $params['dateStart']);
-                } elseif (isset($params['dateEnd'])) {
+                }
+
+                if (isset($params['dateEnd']))
+                {
                     $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                    $q->where('weightticketproducts.created_at', '<=', $date_end);
+                    $q->where('weightticketproducts.created_at', '<', $date_end);
                 }
             })
             ->join('productorder', 'transportscheduleproduct.productorder_id', '=', 'productorder.id')
@@ -207,16 +209,16 @@ class ReportRepository implements ReportRepositoryInterface {
             {
                 $q->on('transportScheduleProduct_id', '=', 'transportscheduleproduct.id');
                 
-                if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-//                    $q->whereBetween('weightticketproducts.created_at', array($params['dateStart'], $date_end));
+                // Filter by Date
+                if (isset($params['dateStart']))
+                {
                     $q->where('weightticketproducts.created_at', '>', $params['dateStart']);
-                    $q->where('weightticketproducts.created_at', '<', $date_end);
-                } elseif (isset($params['dateStart'])) {
-                    $q->where('weightticketproducts.created_at', '>=', $params['dateStart']);
-                } elseif (isset($params['dateEnd'])) {
+                }
+
+                if (isset($params['dateEnd']))
+                {
                     $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                    $q->where('weightticketproducts.created_at', '<=', $date_end);
+                    $q->where('weightticketproducts.created_at', '<', $date_end);
                 }
             })
             ->join('productorder', 'productorder_id', '=', 'productorder.id');
@@ -234,6 +236,7 @@ class ReportRepository implements ReportRepositoryInterface {
         $transactions = $transactions->where('truck.id', '=', $id);
         
         $transactions = $transactions->select(
+            'weightticketproducts.id as id',
             'weightticketproducts.bales',
             'weightticketproducts.pounds',
             'weightticketproducts.created_at',
@@ -277,6 +280,17 @@ class ReportRepository implements ReportRepositoryInterface {
         
         $transactions = $transactions->get();
         
+        $truck_loads = array();
+        foreach($transactions->toArray() as $truck_load)
+        {
+            $truck_loads[] = array(
+                'id' => ($truck_load['loading_type'] == 2) ? 'Unload' : 'Load',
+                'loads' => $truck_load['loader_destination_lastname'],
+                'amount' => $truck_load['pounds']
+            );
+        }
+        
+        
         $report['truck'] = $truck;
         $report['summary']['total_transactions'] = $total_transactions;
         $report['summary']['total_bales'] = $total_bales;
@@ -288,6 +302,7 @@ class ReportRepository implements ReportRepositoryInterface {
         $report['summary']['total_hauling_fee'] = $total_hauling_fee;
         $report['summary']['total_statement'] = $total_bales + $total_pounds + $total_hauling_fee;
         $report['transactions'] = $transactions->toArray();
+        $report['truck_loads'] = $truck_loads;
         
         return $report;
     }
@@ -362,15 +377,16 @@ class ReportRepository implements ReportRepositoryInterface {
             {
                 $q->on('transportScheduleProduct_id', '=', 'transportscheduleproduct.id');
                 
-                if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                // Filter by Date
+                if (isset($params['dateStart']))
+                {
                     $q->where('weightticketproducts.created_at', '>', $params['dateStart']);
-                    $q->where('weightticketproducts.created_at', '<', $date_end);
-                } elseif (isset($params['dateStart'])) {
-                    $q->where('weightticketproducts.created_at', '>=', $params['dateStart']);
-                } elseif (isset($params['dateEnd'])) {
+                }
+
+                if (isset($params['dateEnd']))
+                {
                     $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                    $q->where('weightticketproducts.created_at', '<=', $date_end);
+                    $q->where('weightticketproducts.created_at', '<', $date_end);
                 }
             });
         
