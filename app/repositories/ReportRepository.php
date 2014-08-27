@@ -423,26 +423,34 @@ class ReportRepository implements ReportRepositoryInterface {
      */
     public function generateGrossProfit($params)
     {
-        $transactions = Order::with(
-            'account',
-            'transportschedule.transportscheduleproduct',
-            'transportschedule.weightticket.weightticketscale_pickup.weightticketproducts',
-            'transportschedule.weightticket.weightticketscale_dropoff.weightticketproducts'
+        $weighttickets = WeightTicket::with(
+            'weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder',
+            'weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder'
         );
         
-        $transactions = $transactions->where('ordertype', '=', 2);
+        // Filter by Date
+        if (isset($params['dateStart']))
+        {
+            $weighttickets = $weighttickets->where('created_at', '>', $params['dateStart']);
+        }
+
+        if (isset($params['dateEnd']))
+        {
+            $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+            $weighttickets = $weighttickets->where('created_at', '<', $date_end);
+        }
         
-        $transactions = $transactions->get();
+        $weighttickets = $weighttickets->get();
         
         Log::debug(DB::getQueryLog());
         
-        $report['summary']['total_transactions'] = $transactions->count();
+        $report['summary']['total_transactions'] = $weighttickets->count();
         $report['summary']['total_cost'] = '';
         $report['summary']['hay_cost'] = '';
         $report['summary']['freight_cost'] = '';
         $report['summary']['profit'] = '';
         $report['summary']['profit_percentage'] = '';
-        $report['transactions'] = $transactions->toArray();
+        $report['transactions'] = $weighttickets->toArray();
         
         return $report;
     }

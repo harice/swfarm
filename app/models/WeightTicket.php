@@ -43,7 +43,7 @@ class WeightTicket extends BaseModel {
     }
 
     public function transportschedule(){
-        return $this->belongsTo('TransportSchedule', 'id', 'transportschedule_id');
+        return $this->belongsTo('TransportSchedule', 'transportschedule_id', 'id');
     }
 
     public function status()
