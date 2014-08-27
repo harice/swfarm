@@ -137,7 +137,7 @@ define([
 		},
 		
 		isEditable: function () {
-			if(this.model.get('status').name.toLowerCase() != Const.STATUS.PENDING)
+			if(this.model.get('status').id != Const.STATUSID.PENDING)
 				return true;
 			else
 				return false;

@@ -40,7 +40,7 @@
 					<div class="order-stack-details">
 						<div class="col-md-12 no-padding">
 							<div class="pull-right">
-								<% var postatus = po.get("status").name.toLowerCase() %>
+								<% var postatus = po.get("status").id %>
 								<a href="<%= po_url %>/<%= po.get("id") %>" class="btn btn-trans btn-rad btn-primary btn-sm">
 									<i class="fa fa-eye width-10"></i> View <% if (postatus != po_status_pending) { %>PO<% } else { %>Bid<% } %>
 								</a>

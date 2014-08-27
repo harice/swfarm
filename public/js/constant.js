@@ -189,6 +189,15 @@ define(function () {
 			'POCANCELLED' : 'po cancelled',
 			'TESTING' : 'testing',
 		},
+		'STATUSID': {
+			'OPEN' : 1,
+			'CLOSED' : 2,
+			'CANCELLED' : 3,
+			'PENDING' : 4,
+			'BIDCANCELLED' : 5,
+			'POCANCELLED' : 6,
+			'TESTING' : 7,
+		},
 		'INVENTORY': {
 			'LOCATIONFROMREQUIRED': ['transfer','issue'],
 			'LOCATIONTOREQUIRED': ['transfer','receipt'],

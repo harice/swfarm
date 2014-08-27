@@ -6,7 +6,7 @@ class DownloadRepository implements DownloadInterface
 	{
 		if(is_array($params) && array_key_exists('q', $params)) {
 			// var_dump(Request::header());
-			// var_dump(Cookie::get('laravel_session'));
+			// var_dump(Cookie::get('ihYF23kouGY'));
 			// var_dump(Session::all());
 			// exit();
 			$q = unserialize(base64_decode($params['q']));
@@ -28,7 +28,7 @@ class DownloadRepository implements DownloadInterface
 					break;
 			}
 		}
-		
+		// http://swfarm.local/file?q=YTozOntzOjE6ImkiO3M6MToiMSI7czoxOiJ0IjtzOjE6InYiO3M6MToibSI7czozOiJkb2MiO30=
 		// return App::abort(501,'Not implemented');
 		return Response::view('errors.404', array(), 404);
 	}

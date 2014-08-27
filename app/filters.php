@@ -92,6 +92,8 @@ Route::filter('auth.basic', function()
 Route::filter('auth.session', function()
 {
 	if(Request::ajax()) return App::abort(501,'Not implemented');
+
+	if(!Cookie::get('ihYF23kouGY')) return Redirect::to('404');
 });
 
 Route::filter('basic', function()

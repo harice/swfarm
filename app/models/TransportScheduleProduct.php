@@ -10,7 +10,8 @@ class TransportScheduleProduct extends Eloquent {
     public static $rules = array(
       'transportschedule_id' => 'required',
       'productorder_id' => 'required',
-      'quantity' => 'required'
+      'quantity' => 'required',
+      'sectionto_id'=> 'required'
     );
 
     public function transportschedule(){

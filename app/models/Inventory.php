@@ -43,7 +43,7 @@ class Inventory extends Eloquent {
         return $this->hasOne('Order', 'id', 'order_id')->select(array('id', 'order_number'));
     }
 
-    public function ordernumberForInventory(){
+    public function ordernumberforinventory(){
         return $this->hasOne('Order', 'id', 'order_id')->select(array('id', 'order_number', 'account_id', 'contract_id'));
     }
 

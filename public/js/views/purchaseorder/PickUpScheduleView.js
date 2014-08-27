@@ -85,7 +85,7 @@ define([
 				pu : this.model
 			};
 
-			if(this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED && this.purchaseOrderModel.get('status').name.toLowerCase() == Const.STATUS.OPEN)
+			if(this.model.get('status').id != Const.STATUSID.CLOSED && this.purchaseOrderModel.get('status').id == Const.STATUSID.OPEN)
 				innerTemplateVariables['editable'] = true;
 
 			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);

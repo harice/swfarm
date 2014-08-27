@@ -38,7 +38,7 @@
 								<a href="<%= so_url %>/<%= so.get("id") %>" class="btn btn-trans btn-rad btn-primary btn-sm">
 									<i class="fa fa-eye width-10"></i> View SO
 								</a>
-								<% if (so.get("status").name.toLowerCase() == so_status_open) { %>
+								<% if (so.get("status").id == so_status_open) { %>
 									<a href="<%= so_edit_url %>/<%= so.get("id") %>" class="btn btn-primary btn-trans btn-rad btn-sm editable-button">
 										<i class="fa fa-pencil width-10"></i> Edit SO
 									</a>
