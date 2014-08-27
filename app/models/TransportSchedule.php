@@ -17,6 +17,7 @@ class TransportSchedule extends Eloquent {
     protected $fillable = array(
         'order_id',
         'date',
+        'truckerAccountType_id',
         'trucker_id',
         'truck_id',
         'trailer_id',
@@ -45,6 +46,7 @@ class TransportSchedule extends Eloquent {
       'scheduletimeHour' => 'required',
       'scheduletimeMin' => 'required',
       'scheduletimeAmPm' => 'required',
+      'truckerAccountType_id' => 'required',
       'trucker_id' => 'required',
       'truck_id' => 'required',
       'distance' => 'required',
