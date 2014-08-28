@@ -15,6 +15,7 @@ class AddTruckerAccountTypeColumnToTransportscheduleTable extends Migration {
 		Schema::table('transportschedule', function(Blueprint $table)
 		{
 			$table->integer('truckerAccountType_id')->after('date');
+			// $table->foreign('truckerAccountType_id')->references('id')->on('accounttype')->onDelete('cascade');
 		});
 	}
 
@@ -26,9 +27,10 @@ class AddTruckerAccountTypeColumnToTransportscheduleTable extends Migration {
 	public function down()
 	{
 		Schema::table('transportschedule', function(Blueprint $table)
-		{
-			$table->drop('truckerAccountType_id');
-		});
+	    {
+	    	// $table->dropForeign('truckerAccountType_id');
+	      	$table->dropColumn('truckerAccountType_id');
+	    });
 	}
 
 }

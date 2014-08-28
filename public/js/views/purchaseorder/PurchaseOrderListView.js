@@ -128,9 +128,9 @@ define([
 				schedule_url: '#/'+Const.URL.PICKUPSCHEDULE,
 				add: Const.CRUD.ADD,
 				collapsible_id: Const.PO.COLLAPSIBLE.ID,
-				po_status_pending: Const.STATUS.PENDING,
-				po_status_open: Const.STATUS.OPEN,
-				po_status_testing: Const.STATUS.TESTING,
+				po_status_pending: Const.STATUSID.PENDING,
+				po_status_open: Const.STATUSID.OPEN,
+				po_status_testing: Const.STATUSID.TESTING,
 				_: _ 
 			};
 

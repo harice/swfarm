@@ -24,7 +24,8 @@
 	<div id="cl-wrapper" class="error-container" style='opacity: 1; margin-left: 0px;'>
 		<div class="page-error">
 			<h1 class="number text-center">404</h1>
-			<h2 class="description text-center">Sorry, but this page doesn't exists!</h2>
+			<h2 class="description text-center">Sorry, but this <?php if(Session::get('page')) echo Session::get('page'); else echo 'page'; ?> doesn't exists!</h2>
+			<h3 class="text-center">Would you like to go <a href="/">home</a>?</h3>
 		</div>
 		<div class="text-center copy">&copy; 2014 Southwest Farm Services</div>
 	</div>

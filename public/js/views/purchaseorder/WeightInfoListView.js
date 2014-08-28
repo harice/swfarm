@@ -78,7 +78,7 @@ define([
 				_: _ 
 			};
 			
-			if(this.model.get('status').name.toLowerCase() == Const.STATUS.OPEN)
+			if(this.model.get('status').id == Const.STATUSID.OPEN)
 				data['editable'] = true;
 			
 			_.extend(data,Backbone.View.prototype.helpers);

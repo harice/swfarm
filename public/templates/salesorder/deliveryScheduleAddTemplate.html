@@ -193,18 +193,30 @@
 						<div class="form-group">
 							<label for="distance" class="col-sm-4 control-label">Distance</label>
 							<div class="col-sm-8">
-								<input type="text" class="form-control text-right width-100 input-sm" id="distance" name="distance" required>
+								<input type="text" class="form-control text-right width-100 input-sm" id="distance" name="distance" style="display:inline-block" readonly required> <span id="map" style="display:inline-block;cursor:pointer;margin-left:10px;" class="glyphicon glyphicon-map-marker"></span>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label for="distance-loaded" class="col-sm-4 control-label">Loaded Distance</label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control text-right width-100 input-sm" id="distance-loaded" style="display:inline-block" readonly>
 							</div>
 						</div>
 
 						<div class="form-group">
 							<label for="fuelcharge" class="col-sm-4 control-label">Fuel Charges</label>
-							<div class="col-sm-8">
+							<div class="col-sm-2">
 								<div class="input-group input-group-sm margin-0 width-100">
 									<span class="input-group-addon">$</span>
-									<input type="text" class="form-control text-right monetary-value" id="fuelcharge" name="fuelcharge" placeholder="0.00">
+									<input type="text" class="form-control text-right monetary-value" id="fuelcharge" name="fuelcharge" placeholder="0.00" readonly>
 								</div>	
 								<div class="error-msg-cont"></div>
+							</div>
+							<div class="col-sm-6">
+								<div class="checkbox" style="margin-left:10px;">
+									<label><input id="has-fuel-charge" class="has-fuel-charge" type="checkbox"> Compute</label>
+								</div>
 							</div>
 						</div>
 

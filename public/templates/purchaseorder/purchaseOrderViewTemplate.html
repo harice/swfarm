@@ -95,7 +95,13 @@
               <i class="fa fa-ban width-10"></i> Cancel Bid
             </a>
           <% } %>
-        <% } %>
+        <% } else { %>
+			<% if (typeof so_link_label !== "undefined") { %>
+				<a id="create-dropship-so" class="btn btn-primary btn-trans btn-rad btn-sm" href="#">
+					<i class="fa fa-pencil width-10"></i> <%= so_link_label %>
+				</a>
+			<% } %>
+		<% } %>
         <a class="btn btn-trans btn-rad btn-sm" href="<%= po_url %>"><i class="fa fa-history width-10"></i> Back</a>
       </div>
     </div>

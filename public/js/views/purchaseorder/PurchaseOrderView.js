@@ -132,13 +132,29 @@ define([
 				_: _
 			};
 			
-			if(this.model.get('status').name.toLowerCase() == Const.STATUS.PENDING ||
-				this.model.get('status').name.toLowerCase() == Const.STATUS.OPEN ||
-				this.model.get('status').name.toLowerCase() == Const.STATUS.TESTING)
+			if(this.model.get('status').id == Const.STATUSID.PENDING ||
+				this.model.get('status').id == Const.STATUSID.OPEN ||
+				this.model.get('status').id == Const.STATUSID.TESTING)
 				innerTemplateVariables['editable'] = true;
 				
 			if(this.isBid)
 				innerTemplateVariables['is_bid'] = true;
+			
+			if(this.model.get('location').id == Const.PO.DESTINATION.DROPSHIP && this.model.get('status').id == Const.STATUSID.CLOSED) {
+				if(this.model.get('salesorder_id')) {
+					this.gotoDropshipSO = function () {
+						Backbone.history.navigate(Const.URL.SO+'/'+thisObj.model.get('salesorder_id'), {trigger: true});
+					};
+					innerTemplateVariables['so_link_label'] = 'View So';
+				}
+				else {
+					this.gotoDropshipSO = function () {
+						Global.getGlobalVars().fromPOId = thisObj.model.get('id');
+						Backbone.history.navigate(Const.URL.SO+'/'+Const.CRUD.ADD, {trigger: true});
+					};
+					innerTemplateVariables['so_link_label'] = 'Add So';
+				}
+			}
 			
 			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
 			var innerTemplate = _.template(purchaseOrderAddTemplate, innerTemplateVariables);
@@ -198,7 +214,7 @@ define([
 					};
 					
 					if(productSub.document != null) {
-						var dl = {i:productSub.document.id, t:'v', m:'doc'};
+						var dl = {id:productSub.document.id, type:'doc'};
 						variablesSub['file_path'] = Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize(dl));
 					}
 					
@@ -225,6 +241,7 @@ define([
 			'click #confirm-close-order': 'closeOrder',
 			'click #checkin-stack': 'showCheckinStackConfirmationWindow',
 			'click #confirm-checkin-stack': 'checkinStack',
+			'click #create-dropship-so': 'createDropshipSO',
 			//'click .attach-pdf': 'showPDF',
 		},
 		
@@ -293,6 +310,15 @@ define([
 			
 			return false;
 		},
+		
+		createDropshipSO: function () {
+			
+			this.gotoDropshipSO();
+			
+			return false;
+		},
+		
+		gotoDropshipSO: function () {},
 	});
 
   return PurchaseOrderView;
