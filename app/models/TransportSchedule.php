@@ -58,6 +58,7 @@ class TransportSchedule extends Eloquent {
 
     public function order(){
         return $this->belongsTo('order');
+        // return $this->belongsTo('order', 'order_id', 'id');
     }
 
     // public function trucker(){

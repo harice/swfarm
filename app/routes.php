@@ -190,6 +190,11 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('inventory/transactiontype', 'APIv1\InventoryController@transactionType');
     Route::post('inventory/purchaseorder', 'APIv1\InventoryController@store');
     Route::resource('inventory', 'APIv1\InventoryController');
+
+    //Commission
+    Route::get('commission/closeWeightTicketByUser', 'APIv1\CommissionController@getAllCloseWeightTicketByUser');
+    Route::get('commission/users', 'APIv1\UsersController@userList');
+    Route::resource('commission', 'APIv1\CommissionController');
     
     // Reports
     Route::get('report/gross-profit', 'APIv1\ReportController@generateGrossProfit');

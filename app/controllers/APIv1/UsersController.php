@@ -88,5 +88,9 @@ class UsersController extends BaseController {
 		return $this->users->updateProfile($id, Input::all() );
 	}
 
+	public function userList(){
+		return $this->users->userList(Input::all());	
+	}
+
 
 }
