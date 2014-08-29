@@ -481,10 +481,10 @@ class ReportRepository implements ReportRepositoryInterface {
             $updated_at = $weightticket['updated_at'];
             $account = $weightticket['transportschedule']['order']['account']['name'];
             $net_sale = $total_sales - 0.0; // Total Sales - Return Sales
-            $hay_cost = 99.9999;
+            $hay_cost = 99.9999; // TODO: Get buying price
             $freight = $weightticket['transportschedule']['truckingrate'] + $weightticket['transportschedule']['trailerrate'] + $weightticket['transportschedule']['fuelcharge'];
             $fees = $weightticket['transportschedule']['originloaderfee'] + $weightticket['transportschedule']['destinationloaderfee'];
-            $commission = 9.9999;
+            $commission = 9.9999; // TODO: Get commissions
             $profit_amount = $net_sale - $hay_cost - $freight - $fees - $commission;
             $profit_percentage = number_format((($profit_amount / $net_sale) * 100), 2, '.', ',');
             
@@ -501,7 +501,7 @@ class ReportRepository implements ReportRepositoryInterface {
             );
         }
         
-        // Get summary
+        // Construct summary
         $total_cost = $total_hay_cost = $total_freight_cost = $total_profit_amount = $total_net_sale = $total_profit_percentage = 0.0;
         foreach ($transactions as $transaction)
         {
