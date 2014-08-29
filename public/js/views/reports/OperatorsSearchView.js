@@ -29,7 +29,6 @@ define([
 			this.model = new Report();
 			this.model.on('change', function (){				
 				thisObj.processData();
-				console.log("Changed");
 				this.off("change");
 			});			
 

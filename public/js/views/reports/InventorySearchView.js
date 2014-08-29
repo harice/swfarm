@@ -2,7 +2,7 @@ define([
 	'backbone',
 	'views/base/ReportView',
 	'models/reports/ReportModel',
-	'collections/contact/ContactCollection',
+	'collections/stack/LocationCollection',
 	'text!templates/reports/FilterFormTemplate.html',
 	'text!templates/reports/InventoryListTemplate.html',
 	'global',
@@ -11,7 +11,7 @@ define([
 	Backbone,
 	ReportView,			
 	Report,
-	ContactCollection,
+	LocationCollection,
 	filterFormTemplate,
 	inventoryListTemplate,
 	Global,
@@ -28,17 +28,15 @@ define([
 
 			this.model = new Report();
 			this.model.on('change', function (){				
-				thisObj.processData();
-				console.log("Changed");
+				thisObj.processData();;
 				this.off("change");
 			});			
 
-			this.collection = new ContactCollection();			
+			this.collection = new LocationCollection();			
 
 		},
 		
 		render: function(){
-			this.collection.getContactsByAccountType(4);
 			this.getLocationList();								
 			Backbone.View.prototype.refreshTitle('Report','Inventory');
 		},	
@@ -46,16 +44,20 @@ define([
 		getLocationList: function(){
 			var thisObj = this;	
 
-			this.collection.on('sync', function (){	
-				thisObj.displayForm();																	
-				this.off('sync');
-			})	
+			this.collection.fetch({
+				success: function (collection, response, options) {
+					thisObj.displayForm();	
+				},
+				error: function (collection, response, options) {
+				},
+				headers: this.collection.getAuth()
+			});
 		},			
 
 		getLocations: function (){
 			var locations = '<option disabled selected>Select Location</option>';			
 			_.each(this.collection.models, function (model) {
-				locations += '<option value="'+model.get('id')+'">'+model.get('firstname')+ ' ' +model.get('lastname') +'</option>';
+				locations += '<option value="'+model.get('id')+'">'+model.get('locationName')+'</option>';
 			});
 
 			return locations;
@@ -97,7 +99,7 @@ define([
 			var innerTemplateVariables= {
 				'date_from': $('#filter-operator-date-start .input-group.date input').val(),
 				'date_to': $('#filter-operator-date-end .input-group.date input').val(),
-				'operators': this.model,
+				'locations': this.model,
 			}
 			var compiledTemplate = _.template(inventoryListTemplate, innerTemplateVariables);
 			
