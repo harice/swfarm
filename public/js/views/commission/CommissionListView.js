@@ -1,20 +1,22 @@
 define([
 	'backbone',
 	'views/base/AccordionListView',
-	'models/stack/StackLocationModel',
-	'collections/stack/StackLocationCollection',
+	'collections/user/CommissionedUserCollection',
+	'collections/commission/WeightTicketByUserCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/commission/commissionListTemplate.html',
 	'text!templates/commission/commissionInnerListTemplate.html',
+	'text!templates/commission/weightTicketByUserTemplate.html',
 	'text!templates/commission/commissionFormTemplate.html',
 	'constant',
 ], function(Backbone,
 			AccordionListView,
-			StackLocationModel,
-			StackLocationCollection,
+			UserCollection,
+			WeightTicketByUserCollection,
 			contentTemplate,
 			commissionListTemplate,
 			commissionInnerListTemplate,
+			weightTicketByUserTemplate,
 			commissionFormTemplate,
 			Const
 ){
@@ -28,7 +30,7 @@ define([
 			
 			var thisObj = this;
 			
-			this.collection = new StackLocationCollection();
+			this.collection = new UserCollection();
 			this.collection.on('sync', function() {
 				if(thisObj.subContainerExist())
 					thisObj.displayList();
@@ -96,18 +98,29 @@ define([
 		toggleAccordion: function (ev) {
 			var thisObj = this;
 			
-			/*this.toggleAccordionAndRequestACollection(ev.currentTarget,
+			this.toggleAccordionAndRequestACollection(ev.currentTarget,
 				Const.COMMISSION.COLLAPSIBLE.ID,
-				OrderWeightDetailsByStackCollection,
+				WeightTicketByUserCollection,
 				function (collection, id) {
-					var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
-					$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(collection.models, id));
+					var collapsibleId = Const.COMMISSION.COLLAPSIBLE.ID+id;
+					$('#'+collapsibleId).find('.weight-ticket-by-user table tbody').html(thisObj.generateWeightTicketByUser(collection.models, id));
 				}
-			);*/
-			
-			this.toggleAccordionNormal(ev.currentTarget, Const.COMMISSION.COLLAPSIBLE.ID);
+			);
 			
 			return false;
+		},
+		
+		generateWeightTicketByUser: function (models, userId) {
+			var data = {
+				user_id: userId,
+				wts: models,
+				wt_url: '/#/'+Const.URL.SOWEIGHTINFO,
+				_: _ 
+			};
+
+			_.extend(data,Backbone.View.prototype.helpers);
+
+			return _.template(weightTicketByUserTemplate, data);
 		},
 		
 		showEditCommissionWindow: function (ev) {
