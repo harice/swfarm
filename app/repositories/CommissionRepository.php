@@ -159,6 +159,7 @@ class CommissionRepository implements CommissionRepositoryInterface {
             } else {
                 $result['netTons'] = $result['weightticketscale_pickup']['gross']-$result['weightticketscale_pickup']['tare'];
             }
+            $result['netTons'] = number_format($result['netTons'], 4);
         });
 
         return $result;
