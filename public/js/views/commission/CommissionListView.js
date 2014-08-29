@@ -96,6 +96,7 @@ define([
 			'keyup #commission-rate-per-ton': 'onKeyUpCommissionRatePerTon',
 			'blur #commission-rate-per-ton': 'onBlurMoney',
 			'click #save-commission': 'saveCommission',
+			'click .stop-propagation': 'linkStopPropagation',
 		},
 		
 		toggleAccordion: function (ev) {
@@ -159,10 +160,8 @@ define([
 			var validate = $('#commissionForm').validate({
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
-					console.log(data);
 					
 					var deleteID = Const.COMMISSION.WEIGHTTICKETBYUSERID+data.order_id+'-'+data.weightticket_id;
-					console.log(deleteID);
 					
 					var commissionModel = new CommissionModel(data);
 					commissionModel.save(
@@ -172,6 +171,7 @@ define([
 								thisObj.hideConfirmationWindow('modal-with-form-confirm', function () {
 									var tbody = thisObj.subContainer.find('#'+deleteID).closest('tbody');
 									thisObj.subContainer.find('#'+deleteID).remove();
+									console.log("tbody.find('tr').length: "+tbody.find('tr').length);
 									if(tbody.find('tr').length <= 0)
 										tbody.html('<tr><td colspan="3">No results found.</td></tr>');
 									thisObj.displayMessage(response);

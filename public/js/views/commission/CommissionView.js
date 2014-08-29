@@ -1,94 +1,87 @@
 define([
 	'backbone',
-	'views/base/AccordionListView',
-	'models/stack/StackLocationModel',
-	'collections/stack/StackLocationCollection',
+	'views/base/ListView',
+	'collections/salesorder/SOWeightInfoCollection',
 	'text!templates/layout/contentTemplate.html',
-	'text!templates/commission/commissionListTemplate.html',
-	'text!templates/stack/stackLocationInnerListTemplate.html',
+	'text!templates/commission/userCommissionTemplate.html',
+	'text!templates/stacknumber/stackNumberInnerListTemplate.html',
 	'constant',
 ], function(Backbone,
-			AccordionListView,
-			StackLocationModel,
-			StackLocationCollection,
+			ListView,
+			SOWeightInfoCollection,
 			contentTemplate,
-			commissionListTemplate,
-			stackLocationInnerListTemplate,
+			userCommissionTemplate,
+			stackNumberInnerListTemplate,
 			Const
 ){
 
-	var CommissionListView = AccordionListView.extend({
+	var CommissionView = ListView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
-		initialize: function() {
+		initialize: function(option) {
 			this.extendListEvents();
 			this.initSubContainer();
 			
 			var thisObj = this;
+			this.userId = option.id;
+			this.h1Title = 'User Commission';
+			this.h1Small = '';
 			
-			/*this.collection = new StackLocationCollection();
+			this.collection = new SOWeightInfoCollection();
+			this.collection.setFilter('userId', this.userId);
+			this.collection.listView.searchURLForFilter = false;
+			this.collection.setDefaultURL('/apiv1/commission/getClosedWeightTicketByUserIncludingWithCommission');
 			this.collection.on('sync', function() {
-				if(thisObj.subContainerExist())
+				if(thisObj.subContainerExist()) {
+					thisObj.displayUserCommission();
 					thisObj.displayList();
+				}
 			});
 			this.collection.on('error', function(collection, response, options) {
 				this.off('error');
-			});*/
+			});
 		},
 		
 		render: function(){
-			this.displayStackLocation();
-			//this.renderList(this.collection.listView.currentPage);
-			Backbone.View.prototype.refreshTitle('Commission','list');
+			this.renderList(1);
+			Backbone.View.prototype.refreshTitle(this.h1Title, this.h1Small);
 		},
 		
-		displayStackLocation: function () {
-			var innerTemplateVar = {};
-			var innerTemplate = _.template(commissionListTemplate, innerTemplateVar);
+		displayUserCommission: function () {
+			var innerTemplateVar = {
+				product_stacknumber: '',
+				total_on_hand: '',
+			};
+			
+			var innerTemplate = _.template(userCommissionTemplate, innerTemplateVar);
 			
 			var variables = {
-				h1_title: 'Commission',
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
-			this.setListOptions();
 		},
 		
 		displayList: function () {
 			
 			/*var data = {
-                sl_url: '#/'+Const.URL.STACKLOCATION,
-				sl_edit_url: '#/'+Const.URL.STACKLOCATION+'/'+Const.CRUD.EDIT,
-				sls: this.collection.models,
-				collapsible_id: Const.PO.COLLAPSIBLE.ID,
+				stacknumbers: this.collection.models,
 				_: _ 
 			};
 			
-			var innerListTemplate = _.template(stackLocationInnerListTemplate, data);
-			this.subContainer.find("#commission-list tbody").html(innerListTemplate);
-			this.collapseSelected();
+			_.extend(data,Backbone.View.prototype.helpers);
+			
+			var innerListTemplate = _.template(stackNumberInnerListTemplate, data);
+			this.subContainer.find("#user-commission-list tbody").html(innerListTemplate);
+			
 			this.generatePagination();*/
 		},
 		
-		setListOptions: function () {
-			/*var options = this.collection.listView; //console.log(options);
-			
-			if(options.search != '')
-				this.$el.find('#search-keyword').val(options.search);*/
-		},
-		
 		events: {
-			'click tr.collapse-trigger': 'toggleAccordion',
-		},
-		
-		toggleAccordion: function (ev) {
-			/*var thisObj = this;
-			this.toggleAccordionNormal(ev.currentTarget);
-			return false;*/
+			'click #go-to-previous-page': 'goToPreviousPage',
 		},
 	});
 
-	return CommissionListView;
+	return CommissionView;
   
 });
