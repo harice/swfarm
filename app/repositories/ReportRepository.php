@@ -424,6 +424,7 @@ class ReportRepository implements ReportRepositoryInterface {
     public function generateGrossProfit($params)
     {
         $weighttickets = WeightTicket::with(
+            'transportschedule.order',
             'weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder',
             'weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder'
         );
