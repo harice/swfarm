@@ -1,13 +1,17 @@
 <form id="commissionForm" class="form-horizontal">
 	<div class="row margin-top-0">
 		<div class="col-sm-10 col-sm-offset-1">
+			<input type="hidden" id="weightticket_id" name="weightticket_id" value="" />
+			<input type="hidden" id="order_id" name="order_id" value="" />
+			<input type="hidden" id="user_id" name="user_id" value="" />
+			<input type="hidden" id="tons" name="tons" value="" />
 			<p style="text-align:left">Commission Type</p>
 			<div class="form-group">
 				<% if (!_.isEmpty(commission_type)) { %>
 					<% _.each(commission_type, function(ct){ %>
 						<div class="col-sm-6">
 							<label class="radio-inline">
-								<input type="radio" value="<%= ct.id %>" name="commission_type" class="commission_type icheck"><span></span> <%= ct.name %>
+								<input type="radio" value="<%= ct.id %>" name="type" class="type icheck"><span></span> <%= ct.name %>
 							</label>
 						</div>
 					<% }); %>
@@ -16,12 +20,13 @@
 			<div class="row">
 				<div id="<%= column_id_pre %><%= commission_type[0].id %>" class="col-sm-6">
 					<div class="form-group">
-						<label for="" class="col-sm-5 control-label">Commission</label>
+						<label for="amountdue" class="col-sm-5 control-label">Commission</label>
 						<div class="col-sm-7">
 							<div class="input-group input-group-sm margin-0 width-100">
 								<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
-								<input id="commission-flat-rate" type="text" class="form-control text-right" name="" placeholder="0.00">
+								<input id="commission-flat-rate" type="text" class="form-control text-right price" name="amountdue" placeholder="0.00" required>
 							</div>
+							<div class="error-msg-cont"></div>
 						</div>
 					</div>
 				</div>
@@ -29,24 +34,25 @@
 					<div class="form-group">
 						<label for="" class="col-sm-5 control-label">Tons</label>
 						<div class="col-sm-7">
-							<input id="commission-ton" type="text" class="form-control text-right width-100 input-sm" name="" placeholder="0.0000">
+							<input id="commission-ton" type="text" class="form-control text-right width-100 input-sm" name="" placeholder="0.0000" readonly>
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="" class="col-sm-5 control-label">Rate</label>
+						<label for="rate" class="col-sm-5 control-label">Rate</label>
 						<div class="col-sm-7">
 							<div class="input-group input-group-sm margin-0 width-100">
 								<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
-								<input id="commission-rate-per-ton" type="text" class="form-control text-right" name="" placeholder="0.00">
+								<input id="commission-rate-per-ton" type="text" class="form-control text-right rate price" name="rate" placeholder="0.00" required>
 							</div>
+							<div class="error-msg-cont"></div>
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="" class="col-sm-5 control-label">Commission</label>
+						<label for="amountdue" class="col-sm-5 control-label">Commission</label>
 						<div class="col-sm-7">
 							<div class="input-group input-group-sm margin-0 width-100">
 								<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
-								<input id="commission-total-per-ton" type="text" class="form-control text-right" name="" placeholder="0.00" readonly>
+								<input id="commission-total-per-ton" type="text" class="form-control text-right amountdue" name="amountdue" placeholder="0.00" readonly>
 							</div>
 						</div>
 					</div>

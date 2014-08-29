@@ -1,6 +1,7 @@
 define([
 	'backbone',
 	'views/base/AccordionListView',
+	'models/commission/CommissionModel',
 	'collections/user/CommissionedUserCollection',
 	'collections/commission/WeightTicketByUserCollection',
 	'text!templates/layout/contentTemplate.html',
@@ -11,6 +12,7 @@ define([
 	'constant',
 ], function(Backbone,
 			AccordionListView,
+			CommissionModel,
 			UserCollection,
 			WeightTicketByUserCollection,
 			contentTemplate,
@@ -86,13 +88,14 @@ define([
 		events: {
 			'click tr.collapse-trigger': 'toggleAccordion',
 			'click .edit-commission': 'showEditCommissionWindow',
-			'change .commission_type': 'onChangeCommissionType',
+			'change .type': 'onChangeCommissionType',
 			'keyup #commission-flat-rate': 'formatMoney',
 			'blur #commission-flat-rate': 'onBlurMoney',
-			'keyup #commission-ton': 'onKeyUpCommissionTon',
-			'blur #commission-ton': 'onBlurTon',
+			//'keyup #commission-ton': 'onKeyUpCommissionTon',
+			//'blur #commission-ton': 'onBlurTon',
 			'keyup #commission-rate-per-ton': 'onKeyUpCommissionRatePerTon',
 			'blur #commission-rate-per-ton': 'onBlurMoney',
+			'click #save-commission': 'saveCommission',
 		},
 		
 		toggleAccordion: function (ev) {
@@ -115,6 +118,7 @@ define([
 				user_id: userId,
 				wts: models,
 				wt_url: '/#/'+Const.URL.SOWEIGHTINFO,
+				weight_ticket_by_user_id: Const.COMMISSION.WEIGHTTICKETBYUSERID,
 				_: _ 
 			};
 
@@ -123,7 +127,19 @@ define([
 			return _.template(weightTicketByUserTemplate, data);
 		},
 		
-		showEditCommissionWindow: function (ev) {
+		showEditCommissionWindow: function (ev) { console.log('showEditCommissionWindow');
+			this.subContainer.find('#modal-with-form-confirm input').removeClass('error');
+			this.subContainer.find('#modal-with-form-confirm label.error').text('');
+			this.subContainer.find('#modal-with-form-confirm .error-msg-cont').html('');
+			
+			var button = $(ev.currentTarget);
+			var tons = button.attr('data-tons');
+			this.subContainer.find('#weightticket_id').val(button.attr('data-id'));
+			this.subContainer.find('#order_id').val(button.attr('data-order-id'));
+			this.subContainer.find('#user_id').val(button.attr('data-user-id'));
+			this.subContainer.find('#tons').val(tons);
+			this.subContainer.find('#commission-ton').val(this.addCommaToNumber(tons));
+			
 			this.showConfirmationWindow('modal-with-form-confirm');
 			return false;
 		},
@@ -138,23 +154,38 @@ define([
 										form,
 										'Compute Commission');
 			
-			this.subContainer.find('[name="commission_type"][value="'+Const.COMMISSION.TYPE[0].id+'"]').attr('checked', true)
-				.trigger('change');
-			//$('#modal-with-form-confirm .i-circle.warning').remove();
-			//$('#modal-with-form-confirm h4').remove();
+			this.subContainer.find('[name="type"][value="'+Const.COMMISSION.TYPE[0].id+'"]').attr('checked', true).trigger('change');
 			
-			/*
-			var validate = $('#convertToPOForm').validate({
+			var validate = $('#commissionForm').validate({
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
-					//console.log(data);
+					console.log(data);
 					
-					thisObj.bidTransportdateStart = data.transportdatestart;
-					thisObj.bidTransportdateEnd = data.transportdateend;
-					thisObj.bidLocationId = data.location_id;
+					var deleteID = Const.COMMISSION.WEIGHTTICKETBYUSERID+data.order_id+'-'+data.weightticket_id;
+					console.log(deleteID);
 					
-					thisObj.isConvertToPO = true;
-					thisObj.subContainer.find('#poForm').submit();
+					var commissionModel = new CommissionModel(data);
+					commissionModel.save(
+						null, 
+						{
+							success: function (model, response, options) {
+								thisObj.hideConfirmationWindow('modal-with-form-confirm', function () {
+									var tbody = thisObj.subContainer.find('#'+deleteID).closest('tbody');
+									thisObj.subContainer.find('#'+deleteID).remove();
+									if(tbody.find('tr').length <= 0)
+										tbody.html('<tr><td colspan="3">No results found.</td></tr>');
+									thisObj.displayMessage(response);
+								});
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: commissionModel.getAuth(),
+						}
+					);
 				},
 				errorPlacement: function(error, element) {
 					if(element.hasClass('form-date')) {
@@ -167,7 +198,7 @@ define([
 						error.insertAfter(element);
 					}
 				},
-			});*/
+			});
 		},
 		
 		onChangeCommissionType: function (ev) {
@@ -175,22 +206,21 @@ define([
 			
 			if(id == Const.COMMISSION.TYPE[0].id) {
 				var selectedColumnId = Const.COMMISSION.COLUMNIDPRE+Const.COMMISSION.TYPE[0].id;
-				this.subContainer.find('#'+selectedColumnId+' input').attr('disabled', false);
-				this.subContainer.find('#'+selectedColumnId+' label').css('color', 'inherit');
-				
 				var unselectedColumnId = Const.COMMISSION.COLUMNIDPRE+Const.COMMISSION.TYPE[1].id;
-				this.subContainer.find('#'+unselectedColumnId+' input').attr('disabled', true);
-				this.subContainer.find('#'+unselectedColumnId+' label').css('color', '#ddd');
 			}
 			else {
 				var selectedColumnId = Const.COMMISSION.COLUMNIDPRE+Const.COMMISSION.TYPE[1].id;
-				this.subContainer.find('#'+selectedColumnId+' input').attr('disabled', false);
-				this.subContainer.find('#'+selectedColumnId+' label').css('color', 'inherit');
-				
 				var unselectedColumnId = Const.COMMISSION.COLUMNIDPRE+Const.COMMISSION.TYPE[0].id;
-				this.subContainer.find('#'+unselectedColumnId+' input').attr('disabled', true);
-				this.subContainer.find('#'+unselectedColumnId+' label').css('color', '#ddd');
 			}
+			
+			this.subContainer.find('#'+selectedColumnId+' input').attr('disabled', false);
+			this.subContainer.find('#'+selectedColumnId+' label').css('color', 'inherit');
+			
+			this.subContainer.find('#'+unselectedColumnId+' input').attr('disabled', true).removeClass('error');
+			this.subContainer.find('#'+unselectedColumnId+' input').attr('disabled', true);
+			this.subContainer.find('#'+unselectedColumnId+' label').css('color', '#ddd');
+			this.subContainer.find('#'+unselectedColumnId+' label.error').text('');
+			this.subContainer.find('#'+unselectedColumnId+' .error-msg-cont').html('');
 		},
 		
 		onKeyUpCommissionTon: function (ev) {
@@ -217,6 +247,11 @@ define([
 			var commission = 0;
 			commission = tons * rate;
 			this.subContainer.find('#commission-total-per-ton').val(this.addCommaToNumber(commission.toFixed(2)));
+		},
+		
+		saveCommission: function (ev) { console.log('saveCommission');
+			this.subContainer.find('#commissionForm').submit();
+			return false;
 		},
 	});
 

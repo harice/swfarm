@@ -193,6 +193,7 @@ define(function () {
 				{id:2, name: 'Per Ton Rate'},
 			],
 			'COLUMNIDPRE': 'commission_type_',
+			'WEIGHTTICKETBYUSERID': 'weight-ticket-by-user-',
 		},
 		'LB2TON': 0.0005,
 		'CANCELLATIONREASON': {
