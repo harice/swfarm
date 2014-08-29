@@ -14,7 +14,7 @@ class Commission extends BaseModel {
         'weightticket_id' => 'required',
         'user_id' => 'required',
         'tons' => 'required',
-        'rate' => 'required',
+        'rate' => 'required_if:type,2',
         'amountdue' => 'required',
         'type' => 'required'
     );

@@ -453,6 +453,11 @@ class ReportRepository implements ReportRepositoryInterface {
             $data = array();
             $index = 0;
             $data['location'] = $result['name'];
+            $data['balesIn'] = 0;
+            $data['balesOut'] = 0;
+            $data['tonsIn'] = 0;
+            $data['tonsOut'] = 0;
+            $data['totalBales'] = 0;
             $data['totalBales'] = 0;
             $data['totalTons'] = 0;
             $data['totalCost'] = 0;
@@ -469,6 +474,8 @@ class ReportRepository implements ReportRepositoryInterface {
                     $data['data'][$index]['price'] = $inventoryproduct['price'];
                     $data['data'][$index]['cost'] = number_format($inventoryproduct['tons'] * $inventoryproduct['price'], 2);
                     $data['data'][$index]['operation'] = $inventoryproduct['inventory']['inventorytransactiontype']['type'];
+                    $data['balesIn'] += $data['data'][$index]['bales'];
+                    $data['tonsIn'] += $data['data'][$index]['tons'];
                     $data['totalBales'] += $data['data'][$index]['bales'];
                     $data['totalTons'] += $data['data'][$index]['tons'];
                     $data['totalCost'] += $data['data'][$index]['cost'];
@@ -486,6 +493,8 @@ class ReportRepository implements ReportRepositoryInterface {
                     $data['data'][$index]['price'] = $inventoryproduct['price'];
                     $data['data'][$index]['cost'] = number_format($inventoryproduct['tons'] * $inventoryproduct['price'], 2);
                     $data['data'][$index]['operation'] = $inventoryproduct['inventory']['inventorytransactiontype']['type'];
+                    $data['balesOut'] += $data['data'][$index]['bales'];
+                    $data['tonsOut'] += $data['data'][$index]['tons'];
                     $data['totalBales'] += $data['data'][$index]['bales'];
                     $data['totalTons'] += $data['data'][$index]['tons'];
                     $data['totalCost'] += $data['data'][$index]['cost'];
@@ -493,7 +502,10 @@ class ReportRepository implements ReportRepositoryInterface {
                 }
 
             }
-
+            $data['tonsIn'] = number_format($data['tonsIn'], 0, '.', '');
+            $data['tonsOut'] = number_format($data['tonsOut'], 0, '.', '');
+            $data['balesIn'] = number_format($data['balesIn'], 0, '.', '');
+            $data['balesOut'] = number_format($data['balesOut'], 0, '.', '');
             $data['totalBales'] = number_format($data['totalBales'], 0, '.', '');
             $data['totalTons'] = number_format($data['totalTons'], 2, '.', '');
             $data['totalCost'] = number_format($data['totalCost'], 2, '.', '');
