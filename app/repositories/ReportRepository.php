@@ -262,6 +262,8 @@ class ReportRepository implements ReportRepositoryInterface {
             'loader_destination.lastname as loader_destination_lastname',
             'loader_destination.suffix as loader_destination_suffix',
             
+//            'weightticket.loadingTicketNumber as loading_ticket_number',
+//            'weightticket.unloadingTicketNumber as unloading_ticket_number',
             'weightticketscale.type as loading_type'
         );
         
@@ -284,6 +286,7 @@ class ReportRepository implements ReportRepositoryInterface {
         foreach($transactions->toArray() as $truck_load)
         {
             $truck_loads[] = array(
+//                'receipt_no' => ($truck_load['loading_type'] == 2) ? $truck_load['unloading_ticket_number'] : 'loading_ticket_number',
                 'type' => ($truck_load['loading_type'] == 2) ? 'Unload' : 'Load',
                 'loader' => ($truck_load['loading_type'] == 2) ? $truck_load['loader_destination_lastname'] .', ' .$truck_load['loader_destination_firstname'] : $truck_load['loader_origin_lastname'] .', ' .$truck_load['loader_origin_firstname'],
                 'amount' => $truck_load['pounds']
