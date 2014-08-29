@@ -1,0 +1,60 @@
+<% if (!_.isEmpty(users)) { %>
+	<% _.each(users, function(user){ %>
+	<tr class="collapse-trigger cursor-pointer" data-id="<%= user.get("id") %>">
+		<td>
+			<i class="fa fa-angle-right width-10 accordion-carret"></i>
+			<a class="stop-propagation" href="<%= commission_single_url %>/<%= user.get("id") %>"><%= user.get("id") %></a>
+			<span class="throbber_wrap" style="display: none;"><i class="fa fa-spinner fa-spin throbber_ajax"></i></span>
+		</td>
+	</tr>
+	<tr>
+		<td style="padding:0;">
+			<div class="commission-collapsible-item list-view-collapse collapse" id="<%= collapsible_id %><%= user.get("id") %>">
+				<div class="container">
+					<div class="order-stack-details">
+						<div class="col-md-12 no-padding"></div>
+						<div class="order-weight-details-by-stack">
+							<div class="row margin-top-0 padding-top-10">
+								<div class="col-md-12">Closed SO Weight Tickets:</div>
+							</div>
+							<div class="row margin-top-0">
+								<div class="col-md-12">
+									<div class="content-inner table-responsive">
+										<table class="table-condensed table-bordered table-hover">
+											<thead>
+												<tr>
+													<th>Weight Ticket Number</th>
+													<th>Description</th>
+													<th>Action</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>a</td>
+													<td>b</td>
+													<td>
+														<a class="edit-commission" href="#" data-id="">
+															<span class="fa-stack">
+																<i class="fa fa-square fa-stack-2x"></i>
+																<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+															</span>
+														</a>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</td>
+	</tr>
+	<% }); %>
+<% } else { %>
+	<tr>
+		<td>No results found.</td>
+	</tr>
+<% } %>

@@ -137,7 +137,7 @@ define([
 				sos: this.collection.models,
 				schedule_url: '#/'+Const.URL.DELIVERYSCHEDULE,
 				add: Const.CRUD.ADD,
-				collapsible_id: Const.PO.COLLAPSIBLE.ID,
+				collapsible_id: Const.SO.COLLAPSIBLE.ID,
 				so_status_open: Const.STATUSID.OPEN,
 				_: _ 
 			};
@@ -339,9 +339,10 @@ define([
 			var thisObj = this;
 			
 			this.toggleAccordionAndRequestACollection(ev.currentTarget,
+				Const.SO.COLLAPSIBLE.ID,
 				OrderWeightDetailsByStackCollection,
 				function (collection, id) {
-					var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
+					var collapsibleId = Const.SO.COLLAPSIBLE.ID+id;
 					$('#'+collapsibleId).find('.order-weight-details-by-stack').html(thisObj.generateOrderWeightDetailsByStack(collection.models, id));
 				}
 			);
@@ -385,7 +386,7 @@ define([
 				{
 					success: function (model, response, options) {
 						thisObj.hideConfirmationWindow('modal-confirm', function () {
-							thisObj.subContainer.find('#'+Const.PO.COLLAPSIBLE.ID+id+' .editable-button').remove();
+							thisObj.subContainer.find('#'+Const.SO.COLLAPSIBLE.ID+id+' .editable-button').remove();
 							thisObj.subContainer.find('.collapse-trigger[data-id="'+id+'"] .td-status').html('<label class="label label-default">Closed</label>');
 						});
 						thisObj.displayMessage(response);

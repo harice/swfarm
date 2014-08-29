@@ -11,10 +11,10 @@ define([
 				this.$el.find('.collapse-trigger[data-id="'+id+'"]').trigger('click');
 		},
 		
-		toggleAccordionAndRequestACollection: function (triggerElement, AccordionCollection, successCallBack, errorCallBack) {
+		toggleAccordionAndRequestACollection: function (triggerElement, collapsibleIdPre, AccordionCollection, successCallBack, errorCallBack) {
 			var thisObj = this;
 			var id = $(triggerElement).attr('data-id');
-			var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
+			var collapsibleId = collapsibleIdPre+id;
 			
 			if(!$('#'+collapsibleId).hasClass('in')) {
 				var thisId = id;
@@ -53,12 +53,12 @@ define([
 			}
 		},
 		
-		toggleAccordionNormal: function (triggerElement) {
+		toggleAccordionNormal: function (triggerElement, collapsibleIdPre) {
 			var thisObj = this;
 			var id = $(triggerElement).attr('data-id');
-			var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
+			var collapsibleId = collapsibleIdPre+id;
 			
-			if(!$('#'+collapsibleId).hasClass('in')) {
+			if(!$('#'+collapsibleId).hasClass('in')) { console.log('toggleAccordionNormal:if');
 				var thisId = id;
 				thisObj.collection.setCollapseId(id);
 				
@@ -67,7 +67,7 @@ define([
 				$('#'+collapsibleId).collapse('toggle');
 				$('.accordion-list-cont tr.collapse-trigger[data-id="'+id+'"]').find('.accordion-carret').removeClass('fa-angle-right').addClass('fa-angle-down');
 			}
-			else {
+			else { console.log('toggleAccordionNormal:else');
 				this.collection.setCollapseId(null);
 				$('#'+collapsibleId).collapse('toggle');
 				$(triggerElement).find('.accordion-carret').removeClass('fa-angle-down').addClass('fa-angle-right');
