@@ -206,5 +206,9 @@ Route::group(array('before' => 'auth.session'),function(){
 });
 
 Route::get('/', function(){ return View::make('main'); });
+Route::get('/pdf', function(){
+    return PDF::loadHtml(View::make('pdf.base')->nest('child','pdf.order',array('order' => Order::find(1))))->stream();
+    // return View::make('pdf.base',array('title' => 'export'))->nest('child','pdf.order',array('order' => 'P09123127-231'));
+});
 Route::get('/404', function(){ return View::make('errors/404'); });
 Route::get('/{dump}', function(){ return Redirect::to('404'); });
