@@ -5,7 +5,8 @@ define([
 	'views/reports/ProducerSearchView',	
 	'views/reports/TruckersSearchView',	
 	'views/reports/CustomerSearchView',	
-	'views/reports/DriverSearchView',	
+	'views/reports/DriverSearchView',
+	'views/reports/InventorySearchView',	
 	'models/reports/ReportModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/reports/ReportFormTemplate.html',
@@ -18,6 +19,7 @@ define([
 			Trucker,
 			Customer,
 			Driver,
+			Inventory,
 			Report,
 			contentTemplate,
 			reportFormTemplate,
@@ -68,6 +70,12 @@ define([
 			this.closeView();
 			this.currView = new Driver();			
 			this.currView.setElement($("#report-filter")).render();			
+		},
+
+		inventory: function (){
+			this.closeView();
+			this.currView = new Inventory();			
+			this.currView.setElement($("#report-filter")).render();	
 		},
 	});
 

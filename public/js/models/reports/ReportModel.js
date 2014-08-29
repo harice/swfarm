@@ -49,7 +49,7 @@ define([
         },        
 
         fetchInventory: function (id, startDate, endDate) {
-        	this.urlRoot = '/apiv1/report/inventory/' + id + '?dateStart=' +startDate+'&dateEnd='+endDate;
+        	this.urlRoot = '/apiv1/report/inventoryPerLocation?storagelocationId=' + id + '&dateFrom=' +startDate+'&dateTo='+endDate;
         	this.runFetch();
         },
 

@@ -18,8 +18,7 @@
         <div class="content-inner table-responsive">
             <table id="operator-list" class="table table-bordered">
                 <thead class="no-border">
-                    <tr>                   
-                        <th>Invoice #</th>
+                    <tr>         
                         <th>Date</th>
                         <th>Origin</th>
                         <th>Destination</th>
@@ -28,16 +27,13 @@
                         <th>Tons</th>
                         <th>Rate</th>
                         <th>Total</th>
-                        <th>Rent</th>
-                        <th>Receipt #</th>
-                        <th>Type</th>
-                        <th>Loader</th>
-                        <th>Amount</th>
+                        <th>Rent</th>                     
                     </tr>
                 </thead>
                 <tbody class="no-border-y">               
                     <% 
                         var total_bales = 0;
+                        var total_tons = 0;
                         _.each(truckers.get('transactions'),function(transaction){ 
                         var tons = transaction.pounds * .0005;
                         var net = tons * 2;
@@ -45,9 +41,9 @@
                         var rent = transaction.truckingrate * .1;
                         var amount = parseFloat(transaction.loader_origin_fee) + parseFloat(transaction.loader_destination_fee);
                         total_bales += transaction.bales;
+                        (transaction.loading_type=='1') ? total_tons += tons : total_tons += 0;
                     %>    
-                        <tr>                        
-                            <td></td>
+                        <tr>                                                 
                             <td>
                                 <% 
                                     var d = Date.parse(transaction.created_at);
@@ -73,31 +69,36 @@
                             <td><%= transaction.section_destination_name %></td>                        
                             <td><%= transaction.bales %></td> 
                             <td><%= net.toFixed(2) %></td>
-                            <td><%= tons.toFixed(2) %></td>
+                            <td><%= tons.toFixed(4) %></td>
                             <td><%= transaction.truckingrate %></td>
                             <td><%= total.toFixed(2) %></td>
-                            <td><%= rent.toFixed(2) %></td> 
-                            <td>
-                                
-                            </td>
-                            <td>
-                                <%
-                                    print((transaction.loading_type == '1') ? "Load" : "Unload")
-                                %>
-                            </td>  
-                            <td>
-                                <%
-                                    var name = transaction.loader_origin_firstname + ' ' + transaction.loader_origin_lastname;
-                                    print((transaction.loading_type == '1') ? name : name=transaction. loader_destination_firstname + ' ' + transaction.loader_destination_lastname)
-                                %>
-                            </td>
-                            <td>
-                                <%= amount.toFixed(2) %>
-                            </td>                      
+                            <td><%= rent.toFixed(2) %></td>                                          
                         </tr>   
                     <%}); %>                     
                 </tbody>                
             </table>  
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Loader</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <%                        
+                    _.each(truckers.get('truck_loads'),function(load){                        
+                    %>
+                    <tr>
+                        <td><%= load.type %></td>  
+                        <td><%= load.loader %></td>
+                        <td><%= load.amount %></td>  
+                    </tr>
+                    <%}); %>    
+                </tbody>
+            </table>
+
             <table class="table-bordered">
                 <thead class="no-border">
                     <tr>
@@ -106,40 +107,37 @@
                 </thead>
                 <tbody class="no-border-y">
                     <tr>
-                        <td width="33%">
+                        <td width="25%">
                             Total Bales: <strong><%= total_bales %></strong>
                         </td>
-                        <td width="33%">
-                            Total Tons(Pickup): <strong></strong>  
+                        <td width="25%">
+                            Total Tons: <strong><%= total_tons.toFixed(4) %></strong>  
                         </td>
-                        <td width="33%">
-                            Total Tons(Dropoff): <strong></strong>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="33%">
+                        <td width="25%">
                             Total Hauling: <strong><%= truckers.get('summary').total_hauling_fee %></strong>
                         </td>
-                        <td width="33%">
+                        <td width="25%">
                             Total Admin Fee: <strong><%= truckers.get('summary').total_admin_fee %></strong>
-                        </td>
-                        <td width="33%">
-                            Total Fuel Fee: <strong><%= truckers.get('summary').total_fuel_fee %></strong>
                         </td>
                     </tr>
                     <tr>
-                        <td width="33%">
+                        <td width="25%">
+                            Total Fuel Fee: <strong><%= truckers.get('summary').total_fuel_fee %></strong>
+                        </td>
+                        <td width="25%">
                             Total Trailer Rent: <strong><%= truckers.get('summary').total_trailer_rent %></strong>
                         </td>
-                        <td width="33%">
+                        <td width="25%">
                             Total Loading: <strong><%= truckers.get('summary').total_loading_fee %></strong>
                         </td>
-                        <td width="33%">
+                        <td width="25%">
                             Total Statement: <strong><%= truckers.get('summary').total_statement %></strong>
                         </td>
                     </tr>
                 </tbody>
             </table>
+
+
         </div>
     </div>
     <% } else { %>

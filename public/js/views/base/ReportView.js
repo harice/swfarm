@@ -105,6 +105,9 @@ define([
 				case '2':
 					return this.trucker();
 					break;
+				case '3':
+					return this.inventory();
+					break;
 				case '4':
 					return this.customer();
 					break;
