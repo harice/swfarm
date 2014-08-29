@@ -32,15 +32,41 @@ class DownloadRepository implements DownloadInterface
 		        	}
 
         			$model_o = $file_o->documentable;
-        			switch(get_class($model_o)) {
-        				case 'ProductOrder':
-        					$filename = $model_o->order->order_number .'-'.$model_o->stacknumber;
-        					break;
-        			}
+        			if(is_object($model_o)) {
+	        			switch(get_class($model_o)) {
+	        				case 'ProductOrder':
+	        					$filename = $model_o->order->order_number .'-'.$model_o->stacknumber;
+	        					break;
+	        			}
+	        		}
 
         			header('Content-Disposition: attachment; filename="'.$filename.$ext.'"');
 		        	readfile($file_o->content);
 		        }
+				break;
+
+			case 'pdf':
+				if(!array_key_exists('model', $q)) break;
+				switch ($q['model']) {
+					case 'order':
+						$order = Order::with('productsummary.productname')
+					                ->with('productsummary.productorder.product')
+					                ->with('productsummary.productorder.document')
+					                ->with('productsummary.productorder.sectionfrom.storagelocation')
+					                ->with('account')
+					                ->with('contact')
+					                ->with('orderaddress', 'orderaddress.addressStates')
+					                ->with('location')
+					                ->with('status')
+					                ->with('ordercancellingreason.reason')
+									->with('contract.account')
+									->find($q['id']);
+
+						// return View::make('pdf.base')->nest('child','pdf.order',array('order' => $order));
+						// return PDF::loadHtml(View::make('pdf.base')->nest('child','pdf.order',array('order' => $order)))->stream();
+						return PDF::loadView('pdf.order',array('order' => $order))->stream();
+						break;
+				}
 				break;
 		}
 

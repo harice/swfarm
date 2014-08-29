@@ -109,7 +109,10 @@ Route::filter('basic', function()
 					)
 				);
 	if(!$auth) return App::abort(403,'Unauthorized',['WWW-Authenticate' => 'Basic']);
-	else Tokenizer::store();
+	else {
+		if(!Cookie::get('ihYF23kouGY')) return App::abort(403,'Unauthorized',['WWW-Authenticate' => 'Basic']);
+		Tokenizer::store();
+	}
 });
 
 /*
