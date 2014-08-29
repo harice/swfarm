@@ -1,0 +1,93 @@
+<div class="col-md-12">    
+    <div class="header">
+        <div class="row margin-top-0">
+            <div class="col-md-6">
+                <h3>
+                    Driver:
+                    <strong>
+                        <%= drivers.get('driver').firstname %> <%= drivers.get('driver').lastname %>
+                    </strong>
+                </h3> 
+            </div>
+            <div class="col-md-6 text-right">
+                <p><strong><%= date_from %></strong> to <strong><%= date_to %></strong></p>
+            </div>
+        </div>
+    </div>
+    <% if (drivers.get('summary').total_transactions) { %>         
+    <div class="content">    
+        <div class="content-inner table-responsive">
+            <table id="operator-list" class="table table-bordered">
+                <thead class="no-border">
+                    <tr>                    
+                        <th>Invoice #</th>
+                        <th>Date</th>
+                        <th>Truck Name</th>
+                        <th>Bales</th>
+                        <th>Tons</th>
+                        <th>Rate</th>
+                        <th>Gross</th>
+                        <th>Pay Rate</th>
+                        <th>Driver Pay</th>
+                    </tr>
+                </thead>
+                <tbody class="no-border-y">
+                    <%
+                        var total_pay = 0;
+                        _.each(drivers.get('transactions'),function(transaction){
+                            var tons = transaction.pounds * .0005;
+                            var gross = tons *  transaction.driver_rate;
+                            var driver_pay = gross * transaction.driver_rate;
+                            total_pay += driver_pay;
+                    %>    
+                        <tr>                        
+                            <td></td>
+                            <td>
+                                <%
+                                    var d = Date.parse(transaction.created_at);
+                                    if (isNaN(d)==false)
+                                    {
+                                        var d = new Date(transaction.created_at), 
+                                        fragments = [                                
+                                            d.getMonth() + 1,
+                                            d.getDate(),
+                                            d.getFullYear()
+                                        ]; 
+                                        print(fragments.join('/'));
+
+                                    }     
+                                    else {
+                                        d = (transaction.created_at).split(' ')[0];
+                                        var t = d.split('-');
+                                        print(t[1]+'/'+t[2]+'/'+t[0]);
+                                    } 
+                                %>   
+                            </td>
+                            <td><%= transaction.account_name %></td>
+                            <td><%= transaction.bales %></td>
+                            <td><%= tons.toFixed(2) %></td>
+                            <td><%= transaction.trucking_rate %></td>
+                            <td><%= gross.toFixed(2) %></td>
+                            <td><%= transaction.driver_rate %></td>
+                            <td><%= driver_pay.toFixed(2) %></td>            
+                        </tr>   
+                    <%}); %>                     
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="9"><strong>SUMMARY</strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="8">Total</td>
+                        <td><strong><%= total_pay.toFixed(2) %></strong></td>
+                    </tr>
+                </tfoot>
+            </table>                   
+        </div>    
+    </div>
+    <% } else { %>
+    <div class="content">
+      <p>No transactions found.</p>
+    </div>
+    <% } %>
+</div>

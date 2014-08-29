@@ -2,29 +2,29 @@ define([
 	'backbone',
 	'views/base/ReportView',
 	'models/reports/ReportModel',
-	'collections/account/AccountProducerCollection',
+	'collections/trucker/TruckerCollection',
 	'text!templates/reports/FilterFormTemplate.html',
-	'text!templates/reports/ProducersListTemplate.html',
+	'text!templates/reports/TruckersPayListTemplate.html',
 	'global',
 	'constant',
 ], function(
 	Backbone,
 	ReportView,			
 	Report,
-	AccountProducerCollection,
+	TruckerCollection,
 	filterFormTemplate,
-	producersListTemplate,
+	truckerListTemplate,
 	Global,
 	Const
 ){
 
-	var ProducerSearchView = ReportView.extend({		
+	var TruckersSearchView = ReportView.extend({
 		
 		initialize: function() {
 			var thisObj = this;
-			this.filterId = null;
+			this.filterId = null;	
 			this.startDate = null;
-			this.endDate = null;					
+			this.endDate = null;	
 
 			this.model = new Report();
 			this.model.on('change', function (){
@@ -32,83 +32,82 @@ define([
 				this.off("change");
 			});	
 
-			this.collection = new AccountProducerCollection();
+			this.collection = new TruckerCollection();
 
 			//Only display form when finished synching
-			this.collection.on('sync', function (){				
-				thisObj.displayForm();																
+			this.collection.on('sync', function (){																
 				this.off('sync');
 			})			
 
 		},
 		
 		render: function(){	
-
-			this.getProducerList();			
-			Backbone.View.prototype.refreshTitle('Report','Producer Statement');			
+			this.getTruckersList();		
+			Backbone.View.prototype.refreshTitle('Report','Trucking Statement');
 		},	
 
-		getProducerList: function (){
-			var thisObj = this;
-			var keyword = "Pro";			
-			this.collection.formatURL(keyword);
+		getTruckersList: function (){	
+			var thisObj = this;						
 			this.collection.fetch({
 				success: function (collection, response, options) {
-					
+					thisObj.displayForm();	
 				},
 				error: function (collection, response, options) {
 				},
 				headers: this.collection.getAuth()
 			});
+		},			
+
+		getTruckers: function (){
+			var truckers = '<option disabled selected>Select Truck</option>';				
+			_.each(this.collection.models, function (model) {	
+				_.each(model.get('data'), function (truck) {
+					truckers += '<option value="'+truck.id+'">'+truck.trucknumber +'</option>';													
+				});						
+			});
+			
+			return truckers;
 		},
 
-		getProducers: function(){
-				
-			var producers = '<option disabled selected>Select Producer</option>';
-			_.each(this.collection.models, function (model) {
-				producers += '<option value="'+model.get('id')+'">'+model.get('name') +'</option>';
-			});
-
-			return producers;
-		},	
-	
 		displayForm: function () {
 			var thisObj = this;	
-
+							
 			var innerTemplateVariables = {
 				'date': this.setCurDate(),
-				'filters': this.getProducers(),
-				'filter_name': "Producer's Name"
+				'filters': this.getTruckers(),
+				'filter_name': "Truck Name"
 			};
-			
+						
 			var innerTemplate = _.template(filterFormTemplate, innerTemplateVariables);
 						
 			this.$el.html(innerTemplate);			
-			this.focusOnFirstField();
-														
+			this.focusOnFirstField();								
+						
 			$('.form-button-container').show();		
-		},		
+		},				
 				
-		onclickgenerate: function() {	
+		onclickgenerate: function() {
 			var thisObj = this;					
 			this.filterId = $("#filtername").val();				
-			if(this.checkFields()){								
-				this.model.fetchProducersStatement(this.filterId, this.startDate, this.endDate);
-			}
+			if(this.checkFields()){	
+				this.model.fetchTruckingStatement(this.filterId, this.startDate, this.endDate);
+			}	
 
 			this.model.on('sync', function (){				
 				thisObj.processData();				
 				this.off("sync");
-			});	
+			});			
 		},
 
 		processData: function() {
 			var thisObj = this;
 			
 			var innerTemplateVariables= {
-				'producers': this.model,
+				'date_from': $('#filter-operator-date-start .input-group.date input').val(),
+				'date_to': $('#filter-operator-date-end .input-group.date input').val(),
+				'truckers': this.model,
 			}
-			var compiledTemplate = _.template(producersListTemplate, innerTemplateVariables);
+			var compiledTemplate = _.template(truckerListTemplate, innerTemplateVariables);
 
 			$("report-list").html('');
 			$("#report-list").removeClass("hidden");
@@ -118,6 +117,6 @@ define([
 		
 	});
 
-  return ProducerSearchView;
+  return TruckersSearchView;
   
 });

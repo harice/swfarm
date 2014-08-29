@@ -69,7 +69,7 @@ define([
         },
 
         fetchDriverStatement: function (id, startDate, endDate) {
-        	this.urlRoot = '/apiv1/report/driver/' + id;
+        	this.urlRoot = '/apiv1/report/driver-pay/' + id + '?dateStart=' +startDate+'&dateEnd='+endDate;
         	this.runFetch();
         },
 	});

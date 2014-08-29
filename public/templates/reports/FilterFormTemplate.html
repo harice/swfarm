@@ -1,13 +1,14 @@
 <div class="row margin-top-0 form-group">
     <div class="col-sm-2 control-label">
-        <label for="operator">Producer Name *</label>
+        <label for="filtername"><%= filter_name %> *</label>
     </div>
     <div class="col-sm-3">
         <div class="row margin-top-0">        
             <div class="col-sm-12">
-                <select class="form-control" id="producername" tabindex='2'>
-                    <%= producers %>
+                <select class="form-control" id="filtername" tabindex='2'>
+                    <%= filters %>
                 </select>
+                <div class="error-msg-cont"></div>
             </div>
         </div>
     </div>    
@@ -21,4 +22,7 @@
             </div>
         </div>
     </div>
-</div>    
+</div> 
+
+<div id="report-list" class="row margin-top-0 form-group">
+</div>     

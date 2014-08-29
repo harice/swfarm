@@ -1,0 +1,110 @@
+<div class="col-md-12">    
+    <div class="header">
+        <div class="row margin-top-0">
+            <div class="col-md-6">
+                <h3>
+                    Customer Name:
+                    <strong>
+                        <%= customers.get('customer').name %>
+                    </strong>
+                </h3> 
+            </div>
+            <div class="col-md-6 text-right">
+                <p><strong><%= date_from %></strong> to <strong><%= date_to %></strong></p>
+            </div>       
+        </div>
+    </div>    
+    <% if (customers.get('summary').total_transactions) { %>    
+    <div class="content">
+        <div class="content-inner table-responsive">    
+            <table id="operator-list" class="table-bordered">
+                <thead class="no-border">
+                    <tr>
+                        <th>Invoice #</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Commodity</th>
+                        <th>Bales</th>                
+                        <th>Tons</th>
+                        <th>Price</th>
+                        <th>Customer Total</th>
+                    </tr>
+                </thead>
+                <tbody class="no-border-y">
+                    <% 
+                        var grand_total = 0;
+                        var total_bales = 0;
+                        var total_tons = 0;
+                        _.each(customers.get('transactions'),function(transaction){ 
+                        var tons = transaction.pounds * .0005;
+                        var customer_total = tons * transaction.unitprice;
+                        total_tons += tons;
+                        total_bales += transaction.bales;
+                        grand_total += customer_total;
+                    %>       
+                        <tr>                        
+                            <td>
+                            </td> 
+                            <td>
+                                <%= transaction.natureofsale %>
+                            </td> 
+                            <td>
+                                <% 
+                                    var d = Date.parse(transaction.created_at);
+                                    if (isNaN(d)==false)
+                                    {
+                                        var d = new Date(transaction.created_at), 
+                                        fragments = [                                
+                                            d.getMonth() + 1,
+                                            d.getDate(),
+                                            d.getFullYear()
+                                        ]; 
+                                        print(fragments.join('/'));
+
+                                    }     
+                                    else {
+                                        d = (transaction.created_at).split(' ')[0];
+                                        var t = d.split('-');
+                                        print(t[1]+'/'+t[2]+'/'+t[0]);
+                                    }                  
+                                %>
+                            </td>  
+                            <td>
+                                <%= transaction.product_name %>
+                            </td>  
+                            <td>
+                                <%= transaction.bales %>
+                            </td>  
+                            <td>
+                                <%= tons.toFixed(4) %>
+                            </td>  
+                            <td>
+                                <%= transaction.unitprice %>
+                            </td>  
+                            <td>
+                                <%= customer_total.toFixed(2) %>
+                            </td>                                                 
+                        </tr>
+                    <%}); %>  
+                </tbody>  
+                <tfoot>
+                    <tr>
+                        <td colspan="8"><strong>SUMMARY</strong></td>
+                    </tr>   
+                    <tr>  
+                        <td colspan="4">Total</td>                      
+                        <td><strong><%= total_bales %></strong></td>
+                        <td><strong><%= total_tons.toFixed(4) %></strong></td>
+                        <td>&nbsp;</td>
+                        <td><strong><%= grand_total.toFixed(2) %></strong></td>
+                    </tr>  
+                </tfoor>
+            </table>   
+        </div>        
+    </div>
+    <% } else { %>
+    <div class="content">
+      <p>No transactions found.</p>
+    </div>
+    <% } %>
+</div>

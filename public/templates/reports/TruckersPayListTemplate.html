@@ -1,0 +1,150 @@
+<div class="col-md-12">    
+    <div class="header">
+        <div class="row margin-top-0">
+            <div class="col-md-6">
+                <h3>
+                    Truck Number
+                    <strong>
+                        <%= truckers.get('truck').trucknumber %>
+                    </strong>
+            </div>
+            <div class="col-md-6 text-right">
+                <p><strong><%= date_from %></strong> to <strong><%= date_to %></strong></p>
+            </div>
+        </div>
+    </div>    
+    <% if (truckers.get('summary').total_transactions) { %>      
+    <div class="content">
+        <div class="content-inner table-responsive">
+            <table id="operator-list" class="table table-bordered">
+                <thead class="no-border">
+                    <tr>                   
+                        <th>Invoice #</th>
+                        <th>Date</th>
+                        <th>Origin</th>
+                        <th>Destination</th>
+                        <th>Bale</th>
+                        <th>Net</th>
+                        <th>Tons</th>
+                        <th>Rate</th>
+                        <th>Total</th>
+                        <th>Rent</th>
+                        <th>Receipt #</th>
+                        <th>Type</th>
+                        <th>Loader</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody class="no-border-y">               
+                    <% 
+                        var total_bales = 0;
+                        _.each(truckers.get('transactions'),function(transaction){ 
+                        var tons = transaction.pounds * .0005;
+                        var net = tons * 2;
+                        var total = tons * transaction.truckingrate;
+                        var rent = transaction.truckingrate * .1;
+                        var amount = parseFloat(transaction.loader_origin_fee) + parseFloat(transaction.loader_destination_fee);
+                        total_bales += transaction.bales;
+                    %>    
+                        <tr>                        
+                            <td></td>
+                            <td>
+                                <% 
+                                    var d = Date.parse(transaction.created_at);
+                                    if (isNaN(d)==false)
+                                    {
+                                        var d = new Date(transaction.created_at), 
+                                        fragments = [                                
+                                            d.getMonth() + 1,
+                                            d.getDate(),
+                                            d.getFullYear()
+                                        ]; 
+                                        print(fragments.join('/'));
+
+                                    }     
+                                    else {
+                                        d = (transaction.created_at).split(' ')[0];
+                                        var t = d.split('-');
+                                        print(t[1]+'/'+t[2]+'/'+t[0]);
+                                    }                  
+                                %>
+                            </td>
+                            <td><%= transaction.section_origin_name %></td>
+                            <td><%= transaction.section_destination_name %></td>                        
+                            <td><%= transaction.bales %></td> 
+                            <td><%= net.toFixed(2) %></td>
+                            <td><%= tons.toFixed(2) %></td>
+                            <td><%= transaction.truckingrate %></td>
+                            <td><%= total.toFixed(2) %></td>
+                            <td><%= rent.toFixed(2) %></td> 
+                            <td>
+                                
+                            </td>
+                            <td>
+                                <%
+                                    print((transaction.loading_type == '1') ? "Load" : "Unload")
+                                %>
+                            </td>  
+                            <td>
+                                <%
+                                    var name = transaction.loader_origin_firstname + ' ' + transaction.loader_origin_lastname;
+                                    print((transaction.loading_type == '1') ? name : name=transaction. loader_destination_firstname + ' ' + transaction.loader_destination_lastname)
+                                %>
+                            </td>
+                            <td>
+                                <%= amount.toFixed(2) %>
+                            </td>                      
+                        </tr>   
+                    <%}); %>                     
+                </tbody>                
+            </table>  
+            <table class="table-bordered">
+                <thead class="no-border">
+                    <tr>
+                        <td colspan="3"><strong>SUMMARY</strong></td>
+                    </tr>
+                </thead>
+                <tbody class="no-border-y">
+                    <tr>
+                        <td width="33%">
+                            Total Bales: <strong><%= total_bales %></strong>
+                        </td>
+                        <td width="33%">
+                            Total Tons(Pickup): <strong></strong>  
+                        </td>
+                        <td width="33%">
+                            Total Tons(Dropoff): <strong></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="33%">
+                            Total Hauling: <strong><%= truckers.get('summary').total_hauling_fee %></strong>
+                        </td>
+                        <td width="33%">
+                            Total Admin Fee: <strong><%= truckers.get('summary').total_admin_fee %></strong>
+                        </td>
+                        <td width="33%">
+                            Total Fuel Fee: <strong><%= truckers.get('summary').total_fuel_fee %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="33%">
+                            Total Trailer Rent: <strong><%= truckers.get('summary').total_trailer_rent %></strong>
+                        </td>
+                        <td width="33%">
+                            Total Loading: <strong><%= truckers.get('summary').total_loading_fee %></strong>
+                        </td>
+                        <td width="33%">
+                            Total Statement: <strong><%= truckers.get('summary').total_statement %></strong>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <% } else { %>
+    <div class="content">
+        <p>No transactions found.</p>
+    </div>
+    <% } %>
+</div>

@@ -2,29 +2,29 @@ define([
 	'backbone',
 	'views/base/ReportView',
 	'models/reports/ReportModel',
-	'collections/account/AccountProducerCollection',
+	'collections/account/AccountCustomerCollection',
 	'text!templates/reports/FilterFormTemplate.html',
-	'text!templates/reports/ProducersListTemplate.html',
+	'text!templates/reports/CustomersListTemplate.html',
 	'global',
 	'constant',
 ], function(
 	Backbone,
 	ReportView,			
 	Report,
-	AccountProducerCollection,
+	AccountCustomerCollection,
 	filterFormTemplate,
-	producersListTemplate,
+	customersListTemplate,
 	Global,
 	Const
 ){
 
-	var ProducerSearchView = ReportView.extend({		
+	var CustomerSearchView = ReportView.extend({
 		
 		initialize: function() {
 			var thisObj = this;
-			this.filterId = null;
+			this.filterId = null;	
 			this.startDate = null;
-			this.endDate = null;					
+			this.endDate = null;	
 
 			this.model = new Report();
 			this.model.on('change', function (){
@@ -32,7 +32,7 @@ define([
 				this.off("change");
 			});	
 
-			this.collection = new AccountProducerCollection();
+			this.collection = new AccountCustomerCollection();
 
 			//Only display form when finished synching
 			this.collection.on('sync', function (){				
@@ -43,14 +43,13 @@ define([
 		},
 		
 		render: function(){	
-
 			this.getProducerList();			
-			Backbone.View.prototype.refreshTitle('Report','Producer Statement');			
+			Backbone.View.prototype.refreshTitle('Report','Customer Sales');			
 		},	
 
 		getProducerList: function (){
 			var thisObj = this;
-			var keyword = "Pro";			
+			var keyword = "Cus";
 			this.collection.formatURL(keyword);
 			this.collection.fetch({
 				success: function (collection, response, options) {
@@ -62,14 +61,14 @@ define([
 			});
 		},
 
-		getProducers: function(){
+		getCustomers: function(){
 				
-			var producers = '<option disabled selected>Select Producer</option>';
+			var customers = '<option disabled selected>Select Customer</option>';
 			_.each(this.collection.models, function (model) {
-				producers += '<option value="'+model.get('id')+'">'+model.get('name') +'</option>';
+				customers += '<option value="'+model.get('id')+'">'+model.get('name') +'</option>';
 			});
 
-			return producers;
+			return customers;
 		},	
 	
 		displayForm: function () {
@@ -77,23 +76,23 @@ define([
 
 			var innerTemplateVariables = {
 				'date': this.setCurDate(),
-				'filters': this.getProducers(),
-				'filter_name': "Producer's Name"
+				'filters': this.getCustomers(),
+				'filter_name': "Customer's Name"
 			};
 			
 			var innerTemplate = _.template(filterFormTemplate, innerTemplateVariables);
 						
 			this.$el.html(innerTemplate);			
-			this.focusOnFirstField();
-														
+			this.focusOnFirstField();			
+												
 			$('.form-button-container').show();		
 		},		
 				
-		onclickgenerate: function() {	
-			var thisObj = this;					
+		onclickgenerate: function() {
+			var thisObj = this;			
 			this.filterId = $("#filtername").val();				
-			if(this.checkFields()){								
-				this.model.fetchProducersStatement(this.filterId, this.startDate, this.endDate);
+			if(this.checkFields()){							
+				this.model.fetchCustomerSales(this.filterId, this.startDate, this.endDate);
 			}
 
 			this.model.on('sync', function (){				
@@ -106,9 +105,11 @@ define([
 			var thisObj = this;
 			
 			var innerTemplateVariables= {
-				'producers': this.model,
+				'date_from': $('#filter-operator-date-start .input-group.date input').val(),
+				'date_to': $('#filter-operator-date-end .input-group.date input').val(),
+				'customers': this.model,
 			}
-			var compiledTemplate = _.template(producersListTemplate, innerTemplateVariables);
+			var compiledTemplate = _.template(customersListTemplate, innerTemplateVariables);
 
 			$("report-list").html('');
 			$("#report-list").removeClass("hidden");
@@ -118,6 +119,6 @@ define([
 		
 	});
 
-  return ProducerSearchView;
+  return CustomerSearchView;
   
 });

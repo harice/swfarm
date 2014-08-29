@@ -30,7 +30,7 @@ define(function () {
 			'TRUCKER': 'administration/trucker',
 			'INVENTORY': 'inventory',
 			'STACKNUMBER': 'stacknumber',
-			'REPORT': 'report'
+			'REPORT': 'report',
 			'FILE': '/file',
 		},
 		'MENU': {

@@ -1,23 +1,23 @@
 define([
 	'backbone',
-	'bootstrapdatepicker',
 	'views/base/ReportView',
 	'views/reports/OperatorsSearchView',
-	'views/reports/ProducerSearchView',
-	'jqueryvalidate',
-	'jquerytextformatter',
+	'views/reports/ProducerSearchView',	
+	'views/reports/TruckersSearchView',	
+	'views/reports/CustomerSearchView',	
+	'views/reports/DriverSearchView',	
 	'models/reports/ReportModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/reports/ReportFormTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
-			DatePicker,
-			AppView,
+			ReportView,
 			Operator,
 			Producer,
-			Validate,
-			TextFormatter,
+			Trucker,
+			Customer,
+			Driver,
 			Report,
 			contentTemplate,
 			reportFormTemplate,
@@ -25,31 +25,50 @@ define([
 			Const
 ){
 
-	var ReportView = AppView.extend({
+	var ReportView = ReportView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),	
 
-		initialize: function (){
+		initialize: function (){			
 			this.initSubContainer();
 			var thisObj = this;
+			this.startDate = null;
+			this.endDate = null;
 
 			this.displayFilter();			
 		},
-		render: function(){								
+		render: function(){									
 			Backbone.View.prototype.refreshTitle('Report','Generate');
 		},										
 
 		operator: function (){
 			this.closeView();
 			this.currView = new Operator();			
-			this.currView.render();
+			this.currView.setElement($("#report-filter")).render();						
 		},
 
 		producer: function (){
 			this.closeView();
 			this.currView = new Producer();
-			this.currView.render();
+			this.currView.setElement($("#report-filter")).render();					
+		},
+
+		trucker: function (){
+			this.closeView();
+			this.currView = new Trucker();			
+			this.currView.setElement($("#report-filter")).render();					
 		},
 		
+		customer: function (){
+			this.closeView();
+			this.currView = new Customer();			
+			this.currView.setElement($("#report-filter")).render();			
+		},
+
+		driver: function (){
+			this.closeView();
+			this.currView = new Driver();			
+			this.currView.setElement($("#report-filter")).render();			
+		},
 	});
 
   return ReportView;

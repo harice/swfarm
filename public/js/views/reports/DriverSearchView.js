@@ -4,7 +4,7 @@ define([
 	'models/reports/ReportModel',
 	'collections/contact/ContactCollection',
 	'text!templates/reports/FilterFormTemplate.html',
-	'text!templates/reports/OperatorsPayListTemplate.html',
+	'text!templates/reports/DriversPayListTemplate.html',
 	'global',
 	'constant',
 ], function(
@@ -13,13 +13,13 @@ define([
 	Report,
 	ContactCollection,
 	filterFormTemplate,
-	operatorListTemplate,
+	driverListTemplate,
 	Global,
 	Const
 ){
 
-	var OperatorSearchView = ReportView.extend({	
-
+	var DriverSearchView = ReportView.extend({
+		
 		initialize: function() {
 			var thisObj = this;
 			this.filterId = null;	
@@ -29,21 +29,20 @@ define([
 			this.model = new Report();
 			this.model.on('change', function (){				
 				thisObj.processData();
-				console.log("Changed");
 				this.off("change");
-			});			
+			});	
 
 			this.collection = new ContactCollection();			
 
 		},
 		
 		render: function(){
-			this.collection.getContactsByAccountType(4);
-			this.getOperatorsList();								
-			Backbone.View.prototype.refreshTitle('Report','Operator Pay');
+			this.collection.getContactsByAccountType(9);
+			this.getDriversList();								
+			Backbone.View.prototype.refreshTitle('Report','Driver Pay');
 		},	
 
-		getOperatorsList: function(){
+		getDriversList: function(){
 			var thisObj = this;	
 
 			this.collection.on('sync', function (){	
@@ -52,13 +51,13 @@ define([
 			})	
 		},			
 
-		getOperators: function (){
-			var operators = '<option disabled selected>Select Operator</option>';			
+		getDrivers: function (){
+			var drivers = '<option disabled selected>Select Driver</option>';			
 			_.each(this.collection.models, function (model) {
-				operators += '<option value="'+model.get('id')+'">'+model.get('firstname')+ ' ' +model.get('lastname') +'</option>';
+				drivers += '<option value="'+model.get('id')+'">'+model.get('firstname')+ ' ' +model.get('lastname') +'</option>';
 			});
 
-			return operators;
+			return drivers;
 		},
 
 		displayForm: function () {
@@ -66,29 +65,29 @@ define([
 
 			var innerTemplateVariables = {
 				'date': this.setCurDate(),
-				'filters': this.getOperators(),
-				'filter_name': "Operator's Name"
+				'filters': this.getDrivers(),
+				'filter_name': "Driver's Name"
 			};
 			
 			var innerTemplate = _.template(filterFormTemplate, innerTemplateVariables);
 					
-			this.$el.html(innerTemplate);		
+			this.$el.html(innerTemplate);			
 			this.focusOnFirstField();					
 						
 			$('.form-button-container').show();		
 		},				
 				
-		onclickgenerate: function() {
+		onclickgenerate: function() {	
 			var thisObj = this;			
-			this.filterId = $("#filtername").val();		
-			if(this.checkFields()){								
-				this.model.fetchOperatorsPay(this.filterId, this.startDate, this.endDate);
+			this.filterId = $("#filtername").val();				
+			if(this.checkFields()){			
+				this.model.fetchDriverStatement(this.filterId, this.startDate, this.endDate);
 			}
 
 			this.model.on('sync', function (){				
 				thisObj.processData();				
 				this.off("sync");
-			});	
+			});				
 		},
 
 		processData: function() {
@@ -97,10 +96,10 @@ define([
 			var innerTemplateVariables= {
 				'date_from': $('#filter-operator-date-start .input-group.date input').val(),
 				'date_to': $('#filter-operator-date-end .input-group.date input').val(),
-				'operators': this.model,
+				'drivers': this.model,
 			}
-			var compiledTemplate = _.template(operatorListTemplate, innerTemplateVariables);
-			
+			var compiledTemplate = _.template(driverListTemplate, innerTemplateVariables);
+
 			$("report-list").html('');
 			$("#report-list").removeClass("hidden");
 			$("#report-list").html(compiledTemplate);
@@ -111,6 +110,6 @@ define([
 		
 	});
 
-  return OperatorSearchView;
+  return DriverSearchView;
   
 });

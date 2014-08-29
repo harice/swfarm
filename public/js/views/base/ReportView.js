@@ -63,7 +63,7 @@ define([
 		},
 
 		getReportTypes: function (){			
-			var types = '<option value="">Select type of Report to generate</option>';
+			var types = '<option disabled selected>Select type of Report to generate</option>';
 			_.each(this.reportTypes, function (type) {
 				types += '<option value="'+type.id+'">'+type.name +'</option>';
 			});
@@ -71,7 +71,7 @@ define([
 			
 		},
 
-		displayFilter: function () {
+		displayFilter: function () {			
 			var thisObj = this;
 
 			var innerTemplateVariables = {
@@ -88,27 +88,34 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
-			
-			this.filterAction();		
+
+			this.initCalendars();
+							
 		},	
 
 		filterAction: function () {
 			var thisObj = this;
 
-			this.$el.find("#reporttype").change(function(){				
-				var type = $(this).val();
-				var name = $(this).text();
-				switch(type) {
-					case '1':
-						return thisObj.producer();
-						break;
-					case '7':						
-						return thisObj.operator();
-						break;
-					default:
-						console.log("Default");
-				}				
-			});
+			var type = this.$el.find("#reporttype").val();
+			
+			switch(type) {
+				case '1':	
+					return this.producer();
+					break;
+				case '2':
+					return this.trucker();
+					break;
+				case '4':
+					return this.customer();
+					break;
+				case '7':				
+					return this.operator();
+					break;
+				case '8':				
+					return this.driver();
+					break;
+			}
+			
 		},
 
 		closeView: function () {
@@ -116,11 +123,68 @@ define([
 				this.currView.close();
 			}
 		},
+
+		checkFields: function() {
+			var thisObj = this;
+			var stat = true;
+			var error = "<label class='error'>This field is required</label>";
+			var startDate = $('#filter-operator-date-start .input-group.date input');
+			var endDate = $('#filter-operator-date-end .input-group.date input');
+			var reportFilter = $('#filtername');
+
+			var startStat = true;
+			var endStat = true;
+			var filterStat = true;
+
+			if(startDate.val() != '') {
+				startStat = true;
+				if(startDate.hasClass('error'))
+					startDate.removeClass('error');
+
+				startDate.parents('#filter-operator-date-start').find('.error-msg-cont').html('');
+
+				if(startDate.val() != '' && typeof startDate.val() != 'undefined')
+					thisObj.startDate = thisObj.convertDateFormat(startDate.val(), thisObj.dateFormat, 'yyyy-mm-dd', '-');				
+			}
+			else {			
+				startStat = false;	
+				startDate.addClass("error");
+				startDate.parents('#filter-operator-date-start').find('.error-msg-cont').html(error);
+			}
+
+			if(endDate.val() != ''){
+				endStat = true;
+				if(endDate.hasClass('error'))
+					endDate.removeClass('error');
+				endDate.parents('#filter-operator-date-end').find('.error-msg-cont').html('');
+
+				if(endDate.val() != '' && typeof endDate.val() != 'undefined')
+					thisObj.endDate = thisObj.convertDateFormat(endDate.val(), thisObj.dateFormat, 'yyyy-mm-dd', '-');				
+			}
+			else {
+				endStat = false;
+				endDate.addClass("error");
+				endDate.parents('#filter-operator-date-end').find('.error-msg-cont').html(error);
+			}	
+
+			if(reportFilter.val()==null) {
+				filterStat = false;
+				reportFilter.siblings('.error-msg-cont').html(error);
+			}
+			else {
+				filterStat = true;
+				reportFilter.siblings('.error-msg-cont').html('');
+			}
+
+			(startStat && endStat && filterStat) ? stat = true : stat= false;
+
+			return stat;
+		},
  
  		initCalendars: function () {
-			var thisObj = this;
-			
-			this.$el.find('#filter-operator-date-start .input-group.date').datepicker({
+			var thisObj = this;					
+
+			$('#filter-operator-date-start .input-group.date').datepicker({
 				orientation: "top left",
 				autoclose: true,
 				clearBtn: true,
@@ -132,12 +196,12 @@ define([
 				var date = '';
 				if(selectedDate != '' && typeof selectedDate != 'undefined')
 					date = thisObj.convertDateFormat(selectedDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
-
-				thisObj.startDate = date;
+				
+				//thisObj.startDate = date;				
 				//thisObj.renderList(1);
 			});
 			
-			this.$el.find('#filter-operator-date-end .input-group.date').datepicker({
+			$('#filter-operator-date-end .input-group.date').datepicker({
 				orientation: "top left",
 				autoclose: true,
 				clearBtn: true,
@@ -150,13 +214,17 @@ define([
 				if(selectedDate != '' && typeof selectedDate != 'undefined')
 					date = thisObj.convertDateFormat(selectedDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
 				
-				thisObj.endDate = date;
+				//thisObj.endDate = date;
 				//thisObj.renderList(1);
 			});
-		},		
-
+			
+		},
+		
 		events: {
 			'click #generate': 'onclickgenerate',
+			'change #reporttype': 'filterAction',
+			'click #filter-operator-date-start': 'checkdate',
+			'click #filter-operator-date-end': 'checkdate'
 		},	
 
 	})
