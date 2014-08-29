@@ -427,7 +427,7 @@ class ReportRepository implements ReportRepositoryInterface {
     public function generateGrossProfit($params)
     {
         $weighttickets = WeightTicket::with(
-            'transportschedule.order',
+            'transportschedule.order.account',
             'weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder',
             'weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder'
         );
@@ -446,15 +446,81 @@ class ReportRepository implements ReportRepositoryInterface {
         
         $weighttickets = $weighttickets->get();
         
-        Log::debug(DB::getQueryLog());
+//        Log::debug(DB::getQueryLog());
+        
+        $transactions = array();
+        foreach ($weighttickets as $weightticket)
+        {
+            $pounds = 0.0;
+            $unitprice = 0.0;
+            $total_sales = 0.0;
+            
+            if ($weightticket['weightticketscale_pickup'])
+            {
+                $weightticket_products = $weightticket['weightticketscale_pickup']->weightticketproducts->toArray();
+
+                foreach ($weightticket_products as $weightticket_product)
+                {
+                    $pounds += $weightticket_product['pounds'];
+                    $unitprice += $weightticket_product['transportscheduleproduct']['productorder']['unitprice'];
+                }
+                $total_sales = ($pounds * 0.0005) * $unitprice;
+            }
+            else
+            {
+                $weightticket_products = $weightticket['weightticketscale_dropoff']->weightticketproducts->toArray();
+
+                foreach ($weightticket_products as $weightticket_product)
+                {
+                    $pounds += $weightticket_product['pounds'];
+                    $unitprice += $weightticket_product['transportscheduleproduct']['productorder']['unitprice'];
+                }
+                $total_sales = ($pounds * 0.0005) * $unitprice;
+            }
+            
+            $updated_at = $weightticket['updated_at'];
+            $account = $weightticket['transportschedule']['order']['account']['name'];
+            $net_sale = $total_sales - 0.0; // Total Sales - Return Sales
+            $hay_cost = 99.9999;
+            $freight = $weightticket['transportschedule']['truckingrate'] + $weightticket['transportschedule']['trailerrate'] + $weightticket['transportschedule']['fuelcharge'];
+            $fees = $weightticket['transportschedule']['originloaderfee'] + $weightticket['transportschedule']['destinationloaderfee'];
+            $commission = 9.9999;
+            $profit_amount = $net_sale - $hay_cost - $freight - $fees - $commission;
+            $profit_percentage = number_format((($profit_amount / $net_sale) * 100), 2, '.', ',');
+            
+            $transactions[] = array(
+                'updated_at' => $updated_at,
+                'account' => $account,
+                'net_sale' => $net_sale,
+                'hay_cost' => $hay_cost,
+                'freight_cost' => $freight,
+                'fees' => $fees,
+                'commission' => $commission,
+                'profit_amount' => $profit_amount,
+                'profit_percentage' => $profit_percentage
+            );
+        }
+        
+        // Get summary
+        $total_cost = $total_hay_cost = $total_freight_cost = $total_profit_amount = $total_net_sale = $total_profit_percentage = 0.0;
+        foreach ($transactions as $transaction)
+        {
+            $total_hay_cost += $transaction['hay_cost'];
+            $total_freight_cost += $transaction['freight_cost'];
+            $total_profit_amount += $transaction['profit_amount'];
+            $total_net_sale += $transaction['net_sale'];
+        }
+        $total_cost = $total_hay_cost + $total_freight_cost;
+        $total_profit_percentage = number_format((($total_profit_amount / $total_net_sale) * 100), 2, '.', ',');
         
         $report['summary']['total_transactions'] = $weighttickets->count();
-        $report['summary']['total_cost'] = '';
-        $report['summary']['hay_cost'] = '';
-        $report['summary']['freight_cost'] = '';
-        $report['summary']['profit'] = '';
-        $report['summary']['profit_percentage'] = '';
-        $report['transactions'] = $weighttickets->toArray();
+        $report['summary']['total_cost'] = $total_cost;
+        $report['summary']['total_hay_cost'] = $total_hay_cost;
+        $report['summary']['total_freight_cost'] = $total_freight_cost;
+        $report['summary']['total_profit_amount'] = $total_profit_amount;
+        $report['summary']['total_profit_percentage'] = $total_profit_percentage;
+        $report['transactions'] = $transactions;
+//        $report['data'] = $weighttickets->toArray();
         
         return $report;
     }
