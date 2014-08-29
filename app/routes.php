@@ -190,6 +190,13 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('inventory/transactiontype', 'APIv1\InventoryController@transactionType');
     Route::post('inventory/purchaseorder', 'APIv1\InventoryController@store');
     Route::resource('inventory', 'APIv1\InventoryController');
+
+    //Commission
+    Route::get('commission/getClosedWeightTicketByUserIncludingWithCommission', 'APIv1\CommissionController@getAllClosedWeightTicketByUserIncludingWithCommission');
+    Route::get('commission/getClosedWeightTicketByUser', 'APIv1\CommissionController@getAllClosedWeightTicketByUser');
+    Route::get('commission/getClosedWeightTicketById', 'APIv1\CommissionController@getClosedWeightTicketById');
+    Route::get('commission/users', 'APIv1\UsersController@userList');
+    Route::resource('commission', 'APIv1\CommissionController');
     
     // Reports
     Route::get('report/gross-profit', 'APIv1\ReportController@generateGrossProfit');
@@ -205,6 +212,6 @@ Route::group(array('before' => 'auth.session'),function(){
     Route::resource('file','FileController', array('only' => array('index')));
 });
 
-Route::get('/', function(){ return View::make('main')->withVersion(Config::get('Constants.VERSION',"1.0")); });
+Route::get('/', function(){ return View::make('main'); });
 Route::get('/404', function(){ return View::make('errors/404'); });
 Route::get('/{dump}', function(){ return Redirect::to('404'); });
