@@ -27,9 +27,9 @@
 		.text-center { text-align: center; }
 		.text-right { text-align: right; }
 
-		table { border-collapse: collapse; width: 100%; border:0; }
+		table { border-collapse: collapse; width: 100%; border: thin solid #ddd; }
 		td, th { border: thin solid #ddd; text-align: left; vertical-align: top; padding: 5px 2px; }
-		tfoot td { font-weight: bold; }
+		tfoot td, thead th { border: thin solid #ddd; font-weight: bold; }
 		@page { margin: 70px 20px 40px 20px; padding: 0; }
 	</style>
 </head>
