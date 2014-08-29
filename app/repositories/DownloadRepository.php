@@ -62,8 +62,9 @@ class DownloadRepository implements DownloadInterface
 									->with('contract.account')
 									->find($q['id']);
 
-						// return View::make('pdf.base',array('title' => 'export'))->nest('child','pdf.order',array('order' => $order));
-						return PDF::loadHtml(View::make('pdf.base')->nest('child','pdf.order',array('order' => $order)))->stream();
+						// return View::make('pdf.base')->nest('child','pdf.order',array('order' => $order));
+						// return PDF::loadHtml(View::make('pdf.base')->nest('child','pdf.order',array('order' => $order)))->stream();
+						return PDF::loadView('pdf.order',array('order' => $order))->stream();
 						break;
 				}
 				break;
