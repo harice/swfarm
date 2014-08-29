@@ -25,7 +25,7 @@ class AddAmountDueColumnToCommissionTable extends Migration {
 	 */
 	public function down()
 	{
-		
+		Schema::dropIfExists('commission');
 	}
 
 }

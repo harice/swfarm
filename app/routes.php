@@ -192,7 +192,9 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('inventory', 'APIv1\InventoryController');
 
     //Commission
-    Route::get('commission/closeWeightTicketByUser', 'APIv1\CommissionController@getAllCloseWeightTicketByUser');
+    Route::get('commission/getClosedWeightTicketByUserIncludingWithCommission', 'APIv1\CommissionController@getAllClosedWeightTicketByUserIncludingWithCommission');
+    Route::get('commission/getClosedWeightTicketByUser', 'APIv1\CommissionController@getAllClosedWeightTicketByUser');
+    Route::get('commission/getClosedWeightTicketById', 'APIv1\CommissionController@getClosedWeightTicketById');
     Route::get('commission/users', 'APIv1\UsersController@userList');
     Route::resource('commission', 'APIv1\CommissionController');
     

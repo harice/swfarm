@@ -15,6 +15,7 @@ class Commission extends BaseModel {
         'user_id' => 'required',
         'tons' => 'required',
         'rate' => 'required',
+        'amountdue' => 'required',
         'type' => 'required'
     );
 
@@ -28,7 +29,8 @@ class Commission extends BaseModel {
         'weightticket_id',
         'user_id', 
         'tons', 
-        'rate', 
+        'rate',
+        'amountdue',
         'type'
     );
     
@@ -38,17 +40,17 @@ class Commission extends BaseModel {
      */
     public function order()
     {
-        return $this->hasOne('Order', 'id', 'order_id');
+        return $this->hasOne('Order', 'id', 'order_id')->select(array('id', 'order_number', 'contact_id'));
     }
 
     public function weightticket()
     {
-        return $this->hasOne('WeightTicket', 'id', 'weightticket_id');
+        return $this->hasOne('WeightTicket', 'id', 'weightticket_id')->select(array('id', 'weightTicketNumber', 'pickup_id', 'dropoff_id'));
     }
 
     public function user()
     {
-        return $this->hasOne('User', 'id', 'user_id');
+        return $this->hasOne('User', 'id', 'user_id')->select(array('id', 'firstname', 'lastname', 'suffix', 'email'));
     }
 
 }

@@ -24,146 +24,102 @@ class CommissionRepository implements CommissionRepositoryInterface {
         //     return $e->getMessage();
         // }
     }
-    
-    public function search($params)
-    {
-        // try
-        // {
-        //     $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
-        //     $sortby = isset($params['sortby']) ? $params['sortby'] : 'account_name';
-        //     $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
-        //     $searchWord = $params['search'];
-            
-        //     return Stack::with('product')
-        //         ->where(function ($query) use ($searchWord) {
-        //             $query->orWhere('stacknumber','like','%'.$searchWord.'%')
-        //                   ->orWhere('location','like','%'.$searchWord.'%');
-        //         })
-        //         ->orderBy($sortby, $orderby)
-        //         ->paginate($perPage);
-        // }
-        // catch (Exception $e)
-        // {
-        //     return $e->getMessage();
-        // }
-    }
-    
+   
     public function findById($id)
     {
-        // try
-        // {
-        //     $stack = Stack::find($id);
-            
-        //     if (!$stack) {
-        //         throw new NotFoundException();
-        //     }
-            
-        //     return $stack;
-        // }
-        // catch (Exception $e)
-        // {
-        //     return $e->getMessage();
-        // }
+        $commission = Commission::with('order')
+                                ->with('weightticket')
+                                ->with('user')
+                                ->find($id);
+        
+        if (!$commission) {
+            return array(
+                'error' => true,
+                'message' => 'Commission not found.'
+                );
+        }
+        
+        return $commission->toArray();
+      
     }
     
     public function store($data)
     {
-        // $this->validate($data);
+        $this->validate($data, 'Commission');
+        if($this->isWeightTickethasCommission($data['weightticket_id'])){
+            return array(
+                    'error' => true,
+                    'message' => 'This weight ticket has already a commission.'
+                );
+        }
+
+        $commission = new Commission;
+        $commission->fill($data);
         
-        // try
-        // {
-        //     $stack = $this->instance();
-        //     $stack->fill($data);
-            
-        //     if (!$stack->save()) {
-        //         return array(
-        //             'error' => true,
-        //             'message' => 'Stack was not created.'
-        //         );
-        //     }
-            
-        //     $response = array(
-        //         'error' => false,
-        //         'message' => Lang::get('messages.success.created', array('entity' => 'Stack')),
-        //         'data' => $stack->toArray()
-        //     );
-            
-        //     return $response;
-        // }
-        // catch (Exception $e)
-        // {
-        //     return $e->getMessage();
-        // }
+        if (!$commission->save()) {
+            $response = array(
+                'error' => true,
+                'message' => 'Commission was not created.'
+            );
+        } else {
+             $response = array(
+                'error' => false,
+                'message' => Lang::get('messages.success.created', array('entity' => 'Commission'))
+            );
+        }
+        
+       return $response;
+        
+    }
+
+    public function isWeightTickethasCommission($weightTicketId){
+        return Commission::where('weightticket_id', '=', $weightTicketId)->count() > 0 ? true : false;
     }
     
     public function update($id, $data)
     {
-        // $this->validate($data, $id);
+        $this->validate($data, 'Commission');
+       
+        $commission = Commission::find($id);
+        $commission->fill($data);
         
-        // try
-        // {
-        //     $stack = $this->findById($id);
-        //     $stack->fill($data);
-            
-        //     if (!$stack->update()) {
-        //         return array(
-        //             'error' => true,
-        //             'message' => 'Stack was not updated.'
-        //         );
-        //     }
-            
-        //     $response = array(
-        //         'error' => false,
-        //         'message' => Lang::get('messages.success.updated', array('entity' => 'Stack')),
-        //         'data' => $stack->toArray()
-        //     );
-            
-        //     return $response;
-        // }
-        // catch (Exception $e)
-        // {
-        //     return $e->getMessage();
-        // }
+        if(!$commission->save()) {
+            $response = array(
+                'error' => true,
+                'message' => 'Commission was not updated.'
+            );
+        } else {
+             $response = array(
+                'error' => false,
+                'message' => Lang::get('messages.success.updated', array('entity' => 'Commission'))
+            );
+        }
+        
+       return $response;
     }
     
     public function destroy($id)
     {
-        // try
-        // {
-        //     $stack = $this->findById($id);
+        $commission = Commission::find($id);
 
-        //     if (!$stack->delete()) {
-        //         return array(
-        //             'error' => true,
-        //             'message' => 'Stack was not deleted.'
-        //         );
-        //     }
+        if (!$commission->delete()) {
+            return array(
+                'error' => true,
+                'message' => 'Commission was not deleted.'
+            );
+        }
 
-        //     $response = array(
-        //         'error' => false,
-        //         'message' => Lang::get('messages.success.deleted', array('entity' => 'Stack')),
-        //         'data' => $stack->toArray()
-        //     );
-            
-        //     return $response;
-        // }
-        // catch (Exception $e)
-        // {
-        //     return $e->getMessage();
-        // }
+        $response = array(
+            'error' => false,
+            'message' => Lang::get('messages.success.deleted', array('entity' => 'Commission'))
+        );
+        
+        return $response;
     }
     
-    public function validate($data, $id = null)
+    public function validate($data, $entity)
     {
-        $rules = Stack::$rules;
-        
-        if ($id) {
-            $rules['stacknumber'] = 'required|unique:stack,stacknumber,'.$id;
-            $rules['product_id'] = 'required';
-            $rules['location'] = 'required|unique:stack,location,'.$id;
-        }
-        
-        $validator = Validator::make($data, $rules);
+        $validator = Validator::make($data, $entity::$rules);
         
         if ($validator->fails()) {
             throw new ValidationException($validator);
@@ -177,31 +133,56 @@ class CommissionRepository implements CommissionRepositoryInterface {
         return new Commission($data);
     }
 
-    public function getAllCloseWeightTicketByUser($userId){
-        $result = WeightTicket::with('schedule.order.account')
-                              ->with('schedule.order.contact')
-                              ->with('weightticketscale_pickup.weightticketproducts')
-                              ->with('weightticketscale_dropoff.weightticketproducts')
+    public function getAllClosedWeightTicketByUser($userId, $includeTicketWithCommission = false){
+        $response = WeightTicket::with('schedule.orderdetails.account')
+                              ->with('schedule.orderdetails.contact')
+                              // ->with('weightticketscale_pickup')
+                              // ->with('weightticketscale_dropoff')
                               ->whereHas('schedule', function ($query) use ($userId){
                                         $query->whereHas('order', function ($query) use ($userId){
                                                 $query->where('user_id', '=', $userId)
                                                       ->where('ordertype', '=', Config::get('constants.ORDERTYPE_SO'));
                                         });
-                    })->where('status_id', '=', Config::get('constants.STATUS_CLOSED'))->get();
+                                });
+
+        if(!$includeTicketWithCommission){
+            $response = $response->has('commission', '=', 0);
+        }
+                              
+        $result = $response->where('status_id', '=', Config::get('constants.STATUS_CLOSED'))->get();
 
         return $result->toArray();
     }
 
-    public function getCloseWeightTicketById($id){
-        $result = WeightTicket::with('schedule.order.account')
-                              ->with('schedule.order.contact')
+    public function getClosedWeightTicketById($id){
+        $result = WeightTicket::with('schedule.orderdetails.account')
+                              ->with('schedule.orderdetails.contact')
+                              ->with('schedule.orderdetails.userfullname')
                               ->with('weightticketscale_pickup.weightticketproducts')
                               ->with('weightticketscale_dropoff.weightticketproducts')
                               ->where('status_id', '=', Config::get('constants.STATUS_CLOSED'))
                               ->where('id', '=', $id)
                               ->first();
+        
+        if(count($result->toArray()) > 0){
+            $data['weightticket_id'] = $result['id'];
+            $data['weightticketnumber'] = $result['weightTicketNumber'];
+            $data['order_id'] = $result['schedule']['orderdetails']['id'];
+            $data['ordernumber'] = $result['schedule']['orderdetails']['order_number'];
+            $data['user_id'] = $result['schedule']['orderdetails']['user_id'];
+            $data['user']['firstname'] = $result['schedule']['orderdetails']['userfullname']['firstname'];
+            $data['user']['lastname'] = $result['schedule']['orderdetails']['userfullname']['lastname'];
+            $data['user']['suffix'] = $result['schedule']['orderdetails']['userfullname']['suffix'];
+
+            //Tons (actual net weight of dropoff ticket, if no dropoff ticket use pick up ticket)
+            if($result['dropoff_id'] != null){
+                $data['tons'] = $result['weightticketscale_dropoff']['gross']-$result['weightticketscale_dropoff']['tare'];
+            } else {
+                $data['tons'] = $result['weightticketscale_pickup']['gross']-$result['weightticketscale_pickup']['tare'];
+            }
+        }
                               
-        return $result->toArray();
+        return $data;
     }
     
 }

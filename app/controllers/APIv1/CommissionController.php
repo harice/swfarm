@@ -89,8 +89,18 @@ class CommissionController extends BaseController {
         return Response::json($response);
 	}
 
-	public function getAllCloseWeightTicketByUser(){
-		$response = $this->repo->getAllCloseWeightTicketByUser(Input::get('userId'));
+	public function getAllClosedWeightTicketByUser(){
+		$response = $this->repo->getAllClosedWeightTicketByUser(Input::get('userId'));
+        return Response::json($response);
+	}
+
+	public function getClosedWeightTicketById(){
+		$response = $this->repo->getClosedWeightTicketById(Input::get('weightticketId'));
+        return Response::json($response);
+	}
+
+	public function getAllClosedWeightTicketByUserIncludingWithCommission(){
+		$response = $this->repo->getAllClosedWeightTicketByUser(Input::get('userId'), true);
         return Response::json($response);
 	}
 

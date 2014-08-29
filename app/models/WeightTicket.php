@@ -55,6 +55,10 @@ class WeightTicket extends BaseModel {
         return $this->hasOne('Status', 'id', 'status_id');
     }
 
+    public function commission(){
+        return $this->hasOne('Commission', 'weightticket_id', 'id');
+    }
+
     public function delete(){
         $this->weightticketscale_pickup()->delete();
         $this->weightticketscale_dropoff()->delete();
