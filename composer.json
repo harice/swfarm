@@ -5,11 +5,11 @@
 	"license": "MIT",
 	"require": {
 		"laravel/framework": "4.1.*",
-    "doctrine/dbal": "2.3.4"
+    	"doctrine/dbal": "2.3.4"
 	},
-  "require-dev": {
-    "mockery/mockery": "dev-master"
-  },
+	"require-dev": {
+		"mockery/mockery": "dev-master"
+	},
 	"autoload": {
 		"classmap": [
 			"app/commands",
