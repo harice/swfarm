@@ -1,4 +1,4 @@
-<h1 class='text-center margin-top-30 margin-bottom-30'>@if ($order->ordertype === '1') Purchase @else Sales @endif Order Invoice</h1>
+<h1 class='margin-top-30 margin-bottom-30'>@if ($order->ordertype === '1') Purchase @else Sales @endif Order</h1>
 <h2><span class='text-danger'>No.:</span> {{ $order->order_number }}</h2>
 <div class="float-left witdh-50">
 	@if ($order->ordertype === '1')
@@ -14,14 +14,14 @@
 		Sales Date: <span class="text-danger">{{ date('m-d-Y h:i A', strtotime($order->created_at)) }}</span><br>
 	    Delivery Start: <span class="text-danger">{{ date('m-d-Y', strtotime($order->transportdatestart)) }}</span>
 	    Delivery End: <span class="text-danger">{{ date('m-d-Y', strtotime($order->transportdateend)) }}</span><br>
-	    Nature of Sale: <span class="text-danger">{{ date('m-d-Y', $order->natureofsale->name) }}</span><br>
+	    Nature of Sale: <span class="text-danger">{{ $order->natureofsale->name }}</span><br>
 
 	    @if (is_object($order->contract))
 	    	Contract: <span class="text-danger">{{ $order->contract->contract_number }}</span><br>
 	    @endif
 	@endif
 
-	Status: <span class="color-{{ $order->status->class }}">{{ $order->status->name }}</span>
+	Status: <span class="text-danger">{{ $order->status->name }}</span>
 
 	@if (in_array($order->status->id, array('3','5','6')))
 		@if ($order->ordercancellingreason->reason->id != '6')
@@ -96,7 +96,7 @@
 								<td class='text-danger'>{{ strtoupper($product->stacknumber) }}</td>
 								<td>{{ $product->sectionfrom->storagelocation->name }} - {{ $product->sectionfrom->name }}</td>
 								<td>{{ $product->description }}</td>
-								<td class="text-right">$ {{ $product->unitprice }}</td>
+								<td class="text-right">$ {{ number_format($product->unitprice, 2, '.', ',') }}</td>
 								{? $t_bales += $product->bales ?}
 								<td class="text-right">{{ $product->bales }}</td>
 								{? $t_tons += $product->tons ?}
@@ -122,7 +122,7 @@
 				@else
 					<tr>
 						<td>{{ $products->productname->name }}</td>
-						<td class="text-right">$ {{ $products->unitprice }}</td>
+						<td class="text-right">$ {{ number_format($products->unitprice, 2, '.', ',') }}</td>
 						{? $t_tons += $products->tons ?}
 						<td class="text-right">{{ $products->tons }}</td>
 						{? $_price = $products->tons * $products->unitprice ?}

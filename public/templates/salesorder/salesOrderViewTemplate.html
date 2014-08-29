@@ -1,5 +1,11 @@
 <div class="content padding-top-0">
-  <h2 class="ponumber margin-bottom-0"><%= so.get("order_number") %></h2>
+  <h2 class="ponumber margin-bottom-0">
+    <%= so.get("order_number") %>
+    <div class='pull-right'>
+      <a href='<%= print_url %>' target='_blank' class='btn btn-link btn-sm padding-right-0'><i class='fa fa-print'></i>print</a>
+      <a href='/' class='btn btn-link btn-sm margin-left-0'><i class='fa fa-envelope-o'></i>email</a>
+    </div>
+  </h2>
   <div class="progress width-150 margin-bottom-0 height-3">
   <div style="width: <%= so.get("weightPercentageDelivered") %>%" class="progress-bar progress-bar-<%= so.get("status").class %>"></div>
   </div>
