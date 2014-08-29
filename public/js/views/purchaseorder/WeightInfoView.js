@@ -86,8 +86,8 @@ define([
                 wi: this.model,
 			};
 			
-			if((!this.model.get('status') || (this.model.get('status') && this.model.get('status').name.toLowerCase() != Const.STATUS.CLOSED)) && 
-				this.purchaseOrderModel.get('status').name.toLowerCase() == Const.STATUS.OPEN)
+			if((!this.model.get('status') || (this.model.get('status') && this.model.get('status').id != Const.STATUSID.CLOSED)) && 
+				this.purchaseOrderModel.get('status').id == Const.STATUSID.OPEN)
 				innerTemplateVariables['editable'] = true;
 			
 			if(this.model.get('weightticketscale_pickup') != null)

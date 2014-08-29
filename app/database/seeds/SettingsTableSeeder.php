@@ -35,6 +35,12 @@ class SettingsTableSeeder extends Seeder {
                 'value'             => '10',
                 'created_at'        => $now,
                 'updated_at'        => $now
+            ),
+              array(
+                'name'              => 'fuel_rate',
+                'value'             => '53.00',
+                'created_at'        => $now,
+                'updated_at'        => $now
             )
         );
         

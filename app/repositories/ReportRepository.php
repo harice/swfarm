@@ -16,15 +16,16 @@ class ReportRepository implements ReportRepositoryInterface {
             {
                 $q->on('transportScheduleProduct_id', '=', 'transportscheduleproduct.id');
                 
-                if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                // Filter by Date
+                if (isset($params['dateStart']))
+                {
                     $q->where('weightticketproducts.created_at', '>', $params['dateStart']);
-                    $q->where('weightticketproducts.created_at', '<', $date_end);
-                } elseif (isset($params['dateStart'])) {
-                    $q->where('weightticketproducts.created_at', '>=', $params['dateStart']);
-                } elseif (isset($params['dateEnd'])) {
+                }
+
+                if (isset($params['dateEnd']))
+                {
                     $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                    $q->where('weightticketproducts.created_at', '<=', $date_end);
+                    $q->where('weightticketproducts.created_at', '<', $date_end);
                 }
             })
             ->join('productorder', 'transportscheduleproduct.productorder_id', '=', 'productorder.id')
@@ -72,15 +73,16 @@ class ReportRepository implements ReportRepositoryInterface {
             {
                 $q->on('transportScheduleProduct_id', '=', 'transportscheduleproduct.id');
                 
-                if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                // Filter by Date
+                if (isset($params['dateStart']))
+                {
                     $q->where('weightticketproducts.created_at', '>', $params['dateStart']);
-                    $q->where('weightticketproducts.created_at', '<', $date_end);
-                } elseif (isset($params['dateStart'])) {
-                    $q->where('weightticketproducts.created_at', '>=', $params['dateStart']);
-                } elseif (isset($params['dateEnd'])) {
+                }
+
+                if (isset($params['dateEnd']))
+                {
                     $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                    $q->where('weightticketproducts.created_at', '<=', $date_end);
+                    $q->where('weightticketproducts.created_at', '<', $date_end);
                 }
             })
             ->join('productorder', 'transportscheduleproduct.productorder_id', '=', 'productorder.id')
@@ -121,28 +123,14 @@ class ReportRepository implements ReportRepositoryInterface {
     public function generateOperatorPay($id, $params)
     {
         // Get load origin
-        $contact_origin = Contact::with(
-            array(
-                'loadOrigin' => function($q) use ($params) {
-                    $q->with('order.account');
-                    if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-//                        $q->whereBetween('created_at', array($params['dateStart'], $date_end));
-                        $q->where('created_at', '>', $params['dateStart']);
-                        $q->where('created_at', '<', $date_end);
-                    } elseif (isset($params['dateStart'])) {
-                        $q->where('created_at', '>=', $params['dateStart']);
-                    } elseif (isset($params['dateEnd'])) {
-                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                        $q->where('created_at', '<=', $date_end);
-                    }
-                }
-            )
-        );
+        $contact_origin = Contact::with('loadOrigin.order.account');
         
-        $contact_origin = $contact_origin->where('id', '=', $id);
+        $contact_origin = $contact_origin->whereHas('loadOrigin',
+            function($q) use ($id, $params) {
+                $q->where('trucker_id', '=', $id);
+            });
         
-        $contact_origin = $contact_origin->first();
+        $contact_origin = $contact_origin->get();
         if (!$contact_origin) {
             throw new Exception('Contact not found.');
         }
@@ -150,58 +138,53 @@ class ReportRepository implements ReportRepositoryInterface {
         $contact_origin = $contact_origin->toArray();
         
         // Get load destination
-        $contact_destination = Contact::with(
-            array(
-                'loadDestination' => function($q) use ($params) {
-                    $q->with('order.account');
-                    if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                        $q->where('created_at', '>', $params['dateStart']);
-                        $q->where('created_at', '<', $date_end);
-                    } elseif (isset($params['dateStart'])) {
-                        $q->where('created_at', '>=', $params['dateStart']);
-                    } elseif (isset($params['dateEnd'])) {
-                        $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                        $q->where('created_at', '<=', $date_end);
-                    }
-                }
-            )
-        );
+        $contact_destination = Contact::with('loadDestination.order.account');
+        $contact_destination = $contact_destination->whereHas('loadOrigin',
+            function($q) use ($id, $params) {
+                $q->where('trucker_id', '=', $id);
+            });
         
-        $contact_destination = $contact_destination->where('id', '=', $id);
-        
-        $contact_destination = $contact_destination->first();
+        $contact_destination = $contact_destination->get();
         if (!$contact_destination) {
             throw new Exception('Contact not found.');
         }
         
         $contact_destination = $contact_destination->toArray();
         
+        // Contruct transactions
         $loads = array();
         $i = 0;
         $total = 0.00;
-        foreach ($contact_origin['load_origin'] as $load) {
-            $item['id'] = $i;
-            $item['type'] = 'Load';
-            $item['amount'] = $load['originloaderfee'];
-            $item['account_name'] = $load['order']['account']['name'];
-            $item['created_at'] = date('Y-m-d', strtotime($load['created_at']));
-            
-            $loads[] = $item;
-            $total += $item['amount'];
-            $i++;
+        foreach ($contact_origin as $contact)
+        {
+            foreach ($contact['load_origin'] as $load) {
+                $item['id'] = $i;
+                $item['type'] = 'Load';
+                $item['amount'] = $load['originloaderfee'];
+                $item['account_name'] = $load['order']['account']['name'];
+                $item['loader'] = $contact['lastname'] . ', ' .$contact['firstname'];
+                $item['created_at'] = date('Y-m-d', strtotime($load['created_at']));
+
+                $loads[] = $item;
+                $total += $item['amount'];
+                $i++;
+            }
         }
         
-        foreach ($contact_destination['load_destination'] as $load) {
-            $item['id'] = $i;
-            $item['type'] = 'Unload';
-            $item['amount'] = $load['destinationloaderfee'];
-            $item['account_name'] = $load['order']['account']['name'];
-            $item['created_at'] = date('Y-m-d', strtotime($load['created_at']));
-            
-            $loads[] = $item;
-            $total += $item['amount'];
-            $i++;
+        foreach ($contact_destination as $contact)
+        {
+            foreach ($contact['load_destination'] as $load) {
+                $item['id'] = $i;
+                $item['type'] = 'Unload';
+                $item['amount'] = $load['destinationloaderfee'];
+                $item['account_name'] = $load['order']['account']['name'];
+                $item['loader'] = $contact['lastname'] . ', ' .$contact['firstname'];
+                $item['created_at'] = date('Y-m-d', strtotime($load['created_at']));
+
+                $loads[] = $item;
+                $total += $item['amount'];
+                $i++;
+            }
         }
         
         $report['operator'] = Contact::find($id)->toArray();
@@ -226,16 +209,16 @@ class ReportRepository implements ReportRepositoryInterface {
             {
                 $q->on('transportScheduleProduct_id', '=', 'transportscheduleproduct.id');
                 
-                if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-//                    $q->whereBetween('weightticketproducts.created_at', array($params['dateStart'], $date_end));
+                // Filter by Date
+                if (isset($params['dateStart']))
+                {
                     $q->where('weightticketproducts.created_at', '>', $params['dateStart']);
-                    $q->where('weightticketproducts.created_at', '<', $date_end);
-                } elseif (isset($params['dateStart'])) {
-                    $q->where('weightticketproducts.created_at', '>=', $params['dateStart']);
-                } elseif (isset($params['dateEnd'])) {
+                }
+
+                if (isset($params['dateEnd']))
+                {
                     $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                    $q->where('weightticketproducts.created_at', '<=', $date_end);
+                    $q->where('weightticketproducts.created_at', '<', $date_end);
                 }
             })
             ->join('productorder', 'productorder_id', '=', 'productorder.id');
@@ -253,6 +236,7 @@ class ReportRepository implements ReportRepositoryInterface {
         $transactions = $transactions->where('truck.id', '=', $id);
         
         $transactions = $transactions->select(
+            'weightticketproducts.id as id',
             'weightticketproducts.bales',
             'weightticketproducts.pounds',
             'weightticketproducts.created_at',
@@ -296,6 +280,17 @@ class ReportRepository implements ReportRepositoryInterface {
         
         $transactions = $transactions->get();
         
+        $truck_loads = array();
+        foreach($transactions->toArray() as $truck_load)
+        {
+            $truck_loads[] = array(
+                'type' => ($truck_load['loading_type'] == 2) ? 'Unload' : 'Load',
+                'loader' => ($truck_load['loading_type'] == 2) ? $truck_load['loader_destination_lastname'] .', ' .$truck_load['loader_destination_firstname'] : $truck_load['loader_origin_lastname'] .', ' .$truck_load['loader_origin_firstname'],
+                'amount' => $truck_load['pounds']
+            );
+        }
+        
+        
         $report['truck'] = $truck;
         $report['summary']['total_transactions'] = $total_transactions;
         $report['summary']['total_bales'] = $total_bales;
@@ -307,6 +302,7 @@ class ReportRepository implements ReportRepositoryInterface {
         $report['summary']['total_hauling_fee'] = $total_hauling_fee;
         $report['summary']['total_statement'] = $total_bales + $total_pounds + $total_hauling_fee;
         $report['transactions'] = $transactions->toArray();
+        $report['truck_loads'] = $truck_loads;
         
         return $report;
     }
@@ -381,15 +377,16 @@ class ReportRepository implements ReportRepositoryInterface {
             {
                 $q->on('transportScheduleProduct_id', '=', 'transportscheduleproduct.id');
                 
-                if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                // Filter by Date
+                if (isset($params['dateStart']))
+                {
                     $q->where('weightticketproducts.created_at', '>', $params['dateStart']);
-                    $q->where('weightticketproducts.created_at', '<', $date_end);
-                } elseif (isset($params['dateStart'])) {
-                    $q->where('weightticketproducts.created_at', '>=', $params['dateStart']);
-                } elseif (isset($params['dateEnd'])) {
+                }
+
+                if (isset($params['dateEnd']))
+                {
                     $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                    $q->where('weightticketproducts.created_at', '<=', $date_end);
+                    $q->where('weightticketproducts.created_at', '<', $date_end);
                 }
             });
         
@@ -417,33 +414,79 @@ class ReportRepository implements ReportRepositoryInterface {
         
         return $report;
     }
+    
+    /**
+     * Generate Gross Profit Report
+     * 
+     * @param array $params
+     * @return mixed
+     */
+    public function generateGrossProfit($params)
+    {
+        $weighttickets = WeightTicket::with(
+            'transportschedule.order',
+            'weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder',
+            'weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder'
+        );
+        
+        // Filter by Date
+        if (isset($params['dateStart']))
+        {
+            $weighttickets = $weighttickets->where('created_at', '>', $params['dateStart']);
+        }
+
+        if (isset($params['dateEnd']))
+        {
+            $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+            $weighttickets = $weighttickets->where('created_at', '<', $date_end);
+        }
+        
+        $weighttickets = $weighttickets->get();
+        
+        Log::debug(DB::getQueryLog());
+        
+        $report['summary']['total_transactions'] = $weighttickets->count();
+        $report['summary']['total_cost'] = '';
+        $report['summary']['hay_cost'] = '';
+        $report['summary']['freight_cost'] = '';
+        $report['summary']['profit'] = '';
+        $report['summary']['profit_percentage'] = '';
+        $report['transactions'] = $weighttickets->toArray();
+        
+        return $report;
+    }
 
     public function inventoryReportPerLocation($data){
+        $perPage = isset($data['perpage']) ? $data['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
         $storageLocationId = $data['storagelocationId'];
         // var_dump(date( 'Y-m-d'. ' 00:00:00', strtotime($data['dateFrom'])));
         // var_dump(date( 'Y-m-d'.' 23:59:59', strtotime($data['dateTo'])));
         // var_dump(date('Y-m-d', strtotime($data['dateFrom'])));
         $storageLocation = StorageLocation::with('section.inventoryproduct_sectionto.inventory.inventorytransactiontype')
-                                        ->with('section.inventoryproduct_sectionto.inventory.ordernumberForInventory.account')
+                                        ->with('section.inventoryproduct_sectionto.inventory.ordernumberforinventory.account')
                                         ->with('section.inventoryproduct_sectionto.inventory.weightticketnumber')
                                         ->with('section.inventoryproduct_sectionfrom.inventory.inventorytransactiontype')
-                                        ->with('section.inventoryproduct_sectionfrom.inventory.ordernumberForInventory.contractnumber');
+                                        ->with('section.inventoryproduct_sectionfrom.inventory.ordernumberforinventory.account')
+                                        ->with('section.inventoryproduct_sectionfrom.inventory.weightticketnumber');
+                                        
         if(isset($data['dateFrom']) && isset($data['dateTo'])){
-            $storageLocation = $storageLocation->where(function($subQuery) use ($data){
-                                    $subQuery->wherehas('section', function($section) use ($data){
-                                       $section->whereHas('inventoryproduct_sectionto', function($inventoryproduct_sectionto) use ($data){
-                                            $from = "'".date( 'Y-m-d'.' 00:00:00', strtotime($data['dateFrom']))."'";
-                                            $to = "'".date( 'Y-m-d'.' 23:59:59', strtotime($data['dateTo']))."'";
-                                            $inventoryproduct_sectionto->whereBetween('created_at', array($from, $to));
-                                        // $inventoryproduct_sectionto->where('created_at', 'like', "'".$data['dateFrom']." %'");
-                                        });
-                                    });
-                                });
+                $storageLocation->with(array('section.inventoryproduct_sectionto' => function ($query) use ($data){
+                        $from = date('Y-m-d'. ' 00:00:00', strtotime($data['dateFrom']));
+                        $to = date('Y-m-d'. ' 23:59:59', strtotime($data['dateTo']));
+                        $query->whereBetween('created_at', array($from, $to));
+                }));
+                $storageLocation->with(array('section.inventoryproduct_sectionfrom' => function ($query) use ($data){
+                        $from = date('Y-m-d'. ' 00:00:00', strtotime($data['dateFrom']));
+                        $to = date('Y-m-d'. ' 23:59:59', strtotime($data['dateTo']));
+                        $query->whereBetween('created_at', array($from, $to));
+                }));
         }
 
-        $storageLocation = $storageLocation->where('id', '=', $storageLocationId)->get();
-        return $storageLocation->toArray();
-        if($result){
+        $storageLocation = $storageLocation->where('id', '=', $storageLocationId)->first();
+        // exit;
+        // return $storageLocation->toArray();
+        if($storageLocation){
+            $result = $storageLocation->toArray();
             $data = array();
             $index = 0;
             $data['location'] = $result['name'];
@@ -452,13 +495,12 @@ class ReportRepository implements ReportRepositoryInterface {
             $data['totalCost'] = 0;
             foreach($result['section'] as $section){
                 foreach($section['inventoryproduct_sectionto'] as $inventoryproduct){
-                    $date = $inventoryproduct['inventory']['created_at'];
                     $data['data'][$index]['section'] = $section['name'];
-                    $data['data'][$index]['date'] = $date->createFromFormat('Y-m-d H:i:s', $date)->format('Y-m-d H:i:s');
-                    $data['data'][$index]['ordernumber'] = $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] : "";
+                    $data['data'][$index]['date'] = $inventoryproduct['inventory']['created_at'];
+                    $data['data'][$index]['ordernumber'] = $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] : "";
                     $data['data'][$index]['weightticketnumber'] = $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] != null ? $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] : "";
-                    $data['data'][$index]['producer'] = $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['account']['name'] : "";
-                    $data['data'][$index]['contract'] = $inventoryproduct['inventory']['ordernumberForInventory']['contract_id'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['contract']['contract_number'] : "";
+                    $data['data'][$index]['producer'] = $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['account']['name'] : "";
+                    $data['data'][$index]['contract'] = $inventoryproduct['inventory']['ordernumberforinventory']['contract_id'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['contract']['contract_number'] : "";
                     $data['data'][$index]['bales'] = $inventoryproduct['bales'] != null ? $inventoryproduct['bales'] : "0";
                     $data['data'][$index]['tons'] = $inventoryproduct['tons'];
                     $data['data'][$index]['price'] = $inventoryproduct['price'];
@@ -470,14 +512,13 @@ class ReportRepository implements ReportRepositoryInterface {
                     $index++;
                 }
                 foreach($section['inventoryproduct_sectionfrom'] as $inventoryproduct){
-                    $date = $inventoryproduct['inventory']['created_at'];
                     $data['data'][$index]['section'] = $section['name'];
-                    $data['data'][$index]['date'] = $date->createFromFormat('Y-m-d H:i:s', $date)->format('Y-m-d H:i:s');
-                    $data['data'][$index]['ordernumber'] = $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] : "";
+                    $data['data'][$index]['date'] = $inventoryproduct['inventory']['created_at'];
+                    $data['data'][$index]['ordernumber'] = $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] : "";
                     $data['data'][$index]['weightticketnumber'] = $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] != null ? $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] : "";
-                    $data['data'][$index]['producer'] = $inventoryproduct['inventory']['ordernumberForInventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['account']['name'] : "";
-                    $data['data'][$index]['contract'] = $inventoryproduct['inventory']['ordernumberForInventory']['contract_id'] != null ? $inventoryproduct['inventory']['ordernumberForInventory']['contract']['contract_number'] : "";
-                    $data['data'][$index]['bales'] = $inventoryproduct['bales'] != null ? $inventoryproduct['bales'] : 0;
+                    $data['data'][$index]['producer'] = $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['account']['name'] : "";
+                    $data['data'][$index]['contract'] = $inventoryproduct['inventory']['ordernumberforinventory']['contract_id'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['contract']['contract_number'] : "";
+                    $data['data'][$index]['bales'] = $inventoryproduct['bales'] != null ? $inventoryproduct['bales'] : "0";
                     $data['data'][$index]['tons'] = $inventoryproduct['tons'];
                     $data['data'][$index]['price'] = $inventoryproduct['price'];
                     $data['data'][$index]['cost'] = number_format($inventoryproduct['tons'] * $inventoryproduct['price'], 2);

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddBalesColumnToInventoryproductTable extends Migration {
+class CreateTokensTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,9 +12,12 @@ class AddBalesColumnToInventoryproductTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::table('inventoryproduct', function(Blueprint $table)
+		Schema::create('tokens', function(Blueprint $table)
 		{
-			$table->integer('bales')->nullable()->after('price');
+			$table->string('id',50)->primary();
+			$table->string('ip_address',10);
+			$table->text('user_agent');
+			$table->integer('last_activity');
 		});
 	}
 
@@ -25,10 +28,7 @@ class AddBalesColumnToInventoryproductTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::table('inventoryproduct', function(Blueprint $table)
-		{
-			//
-		});
+		Schema::dropIfExists('tokens');
 	}
 
 }

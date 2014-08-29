@@ -67,14 +67,42 @@ define([
 			this.loadingRate = null;
 			this.unloadingRate = null;
 			this.trailerPercentageRate = null;
+			this.fuelRate = null
 			
 			this.truckingRateEditable = false;
+			this.hasFuelCharge = false;
+			
+			this.distanceMarkers = [];
+			/*this.distanceMarkers.push({
+				distance:0.53,
+				isLoadedDistance:0,
+				latitudeFrom:33.39511751728097,
+				latitudeTo:33.39110448743527,
+				longitudeFrom:-112.33581232998404,
+				longitudeTo:-112.33130621883902,
+			});
+			this.distanceMarkers.push({
+				distance:0.84,
+				isLoadedDistance:1,
+				latitudeFrom:33.39110448743527,
+				latitudeTo:	33.394902538236444,
+				longitudeFrom:-112.33130621883902,
+				longitudeTo:-112.32263731930288,
+			});
+			this.distanceMarkers.push({
+				distance:1.46,
+				isLoadedDistance:0,
+				latitudeFrom:33.394902538236444,
+				latitudeTo:33.39443674848234,
+				longitudeFrom:-112.32263731930288,
+				longitudeTo:-112.306629895902,
+			});*/
 			
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
 				productFieldClass: ['productorder_id', 'sectionto_id', 'quantity', 'id'],
-				productFieldClassRequired: ['productorder_id', 'quantity'],
+				productFieldClassRequired: ['productorder_id', 'sectionto_id', 'quantity'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
 				removeComma: ['originloaderfee',
@@ -92,6 +120,7 @@ define([
 				thisObj.loadingRate = parseFloat(this.get('loading_rate'));
 				thisObj.unloadingRate = parseFloat(this.get('unloading_rate'));
 				thisObj.trailerPercentageRate = parseFloat(this.get('trailer_percentage_rate'));
+				thisObj.fuelRate = parseFloat(this.get('fuel_rate'));
 				thisObj.accountTypeCollection.getModels();
 				this.off('change');
 			});
@@ -232,10 +261,12 @@ define([
 			this.googleMaps.initMapGetDestinationDistance(function (data) {
 				
 				var distanceMarker = '';
+				thisObj.distanceMarkers = [];
 				if(typeof data.destinationLeg !== 'undefined' && data.destinationLeg != null) {
 					var distance = 0;
-					for(var i = 0; i < data.destinationLeg.length; i++) { console.log('data.destinationLeg'); console.log(data.destinationLeg);
-						distanceMarker += _.template(googleMapsDistanceMarkerTemplate, {
+					var loadedDistance = 0;
+					for(var i = 0; i < data.destinationLeg.length; i++) {
+						thisObj.distanceMarkers.push({
 							longitudeFrom:data.destinationLeg[i].origin.lng(),
 							latitudeFrom:data.destinationLeg[i].origin.lat(),
 							longitudeTo:data.destinationLeg[i].destination.lng(),
@@ -243,16 +274,23 @@ define([
 							distance:data.destinationLeg[i].distance,
 							isLoadedDistance:(data.destinationLeg[i].loaded)? 1 : 0,
 						});
+						
 						distance += parseFloat(data.destinationLeg[i].distance);
+						if(data.destinationLeg[i].loaded)
+							loadedDistance += parseFloat(data.destinationLeg[i].distance);
 					}
 					
-					thisObj.subContainer.find('#distance').val(distance.toFixed(2));
+					thisObj.subContainer.find('#distance').val(this.addCommaToNumber(distance.toFixed(2)));
+					thisObj.subContainer.find('#distance-loaded').val(this.addCommaToNumber(loadedDistance.toFixed(2)));
+					
+					if(thisObj.hasFuelCharge)
+						thisObj.computeFuelCharge();
 				}
-				else
+				else {
 					thisObj.subContainer.find('#distance').val('');
-				
-				console.log('distanceMarker: '+distanceMarker);
-				thisObj.subContainer.find('#marker-data-cont').html(distanceMarker);
+					thisObj.subContainer.find('#distance-loaded').val('');
+					thisObj.subContainer.find('#fuelcharge').val('');
+				}
 			});
 			
 			this.initValidateForm();
@@ -272,6 +310,7 @@ define([
 					var data = thisObj.formatFormField($(form).serializeObject());
 					
 					data['scheduledate'] = thisObj.convertDateFormat(data['scheduledate'], thisObj.dateFormat, thisObj.dateFormatDB, '-');
+					data['scheduleMap'] = thisObj.distanceMarkers;
 					
 					var poScheduleModel = new POScheduleModel(data);
 					
@@ -484,6 +523,7 @@ define([
 				this.$el.find('#product-list tbody').append(clone);
 			}
 			
+			//this.addValidationToProduct(clone);
 			return clone;
 		},
 		
@@ -572,8 +612,6 @@ define([
 				}
 			}
 			
-			formData['scheduleMap'] = this.getformattedDistanceMarkerFormField();
-			
 			return formData;
 		},
 		
@@ -590,10 +628,9 @@ define([
 			
 			'keyup #truckingrate': 'onKeyUpTrackingRate',
 			'blur #truckingrate': 'onBlurMoney',
-			'keyup #distance': 'onKeyUpDistance',
-			'blur #distance': 'onBlurMoney',
-			'keyup #fuelcharge': 'formatMoney',
-			'blur #fuelcharge': 'onBlurMoney',
+			//'keyup #distance': 'onKeyUpDistance',
+			//'blur #distance': 'onBlurMoney',
+			'change #has-fuel-charge': 'changeHasFuelCharge',
 			'keyup .loader': 'formatMoney',
 			'blur .loader': 'onBlurMoney',
 			'keyup .quantity': 'onKeyUpQuantity',
@@ -784,38 +821,30 @@ define([
 		
 		computeTruckingRate: function () {
 			if(!this.truckingRateEditable && $('#truckerAccountType_id').val() != '') {
-				var distanceField = $('#distance');
-				var distanceFieldValue = this.removeCommaFromNumber(distanceField.val());
-				var distance = (!isNaN(distanceFieldValue))? distanceFieldValue : 0;
-				
-				var totalQuantityField = $('#total-quantity');
-				var totalQuantityFieldValue = this.removeCommaFromNumber(totalQuantityField.val());
-				var totalQuantity = (!isNaN(totalQuantityFieldValue))? totalQuantityFieldValue : 0;
+				var distance = this.getFloatValueFromField(this.subContainer.find('#distance'));
+				var totalQuantity = this.getFloatValueFromField(this.subContainer.find('#total-quantity'));
 				
 				var truckingRate = (distance > 0 && totalQuantity > 0)? (((this.freightRate * distance) + this.loadingRate + this.unloadingRate) / totalQuantity).toFixed(2) : ''; //divide by tons
-				$('#truckingrate').val(this.addCommaToNumber(truckingRate));
+				this.subContainer.find('#truckingrate').val(this.addCommaToNumber(truckingRate));
 				
 				if(truckingRate != '')
-					$('#trailerrate').val(this.addCommaToNumber((truckingRate * this.trailerPercentageRate / 100).toFixed(2)));
+					this.subContainer.find('#trailerrate').val(this.addCommaToNumber((truckingRate * this.trailerPercentageRate / 100).toFixed(2)));
 				else
-					$('#trailerrate').val('0.00');
+					this.subContainer.find('#trailerrate').val('0.00');
 			}
 		},
 		
 		computeTrailerRent: function (haulingRate) {
 			if(this.truckingRateEditable) {
-				if(typeof haulingRate == 'undefined') {
-					var haulingRateField = $('#truckingrate');
-					var haulingRateFieldValue = this.removeCommaFromNumber(haulingRateField.val());
-					haulingRate = (!isNaN(haulingRateFieldValue))? haulingRateFieldValue : 0;
-				}
+				if(typeof haulingRate === 'undefined')
+					haulingRate = this.getFloatValueFromField(this.subContainer.find('#truckingrate'));
 				
 				if(!isNaN(haulingRate) && haulingRate != 0) {
 					trailerRent = haulingRate * this.trailerPercentageRate / 100;
-					$('#trailerrate').val(this.addCommaToNumber(trailerRent.toFixed(2)));
+					this.subContainer.find('#trailerrate').val(this.addCommaToNumber(trailerRent.toFixed(2)));
 				}
 				else
-					$('#trailerrate').val('0.00');
+					this.subContainer.find('#trailerrate').val('0.00');
 			}
 		},
 		
@@ -842,28 +871,26 @@ define([
 		},
 		
 		showMap: function () {
-			this.googleMaps.showModalGetDestinationDistance();
+			this.googleMaps.showModalGetDestinationDistance(this.distanceMarkers);
 			return false;
 		},
 		
-		getformattedDistanceMarkerFormField: function () {
-			markerData = [];
-			
-			this.subContainer.find('#marker-data-cont .destination-marker').each(function () {
-				var element = $(this)
-				
-				markerData.push({
-					longitudeFrom: element.attr('data-longitudeFrom'),
-					latitudeFrom: element.attr('data-latitudeFrom'),
-					longitudeTo: element.attr('data-longitudeTo'),
-					latitudeTo: element.attr('data-latitudeTo'),
-					distance: element.attr('data-distance'),
-					longitudeFrom: element.attr('data-longitudeFrom'),
-					isLoadedDistance: element.attr('data-isLoadedDistance'),
-				});
-			});
-			
-			return markerData;
+		changeHasFuelCharge: function (ev) {
+			if($(ev.currentTarget).is(':checked')) {
+				this.hasFuelCharge = true;
+				this.computeFuelCharge();
+			}
+			else {
+				this.hasFuelCharge = false;
+				this.subContainer.find('#fuelcharge').val('');
+			}
+		},
+		
+		computeFuelCharge: function () {
+			var fuelRate = (this.fuelRate != null)? this.fuelRate : 0;
+			var loadedDistance = this.getFloatValueFromField(this.subContainer.find('#distance-loaded'));
+			var fuelCharge = fuelRate * loadedDistance; console.log(fuelRate+' * '+loadedDistance);
+			this.subContainer.find('#fuelcharge').val(this.addCommaToNumber(fuelCharge.toFixed(2)));
 		},
 		
 		postDisplayForm: function () {},
