@@ -136,8 +136,8 @@ class CommissionRepository implements CommissionRepositoryInterface {
     public function getAllClosedWeightTicketByUser($userId, $includeTicketWithCommission = false){
         $response = WeightTicket::with('schedule.orderdetails.account')
                               ->with('schedule.orderdetails.contact')
-                              // ->with('weightticketscale_pickup')
-                              // ->with('weightticketscale_dropoff')
+                              ->with('weightticketscale_pickup')
+                              ->with('weightticketscale_dropoff')
                               ->whereHas('schedule', function ($query) use ($userId){
                                         $query->whereHas('order', function ($query) use ($userId){
                                                 $query->where('user_id', '=', $userId)
@@ -150,8 +150,18 @@ class CommissionRepository implements CommissionRepositoryInterface {
         }
                               
         $result = $response->where('status_id', '=', Config::get('constants.STATUS_CLOSED'))->get();
+        $result = $result->toArray();
 
-        return $result->toArray();
+        array_walk($result, function(&$result){
+            $result['netTons'] = 0;
+            if($result['dropoff_id'] != null){
+                $result['netTons'] = $result['weightticketscale_dropoff']['gross']-$result['weightticketscale_dropoff']['tare'];
+            } else {
+                $result['netTons'] = $result['weightticketscale_pickup']['gross']-$result['weightticketscale_pickup']['tare'];
+            }
+        });
+
+        return $result;
     }
 
     public function getClosedWeightTicketById($id){

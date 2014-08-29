@@ -21,6 +21,7 @@ return array(
 
     'STATUS_CLOSED' => 2,
 
+    'ORDERTYPE_PO' => 1,
     'ORDERTYPE_SO' => 2,
 
     'VERSION' => "3.0"
