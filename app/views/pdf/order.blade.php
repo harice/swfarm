@@ -1,4 +1,10 @@
-<h1 class='margin-top-30 margin-bottom-30'>@if ($order->ordertype === '1') Purchase @else Sales @endif Order</h1>
+<h1 class='margin-top-30 margin-bottom-30'>
+	@if ($order->isfrombid === '0')
+		@if ($order->ordertype === '1') Purchase @else Sales @endif Order
+	@else
+		Bid Details
+	@endif
+</h1>
 <h2><span class='text-danger'>No.:</span> {{ $order->order_number }}</h2>
 <div class="float-left witdh-50">
 	@if ($order->ordertype === '1')
