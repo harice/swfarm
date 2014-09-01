@@ -6,17 +6,7 @@
 			<input type="hidden" id="user_id" name="user_id" value="" />
 			<input type="hidden" id="tons" name="tons" value="" />
 			<p style="text-align:left">Commission Type</p>
-			<div class="form-group">
-				<% if (!_.isEmpty(commission_type)) { %>
-					<% _.each(commission_type, function(ct){ %>
-						<div class="col-sm-6">
-							<label class="radio-inline">
-								<input type="radio" value="<%= ct.id %>" name="type" class="type icheck"><span></span> <%= ct.name %>
-							</label>
-						</div>
-					<% }); %>
-				<% } %>
-			</div>
+			<div id="commission-type-cont" class="form-group"><%= commission_type_template %></div>
 			<div class="row">
 				<div id="<%= column_id_pre %><%= commission_type[0].id %>" class="col-sm-6">
 					<div class="form-group">

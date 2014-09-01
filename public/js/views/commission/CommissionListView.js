@@ -9,6 +9,7 @@ define([
 	'text!templates/commission/commissionInnerListTemplate.html',
 	'text!templates/commission/weightTicketByUserTemplate.html',
 	'text!templates/commission/commissionFormTemplate.html',
+	'text!templates/commission/commissionTypeTemplate.html',
 	'constant',
 ], function(Backbone,
 			AccordionListView,
@@ -20,6 +21,7 @@ define([
 			commissionInnerListTemplate,
 			weightTicketByUserTemplate,
 			commissionFormTemplate,
+			commissionTypeTemplate,
 			Const
 ){
 
@@ -75,7 +77,7 @@ define([
 			this.collapseSelected();
 			this.generatePagination();
 			
-			this.initConvertToPOWindow();
+			this.initCommissionWindow();
 		},
 		
 		setListOptions: function () {
@@ -128,7 +130,7 @@ define([
 			return _.template(weightTicketByUserTemplate, data);
 		},
 		
-		showEditCommissionWindow: function (ev) { console.log('showEditCommissionWindow');
+		showEditCommissionWindow: function (ev) { //console.log('showEditCommissionWindow');
 			this.subContainer.find('#modal-with-form-confirm input').removeClass('error');
 			this.subContainer.find('#modal-with-form-confirm label.error').text('');
 			this.subContainer.find('#modal-with-form-confirm .error-msg-cont').html('');
@@ -145,9 +147,14 @@ define([
 			return false;
 		},
 		
-		initConvertToPOWindow: function () {
+		initCommissionWindow: function () {
 			var thisObj = this;
-			var form = _.template(commissionFormTemplate, {commission_type: Const.COMMISSION.TYPE, column_id_pre: Const.COMMISSION.COLUMNIDPRE});
+			var commissionFormTemplateVars = {
+				commission_type: Const.COMMISSION.TYPE,
+				column_id_pre: Const.COMMISSION.COLUMNIDPRE,
+				commission_type_template: _.template(commissionTypeTemplate, {commission_type: Const.COMMISSION.TYPE}),
+			};
+			var form = _.template(commissionFormTemplate, commissionFormTemplateVars);
 			
 			this.initConfirmationWindowWithForm('',
 										'save-commission',
@@ -171,7 +178,7 @@ define([
 								thisObj.hideConfirmationWindow('modal-with-form-confirm', function () {
 									var tbody = thisObj.subContainer.find('#'+deleteID).closest('tbody');
 									thisObj.subContainer.find('#'+deleteID).remove();
-									console.log("tbody.find('tr').length: "+tbody.find('tr').length);
+									//console.log("tbody.find('tr').length: "+tbody.find('tr').length);
 									if(tbody.find('tr').length <= 0)
 										tbody.html('<tr><td colspan="3">No results found.</td></tr>');
 									thisObj.displayMessage(response);
@@ -249,7 +256,7 @@ define([
 			this.subContainer.find('#commission-total-per-ton').val(this.addCommaToNumber(commission.toFixed(2)));
 		},
 		
-		saveCommission: function (ev) { console.log('saveCommission');
+		saveCommission: function (ev) { //console.log('saveCommission');
 			this.subContainer.find('#commissionForm').submit();
 			return false;
 		},
