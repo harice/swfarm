@@ -12,6 +12,7 @@ define([
 	'collections/salesorder/NatureOfSaleCollection',
 	'collections/product/ProductCollection',
 	'models/salesorder/SalesOrderModel',
+	'models/queue/QueueModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/salesorder/salesOrderViewTemplate.html',
@@ -34,6 +35,7 @@ define([
 			NatureOfSaleCollection,
 			ProductCollection,
 			SalesOrderModel,
+			QueueModel,
 			contentTemplate,
 			purchaseOrderTabbingTemplate,
 			salesOrderViewTemplate,
@@ -152,7 +154,58 @@ define([
 		events:{
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #close-order': 'showCloseOrderConfirmationWindow',
-			'click #confirm-close-order': 'closeOrder'
+			'click #confirm-close-order': 'closeOrder',
+			'click .sendmail':'showSendMailModal',
+			'click #btn_sendmail':'sendMail',
+		},
+
+		showSendMailModal: function(){
+			var thisObj = this;
+			this.initSendMailForm(
+					'Send Sales Order as pdf',
+					'btn_sendmail',
+					'Send',
+					this.model.get('order_number'),
+					'mdl_sendmail',
+					'order',
+					this.model.get('id')
+				);
+			
+			var validate = $('#sendmail-form').validate({
+				submitHandler: function(form) {
+					var data = $(form).serializeObject();
+					var queue = new QueueModel(data);
+					queue.save(
+						null, 
+						{
+							success: function (model, response, options) {
+								thisObj.displayMessage(response);
+								$('#mdl_sendmail').modal('hide');
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: queue.getAuth(),
+						}
+					);
+				},
+				rules: {
+					recipients: {
+						multiemail: true,
+					},
+				}
+			});
+
+			this.showModalForm('mdl_sendmail');
+			return false;
+		},
+
+		sendMail: function() {
+			$('#sendmail-form').submit();
+			return false;
 		},
 		
 		showCloseOrderConfirmationWindow: function () {
