@@ -77,6 +77,17 @@ class ReportController extends BaseController {
         $result = $this->report->generateTruckingStatement($id, Input::all());
         return Response::json($result);
     }
+    
+    /**
+     * Generate Gross Profit Report
+     * 
+     * @return Response
+     */
+    public function generateGrossProfit()
+    {
+        $result = $this->report->generateGrossProfit(Input::all());
+        return Response::json($result);
+    }
 
     public function inventoryReportPerLocation(){
         $response = $this->report->inventoryReportPerLocation( Input::all() );

@@ -30,6 +30,7 @@ define(function () {
 			'TRUCKER': 'administration/trucker',
 			'INVENTORY': 'inventory',
 			'STACKNUMBER': 'stacknumber',
+			'REPORT': 'report',
 			'FILE': '/file',
 			'COMMISSION': 'administration/commission',
 		},
@@ -77,51 +78,50 @@ define(function () {
 				'DELETE':28
 			},
 			'REPORTS': {
-				'VIEW'		:29,
-				'GENERATE'	:30
+				'VIEW':29,
 			},
 			'ADMIN': {
-				'VIEW'	:31,
-				'TRAIL'	:32
+				'VIEW'	:30,
+				'TRAIL'	:31
 			},
 			'STACKLOCATION': {
-				'VIEW'	:33,
-				'ADD'	:34,
-				'EDIT'	:35,
-				'DELETE':36
+				'VIEW'	:32,
+				'ADD'	:33,
+				'EDIT'	:34,
+				'DELETE':35
 			},
 			'TRAILER': {
-				'VIEW'	:37,
-				'ADD'	:38,
-				'EDIT'	:39,
-				'DELETE':40
+				'VIEW'	:36,
+				'ADD'	:37,
+				'EDIT'	:38,
+				'DELETE':39
 			},
 			'SETTINGS': {
-				'EDIT'  :41,
+				'EDIT'  :40,
 			},
 			'SCALE': {
-				'VIEW'	:42,
-				'ADD'	:43,
-				'EDIT'	:44,
-				'DELETE':45
+				'VIEW'	:41,
+				'ADD'	:42,
+				'EDIT'	:43,
+				'DELETE':44
 			},
             'CONTRACT': {
-				'VIEW'	:46,
-				'ADD'	:47,
-				'EDIT'	:48,
-				'DELETE':49
+				'VIEW'	:45,
+				'ADD'	:46,
+				'EDIT'	:47,
+				'DELETE':48
 			},
 			'TRUCKER': {
-				'VIEW'	:50,
-				'ADD'	:51,
-				'EDIT'	:52,
-				'DELETE':53
+				'VIEW'	:49,
+				'ADD'	:50,
+				'EDIT'	:51,
+				'DELETE':52
 			},
 			'INVENTORY': {
-				'VIEW'	:54,
-				'ADD'	:55,
-				'EDIT'	:56,
-				'DELETE':57
+				'VIEW'	:53,
+				'ADD'	:54,
+				'EDIT'	:55,
+				'DELETE':56
 			},
 			'COMMISSION': {
 				'VIEW'	:58,
@@ -232,7 +232,17 @@ define(function () {
             'LOADER': 3,
             'OPERATOR': 4,
             'TRUCKER': 8,
-            'SWFTRUCKER': 9
+            'SWFTRUCKER': 9,
+        },
+        'REPORT': {
+        	'OPERATOR': 'operator-pay',
+        	'PRODUCER': 'producer',
+        	'TRUCKING': 'trucking',
+        	'INVENTORY': 'inventory',
+        	'SALES': 'sales',
+        	'COMMISSION': 'commission',
+        	'GROSS': 'gross',
+        	'DRIVER': 'driver'
         }
 	};
 	

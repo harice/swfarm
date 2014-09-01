@@ -1,0 +1,148 @@
+<div class="col-md-12"> 
+    <div class="header">
+        <div class="row margin-top-0">
+            <div class="col-md-12">
+                <h2>Producer Statement</h2>
+                <h5><%= cur_date %></h5>
+            </div>
+        </div>
+        <div class="row margin-top-0">
+            <div class="col-md-12 text-center">
+                <h5>                                                                   
+                    <strong><%= date_from %></strong> to  <strong><%= date_to %></strong>
+                </h5>
+            </div>
+        </div>
+        <div class="row margin-top-0">
+            <div class="col-md-6">
+                <h3>
+                    Producer Name:
+                    <strong>
+                        <%= producers.get('producer').name %>
+                    </strong>
+                </h3> 
+            </div>
+            <div class="col-md-6 text-right">
+                <h3>
+                    Address:
+                    <strong>
+                        <%= producers.get('producer').address[0].street %>, <%= producers.get('producer').address[0].city %>
+                    </strong>
+                </h3> 
+            </div>         
+        </div>
+    </div>
+    <% if (producers.get('summary').total_transactions) { %>  
+    <div class="content">        
+        <div class="content-inner table-responsive">
+            <%
+                var total_amount = 0; 
+           
+                _.each(producers.get('transactions'),function(transaction){ 
+                    var tons = transaction.pounds * .0005;
+                    var net_weight = tons * 2;        
+                    var amount = tons * transaction.unitprice;
+                    total_amount += amount;    
+            %>
+            <h6>Location: <strong><%= transaction.storagelocation_name %></strong></h6>
+            <table id="operator-list" class="table-bordered table">
+                <thead class="no-border">
+                    <tr>
+                        <th><strong>Date</strong></th>
+                        <th><strong>Weight Ticket</strong></th>
+                        <th><strong>Bales</strong></th>
+                        <th><strong>Net Weight</strong></th>
+                        <th><strong>Tons</strong></th>
+                        <th><strong>Price</strong></th>
+                        <th><strong>Amount</strong></th>
+                    </tr>
+                </thead>
+                <tbody class="no-border-y">                          
+                    <tr>                        
+                        <td>
+                            
+                            <% 
+                                var d = Date.parse(transaction.created_at);
+                                if (isNaN(d)==false)
+                                {
+                                    var d = new Date(transaction.created_at), 
+                                    fragments = [                                
+                                        d.getMonth() + 1,
+                                        d.getDate(),
+                                        d.getFullYear()
+                                    ]; 
+                                    print(fragments.join('/'));
+
+                                }     
+                                else {
+                                    d = (transaction.created_at).split(' ')[0];
+                                    var t = d.split('-');
+                                    print(t[1]+'/'+t[2]+'/'+t[0]);
+                                }                  
+                            %>
+                        </td>
+                        <td><%= transaction.weightTicketNumber %></td>
+                        <td><%= transaction.bales %></td>
+                        <td><%= net_weight.toFixed(2) %></td>
+                        <td><%= tons.toFixed(2) %></td>
+                        <td><%= transaction.unitprice %></td>
+                        <td><%= amount.toFixed(4) %></td>
+                    </tr>
+                    <tr>
+                        <td colspan="8">
+                            Load Count: 
+                        </td>
+                    </tr>    
+                
+                </tbody>               
+            </table>
+            <%}); %>   
+            <table class="table-bordered" style="width:30%">
+                <thead class="no-border">
+                    <tr>
+                        <td colspan="2" align="center"><strong>SUMMARY</strong></td>
+                    </tr>
+                </thead>
+                <tbody class="no-border-y">
+                    <tr>
+                        <td>
+                            Total Loads:
+                        </td>
+                        <td>
+                            <strong><%= (producers.get('summary').total_transactions) %></strong> 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Contract Total Amount: 
+                        </td>
+                        <td>
+                            <strong><%= total_amount %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Less Scale Fees: 
+                        </td>
+                        <td>
+                            <strong></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Amount Due:
+                        </td>
+                        <td>
+                            <strong></strong>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>                       
+        </div>        
+    </div>
+    <% } else { %>
+    <div class="content">
+        <p>No transactions found.</p>
+    </div>
+    <% } %>
+</div>
