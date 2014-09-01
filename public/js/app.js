@@ -11,6 +11,19 @@ define([
 	'constant'
 ], function(Backbone, Bootstrap, Router, AppView, SessionModel, HeaderView, SideMenuView, Global, Const){
 	var initialize = function(){
+
+		// Expire session temp solution clear redirect
+		Backbone.ajax = function() {
+	        Backbone.$.ajaxSetup.call(Backbone.$, {
+	            statusCode: {
+	                403: function() {
+	                    SessionModel.clear();
+	                    Backbone.history.navigate("login", true);
+	                    window.location.reload();
+	                }
+	        }});
+	        return Backbone.$.ajax.apply(Backbone.$, arguments);
+	    };
 		
 		var headerView;
 		var sideMenu;
@@ -449,6 +462,20 @@ define([
 			var reasonField = $(elem).closest('form').find('#reason');
 			return ($(elem).val() == '' && reasonField.val() == Const.CANCELLATIONREASON.OTHERS)? false : true;
 		}, $.validator.format("Please supply a reason"));
+
+		$.validator.addMethod(
+		    "multiemail",
+		     function(value, element) {
+		         if (this.optional(element)) return true;
+		         var emails = value.split(/[;,]+/); // split element by , and ;
+		         valid = true;
+		         for (var i in emails) {
+		             value = emails[i];
+		             valid = valid && $.validator.methods.email.call(this, $.trim(value), element);
+		         }
+		         return valid;
+		     }, $.validator.messages.email
+		);
 		
 		$('#cl-wrapper').on('click', 'a', function () {
 			var a = $(this);
