@@ -15,7 +15,12 @@ class ProcessorController extends BaseController
 	 */
 	public function store()
 	{
-		return Queue::push('Processor', Input::all());
+		if(Input::has('process') && Input::has('model') && Input::has('model_id')) {
+			Queue::push('Processor', Input::only('process','model','model_id'));
+		} else {
+			if(Request::ajax()) return App::abort(501,'Not implemented');
+			else return Redirect::to('404')->withParameters($parameters);
+		}
 	}
 
 	public function missingMethod($parameters = array())
