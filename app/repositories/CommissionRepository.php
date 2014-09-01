@@ -138,6 +138,7 @@ class CommissionRepository implements CommissionRepositoryInterface {
                               ->with('schedule.orderdetails.contact')
                               ->with('weightticketscale_pickup')
                               ->with('weightticketscale_dropoff')
+                              ->with('commission')
                               ->whereHas('schedule', function ($query) use ($userId){
                                         $query->whereHas('order', function ($query) use ($userId){
                                                 $query->where('user_id', '=', $userId)
@@ -146,6 +147,7 @@ class CommissionRepository implements CommissionRepositoryInterface {
                                 });
 
         if(!$includeTicketWithCommission){
+            // $response = $response->with('commission');
             $response = $response->has('commission', '=', 0);
         }
                               
