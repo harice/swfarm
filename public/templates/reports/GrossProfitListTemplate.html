@@ -1,0 +1,134 @@
+<div class="col-md-12">
+    <div class="header">
+        <div class="row margin-top-0">
+            <div class="col-md-12">
+                <h2>Gross Profit</h2>
+                <h5><%= cur_date %></h5>
+            </div>
+        </div>
+        <div class="row margin-top-0">
+            <div class="col-md-12 text-center">
+                <h5>                                                                   
+                    <strong><%= date_from %></strong> to  <strong><%= date_to %></strong>
+                </h5>
+            </div>
+        </div>
+    </div>
+    <% if (profits.get('summary').total_transactions) { %>        
+    <div class="content">            
+        <div class="content-inner table-responsive">
+            <table id="operator-list" class="table table-bordered">
+                <thead class="no-border">
+                    <tr>
+                        <th>Date</th>
+                        <th>Customer</th>
+                        <th>Net Sale</th>
+                        <th>Cost Hay</th>
+                        <th>Freight</th>
+                        <th>Fees</th>
+                        <th>Commission</th>
+                        <th>Profit Amt</th>
+                        <th>Profit Prct</th>
+                    </tr>
+                </thead>
+                <tbody class="no-border-y">
+                    <%                         
+                        _.each(profits.get('transactions'),function(transaction){ 
+                    %>    
+                        <tr> 
+                            <td>
+                            <%
+                                var dateArr = transaction.updated_at.date;                                                
+                                var d = Date.parse(dateArr);
+                                if (isNaN(d)==false)
+                                {
+                                    var d = new Date(dateArr), 
+                                    fragments = [                                
+                                        d.getMonth() + 1,
+                                        d.getDate(),
+                                        d.getFullYear()
+                                    ]; 
+                                    print(fragments.join('/'));
+
+                                }     
+                                else {
+                                    d = (dateArr).split(' ')[0];
+                                    var t = d.split('-');
+                                    print(t[1]+'/'+t[2]+'/'+t[0]);
+                                }                            
+                                                                
+                            %>
+                            </td>
+                            <td><%= transaction.account %></td>
+                            <td><%= transaction.net_sale %></td>
+                            <td><%= transaction.hay_cost %></td>
+                            <td><%= transaction.freight_cost %></td>
+                            <td><%= transaction.fees %></td>
+                            <td><%= transaction.commission %></td>
+                            <td><%= transaction.profit_amount %></td>
+                            <td><%= transaction.profit_percentage %></td>
+                        </tr>   
+                    <%}); %>                     
+                </tbody>                
+            </table> 
+
+            <table class="table-bordered" style="width:30%">
+                <thead class="no-border">
+                    <tr>
+                        <td colspan="2" align="center"><strong>SUMMARY</strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Grand Totals</td>
+                    </tr>
+                </thead>
+                <tbody class="no-border-y">
+                    <tr>
+                        <td>
+                            <strong>Total Cost:</strong> 
+                        </td>
+                        <td>
+                            <%= profits.get('summary').total_cost %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Cost of Hay:</strong> 
+                        </td>
+                        <td>
+                            <%= profits.get('summary').total_hay_cost %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Cost of Freight:</strong> 
+                        </td>
+                        <td>
+                            <%= profits.get('summary').total_freight_cost %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Profit:</strong> 
+                        </td>
+                        <td>
+                            <%= profits.get('summary').total_profit_amount %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Average Percent</strong> 
+                        </td>
+                        <td>
+                            <%= profits.get('summary').total_profit_percentage %>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>                          
+        </div>        
+    </div>
+    <% } else { %>
+    <div class="content">
+        <p>No inventory found.</p>
+    </div>
+    <% } %>
+</div>

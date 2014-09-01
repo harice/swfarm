@@ -3,7 +3,6 @@ define([
 	'views/base/ReportView',
 	'models/reports/ReportModel',
 	'collections/stack/LocationCollection',
-	'text!templates/reports/FilterFormTemplate.html',
 	'text!templates/reports/InventoryListTemplate.html',
 	'global',
 	'constant',
@@ -12,7 +11,6 @@ define([
 	ReportView,			
 	Report,
 	LocationCollection,
-	filterFormTemplate,
 	inventoryListTemplate,
 	Global,
 	Const
@@ -23,8 +21,7 @@ define([
 		initialize: function() {
 			var thisObj = this;
 			this.filterId = null;	
-			this.startDate = null;
-			this.endDate = null;	
+			this.filtername = "Storage Location";
 
 			this.model = new Report();
 			this.model.on('change', function (){				
@@ -54,7 +51,7 @@ define([
 			});
 		},			
 
-		getLocations: function (){
+		getFilterName: function (){
 			var locations = '<option disabled selected>Select Location</option>';			
 			_.each(this.collection.models, function (model) {
 				locations += '<option value="'+model.get('id')+'">'+model.get('locationName')+'</option>';
@@ -62,29 +59,15 @@ define([
 
 			return locations;
 		},
-
-		displayForm: function () {
-			var thisObj = this;	
-
-			var innerTemplateVariables = {
-				'date': this.setCurDate(),
-				'filters': this.getLocations(),
-				'filter_name': "Storage Location"
-			};
 			
-			var innerTemplate = _.template(filterFormTemplate, innerTemplateVariables);
-					
-			this.$el.html(innerTemplate);		
-			this.focusOnFirstField();					
-						
-			$('.form-button-container').show();		
-		},				
-				
 		onclickgenerate: function() {
 			var thisObj = this;			
-			this.filterId = $("#filtername").val();		
+			this.filterId = $("#filtername").val();
+				
 			if(this.checkFields()){								
 				this.model.fetchInventory(this.filterId, this.startDate, this.endDate);
+				$("#report-form").collapse("toggle");
+				$(".collapse-form").addClass("collapsed");
 			}
 
 			this.model.on('sync', function (){				
@@ -97,13 +80,14 @@ define([
 			var thisObj = this;
 			
 			var innerTemplateVariables= {
-				'date_from': $('#filter-operator-date-start .input-group.date input').val(),
-				'date_to': $('#filter-operator-date-end .input-group.date input').val(),
+				'cur_date': this.setCurDate(),
+				'date_from': thisObj.parseDate($('#filter-operator-date-start .input-group.date input').val()),
+				'date_to': thisObj.parseDate($('#filter-operator-date-end .input-group.date input').val()),
 				'locations': this.model,
 			}
 			var compiledTemplate = _.template(inventoryListTemplate, innerTemplateVariables);
 			
-			$("report-list").html('');
+			$(".reportlist").removeClass("hidden");
 			$("#report-list").removeClass("hidden");
 			$("#report-list").html(compiledTemplate);
 		},

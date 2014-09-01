@@ -3,7 +3,6 @@ define([
 	'views/base/ReportView',
 	'models/reports/ReportModel',
 	'collections/contact/ContactCollection',
-	'text!templates/reports/FilterFormTemplate.html',
 	'text!templates/reports/DriversPayListTemplate.html',
 	'global',
 	'constant',
@@ -12,7 +11,6 @@ define([
 	ReportView,			
 	Report,
 	ContactCollection,
-	filterFormTemplate,
 	driverListTemplate,
 	Global,
 	Const
@@ -22,9 +20,8 @@ define([
 		
 		initialize: function() {
 			var thisObj = this;
-			this.filterId = null;	
-			this.startDate = null;
-			this.endDate = null;	
+			this.filterId = null;
+			this.filtername = "Driver's Name";	
 
 			this.model = new Report();
 			this.model.on('change', function (){				
@@ -51,56 +48,43 @@ define([
 			})	
 		},			
 
-		getDrivers: function (){
+		getFilterName: function (){
 			var drivers = '<option disabled selected>Select Driver</option>';			
 			_.each(this.collection.models, function (model) {
 				drivers += '<option value="'+model.get('id')+'">'+model.get('firstname')+ ' ' +model.get('lastname') +'</option>';
 			});
 
 			return drivers;
-		},
-
-		displayForm: function () {
-			var thisObj = this;	
-
-			var innerTemplateVariables = {
-				'date': this.setCurDate(),
-				'filters': this.getDrivers(),
-				'filter_name': "Driver's Name"
-			};
-			
-			var innerTemplate = _.template(filterFormTemplate, innerTemplateVariables);
-					
-			this.$el.html(innerTemplate);			
-			this.focusOnFirstField();					
-						
-			$('.form-button-container').show();		
-		},				
+		},			
 				
 		onclickgenerate: function() {	
 			var thisObj = this;			
-			this.filterId = $("#filtername").val();				
+			this.filterId = $("#filtername").val();
+									
 			if(this.checkFields()){			
 				this.model.fetchDriverStatement(this.filterId, this.startDate, this.endDate);
+				$("#report-form").collapse("toggle");
+				$(".collapse-form").addClass("collapsed");
 			}
 
 			this.model.on('sync', function (){				
 				thisObj.processData();				
 				this.off("sync");
-			});				
+			});			
 		},
 
 		processData: function() {
 			var thisObj = this;
 			
 			var innerTemplateVariables= {
-				'date_from': $('#filter-operator-date-start .input-group.date input').val(),
-				'date_to': $('#filter-operator-date-end .input-group.date input').val(),
+				'cur_date': this.setCurDate(),
+				'date_from': thisObj.parseDate($('#filter-operator-date-start .input-group.date input').val()),
+				'date_to': thisObj.parseDate($('#filter-operator-date-end .input-group.date input').val()),
 				'drivers': this.model,
 			}
 			var compiledTemplate = _.template(driverListTemplate, innerTemplateVariables);
 
-			$("report-list").html('');
+			$(".reportlist").removeClass("hidden");
 			$("#report-list").removeClass("hidden");
 			$("#report-list").html(compiledTemplate);
 		},

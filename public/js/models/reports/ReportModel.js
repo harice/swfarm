@@ -63,8 +63,8 @@ define([
         	this.runFetch();
         },
 
-        fetchGrossProfit: function (id, startDate, endDate) {
-        	this.urlRoot = '/apiv1/report/gross/' + id;
+        fetchGrossProfit: function (startDate, endDate) {
+        	this.urlRoot = '/apiv1/report/gross-profit?dateStart=' +startDate+'&dateEnd='+endDate;
         	this.runFetch();
         },
 

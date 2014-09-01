@@ -1,16 +1,26 @@
 <div class="col-md-12">
     <div class="header">
         <div class="row margin-top-0">
-            <div class="col-md-6">
+            <div class="col-md-12">
+                <h2>Admin - Operator Pay</h2>
+                <h5><%= cur_date %></h5>
+            </div>
+        </div>
+        <div class="row margin-top-0">
+            <div class="col-md-12 text-center">
+                <h5>                                                                   
+                    <strong><%= date_from %></strong> to  <strong><%= date_to %></strong>
+                </h5>
+            </div>
+        </div>
+        <div class="row margin-top-0">
+            <div class="col-md-12">
                 <h3>
                     Operator:
                     <strong>
                         <%= operators.get('operator').firstname %> <%= operators.get('operator').lastname %>
                     </strong>
                 </h3> 
-            </div>
-            <div class="col-md-6 text-right">
-                <p><strong><%= date_from %></strong> to <strong><%= date_to %></strong></p>
             </div>
         </div>
     </div>
@@ -20,12 +30,10 @@
             <table id="operator-list" class="table table-bordered">
                 <thead class="no-border">
                     <tr>
-                        <th>Receipt #</th>
-                        <th>Invoice #</th>
-                        <th>Cust Name</th>
-                        <th>Load Type</th>
-                        <th>Sqeeze</th>
-                        <th>Amount</th>
+                        <th><strong>Cust Name</strong></th>
+                        <th><strong>Load Type</strong></th>
+                        <th><strong>Sqeeze</strong></th>
+                        <th><strong>Amount</strong></th>
                     </tr>
                 </thead>
                 <tbody class="no-border-y">
@@ -34,26 +42,28 @@
                         _.each(operators.get('transactions'),function(transaction){ 
                             total_amount += parseFloat(transaction.amount);
                     %>    
-                        <tr>                        
-                            <td></td>
-                            <td></td>
+                        <tr>      
                             <td><%= transaction.account_name %></td>
                             <td><%= transaction.type %></td>
                             <td></td>
                             <td><%= transaction.amount %></td>                       
                         </tr>   
                     <%}); %>                     
-                </tbody>
-                <tfoot>
+                </tbody>                
+            </table>    
+            <table class="table-bordered" style="width:30%">
+                <thead>
                     <tr>
-                        <td colspan="6"><strong>SUMMARY</strong></td>
+                        <td colspan="2" align="center"><strong>SUMMARY</strong></td>
                     </tr>
+                </thead>
+                <tbody>
                     <tr>
-                        <td colspan="5">Total</td>
+                        <td>Total</td>
                         <td><strong><%= total_amount.toFixed(2) %></strong></td>
                     </tr>
                 </tfoot>
-            </table>                   
+            </table>               
         </div>        
     </div>
     <% } else { %>

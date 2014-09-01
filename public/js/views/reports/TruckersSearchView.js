@@ -3,7 +3,6 @@ define([
 	'views/base/ReportView',
 	'models/reports/ReportModel',
 	'collections/trucker/TruckerCollection',
-	'text!templates/reports/FilterFormTemplate.html',
 	'text!templates/reports/TruckersPayListTemplate.html',
 	'global',
 	'constant',
@@ -12,7 +11,6 @@ define([
 	ReportView,			
 	Report,
 	TruckerCollection,
-	filterFormTemplate,
 	truckerListTemplate,
 	Global,
 	Const
@@ -23,8 +21,7 @@ define([
 		initialize: function() {
 			var thisObj = this;
 			this.filterId = null;	
-			this.startDate = null;
-			this.endDate = null;	
+			this.filtername = "Truck Name";
 
 			this.model = new Report();
 			this.model.on('change', function (){
@@ -58,7 +55,7 @@ define([
 			});
 		},			
 
-		getTruckers: function (){
+		getFilterName: function (){
 			var truckers = '<option disabled selected>Select Truck</option>';				
 			_.each(this.collection.models, function (model) {	
 				_.each(model.get('data'), function (truck) {
@@ -67,49 +64,37 @@ define([
 			});
 			
 			return truckers;
-		},
-
-		displayForm: function () {
-			var thisObj = this;	
-							
-			var innerTemplateVariables = {
-				'date': this.setCurDate(),
-				'filters': this.getTruckers(),
-				'filter_name': "Truck Name"
-			};
-						
-			var innerTemplate = _.template(filterFormTemplate, innerTemplateVariables);
-						
-			this.$el.html(innerTemplate);			
-			this.focusOnFirstField();								
-						
-			$('.form-button-container').show();		
-		},				
+		},			
 				
 		onclickgenerate: function() {
 			var thisObj = this;					
-			this.filterId = $("#filtername").val();				
+			this.filterId = $("#filtername").val();
+
 			if(this.checkFields()){	
 				this.model.fetchTruckingStatement(this.filterId, this.startDate, this.endDate);
+				$("#report-form").collapse("toggle");
+				$(".collapse-form").addClass("collapsed");
 			}	
 
 			this.model.on('sync', function (){				
 				thisObj.processData();				
 				this.off("sync");
-			});			
+			});	
+				
 		},
 
 		processData: function() {
 			var thisObj = this;
 			
 			var innerTemplateVariables= {
-				'date_from': $('#filter-operator-date-start .input-group.date input').val(),
-				'date_to': $('#filter-operator-date-end .input-group.date input').val(),
+				'cur_date': this.setCurDate(),
+				'date_from': thisObj.parseDate($('#filter-operator-date-start .input-group.date input').val()),
+				'date_to': thisObj.parseDate($('#filter-operator-date-end .input-group.date input').val()),
 				'truckers': this.model,
 			}
 			var compiledTemplate = _.template(truckerListTemplate, innerTemplateVariables);
 
-			$("report-list").html('');
+			$(".reportlist").removeClass("hidden");
 			$("#report-list").removeClass("hidden");
 			$("#report-list").html(compiledTemplate);
 		},

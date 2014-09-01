@@ -1,16 +1,26 @@
 <div class="col-md-12">
     <div class="header">
         <div class="row margin-top-0">
-            <div class="col-md-6">
+            <div class="col-md-12">
+                <h2>Inventory Report</h2>
+                <h5><%= cur_date %></h5>
+            </div>
+        </div>
+        <div class="row margin-top-0">
+            <div class="col-md-12 text-center">
+                <h5>                                                                   
+                    <strong><%= date_from %></strong> to  <strong><%= date_to %></strong>
+                </h5>
+            </div>
+        </div>
+        <div class="row margin-top-0">
+            <div class="col-md-12">
                 <h3>
                     Location:
                     <strong>
                         <%= locations.get('location') %>
                     </strong>
                 </h3> 
-            </div>
-            <div class="col-md-6 text-right">
-                <p><strong><%= date_from %></strong> to <strong><%= date_to %></strong></p>
             </div>
         </div>
     </div>
@@ -20,15 +30,15 @@
             <table id="operator-list" class="table table-bordered">
                 <thead class="no-border">
                     <tr>
-                        <th>Order Number</th>
-                        <th>Date</th>
-                        <th>Weight Number</th>
-                        <th>Producer ID</th>
-                        <th>Contract #</th>
-                        <th>Bales</th>
-                        <th>Tons</th>
-                        <th>Cost</th>
-                        <th>Cost Total</th>
+                        <th><strong>Order Number</strong></th>
+                        <th><strong>Date</strong></th>
+                        <th><strong>Weight Number</strong></th>
+                        <th><strong>Producer ID</strong></th>
+                        <th><strong>Contract #</strong></th>
+                        <th><strong>Bales</strong></th>
+                        <th><strong>Tons</strong></th>
+                        <th><strong>Cost</strong></th>
+                        <th><strong>Cost Total</strong></th>
                     </tr>
                 </thead>
                 <tbody class="no-border-y">
@@ -70,22 +80,67 @@
                 </tbody>                
             </table> 
 
-            <table class="table-bordered">
+            <table class="table-bordered" style="width:40%">
                 <thead class="no-border">
                     <tr>
-                        <td colspan="4"><strong>SUMMARY</strong></td>
+                        <td colspan="2" align="center"><strong>SUMMARY</strong></td>
                     </tr>
                 </thead>
                 <tbody class="no-border-y">
                     <tr>
-                        <td width="33%">
-                            <strong>Total Bales:</strong> <%= locations.get('totalBales') %>
+                        <td width="50%">
+                            Total Bales In: 
                         </td>
-                        <td width="33%">
-                            <strong>Total Tons:</strong> <%= locations.get('totalTons') %>
+                        <td>
+                            <strong><%= locations.get('balesIn') %></strong>
                         </td>
-                        <td width="33%">
-                            <strong>Total Cost:</strong> <%= locations.get('totalCost') %>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Bales Out: 
+                        </td>
+                        <td>
+                            <strong><%= locations.get('balesOut') %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Bales: 
+                        </td>
+                        <td>
+                            <strong><%= locations.get('totalBales') %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Tons In: 
+                        </td>
+                        <td>
+                            <strong><%= locations.get('tonsIn') %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Tons Out: 
+                        </td>
+                        <td>
+                            <strong><%= locations.get('tonsOut') %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Tons: 
+                        </td>
+                        <td>
+                            <strong><%= locations.get('totalTons') %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Cost: 
+                        </td>
+                        <td>
+                            <strong><%= locations.get('totalCost') %></strong>
                         </td>
                     </tr>
                 </tbody>

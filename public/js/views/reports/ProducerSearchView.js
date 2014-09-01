@@ -3,7 +3,6 @@ define([
 	'views/base/ReportView',
 	'models/reports/ReportModel',
 	'collections/account/AccountProducerCollection',
-	'text!templates/reports/FilterFormTemplate.html',
 	'text!templates/reports/ProducersListTemplate.html',
 	'global',
 	'constant',
@@ -12,7 +11,6 @@ define([
 	ReportView,			
 	Report,
 	AccountProducerCollection,
-	filterFormTemplate,
 	producersListTemplate,
 	Global,
 	Const
@@ -22,9 +20,8 @@ define([
 		
 		initialize: function() {
 			var thisObj = this;
-			this.filterId = null;
-			this.startDate = null;
-			this.endDate = null;					
+			this.filterId = null;	
+			this.filtername = "Producer's Name";				
 
 			this.model = new Report();
 			this.model.on('change', function (){
@@ -62,7 +59,7 @@ define([
 			});
 		},
 
-		getProducers: function(){
+		getFilterName: function(){
 				
 			var producers = '<option disabled selected>Select Producer</option>';
 			_.each(this.collection.models, function (model) {
@@ -71,29 +68,15 @@ define([
 
 			return producers;
 		},	
-	
-		displayForm: function () {
-			var thisObj = this;	
-
-			var innerTemplateVariables = {
-				'date': this.setCurDate(),
-				'filters': this.getProducers(),
-				'filter_name': "Producer's Name"
-			};
-			
-			var innerTemplate = _.template(filterFormTemplate, innerTemplateVariables);
-						
-			this.$el.html(innerTemplate);			
-			this.focusOnFirstField();
-														
-			$('.form-button-container').show();		
-		},		
 				
 		onclickgenerate: function() {	
 			var thisObj = this;					
-			this.filterId = $("#filtername").val();				
+			this.filterId = $("#filtername").val();
+						
 			if(this.checkFields()){								
 				this.model.fetchProducersStatement(this.filterId, this.startDate, this.endDate);
+				$("#report-form").collapse("toggle");
+				$(".collapse-form").addClass("collapsed");
 			}
 
 			this.model.on('sync', function (){				
@@ -106,11 +89,14 @@ define([
 			var thisObj = this;
 			
 			var innerTemplateVariables= {
+				'cur_date': this.setCurDate(),
+				'date_from': thisObj.parseDate($('#filter-operator-date-start .input-group.date input').val()),
+				'date_to': thisObj.parseDate($('#filter-operator-date-end .input-group.date input').val()),
 				'producers': this.model,
 			}
 			var compiledTemplate = _.template(producersListTemplate, innerTemplateVariables);
 
-			$("report-list").html('');
+			$(".reportlist").removeClass("hidden");
 			$("#report-list").removeClass("hidden");
 			$("#report-list").html(compiledTemplate);
 		},

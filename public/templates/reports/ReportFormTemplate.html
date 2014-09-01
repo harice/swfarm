@@ -1,63 +1,77 @@
 <div class="row margin-top-0">
     <div class="col-md-12 no-padding">
         <div class="block-flat padding-bottom-0">
-            <div class="content padding-top-0 form-horizontal group-border-dashed"> 
-
-                <div class="row form-group">
-                    <div class="col-md-2 text-right">
-                        <label>Date: </label>
-                    </div>
-                    <div class="col-md-3 ">
-                        <label><%= date %></label>
-                    </div>
-                </div>     
-                <div class="row margin-top-0 form-group">                    
-                    <div class="col-md-2 control-label">
-                        <label>Report Type:</label>
-                    </div>
-                    <div class="col-md-3">
-                        <% if (!_.isEmpty(reports)) { %>
-                            <select id="reporttype" class="form-control">
-                                <%= reports %>
-                            </select>
-                        <% } else { %>
-                            <p>No report types returned.</p>
-                        <% } %>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="row margin-top-0">
-                            <label for="name" class="col-sm-4 control-label">Date From *</label>
-                            <div class="col-sm-8">
-                                <div id="filter-operator-date-start" class="calendar-cont">
-                                    <div class="input-group date datetime margin-bottom-0">
-                                        <input id="transportdatestart" class="form-control form-date" name="transportdatestart" size="16" type="text" value="" required/>
-                                        <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+            <div class="content padding-top-0 form-horizontal group-border-dashed">                
+                <div id="report-accordion" class="panel-group accordion">
+                    <div class=" panel-default">
+                        <div class="panel-heading">                            
+                            <h4 class="panel-title">                                                  
+                                <a href="#report-form" data-parent="#report-accordion" data-toggle="collapse" class="collapse-form">                                    
+                                    REPORT FORM     
+                                    <i class="fa fa-angle-down pull-right"></i>
+                                </a>                                
+                            </h4>                                
+                        </div>  
+                        <div class="panel-collapse collapse in" id="report-form"> 
+                            <div class="panel-body padding-top-0 padding-left-0 padding-right-0">                                   
+                                <div class="row margin-top-0 form-group">                    
+                                    <div class="col-md-2 control-label">
+                                        <label>Report Type:</label>
                                     </div>
-                                    <div class="error-msg-cont"></div>
-                                </div>                                
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="row margin-top-0">
-                            <label for="name" class="col-sm-4 control-label">Date To *</label>
-                            <div class="col-sm-8">
-                                <div id="filter-operator-date-end" class="calendar-cont">
-                                    <div class="input-group date datetime margin-bottom-0">
-                                        <input id="transportdateend" class="form-control form-date" name="transportdateend" size="16" type="text" value="" required/>
-                                        <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                    <div class="col-md-3">
+                                        <% if (!_.isEmpty(reports)) { %>
+                                            <select id="reporttype" class="form-control">
+                                                <%= reports %>
+                                            </select>
+                                        <% } else { %>
+                                            <p>No report types returned.</p>
+                                        <% } %>
                                     </div>
-                                    <div class="error-msg-cont"></div>
-                                </div>                                
-                            </div>
-                        </div>
-                    </div>
-                </div>   
-                <div id="report-filter">
+                                    <div class="col-sm-3">
+                                        <div class="row margin-top-0">
+                                            <label for="name" class="col-sm-5 control-label">Date From *</label>
+                                            <div class="col-sm-7">
+                                                <div id="filter-operator-date-start" class="calendar-cont">
+                                                    <div class="input-group date datetime margin-bottom-0">
+                                                        <input id="transportdatestart" class="form-control form-date" name="transportdatestart" size="16" type="text" value="" required/>
+                                                        <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                                    </div>
+                                                    <div class="error-msg-cont"></div>
+                                                </div>                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="row margin-top-0">
+                                            <label for="name" class="col-sm-5 control-label">Date To *</label>
+                                            <div class="col-sm-7">
+                                                <div id="filter-operator-date-end" class="calendar-cont">
+                                                    <div class="input-group date datetime margin-bottom-0">
+                                                        <input id="transportdateend" class="form-control form-date" name="transportdateend" size="16" type="text" value="" required/>
+                                                        <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                                    </div>
+                                                    <div class="error-msg-cont"></div>
+                                                </div>                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="report-filter">
                     
-                </div>              
+                                </div>       
+                            </div>   
+                        </div>
+                    </div>
+                </div>                                         
                                                
             </div> <!-- /.content -->
-        </div> <!-- /.block-flat -->                
+        </div> <!-- /.block-flat -->  
+
+        <div class="block-flat padding-bottom-0 reportlist hidden">
+            <div class="content padding-top-0">
+                <div id="report-list" class="row margin-top-0 form-group">
+                </div>
+            </div>
+        </div>                
     </div>
 </div>

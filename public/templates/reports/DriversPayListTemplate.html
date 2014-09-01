@@ -1,16 +1,26 @@
 <div class="col-md-12">    
     <div class="header">
         <div class="row margin-top-0">
-            <div class="col-md-6">
+            <div class="col-md-12">
+                <h2>Driver Pay</h2>
+                <h5><%= cur_date %></h5>
+            </div>
+        </div>
+        <div class="row margin-top-0">
+            <div class="col-md-12 text-center">
+                <h5>                                                                   
+                    <strong><%= date_from %></strong> to  <strong><%= date_to %></strong>
+                </h5>
+            </div>
+        </div>
+        <div class="row margin-top-0">
+            <div class="col-md-12">
                 <h3>
                     Driver:
                     <strong>
                         <%= drivers.get('driver').firstname %> <%= drivers.get('driver').lastname %>
                     </strong>
                 </h3> 
-            </div>
-            <div class="col-md-6 text-right">
-                <p><strong><%= date_from %></strong> to <strong><%= date_to %></strong></p>
             </div>
         </div>
     </div>
@@ -19,16 +29,15 @@
         <div class="content-inner table-responsive">
             <table id="operator-list" class="table table-bordered">
                 <thead class="no-border">
-                    <tr>                    
-                        <th>Invoice #</th>
-                        <th>Date</th>
-                        <th>Truck Name</th>
-                        <th>Bales</th>
-                        <th>Tons</th>
-                        <th>Rate</th>
-                        <th>Gross</th>
-                        <th>Pay Rate</th>
-                        <th>Driver Pay</th>
+                    <tr>       
+                        <th><strong>Date</strong></th>
+                        <th><strong>Truck Name</strong></th>
+                        <th><strong>Bales</strong></th>
+                        <th><strong>Tons</strong></th>
+                        <th><strong>Rate</strong></th>
+                        <th><strong>Gross</strong></th>
+                        <th><strong>Pay Rate</strong></th>
+                        <th><strong>Driver Pay</strong></th>
                     </tr>
                 </thead>
                 <tbody class="no-border-y">
@@ -40,8 +49,7 @@
                             var driver_pay = gross * transaction.driver_rate;
                             total_pay += driver_pay;
                     %>    
-                        <tr>                        
-                            <td></td>
+                        <tr>    
                             <td>
                                 <%
                                     var d = Date.parse(transaction.created_at);
@@ -72,17 +80,21 @@
                             <td><%= driver_pay.toFixed(2) %></td>            
                         </tr>   
                     <%}); %>                     
-                </tbody>
-                <tfoot>
+                </tbody>                
+            </table>    
+            <table class="table-bordered" style="width:30%">
+                <thead>
                     <tr>
-                        <td colspan="9"><strong>SUMMARY</strong></td>
+                        <th colspan="2" align="center"><strong>SUMMARY</strong></th>
                     </tr>
+                </thead>
+                <tbody>                    
                     <tr>
-                        <td colspan="8">Total</td>
+                        <td>Total</td>
                         <td><strong><%= total_pay.toFixed(2) %></strong></td>
                     </tr>
-                </tfoot>
-            </table>                   
+                </tbody>
+            </table>               
         </div>    
     </div>
     <% } else { %>

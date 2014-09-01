@@ -1,33 +1,43 @@
 <div class="col-md-12">    
     <div class="header">
         <div class="row margin-top-0">
-            <div class="col-md-6">
+            <div class="col-md-12">
+                <h2>Trucking Statement</h2>
+                <h5><%= cur_date %></h5>
+            </div>
+        </div>
+        <div class="row margin-top-0">
+            <div class="col-md-12 text-center">
+                <h5>                                                                   
+                    <strong><%= date_from %></strong> to  <strong><%= date_to %></strong>
+                </h5>
+            </div>
+        </div>
+        <div class="row margin-top-0">
+            <div class="col-md-12">
                 <h3>
                     Truck Number
                     <strong>
                         <%= truckers.get('truck').trucknumber %>
                     </strong>
-            </div>
-            <div class="col-md-6 text-right">
-                <p><strong><%= date_from %></strong> to <strong><%= date_to %></strong></p>
-            </div>
+            </div>            
         </div>
     </div>    
     <% if (truckers.get('summary').total_transactions) { %>      
-    <div class="content">
+    <div class="content">        
         <div class="content-inner table-responsive">
             <table id="operator-list" class="table table-bordered">
                 <thead class="no-border">
                     <tr>         
-                        <th>Date</th>
-                        <th>Origin</th>
-                        <th>Destination</th>
-                        <th>Bale</th>
-                        <th>Net</th>
-                        <th>Tons</th>
-                        <th>Rate</th>
-                        <th>Total</th>
-                        <th>Rent</th>                     
+                        <th><strong>Date</strong></th>
+                        <th><strong>Origin</strong></th>
+                        <th><strong>Destination</strong></th>
+                        <th><strong>Bale</strong></th>
+                        <th><strong>Net</strong></th>
+                        <th><strong>Tons</strong></th>
+                        <th><strong>Rate</strong></th>
+                        <th><strong>Total</strong></th>
+                        <th><strong>Rent</strong></th>                     
                     </tr>
                 </thead>
                 <tbody class="no-border-y">               
@@ -78,12 +88,12 @@
                 </tbody>                
             </table>  
 
-            <table class="table table-bordered">
+            <table class="table table-bordered" style="width:50%">
                 <thead>
                     <tr>
-                        <th>Type</th>
-                        <th>Loader</th>
-                        <th>Amount</th>
+                        <th><strong>Type</strong></th>
+                        <th><strong>Loader</strong></th>
+                        <th><strong>Amount</strong></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -99,39 +109,75 @@
                 </tbody>
             </table>
 
-            <table class="table-bordered">
+            <table class="table-bordered" style="width:30%">
                 <thead class="no-border">
                     <tr>
-                        <td colspan="3"><strong>SUMMARY</strong></td>
+                        <td colspan="2" align="center"><strong>SUMMARY</strong></td>
                     </tr>
                 </thead>
                 <tbody class="no-border-y">
                     <tr>
-                        <td width="25%">
-                            Total Bales: <strong><%= total_bales %></strong>
+                        <td>
+                            Total Bales: 
                         </td>
-                        <td width="25%">
-                            Total Tons: <strong><%= total_tons.toFixed(4) %></strong>  
-                        </td>
-                        <td width="25%">
-                            Total Hauling: <strong><%= truckers.get('summary').total_hauling_fee %></strong>
-                        </td>
-                        <td width="25%">
-                            Total Admin Fee: <strong><%= truckers.get('summary').total_admin_fee %></strong>
+                        <td>
+                            <strong><%= total_bales %></strong>
                         </td>
                     </tr>
                     <tr>
-                        <td width="25%">
-                            Total Fuel Fee: <strong><%= truckers.get('summary').total_fuel_fee %></strong>
+                        <td>
+                            Total Tons: 
                         </td>
-                        <td width="25%">
-                            Total Trailer Rent: <strong><%= truckers.get('summary').total_trailer_rent %></strong>
+                        <td>
+                            <strong><%= total_tons.toFixed(4) %></strong>  
                         </td>
-                        <td width="25%">
-                            Total Loading: <strong><%= truckers.get('summary').total_loading_fee %></strong>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Hauling: 
                         </td>
-                        <td width="25%">
-                            Total Statement: <strong><%= truckers.get('summary').total_statement %></strong>
+                        <td>
+                            <strong><%= truckers.get('summary').total_hauling_fee %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Admin Fee: 
+                        </td>
+                        <td>
+                            <strong><%= truckers.get('summary').total_admin_fee %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Fuel Fee: 
+                        </td>
+                        <td>
+                            <strong><%= truckers.get('summary').total_fuel_fee %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Trailer Rent: 
+                        </td>
+                        <td>
+                            <strong><%= truckers.get('summary').total_trailer_rent %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Loading: 
+                        </td>
+                        <td>
+                            <strong><%= truckers.get('summary').total_loading_fee %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Statement: 
+                        </td>
+                        <td>
+                            <strong><%= truckers.get('summary').total_statement %></strong>
                         </td>
                     </tr>
                 </tbody>

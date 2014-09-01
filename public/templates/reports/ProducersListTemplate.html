@@ -1,5 +1,18 @@
-<div class="col-md-12">    
+<div class="col-md-12"> 
     <div class="header">
+        <div class="row margin-top-0">
+            <div class="col-md-12">
+                <h2>Producer Statement</h2>
+                <h5><%= cur_date %></h5>
+            </div>
+        </div>
+        <div class="row margin-top-0">
+            <div class="col-md-12 text-center">
+                <h5>                                                                   
+                    <strong><%= date_from %></strong> to  <strong><%= date_to %></strong>
+                </h5>
+            </div>
+        </div>
         <div class="row margin-top-0">
             <div class="col-md-6">
                 <h3>
@@ -9,7 +22,7 @@
                     </strong>
                 </h3> 
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 text-right">
                 <h3>
                     Address:
                     <strong>
@@ -35,14 +48,13 @@
             <table id="operator-list" class="table-bordered table">
                 <thead class="no-border">
                     <tr>
-                        <th>Date</th>
-                        <th>Invoice #</th>
-                        <th>Weight Ticket</th>
-                        <th>Bales</th>
-                        <th>Net Weight</th>
-                        <th>Tons</th>
-                        <th>Price</th>
-                        <th>Amount</th>
+                        <th><strong>Date</strong></th>
+                        <th><strong>Weight Ticket</strong></th>
+                        <th><strong>Bales</strong></th>
+                        <th><strong>Net Weight</strong></th>
+                        <th><strong>Tons</strong></th>
+                        <th><strong>Price</strong></th>
+                        <th><strong>Amount</strong></th>
                     </tr>
                 </thead>
                 <tbody class="no-border-y">                          
@@ -69,7 +81,6 @@
                                 }                  
                             %>
                         </td>
-                        <td></td>
                         <td><%= transaction.weightTicketNumber %></td>
                         <td><%= transaction.bales %></td>
                         <td><%= net_weight.toFixed(2) %></td>
@@ -86,25 +97,43 @@
                 </tbody>               
             </table>
             <%}); %>   
-            <table class="table-bordered">
+            <table class="table-bordered" style="width:30%">
                 <thead class="no-border">
                     <tr>
-                        <td colspan="4"><strong>SUMMARY</strong></td>
+                        <td colspan="2" align="center"><strong>SUMMARY</strong></td>
                     </tr>
                 </thead>
                 <tbody class="no-border-y">
                     <tr>
-                        <td width="25%">
-                            <strong>Total Loads:</strong> <%= (producers.get('summary').total_transactions) %>
+                        <td>
+                            Total Loads:
                         </td>
-                        <td width="25%">
-                            Contract Total Amount: <strong><%= total_amount %></strong>
+                        <td>
+                            <strong><%= (producers.get('summary').total_transactions) %></strong> 
                         </td>
-                        <td width="25%">
-                            Less Scale Fees: <strong></strong>
+                    </tr>
+                    <tr>
+                        <td>
+                            Contract Total Amount: 
                         </td>
-                        <td width="25%">
-                            <strong>Total Amount Due:</strong>
+                        <td>
+                            <strong><%= total_amount %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Less Scale Fees: 
+                        </td>
+                        <td>
+                            <strong></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Amount Due:
+                        </td>
+                        <td>
+                            <strong></strong>
                         </td>
                     </tr>
                 </tbody>

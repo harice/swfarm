@@ -3,7 +3,6 @@ define([
 	'views/base/ReportView',
 	'models/reports/ReportModel',
 	'collections/account/AccountCustomerCollection',
-	'text!templates/reports/FilterFormTemplate.html',
 	'text!templates/reports/CustomersListTemplate.html',
 	'global',
 	'constant',
@@ -12,7 +11,6 @@ define([
 	ReportView,			
 	Report,
 	AccountCustomerCollection,
-	filterFormTemplate,
 	customersListTemplate,
 	Global,
 	Const
@@ -21,14 +19,12 @@ define([
 	var CustomerSearchView = ReportView.extend({
 		
 		initialize: function() {
-			var thisObj = this;
-			this.filterId = null;	
-			this.startDate = null;
-			this.endDate = null;	
+			var thisObj = this;			
+			this.filtername = "Customer's Name";
 
 			this.model = new Report();
 			this.model.on('change', function (){
-				thisObj.processData();
+				thisObj.processData(customersListTemplate);
 				this.off("change");
 			});	
 
@@ -61,7 +57,7 @@ define([
 			});
 		},
 
-		getCustomers: function(){
+		getFilterName: function(){
 				
 			var customers = '<option disabled selected>Select Customer</option>';
 			_.each(this.collection.models, function (model) {
@@ -69,52 +65,27 @@ define([
 			});
 
 			return customers;
-		},	
-	
-		displayForm: function () {
-			var thisObj = this;	
-
-			var innerTemplateVariables = {
-				'date': this.setCurDate(),
-				'filters': this.getCustomers(),
-				'filter_name': "Customer's Name"
-			};
-			
-			var innerTemplate = _.template(filterFormTemplate, innerTemplateVariables);
-						
-			this.$el.html(innerTemplate);			
-			this.focusOnFirstField();			
-												
-			$('.form-button-container').show();		
-		},		
+		},			
 				
 		onclickgenerate: function() {
 			var thisObj = this;			
-			this.filterId = $("#filtername").val();				
+			this.filterId = $("#filtername").val();
+			
 			if(this.checkFields()){							
 				this.model.fetchCustomerSales(this.filterId, this.startDate, this.endDate);
+
+				$("#report-form").collapse("toggle");
+				$(".collapse-form").addClass("collapsed");
 			}
 
 			this.model.on('sync', function (){				
-				thisObj.processData();				
+				thisObj.processData(customersListTemplate);				
 				this.off("sync");
-			});	
+			});				
+
 		},
 
-		processData: function() {
-			var thisObj = this;
-			
-			var innerTemplateVariables= {
-				'date_from': $('#filter-operator-date-start .input-group.date input').val(),
-				'date_to': $('#filter-operator-date-end .input-group.date input').val(),
-				'customers': this.model,
-			}
-			var compiledTemplate = _.template(customersListTemplate, innerTemplateVariables);
-
-			$("report-list").html('');
-			$("#report-list").removeClass("hidden");
-			$("#report-list").html(compiledTemplate);
-		},
+		
 
 		
 	});

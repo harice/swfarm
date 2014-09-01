@@ -1,33 +1,42 @@
 <div class="col-md-12">    
     <div class="header">
         <div class="row margin-top-0">
-            <div class="col-md-6">
+            <div class="col-md-12">
+                <h2>Sales Report</h2>
+                <h5><%= cur_date %></h5>
+            </div>
+        </div>
+        <div class="row margin-top-0">
+            <div class="col-md-12 text-center">
+                <h5>                                                                   
+                    <strong><%= date_from %></strong> to  <strong><%= date_to %></strong>
+                </h5>
+            </div>
+        </div>
+        <div class="row margin-top-0">
+            <div class="col-md-12">
                 <h3>
                     Customer Name:
                     <strong>
                         <%= customers.get('customer').name %>
                     </strong>
                 </h3> 
-            </div>
-            <div class="col-md-6 text-right">
-                <p><strong><%= date_from %></strong> to <strong><%= date_to %></strong></p>
-            </div>       
+            </div>      
         </div>
     </div>    
     <% if (customers.get('summary').total_transactions) { %>    
     <div class="content">
         <div class="content-inner table-responsive">    
-            <table id="operator-list" class="table-bordered">
+            <table id="operator-list" class="table-bordered table">
                 <thead class="no-border">
                     <tr>
-                        <th>Invoice #</th>
-                        <th>Type</th>
-                        <th>Date</th>
-                        <th>Commodity</th>
-                        <th>Bales</th>                
-                        <th>Tons</th>
-                        <th>Price</th>
-                        <th>Customer Total</th>
+                        <th><strong>Type</strong></th>
+                        <th><strong>Date</strong></th>
+                        <th><strong>Commodity</strong></th>
+                        <th><strong>Bales</strong></th>                
+                        <th><strong>Tons</strong></th>
+                        <th><strong>Price</strong></th>
+                        <th><strong>Customer Total</strong></th>
                     </tr>
                 </thead>
                 <tbody class="no-border-y">
@@ -42,9 +51,7 @@
                         total_bales += transaction.bales;
                         grand_total += customer_total;
                     %>       
-                        <tr>                        
-                            <td>
-                            </td> 
+                        <tr>      
                             <td>
                                 <%= transaction.natureofsale %>
                             </td> 
@@ -86,20 +93,37 @@
                             </td>                                                 
                         </tr>
                     <%}); %>  
-                </tbody>  
-                <tfoot>
-                    <tr>
-                        <td colspan="8"><strong>SUMMARY</strong></td>
-                    </tr>   
-                    <tr>  
-                        <td colspan="4">Total</td>                      
-                        <td><strong><%= total_bales %></strong></td>
-                        <td><strong><%= total_tons.toFixed(4) %></strong></td>
-                        <td>&nbsp;</td>
-                        <td><strong><%= grand_total.toFixed(2) %></strong></td>
-                    </tr>  
-                </tfoor>
+                </tbody> 
             </table>   
+            <table class="table-bordered" style="width:30%">
+                <thead>
+                    <tr>
+                        <td colspan="2" align="center"><strong>SUMMARY</strong></td>
+                    </tr>
+                </thead>
+                <tbody>   
+                    <tr>  
+                        <td>Total Bales:</td>
+                        <td>
+                            <strong><%= total_bales %></strong>
+                        </td>     
+                    </tr>                    
+                    <tr>
+                        <td>
+                           Total Tons:
+                        </td>
+                        <td>
+                            <strong><%= total_tons.toFixed(4) %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Grand Total:</td>
+                        <td>
+                            <strong><%= grand_total.toFixed(2) %></strong>
+                        </td>
+                    </tr>  
+                </thead>
+            </table>
         </div>        
     </div>
     <% } else { %>

@@ -6,6 +6,7 @@ define([
 	'views/base/AppView',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/reports/ReportFormTemplate.html',
+	'text!templates/reports/FilterFormTemplate.html',
 	'constant',
 ], function(
 	Backbone, 
@@ -15,6 +16,7 @@ define([
 	AppView, 
 	contentTemplate, 
 	reportFormTemplate, 
+	filterFormTemplate,
 	Const
 ){
 
@@ -34,7 +36,7 @@ define([
 				id: 3
 			}, 
 			{
-				name: "Sales Report",
+				name: "Customer Sales Report",
 				id: 4
 			}, 
 			{
@@ -54,6 +56,8 @@ define([
 				id: 8
 			}
 		],
+		startDate: null,
+		endDate: null,
 
 		setCurDate: function (){
 			var date = new Date();			
@@ -76,7 +80,6 @@ define([
 
 			var innerTemplateVariables = {
 				'reports': this.getReportTypes(),
-				'date': this.setCurDate(),
 			};
 
 			var innerTemplate = _.template(reportFormTemplate, innerTemplateVariables);
@@ -111,6 +114,9 @@ define([
 				case '4':
 					return this.customer();
 					break;
+				case '6':
+					return this.gross();
+					break;
 				case '7':				
 					return this.operator();
 					break;
@@ -127,17 +133,16 @@ define([
 			}
 		},
 
-		checkFields: function() {
+		checkDate: function() {
 			var thisObj = this;
+			
 			var stat = true;
 			var error = "<label class='error'>This field is required</label>";
 			var startDate = $('#filter-operator-date-start .input-group.date input');
 			var endDate = $('#filter-operator-date-end .input-group.date input');
-			var reportFilter = $('#filtername');
 
 			var startStat = true;
 			var endStat = true;
-			var filterStat = true;
 
 			if(startDate.val() != '') {
 				startStat = true;
@@ -170,6 +175,20 @@ define([
 				endDate.parents('#filter-operator-date-end').find('.error-msg-cont').html(error);
 			}	
 
+			(startStat && endStat) ? stat = true : stat= false;
+
+			return stat;
+
+		},
+
+		checkFields: function() {
+			var thisObj = this;
+			var stat = true;
+			var error = "<label class='error'>This field is required</label>";
+			var reportFilter = $('#filtername');
+			
+			var filterStat = true;			
+
 			if(reportFilter.val()==null) {
 				filterStat = false;
 				reportFilter.siblings('.error-msg-cont').html(error);
@@ -179,7 +198,7 @@ define([
 				reportFilter.siblings('.error-msg-cont').html('');
 			}
 
-			(startStat && endStat && filterStat) ? stat = true : stat= false;
+			(this.checkDate() && filterStat) ? stat = true : stat= false;
 
 			return stat;
 		},
@@ -199,9 +218,7 @@ define([
 				var date = '';
 				if(selectedDate != '' && typeof selectedDate != 'undefined')
 					date = thisObj.convertDateFormat(selectedDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
-				
-				//thisObj.startDate = date;				
-				//thisObj.renderList(1);
+								
 			});
 			
 			$('#filter-operator-date-end .input-group.date').datepicker({
@@ -216,11 +233,64 @@ define([
 				var date = '';
 				if(selectedDate != '' && typeof selectedDate != 'undefined')
 					date = thisObj.convertDateFormat(selectedDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
-				
-				//thisObj.endDate = date;
-				//thisObj.renderList(1);
+							
 			});
 			
+		},
+
+		displayForm: function () {
+			var thisObj = this;	
+
+			var innerTemplateVariables = {
+				'filters': thisObj.getFilterName(),
+				'filter_name': thisObj.filtername
+			};
+			
+			var innerTemplate = _.template(filterFormTemplate, innerTemplateVariables);
+						
+			this.$el.html(innerTemplate);			
+			this.focusOnFirstField();			
+												
+			$('.form-button-container').removeClass("hidden");			
+		},	
+
+		parseDate: function(d){
+			var date = Date.parse(d);
+
+            if (isNaN(date)==false)
+            {
+                var date = new Date(d), 
+                fragments = [                                
+                    date.getMonth() + 1,
+                    date.getDate(),
+                    date.getFullYear()
+                ]; 
+                date = fragments.join('/');
+
+            }     
+            else {
+                date = (d).split(' ')[0];
+                var t = date.split('-');
+                date = t[0]+'/'+t[1]+'/'+t[2];
+            }
+
+			return date;
+		},
+
+		processData: function(customersListTemplate) {
+			var thisObj = this;
+			
+			var innerTemplateVariables= {
+				'cur_date': this.setCurDate(),
+				'date_from': thisObj.parseDate($('#filter-operator-date-start .input-group.date input').val()),
+				'date_to': thisObj.parseDate($('#filter-operator-date-end .input-group.date input').val()),
+				'customers': this.model,
+			}
+			var compiledTemplate = _.template(customersListTemplate, innerTemplateVariables);
+
+			$(".reportlist").removeClass("hidden");
+			$("#report-list").removeClass("hidden");
+			$("#report-list").html(compiledTemplate);
 		},
 		
 		events: {
