@@ -20,17 +20,31 @@
 		.margin-bottom-0 { margin-bottom: 0; }
 		.margin-bottom-30 { margin-bottom: 30px; }
 
+		.width-8 { width: 8%; }
 		.width-10 { width: 10%; }
+		.width-12 { width: 12%; }
 		.width-15 { width: 15%; }
+		.width-20 { width: 20%; }
+		.width-30 { width: 30%; }
+		.width-40 { width: 40%; }
 		.width-50 { width: 50%; }
+		.width-60 { width: 60%; }
+		.width-70 { width: 70%; }
+
+		.height-60 { height: 60%; }
+
 		.text-danger { color: #a94442; }
 		.text-center { text-align: center; }
 		.text-right { text-align: right; }
 
-		table { border-collapse: collapse; width: 100%; border: thin solid #ddd; }
-		td, th { border: thin solid #ddd; text-align: left; vertical-align: top; padding: 5px 2px; }
+		.valign-top { vertical-align: top; }
+		.no-border { border: 0; }
+
+		table { border-collapse: collapse; width: 100%; border: thin solid #ddd; margin:0; padding: 0; }
+		td, th {  text-align: left; vertical-align: top; padding: 5px 2px; }
 		tfoot td, thead th { border: thin solid #ddd; font-weight: bold; }
-		@page { margin: 70px 20px 40px 20px; padding: 0; }
+		tfoot tr.no-border td { border: 0; font-weight: bold; }
+		@page { margin: 70px 20px 60px 20px; padding: 0; }
 	</style>
 </head>
 
@@ -57,6 +71,8 @@
 			$width = Font_Metrics::get_text_width($t_phone, $font, '10px');
 			$pdf->page_text($w - $width + 97, 35, $t_phone, $font, $font_size, $c_black);
 
+			$n_font = Font_Metrics::get_font("courier", "italic");
+			$pdf->page_text(15, $h - 35, "*This document is system generated.", $n_font, $font_size, $c_black);
 			$pdf->page_text(15, $h - 15, "Page {PAGE_NUM} of {PAGE_COUNT}", $font, $font_size, $c_black);
 			$text = html_entity_decode('&copy; '.Date('Y') . ' Southwest Farm Services', ENT_QUOTES, 'UTF-8');
 			$width = Font_Metrics::get_text_width($text, $font, '10px');

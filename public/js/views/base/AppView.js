@@ -1,6 +1,7 @@
 define([
 	'backbone',
     'text!templates/layout/modalFormTemplate.html',
+    'text!templates/layout/sendmailTemplate.html',
 	'text!templates/layout/confirmModalTemplate.html',
 	'text!templates/layout/confirmNavigateAwayFromFormModalTemplate.html',
 	'text!templates/layout/confirmModalWithFormTemplate.html',
@@ -9,6 +10,7 @@ define([
 	'constant',
 ], function(Backbone,
             modalFormTemplate,
+            sendmailTemplate,
 			confirmModalTemplate,
 			confirmNavigateAwayFromFormModalTemplate,
 			confirmModalWithFormTemplate,
@@ -150,6 +152,27 @@ define([
 				modalTemplateVariables['confirm_dismiss_modal'] = 1;
 			
 			var modalTemplate = _.template(modalFormTemplate, modalTemplateVariables);
+			this.$el.find(this.modalAlertContainer).append(modalTemplate);
+		},
+
+		initSendMailForm: function (content, buttonId, buttonLabel, title, modalId, model, modelId) {
+			if($(this.modalAlertContainer).find('#modal-confirm').length)
+				$(this.modalAlertContainer).find('#modal-confirm').remove();
+			
+			if(modalId == null || typeof modalId == 'undefined')
+				modalId = 'modal-confirm';
+			
+			var modalTemplateVariables = {
+				confirm_title: title,
+				confirm_content: content,
+				confirm_button_id: buttonId,
+				confirm_button_label: buttonLabel,
+				confirm_modal_id: modalId,
+				confirm_model: model,
+				confirm_model_id : modelId
+			};
+			
+			var modalTemplate = _.template(sendmailTemplate, modalTemplateVariables);
 			this.$el.find(this.modalAlertContainer).append(modalTemplate);
 		},
                 
