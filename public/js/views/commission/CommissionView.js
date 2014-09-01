@@ -1,6 +1,7 @@
 define([
 	'backbone',
 	'views/base/ListView',
+	'models/user/UserModel',
 	'collections/salesorder/SOWeightInfoCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/commission/userCommissionTemplate.html',
@@ -8,6 +9,7 @@ define([
 	'constant',
 ], function(Backbone,
 			ListView,
+			UserModel,
 			SOWeightInfoCollection,
 			contentTemplate,
 			userCommissionTemplate,
@@ -40,17 +42,22 @@ define([
 			this.collection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
+			
+			this.model = new UserModel({id:this.userId});
+			this.model.on('change', function() {
+				thisObj.renderList(1);
+				this.off('change');
+			});
 		},
 		
 		render: function(){
-			this.renderList(1);
+			this.model.runFetch();
 			Backbone.View.prototype.refreshTitle(this.h1Title, this.h1Small);
 		},
 		
 		displayUserCommission: function () {
 			var innerTemplateVar = {
-				product_stacknumber: '',
-				total_on_hand: '',
+				user_fullname: this.model.get('lastname')+', '+this.model.get('firstname'),
 			};
 			
 			var innerTemplate = _.template(userCommissionTemplate, innerTemplateVar);
