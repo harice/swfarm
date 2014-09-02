@@ -56,7 +56,7 @@ return array(
 	|
 	*/
 
-	'from' => array('address' => null, 'name' => null),
+	'from' => array('address' => 'no-reply@swfarm.local', 'name' => 'Southwest Farm Services'),
 
 	/*
 	|--------------------------------------------------------------------------
