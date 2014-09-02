@@ -6,9 +6,10 @@ use BaseController;
 use Illuminate\Support\Facades\Response;
 use SettingsRepositoryInterface;
 use Input;
+use Illuminate\Support\Facades\Log;
 
 class SettingsController extends BaseController {
-    
+
     public function __construct(SettingsRepositoryInterface $repo)
     {
         $this->repo = $repo;
@@ -56,8 +57,7 @@ class SettingsController extends BaseController {
 	 */
 	public function update($id)
 	{
-		 $response = $this->repo->update($id, Input::all());
-         return Response::json($response);
+		 return $this->repo->update($id, Input::all());
 	}
 
 	/**
@@ -74,18 +74,17 @@ class SettingsController extends BaseController {
 
     /**
      * Get Transport settings
-     * 
+     *
      * @return Response
      */
 	public function getTransportSettings(){
 		$response = $this->repo->getTransportSettings();
         return Response::json($response);
 	}
-    
-    public function updateSettings()
+
+    public function bulkUpdateSettings()
     {
-        $response = $this->repo->updateSettings( Input::all() );
-        return Response::json($response);
+        return $this->repo->updateSettings(Input::all());
     }
 
 }
