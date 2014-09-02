@@ -120,6 +120,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // Route::resource('purchaseorder', 'APIv1\OrderController');
 
     //Sales Order
+    Route::get('salesorder/getUsingAccount', 'APIv1\OrderController@getSalesOrderUsingAccountId');
     Route::get('salesorder/getOrderWeightDetailsByStack', 'APIv1\OrderController@getOrderWeightDetailsByStack');
     Route::get('salesorder/getStatuses', 'APIv1\OrderController@getSOStatus');
     Route::get('salesorder/getPickupLocationList', 'APIv1\OrderController@getPickupLocationList');

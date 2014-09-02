@@ -185,5 +185,10 @@ class OrderController extends BaseController {
         return Response::json($model);
     }
 
+    public function getSalesOrderUsingAccountId(){
+        $model = $this->repo->getSalesOrderUsingAccountId(Input::get('accountId'));
+        return Response::json($model);
+    }
+
 
 }

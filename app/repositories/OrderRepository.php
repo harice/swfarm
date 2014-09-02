@@ -984,6 +984,7 @@ class OrderRepository implements OrderRepositoryInterface {
             $stackList[$index]['stackNumber'] = $productOrder['stacknumber'];
             $stackList[$index]['totalExpected'] = $productOrder['tons'];
             $stackList[$index]['totalDeliveries'] = 0;
+            // $stackList[$index]['totalReturned'] = 0;
             $stackList[$index]['schedule'] = array();
             $i = 0;
             foreach($productOrder['transportscheduleproduct'] as $transportscheduleproduct){
@@ -1197,5 +1198,13 @@ class OrderRepository implements OrderRepositoryInterface {
                 'message' => "There is a problem while checking in the products."
             );
         }
+    }
+
+    public function getSalesOrderUsingAccountId($accountId){
+        $salesOrder = Order::where('account_id', '=', $accountId)
+                            ->where('ordertype', '=', 2)
+                            ->where('status_id', '!=', Config::get('constants.STATUS_CLOSED'))
+                            ->get(array('id', 'order_number'));
+        return $salesOrder->toArray();
     }
 }

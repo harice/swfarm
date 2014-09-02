@@ -33,9 +33,11 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                             ->with('weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder.product')
                             ->with('weightticketscale_dropoff.scalerAccount')
                             ->with('weightticketscale_dropoff.scale')
+                            ->with('weightticketscale_dropoff.document')
                             ->with('weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder.product')
                             ->with('weightticketscale_pickup.scalerAccount')
                             ->with('weightticketscale_pickup.scale')
+                            ->with('weightticketscale_pickup.document')
                             ->where('transportSchedule_id', '=', $schedule_id)->first();
 
             if(!$weightticket) 
@@ -166,6 +168,10 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                     $weightticketproduct->save();
                 }
                 $isPickup = true;
+
+                if(isset($data['pickup_info']['uploadedfile']) && !empty($data['pickup_info']['uploadedfile'])){
+                    $this->linkUploadDocumentToWeightTicketScale($data['pickup_info']['uploadedfile'], $weightticketscale_pickup->id);
+                }
             }
 
             if(isset($data['dropoff_info'])){
@@ -192,6 +198,10 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                     $weightticketproduct->save();
                 }
                 $isDropoff = true;
+
+                if(isset($data['dropoff_info']['uploadedfile']) && !empty($data['dropoff_info']['uploadedfile'])){
+                    $this->linkUploadDocumentToWeightTicketScale($data['dropoff_info']['uploadedfile'], $weightticketscale_dropoff->id);
+                }
             }
 
             $this->validate($data, 'WeightTicket');
@@ -332,6 +342,10 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                         $weightticketproduct->save();
                     }
                 }
+
+                if(isset($data['pickup_info']['uploadedfile']) && !empty($data['pickup_info']['uploadedfile'])){
+                    $this->linkUploadDocumentToWeightTicketScale($data['pickup_info']['uploadedfile'], $weightticketscale_pickup->id);
+                }
             }
 
             if(isset($data['dropoff_info'])){
@@ -377,6 +391,10 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                         $weightticketproduct->fill($product);
                         $weightticketproduct->save();
                     }
+                }
+
+                if(isset($data['dropoff_info']['uploadedfile']) && !empty($data['dropoff_info']['uploadedfile'])){
+                    $this->linkUploadDocumentToWeightTicketScale($data['dropoff_info']['uploadedfile'], $weightticketscale_dropoff->id);
                 }
             }
 
@@ -927,6 +945,35 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         catch (Exception $e)
         {
             return $e->getMessage();
+        }
+    }
+
+    private function linkUploadDocumentToWeightTicketScale($uploadedfile, $weightTicketScaleId)
+    {
+        $wts = WeightTicketScale::find($weightTicketScaleId);
+        if($wts)
+        {
+            if($wts->document) 
+            {
+                if($wts->document->id != $uploadedfile) 
+                {
+                    $wts->document->delete();
+
+                    if(!empty($uploadedfile)) {
+                        $file = Document::find($uploadedfile);
+                        $file->issave = 1;
+                        $file->documentable_id = $wts->id;
+                        $file->documentable_type = get_class($wts);
+                        $file->save();
+                    }
+                }
+            } else {
+                $file = Document::find($uploadedfile);
+                $file->issave = 1;
+                $file->documentable_id = $wts->id;
+                $file->documentable_type = get_class($wts);
+                $file->save();
+            }
         }
     }
 
