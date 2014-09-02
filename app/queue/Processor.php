@@ -39,6 +39,8 @@ class Processor {
 							$message->attach($_data['pathtofile'], array('as' => $_data['display_name'], 'mime' => $_data['mime']));
 						});
 
+						unlink($_pathtoFile);
+
 						$job->delete();
 						break;
 					
