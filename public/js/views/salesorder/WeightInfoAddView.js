@@ -7,6 +7,7 @@ define([
 	'models/salesorder/SalesOrderModel',
 	'models/salesorder/SOScheduleModel',
 	'models/salesorder/SOWeightInfoModel',
+	'models/document/DocumentModel',
 	'collections/product/ProductCollection',
 	'collections/account/AccountCollection',
 	'collections/scale/ScaleCollection',
@@ -24,6 +25,7 @@ define([
 			SalesOrderModel,
 			SOScheduleModel,
 			SOWeightInfoModel,
+			DocumentModel,
 			ProductCollection,
 			AccountCollection,
 			ScaleCollection,
@@ -63,6 +65,7 @@ define([
 				productFieldExempt: [],
 				productFieldSeparator: '.',
 				removeComma: ['fee', 'bales', 'gross', 'tare', 'pounds'],
+				fileFileClone: null,
 			};
 			
 			this.salesOrderModel = new SalesOrderModel({id:this.soId});
@@ -141,6 +144,8 @@ define([
 			
 			this.initValidateForm();
 			this.supplySOInfo();
+			this.initPDFUpload();
+			this.options.fileFileClone = $('#pdf-file').clone(true);
 			
 			if(this.wiId != null)
 				this.supplyWeightInfoData();
@@ -343,6 +348,11 @@ define([
 			'keyup .product-bales': 'onKeyUpProductBales',
 			'keyup .product-pounds': 'onKeyUpPounds',
 			'blur .product-pounds': 'onBlurPound',
+			
+			'click .attach-pdf': 'attachPDF',
+			'change #pdf-file': 'readFile',
+			'click #remove-pdf-filename': 'resetImageField',
+			'click #undo-remove': 'undoRemove',
 		},
 		
 		onChangeScaleAccount: function (ev) {
@@ -436,6 +446,148 @@ define([
 		
 		resetSelect: function (select) {
 			select.find('option:gt(0)').remove();
+		},
+		
+		initPDFUpload: function () {
+			var thisObj = this;
+			this.initAttachPDFWindow();
+			
+			this.$el.find('#modal-attach-pdf').on('hidden.bs.modal', function (e) {
+				var field = thisObj.subContainer.find('#uploadedfile');
+				
+				if(thisObj.$el.find('#upload-field-cont').css('display') != 'none') {
+					//console.log('empty');
+					field.val('');
+					field.attr('data-filename', '');
+					thisObj.subContainer.find('#attach-pdf').addClass('no-attachment');
+				}
+				else {
+					//console.log('not empty');
+					var pdfFilenameElement = thisObj.subContainer.find('#pdf-filename');
+					field.val(pdfFilenameElement.attr('data-id'));
+					field.attr('data-filename', pdfFilenameElement.text());
+					thisObj.subContainer.find('#attach-pdf').removeClass('no-attachment');
+				}
+			});
+		},
+		
+		attachPDF: function (ev) {
+			var field = this.subContainer.find('#uploadedfile');
+			
+			var clone = this.options.fileFileClone.clone(true);
+			this.subContainer.find('#pdf-file').replaceWith(clone);
+			
+			if(field.val() == '') {
+				this.subContainer.find('#pdf-icon-cont').hide();
+				this.subContainer.find('#undo-remove').hide();
+				this.subContainer.find('#upload-field-cont').show();
+			}
+			else {
+				this.subContainer.find('#upload-field-cont').hide();
+				this.subContainer.find('#pdf-icon-cont').show();
+				this.subContainer.find('#pdf-filename').text(field.attr('data-filename'));
+				this.subContainer.find('#pdf-filename').attr('data-id', field.val());
+				
+				this.subContainer.find('#previous-upload').val(field.attr('data-filename'));
+				this.subContainer.find('#previous-upload').attr('data-id', field.val());
+			}
+			
+			this.subContainer.find('#upload-error').hide();
+			this.showConfirmationWindow('modal-attach-pdf');
+			return false;
+		},
+		
+		readFile: function (ev) {
+			this.subContainer.find('#upload-error').hide();
+			
+			var thisObj = this;
+			var file = ev.target.files[0];
+			
+			if(file.type != Const.MIMETYPE.PDF) {
+				var clone = this.options.fileFileClone.clone(true);
+				this.subContainer.find('#pdf-file').replaceWith(clone);
+				this.subContainer.find('#upload-error').text('only upload a PDF file').show();
+			}
+			else {
+				var reader = new FileReader();
+				reader.onload = function (event) {
+					//console.log('onload');
+					//console.log(event);
+					
+					thisObj.uploadFile({
+						type: file.type,
+						size: file.size,
+						name: file.name,
+						content: event.target.result
+					});
+				};
+				reader.readAsDataURL(file);
+			}
+		},
+		
+		uploadFile: function (data) {
+			this.disableCloseButton('modal-attach-pdf');
+			this.showFieldThrobber('#pdf-file');
+			
+			var thisObj = this;
+			var fileModel = new DocumentModel(data);
+			fileModel.save(
+				null, 
+				{
+					success: function (model, response, options) {
+						data['id'] = response;
+						//console.log(response);
+						thisObj.generatePDFIcon(data);
+						thisObj.enableCloseButton('modal-attach-pdf');
+						thisObj.hideFieldThrobber();
+					},
+					error: function (model, response, options) {
+						thisObj.enableCloseButton('modal-attach-pdf');
+						if(typeof response.responseJSON.error == 'undefined')
+							validate.showErrors(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+						thisObj.hideFieldThrobber();
+					},
+					headers: fileModel.getAuth(),
+				}
+			);
+		},
+		
+		generatePDFIcon: function (data) {
+			var clone = this.options.fileFileClone.clone(true);
+			this.subContainer.find('#pdf-file').replaceWith(clone);
+			this.subContainer.find('#pdf-filename').text(data.name);
+			this.subContainer.find('#pdf-filename').attr('data-id', data.id);
+			
+			this.subContainer.find('#previous-upload').val(data.name);
+			this.subContainer.find('#previous-upload').attr('data-id', data.id);
+			
+			this.subContainer.find('#upload-field-cont').hide();
+			this.subContainer.find('#pdf-icon-cont').show();
+		},
+		
+		resetImageField: function () {
+			var clone = this.options.fileFileClone.clone(true);
+			this.subContainer.find('#pdf-file').replaceWith(clone);
+			
+			this.subContainer.find('#pdf-icon-cont').hide();
+			this.subContainer.find('#undo-remove').show();
+			this.subContainer.find('#upload-field-cont').show();
+			
+			return false;
+		},
+		
+		undoRemove: function () {
+			var field = this.subContainer.find('#previous-upload');
+			
+			this.subContainer.find('#pdf-filename').text(field.val());
+			this.subContainer.find('#pdf-filename').attr(field.attr('data-id'));
+			
+			this.subContainer.find('#upload-field-cont').hide();
+			this.subContainer.find('#pdf-icon-cont').show();
+			
+			return false;
 		},
 		
 		supplyWeightInfoData: function () {},
