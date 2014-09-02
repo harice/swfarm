@@ -3,38 +3,24 @@
         <div class="block-flat padding-top-0 padding-bottom-0">
             <div class="content padding-top-0">
                 <div class="row margin-top-0">
-                    <div class="col-md-9 padding-top-10 padding-right-0">
-                        <a href="<%= sl_add_url %>" class="btn btn-primary btn-sm margin-left-0">+ Add Stack Location</a>
-						<span id="show-map-all" style="cursor:pointer;margin-left:10px;" class="glyphicon glyphicon-map-marker"></span>
-                    </div>
-                    <div class="col-md-3 padding-top-10">
-                        <form id="searchLocal" name="searchLocal" class="form-inline searchLocal" role="form">
-                            <div class="input-group input-group-sm">
-                                <label class="sr-only" for="search">Search</label>
-                                <input type="text" class="search form-control" id="search-keyword" placeholder="" style="border-radius:3px 0 0 3px;">
-
-                                <div class="input-group-btn">
-                                    <button type="button" class="btn btn-primary search-local">Search</button>
-                                </div>
-                            </div>
-                        </form>
+                    <div class="col-md-12 padding-top-10">
+                        <h3><%= user_fullname %></h3>
+						<hr>
                     </div>
                 </div>
-
                 <div class="content-inner table-responsive">
-                    <table id="sl-list" class="table-condensed table-bordered table-hover">
+                    <table id="user-commission-list" class="table-condensed table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th class="sortable sort-account-name cursor-pointer"><i class="fa fa-sort"></i> Account Name</th>
-                                <th class="sortable sort-name cursor-pointer"><i class="fa fa-sort"></i> Location Name</th>
-                                <th>Description</th>
+                                <th>Weight Ticket Number</th>
+                                <th>Commission Type</th>
+								<th>Delivered Tons</th>
+								<th>Commission Per Ton</th>
+								<th>Total Commission</th>
+								<th>Action</th>
                             </tr>
                         </thead>
-                        <tbody id="stacklocation-accordion" class="accordion-list-cont">
-                            <tr>
-                                <td colspan="3">Loading contents...</td>
-                            </tr>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
 
                     <div class="clearfix">
@@ -53,7 +39,13 @@
                         </ul>
                     </div>
                 </div>
-
+				<div class="row">
+					<div class="col-md-12">
+						<div class="pull-right">
+							<a id="go-to-previous-page" class="btn btn-trans btn-rad btn-sm" href="#"><i class="fa fa-reply width-10"></i> Back</a>
+						</div>
+					</div>
+				</div>
             </div> <!-- /.content -->
         </div> <!-- /.block-flat -->
     </div>

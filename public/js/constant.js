@@ -31,6 +31,7 @@ define(function () {
 			'INVENTORY': 'inventory',
 			'STACKNUMBER': 'stacknumber',
 			'FILE': '/file',
+			'COMMISSION': 'administration/commission',
 		},
 		'MENU': {
 			'PURCHASES': {
@@ -122,6 +123,12 @@ define(function () {
 				'EDIT'	:56,
 				'DELETE':57
 			},
+			'COMMISSION': {
+				'VIEW'	:58,
+				'ADD'	:59,
+				'EDIT'	:60,
+				'DELETE':61
+			},
 		},
 		'CRUD': {
 			'ADD': 'add',
@@ -163,11 +170,30 @@ define(function () {
 			'NATUREOFSALES': {
 				'WITHCONTRACT': 1,
 			},
+			'COLLAPSIBLE': {
+				'ID': 'order-list-collapsible-',
+			},
 		},
         'CONTRACT': {
 			'COLLAPSIBLE': {
 				'ID': 'contract-list-collapsible-',
 			},
+		},
+		'STACKLOCATION': {
+			'COLLAPSIBLE': {
+				'ID': 'stacklocation-list-collapsible-',
+			},
+		},
+		'COMMISSION': {
+			'COLLAPSIBLE': {
+				'ID': 'commission-list-collapsible-',
+			},
+			'TYPE': [
+				{id:1, name: 'Flat Rate'},
+				{id:2, name: 'Per Ton Rate'},
+			],
+			'COLUMNIDPRE': 'commission_type_',
+			'WEIGHTTICKETBYUSERID': 'weight-ticket-by-user-',
 		},
 		'LB2TON': 0.0005,
 		'CANCELLATIONREASON': {

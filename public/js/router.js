@@ -31,6 +31,7 @@ define([
 	'controllers/trucker/TruckerController',
 	'controllers/inventory/InventoryController',
 	'controllers/stacknumber/StackNumberController',
+	'controllers/commission/CommissionController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
@@ -65,6 +66,7 @@ define([
 			TruckerController,
 			InventoryController,
 			StackNumberController,
+			CommissionController,
 			Global,
 			Const,
 			Session) {
@@ -223,6 +225,10 @@ define([
 	
 	//stacknumber
 	routerRoutes[Const.URL.STACKNUMBER+'/:id'] = 'showStackNumberPage';
+	
+	//commission
+	routerRoutes[Const.URL.COMMISSION] = 'showCommissionPage';
+	routerRoutes[Const.URL.COMMISSION+'/:id'] = 'showCommissionPage';
 	
 	routerRoutes['*actions'] = 'defaultAction';
 
@@ -464,6 +470,13 @@ define([
 			this.closeView();
 			var stackNumberController = new StackNumberController();
 			this.currView = stackNumberController.setAction(id);
+			this.currView.render();
+		});
+		
+		app_router.on('route:showCommissionPage', function (id) {
+			this.closeView();
+			var commissionController = new CommissionController();
+			this.currView = commissionController.setAction(id);
 			this.currView.render();
 		});
 		

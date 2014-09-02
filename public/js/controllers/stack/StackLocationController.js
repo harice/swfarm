@@ -3,9 +3,8 @@ define([
 	'views/stack/StackLocationListView',
 	'views/stack/StackLocationAddView',
 	'views/stack/StackLocationEditView',
-	'views/salesorder/SalesOrderView',
 	'constant',
-], function(Backbone, StackLocationListView, StackLocationAddView, StackLocationEditView, SalesOrderView, Const){
+], function(Backbone, StackLocationListView, StackLocationAddView, StackLocationEditView, Const){
 	
 	function StackLocationController () {	
 		
@@ -21,10 +20,7 @@ define([
 						return this.edit(id);
 				
 				default:
-					if(action != null && this.IsInt(action))
-						return this.view(action);
-					else
-						return this.listView();
+					return this.listView();
 			}
 		};
 		
@@ -38,10 +34,6 @@ define([
 		
 		this.listView = function () {
 			return new StackLocationListView();
-		};
-		
-		this.view = function (id) {
-			return new SalesOrderView({'id':id});
 		};
 		
 		this.IsInt = function (i) {

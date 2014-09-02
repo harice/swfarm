@@ -47,7 +47,7 @@ define([
 			this.options = {
 				productFieldClone: null,
 				productFieldCounter: 0,
-				productFieldClass: ['product_id', 'stacknumber', 'sectionfrom_id', 'sectionto_id', 'tons', 'price', 'id'],
+				productFieldClass: ['product_id', 'stacknumber', 'sectionfrom_id', 'sectionto_id', 'bales', 'tons', 'price', 'id'],
 				productFieldClassRequired: ['product_id', 'stacknumber', 'sectionfrom_id', 'sectionto_id', 'tons', 'price'],
 				productFieldExempt: [],
 				productFieldSeparator: '.',
@@ -350,7 +350,8 @@ define([
 			'change #transactiontype_id': 'onChangeTransactionType',
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #delete-trucker': 'showConfirmationWindow',
-			'click #confirm-delete-trucker': 'deleteTrucker'
+			'click #confirm-delete-trucker': 'deleteTrucker',
+			'keyup .bales': 'formatNumber',
 		},
 		
 		removeProduct: function (ev) {

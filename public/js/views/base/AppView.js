@@ -91,9 +91,12 @@ define([
 			this.$el.find(this.modalAlertContainer).append(confirmTemplate);
 		},
 		
-		initConfirmationWindowWithForm: function (content, buttonId, buttonLabel, contentForm, title) {
-			if($(this.modalAlertContainer).find('#modal-with-form-confirm').length)
-				$(this.modalAlertContainer).find('#modal-with-form-confirm').remove();
+		initConfirmationWindowWithForm: function (content, buttonId, buttonLabel, contentForm, title, modalId) {
+			if(modalId == null || typeof modalId == 'undefined')
+				modalId = 'modal-with-form-confirm';
+			
+			if($(this.modalAlertContainer).find('#'+modalId).length)
+				$(this.modalAlertContainer).find('#'+modalId).remove();
 				
 			var confirmTemplateVariables = {
 				confirm_title: title,
@@ -101,6 +104,7 @@ define([
 				confirm_button_id: buttonId,
 				confirm_button_label: buttonLabel,
 				confirm_content_form: contentForm,
+				confirm_modal_id: modalId,
 			};
 			
 			var confirmTemplate = _.template(confirmModalWithFormTemplate, confirmTemplateVariables);
