@@ -4,6 +4,7 @@ define([
 	'views/base/AppView',
 	'jqueryvalidate',
 	'jquerytextformatter',
+	'base64',
 	'models/salesorder/SalesOrderModel',
 	'models/salesorder/SOScheduleModel',
 	'models/salesorder/SOWeightInfoModel',
@@ -19,6 +20,7 @@ define([
 			AppView,
 			Validate,
 			TextFormatter,
+			base64,
 			SalesOrderModel,
 			SOScheduleModel,
 			SOWeightInfoModel,
@@ -86,6 +88,12 @@ define([
                 schedule: this.soScheduleModel,
                 wi: this.model,
 			};
+			
+			if(this.model.get('weightticketscale_pickup') && this.model.get('weightticketscale_pickup').document)
+				innerTemplateVariables['file_path_pickup'] = Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.model.get('weightticketscale_pickup').document.id, type:'doc'}));
+			
+			if(this.model.get('weightticketscale_dropoff') && this.model.get('weightticketscale_dropoff').document)
+				innerTemplateVariables['file_path_dropoff'] = Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.model.get('weightticketscale_dropoff').document.id, type:'doc'}));
 			
 			if((!this.model.get('status') || (this.model.get('status') && this.model.get('status').id != Const.STATUSID.CLOSED)) && 
 				this.salesOrderModel.get('status').id == Const.STATUSID.OPEN)

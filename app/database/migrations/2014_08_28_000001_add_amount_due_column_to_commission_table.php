@@ -14,7 +14,7 @@ class AddAmountDueColumnToCommissionTable extends Migration {
 	{
 		Schema::table('commission', function(Blueprint $table)
 		{
-			$table->decimal('amountdue', 10, 4)->after('rate');
+			$table->decimal('amountdue', 10, 2)->after('rate');
 		});
 	}
 

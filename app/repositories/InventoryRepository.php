@@ -51,6 +51,13 @@ class InventoryRepository implements InventoryRepositoryInterface {
         return $inventory->toArray();
     }
 
+    //used in receipt operation when product is returned, must limit the products to be selected
+    public function getProductsOfOrder($order_id){
+          $orderproducts = ProductOrder::with('product')->where('order_id', '=', $order_id)->get(array('id', 'stacknumber', 'product_id'))->toArray();
+
+          return $orderproducts;
+    }
+
     /*public function getStackListByProduct($params){
         $productId = $params['productId'];
         // $stackList = Stack::with('stacklocation.section')

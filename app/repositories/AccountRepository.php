@@ -305,7 +305,7 @@ class AccountRepository implements AccountRepositoryInterface {
   }
 
   public function getProducerAndWarehouseAccount(){
-    $types = array(5, 10); //scale [accounttype ids]
+    $types = array(5, 10); //producer and warehouse [accounttype ids]
     $accounts = Account::with('accounttype')
                 ->whereHas('accounttype', function($q) use($types) { $q->whereIn('accounttype_id', $types); } )
                 ->groupBy('id')
@@ -317,9 +317,19 @@ class AccountRepository implements AccountRepositoryInterface {
 
   public function getLoaderAccount()
   {
-    $types = array(3); //scale [accounttype ids]
+    $types = array(3); //loader [accounttype ids]
     $accounts = Account::with('accounttype')
                 ->whereHas('accounttype', function($q) use($types) { $q->whereIn('accounttype_id', $types); } )
+                ->groupBy('id')
+                ->get(array('id', 'name'));
+
+    return Response::json( $accounts->toArray(), 200 );
+  }
+
+  public function getCustomerAccountList()
+  {
+    $types = array(1); //customer [accounttype ids]
+    $accounts = Account::whereHas('accounttype', function($q) use($types) { $q->whereIn('accounttype_id', $types); } )
                 ->groupBy('id')
                 ->get(array('id', 'name'));
 
