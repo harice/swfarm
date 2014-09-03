@@ -1,7 +1,7 @@
 <?php
 
 class Commission extends BaseModel {
-    
+
     /**
 	 * The database table used by the model.
 	 *
@@ -21,26 +21,26 @@ class Commission extends BaseModel {
 
     /**
      * Define fillable attributes in a model.
-     * 
+     *
      * @var array
      */
     protected $fillable = array(
-        'order_id', 
+        'order_id',
         'weightticket_id',
-        'user_id', 
-        'tons', 
+        'user_id',
+        'tons',
         'rate',
         'amountdue',
         'type'
     );
-    
+
     /**
      * Define the relationship with the weightinfo table
      * @return Collection collection of WeightInfo Models
      */
     public function order()
     {
-        return $this->hasOne('Order', 'id', 'order_id')->select(array('id', 'order_number', 'contact_id'));
+        return $this->hasOne('Order', 'id', 'order_id')->select(array('id', 'order_number', 'contact_id', 'account_id'));
     }
 
     public function weightticket()

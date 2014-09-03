@@ -14,7 +14,7 @@ use Input;
  */
 
 class ReportController extends BaseController {
-    
+
     public function __construct(ReportRepositoryInterface $report)
     {
         $this->report = $report;
@@ -30,10 +30,10 @@ class ReportController extends BaseController {
         $result = $this->report->generateCustomerSales($id, Input::all());
         return Response::json($result);
 	}
-    
+
     /**
      * Generate a Producer Statement Report
-     * 
+     *
      * @return Reponse
      */
     public function generateProducerStatement($id)
@@ -41,10 +41,10 @@ class ReportController extends BaseController {
         $result = $this->report->generateProducerStatement($id, Input::all());
         return Response::json($result);
     }
-    
+
     /**
      * Generate an Operator Pay Report
-     * 
+     *
      * @return type
      */
     public function generateOperatorPay($id)
@@ -52,10 +52,10 @@ class ReportController extends BaseController {
         $result = $this->report->generateOperatorPay($id, Input::all());
         return Response::json($result);
     }
-    
+
     /**
      * Generate driver's pay
-     * 
+     *
      * @param int $id Contact Id
      * @param array $params
      * @return mixed
@@ -65,10 +65,10 @@ class ReportController extends BaseController {
         $result = $this->report->generateDriverPay($id, Input::all());
         return Response::json($result);
     }
-    
+
     /**
      * Generate a Trucking Statement Report
-     * 
+     *
      * @param int $id
      * @return Response
      */
@@ -77,10 +77,10 @@ class ReportController extends BaseController {
         $result = $this->report->generateTruckingStatement($id, Input::all());
         return Response::json($result);
     }
-    
+
     /**
      * Generate Gross Profit Report
-     * 
+     *
      * @return Response
      */
     public function generateGrossProfit()
@@ -89,8 +89,25 @@ class ReportController extends BaseController {
         return Response::json($result);
     }
 
+    /**
+     * Generate Inventory Report
+     *
+     * @return Response
+     */
     public function inventoryReportPerLocation(){
         $response = $this->report->inventoryReportPerLocation( Input::all() );
         return Response::json($response);
     }
+
+    /**
+     * Generate Commission Report
+     *
+     * @return Response
+     */
+    public function generateCommissionReport($id)
+    {
+        $result = $this->report->generateCommissionReport($id, Input::all());
+        return Response::json($result);
+    }
+
 }
