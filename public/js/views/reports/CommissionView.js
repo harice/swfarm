@@ -24,7 +24,7 @@ define([
 
 			this.model = new Report();
 			this.model.on('change', function (){
-				thisObj.processData(customersListTemplate);
+				thisObj.processData(commissionListTemplate);
 				this.off("change");
 			});	
 
@@ -39,16 +39,16 @@ define([
 		},
 		
 		render: function(){	
-			this.getProducerList();			
+			this.getUserList();			
 			Backbone.View.prototype.refreshTitle('Report','Commission Statement');			
 		},	
 
-		getProducerList: function (){
+		getUserList: function (){
 			var thisObj = this;
 			
 			this.collection.fetch({
 				success: function (collection, response, options) {
-					
+					thisObj.displayForm();	
 				},
 				error: function (collection, response, options) {
 				},
@@ -60,7 +60,9 @@ define([
 				
 			var customers = '<option disabled selected>Select User</option>';
 			_.each(this.collection.models, function (model) {
-				customers += '<option value="'+model.get('id')+'">'+model.get('name') +'</option>';
+				_.each(model.get('data'), function (data) {
+					customers += '<option value="'+data.id+'">'+data.firstname + ' ' + data.lastname +'</option>';
+				});
 			});
 
 			return customers;
@@ -71,7 +73,7 @@ define([
 			this.filterId = $("#filtername").val();
 			
 			if(this.checkFields()){							
-				this.model.fetchCommissionStatement(this.filterId, this.startDate);
+				this.model.fetchCommissionStatement(this.filterId, this.startDate, this.endDate);
 
 				$("#report-form").collapse("toggle");
 				$(".collapse-form").addClass("collapsed");
