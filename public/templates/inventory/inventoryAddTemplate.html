@@ -14,14 +14,43 @@
 									<div class="col-md-6">
 										<div class="form-group">
 											<label for="transactiontype_id" class="col-sm-3 control-label">Transaction Type *</label>
-											<div class="col-sm-7">
+											<div class="col-sm-6">
 												<div class="styled-select">
 													<select class="form-control width-304" id="transactiontype_id" name="transactiontype_id" required>
 														<option value="">Select a transaction type</option>
 													</select>
 												</div>
 											</div>
+											<div class="col-sm-3">
+												<div id="receipt-return-cont" class="checkbox" style="display:none;">
+													<label><input id="receipt-return" class="receipt-return" type="checkbox"> Return?</label>
+												</div>
+											</div>
 										</div>
+										
+										<div class="form-group return-fields" style="display:none;">
+											<label for="customer" class="col-sm-3 control-label">Customer</label>
+											<div class="col-sm-6">
+												<div class="styled-select">
+													<select class="form-control width-304" id="customer">
+														<option value="">Select a customer</option>
+														<%= customer_account_list %>
+													</select>
+												</div>
+											</div>
+										</div>
+										
+										<div class="form-group return-fields" style="display:none;">
+											<label for="so_id" class="col-sm-3 control-label">SO Number</label>
+											<div class="col-sm-6">
+												<div class="styled-select">
+													<select class="form-control width-304" id="so_id" name="so_id">
+														<option value="">Select a so number</option>
+													</select>
+												</div>
+											</div>
+										</div>
+										
 									</div>
 									<div class="col-md-6">
 										<div class="form-group">

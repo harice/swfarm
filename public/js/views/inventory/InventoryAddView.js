@@ -65,18 +65,18 @@ define([
 				this.off('error');
 			});
 			
-			this.truckerAccountCollection = new AccountCollection();
-			this.truckerAccountCollection.on('sync', function() {
+			this.customerAccountCollection = new AccountCollection();
+			this.customerAccountCollection.on('sync', function() {
 				thisObj.productCollection.getAllModel();
 				this.off('sync');
 			});
-			this.truckerAccountCollection.on('error', function(collection, response, options) {
+			this.customerAccountCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
 			
 			this.locationCollection = new LocationCollection();
 			this.locationCollection.on('sync', function() {
-				thisObj.truckerAccountCollection.getTrailerAccounts();
+				thisObj.customerAccountCollection.getCustomerAccounts();
 				this.off('sync');
 			});
 			this.locationCollection.on('error', function(collection, response, options) {
@@ -114,7 +114,9 @@ define([
 		displayForm: function () {
 			var thisObj = this;
 			
-			var innerTemplateVariables = {};
+			var innerTemplateVariables = {
+				customer_account_list: '',
+			};
 			
 			if(this.truckerId != null)
 				innerTemplateVariables['trucker_id'] = this.truckerId;
@@ -352,6 +354,7 @@ define([
 			'click #delete-trucker': 'showConfirmationWindow',
 			'click #confirm-delete-trucker': 'deleteTrucker',
 			'keyup .bales': 'formatNumber',
+			'change #receipt-return': 'changeReceiptReturn',
 		},
 		
 		removeProduct: function (ev) {
@@ -399,6 +402,7 @@ define([
 		
 		onChangeTransactionType: function (ev) {
 			var transactionType = $(ev.currentTarget).find('option:selected').text().toLowerCase();
+			var transactionTypeId = parseInt($(ev.currentTarget).val());
 			var fromRules = null;
 			var toRules = null;
 			
@@ -417,6 +421,12 @@ define([
 				toRules = {required: true};
 			
 			this.changeValidation($('.sectionto_id'), toRules);
+			
+			if(transactionTypeId == Const.INVENTORY.TYPE.RECEIPT)
+				this.subContainer.find('#receipt-return-cont').show();
+			else
+				this.subContainer.find('#receipt-return-cont').hide();
+				
 		},
 		
 		toggleDisableLocation: function (element) {
@@ -439,6 +449,15 @@ define([
 				
 				if(element.find('.sectionto_id').length && Const.INVENTORY.LOCATIONTOREQUIRED.indexOf(transactionType) < 0)
 					element.find('.sectionto_id').attr('disabled', true);
+			}
+		},
+		
+		changeReceiptReturn: function (ev) {
+			if($(ev.currentTarget).is(':checked')) {
+				this.subContainer.find('.return-fields').show();
+			}
+			else {
+				this.subContainer.find('.return-fields').hide();
 			}
 		},
 		

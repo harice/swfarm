@@ -135,6 +135,16 @@
 										<td>Net :</td>
 										<td><%= numberFormatTons(wi.get("weightticketscale_pickup").gross - wi.get("weightticketscale_pickup").tare)%></td>
 									</tr>
+									<tr>
+										<td>Uploaded PDF</td>
+										<td>
+											<% if(typeof file_path !== "undefined") { %>
+												<a class="attach-pdf color-danger" href="<%= file_path %>" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
+											<% } else { %>
+												<i class="fa fa-file-pdf-o"></i>
+											<% } %>
+										</td>
+									</tr>
 									</tbody>
 									</table>
 								</div>

@@ -227,6 +227,11 @@ define(function () {
 		'INVENTORY': {
 			'LOCATIONFROMREQUIRED': ['transfer','issue'],
 			'LOCATIONTOREQUIRED': ['transfer','receipt'],
+			'TYPE': {
+				'TRANSFER': 3,
+				'ISSUE': 4,
+				'RECEIPT': 5,
+			},
 		},
         'ACCOUNT_TYPE': {
             'LOADER': 3,
