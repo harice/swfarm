@@ -10,6 +10,7 @@ define([
 	'collections/stack/LocationCollection',
 	'collections/inventory/LocationTransactionTypeCollection',
 	'collections/inventory/StackNumberCollection',
+	'collections/salesorder/SalesOrderCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/inventory/inventoryAddTemplate.html',
 	'text!templates/inventory/inventoryProductItemTemplate.html',
@@ -26,6 +27,7 @@ define([
 			LocationCollection,
 			LocationTransactionTypeCollection,
 			StackNumberCollection,
+			SalesOrderCollection,
 			contentTemplate,
 			inventoryAddTemplate,
 			inventoryProductItemTemplate,
@@ -104,6 +106,24 @@ define([
 			this.stackNumberCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
+			
+			this.salesOrderCollection = new SalesOrderCollection();
+			this.salesOrderCollection.on('sync', function() {
+				thisObj.generateSO();
+                thisObj.hideFieldThrobber('#returnedOrder_id');
+			});
+			this.salesOrderCollection.on('error', function(collection, response, options) {
+				//this.off('error');
+			});
+			
+			this.orderProductsCollection = new ProductCollection();
+			this.orderProductsCollection.on('sync', function() {
+				thisObj.generateOrderProductDropdown();
+				//this.off('sync');
+			});
+			this.orderProductsCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 		},
 		
 		render: function(){
@@ -115,7 +135,7 @@ define([
 			var thisObj = this;
 			
 			var innerTemplateVariables = {
-				customer_account_list: '',
+				customer_account_list: this.getCustomerDropdown(),
 			};
 			
 			if(this.truckerId != null)
@@ -146,7 +166,7 @@ define([
 				submitHandler: function(form) {
 					var data = thisObj.formatFormField($(form).serializeObject());
 					
-					console.log(data);
+					//console.log(data);
 					
 					var inventoryModel = new InventoryModel(data);
 					
@@ -202,6 +222,7 @@ define([
 				var clone = this.options.productFieldClone.clone();
 				this.initStackNumberAutocomplete(clone);
 				this.addIndexToProductFields(clone);
+				clone.find('.product_id').html(this.getProductDropdown());
 				this.$el.find('#product-list tbody').append(clone);
 			}
 			
@@ -210,13 +231,11 @@ define([
 			return clone;
 		},
 		
-		getProductDropdown: function () {
-			var dropDown = '<option value="">Select a product</option>';
-			_.each(this.productCollection.models, function (model) {
-				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
-			});
-			
-			return dropDown;
+		getProductDropdown: function () { console.log('getProductDropdown');
+			if(this.subContainer.find('#receipt-return').is(':checked') && this.subContainer.find('#returnedOrder_id').val() != '')
+				return this.getOrderProductDropdown();
+			else
+				return this.getAllProductDropdown();
 		},
 		
 		getLocationDropdown: function () {
@@ -354,7 +373,9 @@ define([
 			'click #delete-trucker': 'showConfirmationWindow',
 			'click #confirm-delete-trucker': 'deleteTrucker',
 			'keyup .bales': 'formatNumber',
-			'change #receipt-return': 'changeReceiptReturn',
+			'change #receipt-return': 'onChangeReceiptReturn',
+			'change #customer': 'onChangeCustomer',
+			'change #returnedOrder_id': 'onChangeSO',
 		},
 		
 		removeProduct: function (ev) {
@@ -424,8 +445,10 @@ define([
 			
 			if(transactionTypeId == Const.INVENTORY.TYPE.RECEIPT)
 				this.subContainer.find('#receipt-return-cont').show();
-			else
+			else {
 				this.subContainer.find('#receipt-return-cont').hide();
+				this.subContainer.find('#receipt-return').attr('checked', false).trigger('change');
+			}
 				
 		},
 		
@@ -452,13 +475,106 @@ define([
 			}
 		},
 		
-		changeReceiptReturn: function (ev) {
+		onChangeReceiptReturn: function (ev) {
 			if($(ev.currentTarget).is(':checked')) {
 				this.subContainer.find('.return-fields').show();
+				this.subContainer.find('#returnedOrder_id').attr('disabled', false);
 			}
 			else {
 				this.subContainer.find('.return-fields').hide();
+				this.subContainer.find('#customer').val('').trigger('change');
+				this.subContainer.find('#returnedOrder_id').attr('disabled', true);
 			}
+		},
+		
+		getCustomerDropdown: function () {
+			var dropDown = '';
+			_.each(this.customerAccountCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
+			});
+			return dropDown;
+		},
+		
+		onChangeCustomer: function (ev) {
+			this.fetchSO($(ev.currentTarget).val());
+		},
+		
+		fetchSO: function(accountId, so_id) {
+			if(so_id != null)
+				this.selectedSOId = so_id;
+		
+			this.resetSelect($('#returnedOrder_id'), true);
+			if(accountId != '') {
+                this.showFieldThrobber('#returnedOrder_id');
+				this.salesOrderCollection.getSOByCustomer(accountId);
+			}
+		},
+		
+		generateSO: function () {
+			var dropDown = '';
+			_.each(this.salesOrderCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('order_number')+'</option>';
+			});
+			this.$el.find('#returnedOrder_id').append(dropDown);
+			
+			if(typeof this.selectedSOId != 'undefined' && this.selectedSOId != null) {
+				this.$el.find('#returnedOrder_id').val(this.selectedSOId);
+				this.selectedSOId = null;
+			}
+			else {
+				if(this.salesOrderCollection.models.length == 1)
+					this.$el.find('#returnedOrder_id').val(this.salesOrderCollection.models[0].get('id')).change();
+			}
+		},
+		
+		onChangeSO: function (ev) {
+			var orderId = $(ev.currentTarget).val();
+			if(orderId != '')
+				this.orderProductsCollection.getOrderProduct(orderId);
+			else
+				this.generateAllProductDropdown();
+		},
+		
+		generateOrderProductDropdown: function () {
+			var thisObj = this;
+			this.subContainer.find('#product-list .product_id').each(function () {
+				var currentValue = $(this).val();
+				$(this).html(thisObj.getOrderProductDropdown());
+				
+				if(currentValue != '' && $(this).find('option[value="'+currentValue+'"]').length > 0)
+					$(this).val(currentValue);
+				else
+					$(this).val('').trigger('change');
+			});
+		},
+		
+		getOrderProductDropdown: function () {
+			var dropDown = '<option value="">Select a product</option>';
+			_.each(this.orderProductsCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('product').id+'">'+model.get('product').name+'</option>';
+			});
+			
+			return dropDown;
+		},
+		
+		generateAllProductDropdown: function () {
+			var thisObj = this;
+			this.subContainer.find('#product-list .product_id').each(function () {
+				var currentValue = $(this).val();
+				$(this).html(thisObj.getAllProductDropdown());
+				
+				if(currentValue != '' && $(this).find('option[value="'+currentValue+'"]').length > 0)
+					$(this).val(currentValue);
+			});
+		},
+		
+		getAllProductDropdown: function () { //console.log('getAllProductDropdown'); console.log(this.productCollection.models);
+			var dropDown = '<option value="">Select a product</option>';
+			_.each(this.productCollection.models, function (model) {
+				dropDown += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
+			});
+			
+			return dropDown;
 		},
 		
 		otherInitializations: function () {},

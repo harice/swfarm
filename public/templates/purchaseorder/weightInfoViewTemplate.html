@@ -138,8 +138,8 @@
 									<tr>
 										<td>Uploaded PDF</td>
 										<td>
-											<% if(typeof file_path !== "undefined") { %>
-												<a class="attach-pdf color-danger" href="<%= file_path %>" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
+											<% if(typeof file_path_pickup !== "undefined") { %>
+												<a class="attach-pdf color-danger" href="<%= file_path_pickup %>" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
 											<% } else { %>
 												<i class="fa fa-file-pdf-o"></i>
 											<% } %>
@@ -266,6 +266,16 @@
 									<tr>
 										<td>Net :</td>
 										<td><%= numberFormatTons(wi.get("weightticketscale_dropoff").gross - wi.get("weightticketscale_dropoff").tare)%></td>
+									</tr>
+									<tr>
+										<td>Uploaded PDF</td>
+										<td>
+											<% if(typeof file_path_dropoff !== "undefined") { %>
+												<a class="attach-pdf color-danger" href="<%= file_path_dropoff %>" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
+											<% } else { %>
+												<i class="fa fa-file-pdf-o"></i>
+											<% } %>
+										</td>
 									</tr>
 									</tbody>
 									</table>
