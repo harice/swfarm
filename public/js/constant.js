@@ -32,6 +32,7 @@ define(function () {
 			'STACKNUMBER': 'stacknumber',
 			'REPORT': 'report',
 			'FILE': '/file',
+			'COMMISSION': 'administration/commission',
 		},
 		'MENU': {
 			'PURCHASES': {
@@ -77,7 +78,7 @@ define(function () {
 				'DELETE':28
 			},
 			'REPORTS': {
-				'VIEW'		:29,
+				'VIEW':29,
 			},
 			'ADMIN': {
 				'VIEW'	:30,
@@ -122,30 +123,12 @@ define(function () {
 				'EDIT'	:55,
 				'DELETE':56
 			},
-			'OPERATOR': {
-				'GENERATE': 57
-			},
-			'PRODUCER': {
-				'GENERATE': 58
-			},
-			'TRUCKING': {
-				'GENERATE': 59
-			},
-			'INVENTORY': {
-				'GENERATE': 60
-			},
-			'SALES': {
-				'GENERATE': 61
-			},
 			'COMMISSION': {
-				'GENERATE': 62
+				'VIEW'	:58,
+				'ADD'	:59,
+				'EDIT'	:60,
+				'DELETE':61
 			},
-			'GROSS': {
-				'GENERATE': 63
-			},
-			'DRIVER': {
-				'GENERATE': 64
-			}
 		},
 		'CRUD': {
 			'ADD': 'add',
@@ -187,11 +170,30 @@ define(function () {
 			'NATUREOFSALES': {
 				'WITHCONTRACT': 1,
 			},
+			'COLLAPSIBLE': {
+				'ID': 'order-list-collapsible-',
+			},
 		},
         'CONTRACT': {
 			'COLLAPSIBLE': {
 				'ID': 'contract-list-collapsible-',
 			},
+		},
+		'STACKLOCATION': {
+			'COLLAPSIBLE': {
+				'ID': 'stacklocation-list-collapsible-',
+			},
+		},
+		'COMMISSION': {
+			'COLLAPSIBLE': {
+				'ID': 'commission-list-collapsible-',
+			},
+			'TYPE': [
+				{id:1, name: 'Flat Rate'},
+				{id:2, name: 'Per Ton Rate'},
+			],
+			'COLUMNIDPRE': 'commission_type_',
+			'WEIGHTTICKETBYUSERID': 'weight-ticket-by-user-',
 		},
 		'LB2TON': 0.0005,
 		'CANCELLATIONREASON': {

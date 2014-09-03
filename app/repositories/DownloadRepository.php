@@ -61,10 +61,8 @@ class DownloadRepository implements DownloadInterface
 					                ->with('ordercancellingreason.reason')
 									->with('contract.account')
 									->find($q['id']);
-
-						// return View::make('pdf.base')->nest('child','pdf.order',array('order' => $order));
-						// return PDF::loadHtml(View::make('pdf.base')->nest('child','pdf.order',array('order' => $order)))->stream();
-						return PDF::loadView('pdf.order',array('order' => $order))->stream();
+						
+						return PDF::loadView('pdf.base',array('child' => View::make('pdf.order',array('order'=>$order) ) ) )->stream($order->order_number.'.pdf');
 						break;
 				}
 				break;

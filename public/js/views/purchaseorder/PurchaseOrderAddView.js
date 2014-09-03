@@ -1064,8 +1064,8 @@ define([
 										'Convert To Purchase Order');
 			
 			this.$el.find('#bid-destination .radio-inline:first-child input[type="radio"]').attr('checked', true);
-			$('#modal-with-form-confirm .i-circle.warning').remove();
-			$('#modal-with-form-confirm h4').remove();
+			//$('#modal-with-form-confirm .i-circle.warning').remove();
+			//$('#modal-with-form-confirm h4').remove();
 			
 			this.initConvertPOCalendar();
 			

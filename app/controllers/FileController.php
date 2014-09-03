@@ -14,7 +14,7 @@ class FileController extends BaseController
 
 	public function missingMethod($parameters = array())
 	{
-	    return Response::view('errors.404', $parameters, 404);
+	    return Redirect::to('404')->withParameters($parameters);
 	}
 
 }

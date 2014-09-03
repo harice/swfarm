@@ -1,6 +1,7 @@
 define([
 	'backbone',
     'text!templates/layout/modalFormTemplate.html',
+    'text!templates/layout/sendmailTemplate.html',
 	'text!templates/layout/confirmModalTemplate.html',
 	'text!templates/layout/confirmNavigateAwayFromFormModalTemplate.html',
 	'text!templates/layout/confirmModalWithFormTemplate.html',
@@ -9,6 +10,7 @@ define([
 	'constant',
 ], function(Backbone,
             modalFormTemplate,
+            sendmailTemplate,
 			confirmModalTemplate,
 			confirmNavigateAwayFromFormModalTemplate,
 			confirmModalWithFormTemplate,
@@ -89,9 +91,12 @@ define([
 			this.$el.find(this.modalAlertContainer).append(confirmTemplate);
 		},
 		
-		initConfirmationWindowWithForm: function (content, buttonId, buttonLabel, contentForm, title) {
-			if($(this.modalAlertContainer).find('#modal-with-form-confirm').length)
-				$(this.modalAlertContainer).find('#modal-with-form-confirm').remove();
+		initConfirmationWindowWithForm: function (content, buttonId, buttonLabel, contentForm, title, modalId) {
+			if(modalId == null || typeof modalId == 'undefined')
+				modalId = 'modal-with-form-confirm';
+			
+			if($(this.modalAlertContainer).find('#'+modalId).length)
+				$(this.modalAlertContainer).find('#'+modalId).remove();
 				
 			var confirmTemplateVariables = {
 				confirm_title: title,
@@ -99,6 +104,7 @@ define([
 				confirm_button_id: buttonId,
 				confirm_button_label: buttonLabel,
 				confirm_content_form: contentForm,
+				confirm_modal_id: modalId,
 			};
 			
 			var confirmTemplate = _.template(confirmModalWithFormTemplate, confirmTemplateVariables);
@@ -150,6 +156,27 @@ define([
 				modalTemplateVariables['confirm_dismiss_modal'] = 1;
 			
 			var modalTemplate = _.template(modalFormTemplate, modalTemplateVariables);
+			this.$el.find(this.modalAlertContainer).append(modalTemplate);
+		},
+
+		initSendMailForm: function (content, buttonId, buttonLabel, title, modalId, model, modelId) {
+			if($(this.modalAlertContainer).find('#modal-confirm').length)
+				$(this.modalAlertContainer).find('#modal-confirm').remove();
+			
+			if(modalId == null || typeof modalId == 'undefined')
+				modalId = 'modal-confirm';
+			
+			var modalTemplateVariables = {
+				confirm_title: title,
+				confirm_content: content,
+				confirm_button_id: buttonId,
+				confirm_button_label: buttonLabel,
+				confirm_modal_id: modalId,
+				confirm_model: model,
+				confirm_model_id : modelId
+			};
+			
+			var modalTemplate = _.template(sendmailTemplate, modalTemplateVariables);
 			this.$el.find(this.modalAlertContainer).append(modalTemplate);
 		},
                 

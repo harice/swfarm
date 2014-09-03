@@ -18,23 +18,26 @@ Route::group(array('prefix' => 'apiv1'), function()
     Route::get('verifyAccount', 'APIv1\UsersController@verifyAccount');
     Route::get('file/filesCleanUp', 'APIv1\FileController@filesCleanUp');
     Route::get('file/{data}', 'APIv1\FileController@show');
-    
+
 });
 
 /* API ROUTES */
 Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 {
+    //Queue
+    Route::resource('queue','APIv1\ProcessorController', array('only' => array('store')));
+
     // Mail
     Route::put('weightticket/mailLoadingTicket/{id}', 'APIv1\WeightTicketController@mailLoadingTicket');
     Route::put('weightticket/mailWeightTicket/{id}', 'APIv1\WeightTicketController@mailWeightTicket');
     Route::put('weightticket/{id}/mail', 'APIv1\WeightTicketController@mailWeightTicket');
-    
+
     // User
 	Route::get('users/search', 'APIv1\UsersController@search');
 	Route::get('users/auth', 'APIv1\UsersController@auth');
 	Route::put('users/updateprofile/{id}', 'APIv1\UsersController@updateProfile');
 	Route::resource('users', 'APIv1\UsersController');
-	
+
 	Route::get('roles/all', 'APIv1\RolesController@all');
 	Route::resource('roles', 'APIv1\RolesController');
 
@@ -72,7 +75,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 
 	// Route::get('po', 'APIv1\BidController@getPurchaseOrder');
 	// Route::put('po/addUnitPriceToBidProduct/{bidId}', 'APIv1\BidController@addUnitPriceToBidProduct');
-	// Route::put('po/addPickupDateToPurchaseOrder/{bidId}', 'APIv1\BidController@addPickupDateToPurchaseOrder');	
+	// Route::put('po/addPickupDateToPurchaseOrder/{bidId}', 'APIv1\BidController@addPickupDateToPurchaseOrder');
 	// Route::put('po/cancelPurchaseOrder/{id}', 'APIv1\BidController@cancelPurchaseOrder');
 	// Route::put('po/closePurchaseOrder/{id}', 'APIv1\BidController@closePurchaseOrder');
 	// Route::get('po/search', 'APIv1\BidController@searchPurchaseOrder');
@@ -127,49 +130,50 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('salesorder/search', 'APIv1\OrderController@getSalesOrders');
     Route::get('salesorder/{id}', 'APIv1\OrderController@getSalesOrder');
     Route::get('salesorder', 'APIv1\OrderController@getSalesOrders');
-    
+
     Route::post('salesorder', 'APIv1\OrderController@addSalesOrder');
     Route::put('salesorder/{id}', 'APIv1\OrderController@updateSalesOrder');
     Route::delete('salesorder/{id}', 'APIv1\OrderController@destroy');
 
     // Farm Location
     Route::resource('farmlocation', 'APIv1\FarmLocationController');
-    
+
     // Stack
     Route::get('stack/search', 'APIv1\StackController@search');
     Route::resource('stack', 'APIv1\StackController');
-    
+
     // Scale
     Route::get('scale/search', 'APIv1\ScaleController@search');
     Route::resource('scale', 'APIv1\ScaleController');
-    
+
     // Trailer
     Route::get('trailer/search', 'APIv1\TrailerController@search');
     Route::resource('trailer', 'APIv1\TrailerController');
-    
+
     // Truck
     Route::get('truck/listByAccount', 'APIv1\TruckController@getTruckerListByAccount');
     Route::get('truck/search', 'APIv1\TruckController@search');
     Route::resource('truck', 'APIv1\TruckController');
-    
+
     // Fee
     Route::resource('fee', 'APIv1\FeeController');
 
     // settings
     Route::get('settings/getTransportSettings', 'APIv1\SettingsController@getTransportSettings');
+    Route::post('settings/bulkUpdateSettings', 'APIv1\SettingsController@bulkUpdateSettings');
     Route::put('settings', 'APIv1\SettingsController@updateSettings');
     Route::resource('settings', 'APIv1\SettingsController');
 
     // File
     Route::resource('document', 'APIv1\DocumentController');
-    
+
     // Contract
     Route::put('contract/close/{id}', 'APIv1\ContractController@closeContract');
     Route::put('contract/open/{id}', 'APIv1\ContractController@openContract');
-    
+
     Route::get('contract/getProducts/{id}', 'APIv1\ContractController@products');
     Route::get('contract/getSalesOrderByProduct/{id}', 'APIv1\ContractController@salesorder');
-    
+
     Route::get('contract/{id}/weighttickets', 'APIv1\ContractController@weighttickets');
     Route::get('contract/{id}/products', 'APIv1\ContractController@products');
     Route::get('contract/{id}/salesorders', 'APIv1\ContractController@salesorder');
@@ -197,8 +201,9 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('commission/getClosedWeightTicketById', 'APIv1\CommissionController@getClosedWeightTicketById');
     Route::get('commission/users', 'APIv1\UsersController@userList');
     Route::resource('commission', 'APIv1\CommissionController');
-    
+
     // Reports
+    Route::get('report/commission/{id}', 'APIv1\ReportController@generateCommissionReport');
     Route::get('report/gross-profit', 'APIv1\ReportController@generateGrossProfit');
     Route::get('report/trucking-statement/{id}', 'APIv1\ReportController@generateTruckingStatement');
     Route::get('report/operator-pay/{id}', 'APIv1\ReportController@generateOperatorPay');
@@ -213,9 +218,9 @@ Route::group(array('before' => 'auth.session'),function(){
 });
 
 Route::get('/', function(){ return View::make('main'); });
-Route::get('/pdf', function(){
+Route::get('pdf', function(){
     return PDF::loadHtml(View::make('pdf.base')->nest('child','pdf.order',array('order' => Order::find(1))))->stream();
     // return View::make('pdf.base',array('title' => 'export'))->nest('child','pdf.order',array('order' => 'P09123127-231'));
 });
-Route::get('/404', function(){ return View::make('errors/404'); });
-Route::get('/{dump}', function(){ return Redirect::to('404'); });
+Route::get('404', function(){ return View::make('errors/404'); });
+Route::get('{dump}', function(){ return Redirect::to('404'); });
