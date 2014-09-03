@@ -1,0 +1,9 @@
+<% if (!_.isEmpty(commission_type)) { %>
+	<% _.each(commission_type, function(ct){ %>
+		<div class="col-sm-6">
+			<label class="radio-inline">
+				<input type="radio" value="<%= ct.id %>" name="type" class="type icheck"><span></span> <%= ct.name %>
+			</label>
+		</div>
+	<% }); %>
+<% } %>

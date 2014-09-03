@@ -25,6 +25,11 @@ define([
 			this.url = '/apiv1/account/contact?accountId='+id;
 			this.getModels();
 		},
+
+		getContactsByAccountType: function (id) {
+			this.url = '/apiv1/contact?accountType='+ id + '&paginated=false';
+			this.getModels();
+		},
 	});
 
 	return ContactCollection;

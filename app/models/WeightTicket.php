@@ -46,9 +46,17 @@ class WeightTicket extends BaseModel {
         return $this->belongsTo('TransportSchedule', 'transportSchedule_id', 'id');
     }
 
+    public function schedule(){
+        return $this->belongsTo('TransportSchedule', 'transportSchedule_id', 'id')->select(array('id', 'order_id'));
+    }
+
     public function status()
     {
         return $this->hasOne('Status', 'id', 'status_id');
+    }
+
+    public function commission(){
+        return $this->hasOne('Commission', 'weightticket_id', 'id');
     }
 
     public function delete(){

@@ -69,6 +69,18 @@ App::down(function()
 
 /*
 |--------------------------------------------------------------------------
+| Define variable on blade view
+|--------------------------------------------------------------------------
+|
+| use {? $variable = $value ?}
+|
+*/
+Blade::extend(function($value) {
+    return preg_replace('/\{\?(.+)\?\}/', '<?php ${1} ?>', $value);
+});
+
+/*
+|--------------------------------------------------------------------------
 | Require The Filters File
 |--------------------------------------------------------------------------
 |
@@ -78,6 +90,7 @@ App::down(function()
 |
 */
 
+require app_path().'/tokenizer.php';
 require app_path().'/filters.php';
 require app_path().'/ioc.php';
 require app_path().'/events.php';

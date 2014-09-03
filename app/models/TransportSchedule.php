@@ -60,6 +60,10 @@ class TransportSchedule extends Eloquent {
         return $this->belongsTo('order');
     }
 
+    public function orderdetails(){
+        return $this->belongsTo('order', 'order_id', 'id')->select(array('id', 'order_number', 'account_id', 'contact_id', 'status_id', 'user_id'));
+    }
+
     // public function trucker(){
     //     return $this->hasMany('Account', 'id', 'trucker_id');
     // }

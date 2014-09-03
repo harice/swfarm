@@ -12,6 +12,7 @@ define([
 	'collections/purchaseorder/DestinationCollection',
 	'collections/product/ProductCollection',
 	'models/purchaseorder/PurchaseOrderModel',
+	'models/queue/QueueModel',
 	'models/document/DocumentModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
@@ -34,6 +35,7 @@ define([
 			DestinationCollection,
 			ProductCollection,
 			PurchaseOrderModel,
+			QueueModel,
 			DocumentModel,
 			contentTemplate,
 			purchaseOrderTabbingTemplate,
@@ -128,6 +130,7 @@ define([
 				'po_url' : '#/'+Const.URL.PO,
 				'po_edit_url' : '#/'+Const.URL.PO+'/'+Const.CRUD.EDIT+'/'+this.poId,
 				po : this.model,
+				print_url : Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.model.id, type:'pdf', model:'order'})),
 				reason_others : Const.CANCELLATIONREASON.OTHERS,
 				_: _
 			};
@@ -140,19 +143,21 @@ define([
 			if(this.isBid)
 				innerTemplateVariables['is_bid'] = true;
 			
-			if(this.model.get('location').id == Const.PO.DESTINATION.DROPSHIP && this.model.get('status').id == Const.STATUSID.CLOSED) {
-				if(this.model.get('salesorder_id')) {
-					this.gotoDropshipSO = function () {
-						Backbone.history.navigate(Const.URL.SO+'/'+thisObj.model.get('salesorder_id'), {trigger: true});
-					};
-					innerTemplateVariables['so_link_label'] = 'View So';
-				}
-				else {
-					this.gotoDropshipSO = function () {
-						Global.getGlobalVars().fromPOId = thisObj.model.get('id');
-						Backbone.history.navigate(Const.URL.SO+'/'+Const.CRUD.ADD, {trigger: true});
-					};
-					innerTemplateVariables['so_link_label'] = 'Add So';
+			if(!this.isBid) {
+				if(this.model.get('location').id == Const.PO.DESTINATION.DROPSHIP && this.model.get('status').id == Const.STATUSID.CLOSED) {
+					if(this.model.get('salesorder_id')) {
+						this.gotoDropshipSO = function () {
+							Backbone.history.navigate(Const.URL.SO+'/'+thisObj.model.get('salesorder_id'), {trigger: true});
+						};
+						innerTemplateVariables['so_link_label'] = 'View So';
+					}
+					else {
+						this.gotoDropshipSO = function () {
+							Global.getGlobalVars().fromPOId = thisObj.model.get('id');
+							Backbone.history.navigate(Const.URL.SO+'/'+Const.CRUD.ADD, {trigger: true});
+						};
+						innerTemplateVariables['so_link_label'] = 'Add So';
+					}
 				}
 			}
 			
@@ -214,7 +219,7 @@ define([
 					};
 					
 					if(productSub.document != null) {
-						var dl = {i:productSub.document.id, t:'v', m:'doc'};
+						var dl = {id:productSub.document.id, type:'doc'};
 						variablesSub['file_path'] = Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize(dl));
 					}
 					
@@ -242,7 +247,58 @@ define([
 			'click #checkin-stack': 'showCheckinStackConfirmationWindow',
 			'click #confirm-checkin-stack': 'checkinStack',
 			'click #create-dropship-so': 'createDropshipSO',
+			'click .sendmail':'showSendMailModal',
+			'click #btn_sendmail':'sendMail',
 			//'click .attach-pdf': 'showPDF',
+		},
+
+		showSendMailModal: function(){
+			var thisObj = this;
+			this.initSendMailForm(
+					'Send Purchase Order as pdf',
+					'btn_sendmail',
+					'Send',
+					this.model.get('order_number'),
+					'mdl_sendmail',
+					'order',
+					this.model.get('id')
+				);
+			
+			var validate = $('#sendmail-form').validate({
+				submitHandler: function(form) {
+					var data = $(form).serializeObject();
+					var queue = new QueueModel(data);
+					queue.save(
+						null, 
+						{
+							success: function (model, response, options) {
+								thisObj.displayMessage(response);
+								$('#mdl_sendmail').modal('hide');
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: queue.getAuth(),
+						}
+					);
+				},
+				rules: {
+					recipients: {
+						multiemail: true,
+					},
+				}
+			});
+
+			this.showModalForm('mdl_sendmail');
+			return false;
+		},
+
+		sendMail: function() {
+			$('#sendmail-form').submit();
+			return false;
 		},
 		
 		showCloseOrderConfirmationWindow: function () {
@@ -251,6 +307,7 @@ define([
 										'Close Purchase Order',
 										'Close Purchase Order',
 										false);
+
 			this.showConfirmationWindow();
 			
 			return false;

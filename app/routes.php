@@ -24,6 +24,9 @@ Route::group(array('prefix' => 'apiv1'), function()
 /* API ROUTES */
 Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 {
+    //Queue
+    Route::resource('queue','APIv1\ProcessorController', array('only' => array('store')));
+
     // Mail
     Route::put('weightticket/mailLoadingTicket/{id}', 'APIv1\WeightTicketController@mailLoadingTicket');
     Route::put('weightticket/mailWeightTicket/{id}', 'APIv1\WeightTicketController@mailWeightTicket');
@@ -192,6 +195,13 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::post('inventory/purchaseorder', 'APIv1\InventoryController@store');
     Route::resource('inventory', 'APIv1\InventoryController');
 
+    //Commission
+    Route::get('commission/getClosedWeightTicketByUserIncludingWithCommission', 'APIv1\CommissionController@getAllClosedWeightTicketByUserIncludingWithCommission');
+    Route::get('commission/getClosedWeightTicketByUser', 'APIv1\CommissionController@getAllClosedWeightTicketByUser');
+    Route::get('commission/getClosedWeightTicketById', 'APIv1\CommissionController@getClosedWeightTicketById');
+    Route::get('commission/users', 'APIv1\UsersController@userList');
+    Route::resource('commission', 'APIv1\CommissionController');
+    
     // Reports
     Route::get('report/gross-profit', 'APIv1\ReportController@generateGrossProfit');
     Route::get('report/trucking-statement/{id}', 'APIv1\ReportController@generateTruckingStatement');
@@ -206,6 +216,10 @@ Route::group(array('before' => 'auth.session'),function(){
     Route::resource('file','FileController', array('only' => array('index')));
 });
 
-Route::get('/', function(){ return View::make('main')->withVersion(Config::get('Constants.VERSION',"1.0")); });
-Route::get('/404', function(){ return View::make('errors/404'); });
-Route::get('/{dump}', function(){ return Redirect::to('404'); });
+Route::get('/', function(){ return View::make('main'); });
+Route::get('pdf', function(){
+    return PDF::loadHtml(View::make('pdf.base')->nest('child','pdf.order',array('order' => Order::find(1))))->stream();
+    // return View::make('pdf.base',array('title' => 'export'))->nest('child','pdf.order',array('order' => 'P09123127-231'));
+});
+Route::get('404', function(){ return View::make('errors/404'); });
+Route::get('{dump}', function(){ return Redirect::to('404'); });

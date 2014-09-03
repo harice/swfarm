@@ -24,7 +24,7 @@ class AccountRepository implements AccountRepositoryInterface {
     $page = isset($params['page']) ? $params['page'] : 1;
     $sortby = isset($params['sortby']) ? $params['sortby'] : 'name';
     $orderby = isset($params['orderby']) ? $params['orderby'] : 'ASC';
-    $offset = $page * $perPage - $perPage;
+    // $offset = $page * $perPage - $perPage;
 
     $accounts = Account::with('accounttype')->orderBy($sortby,$orderby);
     

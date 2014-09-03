@@ -1,0 +1,155 @@
+<div class="col-md-12">
+    <div class="header">
+        <div class="row margin-top-0">
+            <div class="col-md-12">
+                <h2>Inventory Report</h2>
+                <h5><%= cur_date %></h5>
+            </div>
+        </div>
+        <div class="row margin-top-0">
+            <div class="col-md-12 text-center">
+                <h5>                                                                   
+                    <strong><%= date_from %></strong> to  <strong><%= date_to %></strong>
+                </h5>
+            </div>
+        </div>
+        <div class="row margin-top-0">
+            <div class="col-md-12">
+                <h3>
+                    Location:
+                    <strong>
+                        <%= locations.get('location') %>
+                    </strong>
+                </h3> 
+            </div>
+        </div>
+    </div>
+    <% if (!_.isEmpty(locations)) { %>        
+    <div class="content">            
+        <div class="content-inner table-responsive">
+            <table id="operator-list" class="table table-bordered">
+                <thead class="no-border">
+                    <tr>
+                        <th><strong>Order Number</strong></th>
+                        <th><strong>Date</strong></th>
+                        <th><strong>Weight Number</strong></th>
+                        <th><strong>Producer ID</strong></th>
+                        <th><strong>Contract #</strong></th>
+                        <th><strong>Bales</strong></th>
+                        <th><strong>Tons</strong></th>
+                        <th><strong>Cost</strong></th>
+                        <th><strong>Cost Total</strong></th>
+                    </tr>
+                </thead>
+                <tbody class="no-border-y">
+                    <%                         
+                        _.each(locations.get('data'),function(inventory){ 
+                    %>    
+                        <tr>                        
+                            <td><%= inventory.ordernumber %></td>   
+                            <td>
+                                <%
+                                var d = Date.parse(inventory.date);
+                                if (isNaN(d)==false)
+                                {
+                                    var d = new Date(inventory.date), 
+                                    fragments = [                                
+                                        d.getMonth() + 1,
+                                        d.getDate(),
+                                        d.getFullYear()
+                                    ]; 
+                                    print(fragments.join('/'));
+
+                                }     
+                                else {
+                                    d = (inventory.date).split(' ')[0];
+                                    var t = d.split('-');
+                                    print(t[1]+'/'+t[2]+'/'+t[0]);
+                                } 
+                                %>
+                            </td>
+                            <td><%= inventory.weightticketnumber %></td>
+                            <td><%= inventory.producer %></td>
+                            <td><%= inventory.contract %></td>                            
+                            <td><%= inventory.bales %></td>
+                            <td><%= inventory.tons %></td>
+                            <td><%= inventory.cost %></td>
+                            <td><%= inventory.tons * inventory.cost %></td>
+                        </tr>   
+                    <%}); %>                     
+                </tbody>                
+            </table> 
+
+            <table class="table-bordered" style="width:40%">
+                <thead class="no-border">
+                    <tr>
+                        <td colspan="2" align="center"><strong>SUMMARY</strong></td>
+                    </tr>
+                </thead>
+                <tbody class="no-border-y">
+                    <tr>
+                        <td width="50%">
+                            Total Bales In: 
+                        </td>
+                        <td>
+                            <strong><%= locations.get('balesIn') %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Bales Out: 
+                        </td>
+                        <td>
+                            <strong><%= locations.get('balesOut') %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Bales: 
+                        </td>
+                        <td>
+                            <strong><%= locations.get('totalBales') %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Tons In: 
+                        </td>
+                        <td>
+                            <strong><%= locations.get('tonsIn') %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Tons Out: 
+                        </td>
+                        <td>
+                            <strong><%= locations.get('tonsOut') %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Tons: 
+                        </td>
+                        <td>
+                            <strong><%= locations.get('totalTons') %></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total Cost: 
+                        </td>
+                        <td>
+                            <strong><%= locations.get('totalCost') %></strong>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>                          
+        </div>        
+    </div>
+    <% } else { %>
+    <div class="content">
+        <p>No inventory found.</p>
+    </div>
+    <% } %>
+</div>

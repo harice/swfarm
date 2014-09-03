@@ -13,7 +13,7 @@ class AuditRepository implements AuditRepositoryInterface {
     $data_id = isset($input['data_id']) ? $input['data_id'] : '';
     $offset = $page * $perPage - $perPage;
     
-    $audit = Audit::orderBy($sortby, $orderby)->offset($offset);
+    $audit = Audit::orderBy($sortby, $orderby);
     if(!empty($type)){
       if(!empty($data_id))
         $audit->where('type', $type)->where('data_id', $data_id);

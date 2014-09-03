@@ -4,32 +4,70 @@ class DownloadRepository implements DownloadInterface
 {
 	public function download($params)
 	{
-		if(is_array($params) && array_key_exists('q', $params)) {
-			// var_dump(Request::header());
-			// var_dump(Cookie::get('ihYF23kouGY'));
-			// var_dump(Session::all());
-			// exit();
-			$q = unserialize(base64_decode($params['q']));
-			switch ($q['m']) {
-				case 'doc':
-					$file_o = Document::where('issave', '=', 1)->where('id', '=', $q['i'])->first();
-			        if($file_o){
-		        		header('Pragma: public');
-            			header('Expires: 0');
-            			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-			        	header('Content-Description: File Transfer');
-			        	header('Content-Transfer-Encoding: binary');
-						
-						// header('Content-Disposition: attachment; filename="downloaded.pdf"');
+		$q = unserialize(base64_decode($params['q']));
+		
+		if(!is_array($q) && !array_key_exists('type', $q) && !array_key_exists('id', $q)) 
+			return Redirect::to('404')->withPage('file');
 
-			            header('Content-Type: '.$file_o->type);
-			            readfile($file_o->content);
-			        }
-					break;
-			}
+		switch ($q['type']) {
+			case 'doc':
+				$file_o = Document::where('issave', '=', 1)->where('id', '=', $q['id'])->first();
+		        if($file_o){
+	        		header('Pragma: public');
+        			header('Expires: 0');
+        			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+		        	header('Content-Description: File Transfer');
+		        	header('Content-Transfer-Encoding: binary');
+		        	header('Content-Type: '.$file_o->type);
+
+		        	if(!array_key_exists('dl', $q)) { readfile($file_o->content); break; }
+
+		        	$filename = time();
+		        	$ext = '.pdf';
+
+		        	switch ($file_o->type) {
+		        		case 'application/pdf':
+		        			$ext = '.pdf';
+		        			break;
+		        	}
+
+        			$model_o = $file_o->documentable;
+        			if(is_object($model_o)) {
+	        			switch(get_class($model_o)) {
+	        				case 'ProductOrder':
+	        					$filename = $model_o->order->order_number .'-'.$model_o->stacknumber;
+	        					break;
+	        			}
+	        		}
+
+        			header('Content-Disposition: attachment; filename="'.$filename.$ext.'"');
+		        	readfile($file_o->content);
+		        }
+				break;
+
+			case 'pdf':
+				if(!array_key_exists('model', $q)) break;
+				switch ($q['model']) {
+					case 'order':
+						$order = Order::with('productsummary.productname')
+					                ->with('productsummary.productorder.product')
+					                ->with('productsummary.productorder.document')
+					                ->with('productsummary.productorder.sectionfrom.storagelocation')
+					                ->with('account')
+					                ->with('contact')
+					                ->with('orderaddress', 'orderaddress.addressStates')
+					                ->with('location')
+					                ->with('status')
+					                ->with('ordercancellingreason.reason')
+									->with('contract.account')
+									->find($q['id']);
+						
+						return PDF::loadView('pdf.base',array('child' => View::make('pdf.order',array('order'=>$order) ) ) )->stream($order->order_number.'.pdf');
+						break;
+				}
+				break;
 		}
-		// http://swfarm.local/file?q=YTozOntzOjE6ImkiO3M6MToiMSI7czoxOiJ0IjtzOjE6InYiO3M6MToibSI7czozOiJkb2MiO30=
-		// return App::abort(501,'Not implemented');
-		return Response::view('errors.404', array(), 404);
+
+		return Redirect::to('404')->withPage('file');
 	}
 }

@@ -93,7 +93,11 @@ Route::filter('auth.session', function()
 {
 	if(Request::ajax()) return App::abort(501,'Not implemented');
 
-	if(!Cookie::get('ihYF23kouGY')) return Redirect::to('404');
+	if(!Cookie::get('ihYF23kouGY')) return Redirect::to('404')->withPage('file');
+
+	if(!Tokenizer::validate()) return Redirect::to('404')->withPage('file');
+
+	if(!Input::get('q')) return Redirect::to('404')->withPage('file');
 });
 
 Route::filter('basic', function()
@@ -105,6 +109,10 @@ Route::filter('basic', function()
 					)
 				);
 	if(!$auth) return App::abort(403,'Unauthorized',['WWW-Authenticate' => 'Basic']);
+	else {
+		if(!Cookie::get('ihYF23kouGY')) return App::abort(403,'Unauthorized',['WWW-Authenticate' => 'Basic']);
+		Tokenizer::store();
+	}
 });
 
 /*
