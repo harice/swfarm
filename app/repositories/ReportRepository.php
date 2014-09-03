@@ -625,7 +625,7 @@ class ReportRepository implements ReportRepositoryInterface {
     /**
      * Generate Commission Report
      *
-     * @param int $id
+     * @param int $id User ID
      * @param array $params
      * @return mixed
      */
