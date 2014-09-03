@@ -1,0 +1,46 @@
+<% if (!_.isEmpty(weight_tickets)) { %>
+	<% _.each(weight_tickets, function(weight_ticket){ %>
+		<% var commission = weight_ticket.get("commission"); %>
+		<tr>
+			<td><%= weight_ticket.get("weightTicketNumber") %></td>
+			<td>
+				<% if (commission) { %>
+					<%= _.findWhere(commission_types, {id:weight_ticket.get("commission").type}).name  %>
+				<% } %>
+			</td>
+			<td class="text-right">
+				<% if (commission) { %>
+					<%= numberFormatTons(weight_ticket.get("commission").tons) %>
+				<% } else { %>
+					<%= numberFormatTons(weight_ticket.get("netTons")) %>
+				<% } %>
+			</td>
+			<td class="text-right">
+				<% if (commission) { %>
+					<% if (parseFloat(weight_ticket.get("commission").rate) <= 0) { %>
+						NA
+					<% } else { %>
+						<%= numberFormat(weight_ticket.get("commission").rate) %>
+					<% } %>
+				<% } %>
+			</td>
+			<td class="text-right">
+				<% if (commission) { %>
+					<%= numberFormat(weight_ticket.get("commission").amountdue) %>
+				<% } %>
+			</td>
+			<td>
+				<a class="edit-commission" href="#" data-id="<%= weight_ticket.get("id") %>">
+					<span class="fa-stack">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+					</span>
+				</a>
+			</td>
+		</tr>
+	<% }); %>
+<% } else { %>
+	<tr>
+		<td colspan="6">No result found.</td>
+	</tr>
+<% } %>

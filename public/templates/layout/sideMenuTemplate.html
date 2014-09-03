@@ -44,7 +44,7 @@
         <% } %>
 
         <% if(_.contains(permission,constant.MENU.REPORTS.VIEW) || _.isEqual(su,constant.SU)) { %>
-        <li><a href="#/"><i class="fa fa-bar-chart-o"></i><span>Reports</span></a></li>
+        <li><a href="#/<%= constant.URL.REPORT %>"><i class="fa fa-bar-chart-o"></i><span>Reports</span></a></li>
         <% } %>
 
         <% 
@@ -93,6 +93,10 @@
 			
 			<% if(_.contains(permission,constant.MENU.SETTINGS.EDIT) || _.isEqual(su,constant.SU)) { %>
             <li><a href="#/<%= constant.URL.SETTINGS %>">Settings</a></li>
+            <% } %>
+			
+			<% if(_.contains(permission,constant.MENU.COMMISSION.VIEW) || _.isEqual(su,constant.SU)) { %>
+            <li><a href="#/<%= constant.URL.COMMISSION %>">Commission</a></li>
             <% } %>
           </ul>
         </li>

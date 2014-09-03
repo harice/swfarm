@@ -19,6 +19,11 @@ return array(
     'LOCATION_DROPSHIP' => 3,
     'LOCATION_PRODUCER' => 2,
 
+    'STATUS_CLOSED' => 2,
+
+    'ORDERTYPE_PO' => 1,
+    'ORDERTYPE_SO' => 2,
+
     'VERSION' => "3.0"
 
 );

@@ -120,6 +120,11 @@ define([
 				thisObj.$el.find('#product-list tfoot .total-bales').text(this.addCommaToNumber(productsBalesTotal.toString()));
 				thisObj.$el.find('#product-list tfoot .total-pounds').text(this.addCommaToNumber(productsPoundsTotal.toFixed(2)));
 				thisObj.$el.find('#product-list tfoot .total-net-tons').text(this.addCommaToNumber(productsNetTotal.toFixed(4)));
+				
+				if(weightInfo.document != null) {
+					this.subContainer.find('#uploadedfile').val(weightInfo.document.id);
+					this.subContainer.find('#attach-pdf').removeClass('no-attachment');
+				}
 			}
 			else
 				Global.getGlobalVars().app_router.navigate(Const.URL.POWEIGHTINFO+'/'+this.poId+'/'+this.schedId, {trigger: true});

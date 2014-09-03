@@ -74,7 +74,7 @@ define([
                 sl_url: '#/'+Const.URL.STACKLOCATION,
 				sl_edit_url: '#/'+Const.URL.STACKLOCATION+'/'+Const.CRUD.EDIT,
 				sls: this.collection.models,
-				collapsible_id: Const.PO.COLLAPSIBLE.ID,
+				collapsible_id: Const.STACKLOCATION.COLLAPSIBLE.ID,
 				_: _ 
 			};
 			
@@ -111,7 +111,7 @@ define([
 		
 		toggleAccordion: function (ev) {
 			var thisObj = this;
-			this.toggleAccordionNormal(ev.currentTarget);
+			this.toggleAccordionNormal(ev.currentTarget, Const.STACKLOCATION.COLLAPSIBLE.ID);
 			return false;
 		},
 		

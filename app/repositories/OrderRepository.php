@@ -76,10 +76,10 @@ class OrderRepository implements OrderRepositoryInterface {
           $item['weightPercentageDelivered'] = $this->getExpectedDeliveredData($item['id']);
           foreach($item['productsummary'] as $productsummary){
             foreach($productsummary['productorder'] as $productorder){
-            if($productorder['unitprice'] != null){
-              $item['totalPrice'] += $productorder['unitprice'] * $productorder['tons'];
+                if($productorder['unitprice'] != null){
+                  $item['totalPrice'] += $productorder['unitprice'] * $productorder['tons'];
+                }
             }
-          }
         }
         }
 
@@ -105,11 +105,12 @@ class OrderRepository implements OrderRepositoryInterface {
         $result = array();
         $result['expected'] = 0;
         $result['delivered'] = 0;
-
+        $result['returned'] = 0;
         foreach($order['productorder'] as $productOrder){
  
             $totalDeliveries = 0;
             $deliveredWeight = 0;
+            
             foreach($productOrder['transportscheduleproduct'] as $transportscheduleproduct){
                 $weightTypeToBeUsed = 1; //pickup weight ticket default
                 if(!isset($transportscheduleproduct['transportschedule']['weightticket'])){
@@ -178,13 +179,19 @@ class OrderRepository implements OrderRepositoryInterface {
 
             }
             
-
+            
             $result['delivered'] += $totalDeliveries;
             $result['expected'] += $productOrder['tons'];
+            
+            if($order['ordertype'] == Config::get('constants.ORDERTYPE_SO')){ //only SO can have return products
+                //get total weight return on product order
+                $result['returned'] += $this->getTotalStackReturnedOnOrderUsingStackNumber($order['id'], $productOrder['stacknumber']);
+            }
+            
         }
 
-        $result['delivered'] = $result['delivered'];
-        $result['expected'] = $result['expected'];
+        $result['delivered'] = $result['delivered']-$result['returned']; //deduct all the returned product        
+
         if($result['delivered'] != null && $result['delivered'] != 0){
             $result['percentage'] = intval(($result['delivered']/$result['expected']) * 100);    
         } else {
@@ -984,6 +991,7 @@ class OrderRepository implements OrderRepositoryInterface {
             $stackList[$index]['stackNumber'] = $productOrder['stacknumber'];
             $stackList[$index]['totalExpected'] = $productOrder['tons'];
             $stackList[$index]['totalDeliveries'] = 0;
+            $stackList[$index]['totalReturned'] = $this->getTotalStackReturnedOnOrderUsingStackNumber($order['id'], $productOrder['stacknumber']);
             $stackList[$index]['schedule'] = array();
             $i = 0;
             foreach($productOrder['transportscheduleproduct'] as $transportscheduleproduct){
@@ -1073,6 +1081,22 @@ class OrderRepository implements OrderRepositoryInterface {
         }
 
         return $stackList;
+    }
+
+    private function getTotalStackReturnedOnOrderUsingStackNumber($orderId, $stackNumber){
+        $returnedInTons = 0;
+        $stack = Stack::where('stacknumber', '=', $stackNumber)->first(array('id'));
+        $stackId = $stack['id'];
+        $result = Inventory::with(array('inventoryproduct' => function($query) use ($stackId){
+                                $query->where('stack_id', '=', $stackId);
+                            }))->where('returnedOrder_id', '=', $orderId)->get();
+        $result = $result->toArray();
+        foreach($result as $inventory){
+            foreach($inventory['inventoryproduct'] as $product){
+                $returnedInTons += $product['tons'];
+            }
+        }
+        return $returnedInTons;
     }
 
     private function getWeightTicketProductTobeUsed($type, $weightticketproducts){
@@ -1197,5 +1221,13 @@ class OrderRepository implements OrderRepositoryInterface {
                 'message' => "There is a problem while checking in the products."
             );
         }
+    }
+
+    public function getSalesOrderUsingAccountId($accountId){
+        $salesOrder = Order::where('account_id', '=', $accountId)
+                            ->where('ordertype', '=', 2)
+                            ->where('status_id', '!=', Config::get('constants.STATUS_CLOSED'))
+                            ->get(array('id', 'order_number'));
+        return $salesOrder->toArray();
     }
 }

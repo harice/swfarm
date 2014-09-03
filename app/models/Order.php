@@ -113,4 +113,8 @@ class Order extends BaseModel {
         return $this->hasMany('ProductOrderSummary', 'order_id', 'id')->select(array('id', 'product_id', 'order_id', 'tons', 'unitprice'));
     }
 
+    public function userfullname(){
+        return $this->hasOne('User', 'id', 'user_id')->select(array('id', 'firstname', 'lastname', 'suffix'));
+    }
+
 }

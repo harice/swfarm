@@ -155,14 +155,7 @@ class StackRepository implements StackRepositoryInterface {
     
     public function validate($data, $id = null)
     {
-        $rules = Stack::$rules;
-        
-        if ($id) {
-            $rules['stacknumber'] = 'required|unique:stack,stacknumber,'.$id;
-            $rules['product_id'] = 'required';
-            $rules['location'] = 'required|unique:stack,location,'.$id;
-        }
-        
+    
         $validator = Validator::make($data, $rules);
         
         if ($validator->fails()) {

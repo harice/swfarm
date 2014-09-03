@@ -48,6 +48,11 @@ define([
 			this.listView.filters.transportstart = '';
 			this.listView.filters.transportend = '';*/
 		},
+		
+		getSOByCustomer: function (id) {
+			this.url = '/apiv1/inventory/getUsingAccount?accountId='+id;
+            this.getModels();
+		},
 	});
 
 	return SalesOrderCollection;

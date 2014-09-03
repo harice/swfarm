@@ -82,7 +82,7 @@ define([
                 contract_url: '#/'+Const.URL.CONTRACT,
 				contract_edit_url: '#/'+Const.URL.CONTRACT+'/'+Const.CRUD.EDIT,
 				contracts: this.collection.models,
-				collapsible_id: Const.PO.COLLAPSIBLE.ID,
+				collapsible_id: Const.CONTRACT.COLLAPSIBLE.ID,
 				_: _ 
 			};
             
@@ -207,9 +207,10 @@ define([
 			var thisObj = this;
 			
 			this.toggleAccordionAndRequestACollection(ev.currentTarget,
+				Const.CONTRACT.COLLAPSIBLE.ID,
 				SalesOrderDetailsByProductCollection,
 				function (collection, id) {
-					var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;
+					var collapsibleId = Const.CONTRACT.COLLAPSIBLE.ID+id;
 					$('#'+collapsibleId).find('.sales-order-details-by-product').html(thisObj.generateSalesOrderDetailsByProduct(collection.models, id));
 				}
 			);

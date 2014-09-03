@@ -17,8 +17,11 @@ define([
 					},
 				}
 			);
-			this.listView.lookUpIds.order_id = option.id;
+			
+			if(typeof option !== 'undefined' && typeof option.id !== 'undefined')
+				this.listView.lookUpIds.order_id = option.id;
 		},
+		
 	});
 
 	return SOWeightInfoCollection;

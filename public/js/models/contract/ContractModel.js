@@ -1,31 +1,34 @@
 define([
 	'backbone',
-], function(Backbone) {
-
+    'global',
+    'constant'
+], function(Backbone, Global, Const)
+{
 	var ContractModel = Backbone.Model.extend({
 		urlRoot: '/apiv1/contract',
 		defaults: {
         },
 		runFetch: function () {
 			var thisObj = this;
-			
+
 			this.fetch({
 				success: function(model, response, options) {
+                    console.log(response);
 					if(typeof response.error !== 'undefined') {
 						Global.getGlobalVars().app_router.navigate(Const.URL.TRAILER, {trigger: true});
 					}
 				},
 				error: function(model, response, options) {
-					
+
 				},
 				headers: thisObj.getAuth()
 			});
 		},
-        
+
         setCloseURL: function() {
             this.urlRoot = '/apiv1/contract/close';
         },
-        
+
         setOpenURL: function() {
             this.urlRoot = '/apiv1/contract/open';
         }

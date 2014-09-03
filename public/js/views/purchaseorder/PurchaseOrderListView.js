@@ -323,6 +323,7 @@ define([
 			var thisObj = this;
 			
 			this.toggleAccordionAndRequestACollection(ev.currentTarget,
+				Const.PO.COLLAPSIBLE.ID,
 				OrderWeightDetailsByStackCollection,
 				function (collection, id) {
 					var collapsibleId = Const.PO.COLLAPSIBLE.ID+id;

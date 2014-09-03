@@ -39,6 +39,11 @@ define([
 			this.url = '/apiv1/contract/getProducts/'+contractId;
 			this.getModels();
 		},
+		
+		getOrderProduct: function (orderId) {
+			this.url = '/apiv1/inventory/getProductsOfOrder?orderId='+orderId;
+			this.getModels();
+		}
 	});
 
 	return ProductCollection;
