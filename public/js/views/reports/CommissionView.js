@@ -2,25 +2,25 @@ define([
 	'backbone',
 	'views/base/ReportView',
 	'models/reports/ReportModel',
-	'collections/account/AccountCustomerCollection',
-	'text!templates/reports/CustomersListTemplate.html',
+	'collections/user/UserCollection',
+	'text!templates/reports/CommissionListTemplate.html',
 	'global',
 	'constant',
 ], function(
 	Backbone,
 	ReportView,			
 	Report,
-	AccountCustomerCollection,
-	customersListTemplate,
+	UserCollection,
+	commissionListTemplate,
 	Global,
 	Const
 ){
 
-	var CustomerSearchView = ReportView.extend({
+	var CommissionView = ReportView.extend({
 		
 		initialize: function() {
 			var thisObj = this;			
-			this.filtername = "Customer's Name";
+			this.filtername = "User's Name";
 
 			this.model = new Report();
 			this.model.on('change', function (){
@@ -28,7 +28,7 @@ define([
 				this.off("change");
 			});	
 
-			this.collection = new AccountCustomerCollection();
+			this.collection = new UserCollection();
 
 			//Only display form when finished synching
 			this.collection.on('sync', function (){				
@@ -40,7 +40,7 @@ define([
 		
 		render: function(){	
 			this.getProducerList();			
-			Backbone.View.prototype.refreshTitle('Report','Customer Sales');			
+			Backbone.View.prototype.refreshTitle('Report','Commission Statement');			
 		},	
 
 		getProducerList: function (){
@@ -58,7 +58,7 @@ define([
 
 		getFilterName: function(){
 				
-			var customers = '<option disabled selected>Select Customer</option>';
+			var customers = '<option disabled selected>Select User</option>';
 			_.each(this.collection.models, function (model) {
 				customers += '<option value="'+model.get('id')+'">'+model.get('name') +'</option>';
 			});
@@ -71,14 +71,14 @@ define([
 			this.filterId = $("#filtername").val();
 			
 			if(this.checkFields()){							
-				this.model.fetchCustomerSales(this.filterId, this.startDate, this.endDate);
+				this.model.fetchCommissionStatement(this.filterId, this.startDate);
 
 				$("#report-form").collapse("toggle");
 				$(".collapse-form").addClass("collapsed");
 			}
 
 			this.model.on('sync', function (){				
-				thisObj.processData(customersListTemplate);				
+				thisObj.processData(commissionListTemplate);				
 				this.off("sync");
 			});				
 
@@ -89,6 +89,6 @@ define([
 		
 	});
 
-  return CustomerSearchView;
+  return CommissionView;
   
 });

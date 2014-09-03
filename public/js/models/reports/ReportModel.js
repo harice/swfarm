@@ -58,8 +58,8 @@ define([
         	this.runFetch();
         },
 
-        fetchCommissionStatement: function (id, startDate, endDate) {
-        	this.urlRoot = '/apiv1/report/commission/' + id + '?dateStart=' +startDate+'&dateEnd='+endDate;
+        fetchCommissionStatement: function (id, startDate) {
+        	this.urlRoot = '/apiv1/report/commission/' + id + '?dateStart=' +startDate;
         	this.runFetch();
         },
 

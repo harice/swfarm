@@ -46,9 +46,8 @@ define([
 		},	
 
 		getProducerList: function (){
-			var thisObj = this;
-			var keyword = "Pro";			
-			this.collection.formatURL(keyword);
+			var thisObj = this;				
+			
 			this.collection.fetch({
 				success: function (collection, response, options) {
 					

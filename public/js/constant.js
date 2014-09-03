@@ -232,16 +232,6 @@ define(function () {
             'TRUCKER': 8,
             'SWFTRUCKER': 9,
         },
-        'REPORT': {
-        	'OPERATOR': 'operator-pay',
-        	'PRODUCER': 'producer',
-        	'TRUCKING': 'trucking',
-        	'INVENTORY': 'inventory',
-        	'SALES': 'sales',
-        	'COMMISSION': 'commission',
-        	'GROSS': 'gross',
-        	'DRIVER': 'driver'
-        }
 	};
 	
 	return constant;
