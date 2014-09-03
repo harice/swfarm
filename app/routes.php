@@ -201,8 +201,9 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('commission/getClosedWeightTicketById', 'APIv1\CommissionController@getClosedWeightTicketById');
     Route::get('commission/users', 'APIv1\UsersController@userList');
     Route::resource('commission', 'APIv1\CommissionController');
-    
+
     // Reports
+    Route::get('report/commission/{id}', 'APIv1\ReportController@generateCommissionReport');
     Route::get('report/gross-profit', 'APIv1\ReportController@generateGrossProfit');
     Route::get('report/trucking-statement/{id}', 'APIv1\ReportController@generateTruckingStatement');
     Route::get('report/operator-pay/{id}', 'APIv1\ReportController@generateOperatorPay');
