@@ -639,15 +639,9 @@ class ReportRepository implements ReportRepositoryInterface {
             ->join('users', 'commission.user_id', '=', 'users.id')
             ->join('account', 'order.account_id', '=', 'account.id');
 
-        $transactions = $transactions->join('weightticketscale as pickup', 'weightticket.pickup_id', '=', 'pickup.id')
-            ->join('weightticketproducts as pickup_wtp', 'pickup.id', '=', 'pickup_wtp.weightTicketScale_id')
-            ->join('transportscheduleproduct as pickup_tsp', 'pickup_wtp.transportScheduleProduct_id', '=', 'pickup_tsp.id')
-            ->join('productorder as pickup_pro', 'pickup_tsp.productorder_id', '=', 'pickup_pro.id');
+        $transactions = $transactions->join('weightticketscale as pickup', 'weightticket.pickup_id', '=', 'pickup.id');
 
-        $transactions = $transactions->join('weightticketscale as dropoff', 'weightticket.dropoff_id', '=', 'dropoff.id')
-            ->join('weightticketproducts as dropoff_wtp', 'pickup.id', '=', 'dropoff_wtp.weightTicketScale_id')
-            ->join('transportscheduleproduct as dropoff_tsp', 'dropoff_wtp.transportScheduleProduct_id', '=', 'dropoff_tsp.id')
-            ->join('productorder as dropoff_pro', 'dropoff_tsp.productorder_id', '=', 'dropoff_pro.id');
+        $transactions = $transactions->join('weightticketscale as dropoff', 'weightticket.dropoff_id', '=', 'dropoff.id');
 
         $transactions = $transactions->where('commission.user_id', '=', $id);
 
@@ -667,16 +661,15 @@ class ReportRepository implements ReportRepositoryInterface {
             'weightticket.created_at',
             'account.name as account_name',
             'commission.rate',
-            'pickup_wtp.bales as pickup_bales',
-            'pickup_wtp.pounds as pickup_pounds',
-            'dropoff_wtp.bales as dropoff_bales',
-            'dropoff_wtp.pounds as dropoff_pounds',
+            'pickup.bales',
+            'pickup.gross',
+            'pickup.tare',
             'commission.amountdue',
             'commission.type'
         );
 
-        $total_bales = $transactions->sum('pickup_wtp.bales');
-        $total_pounds = $transactions->sum('pickup_wtp.pounds') * 0.0005;
+        $total_bales = $transactions->sum('pickup.bales');
+        $total_pounds = $transactions->sum('pickup.gross') - $transactions->sum('pickup.tare');
         $total_commissions = $transactions->sum('commission.amountdue');
         $transactions = $transactions->get();
 
