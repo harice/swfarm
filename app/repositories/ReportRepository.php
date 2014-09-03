@@ -16,15 +16,16 @@ class ReportRepository implements ReportRepositoryInterface {
             {
                 $q->on('transportScheduleProduct_id', '=', 'transportscheduleproduct.id');
                 
-                if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                // Filter by Date
+                if (isset($params['dateStart']))
+                {
                     $q->where('weightticketproducts.created_at', '>', $params['dateStart']);
-                    $q->where('weightticketproducts.created_at', '<', $date_end);
-                } elseif (isset($params['dateStart'])) {
-                    $q->where('weightticketproducts.created_at', '>=', $params['dateStart']);
-                } elseif (isset($params['dateEnd'])) {
+                }
+
+                if (isset($params['dateEnd']))
+                {
                     $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                    $q->where('weightticketproducts.created_at', '<=', $date_end);
+                    $q->where('weightticketproducts.created_at', '<', $date_end);
                 }
             })
             ->join('productorder', 'transportscheduleproduct.productorder_id', '=', 'productorder.id')
@@ -72,15 +73,16 @@ class ReportRepository implements ReportRepositoryInterface {
             {
                 $q->on('transportScheduleProduct_id', '=', 'transportscheduleproduct.id');
                 
-                if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                // Filter by Date
+                if (isset($params['dateStart']))
+                {
                     $q->where('weightticketproducts.created_at', '>', $params['dateStart']);
-                    $q->where('weightticketproducts.created_at', '<', $date_end);
-                } elseif (isset($params['dateStart'])) {
-                    $q->where('weightticketproducts.created_at', '>=', $params['dateStart']);
-                } elseif (isset($params['dateEnd'])) {
+                }
+
+                if (isset($params['dateEnd']))
+                {
                     $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                    $q->where('weightticketproducts.created_at', '<=', $date_end);
+                    $q->where('weightticketproducts.created_at', '<', $date_end);
                 }
             })
             ->join('productorder', 'transportscheduleproduct.productorder_id', '=', 'productorder.id')
@@ -207,16 +209,16 @@ class ReportRepository implements ReportRepositoryInterface {
             {
                 $q->on('transportScheduleProduct_id', '=', 'transportscheduleproduct.id');
                 
-                if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-//                    $q->whereBetween('weightticketproducts.created_at', array($params['dateStart'], $date_end));
+                // Filter by Date
+                if (isset($params['dateStart']))
+                {
                     $q->where('weightticketproducts.created_at', '>', $params['dateStart']);
-                    $q->where('weightticketproducts.created_at', '<', $date_end);
-                } elseif (isset($params['dateStart'])) {
-                    $q->where('weightticketproducts.created_at', '>=', $params['dateStart']);
-                } elseif (isset($params['dateEnd'])) {
+                }
+
+                if (isset($params['dateEnd']))
+                {
                     $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                    $q->where('weightticketproducts.created_at', '<=', $date_end);
+                    $q->where('weightticketproducts.created_at', '<', $date_end);
                 }
             })
             ->join('productorder', 'productorder_id', '=', 'productorder.id');
@@ -234,6 +236,7 @@ class ReportRepository implements ReportRepositoryInterface {
         $transactions = $transactions->where('truck.id', '=', $id);
         
         $transactions = $transactions->select(
+            'weightticketproducts.id as id',
             'weightticketproducts.bales',
             'weightticketproducts.pounds',
             'weightticketproducts.created_at',
@@ -259,6 +262,8 @@ class ReportRepository implements ReportRepositoryInterface {
             'loader_destination.lastname as loader_destination_lastname',
             'loader_destination.suffix as loader_destination_suffix',
             
+//            'weightticket.loadingTicketNumber as loading_ticket_number',
+//            'weightticket.unloadingTicketNumber as unloading_ticket_number',
             'weightticketscale.type as loading_type'
         );
         
@@ -277,6 +282,18 @@ class ReportRepository implements ReportRepositoryInterface {
         
         $transactions = $transactions->get();
         
+        $truck_loads = array();
+        foreach($transactions->toArray() as $truck_load)
+        {
+            $truck_loads[] = array(
+//                'receipt_no' => ($truck_load['loading_type'] == 2) ? $truck_load['unloading_ticket_number'] : 'loading_ticket_number',
+                'type' => ($truck_load['loading_type'] == 2) ? 'Unload' : 'Load',
+                'loader' => ($truck_load['loading_type'] == 2) ? $truck_load['loader_destination_lastname'] .', ' .$truck_load['loader_destination_firstname'] : $truck_load['loader_origin_lastname'] .', ' .$truck_load['loader_origin_firstname'],
+                'amount' => $truck_load['pounds']
+            );
+        }
+        
+        
         $report['truck'] = $truck;
         $report['summary']['total_transactions'] = $total_transactions;
         $report['summary']['total_bales'] = $total_bales;
@@ -288,6 +305,7 @@ class ReportRepository implements ReportRepositoryInterface {
         $report['summary']['total_hauling_fee'] = $total_hauling_fee;
         $report['summary']['total_statement'] = $total_bales + $total_pounds + $total_hauling_fee;
         $report['transactions'] = $transactions->toArray();
+        $report['truck_loads'] = $truck_loads;
         
         return $report;
     }
@@ -362,15 +380,16 @@ class ReportRepository implements ReportRepositoryInterface {
             {
                 $q->on('transportScheduleProduct_id', '=', 'transportscheduleproduct.id');
                 
-                if (isset($params['dateStart']) && isset($params['dateEnd'])) {
-                    $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+                // Filter by Date
+                if (isset($params['dateStart']))
+                {
                     $q->where('weightticketproducts.created_at', '>', $params['dateStart']);
-                    $q->where('weightticketproducts.created_at', '<', $date_end);
-                } elseif (isset($params['dateStart'])) {
-                    $q->where('weightticketproducts.created_at', '>=', $params['dateStart']);
-                } elseif (isset($params['dateEnd'])) {
+                }
+
+                if (isset($params['dateEnd']))
+                {
                     $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
-                    $q->where('weightticketproducts.created_at', '<=', $date_end);
+                    $q->where('weightticketproducts.created_at', '<', $date_end);
                 }
             });
         
@@ -407,14 +426,101 @@ class ReportRepository implements ReportRepositoryInterface {
      */
     public function generateGrossProfit($params)
     {
-        $transactions = 'fsdfsdf';
+        $weighttickets = WeightTicket::with(
+            'transportschedule.order.account',
+            'weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder',
+            'weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder'
+        );
         
-        $report['summary']['total_cost'] = '';
-        $report['summary']['hay_cost'] = '';
-        $report['summary']['freight_cost'] = '';
-        $report['summary']['profit'] = '';
-        $report['summary']['profit_percentage'] = '';
-        $report['transactions'] = $transactions->toArray();
+        // Filter by Date
+        if (isset($params['dateStart']))
+        {
+            $weighttickets = $weighttickets->where('created_at', '>', $params['dateStart']);
+        }
+
+        if (isset($params['dateEnd']))
+        {
+            $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
+            $weighttickets = $weighttickets->where('created_at', '<', $date_end);
+        }
+        
+        $weighttickets = $weighttickets->get();
+        
+//        Log::debug(DB::getQueryLog());
+        
+        $transactions = array();
+        foreach ($weighttickets as $weightticket)
+        {
+            $pounds = 0.0;
+            $unitprice = 0.0;
+            $total_sales = 0.0;
+            
+            if ($weightticket['weightticketscale_pickup'])
+            {
+                $weightticket_products = $weightticket['weightticketscale_pickup']->weightticketproducts->toArray();
+
+                foreach ($weightticket_products as $weightticket_product)
+                {
+                    $pounds += $weightticket_product['pounds'];
+                    $unitprice += $weightticket_product['transportscheduleproduct']['productorder']['unitprice'];
+                }
+                $total_sales = ($pounds * 0.0005) * $unitprice;
+            }
+            else
+            {
+                $weightticket_products = $weightticket['weightticketscale_dropoff']->weightticketproducts->toArray();
+
+                foreach ($weightticket_products as $weightticket_product)
+                {
+                    $pounds += $weightticket_product['pounds'];
+                    $unitprice += $weightticket_product['transportscheduleproduct']['productorder']['unitprice'];
+                }
+                $total_sales = ($pounds * 0.0005) * $unitprice;
+            }
+            
+            $updated_at = $weightticket['updated_at'];
+            $account = $weightticket['transportschedule']['order']['account']['name'];
+            $net_sale = $total_sales - 0.0; // Total Sales - Return Sales
+            $hay_cost = 99.9999; // TODO: Get buying price
+            $freight = $weightticket['transportschedule']['truckingrate'] + $weightticket['transportschedule']['trailerrate'] + $weightticket['transportschedule']['fuelcharge'];
+            $fees = $weightticket['transportschedule']['originloaderfee'] + $weightticket['transportschedule']['destinationloaderfee'];
+            $commission = 9.9999; // TODO: Get commissions
+            $profit_amount = $net_sale - $hay_cost - $freight - $fees - $commission;
+            $profit_percentage = number_format((($profit_amount / $net_sale) * 100), 2, '.', ',');
+            
+            $transactions[] = array(
+                'updated_at' => $updated_at,
+                'account' => $account,
+                'net_sale' => $net_sale,
+                'hay_cost' => $hay_cost,
+                'freight_cost' => $freight,
+                'fees' => $fees,
+                'commission' => $commission,
+                'profit_amount' => $profit_amount,
+                'profit_percentage' => $profit_percentage
+            );
+        }
+        
+        // Construct summary
+        $total_cost = $total_hay_cost = $total_freight_cost = $total_profit_amount = $total_net_sale = $total_profit_percentage = 0.0;
+        foreach ($transactions as $transaction)
+        {
+            $total_hay_cost += $transaction['hay_cost'];
+            $total_freight_cost += $transaction['freight_cost'];
+            $total_profit_amount += $transaction['profit_amount'];
+            $total_net_sale += $transaction['net_sale'];
+        }
+        $total_cost = $total_hay_cost + $total_freight_cost;
+        $total_profit_percentage = number_format((($total_profit_amount / $total_net_sale) * 100), 2, '.', ',');
+        
+        $report['summary']['total_transactions'] = $weighttickets->count();
+        $report['summary']['total_cost'] = $total_cost;
+        $report['summary']['total_hay_cost'] = $total_hay_cost;
+        $report['summary']['total_freight_cost'] = $total_freight_cost;
+        $report['summary']['total_profit_amount'] = $total_profit_amount;
+        $report['summary']['total_profit_percentage'] = $total_profit_percentage;
+        $report['transactions'] = $transactions;
+//        $report['data'] = $weighttickets->toArray();
         
         return $report;
     }

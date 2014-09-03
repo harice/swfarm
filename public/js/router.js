@@ -32,6 +32,7 @@ define([
 	'controllers/inventory/InventoryController',
 	'controllers/stacknumber/StackNumberController',
 	'controllers/commission/CommissionController',
+	'controllers/reports/ReportController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
@@ -67,6 +68,7 @@ define([
 			InventoryController,
 			StackNumberController,
 			CommissionController,
+			ReportController,
 			Global,
 			Const,
 			Session) {
@@ -222,6 +224,11 @@ define([
 	routerRoutes[Const.URL.INVENTORY+'/'] = 'showInventoryPage';
 	routerRoutes[Const.URL.INVENTORY+'/:action'] = 'showInventoryPage';
 	routerRoutes[Const.URL.INVENTORY+'/:action/:id'] = 'showInventoryPage';
+
+	//report
+	routerRoutes[Const.URL.REPORT] = 'showReportsPage';
+	routerRoutes[Const.URL.REPORT+'/'] = 'showReportsPage';
+	routerRoutes[Const.URL.REPORT+'/:action'] = 'showReportsPage';
 	
 	//stacknumber
 	routerRoutes[Const.URL.STACKNUMBER+'/:id'] = 'showStackNumberPage';
@@ -472,6 +479,14 @@ define([
 			this.currView = stackNumberController.setAction(id);
 			this.currView.render();
 		});
+
+		app_router.on('route:showReportsPage', function (action) {
+			this.closeView();
+			var reportController = new ReportController();			
+			this.currView = reportController.setAction(action);
+			this.currView.render();
+
+		});
 		
 		app_router.on('route:showCommissionPage', function (id) {
 			this.closeView();
@@ -482,9 +497,8 @@ define([
 		
 		app_router.on('route:defaultAction', function (actions) {
 			this.closeView();
-			console.log('default page');
 			this.currView = new HomePageView();
-			this.currView.render();
+			this.currView.render();			
 		});
 		
 		Global.getGlobalVars().app_router = app_router;
