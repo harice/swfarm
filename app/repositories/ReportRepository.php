@@ -450,7 +450,9 @@ class ReportRepository implements ReportRepositoryInterface {
         foreach ($weighttickets as $weightticket)
         {
             $pounds = 1.0;
+            $tons = 1.0;
             $unitprice = 1.0;
+            $buying_price = 1.0;
             $total_sales = 1.0;
 
             if ($weightticket['weightticketscale_pickup'])
@@ -460,7 +462,12 @@ class ReportRepository implements ReportRepositoryInterface {
                 foreach ($weightticket_products as $weightticket_product)
                 {
                     $pounds += $weightticket_product['pounds'];
+                    $tons += $weightticket_product['tons'];
                     $unitprice += $weightticket_product['transportscheduleproduct']['productorder']['unitprice'];
+
+                    $stacknumber = $weightticket_product['transportscheduleproduct']['productorder']['stacknumber'];
+                    $productorder_id = $weightticket_product['transportscheduleproduct']['productorder']['id'];
+                    $buying_price += $this->getBuyingPrice($stacknumber, $productorder_id);
                 }
                 $total_sales = ($pounds * 0.0005) * $unitprice;
             }
@@ -471,6 +478,7 @@ class ReportRepository implements ReportRepositoryInterface {
                 foreach ($weightticket_products as $weightticket_product)
                 {
                     $pounds += $weightticket_product['pounds'];
+                    $tons += $weightticket_product['tons'];
                     $unitprice += $weightticket_product['transportscheduleproduct']['productorder']['unitprice'];
                 }
                 $total_sales = ($pounds * 0.0005) * $unitprice;
@@ -479,10 +487,10 @@ class ReportRepository implements ReportRepositoryInterface {
             $updated_at = $weightticket['updated_at'];
             $account = $weightticket['transportschedule']['order']['account']['name'];
             $net_sale = $total_sales - 0.0; // Total Sales - Return Sales
-            $hay_cost = 99.9999; // TODO: Get buying price
+            $hay_cost = $tons * $buying_price;
             $freight = $weightticket['transportschedule']['truckingrate'] + $weightticket['transportschedule']['trailerrate'] + $weightticket['transportschedule']['fuelcharge'];
             $fees = $weightticket['transportschedule']['originloaderfee'] + $weightticket['transportschedule']['destinationloaderfee'];
-            $commission = 9.9999; // TODO: Get commissions
+            $commission = $this->getCommission($weightticket['id']);
             $profit_amount = $net_sale - $hay_cost - $freight - $fees - $commission;
             $profit_percentage = number_format((($profit_amount / $net_sale) * 100), 2, '.', ',');
 
@@ -490,6 +498,7 @@ class ReportRepository implements ReportRepositoryInterface {
                 'updated_at' => $updated_at,
                 'account' => $account,
                 'net_sale' => $net_sale,
+                'total_tons' => $tons,
                 'hay_cost' => $hay_cost,
                 'freight_cost' => $freight,
                 'fees' => $fees,
@@ -517,9 +526,49 @@ class ReportRepository implements ReportRepositoryInterface {
         $report['summary']['total_freight_cost'] = $total_freight_cost;
         $report['summary']['total_profit_amount'] = $total_profit_amount;
         $report['summary']['total_profit_percentage'] = $total_profit_percentage;
+        $report['data'] = $weighttickets->toArray();
         $report['transactions'] = $transactions;
 
         return $report;
+    }
+
+    /**
+     * Get unitprice by stacknumber
+     *
+     * @param string $stacknumber
+     * @param int $id Product Order ID
+     * @return float
+     */
+    public function getBuyingPrice($stacknumber, $id)
+    {
+        $productorder = ProductOrder::where('stacknumber', 'like', $stacknumber)
+            ->where('id', '!=', $id)
+            ->first();
+
+        if ($productorder) {
+            $productorder = $productorder->toArray();
+            return $productorder['unitprice'];
+        }
+
+        return 0.0;
+    }
+
+    /**
+     * Get commission by weight ticket id.
+     *
+     * @param int $weightticket_id Weight Ticket Id
+     * @return float
+     */
+    public function getCommission($weightticket_id)
+    {
+        $commission = Commission::where('weightticket_id', '=', $weightticket_id)->first();
+
+        if ($commission)
+        {
+            return $commission['amountdue'];
+        }
+
+        return 0.0;
     }
 
     public function inventoryReportPerLocation($data){
