@@ -841,7 +841,8 @@ define([
 				var value = thisObj.removeCommaFromNumber($(this).val());
 				total += (!isNaN(parseFloat(value)))? parseFloat(value) : 0;
 			});
-			this.subContainer.find('#total-tons').val(thisObj.addCommaToNumber(total.toFixed(4)));
+			// this.subContainer.find('#total-tons').val(thisObj.addCommaToNumber(total.toFixed(4)));
+			this.subContainer.find('#total-tons').html(Backbone.View.prototype.helpers.numberFormatTons(total));
 		},
 		
 		computeTotalTonsPerProduct: function (tableElement) {
@@ -884,8 +885,7 @@ define([
 				var value = thisObj.removeCommaFromNumber($(this).val());
 				total += (!isNaN(parseFloat(value)))? parseFloat(value) : 0;
 			});
-			
-			this.subContainer.find('#total-price').val(thisObj.addCommaToNumber(total.toFixed(2)));
+			this.subContainer.find('#total-price').html('$ ' + Backbone.View.prototype.helpers.numberFormat(total));
 		},
 		
 		onKeyUpBales: function (ev) {
@@ -1195,10 +1195,9 @@ define([
 			if(this.subContainer.find('#account_id').val() != '') {
 				var dropdown = '';
 				_.each(this.locationCollection.models, function (model) {
-					var locationName = model.get('name');
-					
+					 dropdown += '<optgroup label="'+model.get('name')+'">';
 					_.each(model.get('section'), function (section) {
-						dropdown += '<option value="'+section.id+'">'+locationName+' - '+section.name+'</option>';
+						dropdown += '<option value="'+section.id+'">'+section.name+'</option>';
 					});
 				});
 				
