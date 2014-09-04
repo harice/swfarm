@@ -574,7 +574,7 @@ class ReportRepository implements ReportRepositoryInterface {
                     $data['data'][$index]['ordernumber'] = $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] : "";
                     $data['data'][$index]['weightticketnumber'] = $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] != null ? $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] : "";
                     $data['data'][$index]['producer'] = $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['account']['name'] : "";
-                    $data['data'][$index]['contract'] = $inventoryproduct['inventory']['ordernumberforinventory']['contract_id'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['contract']['contract_number'] : "";
+                    $data['data'][$index]['contract'] = isset($inventoryproduct['inventory']['ordernumberforinventory']['contract_id']) ? $inventoryproduct['inventory']['ordernumberforinventory']['contract']['contract_number'] : "";
                     $data['data'][$index]['bales'] = $inventoryproduct['bales'] != null ? $inventoryproduct['bales'] : "0";
                     $data['data'][$index]['tons'] = $inventoryproduct['tons'];
                     $data['data'][$index]['price'] = $inventoryproduct['price'];
@@ -593,7 +593,7 @@ class ReportRepository implements ReportRepositoryInterface {
                     $data['data'][$index]['ordernumber'] = $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] : "";
                     $data['data'][$index]['weightticketnumber'] = $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] != null ? $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] : "";
                     $data['data'][$index]['producer'] = $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['account']['name'] : "";
-                    $data['data'][$index]['contract'] = $inventoryproduct['inventory']['ordernumberforinventory']['contract_id'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['contract']['contract_number'] : "";
+                    $data['data'][$index]['contract'] = isset($inventoryproduct['inventory']['ordernumberforinventory']['contract_id']) ? $inventoryproduct['inventory']['ordernumberforinventory']['contract']['contract_number'] : "";
                     $data['data'][$index]['bales'] = $inventoryproduct['bales'] != null ? $inventoryproduct['bales'] : "0";
                     $data['data'][$index]['tons'] = $inventoryproduct['tons'];
                     $data['data'][$index]['price'] = $inventoryproduct['price'];
