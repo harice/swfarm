@@ -161,6 +161,7 @@ class ReportRepository implements ReportRepositoryInterface {
         {
             foreach ($contact['load_origin'] as $load) {
                 $item['id'] = $i;
+                $item['order_number'] = $load['order']['order_number'];
                 $item['type'] = 'Load';
                 $item['amount'] = $load['originloaderfee'];
                 $item['account_name'] = $load['order']['account']['name'];
@@ -177,6 +178,7 @@ class ReportRepository implements ReportRepositoryInterface {
         {
             foreach ($contact['load_destination'] as $load) {
                 $item['id'] = $i;
+                $item['order_number'] = $load['order']['order_number'];
                 $item['type'] = 'Unload';
                 $item['amount'] = $load['destinationloaderfee'];
                 $item['account_name'] = $load['order']['account']['name'];
