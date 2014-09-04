@@ -725,12 +725,13 @@ class ReportRepository implements ReportRepositoryInterface {
             'pickup.bales',
             'pickup.gross',
             'pickup.tare',
+            'commission.tons',
             'commission.amountdue',
             'commission.type'
         );
 
         $total_bales = $transactions->sum('pickup.bales');
-        $total_pounds = $transactions->sum('pickup.gross') - $transactions->sum('pickup.tare');
+        $total_pounds = $transactions->sum('commission.tons');
         $total_commissions = $transactions->sum('commission.amountdue');
         $transactions = $transactions->get();
 
