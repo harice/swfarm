@@ -492,6 +492,7 @@ class ReportRepository implements ReportRepositoryInterface {
             }
 
             $updated_at = $weightticket['updated_at'];
+            $order_number = $weightticket['transportschedule']['order']['order_number'];
             $account = $weightticket['transportschedule']['order']['account']['name'];
             $net_sale = $total_sales - 0.0; // Total Sales - Return Sales
             $hay_cost = $tons * $buying_price;
@@ -502,6 +503,7 @@ class ReportRepository implements ReportRepositoryInterface {
             $profit_percentage = number_format((($profit_amount / $net_sale) * 100), 2, '.', ',');
 
             $transactions[] = array(
+                'order_number' => $order_number,
                 'updated_at' => $updated_at,
                 'account' => $account,
                 'net_sale' => $net_sale,
@@ -533,7 +535,7 @@ class ReportRepository implements ReportRepositoryInterface {
         $report['summary']['total_freight_cost'] = $total_freight_cost;
         $report['summary']['total_profit_amount'] = $total_profit_amount;
         $report['summary']['total_profit_percentage'] = $total_profit_percentage;
-        $report['data'] = $weighttickets->toArray();
+//        $report['data'] = $weighttickets->toArray();
         $report['transactions'] = $transactions;
 
         return $report;
