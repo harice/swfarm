@@ -1,37 +1,55 @@
 <tr class="product-item">
-	<td style="width: 150px;">
-		<input type="hidden" class="id" name="id" value="" />
-        <div class="styled-select">
-            <select class="form-control product_id width-160" name="product_id"><%= product_list %></select>
-        </div>
-	</td>
-	<td><input class="form-control text-right product-item-field tons" type="text" name="tons" maxlength="12"></td>
-	<td><div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right product-item-field unit-price" type="text" value="0.00" readonly></div></td>
 	<td>
-		<button title="Remove Product" type="button" class="pull-right btn btn-danger btn-xs remove-product"><span class="glyphicon glyphicon-remove"></span></button>
+		<input type="hidden" class="id" name="id" value="" />
+        <select class="form-control product_id width-200 input-sm" name="product_id"><%= product_list %></select>
+	</td>
+	<td>
+		<input class="form-control text-right product-item-field tons input-sm" type="text" name="tons" maxlength="12">
+	</td>
+	<td>
+		<div class="input-group input-group-sm margin-0">
+			<span class="input-group-addon">$</span>
+			<input class="form-control text-right product-item-field unit-price" type="text" value="0.00" readonly>
+		</div>
+	</td>
+	<td>
+		<button title="Remove Product" type="button" class="pull-right btn btn-danger btn-rad btn-xs remove-product">
+			<span class="glyphicon glyphicon-remove"></span>
+		</button>
 	</td>
 </tr>
 <tr class="product-stack">
-	<td colspan="3">
+	<td colspan="4">
 		<div class="row margin-top-0 padding-top-10">
-			<div class="col-md-11 col-md-offset-1">
-				<legend>
+			<div class="col-md-12">
+				<h3 class='margin-top-0 margin-bottom-0'>
 					Stacknumber
-					<button title="Add Product Stack" type="button" class="pull-right btn btn-info btn-xs add-product-stack"><span class="glyphicon glyphicon-plus"></span></button>
-				</legend>
+					<button title="Add Product Stack" type="button" class="pull-right btn btn-primary btn-rad btn-xs add-product-stack">
+						<span class="glyphicon glyphicon-plus"></span>
+					</button>
+				</h3>
+				<hr class='margin-top-10 margin-bottom-10' />
+
 				<div class="table-responsive">
-					<table class="table table-bordered product-stack-table">
+					<table class="table-condensed table-bordered product-stack-table">
 						<thead>
 							<tr>
-								<th>Stack Number</th>
-								<th>Location From</th>
+								<th>Stack No.<i class='color-danger width-10'>*</i></th>
+								<th>Location From<i class='color-danger width-10'>*</i></th>
 								<th>Description</th>
-								<th><% if (typeof is_bid === "undefined") { %>Unit Price<% } else { %>Bid Unit Price<% } %></th>
-								<th>Bales</th>
-								<th>Est. Tons</th>
+								<th>
+									<% if (typeof is_bid === "undefined") { %>
+										Unit Price
+									<% } else { %>
+										Bid Unit Price
+									<% } %>
+									<i class='color-danger width-10'>*</i>
+								</th>
+								<th>Bales<i class='color-danger width-10'>*</i></th>
+								<th>Est Tons<i class='color-danger width-10'>*</i></th>
 								<th><% if (typeof is_bid === "undefined") { %>Total Price<% } else { %>Bid Total Price<% } %></th>
 								<% if (typeof is_bid === "undefined") { %>
-								<th>Hold for Testing</th>
+								<th>Testing</th>
 								<th>RFV</th>
 								<th>PDF</th>
 								<% } %>
@@ -41,14 +59,14 @@
 						<tfoot>
 							<tr>
 								<td class="text-right" colspan="5">Total</td>
-								<td><input class="form-control text-right total-tons" type="text" value="0.0000" readonly></td>
+								<td><input class="form-control text-right total-tons input-sm" type="text" value="0.0000" readonly></td>
 								<td>
-									<div class="input-group margin-0">
+									<div class="input-group input-group-sm margin-0">
 										<span class="input-group-addon">$</span>
 										<input class="form-control text-right total-price" type="text" value="0.00" readonly>
 									</div>
 								</td>
-								<td <% if (typeof is_bid !== "undefined") { %>colspan="4"<% } %>>&nbsp;</td>
+								<td <% if (typeof is_bid === "undefined") { %>colspan="4"<% } %>>&nbsp;</td>
 							</tr>
 						</tfoot>
 						<tbody data-id=""></tbody>
@@ -57,5 +75,4 @@
 			</div>
 		</div>
 	</td>
-	<td></td>
 </tr>

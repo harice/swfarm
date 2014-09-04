@@ -1,59 +1,55 @@
-<div class="row">
-    <div class="col-md-12">
+<div class="row margin-top-0">
+    <div class="col-md-12 no-padding">
         <div class="block-flat">
-            <div class="content">
-
+            <div class="content padding-top-0">
                 <form id="poForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-                    <% if (typeof po_id !== "undefined") { %>
-                    <input type="hidden" name="id" value="<%= po_id %>" />
-                    <% } %>
-                    <fieldset>
-                        <legend>Details</legend>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <% if (typeof po_id !== "undefined") { %>
-                                <div class="form-group">
-                                    <label for="ponumber" class="col-sm-3 control-label">PO Number</label>
-                                    <div class="col-sm-7">
-                                        <input id="ponumber" type="text" class="form-control ponumber" placeholder="" maxlength="250" readonly>
-                                    </div>
+                <% if (typeof po_id !== "undefined") { %><input type="hidden" name="id" value="<%= po_id %>" /> <% } %>
+                
+                    <h3 class='margin-top-10 margin-bottom-0'>Details</h3>
+                    <hr class='margin-top-10 margin-bottom-10' />
+
+                    <div class="row margin-top-0">
+                        <div class="col-md-6">
+                            <% if (typeof po_id !== "undefined") { %>
+                            <div class="form-group">
+                                <label for="ponumber" class="col-sm-3 control-label">PO No.</label>
+                                <div class="col-sm-4">
+                                    <input id="ponumber" type="text" class="form-control ponumber input-sm" placeholder="" maxlength="250" readonly>
                                 </div>
-                                <div class="form-group">
-                                    <label for="status" class="col-sm-3 control-label">Status</label>
-                                    <div class="col-sm-7">
-                                        <input id="status" type="text" class="form-control status" placeholder="" maxlength="250" readonly>
-                                    </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="status" class="col-sm-3 control-label">Status</label>
+                                <div class="col-sm-4">
+                                    <input id="status" type="text" class="form-control status input-sm" placeholder="" maxlength="250" readonly>
                                 </div>
-                                <% } %>
-                                <% if (typeof is_bid === "undefined") { %>
-                                <div class="form-group">
-                                    <label for="location_id" class="col-sm-3 control-label">Destination</label>
-                                    <div id="po-destination" class="col-sm-9"></div>
+                            </div>
+                            <% } %>
+                            <% if (typeof is_bid === "undefined") { %>
+                            <div class="form-group">
+                                <label for="location_id" class="col-sm-3 control-label">Destination<i class='color-danger'>*</i></label>
+                                <div id="po-destination" class="col-sm-9"></div>
+                            </div>
+                            <% } %>
+    						<div class="form-group so-field" style="display:none;">
+                                <label for="account_customer" class="col-sm-3 control-label">Customer<i class='color-danger'>*</i></label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control capitalize input-sm" id="account_customer" name="account_customer" maxlength="50">
+                                    <input type="hidden" class="form-control" id="account_id_customer" name="account_id_customer" value="">
                                 </div>
-                                <% } %>
-								<div class="form-group so-field" style="display:none;">
-                                    <label for="account_customer" class="col-sm-3 control-label">Customer *</label>
-                                    <div class="col-sm-7">
-                                        <input type="text" class="form-control capitalize" id="account_customer" name="account_customer" maxlength="50">
-                                        <input type="hidden" class="form-control" id="account_id_customer" name="account_id_customer" value="">
-                                    </div>
+                            </div>
+    						<div class="form-group so-field" style="display:none;">
+                                <label for="contract_id" class="col-sm-3 control-label">Contract<i class='color-danger'>*</i></label>
+                                <div class="col-sm-6">
+                                    <select id="contract_id" class="form-control contract_id width-160 input-sm" name="contract_id" required>
+                                        <option value="">Select contract</option>
+                                    </select>
                                 </div>
-								<div class="form-group so-field" style="display:none;">
-                                    <label for="contract_id" class="col-sm-3 control-label">Contract *</label>
-                                    <div class="col-sm-7">
-                                        <div class="styled-select">
-                                            <select id="contract_id" class="form-control contract_id width-160" name="contract_id" required>
-                                                <option value="">Select a contract</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="account" class="col-sm-3 control-label">Producer *</label>
-                                    <div class="col-sm-7">
-                                        <input type="text" class="form-control capitalize" id="account" name="account" maxlength="50" required>
-                                        <input type="hidden" class="form-control" id="account_id" name="account_id" value="" required>
-                                    </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="account" class="col-sm-3 control-label">Producer<i class='color-danger'>*</i></label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control capitalize input-sm" id="account" name="account" maxlength="50" required>
+                                    <input type="hidden" class="form-control" id="account_id" name="account_id" value="" required>
                                 </div>
 								<div class="form-group">
 									<label for="contact_id" class="col-sm-3 control-label">Producer Contact *</label>
@@ -72,112 +68,117 @@
                                         <input id="street" type="text" class="form-control street" placeholder="" maxlength="250" readonly>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="city" class="col-sm-3 control-label">City</label>
-                                    <div class="col-sm-7">
-                                        <input id="city" type="text" class="form-control city" placeholder="" maxlength="250" readonly>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="state" class="col-sm-3 control-label">State/Province</label>
-                                    <div class="col-sm-7">
-                                        <input id="state" type="text" class="form-control state" placeholder="" maxlength="250" readonly>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="zipcode" class="col-sm-3 control-label">Zip Code</label>
-                                    <div class="col-sm-3">
-                                        <input id="zipcode" type="text" class="form-control zipcode" placeholder="" minlength="5" maxlength="10" readonly>
-                                    </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="city" class="col-sm-3 control-label">City</label>
+                                <div class="col-sm-7">
+                                    <input id="city" type="text" class="form-control city input-sm" placeholder="" maxlength="250" readonly>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <% if (typeof po_id !== "undefined") { %>
-                                <div class="form-group">
-                                    <label for="dateofpurchase" class="col-sm-3 control-label">Date of Purchase</label>
-                                    <div class="col-sm-9">
-                                        <input id="dateofpurchase" type="text" class="form-control dateofpurchase" placeholder="" maxlength="250" readonly>
-                                    </div>
+                            <div class="form-group">
+                                <label for="state" class="col-sm-3 control-label">State/Province</label>
+                                <div class="col-sm-5">
+                                    <input id="state" type="text" class="form-control state input-sm" placeholder="" maxlength="250" readonly>
                                 </div>
-                                <% } %>
-                                <% if (typeof is_bid === "undefined") { %>
-                                <div class="form-group"><label for="" class="col-sm-12">Pick-up Period:</label></div>
-                                <div class="form-group">
-                                    <label for="transportdatestart" class="col-sm-3 control-label">Start</label>
-                                    <div class="col-sm-4">
-                                        <div id="start-date" class="calendar-cont">
-                                            <div class="input-group date datetime margin-bottom-0">
-                                                <input id="transportdatestart" class="form-control form-date" name="transportdatestart" size="16" type="text" value="" required/>
-                                                <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="zipcode" class="col-sm-3 control-label">Zip Code</label>
+                                <div class="col-sm-3">
+                                    <input id="zipcode" type="text" class="form-control zipcode input-sm" placeholder="" minlength="5" maxlength="10" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <% if (typeof po_id !== "undefined") { %>
+                            <div class="form-group">
+                                <label for="dateofpurchase" class="col-sm-3 control-label">Purchased Date</label>
+                                <div class="col-sm-4">
+                                    <input id="dateofpurchase" type="text" class="form-control dateofpurchase input-sm" placeholder="" maxlength="250" readonly>
+                                </div>
+                            </div>
+                            <% } %>
+                            <% if (typeof is_bid === "undefined") { %>
+                            <div class="form-group">
+                                <label for="transportdatestart" class="col-sm-3 control-label">Pickup Start<i class='color-danger'>*</i></label>
+                                <div class="col-sm-4">
+                                    <div id="start-date" class="calendar-cont">
+                                        <div class="input-group input-group-sm date datetime margin-bottom-0">
+                                          <input id="transportdatestart" class="form-control form-date" name="transportdatestart" size="16" type="text" value="" required />
+                                          <div class="input-group-btn">
+                                            <span class="btn btn-trans"><span class="fa fa-calendar"></span></span>
+                                          </div>
+                                        </div>
+                                    </div>
+                                    <div class="error-msg-cont"></div>
+                                </div>
+                            </div>
+                            <div class='form-group'>
+                                <label for="transportdateend" class="col-sm-3 control-label">Pickup End<i class='color-danger'>*</i></label>
+                                <div class="col-sm-4">
+                                    <div id="end-date" class="calendar-cont">
+                                        <div class="input-group input-group-sm date datetime margin-bottom-0">
+                                            <input id="transportdateend" class="form-control form-date" name="transportdateend" size="16" type="text" value="" required/>
+                                            <div class="input-group-btn">
+                                                <span class="btn btn-trans"><span class="fa fa-calendar"></span></span>
                                             </div>
                                         </div>
-                                        <div class="error-msg-cont"></div>
                                     </div>
-                                    <label for="transportdateend" class="col-sm-1 control-label">End</label>
-                                    <div class="col-sm-4">
-                                        <div id="end-date" class="calendar-cont">
-                                            <div class="input-group date datetime margin-bottom-0">
-                                                <input id="transportdateend" class="form-control form-date" name="transportdateend" size="16" type="text" value="" required/>
-                                                <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
-                                            </div>
-                                        </div>
-                                        <div class="error-msg-cont"></div>
-                                    </div>
+                                    <div class="error-msg-cont"></div>
                                 </div>
-                                <% } %>
-                                <div class="form-group">
-                                    <label for="notes" class="col-sm-3 control-label">Notes</label>
-                                    <div class="col-sm-9">
-                                        <textarea class="form-control notes" id="notes" name="notes"></textarea>
-                                    </div>
+                            </div>
+                            <% } %>
+                            <div class="form-group">
+                                <label for="notes" class="col-sm-3 control-label">Notes</label>
+                                <div class="col-sm-8">
+                                    <textarea class="form-control notes height-70" id="notes" name="notes"></textarea>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
 
-                            </div>
-                        </div>
-                    </fieldset>
-                    <fieldset>
-                        <legend>
-                            Products
-                            <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
-                        </legend>
-                        <div class="table-responsive">
-                            <table id="product-list" class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>Est Tons</th>
-                                        <th><% if (typeof is_bid === "undefined") { %>Total Price<% } else { %>Bid Total Price<% } %></th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-								<tfoot>
-									<tr>
-										<td class="text-right" colspan="1">Total</td>
-										<td><input id="total-tons" class="form-control text-right" type="text" value="0.0000" readonly></td>
-										<td>
-											<div class="input-group margin-0">
-												<span class="input-group-addon">$</span>
-												<input id="total-price" class="form-control text-right" type="text" value="0.00" readonly>
-											</div>
-										</td>
-										<td>&nbsp;</td>
-									</tr>
-								</tfoot>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    </fieldset>
+                    <h3 class='margin-bottom-0'>
+                        Products
+                        <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-primary btn-rad btn-xs">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                    </h3>
+                    <hr class='margin-top-10 margin-bottom-10' />
+
+                    <div class="table-responsive">
+                        <table id="product-list" class="table-condensed table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Product<i class='color-danger'>*</i></th>
+                                    <th class='width-150'>Est Tons<i class='color-danger'>*</i></th>
+                                    <th class='width-150'>
+                                        <% if (typeof is_bid === "undefined") { %>Total Price<% } else { %>Bid Total Price<% } %>
+                                    </th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                            </thead>
+    						<tfoot>
+    							<tr>
+    								<td class="text-right" colspan="1">Total</td>
+    								<td id='total-tons' class='text-right'>$ 0.0000</td>
+    								<td id="total-price" class='text-right'>$ 0.00</td>
+                                    <td>&nbsp;</td>
+    							</tr>
+    						</tfoot>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
                     <div class="form-group form-button-container">
                         <div class="col-md-12">
                             <div class="pull-right">
 								<% if (typeof is_bid === "undefined") { %>
-									<button id="save-and-check-in" type="button" class="save-and-close btn btn-primary">Save & Close</button>
+									<button id="save-and-check-in" type="button" class="save-and-close btn btn-sm btn-primary btn-rad">Save & Close</button>
 								<% } %>
                                 <% if (typeof po_id !== "undefined" && typeof is_bid !== "undefined") { %>
-									<button id="convert-po" type="button" class="save btn btn-warning">Convert to PO</button>
+									<button id="convert-po" type="button" class="save btn btn-sm btn-warning btn-rad">Convert to PO</button>
                                 <% } %>
-                                <button id="save" type="submit" class="save btn btn-primary">Save</button>
-                                <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
+                                <button id="save" type="submit" class="save btn btn-sm btn-primary btn-rad">Save</button>
+                                <a id="go-to-previous-page" class="btn btn-default btn-sm btn-rad" href="#">Cancel</a>
                             </div>
                         </div>
                     </div>

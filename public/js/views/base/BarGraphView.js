@@ -98,7 +98,9 @@ define([
 		                align: "center",
 		                numbers :{
 		                    show: true,
-		                    yAlign: function(y) { return y + 1; },
+		                    xAlign: function(x,a) { console.log('x: '+x); return x; },
+							yAlign: function(y,a) { console.log('y: '+y); return y; },
+							showDataValue: true,
 		                },
 		            }
 		        },

@@ -18,6 +18,7 @@ class CreateTransportscheduleTable extends Migration {
 			$table->increments('id');
 			$table->integer('order_id')->unsigned();
 			$table->timestamp('date');
+			$table->integer('truckerAccountType_id');
 			$table->integer('trucker_id')->unsigned();
             $table->integer('truck_id')->unsigned();
 			$table->integer('trailer_id')->unsigned()->nullable();

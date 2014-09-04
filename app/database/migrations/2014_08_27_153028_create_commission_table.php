@@ -20,6 +20,7 @@ class CreateCommissionTable extends Migration {
 			$table->integer('user_id')->unsigned();
 			$table->decimal('tons', 10, 4);
 			$table->decimal('rate', 10, 2);
+			$table->decimal('amountdue', 10, 2);
 			$table->tinyInteger('type'); //1 flat rate / 2 per ton rate
 
 			$table->timestamps();
