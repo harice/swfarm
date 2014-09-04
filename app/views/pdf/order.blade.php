@@ -1,14 +1,14 @@
 <h1 class='margin-top-30 margin-bottom-30'>
-	@if ($order->isfrombid === '0')
-		@if ($order->ordertype === '1') Purchase @else Sales @endif Order
+	@if (intval($order->isfrombid) === 0)
+		@if (intval($order->ordertype) === 1) Purchase @else Sales @endif Order
 	@else
 		Bid Details
 	@endif
 </h1>
 <h2><span class='text-danger'>No.:</span> {{ $order->order_number }}</h2>
 <div class="float-left witdh-60">
-	@if ($order->ordertype === '1')
-		@if ($order->isfrombid === '0')
+	@if (intval($order->ordertype) === 1)
+		@if (intval($order->isfrombid) === 0)
 			Purchased Date: <span class="text-danger">{{ date('m-d-Y h:i A', strtotime($order->created_at)) }}</span><br>
 	        Pickup Start: <span class="text-danger">{{ date('m-d-Y', strtotime($order->transportdatestart)) }}</span>
 	        Pickup End: <span class="text-danger">{{ date('m-d-Y', strtotime($order->transportdateend)) }}</span><br>
@@ -29,8 +29,8 @@
 
 	Status: <span class="text-danger">{{ $order->status->name }}</span>
 
-	@if (in_array($order->status->id, array('3','5','6')))
-		@if ($order->ordercancellingreason->reason->id != '6')
+	@if (in_array(intval($order->status->id), array(3,5,6)))
+		@if (intval($order->ordercancellingreason->reason->id) != 6)
 			<br>Reason: <span class="text-danger">{{ $order->ordercancellingreason->reason->reason }}
 		@else
 			<br>Reason: <span class="text-danger">{{ $order->ordercancellingreason->others }}
@@ -62,11 +62,11 @@
 	<thead>
 		<tr>
 			<th class='width-15'>Stack No.</th>
-			@if ($order->ordertype === '1')
+			@if (intval($order->ordertype) === 1)
 				<th class='width-20'>Location</th>
 				<th class='width-20'>Description</th>
 
-				@if ($order->isfrombid === '0')
+				@if (intval($order->isfrombid) === 0)
 					<th class='width-10'>Unit Price</th>
 				@else
 					<th class='width-10'>Bid Price</th>
@@ -74,7 +74,7 @@
 				<th class='width-8'>Bales</th>
 				<th class='width-12'>Est Tons</th>
 
-				@if ($order->isfrombid === '0')
+				@if (intval($order->isfrombid) === 0)
 					<th class='width-15'>Total Price</th>
 				@else
 					<th class='width-15'>Total Bid</th>
@@ -99,7 +99,7 @@
 					{? $t_bales = 0 ?}
 					@if (sizeof($order->productsummary) > 0)
 						@foreach ($order->productsummary as $products)
-							@if ($order->ordertype === '1')
+							@if (intval($order->ordertype) === 1)
 								@if (sizeof($products->productorder) > 0)
 									<tr>
 										<td colspan="7">{{ $products->productname->name }}</td>
@@ -178,7 +178,7 @@
 	</tbody>
 	<tfoot>
 		<tr>
-			@if ($order->ordertype === '1')
+			@if (intval($order->ordertype) === 1)
 				<td class="text-right" colspan="4">Total</td>
 				<td class="text-right">{{ number_format($t_bales, 0, '.', ',') }}</td>
 			@else

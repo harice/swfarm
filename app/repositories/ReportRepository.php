@@ -574,17 +574,18 @@ class ReportRepository implements ReportRepositoryInterface {
                     $data['data'][$index]['ordernumber'] = $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] : "";
                     $data['data'][$index]['weightticketnumber'] = $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] != null ? $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] : "";
                     $data['data'][$index]['producer'] = $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['account']['name'] : "";
-                    $data['data'][$index]['contract'] = $inventoryproduct['inventory']['ordernumberforinventory']['contract_id'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['contract']['contract_number'] : "";
+                    $data['data'][$index]['contract'] = isset($inventoryproduct['inventory']['ordernumberforinventory']['contract']) ? $inventoryproduct['inventory']['ordernumberforinventory']['contract']['contract_number'] : "";
                     $data['data'][$index]['bales'] = $inventoryproduct['bales'] != null ? $inventoryproduct['bales'] : "0";
                     $data['data'][$index]['tons'] = $inventoryproduct['tons'];
                     $data['data'][$index]['price'] = $inventoryproduct['price'];
-                    $data['data'][$index]['cost'] = number_format($inventoryproduct['tons'] * $inventoryproduct['price'], 2);
+                    $data['data'][$index]['cost'] = $inventoryproduct['tons'] * $inventoryproduct['price'];
                     $data['data'][$index]['operation'] = $inventoryproduct['inventory']['inventorytransactiontype']['type'];
                     $data['balesIn'] += $data['data'][$index]['bales'];
                     $data['tonsIn'] += $data['data'][$index]['tons'];
                     $data['totalBales'] += $data['data'][$index]['bales'];
                     $data['totalTons'] += $data['data'][$index]['tons'];
                     $data['totalCost'] += $data['data'][$index]['cost'];
+                    $data['data'][$index]['cost'] = number_format($data['data'][$index]['cost'], 2);
                     $index++;
                 }
                 foreach($section['inventoryproduct_sectionfrom'] as $inventoryproduct){
@@ -593,17 +594,18 @@ class ReportRepository implements ReportRepositoryInterface {
                     $data['data'][$index]['ordernumber'] = $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] : "";
                     $data['data'][$index]['weightticketnumber'] = $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] != null ? $inventoryproduct['inventory']['weightticketnumber']['weightTicketNumber'] : "";
                     $data['data'][$index]['producer'] = $inventoryproduct['inventory']['ordernumberforinventory']['order_number'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['account']['name'] : "";
-                    $data['data'][$index]['contract'] = $inventoryproduct['inventory']['ordernumberforinventory']['contract_id'] != null ? $inventoryproduct['inventory']['ordernumberforinventory']['contract']['contract_number'] : "";
+                    $data['data'][$index]['contract'] = isset($inventoryproduct['inventory']['ordernumberforinventory']['contract']) ? $inventoryproduct['inventory']['ordernumberforinventory']['contract']['contract_number'] : "";
                     $data['data'][$index]['bales'] = $inventoryproduct['bales'] != null ? $inventoryproduct['bales'] : "0";
                     $data['data'][$index]['tons'] = $inventoryproduct['tons'];
                     $data['data'][$index]['price'] = $inventoryproduct['price'];
-                    $data['data'][$index]['cost'] = number_format($inventoryproduct['tons'] * $inventoryproduct['price'], 2);
+                    $data['data'][$index]['cost'] = $inventoryproduct['tons'] * $inventoryproduct['price'];
                     $data['data'][$index]['operation'] = $inventoryproduct['inventory']['inventorytransactiontype']['type'];
                     $data['balesOut'] += $data['data'][$index]['bales'];
                     $data['tonsOut'] += $data['data'][$index]['tons'];
                     $data['totalBales'] += $data['data'][$index]['bales'];
                     $data['totalTons'] += $data['data'][$index]['tons'];
                     $data['totalCost'] += $data['data'][$index]['cost'];
+                    $data['data'][$index]['cost'] = number_format($data['data'][$index]['cost'], 2);
                     $index++;
                 }
 
@@ -617,7 +619,7 @@ class ReportRepository implements ReportRepositoryInterface {
             $data['totalCost'] = number_format($data['totalCost'], 2, '.', '');
             return $data;
         } else {
-            return array('error' => true, 'message' => 'Location not found.');
+            return array('error' => true, 'message' => 'No record found.');
         }
 
     }
