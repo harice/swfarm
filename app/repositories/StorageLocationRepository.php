@@ -133,28 +133,27 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         $storagelocation->fill($data);
 
         if (!$storagelocation->save()) {
-            return array(
+            return Response::json(array(
                 'error' => true,
                 'message' => 'Stack location was not created.'
-            );
+            ), 500);
         }
 
         $sections = $this->addSection($storagelocation->id, $data['sections']);
         
         if($sections){
             DB::commit();
-            $response = array(
+            return Response::json(array(
                 'error' => false,
                 'message' => Lang::get('messages.success.created', array('entity' => 'Stack location'))
-            );
+            ), 200);
         } else {
             DB::rollback();
-            $response = array(
-            'error' => true,
-            'message' => "Please enter a unique Section name.");
+            return Response::json(array(
+                'error' => true,
+                'message' => "Please enter a unique Section name."
+            ), 500);
         }
-
-        return $response;
         
     }
 
@@ -263,17 +262,18 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         $storagelocation->fill($data);
         
         if (!$storagelocation->update()) {
-            return array(
+            return Response::json(array(
                 'error' => true,
                 'message' => 'Stack location was not updated.'
-            );
+            ), 500);
         }
 
         if(isset($data['sections']) && count($data['sections']) > 0){
             if ($this->hasDuplicateSectionName($data['sections'])) {
                 return Response::json(array(
                     'error' => true,
-                    'message' => "Please enter a unique Section name."), 500);
+                    'message' => "Please enter a unique Section name."
+                ), 500);
             }
             
             $removeSectionResult = $this->removeSection($id, $data['sections']); //delete sections that is remove by client
@@ -284,18 +284,20 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
                 return Response::json(array(
                     'error' => false,
                     'message' => Lang::get('messages.success.updated', array('entity' => 'Stack location'))
-                ));
+                ), 200);
             } else {
                 DB::rollback();
                 return Response::json(array(
                     'error' => true,
-                    'message' => "Please enter a unique Section name."), 500);
+                    'message' => "Please enter a unique Section name."
+                ), 500);
             }
         } else {
             DB::rollback();
             return Response::json(array(
                 'error' => true,
-                'message' => "Atleast one section is required"), 500);
+                'message' => "Atleast one section is required"
+            ), 500);
         }
     }
     

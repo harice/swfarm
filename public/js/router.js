@@ -32,6 +32,8 @@ define([
 	'controllers/inventory/InventoryController',
 	'controllers/stacknumber/StackNumberController',
 	'controllers/commission/CommissionController',
+	'controllers/reports/ReportController',
+	'controllers/dashboard/DashboardController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
@@ -67,6 +69,8 @@ define([
 			InventoryController,
 			StackNumberController,
 			CommissionController,
+			ReportController,
+			DashboardController,
 			Global,
 			Const,
 			Session) {
@@ -80,6 +84,9 @@ define([
 
 	//logout
 	routerRoutes[Const.URL.LOGOUT] = 'processLogOut';
+
+	//dashboard
+	routerRoutes[Const.URL.DASHBOARD] = 'showDashboard';
 	
 	//admin
 	routerRoutes[Const.URL.ADMIN] = 'showAdminPage';
@@ -222,6 +229,11 @@ define([
 	routerRoutes[Const.URL.INVENTORY+'/'] = 'showInventoryPage';
 	routerRoutes[Const.URL.INVENTORY+'/:action'] = 'showInventoryPage';
 	routerRoutes[Const.URL.INVENTORY+'/:action/:id'] = 'showInventoryPage';
+
+	//report
+	routerRoutes[Const.URL.REPORT] = 'showReportsPage';
+	routerRoutes[Const.URL.REPORT+'/'] = 'showReportsPage';
+	routerRoutes[Const.URL.REPORT+'/:action'] = 'showReportsPage';
 	
 	//stacknumber
 	routerRoutes[Const.URL.STACKNUMBER+'/:id'] = 'showStackNumberPage';
@@ -472,6 +484,21 @@ define([
 			this.currView = stackNumberController.setAction(id);
 			this.currView.render();
 		});
+
+		app_router.on('route:showReportsPage', function () {
+			this.closeView();
+			var reportController = new ReportController();			
+			this.currView = reportController.setAction();
+			this.currView.render();
+
+		});
+
+		app_router.on('route:showDashboard', function() {
+			this.closeView();
+			var dashboardControlller = new DashboardController();	
+			this.currView = dashboardControlller.setAction();
+			this.currView.render();
+		});
 		
 		app_router.on('route:showCommissionPage', function (id) {
 			this.closeView();
@@ -482,9 +509,8 @@ define([
 		
 		app_router.on('route:defaultAction', function (actions) {
 			this.closeView();
-			console.log('default page');
 			this.currView = new HomePageView();
-			this.currView.render();
+			this.currView.render();			
 		});
 		
 		Global.getGlobalVars().app_router = app_router;

@@ -42,7 +42,7 @@ define([
 		},
                 
         getCustomerAccounts: function () {
-            this.url = '/apiv1/account?type=customer';
+            this.url = '/apiv1/account/customer';
             this.getModels();
         },
 		
