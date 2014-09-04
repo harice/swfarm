@@ -234,6 +234,8 @@ class ReportRepository implements ReportRepositoryInterface {
             ->join('contact as loader_destination', 'transportschedule.destinationloader_id', '=', 'loader_destination.id');
 
         $transactions = $transactions->join('weightticketscale', 'weightticketproducts.weightTicketScale_id', '=', 'weightticketscale.id');
+        $transactions = $transactions->leftJoin('weightticket as pickup_wt', 'weightticketscale.id', '=', 'pickup_wt.pickup_id');
+        $transactions = $transactions->leftJoin('weightticket as dropoff_wt', 'weightticketscale.id', '=', 'dropoff_wt.dropoff_id');
 
         $transactions = $transactions->where('truck.id', '=', $id);
 
@@ -265,8 +267,8 @@ class ReportRepository implements ReportRepositoryInterface {
             'loader_destination.lastname as loader_destination_lastname',
             'loader_destination.suffix as loader_destination_suffix',
 
-//            'weightticket.loadingTicketNumber as loading_ticket_number',
-//            'weightticket.unloadingTicketNumber as unloading_ticket_number',
+            'pickup_wt.loadingTicketNumber as loading_ticket_number',
+            'dropoff_wt.unloadingTicketNumber as unloading_ticket_number',
             'weightticketscale.type as loading_type'
         );
 
@@ -289,10 +291,11 @@ class ReportRepository implements ReportRepositoryInterface {
         foreach($transactions->toArray() as $truck_load)
         {
             $truck_loads[] = array(
-//                'receipt_no' => ($truck_load['loading_type'] == 2) ? $truck_load['unloading_ticket_number'] : 'loading_ticket_number',
+                'order_number' => $truck_load['order_number'],
+                'receipt_no' => ($truck_load['loading_type'] == 2) ? $truck_load['unloading_ticket_number'] : $truck_load['loading_ticket_number'],
                 'type' => ($truck_load['loading_type'] == 2) ? 'Unload' : 'Load',
                 'loader' => ($truck_load['loading_type'] == 2) ? $truck_load['loader_destination_lastname'] .', ' .$truck_load['loader_destination_firstname'] : $truck_load['loader_origin_lastname'] .', ' .$truck_load['loader_origin_firstname'],
-                'amount' => $truck_load['pounds']
+                'amount' => ($truck_load['loading_type'] == 2) ? $truck_load['loader_destination_fee'] : $truck_load['loader_origin_fee'],
             );
         }
 
