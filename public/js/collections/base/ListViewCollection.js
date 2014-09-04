@@ -61,13 +61,10 @@ define([
 						}
 						
 						thisObj.trigger('sync', data, textStatus, jqXHR, option);
-					}
-					else
-						alert(jqXHR.statusText);
+					}				
 				},
 				error:  function (jqXHR, textStatus, errorThrown) {
 					thisObj.trigger('error', jqXHR, textStatus, errorThrown);
-					alert(jqXHR.statusText);
 				},
 				headers: thisObj.getAuth(),
 			});

@@ -617,7 +617,7 @@ class ReportRepository implements ReportRepositoryInterface {
             $data['totalCost'] = number_format($data['totalCost'], 2, '.', '');
             return $data;
         } else {
-            return array('error' => true, 'message' => 'Location not found.');
+            return array('error' => true, 'message' => 'No record found.');
         }
 
     }

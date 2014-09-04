@@ -355,7 +355,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         return new StorageLocation($data);
     }
 
-    public function getAllStorageLocation(){
+    /*public function getAllStorageLocation(){
         $storageLocation = Section::with('storagelocationName')->get();
         // $storageLocation = StorageLocation::with('section')->get();
         // var_dump($storageLocation->toArray());
@@ -364,6 +364,17 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
             array_push($locationResult, array('id' => $location->id, 'locationName' => $location['storagelocation_name']['name'].' - '.$location['name']));
         }
         return $locationResult;
+    }*/
+
+    public function getAllStorageLocation(){
+        $storageLocation = StorageLocation::orderby('name', 'ASC')->get(array('id', 'name'))->toArray();
+        // $storageLocation = StorageLocation::with('section')->get();
+        // var_dump($storageLocation->toArray());
+        // $locationResult = array();
+        // foreach($storageLocation as $location){
+        //     array_push($locationResult, array('id' => $location->id, 'locationName' => $location['storagelocation_name']['name'].' - '.$location['name']));
+        // }
+        return $storageLocation;
     }
     
 }

@@ -17,7 +17,6 @@ define([
 				success: function(model, response, options) {
 					//console.log('success: UserModel.fetch()');
 					if(typeof response.error != 'undefined') {
-						alert(response.message);
 						Global.getGlobalVars().app_router.navigate(Const.URL.ROLE, {trigger: true});
 					}
 				},

@@ -12,13 +12,11 @@ define([
 ], function(Backbone, Bootstrap, Router, AppView, SessionModel, HeaderView, SideMenuView, Global, Const){
 	var initialize = function(){
 
-		// Expire session temp solution clear redirect
 		Backbone.ajax = function() {
 	        Backbone.$.ajaxSetup.call(Backbone.$, {
 	            statusCode: {
 	                403: function() {
 	                    SessionModel.clear();
-	                    Backbone.history.navigate("login", true);
 	                    window.location.reload();
 	                }
 	        }});
