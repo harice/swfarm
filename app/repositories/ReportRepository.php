@@ -585,6 +585,7 @@ class ReportRepository implements ReportRepositoryInterface {
                     $data['totalBales'] += $data['data'][$index]['bales'];
                     $data['totalTons'] += $data['data'][$index]['tons'];
                     $data['totalCost'] += $data['data'][$index]['cost'];
+                    $data['data'][$index]['cost'] = number_format($data['data'][$index]['cost'], 2);
                     $index++;
                 }
                 foreach($section['inventoryproduct_sectionfrom'] as $inventoryproduct){
@@ -597,13 +598,14 @@ class ReportRepository implements ReportRepositoryInterface {
                     $data['data'][$index]['bales'] = $inventoryproduct['bales'] != null ? $inventoryproduct['bales'] : "0";
                     $data['data'][$index]['tons'] = $inventoryproduct['tons'];
                     $data['data'][$index]['price'] = $inventoryproduct['price'];
-                    $data['data'][$index]['cost'] = number_format($inventoryproduct['tons'] * $inventoryproduct['price'], 2);
+                    $data['data'][$index]['cost'] = $inventoryproduct['tons'] * $inventoryproduct['price'];
                     $data['data'][$index]['operation'] = $inventoryproduct['inventory']['inventorytransactiontype']['type'];
                     $data['balesOut'] += $data['data'][$index]['bales'];
                     $data['tonsOut'] += $data['data'][$index]['tons'];
                     $data['totalBales'] += $data['data'][$index]['bales'];
                     $data['totalTons'] += $data['data'][$index]['tons'];
                     $data['totalCost'] += $data['data'][$index]['cost'];
+                    $data['data'][$index]['cost'] = number_format($data['data'][$index]['cost'], 2);
                     $index++;
                 }
 
