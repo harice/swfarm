@@ -12,6 +12,11 @@ require.config({
 		jqueryphonenumber: 'libs/jquery/jquery.phonenumber',
 		bootstrap: 'libs/bootstrap/bootstrap.min',
 		bootstrapdatepicker: 'libs/bootstrap/bootstrap-datepicker',
+		jqueryflot: 'libs/jquery.flot/jquery.flot.min',
+		jqueryflotresize: 'libs/jquery.flot/jquery.flot.resize.min',
+		jqueryflotlabels: 'libs/jquery.flot/jquery.flot.labels',
+		jqueryflotstackpercent: 'libs/jquery.flot/jquery.flot.stackpercent',
+		jqueryflotbarnumbers: 'libs/jquery.flot/jquery.flot.barnumbers',
 		bootstrapmultiselect: 'libs/bootstrap.multiselect/js/bootstrap-multiselect',
 		underscore: 'libs/underscore/underscore-min',
 		backbone: 'libs/backbone/backbone-min',
@@ -41,6 +46,32 @@ require.config({
 			deps: ['underscore', 'jquery', 'bootstrap', 'growl', 'jquerygritter', 'jqueryselect', 'icheck', 'jquerypushmenu','jquerynanoscroller','behaviourcore', 'maskedinput'],
 			exports: 'Backbone'
 		},
+
+		'jqueryflot': {
+			deps: ['jquery'],
+			exports: 'Flot'
+		},
+
+		'jqueryflotresize': {
+			deps: ['jquery', 'jqueryflot'],
+			exports: 'FlotResize'
+		},
+
+		'jqueryflotlabels': {
+			deps: ['jquery', 'jqueryflot'],
+			exports: 'FlotLabels'
+		},	
+
+		'jqueryflotstackpercent': {
+			deps: ['jquery', 'jqueryflot'],
+			exports: 'FlotStackPercent',
+		},	
+
+		'jqueryflotbarnumbers': {
+			deps: ['jquery', 'jqueryflot'],
+			exports: 'FlotBarNumbers'
+		},
+
 		'bootstrapdatepicker': {
 			deps: ['jquery', 'bootstrap'],
 			exports: 'DatePicker',

@@ -227,6 +227,11 @@ define(function () {
 		'INVENTORY': {
 			'LOCATIONFROMREQUIRED': ['transfer','issue'],
 			'LOCATIONTOREQUIRED': ['transfer','receipt'],
+			'TYPE': {
+				'TRANSFER': 3,
+				'ISSUE': 4,
+				'RECEIPT': 5,
+			},
 		},
         'ACCOUNT_TYPE': {
             'LOADER': 3,
@@ -234,16 +239,6 @@ define(function () {
             'TRUCKER': 8,
             'SWFTRUCKER': 9,
         },
-        'REPORT': {
-        	'OPERATOR': 'operator-pay',
-        	'PRODUCER': 'producer',
-        	'TRUCKING': 'trucking',
-        	'INVENTORY': 'inventory',
-        	'SALES': 'sales',
-        	'COMMISSION': 'commission',
-        	'GROSS': 'gross',
-        	'DRIVER': 'driver'
-        }
 	};
 	
 	return constant;

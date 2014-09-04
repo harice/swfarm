@@ -19,6 +19,7 @@ class Inventory extends Eloquent {
         'stacklocation_id',
         'weightticket_id',
         'order_id',
+        'returnedOrder_id',
         'notes'
     );
     
@@ -37,6 +38,10 @@ class Inventory extends Eloquent {
 
     public function order(){
         return $this->hasOne('Order', 'id', 'order_id');
+    }
+
+    public function returnedorder(){
+        return $this->hasOne('Order', 'id', 'returnedOrder_id');
     }
 
     public function ordernumber(){

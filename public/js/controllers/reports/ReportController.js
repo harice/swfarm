@@ -6,17 +6,9 @@ define([
 	
 	function ReportController () {	
 		
-		this.setAction = function (action) {		
-			switch(action) {	
-				default:
-					return this.reportView();	
-			}
-		};		
-
-		this.reportView = function() {
+		this.setAction = function () {		
 			return new Report();
-
-		};
+		};		
 
 	};
 

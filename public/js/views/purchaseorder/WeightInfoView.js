@@ -4,6 +4,7 @@ define([
 	'views/base/AppView',
 	'jqueryvalidate',
 	'jquerytextformatter',
+	'base64',
 	'models/purchaseorder/PurchaseOrderModel',
 	'models/purchaseorder/POScheduleModel',
 	'models/purchaseorder/POWeightInfoModel',
@@ -17,6 +18,7 @@ define([
 			AppView,
 			Validate,
 			TextFormatter,
+			Base64,
 			PurchaseOrderModel,
 			POScheduleModel,
 			POWeightInfoModel,
@@ -69,7 +71,7 @@ define([
 		},
 		
 		displayForm: function () {
-			var thisObj = this;
+			var thisObj = this;			
 			
 			var innerTemplateVariables = {
 				pickup_weight_info_edit_url: '#/'+Const.URL.POWEIGHTINFO+'/'+thisObj.poId+'/'+thisObj.schedId+'/'+Const.CRUD.EDIT+'/'+Const.WEIGHTINFO.PICKUP,
@@ -85,6 +87,12 @@ define([
                 schedule: this.poScheduleModel,
                 wi: this.model,
 			};
+			
+			if(this.model.get('weightticketscale_pickup') && this.model.get('weightticketscale_pickup').document)
+				innerTemplateVariables['file_path_pickup'] = Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.model.get('weightticketscale_pickup').document.id, type:'doc'}));
+			
+			if(this.model.get('weightticketscale_dropoff') && this.model.get('weightticketscale_dropoff').document)
+				innerTemplateVariables['file_path_dropoff'] = Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.model.get('weightticketscale_dropoff').document.id, type:'doc'}));
 			
 			if((!this.model.get('status') || (this.model.get('status') && this.model.get('status').id != Const.STATUSID.CLOSED)) && 
 				this.purchaseOrderModel.get('status').id == Const.STATUSID.OPEN)

@@ -7,7 +7,8 @@ define([
 	'views/reports/CustomerSearchView',	
 	'views/reports/DriverSearchView',
 	'views/reports/InventorySearchView',
-	'views/reports/GrossProfitView',	
+	'views/reports/GrossProfitView',
+	'views/reports/CommissionView',	
 	'models/reports/ReportModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/reports/ReportFormTemplate.html',
@@ -22,6 +23,7 @@ define([
 			Driver,
 			Inventory,
 			GrossProfit,
+			CommissionView,
 			Report,
 			contentTemplate,
 			reportFormTemplate,
@@ -83,6 +85,12 @@ define([
 		gross: function (){
 			this.closeView();
 			this.currView = new GrossProfit();			
+			this.currView.setElement($("#report-filter")).render();	
+		},
+
+		commission: function() {
+			this.closeView();
+			this.currView = new CommissionView();
 			this.currView.setElement($("#report-filter")).render();	
 		},
 	});

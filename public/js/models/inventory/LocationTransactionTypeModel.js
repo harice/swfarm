@@ -12,7 +12,6 @@ define([
 			this.fetch({
 				success: function(model, response, options) {
 					if(typeof response.error != 'undefined') {
-						alert(response.message);
 						Backbone.history.history.back();
 					}
 				},

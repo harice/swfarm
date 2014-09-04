@@ -54,7 +54,7 @@ define([
 		getFilterName: function (){
 			var locations = '<option disabled selected>Select Location</option>';			
 			_.each(this.collection.models, function (model) {
-				locations += '<option value="'+model.get('id')+'">'+model.get('locationName')+'</option>';
+				locations += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
 
 			return locations;

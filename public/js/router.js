@@ -33,6 +33,7 @@ define([
 	'controllers/stacknumber/StackNumberController',
 	'controllers/commission/CommissionController',
 	'controllers/reports/ReportController',
+	'controllers/dashboard/DashboardController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
@@ -69,6 +70,7 @@ define([
 			StackNumberController,
 			CommissionController,
 			ReportController,
+			DashboardController,
 			Global,
 			Const,
 			Session) {
@@ -82,6 +84,9 @@ define([
 
 	//logout
 	routerRoutes[Const.URL.LOGOUT] = 'processLogOut';
+
+	//dashboard
+	routerRoutes[Const.URL.DASHBOARD] = 'showDashboard';
 	
 	//admin
 	routerRoutes[Const.URL.ADMIN] = 'showAdminPage';
@@ -480,12 +485,19 @@ define([
 			this.currView.render();
 		});
 
-		app_router.on('route:showReportsPage', function (action) {
+		app_router.on('route:showReportsPage', function () {
 			this.closeView();
 			var reportController = new ReportController();			
-			this.currView = reportController.setAction(action);
+			this.currView = reportController.setAction();
 			this.currView.render();
 
+		});
+
+		app_router.on('route:showDashboard', function() {
+			this.closeView();
+			var dashboardControlller = new DashboardController();	
+			this.currView = dashboardControlller.setAction();
+			this.currView.render();
 		});
 		
 		app_router.on('route:showCommissionPage', function (id) {

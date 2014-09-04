@@ -56,6 +56,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('account/scaler', 'APIv1\AccountController@getScalerAccount');
     Route::get('account/getScaleList', 'APIv1\AccountController@getScaleList');
     Route::get('account/loader', 'APIv1\AccountController@getLoaderAccount');
+    Route::get('account/customer', 'APIv1\AccountController@getCustomerAccountList');
     Route::get('account/search', 'APIv1\AccountController@search');
 	Route::get('account/getFormData', 'APIv1\AccountController@getFormData');
   	Route::get('account/getCitiesByState/{id}', 'APIv1\AccountController@getCitiesByState');
@@ -188,6 +189,9 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::resource('storagelocation', 'APIv1\StorageLocationController');
 
     // Inventory
+    Route::get('inventory/getUsingAccount', 'APIv1\OrderController@getSalesOrderUsingAccountId');
+    Route::get('inventory/getProductsOfOrder', 'APIv1\InventoryController@getProductsOfOrder');
+    
     Route::get('inventory/summaryByStack', 'APIv1\InventoryController@getInventorySummaryByStack');
     Route::get('inventory/stackListByProduct', 'APIv1\InventoryController@getStackListByProduct');
     Route::get('inventory/stacklist', 'APIv1\InventoryController@stackList');

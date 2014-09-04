@@ -109,6 +109,10 @@ class AccountController extends BaseController {
 		return $this->account->getLoaderAccount();
 	}
 
+	public function getCustomerAccountList(){
+		return $this->account->getCustomerAccountList();
+	}
+
 	public function getTrailerAccount(){
 		return $this->account->getTrailerAccount();
 	}

@@ -114,6 +114,9 @@ define([
 				case '4':
 					return this.customer();
 					break;
+				case '5':
+					return this.commission();
+					break;
 				case '6':
 					return this.gross();
 					break;
