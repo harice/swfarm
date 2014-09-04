@@ -80,12 +80,29 @@ define([
 			}
 
 			this.model.on('sync', function (){				
-				thisObj.processData(commissionListTemplate);				
+				thisObj.processData();				
 				this.off("sync");
 			});				
 
 		},
 
+		processData: function() {
+			var thisObj = this;
+			
+			var innerTemplateVariables= {
+				'cur_date': this.setCurDate(),
+				'date_from': thisObj.parseDate($('#filter-operator-date-start .input-group.date input').val()),
+				'date_to': thisObj.parseDate($('#filter-operator-date-end .input-group.date input').val()),
+				'users': this.model,
+			}
+
+			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
+			var compiledTemplate = _.template(commissionListTemplate, innerTemplateVariables);
+
+			$(".reportlist").removeClass("hidden");
+			$("#report-list").removeClass("hidden");
+			$("#report-list").html(compiledTemplate);
+		},
 		
 
 		
