@@ -222,7 +222,8 @@ class ReportRepository implements ReportRepositoryInterface {
                     $q->where('weightticketproducts.created_at', '<', $date_end);
                 }
             })
-            ->join('productorder', 'productorder_id', '=', 'productorder.id');
+            ->join('productorder', 'productorder_id', '=', 'productorder.id')
+            ->join('order', 'transportschedule.order_id', '=', 'order.id');
 
         $transactions = $transactions->leftJoin('section as section_origin', 'productorder.section_id', '=','section_origin.id')
             ->leftJoin('section as section_destination', 'transportscheduleproduct.sectionto_id', '=', 'section_destination.id')
@@ -240,6 +241,7 @@ class ReportRepository implements ReportRepositoryInterface {
             'weightticketproducts.id as id',
             'weightticketproducts.bales',
             'weightticketproducts.pounds',
+            'order.order_number',
             'weightticketproducts.created_at',
             'transportschedule.truckingrate',
             'transportschedule.trailerrate',
