@@ -91,6 +91,8 @@
             <table class="table table-bordered" style="width:50%">
                 <thead>
                     <tr>
+                        <th><strong>Order No.</strong></th>
+                        <th><strong>Receipt No.</strong></th>
                         <th><strong>Type</strong></th>
                         <th><strong>Loader</strong></th>
                         <th><strong>Amount</strong></th>
@@ -101,6 +103,8 @@
                     _.each(truckers.get('truck_loads'),function(load){                        
                     %>
                     <tr>
+                        <td><%= load.order_number %> </td>
+                        <td><%= load.receipt_no %> </td>
                         <td><%= load.type %></td>  
                         <td><%= load.loader %></td>
                         <td> 

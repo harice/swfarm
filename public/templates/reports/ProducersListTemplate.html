@@ -46,7 +46,8 @@
                 <thead class="no-border">
                     <tr>
                         <th><strong>Date</strong></th>
-                        <th><strong>Weight Ticket</strong></th>
+                        <th><strong>Order No.</strong></th>
+                        <th><strong>Weight Ticket No.</strong></th>
                         <th><strong>Bales</strong></th>
                         <th><strong>Net Weight</strong></th>
                         <th><strong>Tons</strong></th>
@@ -78,6 +79,7 @@
                                 }                  
                             %>
                         </td>
+                        <td><%= transaction.order_number %></td>
                         <td><%= transaction.weightTicketNumber %></td>
                         <td><%= numberFormatBales(transaction.bales) %></td>
                         <td><%= (convertLbsToTons(transaction.pounds) * 2).toFixed(2) %></td>

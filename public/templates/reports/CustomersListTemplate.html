@@ -30,6 +30,7 @@
             <table id="operator-list" class="table-bordered table">
                 <thead class="no-border">
                     <tr>
+                        <th><strong>Weight Ticket No.</strong></th>
                         <th><strong>Type</strong></th>
                         <th><strong>Date</strong></th>
                         <th><strong>Commodity</strong></th>
@@ -49,7 +50,8 @@
                        
                         grand_total += customer_total;
                     %>       
-                        <tr>      
+                        <tr>   
+                            <td><%= transaction.weightTicketNumber %></td>   
                             <td>
                                 <%= transaction.natureofsale %>
                             </td> 
