@@ -98,6 +98,7 @@ class ReportRepository implements ReportRepositoryInterface {
             'storagelocation.id as storagelocation_id',
             'storagelocation.name as storagelocation_name',
             'weightticketproducts.created_at',
+            'order.order_number',
             'weightticket.weightTicketNumber',
             'products.name as product_name',
             'weightticketproducts.bales',
