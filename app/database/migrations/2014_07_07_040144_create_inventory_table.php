@@ -18,12 +18,14 @@ class CreateInventoryTable extends Migration {
 			$table->integer('transactiontype_id')->unsigned();
 			$table->integer('weightticket_id')->unsigned()->nullable();
 			$table->integer('order_id')->unsigned()->nullable();
+			$table->integer('returnedOrder_id')->unsigned()->nullable();
 			$table->text('notes')->nullable();
 			$table->timestamps();
 
 			$table->foreign('transactiontype_id')->references('id')->on('inventorytransactiontype');
 			$table->foreign('weightticket_id')->references('id')->on('weightticket');
 			$table->foreign('order_id')->references('id')->on('order');
+			$table->foreign('returnedOrder_id')->references('id')->on('order');
 		});
 	}
 
