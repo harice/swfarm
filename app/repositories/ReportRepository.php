@@ -446,14 +446,12 @@ class ReportRepository implements ReportRepositoryInterface {
 
         $weighttickets = $weighttickets->get();
 
-//        Log::debug(DB::getQueryLog());
-
         $transactions = array();
         foreach ($weighttickets as $weightticket)
         {
-            $pounds = 0.0;
-            $unitprice = 0.0;
-            $total_sales = 0.0;
+            $pounds = 1.0;
+            $unitprice = 1.0;
+            $total_sales = 1.0;
 
             if ($weightticket['weightticketscale_pickup'])
             {
@@ -520,7 +518,6 @@ class ReportRepository implements ReportRepositoryInterface {
         $report['summary']['total_profit_amount'] = $total_profit_amount;
         $report['summary']['total_profit_percentage'] = $total_profit_percentage;
         $report['transactions'] = $transactions;
-//        $report['data'] = $weighttickets->toArray();
 
         return $report;
     }
