@@ -232,7 +232,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
         return array(
               'error' => false,
-              'message' => 'Weight ticket successfully created');
+              'message' => 'Weight Ticket successfully created');
     }
 
     private function generateWeightTicketNumber(){
