@@ -41,6 +41,7 @@ class ReportRepository implements ReportRepositoryInterface {
         $transactions = $transactions->select(
             'storagelocation.id as storagelocation_id',
             'storagelocation.name as storagelocation_name',
+            'order.order_number',
             'natureofsale.name as natureofsale',
             'weightticketproducts.created_at',
             'weightticket.weightTicketNumber',
@@ -160,6 +161,7 @@ class ReportRepository implements ReportRepositoryInterface {
         {
             foreach ($contact['load_origin'] as $load) {
                 $item['id'] = $i;
+                $item['order_number'] = $load['order']['order_number'];
                 $item['type'] = 'Load';
                 $item['amount'] = $load['originloaderfee'];
                 $item['account_name'] = $load['order']['account']['name'];
@@ -176,6 +178,7 @@ class ReportRepository implements ReportRepositoryInterface {
         {
             foreach ($contact['load_destination'] as $load) {
                 $item['id'] = $i;
+                $item['order_number'] = $load['order']['order_number'];
                 $item['type'] = 'Unload';
                 $item['amount'] = $load['destinationloaderfee'];
                 $item['account_name'] = $load['order']['account']['name'];
@@ -397,11 +400,13 @@ class ReportRepository implements ReportRepositoryInterface {
                     $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
                     $q->where('weightticketproducts.created_at', '<', $date_end);
                 }
-            });
+            })
+            ->join('order', 'order_id', '=', 'order.id');
 
         $transactions = $transactions->where('transportschedule.trucker_id', '=', $id);
 
         $transactions = $transactions->select(
+            'order.order_number',
             'account.name as account_name',
             'weightticketproducts.bales',
             'weightticketproducts.pounds',
@@ -491,6 +496,7 @@ class ReportRepository implements ReportRepositoryInterface {
             }
 
             $updated_at = $weightticket['updated_at'];
+            $order_number = $weightticket['transportschedule']['order']['order_number'];
             $account = $weightticket['transportschedule']['order']['account']['name'];
             $net_sale = $total_sales - 0.0; // Total Sales - Return Sales
             $hay_cost = $tons * $buying_price;
@@ -501,6 +507,7 @@ class ReportRepository implements ReportRepositoryInterface {
             $profit_percentage = number_format((($profit_amount / $net_sale) * 100), 2, '.', ',');
 
             $transactions[] = array(
+                'order_number' => $order_number,
                 'updated_at' => $updated_at,
                 'account' => $account,
                 'net_sale' => $net_sale,
@@ -532,7 +539,7 @@ class ReportRepository implements ReportRepositoryInterface {
         $report['summary']['total_freight_cost'] = $total_freight_cost;
         $report['summary']['total_profit_amount'] = $total_profit_amount;
         $report['summary']['total_profit_percentage'] = $total_profit_percentage;
-        $report['data'] = $weighttickets->toArray();
+//        $report['data'] = $weighttickets->toArray();
         $report['transactions'] = $transactions;
 
         return $report;
