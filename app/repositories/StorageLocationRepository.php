@@ -367,7 +367,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
     }*/
 
     public function getAllStorageLocation(){
-        $storageLocation = StorageLocation::orderby('name', 'ASC')->get()->toArray();
+        $storageLocation = StorageLocation::orderby('name', 'ASC')->get(array('id', 'name'))->toArray();
         // $storageLocation = StorageLocation::with('section')->get();
         // var_dump($storageLocation->toArray());
         // $locationResult = array();
