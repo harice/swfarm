@@ -41,6 +41,7 @@ class ReportRepository implements ReportRepositoryInterface {
         $transactions = $transactions->select(
             'storagelocation.id as storagelocation_id',
             'storagelocation.name as storagelocation_name',
+            'order.order_number',
             'natureofsale.name as natureofsale',
             'weightticketproducts.created_at',
             'weightticket.weightTicketNumber',
