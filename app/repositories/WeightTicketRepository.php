@@ -1,7 +1,7 @@
 <?php
 
 class WeightTicketRepository implements WeightTicketRepositoryInterface {
-    
+
     public function findAll($params = array())
     {
         try
@@ -11,12 +11,12 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             $sortby   = isset($params['sortby']) ? $params['sortby'] : 'id';
             $orderby  = isset($params['orderby']) ? $params['orderby'] :'DSC';
             $offset   = $page * $perPage - $perPage;
-            
+
             $result = WeightTicket::take($perPage)
                 ->offset($offset)
                 ->orderBy($sortby, $orderby)
                 ->paginate($perPage);
-            
+
             return $result;
         }
         catch (Exception $e)
@@ -40,7 +40,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                             ->with('weightticketscale_pickup.document')
                             ->where('transportSchedule_id', '=', $schedule_id)->first();
 
-            if(!$weightticket) 
+            if(!$weightticket)
                 throw new NotFoundException('Weight Info Not Found');
 
             return $weightticket;
@@ -71,16 +71,16 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             if($transportScheduleDetails['weightticket']['dropoff_id'] != null){
                 $dropoffNetWeight = $this->getNetWeight($transportScheduleDetails['weightticket']['weightticketscale_dropoff']['gross'], $transportScheduleDetails['weightticket']['weightticketscale_dropoff']['tare']);
             }
-            
+
             if($transportScheduleDetails['weightticket']['pickup_id'] != null && $transportScheduleDetails['weightticket']['dropoff_id'] != null){
                 if($pickupNetWeight >= $dropoffNetWeight){
                     $weightTicketList[$index] = $transportScheduleDetails['weightticket']['weightticketscale_pickup'];
                     $netWeight = $pickupNetWeight;
-                    
+
                 } else {
                     $weightTicketList[$index] = $transportScheduleDetails['weightticket']['weightticketscale_dropoff'];
                     $netWeight = $dropoffNetWeight;
-                    
+
                 }
             } else if($transportScheduleDetails['weightticket']['pickup_id'] != null){
                 $weightTicketList[$index] = $transportScheduleDetails['weightticket']['weightticketscale_pickup'];
@@ -99,13 +99,13 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             $index++;
         }
 
-        return $weightTicketList;             
+        return $weightTicketList;
     }
 
     private function getNetWeight($gross, $tare){
         return $gross-$tare;
     }
-    
+
     public function store($data)
     {
         $hasExisitingTicket = WeightTicket::where('transportSchedule_id', '=', $data['transportSchedule_id'])->first();
@@ -143,7 +143,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                     $toBeClose =  true;
                 }
             }
-            
+
             if(isset($data['pickup_info'])){
                 if($toBeClose){
                     //for pickup data
@@ -218,14 +218,14 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             if($toBeClose){
                 $data['status_id'] = 2; //close status
             } else {
-                $data['status_id'] = 1; //open status    
+                $data['status_id'] = 1; //open status
             }
             $weightticket->fill($data);
             $weightticket->save();
 
             return $weightticket->id;
         });
-        
+
         if(is_array($result)){
             return $result;
         }
@@ -240,7 +240,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
         $dateToday = date('Y-m-d');
         $count = WeightTicket::where('created_at', 'like', $dateToday.'%')->count()+1;
-        
+
         return $prefix.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
     }
 
@@ -275,8 +275,8 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
       $orderproducts = TransportScheduleProduct::with('productorder.product')->where('transportschedule_id', '=', $transportschedule_id)->get()->toArray();
 
       return $orderproducts;
-    } 
-    
+    }
+
     public function update($id, $data)
     {
         $result = DB::transaction(function() use ($id, $data){
@@ -287,14 +287,14 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                     $toBeClose =  true;
                 }
             }
-            
+
             $this->validate($data, 'WeightTicket');
-            
+
             $weightticket = WeightTicket::where('transportSchedule_id', '=', $id)->first();
             if($weightticket->status_id == 2){ //if close, cannot be edit
                 return array(
                   'error' => false,
-                  'message' => 'You cannot edit a weight ticket that is already close');
+                  'message' => 'You cannot edit a Weight Ticket that was already closed.');
             }
             $weightticket->fill($data);
             $weightticket->save();
@@ -400,16 +400,16 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
             return $weightticket->id;
         });
-        
+
         if(is_array($result)){
             return $result;
         }
 
         return array(
               'error' => false,
-              'message' => 'Weight ticket successfully updated');
+              'message' => 'Weight Ticket successfully updated');
     }
-    
+
     public function destroy($transportSchedule_id)
     {
         $weightTicket = WeightTicket::where('transportSchedule_id', '=', $transportSchedule_id)->first();
@@ -419,27 +419,27 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
             $response = array(
                 'error' => false,
-                'message' => 'Weight ticket successfully deleted.');
+                'message' => 'Weight Ticket successfully deleted.');
           } else {
             $response = array(
                 'error' => true,
-                'message' => "Weight ticket not found");
+                'message' => "Weight Ticket not found");
           }
 
         return $response;
     }
-    
+
 
     public function validate($data, $entity){
           $validator = Validator::make($data, $entity::$rules);
-          
-          if($validator->fails()) { 
-              throw new ValidationException($validator); 
+
+          if($validator->fails()) {
+              throw new ValidationException($validator);
           }
-          
+
           return true;
     }
-    
+
     public function instance($data = array())
     {
         return new WeightTicket($data);
@@ -447,7 +447,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
     /**
      * Mail Weight Ticket
-     * 
+     *
      * @param type $id TransportSchedule id
      * @param array $data
      * @return type
@@ -458,22 +458,22 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         {
             $transportSchedule_id = $id;
             $transportSchedule = TransportSchedule::find($transportSchedule_id);
-            
+
             $contact_trucker = Contact::find($transportSchedule->trucker_id);
-            
+
             if ($transportSchedule->originloader_id == $transportSchedule->destinationloader_id) {
                 $contact_loader = Contact::find($transportSchedule->destinationloader_id);
             } else {
                 $contact_loader_origin = Contact::find($transportSchedule->originloader_id);
                 $contact_loader_destination = Contact::find($transportSchedule->destinationloader_id);
             }
-            
+
             // Get order
             $order = Order::find($transportSchedule["order_id"]);
-            
+
             // Get account
             $account = Account::find($order['account_id']);
-            
+
             $weightticket = WeightTicket::
                 with('weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder.product')
                 ->with('weightticketscale_dropoff.scalerAccount')
@@ -483,7 +483,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                 ->with('weightticketscale_pickup.scale')
                 ->where('transportSchedule_id', '=', $transportSchedule_id)
                 ->first();
-            
+
             // Get Contacts
 //            $recipients = array(
 //                array(
@@ -499,7 +499,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                     "email" => $email
                 );
             }
-            
+
             if ($weightticket) {
                 foreach ($recipients as $recipient) {
                     if (isset($recipient['name'])) {
@@ -538,7 +538,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                     'error' => true,
                     'message' => 'Email was not sent.'), 200);
             }
-            
+
             return Response::json(array(
               'error' => false,
               'message' => 'Weight Ticket was sent.'), 200);
@@ -558,7 +558,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         if($order){
             $order = $order->toArray();
             return $order['location']['id'];
-           
+
         } else {
             return false;
         }
@@ -571,7 +571,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
         return intval($order['ordertype']); //if 1 - PO, if 2 - SO
     }
-    
+
 
     private function createJsonForInventory($schedule_id, $ordertype = 1){ //order type is default to PO
         if($ordertype == 1){
@@ -594,7 +594,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         } else { //if SO, SO has always have pick up schedule before calling this method
             $weightticketscale = $transportSchedule['weightticket']['weightticketscale_pickup'];
         }
-        
+
         $ctr = 0;
         foreach($weightticketscale['weightticketproducts'] as $product){
             $productTemp[$ctr]['tons'] = $product['pounds'] * 0.0005;
@@ -618,22 +618,22 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         if(!$weightticketObj) {
             return Response::json(array(
                   'error' => true,
-                  'message' => 'Weight Info Not Found.'), 500);
+                  'message' => 'Weight Ticket Not Found.'), 500);
         } else if($weightticketObj->checkout == 1){ //already checkout
             return Response::json(array(
                   'error' => true,
-                  'message' => 'This weight ticket is already checked out.'), 500);
+                  'message' => 'This Weight Ticket was already checked out.'), 500);
         } else if($weightticketObj->pickup_id == null){
             return Response::json(array(
                   'error' => true,
-                  'message' => 'This weight ticket has no pickup details yet.'), 500);
+                  'message' => 'This Weight Ticket has no pickup details yet.'), 500);
         } else {
             $weightticket = $weightticketObj->toArray();
 
             if(isset($weightticket['weightticketscale_pickup'])){
-                
+
                 if($weightticket['weightticketscale_pickup']['scaleAccount_id'] == null ||
-                   $weightticket['weightticketscale_pickup']['scale_id'] == null || 
+                   $weightticket['weightticketscale_pickup']['scale_id'] == null ||
                    $weightticket['weightticketscale_pickup']['fee'] == null ||
                    $weightticket['weightticketscale_pickup']['bales'] == null ||
                    $weightticket['weightticketscale_pickup']['gross'] ==  null ||
@@ -652,7 +652,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                         }
                     }
                 }
-                
+
             }
 
             $dataInventory = $this->createJsonForInventory($schedule_id, 2); //set order type to SO
@@ -660,13 +660,13 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             if($inventoryResponse['error']){
                 return Response::json($inventoryResponse);
             }
-            
+
             //change the status
             $weightticketObj->checkout = 1;
             $weightticketObj->save();
             return Response::json(array(
               'error' => false,
-              'message' => 'Weighticket successfully checkout.'), 200);
+              'message' => 'Weight Ticket successfully checkout.'), 200);
 
 
         }
@@ -682,7 +682,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         array_push($products, $product1);
         array_push($products, $product2);
         $inventoryData = array("transactiontype_id" => "5", "products" => $products, "notes"=>"test");
-        
+
         InventoryLibrary::store($inventoryData);
 
         exit;*/
@@ -701,15 +701,15 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             } else if($weightticketObj->status_id == 2){ //already close
                 return Response::json(array(
                       'error' => true,
-                      'message' => 'This weight ticket was already closed.'), 500);
+                      'message' => 'This Weight Ticket was already closed.'), 500);
             } else if($orderType == 2 && $weightticketObj->checkout != 1){ //SO is not checkout yet
                 return Response::json(array(
                       'error' => true,
-                      'message' => 'Weight ticket has not been checkout from the inventory yet.'), 500);
+                      'message' => 'Weight Ticket has not been checkout from the inventory yet.'), 500);
             }
-                
+
             $weightticket = $weightticketObj->toArray();
-            
+
             $weightticket['status_id'] = '2'; //close
             //rename array to fit in update function
             if(isset($weightticket['weightticketscale_pickup'])){
@@ -721,7 +721,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                 // }
 
                 if($weightticket['weightticketscale_pickup']['scaleAccount_id'] == null ||
-                   $weightticket['weightticketscale_pickup']['scale_id'] == null || 
+                   $weightticket['weightticketscale_pickup']['scale_id'] == null ||
                    $weightticket['weightticketscale_pickup']['fee'] == null ||
                    $weightticket['weightticketscale_pickup']['bales'] == null ||
                    $weightticket['weightticketscale_pickup']['gross'] ==  null ||
@@ -740,7 +740,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                         }
                     }
                 }
-                
+
             }
 
             if(isset($weightticket['weightticketscale_dropoff'])){
@@ -752,7 +752,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                 // }
 
                 if($weightticket['weightticketscale_dropoff']['scaleAccount_id'] == null ||
-                   $weightticket['weightticketscale_dropoff']['scale_id'] == null || 
+                   $weightticket['weightticketscale_dropoff']['scale_id'] == null ||
                    $weightticket['weightticketscale_dropoff']['fee'] == null ||
                    $weightticket['weightticketscale_dropoff']['bales'] == null ||
                    $weightticket['weightticketscale_dropoff']['gross'] ==  null ||
@@ -780,8 +780,8 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                     return Response::json($inventoryResponse);
                 }
             }
-            
-            
+
+
             //change the status
             $weightticketObj->status_id = 2; //close status
             $weightticketObj->save();
@@ -793,7 +793,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
             return Response::json(array(
               'error' => false,
-              'message' => 'Weighticket successfully closed.'), 200);
+              'message' => 'Weight Ticket successfully closed.'), 200);
             // return $weightticket;
         }
         catch (Exception $e)
@@ -801,10 +801,10 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             return $e->getMessage();
         }
     }
-    
+
     /**
      * Mail loading ticket.
-     * 
+     *
      * @param type $id
      * @param type $data
      * @return type
@@ -818,7 +818,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             if (!$transportSchedule) {
                 throw new NotFoundException('Transport Schedule not found.', 404);
             }
-            
+
             // Get Trucker Account, Truck #, and Truck Driver
             $driver = Contact::with('account')
                 ->where('id', '=', $transportSchedule->trucker_id)
@@ -827,7 +827,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                 throw new NotFoundException('Driver not found.', 404);
             }
             $trucker = Account::find($driver['account']);
-            
+
             // Get Loaders
             if ($transportSchedule->originloader_id) {
                 $contact_loader_origin = Contact::find($transportSchedule->originloader_id);
@@ -835,13 +835,13 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             if ($transportSchedule->destinationloader_id) {
                 $contact_loader_destination = Contact::find($transportSchedule->destinationloader_id);
             }
-            
+
             // Get Order
             $order = Order::find($transportSchedule["order_id"]);
             if (!$order) {
                 throw new NotFoundException('Order not found.', 404);
             }
-            
+
             // Get Customer
             $account = Account::with('address')
                 ->where('id', '=', $order['account_id'])
@@ -849,7 +849,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             if (!$account) {
                 throw new NotFoundException('Account not found.', 404);
             }
-            
+
             // Get Weight Ticket
             $weightticket = WeightTicket::
                 with('weightticketscale_dropoff')
@@ -859,7 +859,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             if (!$weightticket) {
                 throw new NotFoundException('Weight Ticket not found.', 404);
             }
-            
+
             // Get Contacts
 //            $recipients = array(
 //                array(
@@ -875,7 +875,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                     "email" => $email
                 );
             }
-            
+
             if ($weightticket) {
                 foreach ($recipients as $recipient) {
                     if (isset($recipient['name'])) {
@@ -922,7 +922,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                     'error' => true,
                     'message' => 'Email was not sent.'), 200);
             }
-            
+
 //            $response = array(
 //                'error' => false,
 //                'message' => 'Loading Ticket has been sent.',
@@ -935,11 +935,11 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 //                    'weightticket' => $weightticket->toArray()
 //                )
 //            );
-            
+
             $response = Response::json(array(
               'error' => false,
               'message' => 'Loading Ticket was sent.'), 200);
-            
+
             return $response;
         }
         catch (Exception $e)
@@ -953,9 +953,9 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         $wts = WeightTicketScale::find($weightTicketScaleId);
         if($wts)
         {
-            if($wts->document) 
+            if($wts->document)
             {
-                if($wts->document->id != $uploadedfile) 
+                if($wts->document->id != $uploadedfile)
                 {
                     $wts->document->delete();
 
