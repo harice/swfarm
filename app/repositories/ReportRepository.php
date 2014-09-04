@@ -400,11 +400,13 @@ class ReportRepository implements ReportRepositoryInterface {
                     $date_end = date('Y-m-d', strtotime("+1 day", strtotime($params['dateEnd'])));
                     $q->where('weightticketproducts.created_at', '<', $date_end);
                 }
-            });
+            })
+            ->join('order', 'order_id', '=', 'order.id');
 
         $transactions = $transactions->where('transportschedule.trucker_id', '=', $id);
 
         $transactions = $transactions->select(
+            'order.order_number',
             'account.name as account_name',
             'weightticketproducts.bales',
             'weightticketproducts.pounds',
