@@ -19,7 +19,13 @@ return array(
     'LOCATION_DROPSHIP' => 3,
     'LOCATION_PRODUCER' => 2,
 
+    'STATUS_OPEN' => 1,
     'STATUS_CLOSED' => 2,
+    'STATUS_CANCELLED' => 3,
+    'STATUS_PENDING' => 4,
+    'STATUS_BIDCANCELLED' => 5,
+    'STATUS_POCANCELLED' => 6,
+    'STATUS_TESTING' => 7,
 
     'ORDERTYPE_PO' => 1,
     'ORDERTYPE_SO' => 2,

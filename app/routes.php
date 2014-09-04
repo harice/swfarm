@@ -215,6 +215,12 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('report/sales/{id}', 'APIv1\ReportController@generateSales');
     Route::get('report/producer-statement/{id}', 'APIv1\ReportController@generateProducerStatement');
     Route::get('report/inventoryPerLocation', 'APIv1\ReportController@inventoryReportPerLocation');
+
+    //Dashboard
+    Route::get('dashboard/purchaseInTons', 'APIv1\DashboardController@purchaseInTons');
+    Route::get('dashboard/salesInTons', 'APIv1\DashboardController@salesInTons');
+    Route::get('dashboard/purchaseInDollarValues', 'APIv1\DashboardController@purchaseInDollarValues');
+    Route::get('dashboard/salesInDollarValues', 'APIv1\DashboardController@salesInDollarValues');
 });
 
 Route::group(array('before' => 'auth.session'),function(){
