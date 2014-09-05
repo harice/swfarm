@@ -170,7 +170,7 @@ define([
 			
 			var validate = $('#commissionForm').validate({
 				submitHandler: function(form) {
-					var data = $(form).serializeObject();
+					var data = thisObj.removeComma($(form).serializeObject());
 					
 					var deleteID = Const.COMMISSION.WEIGHTTICKETBYUSERID+data.order_id+'-'+data.weightticket_id;
 					
