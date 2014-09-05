@@ -38,6 +38,13 @@ return array(
     'GRAPH_TYPE_1' => 1,
     'GRAPH_TYPE_2' => 2,
 
+    'NATUREOFSALES_RESERVATION' => 1,
+    'NATUREOFSALES_INCOMING' => 2,
+    'NATUREOFSALES_OUTGOING' => 3,
+
+    'COMMISSION_TYPE_FLATRATE' => 1,
+    'COMMISSION_TYPE_PERTONRATE' => 2,
+
     'VERSION' => "3.0"
 
 );
