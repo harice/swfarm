@@ -51,7 +51,12 @@ class Product extends Eloquent {
     
     public function productorder()
     {
-        return $this->belongsTo('ProductOrder', 'id', 'product_id');
+        return $this->hasMany('ProductOrder', 'product_id', 'id');
+    }
+
+    public function productordertons()
+    {
+        return $this->hasMany('ProductOrder', 'product_id', 'id')->select(array('id', 'product_id', 'tons', 'order_id', 'unitprice'));
     }
     
     public function contractproducts()
