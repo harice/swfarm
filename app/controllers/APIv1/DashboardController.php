@@ -20,6 +20,11 @@ class DashboardController extends BaseController {
         $this->repo = $repo;
     }
 
+    public function main(){
+    	$result = $this->repo->dashboard(Input::all());
+    	return Response::json($result);
+    }
+
     public function purchaseInTons(){
     	$result = $this->repo->purchaseInTons(Input::all());
     	return Response::json($result);

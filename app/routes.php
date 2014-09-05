@@ -217,10 +217,11 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('report/inventoryPerLocation', 'APIv1\ReportController@inventoryReportPerLocation');
 
     //Dashboard
-    Route::get('dashboard/purchaseInTons', 'APIv1\DashboardController@purchaseInTons');
-    Route::get('dashboard/salesInTons', 'APIv1\DashboardController@salesInTons');
-    Route::get('dashboard/purchaseInDollarValues', 'APIv1\DashboardController@purchaseInDollarValues');
-    Route::get('dashboard/salesInDollarValues', 'APIv1\DashboardController@salesInDollarValues');
+    Route::get('dashboard', 'APIv1\DashboardController@main');
+    // Route::get('dashboard/purchaseInTons', 'APIv1\DashboardController@purchaseInTons');
+    // Route::get('dashboard/salesInTons', 'APIv1\DashboardController@salesInTons');
+    // Route::get('dashboard/purchaseInDollarValues', 'APIv1\DashboardController@purchaseInDollarValues');
+    // Route::get('dashboard/salesInDollarValues', 'APIv1\DashboardController@salesInDollarValues');
 });
 
 Route::group(array('before' => 'auth.session'),function(){

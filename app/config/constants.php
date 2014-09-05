@@ -30,6 +30,14 @@ return array(
     'ORDERTYPE_PO' => 1,
     'ORDERTYPE_SO' => 2,
 
+    'GRAPH_PURCHASE_IN_TONS' => 1,
+    'GRAPH_PURCHASE_IN_DOLLAR_VALUES' => 2,
+    'GRAPH_SALES_IN_TONS' => 3,
+    'GRAPH_SALES_IN_DOLLAR_VALUES' => 4,
+
+    'GRAPH_TYPE_1' => 1,
+    'GRAPH_TYPE_2' => 2,
+
     'VERSION' => "3.0"
 
 );

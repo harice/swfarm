@@ -6,6 +6,38 @@
  * @author Avs
  */
 class DashboardRepository implements DashboardRepositoryInterface {
+
+    public function dashboard($params){
+        if(!isset($params['graphId'])){ //if no graph is specified, return all graphs
+            $graph = array(
+                    array('graphName' => 'Purchase in tons', 'graphId' => Config::get('constants.GRAPH_PURCHASE_IN_TONS'), 'graphType' => Config::get('constants.GRAPH_TYPE_1'), 'data' => $this->purchaseInTons($params)),
+                    array('graphName' => 'Purchase in dollar values', 'graphId' => Config::get('constants.GRAPH_PURCHASE_IN_DOLLAR_VALUES'), 'graphType' => Config::get('constants.GRAPH_TYPE_1'), 'data' => $this->purchaseInDollarValues($params)),
+                    array('graphName' => 'Sales in tons', 'graphId' => Config::get('constants.GRAPH_SALES_IN_TONS'), 'graphType' => Config::get('constants.GRAPH_TYPE_1'), 'data' => $this->salesInTons($params)),
+                    array('graphName' => 'Sales in dollar values', 'graphId' => Config::get('constants.GRAPH_SALES_IN_DOLLAR_VALUES'), 'graphType' => Config::get('constants.GRAPH_TYPE_1'), 'data' => $this->salesInDollarValues($params))
+                );
+        } else {
+            switch ($params['graphId']) {
+                case Config::get('constants.GRAPH_PURCHASE_IN_TONS'):
+                    $graph = $this->purchaseInTons($params);
+                    break;
+                case Config::get('constants.GRAPH_PURCHASE_IN_DOLLAR_VALUES'):
+                    $graph = $this->purchaseInDollarValues($params);
+                    break;
+                case Config::get('constants.GRAPH_SALES_IN_TONS'):
+                    $graph = $this->salesInTons($params);
+                    break;
+                case Config::get('constants.GRAPH_SALES_IN_DOLLAR_VALUES'):
+                    $graph = $this->salesInDollarValues($params);
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+        }
+
+        return $graph;
+
+    }
     
     public function purchaseInTons($params){
         $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d 00:00:00', strtotime("yesterday"));
