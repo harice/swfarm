@@ -213,6 +213,27 @@ define([
 	      }); 
 	      
 	    },
+		
+		formatGraphData: function (data, type) {
+			var graphData = null;
+			var graphXData = [];
+			
+			switch(graph.get('graphType')){
+				case Const.GRAPH.TYPE.STACKEDBAR:
+					break;
+				case Const.GRAPH.TYPE.BAR:
+					
+					for(var i = 0; i < data.length; i++) {
+						graphXData.push([i, ])
+					}
+					
+					break;
+				default:
+					break;
+			}
+			
+			return { data: graphData, xData: graphXData, };
+		},
 
 	});
 
