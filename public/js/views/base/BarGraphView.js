@@ -27,10 +27,7 @@ define([
 
 		graphData: function (id, data, xData, label, decimals){			
 
-			var graph = $.plot($("#"+id), [{
-		        data: data
-		     }
-		    ], {
+			var graph = $.plot($("#"+id), data, {
 		        series: {
 		          bars: {
 		            show: true,
@@ -41,7 +38,7 @@ define([
 		            hoverable: true,
 		            fillColor: {
 		              colors: [{
-		                opacity: .4
+		                opacity: 0.5
 		              }, {
 		                opacity: 1
 		              }
@@ -96,15 +93,15 @@ define([
 		                hoverable:true,
 		                fillColor: {
 		                    colors:[
-		                    	{opacity: .5 },
+		                    	{opacity: 0.5 },
 		                    	{opacity: 1 }
 		                    ]
 		                },
 		                align: "center",
 		                numbers :{
 		                    show: true,
-		                    xAlign: function(x,a) { console.log('x: '+x); return x; },
-							yAlign: function(y,a) { console.log('y: '+y); return y; },
+		                    xAlign: function(x) { return x; },
+							yAlign: function(y) { return y; },
 							showDataValue: true,
 		                },
 		            }
