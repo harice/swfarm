@@ -69,6 +69,8 @@ define([
 				'date_to': thisObj.parseDate($('#filter-operator-date-end .input-group.date input').val()),
 				'profits': this.model,
 			}
+
+			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
 			var compiledTemplate = _.template(grossProfitListTemplate, innerTemplateVariables);
 			
 			$(".reportlist").removeClass("hidden");

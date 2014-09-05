@@ -9,6 +9,7 @@
  *             show : boolean,
  *             alignX : number or function,
  *             alignY : number or function,
+ *             showDataValue : boolean,
  *         }
  *     }
  * }
@@ -65,10 +66,20 @@
                     point[axes[hs]] = (points[barNumber] - series.data[i/3][hs] / 2);
                     text = series.data[i/3][hs];
                 } else {
-                    text = points[barNumber];
+                    if(series.bars.numbers.showDataValue) {
+						var counter = (i > 0)? i - ps : i;
+						text = series.data[i/3][hs];
+					}
+					else
+						text = points[barNumber];
                 }
                 var c = plot.p2c(point);
-                ctx.fillText(text.toString(10), c.left + offset.left, c.top + offset.top)
+				
+				if(typeof series.yPositionAdjustLabel !== 'undefined')
+					c.top = c.top + series.yPositionAdjustLabel;
+					
+					
+				ctx.fillText(text.toString(10), c.left + offset.left, c.top + offset.top)
             }
         }
     }

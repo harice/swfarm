@@ -95,7 +95,8 @@ define([
 								[8, 10],
 								[9, 10],
 								[10,10]
-							]
+							],
+							yPositionAdjustLabel: -10,
 						},			
 					],
 					xData: [

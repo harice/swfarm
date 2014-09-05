@@ -93,6 +93,8 @@ define([
 				'date_to': thisObj.parseDate($('#filter-operator-date-end .input-group.date input').val()),
 				'producers': this.model,
 			}
+
+			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
 			var compiledTemplate = _.template(producersListTemplate, innerTemplateVariables);
 
 			$(".reportlist").removeClass("hidden");

@@ -38,18 +38,16 @@
             <%
                 var total_amount = 0; 
            
-                _.each(producers.get('transactions'),function(transaction){ 
-                    var tons = transaction.pounds * .0005;
-                    var net_weight = tons * 2;        
-                    var amount = tons * transaction.unitprice;
-                    total_amount += amount;    
+                _.each(producers.get('transactions'),function(transaction){
+                    total_amount += transaction.unitprice * convertLbsToTons(transaction.pounds);    
             %>
             <h6>Location: <strong><%= transaction.storagelocation_name %></strong></h6>
             <table id="operator-list" class="table-bordered table">
                 <thead class="no-border">
                     <tr>
                         <th><strong>Date</strong></th>
-                        <th><strong>Weight Ticket</strong></th>
+                        <th><strong>Order No.</strong></th>
+                        <th><strong>Weight Ticket No.</strong></th>
                         <th><strong>Bales</strong></th>
                         <th><strong>Net Weight</strong></th>
                         <th><strong>Tons</strong></th>
@@ -81,12 +79,13 @@
                                 }                  
                             %>
                         </td>
+                        <td><%= transaction.order_number %></td>
                         <td><%= transaction.weightTicketNumber %></td>
-                        <td><%= transaction.bales %></td>
-                        <td><%= net_weight.toFixed(2) %></td>
-                        <td><%= tons.toFixed(2) %></td>
-                        <td><%= transaction.unitprice %></td>
-                        <td><%= amount.toFixed(4) %></td>
+                        <td><%= numberFormatBales(transaction.bales) %></td>
+                        <td><%= (convertLbsToTons(transaction.pounds) * 2).toFixed(2) %></td>
+                        <td><%= convertLbsToTons(transaction.pounds) %></td>
+                        <td>$ <%= numberFormat(transaction.unitprice) %></td>
+                        <td>$ <%= numberFormat(transaction.unitprice * convertLbsToTons(transaction.pounds)) %></td>
                     </tr>
                     <tr>
                         <td colspan="8">
@@ -117,7 +116,7 @@
                             Contract Total Amount: 
                         </td>
                         <td>
-                            <strong><%= total_amount %></strong>
+                            <strong>$ <%= numberFormat(total_amount) %></strong>
                         </td>
                     </tr>
                     <tr>
@@ -125,7 +124,7 @@
                             Less Scale Fees: 
                         </td>
                         <td>
-                            <strong></strong>
+                            <strong>$ <%= numberFormat() %></strong>
                         </td>
                     </tr>
                     <tr>
@@ -133,7 +132,7 @@
                             Total Amount Due:
                         </td>
                         <td>
-                            <strong></strong>
+                            <strong>$ <%= numberFormat() %></strong>
                         </td>
                     </tr>
                 </tbody>

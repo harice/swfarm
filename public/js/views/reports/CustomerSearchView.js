@@ -84,7 +84,23 @@ define([
 
 		},
 
-		
+		processData: function() {
+			var thisObj = this;
+			
+			var innerTemplateVariables= {
+				'cur_date': this.setCurDate(),
+				'date_from': thisObj.parseDate($('#filter-operator-date-start .input-group.date input').val()),
+				'date_to': thisObj.parseDate($('#filter-operator-date-end .input-group.date input').val()),
+				'customers': this.model,
+			}
+
+			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
+			var compiledTemplate = _.template(customersListTemplate, innerTemplateVariables);
+
+			$(".reportlist").removeClass("hidden");
+			$("#report-list").removeClass("hidden");
+			$("#report-list").html(compiledTemplate);
+		},		
 
 		
 	});

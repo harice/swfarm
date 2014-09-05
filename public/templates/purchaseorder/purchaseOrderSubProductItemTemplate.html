@@ -1,39 +1,45 @@
 <tr class="product-stack-item">
 	<td>
 		<input type="hidden" class="id" name="id" value="" />
-		<input class="form-control stacknumber" name="stacknumber" type="text" maxlength="20">
+		<input class="form-control stacknumber input-sm" name="stacknumber" type="text" maxlength="20">
 	</td>
 	<td>
-		<div class="styled-select">
-			<select class="form-control section_id width-160" name="section_id">
-				<option value="">Select a stack location</option>
-			</select>
+		<select class="form-control section_id width-150 input-sm" name="section_id">
+			<option value="">Select a stack location</option>
+		</select>
+	</td>
+	<td><input class="form-control description input-sm" name="description" maxlength="80"></td>
+	<td>
+		<div class="input-group input-group-sm margin-0">
+			<span class="input-group-addon">$</span>
+			<input class="form-control text-right price unitprice" type="text" name="unitprice" placeholder="0.00" value="">
 		</div>
-	</td>
-	<td><input class="form-control description" name="description" maxlength="80"></td>
-	<td>
-		<div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right price unitprice" type="text" name="unitprice" placeholder="0.00" value=""></div>
 		<div class="error-msg-cont"></div>
 	</td>
-	<td><input class="form-control text-right bales" name="bales" type="text"></td>
-	<td><input class="form-control text-right tons" name="tons" type="text" maxlength="12"></td>
-	<td><div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right unit-price" type="text" value="0.00" readonly></div></td>
+	<td><input class="form-control text-right bales input-sm" name="bales" type="text"></td>
+	<td><input class="form-control text-right tons input-sm" name="tons" type="text" maxlength="12"></td>
+	<td>
+		<div class="input-group input-group-sm margin-0">
+			<span class="input-group-addon">$</span>
+			<input class="form-control text-right unit-price" type="text" value="0.00" readonly>
+		</div>
+	</td>
 	<% if (typeof is_bid === "undefined") { %>
 	<td>
-        <div class="styled-select">
-            <select class="select2 ishold width-80" name="ishold">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
+        <select class="form-control ishold width-80 input-sm" name="ishold">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select>
 	</td>
-	<td><input class="form-control text-right rfv" type="text" name="rfv" minlength="3" maxlength="3"></td>
+	<td><input class="form-control text-right rfv input-sm" type="text" name="rfv" minlength="3" maxlength="3"></td>
 	<td>
 		<input type="hidden" class="uploadedfile" name="uploadedfile" value="" data-filename="" />
-		<a class="attach-pdf no-attachment" data-id="" href="#"><i class="fa fa-book"></i></a>
+		<a class="attach-pdf no-attachment" data-id="" href="#"><i class="fa fa-file-pdf-o"></i></a>
 	</td>
 	<% } %>
 	<td>
-		<button title="Remove Product Stack" type="button" class="pull-right btn btn-danger btn-xs remove-product-stack"><span class="glyphicon glyphicon-remove"></span></button>
+		<button title="Remove Product Stack" type="button" class="pull-right btn btn-danger btn-rad btn-xs remove-product-stack">
+			<span class="glyphicon glyphicon-remove"></span>
+		</button>
 	</td>
 </tr>
