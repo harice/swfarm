@@ -24,7 +24,7 @@
             </div>
         </div>
     </div>
-    <% if (operators.get('summary').total) { %>         
+    <% if (!_.isEmpty(operators.get('transactions'))) { %>         
     <div class="content">            
         <div class="content-inner table-responsive">
             <table id="operator-list" class="table table-bordered">
@@ -37,33 +37,28 @@
                     </tr>
                 </thead>
                 <tbody class="no-border-y">
-                    <% 
-                        var total_amount = 0;
-                        _.each(operators.get('transactions'),function(transaction){ 
-                            total_amount += parseFloat(transaction.amount);
+                    <%                         
+                        _.each(operators.get('transactions'),function(transaction){                        
                     %>    
                         <tr>      
                             <td><%= transaction.account_name %></td>
                             <td><%= transaction.type %></td>
-                            <td></td>
-                            <td><%= transaction.amount %></td>                       
+                            <td><%= transaction.loader %></td>
+                            <td>$ <%= numberFormat(transaction.amount) %></td>                       
                         </tr>   
                     <%}); %>                     
-                </tbody>                
-            </table>    
-            <table class="table-bordered" style="width:30%">
-                <thead>
+                </tbody>   
+                <tfoot>
                     <tr>
-                        <td colspan="2" align="center"><strong>SUMMARY</strong></td>
+                        <td colspan="3" align="right">
+                            TOTAL
+                        </td>
+                        <td>
+                            <strong>$ <%= numberFormat(operators.get('summary').total) %></strong>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Total</td>
-                        <td><strong><%= total_amount.toFixed(2) %></strong></td>
-                    </tr>
-                </tfoot>
-            </table>               
+                </tfoot>             
+            </table>                
         </div>        
     </div>
     <% } else { %>

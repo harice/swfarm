@@ -30,6 +30,7 @@
             <table id="operator-list" class="table-bordered table">
                 <thead class="no-border">
                     <tr>
+                        <th><strong>Weight Ticket No.</strong></th>
                         <th><strong>Type</strong></th>
                         <th><strong>Date</strong></th>
                         <th><strong>Commodity</strong></th>
@@ -42,16 +43,15 @@
                 <tbody class="no-border-y">
                     <% 
                         var grand_total = 0;
-                        var total_bales = 0;
-                        var total_tons = 0;
+                      
                         _.each(customers.get('transactions'),function(transaction){ 
-                        var tons = transaction.pounds * .0005;
+                        var tons = convertLbsToTons(transaction.pounds);
                         var customer_total = tons * transaction.unitprice;
-                        total_tons += tons;
-                        total_bales += transaction.bales;
+                       
                         grand_total += customer_total;
                     %>       
-                        <tr>      
+                        <tr>   
+                            <td><%= transaction.weightTicketNumber %></td>   
                             <td>
                                 <%= transaction.natureofsale %>
                             </td> 
@@ -80,16 +80,16 @@
                                 <%= transaction.product_name %>
                             </td>  
                             <td>
-                                <%= transaction.bales %>
+                                <%= numberFormatBales(transaction.bales) %>
                             </td>  
                             <td>
-                                <%= tons.toFixed(4) %>
+                                <%= tons %>
                             </td>  
                             <td>
-                                <%= transaction.unitprice %>
+                                $ <%= numberFormat(transaction.unitprice) %>
                             </td>  
                             <td>
-                                <%= customer_total.toFixed(2) %>
+                                $ <%= numberFormat(customer_total) %>
                             </td>                                                 
                         </tr>
                     <%}); %>  
@@ -105,7 +105,7 @@
                     <tr>  
                         <td>Total Bales:</td>
                         <td>
-                            <strong><%= total_bales %></strong>
+                            <strong><%= numberFormatBales(customers.get('summary').total_bales) %></strong>
                         </td>     
                     </tr>                    
                     <tr>
@@ -113,13 +113,13 @@
                            Total Tons:
                         </td>
                         <td>
-                            <strong><%= total_tons.toFixed(4) %></strong>
+                            <strong><%= convertLbsToTons(customers.get('summary').total_pounds) %></strong>
                         </td>
                     </tr>
                     <tr>
                         <td>Grand Total:</td>
                         <td>
-                            <strong><%= grand_total.toFixed(2) %></strong>
+                            <strong>$ <%= numberFormat(grand_total) %></strong>
                         </td>
                     </tr>  
                 </thead>

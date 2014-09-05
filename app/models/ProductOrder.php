@@ -48,7 +48,7 @@ class ProductOrder extends Eloquent {
     }
 
     public function order(){
-        return $this->belongsTo('Order', 'order_id');
+        return $this->belongsTo('Order', 'order_id', 'id');
     }
 
     public function transportscheduleproduct(){

@@ -19,10 +19,24 @@ return array(
     'LOCATION_DROPSHIP' => 3,
     'LOCATION_PRODUCER' => 2,
 
+    'STATUS_OPEN' => 1,
     'STATUS_CLOSED' => 2,
+    'STATUS_CANCELLED' => 3,
+    'STATUS_PENDING' => 4,
+    'STATUS_BIDCANCELLED' => 5,
+    'STATUS_POCANCELLED' => 6,
+    'STATUS_TESTING' => 7,
 
     'ORDERTYPE_PO' => 1,
     'ORDERTYPE_SO' => 2,
+
+    'GRAPH_PURCHASE_IN_TONS' => 1,
+    'GRAPH_PURCHASE_IN_DOLLAR_VALUES' => 2,
+    'GRAPH_SALES_IN_TONS' => 3,
+    'GRAPH_SALES_IN_DOLLAR_VALUES' => 4,
+
+    'GRAPH_TYPE_1' => 1,
+    'GRAPH_TYPE_2' => 2,
 
     'VERSION' => "3.0"
 

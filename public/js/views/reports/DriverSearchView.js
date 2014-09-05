@@ -82,6 +82,8 @@ define([
 				'date_to': thisObj.parseDate($('#filter-operator-date-end .input-group.date input').val()),
 				'drivers': this.model,
 			}
+
+			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
 			var compiledTemplate = _.template(driverListTemplate, innerTemplateVariables);
 
 			$(".reportlist").removeClass("hidden");

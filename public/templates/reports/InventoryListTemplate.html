@@ -18,13 +18,13 @@
                 <h3>
                     Location:
                     <strong>
-                        <%= locations.get('name') %>
+                        <%= locations.get('location') %>
                     </strong>
                 </h3> 
             </div>
         </div>
     </div>
-    <% if (!_.isEmpty(locations)) { %>        
+    <% if (!_.isEmpty(locations.get('data'))) { %>        
     <div class="content">            
         <div class="content-inner table-responsive">
             <table id="operator-list" class="table table-bordered">
@@ -33,7 +33,7 @@
                         <th><strong>Order Number</strong></th>
                         <th><strong>Date</strong></th>
                         <th><strong>Weight Number</strong></th>
-                        <th><strong>Producer ID</strong></th>
+                        <th><strong>Producer</strong></th>
                         <th><strong>Contract #</strong></th>
                         <th><strong>Bales</strong></th>
                         <th><strong>Tons</strong></th>
@@ -71,10 +71,10 @@
                             <td><%= inventory.weightticketnumber %></td>
                             <td><%= inventory.producer %></td>
                             <td><%= inventory.contract %></td>                            
-                            <td><%= inventory.bales %></td>
-                            <td><%= inventory.tons %></td>
-                            <td><%= inventory.cost %></td>
-                            <td><%= inventory.tons * inventory.cost %></td>
+                            <td><%= numberFormatBales(inventory.bales) %></td>
+                            <td><%= numberFormatTons(inventory.tons) %></td>
+                            <td>$ <%= numberFormat(inventory.price) %></td>
+                            <td>$ <%= numberFormat(inventory.cost) %></td>
                         </tr>   
                     <%}); %>                     
                 </tbody>                
@@ -92,7 +92,7 @@
                             Total Bales In: 
                         </td>
                         <td>
-                            <strong><%= locations.get('balesIn') %></strong>
+                            <strong><%= numberFormatBales(locations.get('balesIn')) %></strong>
                         </td>
                     </tr>
                     <tr>
@@ -100,7 +100,7 @@
                             Total Bales Out: 
                         </td>
                         <td>
-                            <strong><%= locations.get('balesOut') %></strong>
+                            <strong><%= numberFormatBales(locations.get('balesOut')) %></strong>
                         </td>
                     </tr>
                     <tr>
@@ -108,7 +108,7 @@
                             Total Bales: 
                         </td>
                         <td>
-                            <strong><%= locations.get('totalBales') %></strong>
+                            <strong><%= numberFormatBales(locations.get('totalBales')) %></strong>
                         </td>
                     </tr>
                     <tr>
@@ -116,7 +116,7 @@
                             Total Tons In: 
                         </td>
                         <td>
-                            <strong><%= locations.get('tonsIn') %></strong>
+                            <strong><%= numberFormatTons(locations.get('tonsIn')) %></strong>
                         </td>
                     </tr>
                     <tr>
@@ -124,7 +124,7 @@
                             Total Tons Out: 
                         </td>
                         <td>
-                            <strong><%= locations.get('tonsOut') %></strong>
+                            <strong><%= numberFormatTons(locations.get('tonsOut')) %></strong>
                         </td>
                     </tr>
                     <tr>
@@ -132,7 +132,7 @@
                             Total Tons: 
                         </td>
                         <td>
-                            <strong><%= locations.get('totalTons') %></strong>
+                            <strong><%= numberFormatTons(locations.get('totalTons')) %></strong>
                         </td>
                     </tr>
                     <tr>
@@ -140,7 +140,7 @@
                             Total Cost: 
                         </td>
                         <td>
-                            <strong><%= locations.get('totalCost') %></strong>
+                            <strong>$ <%= numberFormat(locations.get('totalCost')) %></strong>
                         </td>
                     </tr>
                 </tbody>

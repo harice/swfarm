@@ -1,7 +1,7 @@
 <?php
 
 class WeightTicket extends BaseModel {
-    
+
     /**
 	 * The database table used by the model.
 	 *
@@ -15,19 +15,19 @@ class WeightTicket extends BaseModel {
 
     /**
      * Define fillable attributes in a model.
-     * 
+     *
      * @var array
      */
     protected $fillable = array(
         'transportSchedule_id',
-        'status_id', 
-        'weightTicketNumber', 
+        'status_id',
+        'weightTicketNumber',
         'loadingTicketNumber',
-        'unloadingTicketNumber', 
-        'pickup_id', 
+        'unloadingTicketNumber',
+        'pickup_id',
         'dropoff_id'
     );
-    
+
     /**
      * Define the relationship with the weightinfo table
      * @return Collection collection of WeightInfo Models
