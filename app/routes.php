@@ -184,7 +184,8 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // Storage location
     Route::get('storagelocation/warehouse', 'APIv1\StorageLocationController@getStorageLocationOfWarehouse');
     Route::get('storagelocation/getByAccount/{id}', 'APIv1\StorageLocationController@getStorageLocationByAccount');
-    Route::get('storagelocation/locationlist', 'APIv1\StorageLocationController@locationList');
+    Route::get('storagelocation/locations', 'APIv1\StorageLocationController@getAllStorageLocation');
+    Route::get('storagelocation/locationlist', 'APIv1\StorageLocationController@getAllStorageLocationWithSection');
     Route::get('storagelocation/search', 'APIv1\StorageLocationController@search');
     Route::resource('storagelocation', 'APIv1\StorageLocationController');
 
