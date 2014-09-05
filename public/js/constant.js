@@ -240,10 +240,10 @@ define(function () {
             'SWFTRUCKER': 9,
         },
 		'GRAPH': {
-			'TYPE': [
-				{'BAR': 1},
-				{'STACKEDBAR': 2},
-			],
+			'TYPE': {
+				'BAR': 1,
+				'STACKEDBAR': 2,
+			},
 		},
 	};
 	

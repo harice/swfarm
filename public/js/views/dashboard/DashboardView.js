@@ -50,7 +50,7 @@ define([
 		displayAdminDashboard: function() {
 			var thisObj = this;
 
-			this.subContainer.html("<div class='row'></div>"); console.log(this.graphCollection.models);
+			this.subContainer.html("<div class='row'></div>"); //console.log(this.graphCollection.models);
 			
 			_.each(this.graphCollection.models, function (graph) {
 				var graphId = graph.get('graphName').replace(/\s+/g, '_').toLowerCase();
@@ -73,14 +73,14 @@ define([
 					tickDecimals = 2;
 				}
 				
-				var graphData = thisObj.formatGraphData(graph.('data'), graph.get('graphType'));
+				var graphData = thisObj.formatGraphData(graph.get('data'), graph.get('graphType')); //console.log(graphData);
 				
 				switch(graph.get('graphType')){
 					case Const.GRAPH.TYPE.STACKEDBAR:
 						//thisObj.graphStackedData(graph_id, graph.data, graph.xData, currency, tickDecimals);
 						break;
 					case Const.GRAPH.TYPE.BAR:
-						//thisObj.graphData(graph_id, graph.data, graph.xData, currency, tickDecimals);
+						thisObj.graphData(graphId, graphData.data, graphData.xData, currency, tickDecimals);
 						break;
 					default:
 						break;
