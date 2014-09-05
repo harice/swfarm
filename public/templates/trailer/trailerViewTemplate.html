@@ -8,9 +8,9 @@
                 <dd><%= trailer.get("account").name %></dd>
                 <dd>
                     <div class="clearfix"></div>
-                    <a href="<%= trailer_edit_url %>/<%= trailer.get('id') %>" class="btn btn-primary">Edit</a>
-                    <button id="delete-trailer" type="button" class="btn btn-danger">Delete</button>
-                    <a id="go-to-previous-page" href="#" class="btn btn-default">Cancel</a>
+                    <a href="<%= trailer_edit_url %>/<%= trailer.get('id') %>" class="btn btn-primary"><i class="fa fa-pencil width-10"></i> Edit</a>
+                    <button id="delete-trailer" type="button" class="btn btn-danger"><i class="fa fa-times width-10"></i> Delete</button>
+                    <a id="go-to-previous-page" href="#" class="btn btn-link">Cancel</a>
                 </dd>
             </dl>
         </div>
