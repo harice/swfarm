@@ -44,11 +44,11 @@ define([
 		              }
 		              ]
 		            },
-					numbers :{
-						show: true,
-						xAlign: function(x) { return x; },
-						yAlign: function(y) { return y; },
-					},
+		            numbers: {
+		            	show:true,
+		            	xAlign: function(x,a) { return x; },
+						yAlign: function(y,a) { return y+55; }
+		            }
 		          },
 		          shadowSize: 2
 		        },

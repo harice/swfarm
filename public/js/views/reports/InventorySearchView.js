@@ -30,7 +30,6 @@ define([
 			});			
 
 			this.collection = new LocationCollection();			
-
 		},
 		
 		render: function(){
@@ -40,6 +39,7 @@ define([
 
 		getLocationList: function(){
 			var thisObj = this;	
+			this.collection.getLocations();
 
 			this.collection.fetch({
 				success: function (collection, response, options) {

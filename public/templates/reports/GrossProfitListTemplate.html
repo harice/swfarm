@@ -20,15 +20,16 @@
             <table id="operator-list" class="table table-bordered">
                 <thead class="no-border">
                     <tr>
-                        <th>Date</th>
-                        <th>Customer</th>
-                        <th>Net Sale</th>
-                        <th>Cost Hay</th>
-                        <th>Freight</th>
-                        <th>Fees</th>
-                        <th>Commission</th>
-                        <th>Profit Amt</th>
-                        <th>Profit Prct</th>
+                        <th><strong>Order No.</strong></th>
+                        <th><strong>Date</strong></th>
+                        <th><strong>Customer</strong></th>
+                        <th><strong>Net Sale</strong></th>
+                        <th><strong>Cost Hay</strong></th>
+                        <th><strong>Freight</strong></th>
+                        <th><strong>Fees</strong></th>
+                        <th><strong>Commission</strong></th>
+                        <th><strong>Profit Amt</strong></th>
+                        <th><strong>Profit Prct</strong></th>
                     </tr>
                 </thead>
                 <tbody class="no-border-y">
@@ -36,6 +37,7 @@
                         _.each(profits.get('transactions'),function(transaction){ 
                     %>    
                         <tr> 
+                            <td><%= transaction.order_number %></td>
                             <td>
                             <%
                                 var dateArr = transaction.updated_at.date;                                                
@@ -60,13 +62,13 @@
                             %>
                             </td>
                             <td><%= transaction.account %></td>
-                            <td><%= transaction.net_sale %></td>
-                            <td><%= transaction.hay_cost %></td>
-                            <td><%= transaction.freight_cost %></td>
-                            <td><%= transaction.fees %></td>
-                            <td><%= transaction.commission %></td>
-                            <td><%= transaction.profit_amount %></td>
-                            <td><%= transaction.profit_percentage %></td>
+                            <td>$ <%= transaction.net_sale %></td>
+                            <td>$ <%= transaction.hay_cost %></td>
+                            <td>$ <%= transaction.freight_cost %></td>
+                            <td>$ <%= transaction.fees %></td>
+                            <td>$ <%= transaction.commission %></td>
+                            <td>$ <%= transaction.profit_amount %></td>
+                            <td><%= transaction.profit_percentage %>%</td>
                         </tr>   
                     <%}); %>                     
                 </tbody>                
@@ -87,7 +89,7 @@
                             <strong>Total Cost:</strong> 
                         </td>
                         <td>
-                            <%= profits.get('summary').total_cost %>
+                            $ <%= profits.get('summary').total_cost %>
                         </td>
                     </tr>
                     <tr>
@@ -95,7 +97,7 @@
                             <strong>Cost of Hay:</strong> 
                         </td>
                         <td>
-                            <%= profits.get('summary').total_hay_cost %>
+                            $ <%= profits.get('summary').total_hay_cost %>
                         </td>
                     </tr>
                     <tr>
@@ -103,7 +105,7 @@
                             <strong>Cost of Freight:</strong> 
                         </td>
                         <td>
-                            <%= profits.get('summary').total_freight_cost %>
+                            $ <%= profits.get('summary').total_freight_cost %>
                         </td>
                     </tr>
                     <tr>
@@ -111,7 +113,7 @@
                             <strong>Profit:</strong> 
                         </td>
                         <td>
-                            <%= profits.get('summary').total_profit_amount %>
+                            $ <%= profits.get('summary').total_profit_amount %>
                         </td>
                     </tr>
                     <tr>
@@ -119,7 +121,7 @@
                             <strong>Average Percent</strong> 
                         </td>
                         <td>
-                            <%= profits.get('summary').total_profit_percentage %>
+                            <%= profits.get('summary').total_profit_percentage %>%
                         </td>
                     </tr>
                 </tbody>
