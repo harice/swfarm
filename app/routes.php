@@ -184,7 +184,8 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // Storage location
     Route::get('storagelocation/warehouse', 'APIv1\StorageLocationController@getStorageLocationOfWarehouse');
     Route::get('storagelocation/getByAccount/{id}', 'APIv1\StorageLocationController@getStorageLocationByAccount');
-    Route::get('storagelocation/locationlist', 'APIv1\StorageLocationController@locationList');
+    Route::get('storagelocation/locations', 'APIv1\StorageLocationController@getAllStorageLocation');
+    Route::get('storagelocation/locationlist', 'APIv1\StorageLocationController@getAllStorageLocationWithSection');
     Route::get('storagelocation/search', 'APIv1\StorageLocationController@search');
     Route::resource('storagelocation', 'APIv1\StorageLocationController');
 
@@ -215,6 +216,13 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('report/sales/{id}', 'APIv1\ReportController@generateSales');
     Route::get('report/producer-statement/{id}', 'APIv1\ReportController@generateProducerStatement');
     Route::get('report/inventoryPerLocation', 'APIv1\ReportController@inventoryReportPerLocation');
+
+    //Dashboard
+    Route::get('dashboard', 'APIv1\DashboardController@main');
+    // Route::get('dashboard/purchaseInTons', 'APIv1\DashboardController@purchaseInTons');
+    // Route::get('dashboard/salesInTons', 'APIv1\DashboardController@salesInTons');
+    // Route::get('dashboard/purchaseInDollarValues', 'APIv1\DashboardController@purchaseInDollarValues');
+    // Route::get('dashboard/salesInDollarValues', 'APIv1\DashboardController@salesInDollarValues');
 });
 
 Route::group(array('before' => 'auth.session'),function(){
