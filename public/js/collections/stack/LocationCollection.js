@@ -19,6 +19,11 @@ define([
 			this.url = '/apiv1/storagelocation/warehouse';
 			this.getModels();
 		},
+
+		getLocations: function () {
+			this.url = '/apiv1/storagelocation/locations';
+			this.getModels();
+		},
 	});
 
 	return LocationCollection;

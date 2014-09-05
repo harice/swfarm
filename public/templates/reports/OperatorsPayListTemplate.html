@@ -30,6 +30,7 @@
             <table id="operator-list" class="table table-bordered">
                 <thead class="no-border">
                     <tr>
+                        <th><strong>Order No.</strong></th>                        
                         <th><strong>Cust Name</strong></th>
                         <th><strong>Load Type</strong></th>
                         <th><strong>Sqeeze</strong></th>
@@ -40,7 +41,8 @@
                     <%                         
                         _.each(operators.get('transactions'),function(transaction){                        
                     %>    
-                        <tr>      
+                        <tr>   
+                            <td><%= transaction.order_number %></td>  
                             <td><%= transaction.account_name %></td>
                             <td><%= transaction.type %></td>
                             <td><%= transaction.loader %></td>

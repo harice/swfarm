@@ -41,11 +41,16 @@ define([
 		            hoverable: true,
 		            fillColor: {
 		              colors: [{
-		                opacity: 1
+		                opacity: .4
 		              }, {
 		                opacity: 1
 		              }
 		              ]
+		            },
+		            numbers: {
+		            	show:true,
+		            	xAlign: function(x,a) { return x; },
+						yAlign: function(y,a) { return y+55; }
 		            }
 		          },
 		          shadowSize: 2
