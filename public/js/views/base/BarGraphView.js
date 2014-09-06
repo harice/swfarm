@@ -27,10 +27,7 @@ define([
 
 		graphData: function (id, data, xData, label, decimals){			
 
-			var graph = $.plot($("#"+id), [{
-		        data: data
-		     }
-		    ], {
+			var graph = $.plot($("#"+id), data, {
 		        series: {
 		          bars: {
 		            show: true,
@@ -41,11 +38,16 @@ define([
 		            hoverable: true,
 		            fillColor: {
 		              colors: [{
-		                opacity: 1
+		                opacity: 0.5
 		              }, {
 		                opacity: 1
 		              }
 		              ]
+		            },
+		            numbers: {
+		            	show:true,
+		            	xAlign: function(x,a) { return x; },
+						yAlign: function(y,a) { return y+55; }
 		            }
 		          },
 		          shadowSize: 2
@@ -91,15 +93,15 @@ define([
 		                hoverable:true,
 		                fillColor: {
 		                    colors:[
-		                    	{opacity: .5 },
+		                    	{opacity: 0.5 },
 		                    	{opacity: 1 }
 		                    ]
 		                },
 		                align: "center",
 		                numbers :{
 		                    show: true,
-		                    xAlign: function(x,a) { console.log('x: '+x); return x; },
-							yAlign: function(y,a) { console.log('y: '+y); return y; },
+		                    xAlign: function(x) { return x; },
+							yAlign: function(y) { return y; },
 							showDataValue: true,
 		                },
 		            }
@@ -211,6 +213,31 @@ define([
 	      }); 
 	      
 	    },
+		
+		formatGraphData: function (data, type) { //console.log('type: '+type); console.log('Const.GRAPH.TYPE.BAR: '+Const.GRAPH.TYPE.BAR);
+			var graphData = [];
+			var graphXData = [];
+			
+			switch(type){
+				case Const.GRAPH.TYPE.STACKEDBAR:
+					break;
+				case Const.GRAPH.TYPE.BAR:
+					
+					var d = [];
+					for(var i = 0; i < data.length; i++) {
+						graphXData.push([i, data[i].label]); //console.log(data[i].label);
+						d.push([i, data[i].value]); //console.log(data[i].value);
+					}
+					
+					graphData.push({ data:d, yPositionAdjustLabel: -10 });
+					
+					break;
+				default:
+					break;
+			}
+			
+			return { data: graphData, xData: graphXData, };
+		},
 
 	});
 

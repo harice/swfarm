@@ -79,8 +79,13 @@ class CommissionRepository implements CommissionRepositoryInterface {
     public function update($id, $data)
     {
         $this->validate($data, 'Commission');
-       
+
+        if($data['type'] == Config::get('constants.COMMISSION_TYPE_FLATRATE')){
+            $data['rate'] = null;
+        }
+
         $commission = Commission::find($id);
+        
         $commission->fill($data);
         
         if(!$commission->save()) {

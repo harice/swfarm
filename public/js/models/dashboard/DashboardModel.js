@@ -15,15 +15,18 @@ define([
 						currency:false,
 						type: "bar"
 					},
-					data: [
-						[0, 1000],
-						[1, 50],
-						[2, 140],
-						[3, 350],
-						[4, 600],
-						[5, 800],
-						[6, 990]
-					],
+					data: [{
+						data: [
+							[0, 1000],
+							[1, 50],
+							[2, 140],
+							[3, 350],
+							[4, 600],
+							[5, 800],
+							[6, 990]
+						],
+						yPositionAdjustLabel: -10,
+					}],
 					xData: [
 						[0, "Alfalfa"],
 						[1, "Bermuda"],
@@ -40,15 +43,18 @@ define([
 						currency: true,
 						type: "bar"
 					},
-					data: [
-						[0, 1000],
-						[1, 50],
-						[2, 140],
-						[3, 350],
-						[4, 600],
-						[5, 800],
-						[6, 990]
-					],
+					data: [{
+						data: [
+							[0, 1000],
+							[1, 50],
+							[2, 140],
+							[3, 350],
+							[4, 600],
+							[5, 800],
+							[6, 990]
+						],
+						yPositionAdjustLabel: -10,
+					}],
 					xData: [
 						[0, "Alfalfa"],
 						[1, "Bermuda"],
@@ -112,6 +118,31 @@ define([
 						[10, "Haringa Farms"]
 					]
 				},
+				{
+					graphname: "Inventory Dashboard",
+					settings: {
+						currency: false,
+						type: "bar"
+					},
+					data: [
+						[0, 500],
+						[1, 400],
+						[2, 760],
+						[3, 450],
+						[4, 660],
+						[5, 780],
+						[6, 890]
+					],
+					xData: [
+						[0, "Alfalfa"],
+						[1, "Bermuda"],
+						[2, "Cow Hay"],
+						[3, "Sudan Hay"],
+						[4, "Oat Hay"],
+						[5, "Timothy Hay"],
+						[6, "Wheat Hay"]
+					]
+				}
 			]
         },
 

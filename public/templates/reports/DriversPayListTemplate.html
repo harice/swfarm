@@ -29,7 +29,8 @@
         <div class="content-inner table-responsive">
             <table id="operator-list" class="table table-bordered">
                 <thead class="no-border">
-                    <tr>       
+                    <tr>   
+                        <th><strong>Order No.</strong></th>    
                         <th><strong>Date</strong></th>
                         <th><strong>Truck Name</strong></th>
                         <th><strong>Bales</strong></th>
@@ -50,6 +51,7 @@
                             total_pay += driver_pay;
                     %>    
                         <tr>    
+                            <td><%= transaction.order_number %></td>
                             <td>
                                 <%
                                     var d = Date.parse(transaction.created_at);
