@@ -108,6 +108,7 @@ return array(
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 
 		'Barryvdh\DomPDF\ServiceProvider',
+		'Maatwebsite\Excel\ExcelServiceProvider',
 
 	),
 
@@ -176,6 +177,7 @@ return array(
 		'View'            => 'Illuminate\Support\Facades\View',
 
 		'PDF'			  => 'Barryvdh\DomPDF\Facade',
+		'Excel' => 'Maatwebsite\Excel\Facades\Excel',
 
 	),
 

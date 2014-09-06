@@ -6,11 +6,13 @@ class DownloadRepository implements DownloadInterface
 	{
 		$q = unserialize(base64_decode($params['q']));
 		
-		if(!is_array($q) && !array_key_exists('type', $q) && !array_key_exists('id', $q)) 
+		if(!is_array($q) && !array_key_exists('type', $q)) 
 			return Redirect::to('404')->withPage('file');
 
 		switch ($q['type']) {
 			case 'doc':
+				if(!array_key_exists('id', $q)) { return Redirect::to('404')->withPage('file'); break; }
+
 				$file_o = Document::where('issave', '=', 1)->where('id', '=', $q['id'])->first();
 		        if($file_o){
 	        		header('Pragma: public');
@@ -42,11 +44,12 @@ class DownloadRepository implements DownloadInterface
 
         			header('Content-Disposition: attachment; filename="'.$filename.$ext.'"');
 		        	readfile($file_o->content);
-		        }
+		        } else return Redirect::to('404')->withPage('file');
 				break;
 
 			case 'pdf':
-				if(!array_key_exists('model', $q)) break;
+				if(!array_key_exists('model', $q) && !array_key_exists('id', $q)) { return Redirect::to('404')->withPage('file'); break; }
+
 				switch ($q['model']) {
 					case 'order':
 						$order = Order::with('productsummary.productname')
@@ -64,10 +67,32 @@ class DownloadRepository implements DownloadInterface
 						
 						return PDF::loadView('pdf.base',array('child' => View::make('pdf.order',array('order'=>$order) ) ) )->stream($order->order_number.'.pdf');
 						break;
+
+					default:
+						return Redirect::to('404')->withPage('file');
+						break;
 				}
+				break;
+
+			case 'excel':
+				if(!array_key_exists('format', $q) && !array_key_exists('model', $q)) return Redirect::to('404')->withPage('file');
+
+				switch($q['model']) {
+					case 'producer-statement':
+						//
+						break;
+
+					default:
+						return Redirect::to('404')->withPage('file');
+						break;
+				}
+				break;
+
+			default:
+				return Redirect::to('404')->withPage('file');
 				break;
 		}
 
-		return Redirect::to('404')->withPage('file');
+		exit();
 	}
 }
