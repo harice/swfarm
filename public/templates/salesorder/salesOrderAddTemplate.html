@@ -31,14 +31,14 @@
                                     <div id="so-nos" class="col-sm-9"></div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="account" class="col-sm-3 control-label">Customer *</label>
+                                    <label for="account" class="col-sm-3 control-label">Customer <i class="color-danger">*</i></label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control capitalize" id="account" name="account" maxlength="50" required>
                                         <input type="hidden" class="form-control" id="account_id" name="account_id" value="" required>
                                     </div>
                                 </div>
 								<div class="form-group">
-									<label for="contact_id" class="col-sm-3 control-label">Customer Contact *</label>
+									<label for="contact_id" class="col-sm-3 control-label">Customer Contact <i class="color-danger">*</i></label>
 									<div class="col-sm-7">
 										<div class="styled-select">
 											<select class="form-control display-inline" id="contact_id" name="contact_id" required>
@@ -142,7 +142,7 @@
                     <fieldset>
                         <legend>
                             Products
-                            <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
+                            <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-rad btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
                         </legend>
                         <div class="table-responsive">
                             <table id="product-list" class="table table-bordered">
@@ -177,7 +177,7 @@
                             <div class="pull-right">
 								<% if (typeof readonly_products == "undefined") { %>
 									<% if (typeof verified === "undefined") { %>
-									<button id="verify-so" type="button" class="save btn btn-primary">
+									<button id="verify-so" type="button" class="save btn btn-primary btn-sm btn-rad">
 										<% if (typeof so_id !== "undefined") { %>
 											Verify
 										<% } else { %>
@@ -186,7 +186,7 @@
 									</button>
 									<% } %>
 								<% } %>
-                                <button id="save" type="submit" class="save btn btn-primary"><i class="fa fa-save"></i> Save</button>
+                                <button id="save" type="submit" class="save btn btn-primary btn-rad btn-sm"><i class="fa fa-save"></i> Save</button>
                                 <a id="go-to-previous-page" class="btn btn-link" href="#">Cancel</a>
                             </div>
                         </div>

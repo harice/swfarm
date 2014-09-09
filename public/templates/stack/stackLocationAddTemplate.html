@@ -12,7 +12,7 @@
 							<fieldset>
 								<legend>Location Details</legend>                  
 								<div class="form-group">
-									<label for="account_id" class="col-sm-2 control-label">Account *</label>
+									<label for="account_id" class="col-sm-2 control-label">Account <i class="color-danger">*</i></label>
 									<div class="col-sm-4">
 										<div class="styled-select">
 											<select class="form-control width-250" id="account_id" name="account_id" required>
@@ -23,7 +23,7 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="address" class="col-sm-2 control-label">Address *</label>
+									<label for="address" class="col-sm-2 control-label">Address <i class="color-danger">*</i></label>
 									<div class="col-sm-4">
 										<div class="styled-select" style="display:inline-block;">
 											<select class="form-control width-250" id="address" name="address">
@@ -36,7 +36,7 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="name" class="col-sm-2 control-label">Location Name *</label>
+									<label for="name" class="col-sm-2 control-label">Location Name <i class="color-danger">*</i></label>
 									<div class="col-sm-4">
 										<input type="text" class="form-control capitalize" id="name" name="name" maxlength="50" required>
 									</div>
@@ -51,7 +51,7 @@
 							<fieldset>
 								<legend>
 									Section
-									<button title="Add Section" id="add-section" type="button" class="pull-right btn btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
+									<button title="Add Section" id="add-section" type="button" class="pull-right btn btn-rad btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
 								</legend>
 								<div class="table-responsive">
 									<table id="section-list" class="table table-bordered">
@@ -69,9 +69,9 @@
 							<div class="form-group">
 								<div class="col-md-12">
 									<div class="pull-right">
-										<button id="save" type="submit" class="save btn btn-primary"><i class="fa fa-save"></i>  Save</button>
+										<button id="save" type="submit" class="save btn btn-primary btn-sm btn-rad"><i class="fa fa-save"></i>  Save</button>
 										<% if (typeof sl_id !== "undefined") { %>
-											<button id="delete-sl" type="button" class="btn btn-danger"><i class="fa fa-times width-10"></i> Delete</button>
+											<button id="delete-sl" type="button" class="btn btn-danger btn-sm btn-rad"><i class="fa fa-times width-10"></i> Delete</button>
 										<% } %>
 										<a id="go-to-previous-page" class="btn btn-link" href="#">Cancel</a>
 									</div>
