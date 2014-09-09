@@ -2,6 +2,7 @@ define([
 	'backbone',	
 	'views/base/BarGraphView',
 	'models/dashboard/DashboardModel',
+	'collections/dashboard/GraphCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/dashboard/barGraphTemplate.html',
 	'global',
@@ -10,6 +11,7 @@ define([
 	Backbone,
 	BarGraphView, 
 	DashboardModel,
+	GraphCollection,
 	contentTemplate,
 	barGraphTemplate,
 	Global,
@@ -28,19 +30,64 @@ define([
 				thisObj.displayAdminDashboard();
 				this.off("sync");
 			});				
-					
+			
+			this.graphCollection = new GraphCollection();
+			this.graphCollection.on('sync', function() {	
+				if(thisObj.subContainerExist())
+					thisObj.displayAdminDashboard();
+				this.off('sync');
+			});
+			
+			this.graphCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 		},
 		render: function(){	
-			this.displayAdminDashboard();						
+			this.graphCollection.getModels();				
 			Backbone.View.prototype.refreshTitle('Dashboard','View');
 		},	
 
 		displayAdminDashboard: function() {
 			var thisObj = this;
 
-			this.subContainer.html("<div class='row'></div>");
+			this.subContainer.html("<div class='row'></div>"); //console.log(this.graphCollection.models);
+			
+			_.each(this.graphCollection.models, function (graph) {
+				var graphId = graph.get('graphName').replace(/\s+/g, '_').toLowerCase();
+				var label = false;
 
-			_.each(this.model.get('reports'), function (graph) {
+				var innerTemplateVariables = {
+					'graph_heading': graph.get('graphName'),
+					'graph_id': graphId,
+					'gid': graph.get('graphId'),
+				};
+				var graphInnerTemplate = _.template(barGraphTemplate, innerTemplateVariables);
+
+				thisObj.subContainer.find('.row').append(graphInnerTemplate);
+				
+				var currency = '';
+				var tickDecimals = 0;
+
+				if(label) {
+					currency = '$';
+					tickDecimals = 2;
+				}
+				
+				var graphData = thisObj.formatGraphData(graph.get('data'), graph.get('graphType')); //console.log(graphData);
+				
+				switch(graph.get('graphType')){
+					case Const.GRAPH.TYPE.STACKEDBAR:
+						//thisObj.graphStackedData(graph_id, graph.data, graph.xData, currency, tickDecimals);
+						break;
+					case Const.GRAPH.TYPE.BAR:
+						thisObj.graphData(graphId, graphData.data, graphData.xData, currency, tickDecimals);
+						break;
+					default:
+						break;
+				}
+			});
+			
+			/*_.each(this.model.get('reports'), function (graph) {
 				var graph_id = graph.graphname.replace(/\s+/g, '_').toLowerCase();
 				var label = graph.settings.currency;
 
@@ -73,7 +120,7 @@ define([
 				}	
 											
 
-			});					
+			});	*/
 		},
 		
 

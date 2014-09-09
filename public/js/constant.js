@@ -239,6 +239,12 @@ define(function () {
             'TRUCKER': 8,
             'SWFTRUCKER': 9,
         },
+		'GRAPH': {
+			'TYPE': {
+				'BAR': 1,
+				'STACKEDBAR': 2,
+			},
+		},
 	};
 	
 	return constant;

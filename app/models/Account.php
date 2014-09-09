@@ -39,6 +39,10 @@ class Account extends Eloquent {
         return $this->hasMany('Scale', 'account_id', 'id')->select(array('id', 'account_id', 'name'));
     }
 
+    public function order(){
+        return $this->hasMany('Order', 'account_id', 'id')->select(array('id', 'account_id', 'order_number'));
+    }
+
     // Laravel's equivalent to calling the constructor on a model
     public static function boot()
     {

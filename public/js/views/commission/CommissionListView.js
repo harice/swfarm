@@ -34,6 +34,10 @@ define([
 			
 			var thisObj = this;
 			
+			this.options = {
+				removeComma: ['rate', 'amountdue'],
+			};
+			
 			this.collection = new UserCollection();
 			this.collection.on('sync', function() {
 				if(thisObj.subContainerExist())
@@ -166,7 +170,7 @@ define([
 			
 			var validate = $('#commissionForm').validate({
 				submitHandler: function(form) {
-					var data = $(form).serializeObject();
+					var data = thisObj.removeComma($(form).serializeObject());
 					
 					var deleteID = Const.COMMISSION.WEIGHTTICKETBYUSERID+data.order_id+'-'+data.weightticket_id;
 					
@@ -259,6 +263,16 @@ define([
 		saveCommission: function (ev) { //console.log('saveCommission');
 			this.subContainer.find('#commissionForm').submit();
 			return false;
+		},
+		
+		removeComma: function (data) {
+			for(var key in data) {
+				if(typeof data[key] !== 'function' && this.options.removeComma.indexOf(key) >= 0) {
+					data[key] = this.removeCommaFromNumber(data[key]);
+				}
+			}
+			
+			return data;
 		},
 	});
 

@@ -11,7 +11,7 @@
                             <fieldset>
                                 <legend>Details</legend>
                                 <div class="form-group">
-                                    <label for="account_id" class="col-sm-3 control-label">Trailer Account Name *</label>
+                                    <label for="account_id" class="col-sm-3 control-label">Trailer Account *</label>
                                     <div class="col-sm-5">
                                         <div class="styled-select">
                                             <select class="form-control width-304" id="account_id" name="account_id" required>
@@ -21,7 +21,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="number" class="col-sm-3 control-label">Trailer Number *</label>
+                                    <label for="number" class="col-sm-3 control-label">Trailer No. *</label>
                                     <div class="col-sm-5">
                                         <input type="text" class="form-control capitalize" id="number" name="number" minlength="1" maxlength="20" required>
                                     </div>
@@ -29,11 +29,11 @@
                             </fieldset>
                             <div class="form-group">
                                 <div class="col-md-5 col-md-offset-3">
-                                    <button id="save" type="submit" class="save btn btn-primary">Save</button>
+                                    <button id="save" type="submit" class="save btn btn-primary"><i class="fa fa-save"></i> Save</button>
                                     <% if (typeof trailer_id !== "undefined") { %>
-                                    <button id="delete-trailer" type="button" class="btn btn-danger">Delete</button>
+                                    <button id="delete-trailer" type="button" class="btn btn-danger"><i class="fa fa-times width-10"></i> Delete</button>
                                     <% } %>
-                                    <a id="go-to-previous-page" class="btn btn-default" href="#">Cancel</a>
+                                    <a id="go-to-previous-page" class="btn btn-link" href="#">Cancel</a>
                                 </div>
                             </div>
                         </form>

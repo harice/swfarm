@@ -29,6 +29,7 @@
             <table id="operator-list" class="table table-bordered">
                 <thead class="no-border">
                     <tr>         
+                        <th><strong>Order No.</strong></th>
                         <th><strong>Date</strong></th>
                         <th><strong>Origin</strong></th>
                         <th><strong>Destination</strong></th>
@@ -53,7 +54,8 @@
                         total_bales += transaction.bales;
                         (transaction.loading_type=='1') ? total_tons += tons : total_tons += 0;
                     %>    
-                        <tr>                                                 
+                        <tr>   
+                            <td><%= transaction.order_number %> </td>                                              
                             <td>
                                 <% 
                                     var d = Date.parse(transaction.created_at);
@@ -92,7 +94,7 @@
                 <thead>
                     <tr>
                         <th><strong>Order No.</strong></th>
-                        <th><strong>Receipt No.</strong></th>
+                        <th><strong>Ticket No.</strong></th>
                         <th><strong>Type</strong></th>
                         <th><strong>Loader</strong></th>
                         <th><strong>Amount</strong></th>

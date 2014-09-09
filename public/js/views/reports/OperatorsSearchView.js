@@ -1,15 +1,19 @@
 define([
 	'backbone',
+	'base64',
 	'views/base/ReportView',
 	'models/reports/ReportModel',
+	'models/document/DocumentModel',
 	'collections/contact/ContactCollection',
 	'text!templates/reports/OperatorsPayListTemplate.html',
 	'global',
 	'constant',
 ], function(
 	Backbone,
+	Base64,
 	ReportView,			
 	Report,
+	DocumentModel,
 	ContactCollection,
 	operatorListTemplate,
 	Global,
@@ -81,6 +85,7 @@ define([
 				'date_from': thisObj.parseDate($('#filter-operator-date-start .input-group.date input').val()),
 				'date_to': thisObj.parseDate($('#filter-operator-date-end .input-group.date input').val()),
 				'operators': this.model,
+				print_url : Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.model.id, type:'pdf', model:'order'})),
 			}
 
 			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
@@ -91,7 +96,16 @@ define([
 			$("#report-list").html(compiledTemplate);
 		},
 
-
+		showPDF: function (ev) {
+			// console.log('showPDF');
+			this.model = new DocumentModel({id:$(ev.currentTarget).attr('data-id')});
+			this.model.on('change', function() {
+				
+			});
+			this.model.runFetch();
+			
+			return false;
+		},
 
 		
 	});

@@ -30,8 +30,9 @@
             <table id="operator-list" class="table-bordered table">
                 <thead class="no-border">
                     <tr>
-                        <th><strong>Weight Ticket No.</strong></th>
+                        <th><strong>SO No.</strong></th>
                         <th><strong>Type</strong></th>
+                        <th><strong>Weight Ticket No.</strong></th>                      
                         <th><strong>Date</strong></th>
                         <th><strong>Commodity</strong></th>
                         <th><strong>Bales</strong></th>                
@@ -51,10 +52,11 @@
                         grand_total += customer_total;
                     %>       
                         <tr>   
-                            <td><%= transaction.weightTicketNumber %></td>   
+                            <td><%= transaction.order_number %></td>
                             <td>
                                 <%= transaction.natureofsale %>
                             </td> 
+                            <td><%= transaction.weightTicketNumber %></td>                               
                             <td>
                                 <% 
                                     var d = Date.parse(transaction.created_at);
@@ -94,36 +96,16 @@
                         </tr>
                     <%}); %>  
                 </tbody> 
+                <tfoot>
+                    <tr>
+                        <td colspan="5" align="center"><strong>TOTAL<strong></td>
+                        <td><strong><%= numberFormatBales(customers.get('summary').total_bales) %></strong></td>
+                        <td><strong><%= convertLbsToTons(customers.get('summary').total_pounds) %></strong></td>
+                        <td></td>
+                        <td> <strong>$ <%= numberFormat(grand_total) %></strong></td>
+                    </tr>
+                </tfoot>
             </table>   
-            <table class="table-bordered" style="width:30%">
-                <thead>
-                    <tr>
-                        <td colspan="2" align="center"><strong>SUMMARY</strong></td>
-                    </tr>
-                </thead>
-                <tbody>   
-                    <tr>  
-                        <td>Total Bales:</td>
-                        <td>
-                            <strong><%= numberFormatBales(customers.get('summary').total_bales) %></strong>
-                        </td>     
-                    </tr>                    
-                    <tr>
-                        <td>
-                           Total Tons:
-                        </td>
-                        <td>
-                            <strong><%= convertLbsToTons(customers.get('summary').total_pounds) %></strong>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Grand Total:</td>
-                        <td>
-                            <strong>$ <%= numberFormat(grand_total) %></strong>
-                        </td>
-                    </tr>  
-                </thead>
-            </table>
         </div>        
     </div>
     <% } else { %>

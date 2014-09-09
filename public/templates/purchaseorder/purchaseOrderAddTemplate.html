@@ -38,7 +38,7 @@
                                 </div>
                             </div>
     						<div class="form-group so-field" style="display:none;">
-                                <label for="contract_id" class="col-sm-3 control-label">Contract<i class='color-danger'>*</i></label>
+                                <label for="contract_id" class="col-sm-3 control-label">Customer Contract<i class='color-danger'>*</i></label>
                                 <div class="col-sm-6">
                                     <select id="contract_id" class="form-control contract_id width-160 input-sm" name="contract_id" required>
                                         <option value="">Select contract</option>
@@ -53,7 +53,7 @@
                                 </div>
                             </div>
 							<div class="form-group">
-								<label for="contact_id" class="col-sm-3 control-label">Contact<i class='color-danger'>*</i></label>
+								<label for="contact_id" class="col-sm-3 control-label">Producer Contact<i class='color-danger'>*</i></label>
 								<div class="col-sm-6">
 									<select class="form-control input-sm" id="contact_id" name="contact_id" required>
 										<option value="">Select contact</option>
@@ -76,7 +76,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="state" class="col-sm-3 control-label">State/Province</label>
+                                <label for="state" class="col-sm-3 control-label">State</label>
                                 <div class="col-sm-5">
                                     <input id="state" type="text" class="form-control state input-sm" placeholder="" maxlength="250" readonly>
                                 </div>
@@ -138,7 +138,7 @@
 
                     <h3 class='margin-bottom-0'>
                         Products
-                        <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-primary btn-rad btn-xs">
+                        <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-primary btn-xs">
                             <span class="glyphicon glyphicon-plus"></span>
                         </button>
                     </h3>
@@ -172,13 +172,13 @@
                         <div class="col-md-12">
                             <div class="pull-right">
 								<% if (typeof is_bid === "undefined") { %>
-									<button id="save-and-check-in" type="button" class="save-and-close btn btn-sm btn-primary btn-rad">Save & Close</button>
+									<button id="save-and-check-in" type="button" class="save-and-close btn btn-sm btn-primary">Save & Close</button>
 								<% } %>
                                 <% if (typeof po_id !== "undefined" && typeof is_bid !== "undefined") { %>
-									<button id="convert-po" type="button" class="save btn btn-sm btn-warning btn-rad">Convert to PO</button>
+									<button id="convert-po" type="button" class="save btn btn-sm btn-warning">Convert to PO</button>
                                 <% } %>
-                                <button id="save" type="submit" class="save btn btn-sm btn-primary btn-rad">Save</button>
-                                <a id="go-to-previous-page" class="btn btn-default btn-sm btn-rad" href="#">Cancel</a>
+                                <button id="save" type="submit" class="save btn btn-sm btn-primary"><i class="fa fa-save"></i> Save</button>
+                                <a id="go-to-previous-page" class="btn btn-link btn-sm" href="#">Cancel</a>
                             </div>
                         </div>
                     </div>

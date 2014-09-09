@@ -3,6 +3,9 @@
         <div class="row margin-top-0">
             <div class="col-md-12">
                 <h2>Admin - Operator Pay</h2>
+                <div class="pull-right">
+                    <a href='<%= print_url %>' target='_blank' class='btn btn-link btn-sm padding-right-0'><i class='fa fa-print'></i>print</a>
+                </div>
                 <h5><%= cur_date %></h5>
             </div>
         </div>
@@ -30,6 +33,7 @@
             <table id="operator-list" class="table table-bordered">
                 <thead class="no-border">
                     <tr>
+                        <th><strong>Order No.</strong></th>                        
                         <th><strong>Cust Name</strong></th>
                         <th><strong>Load Type</strong></th>
                         <th><strong>Sqeeze</strong></th>
@@ -40,7 +44,8 @@
                     <%                         
                         _.each(operators.get('transactions'),function(transaction){                        
                     %>    
-                        <tr>      
+                        <tr>   
+                            <td><%= transaction.order_number %></td>  
                             <td><%= transaction.account_name %></td>
                             <td><%= transaction.type %></td>
                             <td><%= transaction.loader %></td>
