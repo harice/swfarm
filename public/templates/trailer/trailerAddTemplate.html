@@ -1,15 +1,15 @@
 <div class="row">
     <div class="col-md-12">
         <div class="block-flat">
-            <div class="content">
-                <div class="row">
+            <div class="content padding-top-0">
+                <div class="row margin-top-0">
                     <div class="col-md-9">
                         <form id="trailerForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
                             <% if (typeof trailer_id !== "undefined") { %>
                                 <input type="hidden" name="id" value="<%= trailer_id %>" />
                             <% } %>
                             <fieldset>
-                                <legend>Details</legend>
+                                <legend><h3>Details</h3></legend>
                                 <div class="form-group">
                                     <label for="account_id" class="col-sm-3 control-label">Trailer Account <i class="color-danger">*</i></label>
                                     <div class="col-sm-5">

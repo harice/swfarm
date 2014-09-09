@@ -1,16 +1,16 @@
 <div class="row">
 	<div class="col-md-12">
 		<div class="block-flat">
-			<div class="content">
+			<div class="content padding-top-0">
 
-				<div class="row">
+				<div class="row margin-top-0">
 					<div class="col-md-12">
 						<form id="locationForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
 							<% if (typeof sl_id !== "undefined") { %>
 							<input type="hidden" name="id" value="<%= sl_id %>" />
 							<% } %>
 							<fieldset>
-								<legend>Location Details</legend>                  
+								<legend><h3>Location Details</h3></legend>                  
 								<div class="form-group">
 									<label for="account_id" class="col-sm-2 control-label">Account <i class="color-danger">*</i></label>
 									<div class="col-sm-4">
@@ -50,7 +50,7 @@
 							</fieldset>
 							<fieldset>
 								<legend>
-									Section
+									<h3 class="pull-left margin-top-0 margin-bottom-0">Section</h3>
 									<button title="Add Section" id="add-section" type="button" class="pull-right btn btn-rad btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
 								</legend>
 								<div class="table-responsive">
