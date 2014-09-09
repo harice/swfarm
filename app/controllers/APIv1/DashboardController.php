@@ -45,5 +45,10 @@ class DashboardController extends BaseController {
     	return Response::json($result);
     }
 
+    public function reservedDeliveredVsBalanceOrderPerCustomerAccount(){
+        $result = $this->repo->reservedDeliveredVsBalanceOrderPerCustomerAccount(Input::all());
+        return Response::json($result);
+    }
+
 
 }

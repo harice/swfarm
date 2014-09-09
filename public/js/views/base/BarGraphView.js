@@ -213,6 +213,31 @@ define([
 	      }); 
 	      
 	    },
+		
+		formatGraphData: function (data, type) { //console.log('type: '+type); console.log('Const.GRAPH.TYPE.BAR: '+Const.GRAPH.TYPE.BAR);
+			var graphData = [];
+			var graphXData = [];
+			
+			switch(type){
+				case Const.GRAPH.TYPE.STACKEDBAR:
+					break;
+				case Const.GRAPH.TYPE.BAR:
+					
+					var d = [];
+					for(var i = 0; i < data.length; i++) {
+						graphXData.push([i, data[i].label]); //console.log(data[i].label);
+						d.push([i, data[i].value]); //console.log(data[i].value);
+					}
+					
+					graphData.push({ data:d, yPositionAdjustLabel: -10 });
+					
+					break;
+				default:
+					break;
+			}
+			
+			return { data: graphData, xData: graphXData, };
+		},
 
 	});
 

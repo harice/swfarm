@@ -218,6 +218,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('report/inventoryPerLocation', 'APIv1\ReportController@inventoryReportPerLocation');
 
     //Dashboard
+    Route::get('dashboard/reservedDeliveredVsBalanceOrderPerCustomerAccount', 'APIv1\DashboardController@reservedDeliveredVsBalanceOrderPerCustomerAccount');
     Route::get('dashboard', 'APIv1\DashboardController@main');
     // Route::get('dashboard/purchaseInTons', 'APIv1\DashboardController@purchaseInTons');
     // Route::get('dashboard/salesInTons', 'APIv1\DashboardController@salesInTons');

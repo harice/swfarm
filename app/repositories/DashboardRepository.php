@@ -62,10 +62,10 @@ class DashboardRepository implements DashboardRepositoryInterface {
                 if(count($item['productordertons']) == 0){
                     continue;
                 }
-                $data[$index]['product'] = $item['name'];
-                $data[$index]['totalTons'] = 0;
+                $data[$index]['label'] = $item['name'];
+                $data[$index]['value'] = 0;
                 foreach($item['productordertons'] as $productOrder){
-                    $data[$index]['totalTons'] += $productOrder['tons'];
+                    $data[$index]['value'] += $productOrder['tons'];
                 }
                 $index++;
             }
@@ -98,12 +98,12 @@ class DashboardRepository implements DashboardRepositoryInterface {
                 if(count($item['productordertons']) == 0){
                     continue;
                 }
-                $data[$index]['product'] = $item['name'];
-                $data[$index]['dollarValues'] = 0.0;
+                $data[$index]['label'] = $item['name'];
+                $data[$index]['value'] = 0.0;
                 foreach($item['productordertons'] as $productOrder){
-                    $data[$index]['dollarValues'] += $productOrder['tons'] * $productOrder['unitprice'];
+                    $data[$index]['value'] += $productOrder['tons'] * $productOrder['unitprice'];
                 }
-                $data[$index]['dollarValues'] = number_format($data[$index]['dollarValues'], 2, '.', '');
+                $data[$index]['value'] = number_format($data[$index]['value'], 2, '.', '');
                 $index++;
             }
         }
@@ -134,10 +134,10 @@ class DashboardRepository implements DashboardRepositoryInterface {
                 if(count($item['productordertons']) == 0){
                     continue;
                 }
-                $data[$index]['product'] = $item['name'];
-                $data[$index]['totalTons'] = 0;
+                $data[$index]['label'] = $item['name'];
+                $data[$index]['value'] = 0;
                 foreach($item['productordertons'] as $productOrder){
-                    $data[$index]['totalTons'] += $productOrder['tons'];
+                    $data[$index]['value'] += $productOrder['tons'];
                 }
                 $index++;
             }
@@ -170,17 +170,58 @@ class DashboardRepository implements DashboardRepositoryInterface {
                 if(count($item['productordertons']) == 0){
                     continue;
                 }
-                $data[$index]['product'] = $item['name'];
-                $data[$index]['dollarValues'] = 0.0;
+                $data[$index]['label'] = $item['name'];
+                $data[$index]['value'] = 0.0;
                 foreach($item['productordertons'] as $productOrder){
-                    $data[$index]['dollarValues'] += $productOrder['tons'] * $productOrder['unitprice'];
+                    $data[$index]['value'] += $productOrder['tons'] * $productOrder['unitprice'];
                 }
-                $data[$index]['dollarValues'] = number_format($data[$index]['dollarValues'], 2, '.', '');
+                $data[$index]['value'] = number_format($data[$index]['value'], 2, '.', '');
                 $index++;
             }
         }
 
         return $data;
+    }
+
+    public function reservedDeliveredVsBalanceOrderPerCustomerAccount($params){
+        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d 00:00:00', strtotime("yesterday"));
+        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d 23:59:59', strtotime("yesterday"));
+
+        $result = Account::with(array(
+                            'order.productorder' => function($query){
+                                $query->addSelect(array('id', 'order_id', 'tons'));
+                             }
+                             ,
+                            'order.productorder.transportscheduleproduct.transportschedule' => function($query){
+                                $query->addSelect(array('id', 'order_id'));
+                            },
+                            'order.productorder.transportscheduleproduct.transportschedule.weightticket' => function($query){
+                                $query->addSelect(array('id', 'transportSchedule_id', 'pickup_id', 'dropoff_id', 'status_id', 'weightTicketNumber'));
+                            },
+                            'order.productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_pickup' => function($query){
+                                $query->addSelect(array('id', 'gross', 'tare'));
+                            },
+                            'order.productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_dropoff' => function($query){
+                                $query->addSelect(array('id', 'gross', 'tare'));
+                            }
+                            ))
+                         ->with(array('order' => function($query) use ($dateFrom, $dateTo) {
+                            $query->where('natureofsale_id', '=', Config::get('constants.NATUREOFSALES_RESERVATION'))
+                                  ->whereBetween('created_at', array($dateFrom, $dateTo))
+                                  ->where('orderType', '=', Config::get('constants.ORDERTYPE_SO'))
+                                  ->where(function($query){
+                                        $status = array(Config::get('constants.STATUS_OPEN'), Config::get('constants.STATUS_TESTING'), Config::get('constants.STATUS_CLOSED'));
+                                        $query->whereIn('status_id', $status);
+                                  });
+                         }))
+                         ->whereHas('accounttype', function($query){
+                                $query->where('accounttype.id', '=', 1);
+                         })
+                         ->orderby('name', 'asc')
+                         ->get(array('id', 'name'))
+                         ->toArray();
+
+        return $result;
     }
     
 }
