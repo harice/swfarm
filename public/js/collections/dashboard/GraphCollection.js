@@ -10,6 +10,23 @@ define([
 		initialize: function() {
 			this.setDefaultURL(this.url);
 		},
+		
+		fetchGraphData: function (graphId, dateFrom, dateTo){
+			var params = {};
+			
+			if(graphId != null)
+				params['graphId'] = graphId;
+				
+			if(dateFrom != null)
+				params['dateFrom'] = dateFrom;
+				
+			if(dateTo != null)
+				params['dateTo'] = dateTo;
+			
+			this.url = this.getDefaultURL() + '?' + $.param(params);
+			console.log(this.url);
+			this.getModels();
+		},
 	});
 
 	return GraphCollection;
