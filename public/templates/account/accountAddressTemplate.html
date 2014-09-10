@@ -1,60 +1,58 @@
-<div class="col-md-12">
-	<fieldset class="address-fields-container">
-		<legend>
-			<h3 class="pull-left margin-top-0 margin-bottom-0">Address</h3>
-			<button id="add-address-field" type="button" class="pull-right btn btn-default btn-primary btn-xs btn-rad"><span class="glyphicon glyphicon-plus"></span></button>
-			<button type="button" class="pull-right btn btn-default btn-primary btn-xs remove-address-fields btn-rad"><span class="glyphicon glyphicon-minus"></span></button>
-		</legend>
-		<input type="hidden" class="id" name="id" value="" />
-		<div class="form-group">
-			<label for="type" class="col-sm-2 control-label">Address Type</label>
-			<div class="col-sm-5">
-                <div class="styled-select">
-                    <select class="form-control type" name="type">
-                        <% _.each(address_types, function(address_type){ %>
-                        <option value="<%= address_type.id %>"><%= address_type.name %></option>
-                        <% }); %>
-                    </select>
-                </div>
-			</div>
+<fieldset class="address-fields-container">
+	<legend class="clearfix">
+		<h3 class="pull-left margin-top-0 margin-bottom-10">Address</h3>
+		<button id="add-address-field" type="button" class="pull-right btn btn-default btn-primary btn-xs btn-rad"><span class="glyphicon glyphicon-plus"></span></button>
+		<button type="button" class="pull-right btn btn-default btn-primary btn-xs remove-address-fields btn-rad"><span class="glyphicon glyphicon-minus"></span></button>
+	</legend>
+	<input type="hidden" class="id" name="id" value="" />
+	<div class="form-group">
+		<label for="type" class="col-sm-2 control-label">Address Type</label>
+		<div class="col-sm-5">
+            <div class="styled-select">
+                <select class="form-control type" name="type">
+                    <% _.each(address_types, function(address_type){ %>
+                    <option value="<%= address_type.id %>"><%= address_type.name %></option>
+                    <% }); %>
+                </select>
+            </div>
 		</div>
-		<div class="form-group">
-			<label for="street" class="col-sm-2 control-label">Street <i class="color-danger">*</i></label>
-			<div class="col-sm-5">
-				<input type="text" class="form-control input-sm street width-304" name="street" placeholder="" maxlength="50" >
-			</div>
+	</div>
+	<div class="form-group">
+		<label for="street" class="col-sm-2 control-label">Street <i class="color-danger">*</i></label>
+		<div class="col-sm-5">
+			<input type="text" class="form-control input-sm street width-304" name="street" placeholder="" maxlength="50" >
 		</div>
-		<div class="form-group">
-			<label for="city" class="col-sm-2 control-label">City <i class="color-danger">*</i></label>
-			<div class="col-sm-5">
-				<input type="text" class="form-control input-sm city width-304" name="city" placeholder="" maxlength="50">
-			</div>
+	</div>
+	<div class="form-group">
+		<label for="city" class="col-sm-2 control-label">City <i class="color-danger">*</i></label>
+		<div class="col-sm-5">
+			<input type="text" class="form-control input-sm city width-304" name="city" placeholder="" maxlength="50">
 		</div>
-		<div class="form-group">
-			<label for="state" class="col-sm-2 control-label">State <i class="color-danger">*</i></label>
-			<div class="col-sm-5">
-                <div class="styled-select">
-                    <select class="form-control state" name="state">
-                        <option value="">Select a state</option>
-                        <% _.each(address_states, function(state){ %>
-                        <option value="<%= state.id %>"><%= state.state %></option>
-                        <% }); %>
-                    </select>
-                </div>
-			</div>
+	</div>
+	<div class="form-group">
+		<label for="state" class="col-sm-2 control-label">State <i class="color-danger">*</i></label>
+		<div class="col-sm-5">
+            <div class="styled-select">
+                <select class="form-control state" name="state">
+                    <option value="">Select a state</option>
+                    <% _.each(address_states, function(state){ %>
+                    <option value="<%= state.id %>"><%= state.state %></option>
+                    <% }); %>
+                </select>
+            </div>
 		</div>
-		<div class="form-group">
-			<label for="zipcode" class="col-sm-2 control-label">Zip Code <i class="color-danger">*</i></label>
-			<div class="col-sm-2">
-				<input type="text" class="form-control input-sm zipcode" name="zipcode" placeholder="" minlength="5" maxlength="10">
-			</div>
+	</div>
+	<div class="form-group">
+		<label for="zipcode" class="col-sm-2 control-label">Zip Code <i class="color-danger">*</i></label>
+		<div class="col-sm-2">
+			<input type="text" class="form-control input-sm zipcode" name="zipcode" placeholder="" minlength="5" maxlength="10">
 		</div>
-		<div class="form-group">
-			<label for="country" class="col-sm-2 control-label">Country <i class="color-danger">*</i></label>
-			<div class="col-sm-5">
-				<input type="text" class="form-control width-304 input-sm" value="United States" onfocus="this.blur()" readonly>
-				<input type="hidden" class="country" name="country" value="1">
-			</div>
+	</div>
+	<div class="form-group">
+		<label for="country" class="col-sm-2 control-label">Country <i class="color-danger">*</i></label>
+		<div class="col-sm-5">
+			<input type="text" class="form-control width-304 input-sm" value="United States" onfocus="this.blur()" readonly>
+			<input type="hidden" class="country" name="country" value="1">
 		</div>
-	</fieldset>
-</div>
+	</div>
+</fieldset>

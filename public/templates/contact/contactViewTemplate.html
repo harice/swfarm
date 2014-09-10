@@ -1,53 +1,108 @@
-<div class="row">
-    <div class="col-md-12">
+<div class="row margin-top-0">
+    <div class="col-md-12 no-padding">
         <div class="block-flat">
-
-            <dl class="dl-horizontal">
+            <div class="content padding-top-0">
                 <% if(!_.isEmpty(contact.get("firstname"))) { %>
-                <dt>Full Name</dt>
-                <dd><%= contact.get("lastname") %>, <%= contact.get("firstname") %></dd>
-                <% } else { %>
-                <dd>&nbsp;</dd>
+                <div class="row margin-top-0">
+                    <div class="col-md-12">
+                        <h2 class="margin-top-10 margin-bottom-0"><%= contact.get("lastname") %>, <%= contact.get("firstname") %></h2>
+                        <div class="progress width-500 margin-bottom-0 margin-top-10 height-3">
+                            <div class="progress-bar progress-bar-success" style="width: %"></div>
+                        </div>
+                    </div>
+                </div>
                 <% } %>
-
-                <% if(!_.isEmpty(contact.get("account"))) { %>
-                <dt>Account Name</dt>
-                <dd><%= contact.get("account").name %></dd>
-                <% } %>
-
-                <% if(!_.isEmpty(contact.get("position"))) { %>
-                <dt>Position</dt>
-                <dd><%= contact.get("position") %></dd>
-                <% } %>
-
-                <% if(!_.isEmpty(contact.get("email"))) { %>
-                <dt>Email</dt>
-                <dd><%= contact.get("email") %></dd>
-                <% } %>
-
-                <% if(!_.isEmpty(contact.get("phone"))) { %>
-                <dt>Phone</dt>
-                <dd><%= contact.get("phone") %></dd>
-                <% } %>
-
-                <% if(!_.isEmpty(contact.get("mobile"))) { %>
-                <dt>Mobile</dt>
-                <dd><%= contact.get("mobile") %></dd>
-                <% } %>
-                
-                <% if(!_.isEmpty(contact.get("rate"))) { %>
-                <dt>Rate</dt>
-                <dd><%= contact.get("rate") %> %</dd>
-                <% } %>
-
-                <dt></dt>
-                <dd>
-                    <div class="clearfix"></div>
-                    <a href="<%= contact_edit_url %>/<%= contact.get("id") %>" class="btn btn-primary btn-trans btn-rad btn-sm"><i class="fa fa-pencil width-10"></i> Edit</a>
-                    <button id="delete-contact" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
-                    <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a>
-                </dd>
-            </dl>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="no-border no-strip information">
+                            <tbody class="no-border-x no-border-y">
+                                <tr>
+                                    <td class="category width-200">
+                                        <strong>ABOUT</strong>
+                                    </td>
+                                    <td>
+                                        <table class="no-border no-strip">
+                                            <tbody class="no-border-x no-border-y">
+                                              <% if(!_.isEmpty(contact.get("account"))) { %>  
+                                              <tr>
+                                                <td class="width-150"><strong>Account Name</strong></td>
+                                                <td>
+                                                    <%= contact.get("account").name %>
+                                                </td>
+                                              </tr>
+                                              <% } %>
+                                              <% if(!_.isEmpty(contact.get("position"))) { %>
+                                              <tr>
+                                                <td><strong>Position</strong></td>
+                                                <td><%= contact.get("position") %></td>
+                                              </tr>
+                                              <% } %>
+                                              <% if(!_.isEmpty(contact.get("rate"))) { %>
+                                              <tr>
+                                                <td><strong>Rate</strong></td>
+                                                <td><%= contact.get("rate") %> %</td>
+                                              </tr>
+                                              <% } %>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="category">
+                                        <strong>CONTACT</strong>
+                                    </td>
+                                    <td>
+                                        <table class="no-border no-strip">
+                                            <tbody class="no-border-x no-border-y">
+                                              <% if(!_.isEmpty(contact.get("email"))) { %>
+                                              <tr>
+                                                <td class="width-150"><strong>Email</strong></td>
+                                                <td><%= contact.get("email") %></td>
+                                              </tr>
+                                              <% } %>
+                                              <% if(!_.isEmpty(contact.get("phone"))) { %>
+                                              <tr>
+                                                <td><strong>Phone</strong></td>
+                                                <td><%= contact.get("phone") %></td>
+                                              </tr>
+                                              <% } %>
+                                              <% if(!_.isEmpty(contact.get("mobile"))) { %>                                          
+                                              <tr>
+                                                <td><strong>Mobile</strong></td>
+                                                <td>
+                                                    <%= contact.get("mobile") %>                                         
+                                                </td>
+                                              </tr>
+                                              <% } %>
+                                            </tbody>                                    
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="no-border-x no-border-y">
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        <table class="no-border no-strip">
+                                            <tbody class="no-border-x no-border-y">
+                                              <tr>
+                                                <td class="width-150">&nbsp;</td>
+                                                <td>                                                
+                                                    <div class="clearfix"></div>
+                                                    <a href="<%= contact_edit_url %>/<%= contact.get("id") %>" class="btn btn-primary btn-trans btn-rad btn-sm"><i class="fa fa-pencil width-10"></i> Edit</a>
+                                                    <button id="delete-contact" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
+                                                    <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a>
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div> <!-- /.block-flat -->
     </div>
 </div>

@@ -291,17 +291,19 @@ define([
 		
 		onChangeAccountType: function (ev) {
 			var multipleAddress = Const.ACCOUNT.MULTIPLEADDRESS;
-			var accountTypeText = $(ev.target).find('option:selected').text();
+			var accountTypeText = $(ev.target).find('option:selected').text();			
 			
-			if(multipleAddress.indexOf(accountTypeText) < 0) {
+			if(multipleAddress.indexOf(accountTypeText) < 0) {				
 				$('#account-adresses').find('.address-fields-container:gt(0)').remove();
 			}
 			else {
 				if(accountTypeText == 'Producer') {
+					$('#add-address-field').removeClass("hidden");
 					$('#account-adresses').find('.type option').filter(function () { return $(this).html() == Const.ACCOUNT.UNIQUEADDRESS.CUSTOMER; }).remove();
 					$('#account-adresses').find('.type').append(this.options.addressTypeUniqueForProducer);
 				}
 				else if(accountTypeText == 'Customer') {
+					$('#add-address-field').removeClass("hidden");
 					$('#account-adresses').find('.type option').filter(function () { return $(this).html() == Const.ACCOUNT.UNIQUEADDRESS.PRODUCER; }).remove();
 					$('#account-adresses').find('.type').append(this.options.addressTypeUniqueForCustomer);
 				}
