@@ -1,31 +1,33 @@
 <?php
 
 class StorageLocation extends Eloquent {
-    
+
     /**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
     protected $table = 'storagelocation';
-    
+
     /**
      * Define fillable attributes in a model.
-     * 
+     *
      * @var array
      */
     protected $fillable = array(
 		'account_id',
         'name',
         'description',
+        'address_id',
         'longitude',
         'latitude'
     );
-    
+
     public static $rules = array(
 		'account_id' => 'required',
         'name' => 'required|unique:storagelocation',
-        'description' => 'max:250'
+        'description' => 'max:250',
+        'address_id' => 'required'
     );
 
     public function account(){
