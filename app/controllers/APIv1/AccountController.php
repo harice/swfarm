@@ -30,7 +30,7 @@ class AccountController extends BaseController {
 	 * @return Response
 	 */
 	public function store()
-	{ 
+	{
 		return $this->account->store( Input::all() );
 	}
 
@@ -85,10 +85,10 @@ class AccountController extends BaseController {
 			$name = Input::get('name');
 		else
 			$name = '';
-		
+
 		return $this->account->getAccountsByName( $name );
-	}	
-    
+	}
+
     public function getCustomerAccount(){
 		return $this->account->getCustomerAccount(Input::get('search'));
 	}
@@ -99,6 +99,17 @@ class AccountController extends BaseController {
 
 	public function getAddress(){
 		return $this->account->getAddress(Input::get('accountId'));
+	}
+
+    /**
+     * Get Stack Address
+     *
+     * @param int $id Account Id
+     * @return Response
+     */
+    public function getStackAddress($id)
+    {
+		return $this->account->getStackAddress($id);
 	}
 
 	public function getAccountsByType(){
@@ -140,7 +151,7 @@ class AccountController extends BaseController {
 	public function getTruckerAccountTypes(){
 		return $this->account->getTruckerAccountTypes();
 	}
-    
+
     public function getContracts($id)
     {
         return $this->account->getContracts($id);

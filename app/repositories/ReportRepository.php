@@ -539,7 +539,6 @@ class ReportRepository implements ReportRepositoryInterface {
         $report['summary']['total_freight_cost'] = $total_freight_cost;
         $report['summary']['total_profit_amount'] = $total_profit_amount;
         $report['summary']['total_profit_percentage'] = $total_profit_percentage;
-//        $report['data'] = $weighttickets->toArray();
         $report['transactions'] = $transactions;
 
         return $report;
