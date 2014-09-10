@@ -63,6 +63,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
   	Route::get('account/getAccountsByName', 'APIv1\AccountController@getAccountsByName');
   	Route::get('account/getZipcodeUsingCity/{id}', 'APIv1\AccountController@getZipcodeUsingCity');
     Route::get('account/getAddress', 'APIv1\AccountController@getAddress');
+    Route::get('account/getStackAddress/{id}', 'APIv1\AccountController@getStackAddress');
 	Route::get('account/getCustomerAccount', 'APIv1\AccountController@getCustomerAccount');
 	Route::get('account/getProducerAccount', 'APIv1\AccountController@getProducerAccount');
     Route::get('account/truckerAccountTypes', 'APIv1\AccountController@getTruckerAccountTypes');
@@ -192,7 +193,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     // Inventory
     Route::get('inventory/getUsingAccount', 'APIv1\OrderController@getSalesOrderUsingAccountId');
     Route::get('inventory/getProductsOfOrder', 'APIv1\InventoryController@getProductsOfOrder');
-    
+
     Route::get('inventory/summaryByStack', 'APIv1\InventoryController@getInventorySummaryByStack');
     Route::get('inventory/stackListByProduct', 'APIv1\InventoryController@getStackListByProduct');
     Route::get('inventory/stacklist', 'APIv1\InventoryController@stackList');

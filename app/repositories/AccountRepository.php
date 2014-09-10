@@ -1,12 +1,12 @@
 <?php
- 
+
 class AccountRepository implements AccountRepositoryInterface {
 
   public function findAll() { return Response::json(Account::all()->toArray(),200); }
 
   public function findById($id)
   {
-    $account = Account::with('accounttype', 'address', 'address.addressStates', 'address.addressType')->find($id);          
+    $account = Account::with('accounttype', 'address', 'address.addressStates', 'address.addressType')->find($id);
 
     if($account)
       $response = Response::json($account->toArray(),200);
@@ -27,7 +27,7 @@ class AccountRepository implements AccountRepositoryInterface {
     // $offset = $page * $perPage - $perPage;
 
     $accounts = Account::with('accounttype')->orderBy($sortby,$orderby);
-    
+
     if(isset($params['filter'])) {
       $filter = $params['filter'];
       $accounts->whereHas('accounttype', function($q) use($filter) { $q->where('accounttype_id','=', $filter); } );
@@ -35,7 +35,7 @@ class AccountRepository implements AccountRepositoryInterface {
 
     if(isset($params['search'])) {
       $search = $params['search'];
-      $accounts->where(function($q) use($search) { 
+      $accounts->where(function($q) use($search) {
         $q->orWhere('name','like','%'.$search.'%')
           ->orWhere('website','like','%'.$search.'%')
           ->orWhere('description','like','%'.$search.'%');
@@ -47,16 +47,16 @@ class AccountRepository implements AccountRepositoryInterface {
     return Response::json( array( 'data' => $result['data'], 'total' => $result['total'] ) );
   }
 
-  private function validateExtras() 
+  private function validateExtras()
   {
-    Validator::extend('contains',function($attribute, $value, $parameters){ 
+    Validator::extend('contains',function($attribute, $value, $parameters){
       if(!is_array($value)) $value = explode(',',$value);
       return sizeof(array_filter($value)) > intval($parameters[0]) - 1 ? true : false;
     });
     Validator::replacer('contains', function($message, $attribute, $rule, $parameters){ return str_replace(':contains', $parameters[0], $message); });
   }
 
-  public function store($data) 
+  public function store($data)
   {
     $this->validateExtras();
 
@@ -104,7 +104,7 @@ class AccountRepository implements AccountRepositoryInterface {
 
         $address->save();
       }
-      
+
     });
 
     return Response::json(array( 'error' => false, 'message' => Lang::get('messages.success.created', array('entity' => 'Account'))), 200);
@@ -150,15 +150,15 @@ class AccountRepository implements AccountRepositoryInterface {
       foreach($data['address'] as $addressData){
         if(isset($addressData['id'])) $existingAddressId[] = $addressData['id'];
       }
-      
+
       $this->deleteAddresses($account->id, $existingAddressId); //delete addresses that is not pass excluding the new addresses
 
       foreach($data['address'] as $addressData) {
         $this->validate($addressData, $addressRules);
-        
+
         if(isset($addressData['id'])) $address = Address::find($addressData['id']);
         else $address = new Address;
-        
+
         $address->street = $addressData['street'];
         $address->city = $addressData['city'];
         $address->state = $addressData['state'];
@@ -204,13 +204,13 @@ class AccountRepository implements AccountRepositoryInterface {
 
     return $response;
   }
-  
+
   public function validate($data, $rules)
   {
     $validator = Validator::make($data, $rules);
 
-    if($validator->fails()) { 
-      throw new ValidationException($validator); 
+    if($validator->fails()) {
+      throw new ValidationException($validator);
     }
   }
 
@@ -257,7 +257,7 @@ class AccountRepository implements AccountRepositoryInterface {
 
     return Response::json($accounts->toArray(),200);
   }
-  
+
   public function getCustomerAccount($search)
   {
     return $this->filterByNameAndType($search);
@@ -273,6 +273,33 @@ class AccountRepository implements AccountRepositoryInterface {
     $addresses = Address::with('addressType')->with('addressStates')->where('account', '=', $accountId)->get();
     return Response::json( $addresses->toArray(), 200 );
   }
+
+    /**
+     * Get Stack Address
+     *
+     * @param int $id Account Id
+     * @return Response
+     */
+    public function getStackAddress($id)
+    {
+        $address = Address::join('account_accounttype', 'account_accounttype.account_id', '=', 'address.account')
+            ->join('addressstates', 'addressstates.id', '=', 'address.state')
+            ->join('accounttype', 'account_accounttype.id', '=', 'accounttype.id')
+            ->where('account', '=', $id);
+
+        $address = $address->select(
+            'address.id',
+            'address.account as account_id',
+            'address.street as street',
+            'address.city as city',
+            'address.zipcode as zipcode',
+            'addressstates.state as address_state',
+            'accounttype.name as address_type'
+        );
+
+        $address = $address->get();
+        return Response::json( $address->toArray(), 200 );
+    }
 
   public function getAccountsByType($types)
   {
