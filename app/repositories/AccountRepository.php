@@ -284,8 +284,9 @@ class AccountRepository implements AccountRepositoryInterface {
     {
         $address = Address::join('account_accounttype', 'account_accounttype.account_id', '=', 'address.account')
             ->join('addressstates', 'addressstates.id', '=', 'address.state')
-            ->join('accounttype', 'account_accounttype.id', '=', 'accounttype.id')
-            ->where('account', '=', $id);
+            ->join('addresstype', 'address.type', '=', 'addresstype.id')
+            ->where('account', '=', $id)
+            ->where('type', '=', 3);
 
         $address = $address->select(
             'address.id',
@@ -293,12 +294,23 @@ class AccountRepository implements AccountRepositoryInterface {
             'address.street as street',
             'address.city as city',
             'address.zipcode as zipcode',
-            'addressstates.state as address_state',
-            'accounttype.name as address_type'
+            'addressstates.state_code as address_state_code',
+            'addresstype.name as address_type'
         );
 
-        $address = $address->get();
-        return Response::json( $address->toArray(), 200 );
+        $address = $address->get()->toArray();
+        foreach ($address as &$detail)
+        {
+            $detail['name'] = $detail['street'] .', ' .$detail['city'] .', ' .$detail['address_state_code'] .', ' .'US' .' ' .$detail['zipcode'];
+            unset($detail['account_id']);
+            unset($detail['street']);
+            unset($detail['city']);
+            unset($detail['zipcode']);
+            unset($detail['address_state_code']);
+            unset($detail['address_type']);
+        }
+
+        return Response::json( $address, 200 );
     }
 
   public function getAccountsByType($types)
