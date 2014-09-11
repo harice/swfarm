@@ -11,6 +11,14 @@ class Account extends Eloquent {
 	 */
 	protected $table = 'account';
 
+    public function storagelocation_report() {
+        return $this->hasMany('StorageLocation')->select(array('account_id','id','name'));
+    }
+
+    public function storagelocation() {
+        return $this->hasMany('StorageLocation');
+    }
+
     public function accounttype(){
         return $this->belongsToMany('Accounttype')->withTimestamps();
     }
