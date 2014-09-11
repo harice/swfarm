@@ -26,7 +26,8 @@ class StorageLocation extends Eloquent {
     public static $rules = array(
 		'account_id' => 'required',
         'name' => 'required|unique:storagelocation',
-        'description' => 'max:250'
+        'description' => 'max:250',
+        'address_id' => 'required'
     );
 
     public function account(){
