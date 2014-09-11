@@ -109,9 +109,13 @@ class ReportRepository implements ReportRepositoryInterface {
         );
 
         $result = array();
+        $total_amount = 0.0;
+
         $transacts = $transactions->get()->toArray();
         foreach($transacts as $transact)
         {
+            $amount = $transact['pounds'] * 0.0005 * $transact['unitprice'];
+
             $result[$transact['storagelocation_name']]['weight_tickets'][] = array(
                 'created_at' => $transact['created_at'],
                 'order_number' => $transact['order_number'],
@@ -119,14 +123,24 @@ class ReportRepository implements ReportRepositoryInterface {
                 'product_name' => $transact['product_name'],
                 'bales' => $transact['bales'],
                 'pounds' => $transact['pounds'],
-                'unitprice' => $transact['unitprice']
+                'unitprice' => $transact['unitprice'],
+                'amount' => $amount
             );
+
+            $total_amount += $amount;
         }
+
+        $total_bales = $transactions->sum('weightticketproducts.bales');
+        $total_pounds = $transactions->sum('weightticketproducts.pounds');
+        $scale_fees = 0.0; // @todo: Get Scale Fees
 
         $report['producer'] = Account::with('address')->find($id)->toArray();
         $report['summary']['total_transactions'] = $transactions->count();
-        $report['summary']['total_bales'] = $transactions->sum('weightticketproducts.bales');
-        $report['summary']['total_pounds'] = $transactions->sum('weightticketproducts.pounds');
+        $report['summary']['total_bales'] = $total_bales;
+        $report['summary']['total_pounds'] = $total_pounds;
+        $report['summary']['total_contact_amount'] = $total_amount;
+        $report['summary']['scale_fees'] = $scale_fees;
+        $report['summary']['total'] = $total_amount - $scale_fees;
         $report['transactions'] = $result;
 
         return $report;
