@@ -7,6 +7,7 @@ define([
 	'jquerytextformatter',
 	'models/stack/StackLocationModel',
 	'collections/account/AccountCollection',
+	'collections/address/AddressCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/stack/stackLocationAddTemplate.html',
 	'text!templates/stack/stackLocationSectionItemTemplate.html',
@@ -20,6 +21,7 @@ define([
 			TextFormatter,
 			StackLocationModel,
 			AccountCollection,
+			AddressCollection,
 			contentTemplate,
 			stackLocationAddTemplate,
 			stackLocationSectionItemTemplate,
@@ -56,6 +58,9 @@ define([
 			this.producerAndWarehouseAccount.on('error', function(collection, response, options) {
 				this.off('error');
 			});
+
+			this.addressCollection = new AddressCollection();			
+			
 		},
 		
 		render: function(){
@@ -195,10 +200,37 @@ define([
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #delete-sl': 'showDeleteConfirmationWindow',
 			'click #confirm-delete-sl': 'deleteStockLocation',
-			
+			'change #account_id': 'generateAddress',
 			'click #map': 'showMap',
 		},
 		
+		generateAddress: function (){
+			var thisObj = this;
+
+			var acct_id = $("#account_id").val();			
+			this.addressCollection.fetchStackAddress(acct_id);
+
+
+			this.addressCollection.fetch({
+				success: function (collection, response, options) {					
+					thisObj.showAddressList();
+				},
+				error: function (collection, response, options) {
+				},
+				headers: this.addressCollection.getAuth()
+			});
+					
+		},
+
+		showAddressList: function () {
+			var address = '';
+			_.each(this.addressCollection.models, function (model) {
+				address += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
+			});
+
+			this.$el.find('#address').append(address);
+		},
+
 		removeSection: function (ev) {
 			$(ev.target).closest('tr').remove();
 			

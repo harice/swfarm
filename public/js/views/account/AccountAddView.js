@@ -171,9 +171,11 @@ define([
 		},
 		
 		addAddressFields: function () {
+
 			var clone = null;
 			var multipleAddress = Const.ACCOUNT.MULTIPLEADDRESS;
 			var accountTypeText = $('#accounttype').find('option:selected').text();
+
 			
 			if(this.options.addressFieldClone == null) {
 				var varAccountAddressTemplate = {
@@ -200,9 +202,9 @@ define([
 				this.$el.find('.remove-address-fields').remove();
 				clone = this.$el.find('#account-adresses > div:first-child');
 			}
-			else {
-				if(multipleAddress.indexOf(accountTypeText) > -1) {
-					var clone = this.options.addressFieldClone.clone();
+			else {	
+				//if(multipleAddress.indexOf(accountTypeText) > -1) {					
+					var clone = this.options.addressFieldClone.clone();					
 					
 					if(accountTypeText == 'Producer')
 						clone.find('.type option').filter(function () { return $(this).html() == Const.ACCOUNT.UNIQUEADDRESS.CUSTOMER; }).remove();
@@ -211,7 +213,7 @@ define([
 					
 					this.addIndexToAddressFields(clone);
 					$('#account-adresses').append(clone);
-				}
+				//}
 			}
 			
 			this.addValidationToAddressFields();
@@ -298,12 +300,10 @@ define([
 			}
 			else {
 				if(accountTypeText == 'Producer') {
-					$('#add-address-field').removeClass("hidden");
 					$('#account-adresses').find('.type option').filter(function () { return $(this).html() == Const.ACCOUNT.UNIQUEADDRESS.CUSTOMER; }).remove();
 					$('#account-adresses').find('.type').append(this.options.addressTypeUniqueForProducer);
 				}
 				else if(accountTypeText == 'Customer') {
-					$('#add-address-field').removeClass("hidden");
 					$('#account-adresses').find('.type option').filter(function () { return $(this).html() == Const.ACCOUNT.UNIQUEADDRESS.PRODUCER; }).remove();
 					$('#account-adresses').find('.type').append(this.options.addressTypeUniqueForCustomer);
 				}
