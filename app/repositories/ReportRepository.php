@@ -112,7 +112,7 @@ class ReportRepository implements ReportRepositoryInterface {
         $transacts = $transactions->get()->toArray();
         foreach($transacts as $transact)
         {
-            $result[$transact['storagelocation_name']][] = array(
+            $result[$transact['storagelocation_name']]['weight_tickets'][] = array(
                 'created_at' => $transact['created_at'],
                 'order_number' => $transact['order_number'],
                 'weightTicketNumber' => $transact['weightTicketNumber'],
