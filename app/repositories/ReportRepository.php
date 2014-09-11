@@ -96,6 +96,7 @@ class ReportRepository implements ReportRepositoryInterface {
         $transactions = $transactions->where('order.account_id', '=', $id);
 
         $transactions = $transactions->select(
+            'weightticket.id',
             'storagelocation.id as storagelocation_id',
             'storagelocation.name as storagelocation_name',
             'weightticketproducts.created_at',
@@ -107,11 +108,26 @@ class ReportRepository implements ReportRepositoryInterface {
             'productorder.unitprice'
         );
 
+        $result = array();
+        $transacts = $transactions->get()->toArray();
+        foreach($transacts as $transact)
+        {
+            $result[$transact['storagelocation_name']][] = array(
+                'created_at' => $transact['created_at'],
+                'order_number' => $transact['order_number'],
+                'weightTicketNumber' => $transact['weightTicketNumber'],
+                'product_name' => $transact['product_name'],
+                'bales' => $transact['bales'],
+                'pounds' => $transact['pounds'],
+                'unitprice' => $transact['unitprice']
+            );
+        }
+
         $report['producer'] = Account::with('address')->find($id)->toArray();
         $report['summary']['total_transactions'] = $transactions->count();
         $report['summary']['total_bales'] = $transactions->sum('weightticketproducts.bales');
         $report['summary']['total_pounds'] = $transactions->sum('weightticketproducts.pounds');
-        $report['transactions'] = $transactions->get()->toArray();
+        $report['transactions'] = $result;
 
         return $report;
     }
