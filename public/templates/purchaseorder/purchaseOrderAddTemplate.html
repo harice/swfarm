@@ -138,7 +138,7 @@
 
                     <h3 class='margin-bottom-0'>
                         Products
-                        <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-primary btn-xs">
+                        <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-rad btn-primary btn-xs">
                             <span class="glyphicon glyphicon-plus"></span>
                         </button>
                     </h3>
@@ -172,12 +172,12 @@
                         <div class="col-md-12">
                             <div class="pull-right">
 								<% if (typeof is_bid === "undefined") { %>
-									<button id="save-and-check-in" type="button" class="save-and-close btn btn-sm btn-primary">Save & Close</button>
+									<button id="save-and-check-in" type="button" class="save-and-close btn btn-sm btn-primary btn-rad">Save & Close</button>
 								<% } %>
                                 <% if (typeof po_id !== "undefined" && typeof is_bid !== "undefined") { %>
-									<button id="convert-po" type="button" class="save btn btn-sm btn-warning">Convert to PO</button>
+									<button id="convert-po" type="button" class="save btn btn-sm btn-warning btn-rad">Convert to PO</button>
                                 <% } %>
-                                <button id="save" type="submit" class="save btn btn-sm btn-primary"><i class="fa fa-save"></i> Save</button>
+                                <button id="save" type="submit" class="save btn btn-sm btn-primary btn-rad"><i class="fa fa-save"></i> Save</button>
                                 <a id="go-to-previous-page" class="btn btn-link btn-sm" href="#">Cancel</a>
                             </div>
                         </div>

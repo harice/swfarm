@@ -10,15 +10,15 @@
                             <input type="hidden" id="id" name="id" value="<%= user_id %>" />
                           <% } %>
                           <fieldset>
-                            <legend>Personal Information</legend>
+                            <legend><h3>Personal Information</h3></legend>
                             <div class="form-group">
-                              <label for="firstname" class="col-sm-3 control-label">First Name *</label>
+                              <label for="firstname" class="col-sm-3 control-label">First Name <i class="color-danger">*</i></label>
                               <div class="col-sm-5">
                                 <input type="text" class="form-control capitalize input-sm" id="firstname" name="firstname" placeholder="" minlength="2" maxlength="50" required>
                               </div>
                             </div>
                             <div class="form-group">
-                              <label for="lastname" class="col-sm-3 control-label">Last Name *</label>
+                              <label for="lastname" class="col-sm-3 control-label">Last Name <i class="color-danger">*</i></label>
                               <div class="col-sm-5">
                                 <input type="text" class="form-control capitalize input-sm" id="lastname" name="lastname" placeholder="" minlength="2" maxlength="50" required>
                               </div>
@@ -30,7 +30,7 @@
                               </div>
                             </div>
                             <div class="form-group">
-                              <label for="email" class="col-sm-3 control-label">Email *</label>
+                              <label for="email" class="col-sm-3 control-label">Email <i class="color-danger">*</i></label>
                               <div class="col-sm-5">
                                 <input type="email" class="form-control lowercase input-sm" id="email" name="email" placeholder="" maxlength="250" required>
                               </div>
@@ -42,7 +42,7 @@
                               </div>
                             </div>
                             <div class="form-group">
-                              <label for="emp_no" class="col-sm-3 control-label">Employee No. *</label>
+                              <label for="emp_no" class="col-sm-3 control-label">Employee No. <i class="color-danger">*</i></label>
                               <div class="col-sm-5">
                                 <input type="text" class="form-control input-sm" id="emp_no" name="emp_no" placeholder="" maxlength="250" required>
                               </div>
@@ -76,7 +76,7 @@
                             </div>
                           </fieldset>
                           <fieldset>
-                            <legend>User Settings</legend>
+                            <legend><h3>User Settings</h3></legend>
                             <div class="form-group">
                               <label for="" class="col-sm-3 control-label">Roles</label>
                               <div class="col-sm-5 user-role-container"></div>
@@ -85,7 +85,7 @@
                           <div class="form-group form-button-container" style="display:none;">
                             <label for="" class="col-sm-3 control-label"></label>
                             <div class="col-sm-5">
-                               <button id="save" type="submit" class="save btn btn-primary btn-sm"><i class="fa fa-save"></i> Save</button>
+                               <button id="save" type="submit" class="save btn btn-primary btn-sm btn-rad"><i class="fa fa-save"></i> Save</button>
                                <a id="go-to-previous-page" href="#" class="btn btn-link btn-sm">Cancel</a>
                             </div>
                           </div>

@@ -1,17 +1,17 @@
-<div class="row">
-    <div class="col-md-12">
+<div class="row margin-top-0">
+    <div class="col-md-12 no-padding">
         <div class="block-flat">
-            <div class="content">
-                <div class="row">
+            <div class="content padding-top-0">
+                <div class="row margin-top-0">
                     <div class="col-md-9">
                         <form id="TruckerForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
                             <% if (typeof trucker_id !== "undefined") { %>
                                 <input type="hidden" name="id" value="<%= trucker_id %>" />
                             <% } %>
                             <fieldset>
-                                <legend>Details</legend>
+                                <legend><h3>Details</h3></legend>
                                 <div class="form-group">
-                                    <label for="truckerAccountType_id" class="col-sm-3 control-label">Truck Type *</label>
+                                    <label for="truckerAccountType_id" class="col-sm-3 control-label">Truck Type <i class="color-danger">*</i></label>
                                     <div class="col-sm-5">
                                         <div class="styled-select">
                                             <select class="form-control width-304" id="truckerAccountType_id" name="truckerAccountType_id" required>
@@ -33,26 +33,26 @@
 									</div>
 								</div>
                                 <div class="form-group">
-                                    <label for="trucknumber" class="col-sm-3 control-label">Truck Name *</label>
+                                    <label for="trucknumber" class="col-sm-3 control-label">Truck Name <i class="color-danger">*</i></label>
                                     <div class="col-sm-5">
-                                        <input type="text" class="form-control capitalize width-200" id="trucknumber" name="trucknumber" minlength="1" maxlength="20" required>
+                                        <input type="text" class="form-control input-sm capitalize width-200" id="trucknumber" name="trucknumber" minlength="1" maxlength="20" required>
                                     </div>
                                 </div>
 								<div class="form-group">
-                                    <label for="fee" class="col-sm-3 control-label">Admin Fee *</label>
+                                    <label for="fee" class="col-sm-3 control-label">Admin Fee <i class="color-danger">*</i></label>
                                     <div class="col-sm-2">
                                         <div class="input-group margin-0">
                                             <span class="input-group-addon">$</span>
-                                            <input type="text" class="form-control mask-admin-fee text-right" id="fee" name="fee" placeholder="0.00" maxlength="8" required>
+                                            <input type="text" class="form-control input-sm mask-admin-fee text-right" id="fee" name="fee" placeholder="0.00" maxlength="8" required>
                                         </div>
                                     </div>
                                 </div>
                             </fieldset>
                             <div class="form-group">
                                 <div class="col-md-5 col-md-offset-3">
-                                    <button id="save" type="submit" class="save btn btn-primary"><i class="fa fa-save"></i> Save</button>
+                                    <button id="save" type="submit" class="save btn btn-primary btn-sm btn-rad"><i class="fa fa-save"></i> Save</button>
                                     <% if (typeof trucker_id !== "undefined") { %>
-                                    <button id="delete-trucker" type="button" class="btn btn-danger"><i class="fa fa-times width-10"></i> Delete</button>
+                                    <button id="delete-trucker" type="button" class="btn btn-danger btn-sm btn-rad"><i class="fa fa-times width-10"></i> Delete</button>
                                     <% } %>
                                     <a id="go-to-previous-page" class="btn btn-link" href="#">Cancel</a>
                                 </div>

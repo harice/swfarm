@@ -20,7 +20,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <% if (!_.isEmpty(reports)) { %>
-                                            <select id="reporttype" class="form-control">
+                                            <select id="reporttype" class="form-control input-sm">
                                                 <%= reports %>
                                             </select>
                                         <% } else { %>
@@ -29,12 +29,14 @@
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="row margin-top-0">
-                                            <label for="name" class="col-sm-5 control-label">Date From *</label>
+                                            <label for="name" class="col-sm-5 control-label">Date From <i class="color-danger">*</i></label>
                                             <div class="col-sm-7">
                                                 <div id="filter-operator-date-start" class="calendar-cont">
-                                                    <div class="input-group date datetime margin-bottom-0">
+                                                    <div class="input-group input-group-sm date datetime margin-bottom-0">
                                                         <input id="transportdatestart" class="form-control form-date" name="transportdatestart" size="16" type="text" value="" required/>
-                                                        <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                                        <div class="input-group-btn">
+                                                            <span class="btn btn-trans"><span class="fa fa-calendar"></span></span>
+                                                        </div>
                                                     </div>
                                                     <div class="error-msg-cont"></div>
                                                 </div>                                
@@ -43,12 +45,14 @@
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="row margin-top-0">
-                                            <label for="name" class="col-sm-5 control-label">Date To *</label>
+                                            <label for="name" class="col-sm-5 control-label">Date To <i class="color-danger">*</i></label>
                                             <div class="col-sm-7">
                                                 <div id="filter-operator-date-end" class="calendar-cont">
-                                                    <div class="input-group date datetime margin-bottom-0">
+                                                    <div class="input-group input-group-sm date datetime margin-bottom-0">
                                                         <input id="transportdateend" class="form-control form-date" name="transportdateend" size="16" type="text" value="" required/>
-                                                        <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                                        <div class="input-group-btn">
+                                                            <span class="btn btn-trans"><span class="fa fa-calendar"></span></span>
+                                                        </div>
                                                     </div>
                                                     <div class="error-msg-cont"></div>
                                                 </div>                                

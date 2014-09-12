@@ -171,9 +171,11 @@ define([
 		},
 		
 		addAddressFields: function () {
+
 			var clone = null;
 			var multipleAddress = Const.ACCOUNT.MULTIPLEADDRESS;
 			var accountTypeText = $('#accounttype').find('option:selected').text();
+
 			
 			if(this.options.addressFieldClone == null) {
 				var varAccountAddressTemplate = {
@@ -200,9 +202,9 @@ define([
 				this.$el.find('.remove-address-fields').remove();
 				clone = this.$el.find('#account-adresses > div:first-child');
 			}
-			else {
-				if(multipleAddress.indexOf(accountTypeText) > -1) {
-					var clone = this.options.addressFieldClone.clone();
+			else {	
+				//if(multipleAddress.indexOf(accountTypeText) > -1) {					
+					var clone = this.options.addressFieldClone.clone();					
 					
 					if(accountTypeText == 'Producer')
 						clone.find('.type option').filter(function () { return $(this).html() == Const.ACCOUNT.UNIQUEADDRESS.CUSTOMER; }).remove();
@@ -211,7 +213,7 @@ define([
 					
 					this.addIndexToAddressFields(clone);
 					$('#account-adresses').append(clone);
-				}
+				//}
 			}
 			
 			this.addValidationToAddressFields();
@@ -291,9 +293,9 @@ define([
 		
 		onChangeAccountType: function (ev) {
 			var multipleAddress = Const.ACCOUNT.MULTIPLEADDRESS;
-			var accountTypeText = $(ev.target).find('option:selected').text();
+			var accountTypeText = $(ev.target).find('option:selected').text();			
 			
-			if(multipleAddress.indexOf(accountTypeText) < 0) {
+			if(multipleAddress.indexOf(accountTypeText) < 0) {				
 				$('#account-adresses').find('.address-fields-container:gt(0)').remove();
 			}
 			else {

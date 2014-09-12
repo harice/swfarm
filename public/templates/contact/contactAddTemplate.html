@@ -1,7 +1,7 @@
 <div class="row margin-top-0">
     <div class="col-md-12 no-padding">
         <div class="block-flat padding-top-0 padding-bottom-0">
-            <div class="content padding-top-0">
+            <div class="content">
             
                 <div class="row margin-top-0">
                     <!-- div class="col-md-3">
@@ -13,13 +13,13 @@
                                 <input type="hidden" id="id" name="id" value="<%= contact_id %>" />
                             <% } %>
                             <div class="form-group">
-                                <label for="firstname" class="col-sm-3 control-label">First Name *</label>
+                                <label for="firstname" class="col-sm-3 control-label">First Name <i class="color-danger">*</i></label>
                                 <div class="col-sm-5">
                                     <input type="text" class="form-control capitalize width-300 input-sm" id="firstname" name="firstname" placeholder="" minlength="1" maxlength="50" required>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="lastname" class="col-sm-3 control-label">Last Name *</label>
+                                <label for="lastname" class="col-sm-3 control-label">Last Name <i class="color-danger">*</i></label>
                                 <div class="col-sm-5">
                                     <input type="text" class="form-control capitalize width-300 input-sm" id="lastname" name="lastname" placeholder="" minlength="1" maxlength="50" required>
                                 </div>
@@ -31,7 +31,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="account" class="col-sm-3 control-label">Account Name *</label>
+                                <label for="account" class="col-sm-3 control-label">Account Name <i class="color-danger">*</i></label>
                                 <div class="col-sm-5">
                                     <input type="text" class="form-control width-300 input-sm" id="account" name="" placeholder="" minlength="1" maxlength="50" required>
                                     <input type="hidden" class="form-control" id="account_id" name="account" required>
@@ -44,13 +44,13 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="email" class="col-sm-3 control-label">Email *</label>
+                                <label for="email" class="col-sm-3 control-label">Email <i class="color-danger">*</i></label>
                                 <div class="col-sm-5">
                                     <input type="text" class="form-control lowercase width-300 input-sm" id="email" name="email" placeholder="" minlength="1" maxlength="128" required>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="phone" class="col-sm-3 control-label">Phone *</label>
+                                <label for="phone" class="col-sm-3 control-label">Phone <i class="color-danger">*</i></label>
                                 <div class="col-sm-5">
                                     <input type="text" class="form-control phone-number width-150 input-sm" id="phone" name="phone" placeholder="" minlength="14" maxlength="14" required>
                                 </div>
@@ -73,7 +73,7 @@
                             <div class="form-group">
                                 <label for="" class="col-sm-3 control-label"></label>
                                 <div class="col-sm-5">
-                                     <button id="save" type="submit" class="save btn btn-primary btn-sm"><i class="fa fa-save"></i> Save</button>
+                                     <button id="save" type="submit" class="save btn btn-primary btn-sm btn-rad"><i class="fa fa-save"></i> Save</button>
                                      <a id="go-to-previous-page" class="btn btn-link" href="#">Cancel</a>
                                 </div>
                             </div>

@@ -1,198 +1,200 @@
 <div class="row margin-top-0">
-    <div class="col-md-12">
+    <div class="col-md-12 no-padding">
         <div class="block-flat">
-            <div class="content">
-
-                <form id="soForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-                    <% if (typeof so_id !== "undefined") { %>
-                    <input type="hidden" name="id" value="<%= so_id %>" />
-                    <% } %>
-                    <fieldset>
-                        <legend>Details</legend>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <% if (typeof so_id !== "undefined") { %>
-                                <div class="form-group">
-                                    <label for="sonumber" class="col-sm-3 control-label">SO Number</label>
-                                    <div class="col-sm-7">
-                                        <input id="sonumber" type="text" class="form-control sonumber" placeholder="" maxlength="250" readonly>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="status" class="col-sm-3 control-label">Status</label>
-                                    <div class="col-sm-7">
-                                        <input id="status" type="text" class="form-control status" placeholder="" maxlength="250" readonly>
-                                    </div>
-                                </div>
-                                <% } %>
-
-                                <div class="form-group">
-                                    <label for="natureofsale_id" class="col-sm-3 control-label">Nature of Sale</label>
-                                    <div id="so-nos" class="col-sm-9"></div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="account" class="col-sm-3 control-label">Customer *</label>
-                                    <div class="col-sm-7">
-                                        <input type="text" class="form-control capitalize" id="account" name="account" maxlength="50" required>
-                                        <input type="hidden" class="form-control" id="account_id" name="account_id" value="" required>
-                                    </div>
-                                </div>
-								<div class="form-group">
-									<label for="contact_id" class="col-sm-3 control-label">Customer Contact *</label>
-									<div class="col-sm-7">
-										<div class="styled-select">
-											<select class="form-control display-inline" id="contact_id" name="contact_id" required>
-												<option value="">Select a customer contact</option>
-											</select>
-											<span class="throbber_wrap" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
-										</div>
-									</div>
-								</div>
-                                <div class="form-group">
-                                    <label for="street" class="col-sm-3 control-label">Street</label>
-                                    <div class="col-sm-7">
-                                        <input id="street" type="text" class="form-control street" placeholder="" maxlength="250" readonly>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="city" class="col-sm-3 control-label">City</label>
-                                    <div class="col-sm-7">
-                                        <input id="city" type="text" class="form-control city" placeholder="" maxlength="250" readonly>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="state" class="col-sm-3 control-label">State</label>
-                                    <div class="col-sm-7">
-                                        <input id="state" type="text" class="form-control state" placeholder="" maxlength="250" readonly>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="zipcode" class="col-sm-3 control-label">Zip Code</label>
-                                    <div class="col-sm-3">
-                                        <input id="zipcode" type="text" class="form-control zipcode" placeholder="" minlength="5" maxlength="10" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <% if (typeof so_id !== "undefined") { %>
-                                <div class="form-group">
-                                    <label for="dateofsale" class="col-sm-3 control-label">Date of Sale</label>
-                                    <div class="col-sm-7">
-                                        <input id="dateofsale" type="text" class="form-control dateofsale" placeholder="" maxlength="250" readonly>
-                                    </div>
-                                </div>
-                                <% } %>
-                                <div class="form-group"><label class="col-sm-12">Delivery Period:</label></div>
-                                <div class="form-group">
-                                    <label for="transportdatestart" class="col-sm-3 control-label">Start</label>
-                                    <div class="col-sm-4">
-                                        <div id="start-date" class="calendar-cont">
-                                            <div class="input-group date datetime margin-bottom-0">
-                                                <input id="transportdatestart" class="form-control form-date" name="transportdatestart" size="16" type="text" value="" required/>
-                                                <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+            <div class="content padding-top-0">
+                <div class="row margin-top-0">
+                    <div class="col-md-12">
+                        <form id="soForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+                            <% if (typeof so_id !== "undefined") { %>
+                            <input type="hidden" name="id" value="<%= so_id %>" />
+                            <% } %>
+                            <fieldset>
+                                <legend><h3>Details</h3></legend>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <% if (typeof so_id !== "undefined") { %>
+                                        <div class="form-group">
+                                            <label for="sonumber" class="col-sm-3 control-label">SO Number</label>
+                                            <div class="col-sm-7">
+                                                <input id="sonumber" type="text" class="form-control input-sm sonumber" placeholder="" maxlength="250" readonly>
                                             </div>
                                         </div>
-                                        <div class="error-msg-cont"></div>
-                                    </div>
-                                    <label for="transportdateend" class="col-sm-1 control-label">End</label>
-                                    <div class="col-sm-4">
-                                        <div id="end-date" class="calendar-cont">
-                                            <div class="input-group date datetime margin-bottom-0">
-                                                <input id="transportdateend" class="form-control form-date" name="transportdateend" size="16" type="text" value="" required/>
-                                                <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                        <div class="form-group">
+                                            <label for="status" class="col-sm-3 control-label">Status</label>
+                                            <div class="col-sm-7">
+                                                <input id="status" type="text" class="form-control input-sm status" placeholder="" maxlength="250" readonly>
                                             </div>
                                         </div>
-                                        <div class="error-msg-cont"></div>
-                                    </div>
-                                </div>
-								<% if (typeof readonly_products !== "undefined") { %>
-								<div class="form-group">
-                                    <label for="contract_id_dummy" class="col-sm-3 control-label">Contract</label>
-                                    <div class="col-sm-7">
-										<div class="styled-select">
-                                            <select id="contract_id_dummy" class="form-control contract_id_dummy width-160" disabled>
-                                                <option value="">Select a contract</option>
-                                            </select>
-											<input type="hidden" id="contract_id" class="contract_id" name="contract_id" value="" />
-                                        </div>
-                                    </div>
-                                </div>
-								<% } else { %>
-                                <div class="form-group">
-                                    <label for="contract_id" class="col-sm-3 control-label">Contract</label>
-                                    <div class="col-sm-7">
-										<div class="styled-select">
-                                            <select id="contract_id" class="form-control contract_id width-160" name="contract_id" disabled>
-                                                <option value="">Select a contract</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-								<% } %>
-                                <div class="form-group">
-                                    <label for="notes" class="col-sm-3 control-label">Notes</label>
-                                    <div class="col-sm-9">
-                                        <textarea class="form-control notes" id="notes" name="notes"></textarea>
-                                    </div>
-                                </div>
+                                        <% } %>
 
+                                        <div class="form-group">
+                                            <label for="natureofsale_id" class="col-sm-3 control-label">Nature of Sale</label>
+                                            <div id="so-nos" class="col-sm-9"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="account" class="col-sm-3 control-label">Customer <i class="color-danger">*</i></label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control input-sm capitalize" id="account" name="account" maxlength="50" required>
+                                                <input type="hidden" class="form-control" id="account_id" name="account_id" value="" required>
+                                            </div>
+                                        </div>
+        								<div class="form-group">
+        									<label for="contact_id" class="col-sm-3 control-label">Customer Contact <i class="color-danger">*</i></label>
+        									<div class="col-sm-7">
+        										<div class="styled-select">
+        											<select class="form-control display-inline" id="contact_id" name="contact_id" required>
+        												<option value="">Select a customer contact</option>
+        											</select>
+        											<span class="throbber_wrap" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
+        										</div>
+        									</div>
+        								</div>
+                                        <div class="form-group">
+                                            <label for="street" class="col-sm-3 control-label">Street</label>
+                                            <div class="col-sm-7">
+                                                <input id="street" type="text" class="form-control input-sm street" placeholder="" maxlength="250" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="city" class="col-sm-3 control-label">City</label>
+                                            <div class="col-sm-7">
+                                                <input id="city" type="text" class="form-control input-sm city" placeholder="" maxlength="250" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="state" class="col-sm-3 control-label">State</label>
+                                            <div class="col-sm-7">
+                                                <input id="state" type="text" class="form-control input-sm state" placeholder="" maxlength="250" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="zipcode" class="col-sm-3 control-label">Zip Code</label>
+                                            <div class="col-sm-3">
+                                                <input id="zipcode" type="text" class="form-control input-sm zipcode" placeholder="" minlength="5" maxlength="10" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <% if (typeof so_id !== "undefined") { %>
+                                        <div class="form-group">
+                                            <label for="dateofsale" class="col-sm-3 control-label">Date of Sale</label>
+                                            <div class="col-sm-7">
+                                                <input id="dateofsale" type="text" class="form-control input-sm dateofsale" placeholder="" maxlength="250" readonly>
+                                            </div>
+                                        </div>
+                                        <% } %>
+                                        <div class="form-group"><label class="col-sm-12">Delivery Period:</label></div>
+                                        <div class="form-group">
+                                            <label for="transportdatestart" class="col-sm-3 control-label">Start</label>
+                                            <div class="col-sm-4">
+                                                <div id="start-date" class="calendar-cont">
+                                                    <div class="input-group date datetime margin-bottom-0">
+                                                        <input id="transportdatestart" class="form-control form-date" name="transportdatestart" size="16" type="text" value="" required/>
+                                                        <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                                    </div>
+                                                </div>
+                                                <div class="error-msg-cont"></div>
+                                            </div>
+                                            <label for="transportdateend" class="col-sm-1 control-label">End</label>
+                                            <div class="col-sm-4">
+                                                <div id="end-date" class="calendar-cont">
+                                                    <div class="input-group date datetime margin-bottom-0">
+                                                        <input id="transportdateend" class="form-control form-date" name="transportdateend" size="16" type="text" value="" required/>
+                                                        <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                                    </div>
+                                                </div>
+                                                <div class="error-msg-cont"></div>
+                                            </div>
+                                        </div>
+        								<% if (typeof readonly_products !== "undefined") { %>
+        								<div class="form-group">
+                                            <label for="contract_id_dummy" class="col-sm-3 control-label">Contract</label>
+                                            <div class="col-sm-7">
+        										<div class="styled-select">
+                                                    <select id="contract_id_dummy" class="form-control contract_id_dummy width-160" disabled>
+                                                        <option value="">Select a contract</option>
+                                                    </select>
+        											<input type="hidden" id="contract_id" class="contract_id" name="contract_id" value="" />
+                                                </div>
+                                            </div>
+                                        </div>
+        								<% } else { %>
+                                        <div class="form-group">
+                                            <label for="contract_id" class="col-sm-3 control-label">Contract</label>
+                                            <div class="col-sm-7">
+        										<div class="styled-select">
+                                                    <select id="contract_id" class="form-control contract_id width-160" name="contract_id" disabled>
+                                                        <option value="">Select a contract</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+        								<% } %>
+                                        <div class="form-group">
+                                            <label for="notes" class="col-sm-3 control-label">Notes</label>
+                                            <div class="col-sm-9">
+                                                <textarea class="form-control notes" id="notes" name="notes"></textarea>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <fieldset class="margin-top-10">
+                                <legend>
+                                    <h3 class="pull-left margin-top-0 margin-bottom-0">Products</h3>
+                                    <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-rad btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
+                                </legend>
+                                <div class="table-responsive">
+                                    <table id="product-list" class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Product</th>
+                                                <th class="width-130">Unit Price</th>
+                                                <th>Est Tons</th>
+                                                <th class="width-130">Total Price</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+        								<tfoot>
+        									<tr>
+        										<td class="text-right" colspan="2">Total</td>
+        										<td><input id="total-tons" class="form-control input-sm text-right" type="text" value="0.0000" readonly></td>
+        										<td>
+        											<div class="input-group margin-0">
+        												<span class="input-group-addon">$</span>
+        												<input id="total-price" class="form-control input-sm text-right" type="text" value="0.00" readonly>
+        											</div>
+        										</td>
+        										<td>&nbsp;</td>
+        									</tr>
+        								</tfoot>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </fieldset>
+                            <div class="form-group form-button-container">
+                                <div class="col-md-12">
+                                    <div class="pull-right">
+        								<% if (typeof readonly_products == "undefined") { %>
+        									<% if (typeof verified === "undefined") { %>
+        									<button id="verify-so" type="button" class="save btn btn-primary btn-sm btn-rad">
+        										<% if (typeof so_id !== "undefined") { %>
+        											Verify
+        										<% } else { %>
+        											Save and Verify
+        										<% } %>
+        									</button>
+        									<% } %>
+        								<% } %>
+                                        <button id="save" type="submit" class="save btn btn-primary btn-rad btn-sm"><i class="fa fa-save"></i> Save</button>
+                                        <a id="go-to-previous-page" class="btn btn-link" href="#">Cancel</a>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </fieldset>
-                    <fieldset>
-                        <legend>
-                            Products
-                            <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
-                        </legend>
-                        <div class="table-responsive">
-                            <table id="product-list" class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th class="width-130">Unit Price</th>
-                                        <th>Est Tons</th>
-                                        <th class="width-130">Total Price</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-								<tfoot>
-									<tr>
-										<td class="text-right" colspan="2">Total</td>
-										<td><input id="total-tons" class="form-control text-right" type="text" value="0.0000" readonly></td>
-										<td>
-											<div class="input-group margin-0">
-												<span class="input-group-addon">$</span>
-												<input id="total-price" class="form-control text-right" type="text" value="0.00" readonly>
-											</div>
-										</td>
-										<td>&nbsp;</td>
-									</tr>
-								</tfoot>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    </fieldset>
-                    <div class="form-group form-button-container">
-                        <div class="col-md-12">
-                            <div class="pull-right">
-								<% if (typeof readonly_products == "undefined") { %>
-									<% if (typeof verified === "undefined") { %>
-									<button id="verify-so" type="button" class="save btn btn-primary">
-										<% if (typeof so_id !== "undefined") { %>
-											Verify
-										<% } else { %>
-											Save and Verify
-										<% } %>
-									</button>
-									<% } %>
-								<% } %>
-                                <button id="save" type="submit" class="save btn btn-primary"><i class="fa fa-save"></i> Save</button>
-                                <a id="go-to-previous-page" class="btn btn-link" href="#">Cancel</a>
-                            </div>
-                        </div>
+                        </form>
                     </div>
-                </form>
-
+                </div>
             </div> <!-- /.content -->
         </div> <!-- /.block-flat -->
     </div>

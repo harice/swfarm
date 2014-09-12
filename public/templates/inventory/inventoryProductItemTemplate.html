@@ -5,7 +5,7 @@
             <select class="form-control product_id width-160" name="product_id"><%= product_list %></select>
         </div>
 	</td>
-	<td><input class="form-control stacknumber" type="text" name="stacknumber" maxlength="20" required></td>
+	<td><input class="form-control input-sm stacknumber" type="text" name="stacknumber" maxlength="20" required></td>
 	<td>
 		<div class="styled-select">
             <select class="form-control sectionfrom_id width-160" name="sectionfrom_id"><%= location_list %></select>
@@ -16,14 +16,14 @@
             <select class="form-control sectionto_id width-160" name="sectionto_id"><%= location_list %></select>
         </div>
 	</td>
-	<td><input class="form-control text-right bales" name="bales" type="text"></td>
-	<td><input class="form-control text-right tons" type="text" name="tons" maxlength="12"></td>
+	<td><input class="form-control input-sm text-right bales" name="bales" type="text"></td>
+	<td><input class="form-control input-sm text-right tons" type="text" name="tons" maxlength="12"></td>
 	<td>
-		<div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right price" type="text" name="price" placeholder="0.00" value="" required></div>
+		<div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control input-sm text-right price" type="text" name="price" placeholder="0.00" value="" required></div>
 		<div class="error-msg-cont"></div>
 	</td>
-	<td><div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right total-price" type="text" value="0.00" readonly></div></td>
+	<td><div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control input-sm text-right total-price" type="text" value="0.00" readonly></div></td>
 	<td>
-		<button title="Remove Product" type="button" class="pull-right btn btn-danger btn-xs remove-product"><span class="glyphicon glyphicon-remove"></span></button>
+		<button title="Remove Product" type="button" class="pull-right btn btn-rad btn-danger btn-xs remove-product"><span class="glyphicon glyphicon-remove"></span></button>
 	</td>
 </tr>

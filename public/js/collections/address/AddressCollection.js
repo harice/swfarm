@@ -18,6 +18,10 @@ define([
 		formatURL: function (data) {
 			this.url = this.getDefaultURL() + '?producerId=' + data;
 		},
+
+		fetchStackAddress: function(id){
+			this.url= '/apiv1/account/getStackAddress/'+ id;
+		}
 	});
 
 	return AddressCollection;

@@ -1,30 +1,97 @@
 <div class="row margin-top-0">
     <div class="col-md-12 no-padding">
         <div class="block-flat">
-            <dl class="dl-horizontal">
-                <dt>Type</dt>
-                <dd><%= account.get("accounttype")[0].name %></dd>
-                <dt>Website</dt>
-                <dd><%= account.get("website") %>&nbsp</dd>
-                <dt>Description</dt>
-                <dd><%= account.get("description") %>&nbsp</dd>
-                <dt>Phone</dt>
-                <dd><%= account.get("phone") %>&nbsp</dd>
-                <% _.each(account.get("address"), function (a){ %>
-                <dt><%= a.address_type[0].name %></dt>
-                <dd>
-                    <%= a.street %><br />
-                    <%= a.city + " " + a.address_states[0].state_code  + " " + a.zipcode %><br />
-                    USA
-                </dd>
-                <% }); %>
-                <dd>
-                    <div class="clearfix"></div>
-                    <a href="<%= account_edit_url %>/<%= account.get("id") %>" class="btn btn-primary"><i class="fa fa-pencil width-10"></i> Edit</a>
-                    <button id="delete-account" type="button" class="btn btn-danger"><i class="fa fa-times width-10"></i> Delete</button>
-                    <a id="go-to-previous-page" href="#" class="btn btn-link">Cancel</a>
-                </dd>
-            </dl>
+            <div class="content padding-top-0">
+                <div class="row margin-top-0">
+                    <div class="col-md-12">
+                        <h2 class="margin-top-10 margin-bottom-0"><%= account.get("name") %></h2>
+                        <div class="progress width-500 margin-bottom-0 margin-top-10 height-3">
+                            <div class="progress-bar progress-bar-success" style="width: %"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="no-border no-strip information">
+                            <tbody class="no-border-x no-border-y">
+                                <tr>
+                                    <td class="category" style="width:20%;">
+                                        <strong>ABOUT</strong>
+                                    </td>
+                                    <td>
+                                        <table class="no-border no-strip">
+                                            <tbody class="no-border-x no-border-y">
+                                              <tr>
+                                                <td style="width:20%;"><b>Type</b></td>
+                                                <td>
+                                                    <% _.each(account.get("accounttype"), function (t){ %>
+                                                        <span class="label label-default margin-right-3"><%= t.name %></span>
+                                                    <% }); %>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td style="width:20%;"><b>Description</b></td>
+                                                <td><%= account.get("description") %></td>
+                                              </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="category" style="width:20%;">
+                                        <strong>CONTACT</strong>
+                                    </td>
+                                    <td>
+                                        <table class="no-border no-strip">
+                                            <tbody class="no-border-x no-border-y">
+                                              <tr>
+                                                <td style="width:20%;"><b>Website</b></td>
+                                                <td><%= account.get("website") %></td>
+                                              </tr>
+                                              <tr>
+                                                <td style="width:20%;"><b>Phone</b></td>
+                                                <td><%= account.get("phone") %></td>
+                                              </tr>
+                                              <% _.each(account.get("address"), function (a){ %>
+                                              <tr>
+                                                <td style="width:20%;"><b><%= a.address_type[0].name %></b></td>
+                                                <td>
+                                                    <%= a.street %><br />
+                                                    <%= a.city + " " + a.address_states[0].state_code  + " " + a.zipcode %><br />
+                                                    USA                                            
+                                                </td>
+                                              </tr>
+                                              <% }); %>
+                                            </tbody>                                    
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="no-border-x no-border-y">
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        <table class="no-border no-strip">
+                                            <tbody class="no-border-x no-border-y">
+                                              <tr>
+                                                <td style="width:20%">&nbsp;</td>
+                                                <td>                                                
+                                                    <div class="clearfix"></div>
+                                                    <a href="<%= account_edit_url %>/<%= account.get("id") %>" class="btn btn-primary btn-trans btn-rad btn-sm"><i class="fa fa-pencil width-10"></i> Edit</a>
+                                                    <button id="delete-account" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
+                                                    <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a> 
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>                                                  
+            </div>            
         </div>
     </div>
 </div>
