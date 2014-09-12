@@ -33,6 +33,16 @@ class Section extends BaseModel {
         'name' => 'required|unique:section,name',
         'description' => 'max:250'
     );
+
+    public function productorder()
+    {
+        return $this->hasMany('ProductOrder');
+    }
+
+    public function productsummary()
+    {
+        return $this->hasManyThrough('ProductOrderSummary','ProductOrder','section_id','id','productordersummary_id');
+    }
     
     public function storagelocation()
     {

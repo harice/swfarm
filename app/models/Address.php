@@ -24,4 +24,8 @@ class Address extends Eloquent {
         return $this->hasMany('AddressStates', 'id','state');
     }
 
+    public function state(){
+        return $this->hasOne('AddressStates', 'id','state');
+    }
+
 }
