@@ -6,6 +6,7 @@ define([
 	'jquerytextformatter',
 	'models/stack/StackLocationModel',
 	'collections/account/AccountCollection',
+	'collections/address/AddressCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/stack/stackLocationAddTemplate.html',
 	'global',
@@ -17,6 +18,7 @@ define([
 			TextFormatter,
 			StackLocationModel,
 			AccountCollection,
+			AddressCollection,
 			contentTemplate,
 			stackLocationAddTemplate,
 			Global,
@@ -60,6 +62,9 @@ define([
 				thisObj.producerAndWarehouseAccount.getProducerAndWarehouseAccount();
 				this.off('change');
 			});
+
+			this.addressCollection = new AddressCollection();			
+			
 		},
 		
 		otherInitializations: function () {
@@ -68,6 +73,7 @@ define([
 		
 		render: function(){
 			this.model.runFetch();
+			this.generateAddress();
 			Backbone.View.prototype.refreshTitle('Stack Location','edit');
 		},
 		
@@ -97,6 +103,7 @@ define([
 										'confirm-delete-sl',
 										'Delete');
 		},
+
 	});
 
 	return StackLocationEditView;

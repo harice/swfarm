@@ -35,13 +35,11 @@
     <% if (producers.get('summary').total_transactions) { %>  
     <div class="content">        
         <div class="content-inner table-responsive">
-            <%
-                var total_amount = 0; 
-           
-                _.each(producers.get('transactions'),function(transaction){
-                    total_amount += transaction.unitprice * convertLbsToTons(transaction.pounds);    
+            <%                                                               
+                _.each(producers.get('transactions'),function(transaction, index){                    
             %>
-            <h6>Location: <strong><%= transaction.storagelocation_name %></strong></h6>
+            <h6>Location: <strong><%= index %></strong></h6>
+            
             <table id="operator-list" class="table-bordered table">
                 <thead class="no-border">
                     <tr>
@@ -55,15 +53,19 @@
                         <th><strong>Amount</strong></th>
                     </tr>
                 </thead>
-                <tbody class="no-border-y">                          
+                <tbody class="no-border-y">    
+                    <%
+                        var ctr = 0;                        
+                        _.each(transaction.weight_tickets,function(ticket){ 
+                            ctr++;
+                    %>                      
                     <tr>                        
                         <td>
-                            
-                            <% 
-                                var d = Date.parse(transaction.created_at);
+                             <% 
+                                var d = Date.parse(ticket.created_at);
                                 if (isNaN(d)==false)
                                 {
-                                    var d = new Date(transaction.created_at), 
+                                    var d = new Date(ticket.created_at), 
                                     fragments = [                                
                                         d.getMonth() + 1,
                                         d.getDate(),
@@ -73,28 +75,29 @@
 
                                 }     
                                 else {
-                                    d = (transaction.created_at).split(' ')[0];
+                                    d = (ticket.created_at).split(' ')[0];
                                     var t = d.split('-');
                                     print(t[1]+'/'+t[2]+'/'+t[0]);
                                 }                  
                             %>
+                           
                         </td>
-                        <td><%= transaction.order_number %></td>
-                        <td><%= transaction.weightTicketNumber %></td>
-                        <td><%= numberFormatBales(transaction.bales) %></td>
-                        <td><%= (convertLbsToTons(transaction.pounds) * 2).toFixed(2) %></td>
-                        <td><%= convertLbsToTons(transaction.pounds) %></td>
-                        <td>$ <%= numberFormat(transaction.unitprice) %></td>
-                        <td>$ <%= numberFormat(transaction.unitprice * convertLbsToTons(transaction.pounds)) %></td>
-                    </tr>
+                        <td><%= ticket.order_number %></td>
+                        <td><%= ticket.weightTicketNumber %></td>
+                        <td><%= numberFormatBales(ticket.bales) %></td>
+                        <td><%= (convertLbsToTons(ticket.pounds) * 2).toFixed(2) %></td>
+                        <td><%= convertLbsToTons(ticket.pounds) %></td>
+                        <td>$ <%= numberFormat(ticket.unitprice) %></td>
+                        <td>$ <%= numberFormat(ticket.unitprice * convertLbsToTons(ticket.pounds)) %></td>
+                    </tr>                    
+                    <% }); %>    
                     <tr>
                         <td colspan="8">
-                            Load Count: 
+                            Load Count: <%= ctr %> 
                         </td>
                     </tr>    
-                
                 </tbody>               
-            </table>
+            </table>                
             <%}); %>   
             <table class="table-bordered" style="width:30%">
                 <thead class="no-border">
@@ -116,7 +119,7 @@
                             Contract Total Amount: 
                         </td>
                         <td>
-                            <strong>$ <%= numberFormat(total_amount) %></strong>
+                            <strong>$ <%= numberFormat(producers.get('summary').total_contact_amount) %></strong>
                         </td>
                     </tr>
                     <tr>
@@ -124,7 +127,7 @@
                             Less Scale Fees: 
                         </td>
                         <td>
-                            <strong>$ <%= numberFormat() %></strong>
+                            <strong>$ <%= numberFormat(producers.get('summary').scale_fees) %></strong>
                         </td>
                     </tr>
                     <tr>
@@ -132,7 +135,7 @@
                             Total Amount Due:
                         </td>
                         <td>
-                            <strong>$ <%= numberFormat() %></strong>
+                            <strong>$ <%= numberFormat(producers.get('summary').total) %></strong>
                         </td>
                     </tr>
                 </tbody>

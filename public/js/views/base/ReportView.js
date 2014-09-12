@@ -24,37 +24,37 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 		reportTypes: [
 			{
-				name:"Producer Statement Report",
+				name: "Commission Report",
 				id: 1
 			}, 
 			{
-				name: "Trucking Statement Report",
-				id: 2
-			}, 
-			{
-				name: "Inventory Report",
-				id: 3
-			}, 
-			{
 				name: "Customer Sales Report",
+				id: 2
+			}, 	
+			{
+				name: "Driver's Statement Report",
+				id: 3
+			},
+			{
+				name: "Gross Profit Report",
 				id: 4
 			}, 
 			{
-				name: "Commission Report",
+				name: "Inventory Report",
 				id: 5
-			}, 
+			},
 			{
-				name: "Gross Profit Report",
+				name: "Operator's Pay Report",
 				id: 6
 			}, 
 			{
-				name: "Operator's Pay Report",
+				name:"Producer Statement Report",
 				id: 7
 			}, 
 			{
-				name: "Driver's Statement Report",
+				name: "Trucking Statement Report",
 				id: 8
-			}
+			}, 			 											
 		],
 		startDate: null,
 		endDate: null,
@@ -102,29 +102,29 @@ define([
 			var type = this.$el.find("#reporttype").val();
 			
 			switch(type) {
-				case '1':	
-					return this.producer();
+				case '1':
+					return this.commission();						
 					break;
 				case '2':
-					return this.trucker();
+					return this.customer();					
 					break;
 				case '3':
-					return this.inventory();
+					return this.driver();					
 					break;
 				case '4':
-					return this.customer();
-					break;
-				case '5':
-					return this.commission();
-					break;
-				case '6':
 					return this.gross();
 					break;
-				case '7':				
+				case '5':
+					return this.inventory();
+					break;
+				case '6':
 					return this.operator();
 					break;
+				case '7':				
+					return this.producer();
+					break;
 				case '8':				
-					return this.driver();
+					return this.trucker();
 					break;
 			}
 			

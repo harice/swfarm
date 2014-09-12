@@ -20,7 +20,7 @@ define([
 				},
 				headers: thisObj.getAuth(),
 			});
-		},
+		},	
 	});
 	return StackLocationModel;
 });
