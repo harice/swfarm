@@ -50,6 +50,7 @@ define([
 				if(thisObj.subContainerExist()) {
 					thisObj.displayForm();
 					thisObj.supplyStackLocationData();
+					thisObj.generateAddress();
 				}
 				this.off('sync');
 			});
@@ -72,21 +73,22 @@ define([
 		},
 		
 		render: function(){
-			this.model.runFetch();
-			this.generateAddress();
+			this.model.runFetch();			
 			Backbone.View.prototype.refreshTitle('Stack Location','edit');
 		},
 		
 		supplyStackLocationData: function () {
 			var thisObj = this;
-			var section = this.model.get('section');
-			
+			var section = this.model.get('section');			
+
 			this.subContainer.find('#account_id').val(this.model.get('account_id'));
 			this.subContainer.find('#name').val(this.model.get('name'));
 			this.subContainer.find('#description').val(this.model.get('description'));
 			this.subContainer.find('#latitude').val(this.model.get('latitude'));
 			this.subContainer.find('#longitude').val(this.model.get('longitude'));
-			
+			//this.subContainer.find('#address').html(thisObj.showAddressList());
+			console.log(this.model.get('address_id'));
+
 			var i= 0;
 			_.each(section, function (s) {
 				var sectionFields = (i > 0)? thisObj.addSection(): thisObj.subContainer.find('#section-list tbody .section-item:first-child');

@@ -205,15 +205,19 @@ define([
 		},
 		
 		generateAddress: function (){
-			var thisObj = this;			
-			if(this.slId == null) {
-				this.slId = $("#account_id").val();			
-			}
-			this.addressCollection.fetchStackAddress(this.slId);
+			var thisObj = this;	
+			var address = ''; 
+			var acct_id = this.subContainer.find("#account_id").val();
+
+			if(acct_id == undefined)
+				acct_id = this.model.get('account_id');
+			
+			this.addressCollection.fetchStackAddress(acct_id);
 
 			this.addressCollection.fetch({
 				success: function (collection, response, options) {							
-					thisObj.showAddressList();									
+					address = thisObj.showAddressList();	
+					thisObj.$el.find('#address').html(address);																
 				},
 				error: function (collection, response, options) {
 				},
@@ -229,10 +233,7 @@ define([
 				address += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
 			
-			if(this.$el.find('#address') == undefined){
-				console.log("Not found");
-			}
-			console.log(this.$el.find('#address'));
+			return address;
 		
 		},
 
