@@ -91,7 +91,7 @@ define([
 			
 			var i = 0;
 			_.each(addresses, function (address) {
-				var addressFields = (i > 0)? thisObj.addAddressFields(): thisObj.$el.find('#account-adresses > div:first-child');
+				var addressFields = (i > 0)? thisObj.addAddressFields(): thisObj.$el.find('#account-adresses > .address-fields-container:first-child');
 				i++;
 				
 				if(i > 0)

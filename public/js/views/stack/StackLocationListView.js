@@ -142,14 +142,13 @@ define([
 		showMap: function (ev) {
 			var element = $(ev.currentTarget);
 			var id = element.attr('data-id');
-			var model = this.collection.get(id);
+			//var model = this.collection.get(id);
+			var model = new StackLocationModel({id:id});
+			model.runFetch();
+
+			console.log(model.get('address_id'));
 			
-			if(model.get('latitude') && model.get('longitude')) {
-				var markers = [{accountName:model.get('account_name'),name:model.get('name'),lat:model.get('latitude'),lng:model.get('longitude')}];
-				this.googleMaps.showModalSetLocation(markers);
-			}
-			else
-				this.displayGritter('Map location not set for this stack location. Edit this stack location and add a map location.');
+			
 		},
 		
 		showMapAll: function (ev) {

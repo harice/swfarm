@@ -48,9 +48,8 @@ define([
 			this.producerAndWarehouseAccount = new AccountCollection();
 			this.producerAndWarehouseAccount.on('sync', function() {
 				if(thisObj.subContainerExist()) {
-					thisObj.displayForm();
-					thisObj.supplyStackLocationData();
-					thisObj.generateAddress();
+					thisObj.displayForm();					
+					thisObj.supplyStackLocationData();						
 				}
 				this.off('sync');
 			});
@@ -79,15 +78,27 @@ define([
 		
 		supplyStackLocationData: function () {
 			var thisObj = this;
-			var section = this.model.get('section');			
+			var section = this.model.get('section');					
 
 			this.subContainer.find('#account_id').val(this.model.get('account_id'));
 			this.subContainer.find('#name').val(this.model.get('name'));
 			this.subContainer.find('#description').val(this.model.get('description'));
 			this.subContainer.find('#latitude').val(this.model.get('latitude'));
-			this.subContainer.find('#longitude').val(this.model.get('longitude'));
-			//this.subContainer.find('#address').html(thisObj.showAddressList());
-			console.log(this.model.get('address_id'));
+			this.subContainer.find('#longitude').val(this.model.get('longitude'));	
+
+
+			this.addressCollection.fetchStackAddress(this.model.get('account_id'));
+
+			this.addressCollection.fetch({
+				success: function (collection, response, options) {							
+					address = thisObj.showAddressList();	
+					thisObj.$el.find('#address').html(address).val(thisObj.model.get('address_id'));																				
+				},
+				error: function (collection, response, options) {
+				},
+				headers: this.addressCollection.getAuth()
+			});
+			
 
 			var i= 0;
 			_.each(section, function (s) {
@@ -99,6 +110,7 @@ define([
 				sectionFields.find('.description').val(s.description);
 			});
 		},
+
 		
 		initDeleteConfirmation: function () {
 			this.initConfirmationWindow('Are you sure you want to delete this Stock Location?',

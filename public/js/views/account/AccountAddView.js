@@ -197,10 +197,10 @@ define([
 				addressTypeField.attr('disabled', true);
 				addressTypeField.after('<input class="type" type="hidden" name="'+addressTypeField.attr('name')+'" value="'+addressTypeField.val()+'" />');
 				
-				this.addIndexToAddressFields(this.$el.find('#account-adresses .address-fields-container'));
+				this.addIndexToAddressFields(this.$el.find('#account-adresses > .address-fields-container:first-child'));
 				
 				this.$el.find('.remove-address-fields').remove();
-				clone = this.$el.find('#account-adresses > fieldset');
+				clone = this.$el.find('#account-adresses > .address-fields-container:first-child');
 			}
 			else {	
 				//if(multipleAddress.indexOf(accountTypeText) > -1) {					

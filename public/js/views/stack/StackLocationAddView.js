@@ -217,7 +217,7 @@ define([
 			this.addressCollection.fetch({
 				success: function (collection, response, options) {							
 					address = thisObj.showAddressList();	
-					thisObj.$el.find('#address').html(address);																
+					thisObj.$el.find('#address').append(address);																
 				},
 				error: function (collection, response, options) {
 				},
@@ -226,9 +226,9 @@ define([
 					
 		},
 
-		showAddressList: function () {
+		showAddressList: function (id) {
 			var thisObj = this;
-			var address = '<option value="">Select an address</option>';
+			var address = '';
 			_.each(this.addressCollection.models, function (model) {				
 				address += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
