@@ -5,7 +5,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
 	<meta name="author" content="">
-	<link rel="shortcut icon" href="images/icon.png">
 
 	<title>Southwest Farm Services</title>
 	
@@ -20,9 +19,13 @@
 		.margin-bottom-0 { margin-bottom: 0; }
 		.margin-bottom-30 { margin-bottom: 30px; }
 
+		.padding-right-5 { padding-right: 5px; }
+
+		.width-6 { width: 6%; }
 		.width-8 { width: 8%; }
 		.width-10 { width: 10%; }
 		.width-12 { width: 12%; }
+		.width-13 { width: 13%; }
 		.width-15 { width: 15%; }
 		.width-20 { width: 20%; }
 		.width-30 { width: 30%; }
@@ -37,8 +40,12 @@
 		.text-center { text-align: center; }
 		.text-right { text-align: right; }
 
+		.font-italic { font-style: italic; }
+
 		.valign-top { vertical-align: top; }
 		.no-border { border: 0; }
+
+		hr { border: 0; border-collapse: collapse; height: 1px; background: #ddd; }
 
 		table { border-collapse: collapse; width: 100%; border: thin solid #ddd; margin:0; padding: 0; }
 		td, th {  text-align: left; vertical-align: top; padding: 5px 2px; }
