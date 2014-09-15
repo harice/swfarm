@@ -15,6 +15,7 @@
 		.clear { clear:both; }
 		
 		.margin-top-0 { margin-top: 0; }
+		.margin-top-20 { margin-top: 20px; }
 		.margin-top-30 { margin-top: 30px; }
 		.margin-bottom-0 { margin-bottom: 0; }
 		.margin-bottom-30 { margin-bottom: 30px; }
@@ -27,8 +28,10 @@
 		.width-12 { width: 12%; }
 		.width-13 { width: 13%; }
 		.width-15 { width: 15%; }
+		.width-18 { width: 18%; }
 		.width-20 { width: 20%; }
 		.width-30 { width: 30%; }
+		.width-35 { width: 35%; }
 		.width-40 { width: 40%; }
 		.width-50 { width: 50%; }
 		.width-60 { width: 60%; }

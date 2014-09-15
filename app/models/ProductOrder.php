@@ -56,7 +56,7 @@ class ProductOrder extends Eloquent {
     }
 
     public function productordersummary(){
-        return $this->hasOne('ProductOrderSummary', 'id', 'productordersummary_id');
+        return $this->belongsTo('ProductOrderSummary', 'id', 'productordersummary_id');
     }
 
     public function sectionfrom(){
