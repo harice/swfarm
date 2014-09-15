@@ -67,10 +67,8 @@
                     </tr>
                 </thead>
                 <tbody class="no-border-y">    
-                    <%
-                        var ctr = 0;                        
-                        _.each(transaction.weight_tickets,function(ticket){ 
-                            ctr++;
+                    <%                                        
+                        _.each(transaction.weight_tickets,function(ticket){                       
                     %>                      
                     <tr>                        
                         <td>
@@ -98,7 +96,7 @@
                         <td><%= ticket.order_number %></td>
                         <td><%= ticket.weightTicketNumber %></td>
                         <td><%= numberFormatBales(ticket.bales) %></td>
-                        <td><%= (convertLbsToTons(ticket.pounds) * 2).toFixed(2) %></td>
+                        <td><%= convertLbsToTons(ticket.pounds * 2) %></td>
                         <td><%= convertLbsToTons(ticket.pounds) %></td>
                         <td>$ <%= numberFormat(ticket.unitprice) %></td>
                         <td>$ <%= numberFormat(ticket.unitprice * convertLbsToTons(ticket.pounds)) %></td>
@@ -106,7 +104,7 @@
                     <% }); %>    
                     <tr>
                         <td colspan="8">
-                            Load Count: <%= ctr %> 
+                            Load Count:  
                         </td>
                     </tr>    
                 </tbody>               
@@ -124,7 +122,7 @@
                             Total Loads:
                         </td>
                         <td>
-                            <strong><%= (producers.get('summary').total_transactions) %></strong> 
+                            <strong></strong> 
                         </td>
                     </tr>
                     <tr>

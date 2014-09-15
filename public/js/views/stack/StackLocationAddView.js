@@ -353,9 +353,7 @@ define([
 			var lat = '';
 			var lng = '';
 
-			var address = $("#address option:selected").text();
-
-			console.log(address);
+			var address = $("#address option:selected").text();			
 
 			var geocoder = new google.maps.Geocoder();
 

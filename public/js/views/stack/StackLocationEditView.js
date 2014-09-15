@@ -92,7 +92,9 @@ define([
 			this.addressCollection.fetch({
 				success: function (collection, response, options) {							
 					address = thisObj.showAddressList();	
-					thisObj.$el.find('#address').html(address).val(thisObj.model.get('address_id'));																				
+					thisObj.$el.find('#address').html(address);	
+					address_id = thisObj.model.get('address_id'); 
+					thisObj.$el.find('#address').val(address_id);
 				},
 				error: function (collection, response, options) {
 				},

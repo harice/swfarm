@@ -46,7 +46,7 @@
                         var total_pay = 0;
                         _.each(drivers.get('transactions'),function(transaction){
                             var tons = convertLbsToTons(transaction.pounds);
-                            var gross = tons *  transaction.driver_rate;
+                            var gross = tons *  transaction.trucking_rate;
                             var percent = numberFormatBales(transaction.driver_rate)/100;
                             var driver_pay = gross * percent;
                             total_pay += driver_pay;
