@@ -212,6 +212,8 @@ define([
 		
 		showModalSetLocation: function (markers) {
 			var thisObj = this;
+
+			console.log(markers);
 			
 			this.shownModalCallback = function () {
 				thisObj.removeMarkers();

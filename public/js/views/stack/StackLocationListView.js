@@ -4,6 +4,7 @@ define([
 	'views/base/GoogleMapsView',
 	'models/stack/StackLocationModel',
 	'collections/stack/StackLocationCollection',
+	'collections/address/AddressCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/stack/stackLocationListTemplate.html',
 	'text!templates/stack/stackLocationInnerListTemplate.html',
@@ -13,6 +14,7 @@ define([
 			GoogleMapsView,
 			StackLocationModel,
 			StackLocationCollection,
+			AddressCollection,
 			contentTemplate,
 			stackLocationListTemplate,
 			stackLocationInnerListTemplate,
@@ -36,6 +38,8 @@ define([
 			this.collection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
+
+			this.addressCollection = new AddressCollection();
 		},
 		
 		render: function(){
@@ -140,13 +144,34 @@ define([
 		},
 		
 		showMap: function (ev) {
+			var thisObj = this;
 			var element = $(ev.currentTarget);
 			var id = element.attr('data-id');
 			//var model = this.collection.get(id);
-			var model = new StackLocationModel({id:id});
-			model.runFetch();
+			var lat = '';
+			var lng = '';
+			var address = '';
 
-			console.log(model.get('address_id'));
+			var model = new StackLocationModel({id:id});
+
+			thisObj.googleMaps = new GoogleMapsView();
+
+			model.fetch({
+				success: function(models, response, options){
+					console.log(model.get('latitude'));
+					if(model.get('latitude') && model.get('longitude')) {
+						var markers = [{accountName:model.get('account_name'),name:model.get('name'),lat:model.get('latitude'),lng:model.get('longitude')}];
+						thisObj.googleMaps.showModalSetLocation(markers);
+					}
+					else
+						thisObj.displayGritter('Map location not set for this stack location. Edit this stack location and add a map location.');
+					
+				},
+				error: function(model, response, options){
+
+				},
+				headers: model.getAuth(),
+			});
 			
 			
 		},

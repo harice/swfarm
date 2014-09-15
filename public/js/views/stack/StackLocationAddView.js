@@ -91,7 +91,7 @@ define([
 			
 			this.googleMaps = new GoogleMapsView();
 			this.googleMaps.initGetMapLocation(function (data) {
-				if(typeof data.location !== 'undefined') {					
+				if(typeof data.location !== 'undefined') {	
 					thisObj.subContainer.find('#latitude').val(data.location.lat());
 					thisObj.subContainer.find('#longitude').val(data.location.lng());
 				}
@@ -120,7 +120,8 @@ define([
 					//console.log(data);
 					
 					var stackLocationModel = new StackLocationModel(data);
-					
+
+
 					stackLocationModel.save(
 						null, 
 						{
@@ -202,6 +203,7 @@ define([
 			'click #confirm-delete-sl': 'deleteStockLocation',
 			'change #account_id': 'generateAddress',
 			'click #map': 'showMap',
+			'change #address': 'setCoordinates'
 		},
 		
 		generateAddress: function (){
@@ -226,7 +228,7 @@ define([
 					
 		},
 
-		showAddressList: function (id) {
+		showAddressList: function () {
 			var thisObj = this;
 			var address = '';
 			_.each(this.addressCollection.models, function (model) {				
@@ -344,6 +346,33 @@ define([
 			      });
 			   } 
 			}   
+
+		},
+
+		setCoordinates: function () {
+			var lat = '';
+			var lng = '';
+
+			var address = $("#address option:selected").text();
+
+			console.log(address);
+
+			var geocoder = new google.maps.Geocoder();
+
+		   if (geocoder) {
+		      geocoder.geocode({ 'address': address }, function (results, status) {
+		         if (status == google.maps.GeocoderStatus.OK) {
+		         	$("#map").next('.error-msg-cont').fadeOut();		         	
+		         	$("#latitude").val(results[0].geometry.location.k);
+		            $("#longitude").val(results[0].geometry.location.B);
+		           
+		         }
+		         else {
+		         	$("#map").next('.error-msg-cont').fadeOut();
+		            $("<span class='error-msg-cont'><label class='error margin-bottom-0'>Invalid Address</label></div>").insertAfter($("#map"));
+		         }
+		      });
+		   } 
 
 		},
 		
