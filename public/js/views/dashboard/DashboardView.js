@@ -25,6 +25,8 @@ define([
 			this.initSubContainer();
 			var thisObj = this;	
 			
+			this.isInitProcess = true;
+			
 			this.model = new DashboardModel();	
 			this.model.on('sync', function (){
 				thisObj.displayAdminDashboard();
@@ -33,37 +35,46 @@ define([
 			
 			this.graphCollection = new GraphCollection();
 			this.graphCollection.on('sync', function() {	
-				if(thisObj.subContainerExist())
-					thisObj.displayAdminDashboard();
-				this.off('sync');
+				if(thisObj.isInitProcess) {
+					if(thisObj.subContainerExist()) {
+						thisObj.isInitProcess = false;
+						thisObj.displayAdminDashboard();
+					}
+				}
+				else {
+					console.log(this.models);
+				}
 			});
 			
 			this.graphCollection.on('error', function(collection, response, options) {
-				this.off('error');
 			});
 		},
 		render: function(){	
-			this.graphCollection.getModels();				
+			this.graphCollection.getModels();
 			Backbone.View.prototype.refreshTitle('Dashboard','View');
 		},	
 
 		displayAdminDashboard: function() {
 			var thisObj = this;
 
-			this.subContainer.html("<div class='row'></div>"); //console.log(this.graphCollection.models);
+			this.subContainer.html('<div id="graph-cont" class="row"></div>'); //console.log(this.graphCollection.models);
 			
 			_.each(this.graphCollection.models, function (graph) {
-				var graphId = graph.get('graphName').replace(/\s+/g, '_').toLowerCase();
+				var graphIdName = graph.get('graphName').replace(/\s+/g, '_').toLowerCase();
 				var label = false;
-
+				var graphId = graph.get('graphId');
+				
 				var innerTemplateVariables = {
 					'graph_heading': graph.get('graphName'),
-					'graph_id': graphId,
-					'gid': graph.get('graphId'),
+					'graph_id': graphIdName,
+					'gid': graphId,
+					'start_date_id': 'start-'+graphId,
+					'end_date_id': 'end-'+graphId,
 				};
 				var graphInnerTemplate = _.template(barGraphTemplate, innerTemplateVariables);
 
-				thisObj.subContainer.find('.row').append(graphInnerTemplate);
+				thisObj.subContainer.find('#graph-cont').append(graphInnerTemplate);
+				thisObj.initStartEndCalendarFilter(graphId);
 				
 				var currency = '';
 				var tickDecimals = 0;
@@ -80,12 +91,14 @@ define([
 						//thisObj.graphStackedData(graph_id, graph.data, graph.xData, currency, tickDecimals);
 						break;
 					case Const.GRAPH.TYPE.BAR:
-						thisObj.graphData(graphId, graphData.data, graphData.xData, currency, tickDecimals);
+						thisObj.graphData(graphIdName, graphData.data, graphData.xData, currency, tickDecimals);
 						break;
 					default:
 						break;
 				}
 			});
+			
+			
 			
 			/*_.each(this.model.get('reports'), function (graph) {
 				var graph_id = graph.graphname.replace(/\s+/g, '_').toLowerCase();
@@ -121,6 +134,64 @@ define([
 											
 
 			});	*/
+		},
+		
+		initStartEndCalendarFilter: function (id) {
+			var thisObj = this;
+			var startId = 'start-'+id;
+			var endId = 'end-'+id;
+			
+			this.$el.find('#'+startId+' .input-group.date').datepicker({
+				orientation: "top left",
+				autoclose: true,
+				clearBtn: true,
+				todayHighlight: true,
+				format: this.dateFormat,
+			}).on('changeDate', function (ev) {
+				var graphId = $(ev.currentTarget).closest('.graph-cont').attr('data-id');
+			
+				var startDate = $('#'+startId+' .input-group.date input').val();
+				thisObj.subContainer.find('#'+endId+' .input-group.date').datepicker('setStartDate', startDate);
+				var sDate = null;
+				if(startDate != '' && typeof startDate != 'undefined')
+					sDate = thisObj.convertDateFormat(startDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
+				
+				var endDate = $('#'+endId+' .input-group.date input').val();
+				var eDate = null;
+				if(endDate != '' && typeof endDate != 'undefined')
+					eDate = thisObj.convertDateFormat(endDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
+				
+				if(sDate != null && eDate != null)
+					thisObj.graphCollection.fetchGraphData(graphId, sDate, eDate);
+				else
+					thisObj.graphCollection.fetchGraphData(graphId);
+			});
+			
+			this.$el.find('#'+endId+' .input-group.date').datepicker({
+				orientation: "top left",
+				autoclose: true,
+				clearBtn: true,
+				todayHighlight: true,
+				format: this.dateFormat,
+			}).on('changeDate', function (ev) {
+				var graphId = $(ev.currentTarget).closest('.graph-cont').attr('data-id');
+			
+				var endDate = $('#'+endId+' .input-group.date input').val();
+				thisObj.subContainer.find('#'+startId+' .input-group.date').datepicker('setEndDate', endDate);
+				var eDate = '';
+				if(endDate != '' && typeof endDate != 'undefined')
+					eDate = thisObj.convertDateFormat(endDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
+					
+				var startDate = $('#'+startId+' .input-group.date input').val();
+				var sDate = null;
+				if(startDate != '' && typeof startDate != 'undefined')
+					sDate = thisObj.convertDateFormat(startDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
+					
+				if(sDate != null && eDate != null)
+					thisObj.graphCollection.fetchGraphData(graphId, sDate, eDate);
+				else
+					thisObj.graphCollection.fetchGraphData(graphId);
+			});
 		},
 		
 

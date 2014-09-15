@@ -3,6 +3,34 @@
 		<div class="header">
 			<h3><%= graph_heading %></h3>
 		</div>
+		<div class="filter-cont row">
+			<div class="col-md-12">
+				<div class="pull-right">
+					<% if (typeof start_date_id !== "undefined") { %>
+					<span class="display-inline-block valign-middle margin-right-5">Start</span>
+					<div id="<%= start_date_id %>" class="search-filter-field calendar-cont width-120 display-inline-block valign-middle">
+						<div class="input-group input-group-sm date datetime margin-bottom-0">
+							<input class="form-control" size="16" type="text" value="" />
+							<div class="input-group-btn">
+								<button class="btn btn-trans"><span class="fa fa-calendar"></span></button>
+							</div>
+						</div>
+					</div>
+					<% } %>
+					<% if (typeof end_date_id !== "undefined") { %>
+					<span class="display-inline-block valign-middle margin-left-10 margin-right-5">End</span>
+					<div id="<%= end_date_id %>" class="search-filter-field calendar-cont width-120 display-inline-block valign-middle">
+						<div class="input-group input-group-sm date datetime margin-bottom-0">
+							<input class="form-control" size="16" type="text" value="" />
+							<div class="input-group-btn">
+								<button class="btn btn-trans"><span class="fa fa-calendar"></span></button>
+							</div>
+						</div>
+					</div>
+					<% } %>
+				</div>
+			</div>
+		</div>
 		<div class="content">
 			<div id='<%= graph_id  %>' style="height:250px; position:relative; padding:0"></div>
 		</div>
