@@ -77,15 +77,18 @@ class DownloadRepository implements DownloadInterface
 							if(!array_key_exists('id', $q)) { $_404 = true; break; }
 							
 							$report_o = $this->generateProducerStatement($q);
-							
 							if(!$report_o) { $_404 = true; break; }
 
-							return PDF::loadView(
-												'pdf.base',
-												array(
-													'child' => View::make('reports.producer-header-pdf', array('report_o' => $report_o,))->nest('_nest_content', 'reports.producer-content', array('report_o' => $report_o))
-												) 
-											)->stream('SOA - '.$report_o->name.'.pdf');
+							return PDF::loadView('pdf.base',array('child' => View::make('reports.producer-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.producer-content', array('report_o' => $report_o))))->stream('SOA - '.$report_o->name.'.pdf');
+							break;
+
+						case 'customer-sales-statement':
+							if(!array_key_exists('id', $q)) { $_404 = true; break; }
+
+							$report_o = $this->generateSalesReport($q);
+							if(!$report_o) { $_404 = true; break; }
+
+							return PDF::loadView('pdf.base',array('child' => View::make('reports.customer-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.customer-content', array('report_o' => $report_o))))->stream('SOA - '.$report_o->name.'.pdf');
 							break;
 
 						default:
@@ -126,7 +129,7 @@ class DownloadRepository implements DownloadInterface
 							if(strcmp($format,'csv') === 0) {
 								return Excel::create('SOA - '.$report_o->name, function($excel) use($report_o) {
 										        $excel->sheet($report_o->name, function($sheet) use($report_o) {
-										        	$sheet->setColumnFormat(array('G' => '0.0000'));
+										        	$sheet->setColumnFormat(array('E' => '0.00','F' => '0.00','G' => '0.0000','I' => '0.00'));
 										        	$sheet->loadView(
 										        		'reports.producer-header-excel',
 										        		array(
@@ -149,13 +152,61 @@ class DownloadRepository implements DownloadInterface
 										        	$objDrawing->setWorksheet($sheet);
 
 										        	$sheet->getStyle('G11')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
-										        	$sheet->setColumnFormat(array('G' => '0.0000'));
+										        	$sheet->setColumnFormat(array('E' => '0.00','F' => '0.00','G' => '0.0000','I' => '0.00'));
+										        	$sheet->setWidth(array('A' =>  24,'B' =>  15,'C' =>  20,'D' =>  20,'E' =>  10,'F' =>  15,'G' =>  12,'H' =>  10,'I' =>  15));
 
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
 										        			'colspan' => 8,
 										        			'child' => View::make('reports.producer-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.producer-content', array('report_o' => $report_o))
+									        			)
+								        			);
+										        });
+										    })->download($format);
+							}
+							break;
+
+						case 'customer-sales-statement':
+							if(!array_key_exists('id', $q)) { $_404 = true; break; }
+							
+							$report_o = $this->generateSalesReport($q);
+							
+							if(!$report_o) { $_404 = true; break; }
+
+							if(strcmp($format,'csv') === 0) {
+								return Excel::create('SOA - '.$report_o->name, function($excel) use($report_o) {
+										        $excel->sheet($report_o->name, function($sheet) use($report_o) {
+										        	$sheet->setColumnFormat(array('E' => '0.00','F' => '0.0000','G' => '0.00','H' => '0.00'));
+										        	$sheet->loadView(
+										        		'reports.customer-header-excel',
+										        		array(
+										        			'report_o' => $report_o,
+										        			'_nest_content' => View::make('reports.customer-content', array('report_o' => $report_o))
+									        			)
+								        			);
+										        });
+										    })->download($format);
+							} else {
+								return Excel::create('SOA - '.$report_o->name, function($excel) use($report_o) {
+										        $excel->sheet($report_o->name, function($sheet) use($report_o) {
+													$sheet->setAutoSize(true);
+										        	$sheet->mergeCells('A1:A3');
+										        	$sheet->setFreeze('A4');
+
+										        	$objDrawing = new PHPExcel_Worksheet_Drawing();
+										        	$objDrawing->setPath(public_path("images/southwest-farm-services-logo-pdf.jpg"));
+										        	$objDrawing->setCoordinates('A1');
+										        	$objDrawing->setWorksheet($sheet);
+
+										        	$sheet->setColumnFormat(array('E' => '0.00','F' => '0.0000','G' => '0.00','H' => '0.00'));
+										        	$sheet->setWidth(array('A' =>  24,'B' =>  15,'C' =>  20,'D' =>  10,'E' =>  15,'F' =>  12,'G' =>  10,'H' =>  15));
+
+										        	$sheet->loadView(
+										        		'excel.base',
+										        		array(
+										        			'colspan' => 7,
+										        			'child' => View::make('reports.customer-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.customer-content', array('report_o' => $report_o))
 									        			)
 								        			);
 										        });
@@ -319,6 +370,107 @@ class DownloadRepository implements DownloadInterface
 	    $report_a['scale_fees'] = $scale_i;
 	    $report_a['amount'] = $amount_i;
 	    $report_a['total_load'] = sizeof($weightticket_a);
+	    return $this->parse($report_a);
+	}
+
+	private function generateSalesReport($_params = array()) {
+		$_dateBetween['start'] = array_key_exists('dateStart',$_params) ? date('Y-m-d \0\0\:\0\0\:\0\0', strtotime($_params['dateStart'])) : date('Y-m-d \0\0\:\0\0\:\0\0');
+		$_dateBetween['end'] = array_key_exists('dateEnd',$_params) ? date('Y-m-d \2\3\:\5\9\:\5\9', strtotime($_params['dateEnd'])) : date('Y-m-d \2\3\:\5\9\:\5\9');
+
+		$report_o = Account::with('businessaddress.state')
+                        ->with(array('order' => function($query) use($_dateBetween) {
+                            $query->join('natureofsale','natureofsale.id','=','order.natureofsale_id')
+                            	->join('productorder','productorder.order_id','=','order.id')
+                                ->join('transportscheduleproduct','transportscheduleproduct.productorder_id','=','productorder.id')
+                                ->join('transportschedule','transportschedule.id','=','transportscheduleproduct.transportschedule_id')
+                                ->join('weightticket','weightticket.transportschedule_id','=','transportschedule.id')
+                                ->where('order.ordertype','=',Config::get('constants.ORDERTYPE_SO'))
+                                ->where('transportschedule.status_id','=',Config::get('constants.STATUS_CLOSED'))
+                                ->where('weightticket.status_id','=',Config::get('constants.STATUS_CLOSED'))
+                                ->whereBetween('weightticket.updated_at',array_values($_dateBetween))
+                                ->whereNotNull('weightticket.pickup_id')
+                                ->orderBy('order.created_at','DESC')
+                                ->groupBy('order.id')
+                                ->select(array(
+                                            'order.id', 
+                                            'account_id', 
+                                            'order_number',
+                                            'natureofsale.name as natureofsale'
+                                        ));
+                        }))
+                        ->where('id','=',$_params['id'])
+                        ->first();
+                       
+	    if(!$report_o) return false;
+
+	    if($report_o->order->count() == 0) return Response::json($report_o);
+
+	    $report_a = $report_o->toArray();
+	    $report_a['report_date'] = $_dateBetween;
+	    $report_a['amount'] = 0.00;
+	    $amount_i = 0.00;
+	    foreach ($report_a['order'] as $order_key => $order_a) {
+	        $product_a = ProductOrderSummary::join('products','products.id','=','productordersummary.product_id')
+	                                ->with(array('productorder' => function($query) use($_dateBetween) {
+	                                    $query->join('transportscheduleproduct','transportscheduleproduct.productorder_id','=','productorder.id')
+	                                        ->join('transportschedule','transportschedule.id','=','transportscheduleproduct.transportschedule_id')
+	                                        ->join('weightticket','weightticket.transportschedule_id','=','transportschedule.id')
+	                                        ->join('weightticketscale','weightticketscale.id','=','weightticket.pickup_id')
+	                                        ->join('weightticketproducts','weightticketproducts.transportscheduleproduct_id','=','transportscheduleproduct.id')
+	                                        ->where('weightticket.status_id','=',Config::get('constants.STATUS_CLOSED'))
+	                                        ->whereBetween('weightticket.updated_at',array_values($_dateBetween))
+	                                        ->whereNotNull('weightticket.pickup_id')
+	                                        ->select(array(
+	                                            'productordersummary_id',
+	                                            'weightticket.id as wid',
+	                                            'weightticket.updated_at',
+	                                            'weightticket.weightTicketNumber',
+	                                            'weightticketproducts.bales',
+	                                            'weightticketproducts.pounds'
+	                                        ));
+	                                }))
+	                                ->whereHas('productorder', function($query) use($_dateBetween) {
+	                                    $query->join('transportscheduleproduct','transportscheduleproduct.productorder_id','=','productorder.id')
+	                                        ->join('transportschedule','transportschedule.id','=','transportscheduleproduct.transportschedule_id')
+	                                        ->join('weightticket','weightticket.transportschedule_id','=','transportschedule.id')
+	                                        ->join('weightticketscale','weightticketscale.id','=','weightticket.pickup_id')
+	                                        ->join('weightticketproducts','weightticketproducts.transportscheduleproduct_id','=','transportscheduleproduct.id')
+	                                        ->where('weightticket.status_id','=',Config::get('constants.STATUS_CLOSED'))
+	                                        ->whereBetween('weightticket.updated_at',array_values($_dateBetween))
+	                                        ->whereNotNull('weightticket.pickup_id');
+	                                })
+	                                ->where('order_id','=',$order_a['id'])
+	                                ->orderBy('products.name','ASC')
+	                                ->select(array('productordersummary.id','products.name as product','unitprice'))
+	                                ->get()
+	                                ->toArray();
+
+	        foreach ($product_a as $product_key => $product) {
+	            $productorder_a = array();
+	            $_tons = 0.0000;
+	            foreach ($product['productorder'] as $productorder_key => $productorder) {
+	                if(array_key_exists($productorder['wid'], $productorder_a)) {
+	                    $productorder_a[$productorder['wid']]['bales'] = intval($productorder_a[$productorder['wid']]['bales']) + intval($productorder['bales']);
+	                    $productorder_a[$productorder['wid']]['pounds'] = floatval($productorder_a[$productorder['wid']]['pounds']) + floatval($productorder['pounds']);
+	                    $productorder_a[$productorder['wid']]['tons'] = floatval($productorder_a[$productorder['wid']]['pounds']) * 0.0005;
+
+	                    $_lbstons = floatval($productorder['pounds']) * 0.0005;
+                    	$_tons += $_lbstons;
+	                } else {
+	                    $productorder_a[$productorder['wid']] = $productorder;
+	                    $productorder_a[$productorder['wid']]['tons'] = floatval($productorder['pounds']) * 0.0005;
+	                    $_tons += $productorder_a[$productorder['wid']]['tons'];
+	                }
+	            }
+	            $product_a[$product_key]['productorder'] = array_values($productorder_a);
+	            $amount_p = $_tons * $product['unitprice'];
+            	$amount_i += $amount_p; 
+	        }
+
+	        $report_a['order'][$order_key]['productsummary'] = $product_a;
+	    }
+
+	    $report_a['amount'] = $amount_i;
 	    return $this->parse($report_a);
 	}
 
