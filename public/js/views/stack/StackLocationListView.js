@@ -146,34 +146,25 @@ define([
 		showMap: function (ev) {
 			var thisObj = this;
 			var element = $(ev.currentTarget);
-			var id = element.attr('data-id');
-			//var model = this.collection.get(id);
+			var id = element.attr('data-id');	
 			var lat = '';
-			var lng = '';
-			var address = '';
-
+			var lng = '';	
+			
 			var model = new StackLocationModel({id:id});
-
-			thisObj.googleMaps = new GoogleMapsView();
-
 			model.fetch({
-				success: function(models, response, options){
-					console.log(model.get('latitude'));
+				success: function(model,response,options){
 					if(model.get('latitude') && model.get('longitude')) {
 						var markers = [{accountName:model.get('account_name'),name:model.get('name'),lat:model.get('latitude'),lng:model.get('longitude')}];
 						thisObj.googleMaps.showModalSetLocation(markers);
 					}
 					else
-						thisObj.displayGritter('Map location not set for this stack location. Edit this stack location and add a map location.');
-					
+						thisObj.displayGritter('Map location not set for this stack location. Edit this stack location and add a map location.');	
 				},
 				error: function(model, response, options){
 
 				},
 				headers: model.getAuth(),
 			});
-			
-			
 		},
 		
 		showMapAll: function (ev) {
