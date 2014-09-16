@@ -83,7 +83,8 @@ define([
 		initDeleteConfirmation: function () {
 			this.initConfirmationWindow('Are you sure you want to delete this Trucker?',
 										'confirm-delete-trucker',
-										'Delete');
+										'Delete',
+                                        'Delete Trucker');
 		},
 	});
 
