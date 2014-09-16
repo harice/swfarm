@@ -58,11 +58,6 @@ class Order extends BaseModel {
     {
         return $this->hasMany('ProductOrder', 'order_id', 'id');
     }
-    
-    // public function account()
-    // {
-    //     return $this->hasOne('Account', 'id', 'account_id');
-    // }
 
     public function account(){
         return $this->hasOne('Account', 'id', 'account_id')->select(array('id', 'name'))->withTrashed();

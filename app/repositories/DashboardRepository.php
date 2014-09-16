@@ -13,22 +13,26 @@ class DashboardRepository implements DashboardRepositoryInterface {
                     array('graphName' => 'Purchase in tons', 'graphId' => Config::get('constants.GRAPH_PURCHASE_IN_TONS'), 'graphType' => Config::get('constants.GRAPH_TYPE_1'), 'data' => $this->purchaseInTons($params), 'filters' => array('date')),
                     array('graphName' => 'Purchase in dollar values', 'graphId' => Config::get('constants.GRAPH_PURCHASE_IN_DOLLAR_VALUES'), 'graphType' => Config::get('constants.GRAPH_TYPE_1'), 'data' => $this->purchaseInDollarValues($params), 'filters' => array('date')),
                     array('graphName' => 'Sales in tons', 'graphId' => Config::get('constants.GRAPH_SALES_IN_TONS'), 'graphType' => Config::get('constants.GRAPH_TYPE_1'), 'data' => $this->salesInTons($params), 'filters' => array('date')),
-                    array('graphName' => 'Sales in dollar values', 'graphId' => Config::get('constants.GRAPH_SALES_IN_DOLLAR_VALUES'), 'graphType' => Config::get('constants.GRAPH_TYPE_1'), 'data' => $this->salesInDollarValues($params), 'filters' => array('date'))
+                    array('graphName' => 'Sales in dollar values', 'graphId' => Config::get('constants.GRAPH_SALES_IN_DOLLAR_VALUES'), 'graphType' => Config::get('constants.GRAPH_TYPE_1'), 'data' => $this->salesInDollarValues($params), 'filters' => array('date')),
+                    array('graphName' => 'Reserve Customers', 'graphId' => Config::get('constants.GRAPH_CUSTOMER_ORDER_VS_DELIVERED'), 'graphType' => Config::get('constants.GRAPH_TYPE_2'), 'data' => $this->reservedDeliveredVsBalanceOrderPerCustomerAccount($params), 'filters' => array('date'))
                 );
         } else {
+            $graph['graphId'] = $params['graphId'];
             switch ($params['graphId']) {
                 case Config::get('constants.GRAPH_PURCHASE_IN_TONS'):
-                    $graph = $this->purchaseInTons($params);
+                    $graph['data'] = $this->purchaseInTons($params);
                     break;
                 case Config::get('constants.GRAPH_PURCHASE_IN_DOLLAR_VALUES'):
-                    $graph = $this->purchaseInDollarValues($params);
+                    $graph['data'] = $this->purchaseInDollarValues($params);
                     break;
                 case Config::get('constants.GRAPH_SALES_IN_TONS'):
-                    $graph = $this->salesInTons($params);
+                     $graph['data'] = $this->salesInTons($params);
                     break;
                 case Config::get('constants.GRAPH_SALES_IN_DOLLAR_VALUES'):
-                    $graph = $this->salesInDollarValues($params);
+                     $graph['data'] = $this->salesInDollarValues($params);
                     break;
+                case Config::get('constants.GRAPH_CUSTOMER_ORDER_VS_DELIVERED'):
+                    $graph['data'] = $this->reservedDeliveredVsBalanceOrderPerCustomerAccount($params);
                 default:
                     # code...
                     break;
@@ -191,19 +195,6 @@ class DashboardRepository implements DashboardRepositoryInterface {
                             'order.productorder' => function($query){
                                 $query->addSelect(array('id', 'order_id', 'tons'));
                              }
-                             ,
-                            'order.productorder.transportscheduleproduct.transportschedule' => function($query){
-                                $query->addSelect(array('id', 'order_id'));
-                            },
-                            'order.productorder.transportscheduleproduct.transportschedule.weightticket' => function($query){
-                                $query->addSelect(array('id', 'transportSchedule_id', 'pickup_id', 'dropoff_id', 'status_id', 'weightTicketNumber'));
-                            },
-                            'order.productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_pickup' => function($query){
-                                $query->addSelect(array('id', 'gross', 'tare'));
-                            },
-                            'order.productorder.transportscheduleproduct.transportschedule.weightticket.weightticketscale_dropoff' => function($query){
-                                $query->addSelect(array('id', 'gross', 'tare'));
-                            }
                             ))
                          ->with(array('order' => function($query) use ($dateFrom, $dateTo) {
                             $query->where('natureofsale_id', '=', Config::get('constants.NATUREOFSALES_RESERVATION'))
@@ -220,8 +211,45 @@ class DashboardRepository implements DashboardRepositoryInterface {
                          ->orderby('name', 'asc')
                          ->get(array('id', 'name'))
                          ->toArray();
-
-        return $result;
+        $data = array();
+        $index = 0;
+        foreach($result as $item){
+            $data[$index]['id'] = $item['id'];
+            $data[$index]['name'] = $item['name'];
+            $data[$index]['totalTonsOrdered'] = 0;
+            $data[$index]['totalTonsDelivered'] = 0;
+            foreach($item['order'] as $order){
+                $transportschedule = TransportSchedule::with('weightticket.weightticketscale_pickup')
+                                                      ->with('weightticket.weightticketscale_dropoff')
+                                                      ->with(array('weightticket' => function($query){
+                                                            $query->where('status_id', '=', Config::get('constants.STATUS_CLOSED'));
+                                                      }))
+                                                      ->where('order_id', '=', $order['id'])
+                                                      ->get()
+                                                      ->toArray();
+                foreach($transportschedule as $schedule){
+                    if($schedule['weightticket']['pickup_id'] != null){
+                        $weightticketscale = $schedule['weightticket']['weightticketscale_pickup'];
+                    } else if($schedule['weightticket']['dropoff_id'] != null){
+                        $weightticketscale = $schedule['weightticket']['weightticketscale_dropoff'];
+                    } else {
+                        $weightticketscale = null;
+                    }
+                    if($weightticketscale != null){
+                        $data[$index]['totalTonsDelivered'] += $weightticketscale['gross'] - $weightticketscale['tare'];
+                    }
+                }
+                
+                foreach($order['productorder'] as $productorder){
+                    $data[$index]['totalTonsOrdered'] += $productorder['tons'];
+                }
+            }
+            $data[$index]['totalTonsDelivered'] = number_format($data[$index]['totalTonsDelivered'], 2);
+            $data[$index]['totalTonsOrdered'] = number_format($data[$index]['totalTonsOrdered'], 2);
+            $index++;
+        }
+        
+        return $data;
     }
     
 }
