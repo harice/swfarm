@@ -317,6 +317,7 @@ class AccountRepository implements AccountRepositoryInterface {
   {
     $accounts = Account::with('accounttype')
                   ->whereHas('accounttype', function($q) use($types) { $q->where('accounttype_id', '=', $types); } )
+                  ->orderBy('name', 'asc')
                   ->get(array('id', 'name'));
 
     return Response::json( $accounts->toArray(), 200 );
