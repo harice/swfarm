@@ -46,8 +46,9 @@
                         var total_pay = 0;
                         _.each(drivers.get('transactions'),function(transaction){
                             var tons = convertLbsToTons(transaction.pounds);
-                            var gross = tons *  transaction.driver_rate;
-                            var driver_pay = gross * transaction.driver_rate;
+                            var gross = tons *  transaction.trucking_rate;
+                            var percent = numberFormatBales(transaction.driver_rate)/100;
+                            var driver_pay = gross * percent;
                             total_pay += driver_pay;
                     %>    
                         <tr>    
@@ -78,14 +79,14 @@
                             <td><%= tons %></td>
                             <td>$ <%= numberFormat(transaction.trucking_rate) %></td>
                             <td>$ <%= numberFormat(gross) %></td>
-                            <td>$ <%= numberFormat(transaction.driver_rate) %></td>
+                            <td><%= numberFormatBales(transaction.driver_rate) %> %</td>
                             <td>$ <%= numberFormat(driver_pay) %></td>            
                         </tr>   
                     <%}); %>                     
                 </tbody>  
                 <tfoot>
                     <tr>
-                        <td colspan="7" align="right">TOTAL</td>
+                        <td colspan="8" align="right">TOTAL</td>
                         <td>$ <strong><%= numberFormat(total_pay) %></strong></td>
                     </tr>
                 </tfoot>                              

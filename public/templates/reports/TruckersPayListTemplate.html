@@ -49,7 +49,7 @@
                         var tons = convertLbsToTons(transaction.pounds);
                         var net = tons * 2;
                         var total = tons * transaction.truckingrate;
-                        var rent = transaction.truckingrate * .1;
+                        var rent = total * .1;
                         var amount = parseFloat(transaction.loader_origin_fee) + parseFloat(transaction.loader_destination_fee);
                         total_bales += transaction.bales;
                         (transaction.loading_type=='1') ? total_tons += tons : total_tons += 0;
@@ -80,7 +80,7 @@
                             <td><%= transaction.section_origin_name %></td>
                             <td><%= transaction.section_destination_name %></td>                        
                             <td><%= transaction.bales %></td> 
-                            <td><%= net.toFixed(4) %></td>
+                            <td><%= net.toFixed(2) %></td>
                             <td><%= tons %></td>
                             <td>$ <%= numberFormat(transaction.truckingrate) %></td>
                             <td>$ <%= numberFormat(total) %></td>

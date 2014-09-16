@@ -59,8 +59,8 @@ define([
 				this.off('error');
 			});
 
-			this.addressCollection = new AddressCollection();			
-			
+			this.addressCollection = new AddressCollection();									
+
 		},
 		
 		render: function(){
@@ -91,7 +91,7 @@ define([
 			
 			this.googleMaps = new GoogleMapsView();
 			this.googleMaps.initGetMapLocation(function (data) {
-				if(typeof data.location !== 'undefined') {
+				if(typeof data.location !== 'undefined') {	
 					thisObj.subContainer.find('#latitude').val(data.location.lat());
 					thisObj.subContainer.find('#longitude').val(data.location.lng());
 				}
@@ -107,7 +107,7 @@ define([
 			this.focusOnFirstField();
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
 			
-			this.otherInitializations();
+			this.otherInitializations();			
 		},
 		
 		initValidateForm: function () {
@@ -120,7 +120,8 @@ define([
 					//console.log(data);
 					
 					var stackLocationModel = new StackLocationModel(data);
-					
+
+
 					stackLocationModel.save(
 						null, 
 						{
@@ -202,18 +203,23 @@ define([
 			'click #confirm-delete-sl': 'deleteStockLocation',
 			'change #account_id': 'generateAddress',
 			'click #map': 'showMap',
+			'change #address': 'setCoordinates'
 		},
 		
 		generateAddress: function (){
-			var thisObj = this;
+			var thisObj = this;	
+			var address = ''; 
+			var acct_id = this.subContainer.find("#account_id").val();
 
-			var acct_id = $("#account_id").val();			
+			if(acct_id == undefined)
+				acct_id = this.model.get('account_id');
+			
 			this.addressCollection.fetchStackAddress(acct_id);
 
-
 			this.addressCollection.fetch({
-				success: function (collection, response, options) {					
-					thisObj.showAddressList();
+				success: function (collection, response, options) {							
+					address = thisObj.showAddressList();	
+					thisObj.$el.find('#address').append(address);																
 				},
 				error: function (collection, response, options) {
 				},
@@ -223,12 +229,14 @@ define([
 		},
 
 		showAddressList: function () {
+			var thisObj = this;
 			var address = '';
-			_.each(this.addressCollection.models, function (model) {
+			_.each(this.addressCollection.models, function (model) {				
 				address += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
-
-			this.$el.find('#address').append(address);
+			
+			return address;
+		
 		},
 
 		removeSection: function (ev) {
@@ -307,9 +315,63 @@ define([
 			this.showConfirmationWindow();
 		},
 		
-		showMap: function () {console.log('showMap');
-			this.googleMaps.showModalGetLocation({lat:this.subContainer.find('#latitude').val(),lng:this.subContainer.find('#longitude').val()});
-			return false;
+
+		showMap: function () {
+			var thisObj = this;
+			var addressVal = this.subContainer.find("#address").val();
+			var address = this.subContainer.find("#address option:selected").text();
+
+			
+			if(addressVal == '') {				
+				$("#map").next('.error-msg-cont').fadeOut();
+				$("<span class='error-msg-cont'><label class='error margin-bottom-0'>Select an Address</label></div>").insertAfter($("#map"));
+			}
+			else {
+				var lat = '';
+				var lng = '';
+				
+				var geocoder = new google.maps.Geocoder();
+
+			   if (geocoder) {
+			      geocoder.geocode({ 'address': address }, function (results, status) {
+			         if (status == google.maps.GeocoderStatus.OK) {
+			         	$("#map").next('.error-msg-cont').fadeOut();
+			            thisObj.googleMaps.showModalGetLocation({lat: results[0].geometry.location.k, lng: results[0].geometry.location.B});		           	           
+			           
+			         }
+			         else {
+			         	$("#map").next('.error-msg-cont').fadeOut();
+			            $("<span class='error-msg-cont'><label class='error margin-bottom-0'>Invalid Address</label></div>").insertAfter($("#map"));
+			         }
+			      });
+			   } 
+			}   
+
+		},
+
+		setCoordinates: function () {
+			var lat = '';
+			var lng = '';
+
+			var address = $("#address option:selected").text();			
+
+			var geocoder = new google.maps.Geocoder();
+
+		   if (geocoder) {
+		      geocoder.geocode({ 'address': address }, function (results, status) {
+		         if (status == google.maps.GeocoderStatus.OK) {
+		         	$("#map").next('.error-msg-cont').fadeOut();		         	
+		         	$("#latitude").val(results[0].geometry.location.k);
+		            $("#longitude").val(results[0].geometry.location.B);
+		           
+		         }
+		         else {
+		         	$("#map").next('.error-msg-cont').fadeOut();
+		            $("<span class='error-msg-cont'><label class='error margin-bottom-0'>Invalid Address</label></div>").insertAfter($("#map"));
+		         }
+		      });
+		   } 
+
 		},
 		
 		otherInitializations: function () {},

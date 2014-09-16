@@ -6,6 +6,7 @@ define([
 	'jquerytextformatter',
 	'models/stack/StackLocationModel',
 	'collections/account/AccountCollection',
+	'collections/address/AddressCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/stack/stackLocationAddTemplate.html',
 	'global',
@@ -17,6 +18,7 @@ define([
 			TextFormatter,
 			StackLocationModel,
 			AccountCollection,
+			AddressCollection,
 			contentTemplate,
 			stackLocationAddTemplate,
 			Global,
@@ -46,8 +48,8 @@ define([
 			this.producerAndWarehouseAccount = new AccountCollection();
 			this.producerAndWarehouseAccount.on('sync', function() {
 				if(thisObj.subContainerExist()) {
-					thisObj.displayForm();
-					thisObj.supplyStackLocationData();
+					thisObj.displayForm();					
+					thisObj.supplyStackLocationData();						
 				}
 				this.off('sync');
 			});
@@ -60,6 +62,9 @@ define([
 				thisObj.producerAndWarehouseAccount.getProducerAndWarehouseAccount();
 				this.off('change');
 			});
+
+			this.addressCollection = new AddressCollection();			
+			
 		},
 		
 		otherInitializations: function () {
@@ -67,20 +72,36 @@ define([
 		},
 		
 		render: function(){
-			this.model.runFetch();
+			this.model.runFetch();			
 			Backbone.View.prototype.refreshTitle('Stack Location','edit');
 		},
 		
 		supplyStackLocationData: function () {
 			var thisObj = this;
-			var section = this.model.get('section');
-			
+			var section = this.model.get('section');					
+
 			this.subContainer.find('#account_id').val(this.model.get('account_id'));
 			this.subContainer.find('#name').val(this.model.get('name'));
 			this.subContainer.find('#description').val(this.model.get('description'));
 			this.subContainer.find('#latitude').val(this.model.get('latitude'));
-			this.subContainer.find('#longitude').val(this.model.get('longitude'));
+			this.subContainer.find('#longitude').val(this.model.get('longitude'));	
+
+
+			this.addressCollection.fetchStackAddress(this.model.get('account_id'));
+
+			this.addressCollection.fetch({
+				success: function (collection, response, options) {							
+					address = thisObj.showAddressList();	
+					thisObj.$el.find('#address').html(address);	
+					address_id = thisObj.model.get('address_id'); 
+					thisObj.$el.find('#address').val(address_id);
+				},
+				error: function (collection, response, options) {
+				},
+				headers: this.addressCollection.getAuth()
+			});
 			
+
 			var i= 0;
 			_.each(section, function (s) {
 				var sectionFields = (i > 0)? thisObj.addSection(): thisObj.subContainer.find('#section-list tbody .section-item:first-child');
@@ -91,12 +112,14 @@ define([
 				sectionFields.find('.description').val(s.description);
 			});
 		},
+
 		
 		initDeleteConfirmation: function () {
 			this.initConfirmationWindow('Are you sure you want to delete this Stock Location?',
 										'confirm-delete-sl',
 										'Delete');
 		},
+
 	});
 
 	return StackLocationEditView;

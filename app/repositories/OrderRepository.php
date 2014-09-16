@@ -250,8 +250,6 @@ class OrderRepository implements OrderRepositoryInterface {
     
     public function addOrder($data, $orderType = 1)
     {
-        // var_dump($data);exit;
-        
         $now = new DateTime('NOW');
         $date = $now->format('Y-m-d H:i:s');
         
@@ -286,9 +284,11 @@ class OrderRepository implements OrderRepositoryInterface {
         if(!isset($data['contract_id']) || $data['contract_id'] == '')
             $data['contract_id'] = null;
 
-        $result = DB::transaction(function() use ($data)
-        {
-            $result = array();
+        $result = array();
+        DB::beginTransaction();
+        // $result = DB::transaction(function() use ($data)
+        // {
+            
             $data['orderaddress_id'] = $this->addOrderAddress($data['businessaddress']);
 
             $order = $this->instance();
@@ -297,16 +297,16 @@ class OrderRepository implements OrderRepositoryInterface {
 
             $productResult = $this->addProductToOrder($order->id, $data['products']);
             if(isset($productResult['stacknumberError'])){ //duplicate stack number with different product
-                return array(
+                $result = array(
                     "error" => true,
                     'message' => "Stack number ".$productResult['stacknumber']." already taken by different product.");
             } else if(isset($productResult['stacknumberRepeatedError'])){
-                return array(
+                $result = array(
                     "error" => true,
                     'message' => "Stack number ".$productResult['stacknumber']." has been use repeatedly in this order."
                 );
             } else if(isset($productResult['productTypeRepeatedError'])){
-                return array(
+                $result = array(
                     "error" => true,
                     'message' => "Cannot use the same product type in an order."
                 );
@@ -317,7 +317,7 @@ class OrderRepository implements OrderRepositoryInterface {
 
             if(isset($data['location_id']) && isset($data['checkinorder'])){
                 if($order->status_id == 7){ //has testing products on order
-                    return array(
+                    $result = array(
                         "error" => true,
                         'message' => "Cannot do check in to inventory when order contains hold product(s)."
                     );
@@ -325,39 +325,45 @@ class OrderRepository implements OrderRepositoryInterface {
                 //if dropship and client click the button to create SO
                 if($data['location_id'] == Config::get('constants.LOCATION_DROPSHIP') && $data['checkinorder'] == true){
                     $dropshipResult = $this->checkInPurchaseOrderProducts($order->id, true);  
-                    return array('dropship' => true, 'data' => $dropshipResult);  
+                    $result = array('dropship' => true, 'data' => $dropshipResult);  
                 } else if($data['location_id'] == Config::get('constants.LOCATION_PRODUCER') && $data['checkinorder'] == true){
                     $producerResult = $this->checkInPurchaseOrderProducts($order->id, false);  
-                    return array('producer' => true, 'data' => $producerResult);
+                    $result = array('producer' => true, 'data' => $producerResult);
                 }
             }
             
-            return $order;
-        });
+            // return $order;
+        // });
         
-        if($result){
-            if(isset($result['error'])){
-                if($result['error']){
-                    return array(
-                        "error" => true,
-                        'message' => $result['message']
-                    );
-                }
-            } else if(isset($result['dropship']) || isset($result['producer'])){
-                return $result['data'];
+        // if(count($result) > 0){
+        if(isset($result['error'])){
+            if($result['error']){
+                DB::rollback();
+                return array(
+                    "error" => true,
+                    'message' => $result['message']
+                );
             }
-
-            if($data['ordertype'] == 1)
-                return array(
-                    "error" => false,
-                    'message' => Lang::get('messages.success.created', array('entity' => 'Purchase Order'))
-                );
-            else
-                return array(
-                    "error" => false,
-                    'message' => Lang::get('messages.success.created', array('entity' => 'Sales Order'))
-                );
+        } else if(isset($result['dropship']) || isset($result['producer'])){
+            return $result['data'];
         }
+
+        if($data['ordertype'] == 1){
+            DB::commit();
+            return array(
+                "error" => false,
+                'message' => Lang::get('messages.success.created', array('entity' => 'Purchase Order'))
+            );
+        }
+        else {
+            DB::commit();
+            return array(
+                "error" => false,
+                'message' => Lang::get('messages.success.created', array('entity' => 'Sales Order'))
+            );
+        }
+                
+        // }
        
     }
     
@@ -388,9 +394,11 @@ class OrderRepository implements OrderRepositoryInterface {
         
         if(!isset($data['contract_id']) || $data['contract_id'] == '')
             $data['contract_id'] = null;
-        
-        $result = DB::transaction(function() use ($id, $data)
-        {   
+
+        $result = array();
+        DB::beginTransaction();
+        // $result = DB::transaction(function() use ($id, $data)
+        // {   
             $productResult = null;
             $order = Order::find($id);
 
@@ -407,17 +415,17 @@ class OrderRepository implements OrderRepositoryInterface {
             }
 
             if(isset($productResult['stacknumberError'])){ //duplicate stack number with different product
-                return array(
+                $result = array(
                     "error" => true,
                     'message' => "Stack number ".$productResult['stacknumber']." already taken by different product."
                 );
             } else if(isset($productResult['stacknumberRepeatedError'])){
-                return array(
+                $result = array(
                     "error" => true,
                     'message' => "Stack number ".$productResult['stacknumber']." has been use repeatedly."
                 );
             } else if(isset($productResult['productTypeRepeatedError'])){
-                return array(
+                $result = array(
                     "error" => true,
                     'message' => "Cannot use the same product type in an order."
                 );
@@ -439,7 +447,7 @@ class OrderRepository implements OrderRepositoryInterface {
 
             if(isset($data['location_id']) && isset($data['checkinorder'])){
                 if($order->status_id == 7){ //has testing products on order
-                    return array(
+                    $result = array(
                         "error" => true,
                         'message' => "Cannot do check in to inventory when order contains hold product(s)."
                     );
@@ -447,16 +455,16 @@ class OrderRepository implements OrderRepositoryInterface {
                 //if dropship and client click the button to create SO
                 if($data['location_id'] == Config::get('constants.LOCATION_DROPSHIP') && $data['checkinorder'] == true){
                     $dropshipResult = $this->checkInPurchaseOrderProducts($order->id, true);  
-                    return array('dropship' => true, 'data' => $dropshipResult);  
+                    $result = array('dropship' => true, 'data' => $dropshipResult);  
                 } else if($data['location_id'] == Config::get('constants.LOCATION_PRODUCER') && $data['checkinorder'] == true){
                     $producerResult = $this->checkInPurchaseOrderProducts($order->id, false);  
-                    return array('producer' => true, 'data' => $producerResult);
+                    $result = array('producer' => true, 'data' => $producerResult);
                 }
             }
             
             if(isset($data['location_id']) && isset($data['checkinorder'])){
                 if($order->status_id == 7){ //has testing products on order
-                    return array(
+                    $result = array(
                         "error" => true,
                         'message' => "Cannot do check in to inventory when order contains hold product(s)."
                     );
@@ -464,40 +472,45 @@ class OrderRepository implements OrderRepositoryInterface {
                 //if dropship and client click the button to create SO
                 if($data['location_id'] == Config::get('constants.LOCATION_DROPSHIP') && $data['checkinorder'] == true){
                     $dropshipResult = $this->checkInPurchaseOrderProducts($order->id, true);  
-                    return array('dropship' => true, 'data' => $dropshipResult);  
+                    $result = array('dropship' => true, 'data' => $dropshipResult);  
                 } else if($data['location_id'] == Config::get('constants.LOCATION_PRODUCER') && $data['checkinorder'] == true){
                     $producerResult = $this->checkInPurchaseOrderProducts($order->id, false);  
-                    return array('producer' => true, 'data' => $producerResult);
+                    $result = array('producer' => true, 'data' => $producerResult);
                 }
             }
             
 
-            return $order;
-        });
+        //     return $order;
+        // });
         
-        if($result){
-            if(isset($result['error'])){
-                if($result['error']){
-                    return array(
-                        "error" => true,
-                        'message' => $result['message']
-                    );
-                }
-            } else if(isset($result['dropship']) || isset($result['producer'])){
-                return $result['data'];
+        // if($result){
+        if(isset($result['error'])){
+            if($result['error']){
+                DB::rollback();
+                return array(
+                    "error" => true,
+                    'message' => $result['message']
+                );
             }
-
-            if($data['ordertype'] == 1)
-                return array(
-                    "error" => false,
-                    'message' => Lang::get('messages.success.updated', array('entity' => 'Purchase Order'))
-                );
-            else
-                return array(
-                    "error" => false,
-                    'message' => Lang::get('messages.success.updated', array('entity' => 'Sales Order'))
-                );
+        } else if(isset($result['dropship']) || isset($result['producer'])){
+            return $result['data'];
         }
+
+        if($data['ordertype'] == 1){
+            DB::commit();
+            return array(
+                "error" => false,
+                'message' => Lang::get('messages.success.updated', array('entity' => 'Purchase Order'))
+            );
+        } else {
+            DB::commit();
+            return array(
+                "error" => false,
+                'message' => Lang::get('messages.success.updated', array('entity' => 'Sales Order'))
+            );
+        }
+            
+        // }
     }
 
     public function addOrderAddress($data, $orderAddressId = null){

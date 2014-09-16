@@ -62,13 +62,13 @@
                             %>
                             </td>
                             <td><%= transaction.account %></td>
-                            <td>$ <%= transaction.net_sale %></td>
-                            <td>$ <%= transaction.hay_cost %></td>
-                            <td>$ <%= transaction.freight_cost %></td>
-                            <td>$ <%= transaction.fees %></td>
-                            <td>$ <%= transaction.commission %></td>
-                            <td>$ <%= transaction.profit_amount %></td>
-                            <td><%= transaction.profit_percentage %>%</td>
+                            <td>$ <%= numberFormat(transaction.net_sale) %></td>
+                            <td>$ <%= numberFormat(transaction.hay_cost) %></td>
+                            <td>$ <%= numberFormat(transaction.freight_cost) %></td>
+                            <td>$ <%= numberFormat(transaction.fees) %></td>
+                            <td>$ <%= numberFormat(transaction.commission) %></td>
+                            <td>$ <%= numberFormat(transaction.profit_amount) %></td>
+                            <td><%= transaction.profit_percentage %> %</td>
                         </tr>   
                     <%}); %>                     
                 </tbody>                
@@ -89,7 +89,7 @@
                             <strong>Total Cost:</strong> 
                         </td>
                         <td>
-                            $ <%= profits.get('summary').total_cost %>
+                            $ <%= numberFormat(profits.get('summary').total_cost) %>
                         </td>
                     </tr>
                     <tr>
@@ -97,7 +97,7 @@
                             <strong>Cost of Hay:</strong> 
                         </td>
                         <td>
-                            $ <%= profits.get('summary').total_hay_cost %>
+                            $ <%= numberFormat(profits.get('summary').total_hay_cost) %>
                         </td>
                     </tr>
                     <tr>
@@ -105,7 +105,7 @@
                             <strong>Cost of Freight:</strong> 
                         </td>
                         <td>
-                            $ <%= profits.get('summary').total_freight_cost %>
+                            $ <%= numberFormat(profits.get('summary').total_freight_cost) %>
                         </td>
                     </tr>
                     <tr>
@@ -113,7 +113,7 @@
                             <strong>Profit:</strong> 
                         </td>
                         <td>
-                            $ <%= profits.get('summary').total_profit_amount %>
+                            $ <%= numberFormat(profits.get('summary').total_profit_amount) %>
                         </td>
                     </tr>
                     <tr>
@@ -121,7 +121,7 @@
                             <strong>Average Percent</strong> 
                         </td>
                         <td>
-                            <%= profits.get('summary').total_profit_percentage %>%
+                            <%= profits.get('summary').total_profit_percentage %> %
                         </td>
                     </tr>
                 </tbody>

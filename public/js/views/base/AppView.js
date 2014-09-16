@@ -160,11 +160,11 @@ define([
 		},
 
 		initSendMailForm: function (content, buttonId, buttonLabel, title, modalId, model, modelId) {
-			if($(this.modalAlertContainer).find('#modal-confirm').length)
-				$(this.modalAlertContainer).find('#modal-confirm').remove();
+			if($(this.modalAlertContainer).find('#mdl_sendmail').length)
+				$(this.modalAlertContainer).find('#mdl_sendmail').remove();
 			
 			if(modalId == null || typeof modalId == 'undefined')
-				modalId = 'modal-confirm';
+				modalId = 'mdl_sendmail';
 			
 			var modalTemplateVariables = {
 				confirm_title: title,

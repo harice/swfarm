@@ -4,6 +4,7 @@ define([
 	'views/base/GoogleMapsView',
 	'models/stack/StackLocationModel',
 	'collections/stack/StackLocationCollection',
+	'collections/address/AddressCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/stack/stackLocationListTemplate.html',
 	'text!templates/stack/stackLocationInnerListTemplate.html',
@@ -13,6 +14,7 @@ define([
 			GoogleMapsView,
 			StackLocationModel,
 			StackLocationCollection,
+			AddressCollection,
 			contentTemplate,
 			stackLocationListTemplate,
 			stackLocationInnerListTemplate,
@@ -36,6 +38,8 @@ define([
 			this.collection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
+
+			this.addressCollection = new AddressCollection();
 		},
 		
 		render: function(){
@@ -140,16 +144,27 @@ define([
 		},
 		
 		showMap: function (ev) {
+			var thisObj = this;
 			var element = $(ev.currentTarget);
-			var id = element.attr('data-id');
-			var model = this.collection.get(id);
+			var id = element.attr('data-id');	
+			var lat = '';
+			var lng = '';	
 			
-			if(model.get('latitude') && model.get('longitude')) {
-				var markers = [{accountName:model.get('account_name'),name:model.get('name'),lat:model.get('latitude'),lng:model.get('longitude')}];
-				this.googleMaps.showModalSetLocation(markers);
-			}
-			else
-				this.displayGritter('Map location not set for this stack location. Edit this stack location and add a map location.');
+			var model = new StackLocationModel({id:id});
+			model.fetch({
+				success: function(model,response,options){
+					if(model.get('latitude') && model.get('longitude')) {
+						var markers = [{accountName:model.get('account_name'),name:model.get('name'),lat:model.get('latitude'),lng:model.get('longitude')}];
+						thisObj.googleMaps.showModalSetLocation(markers);
+					}
+					else
+						thisObj.displayGritter('Map location not set for this stack location. Edit this stack location and add a map location.');	
+				},
+				error: function(model, response, options){
+
+				},
+				headers: model.getAuth(),
+			});
 		},
 		
 		showMapAll: function (ev) {

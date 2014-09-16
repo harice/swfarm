@@ -11,6 +11,10 @@ class Account extends Eloquent {
 	 */
 	protected $table = 'account';
 
+    public function storagelocation() {
+        return $this->hasMany('StorageLocation');
+    }
+
     public function accounttype(){
         return $this->belongsToMany('Accounttype')->withTimestamps();
     }
@@ -43,24 +47,13 @@ class Account extends Eloquent {
         return $this->hasMany('Order', 'account_id', 'id')->select(array('id', 'account_id', 'order_number'));
     }
 
-    // Laravel's equivalent to calling the constructor on a model
     public static function boot()
     {
-        // make the parent (Eloquent) boot method run
-        parent::boot();    
+        parent::boot();
 
-        // cause a soft delete of a account to cascade to children so they are also soft deleted
         static::deleting(function($account)
-        {//var_dump($account->contact()->count());
-           
-                $account->contact()->delete();
-                
-            // $account->descriptions()->delete();
-            // foreach($account->variants as $variant)
-            // {
-            //     $variant->options()->delete();
-            //     $variant->delete();
-            // }
+        {  
+            $account->contact()->delete();
         });
     }
 
