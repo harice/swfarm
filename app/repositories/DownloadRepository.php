@@ -91,6 +91,15 @@ class DownloadRepository implements DownloadInterface
 							return PDF::loadView('pdf.base',array('child' => View::make('reports.customer-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.customer-content', array('report_o' => $report_o))))->stream('SOA - '.$report_o->name.'.pdf');
 							break;
 
+						case 'driver-pay-statement':
+							if(!array_key_exists('id', $q)) { $_404 = true; break; }
+
+							$report_o = $this->generateDriversPay($q);
+							if(!$report_o) { $_404 = true; break; }
+
+							return PDF::loadView('pdf.base',array('child' => View::make('reports.driver-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.driver-content', array('report_o' => $report_o))))->stream('SOA - '.$report_o->lastname.'-'.$report_o->firstname.'.pdf');
+							break;
+
 						default:
 							$_404 = true;
 							break;
@@ -231,9 +240,7 @@ class DownloadRepository implements DownloadInterface
 	}
 
 	private function generateProducerStatement($_params = array()){
-		$_dateBetween['start'] = array_key_exists('dateStart',$_params) ? date('Y-m-d \0\0\:\0\0\:\0\0', strtotime($_params['dateStart'])) : date('Y-m-d \0\0\:\0\0\:\0\0');
-		$_dateBetween['end'] = array_key_exists('dateEnd',$_params) ? date('Y-m-d \2\3\:\5\9\:\5\9', strtotime($_params['dateEnd'])) : date('Y-m-d \2\3\:\5\9\:\5\9');
-		
+		$_dateBetween = $this->generateBetweenDates($_params);
 		$report_o = Account::with('businessaddress.state')
 	                        ->with('storagelocation')
 	                        ->with('storagelocation.section')
@@ -374,9 +381,7 @@ class DownloadRepository implements DownloadInterface
 	}
 
 	private function generateSalesReport($_params = array()) {
-		$_dateBetween['start'] = array_key_exists('dateStart',$_params) ? date('Y-m-d \0\0\:\0\0\:\0\0', strtotime($_params['dateStart'])) : date('Y-m-d \0\0\:\0\0\:\0\0');
-		$_dateBetween['end'] = array_key_exists('dateEnd',$_params) ? date('Y-m-d \2\3\:\5\9\:\5\9', strtotime($_params['dateEnd'])) : date('Y-m-d \2\3\:\5\9\:\5\9');
-
+		$_dateBetween = $this->generateBetweenDates($_params);
 		$report_o = Account::with('businessaddress.state')
                         ->with(array('order' => function($query) use($_dateBetween) {
                             $query->join('natureofsale','natureofsale.id','=','order.natureofsale_id')
@@ -472,6 +477,89 @@ class DownloadRepository implements DownloadInterface
 
 	    $report_a['amount'] = $amount_i;
 	    return $this->parse($report_a);
+	}
+
+	private function generateDriversPay($_params = array()) {
+		$_dateBetween = $this->generateBetweenDates($_params);
+		$report_o = Contact::join('account','account.id','=','account')
+                    ->with(array('order' => function($query) use($_dateBetween) {
+                        $query->whereBetween('transportschedule.updated_at',array_values($_dateBetween))
+                            ->select(array('trucker_id','order.id as id','order.order_number'))
+                            ->where('transportschedule.status_id','=',Config::get('constants.STATUS_CLOSED'))
+                            ->orderBy('order.created_at','desc');
+                    }))
+                    ->where('contact.id','=',$_params['id'])
+                    ->select(array('contact.id','contact.firstname','contact.lastname','contact.suffix','account.name as account','contact.email','contact.phone','contact.rate'))
+                    ->take(1)
+                    ->get()
+                    ->each(function($trucker) use($_dateBetween) {
+                        $trucker->amount = 0.00;
+                        $trucker->report_date = (object) $_dateBetween;
+                        $trucker->order->each(function($order) use($trucker,$_dateBetween) {
+                            $order->transportschedule = TransportSchedule::join('truck','truck.id','=','transportschedule.truck_id')
+                                ->with('weightticket.weightticketscale_pickup')
+                                ->with('weightticket.weightticketscale_dropoff')
+                                ->select(array('transportschedule.id','truck.trucknumber as truck','transportschedule.truckingrate','transportschedule.updated_at'))
+                                ->where('transportschedule.order_id','=',$order->id)
+                                ->where('transportschedule.trucker_id','=',$order->trucker_id)
+                                ->where('transportschedule.status_id','=',Config::get('constants.STATUS_CLOSED'))
+                                ->whereBetween('transportschedule.updated_at',array_values($_dateBetween))
+                                ->get()
+                                ->each(function($transportschedule) use($trucker) {
+                                    $transportschedule->weightticket->setVisible(array('weightticketscale_pickup','weightticketscale_dropoff'));
+
+                                    if(
+                                        !is_null($transportschedule->weightticket->weightticketscale_pickup) && 
+                                        !is_null($transportschedule->weightticket->weightticketscale_dropoff)
+                                    ) {
+                                        $pickup_net = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare);
+                                        $dropoff_net = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare);
+                                        $ii = bccomp($pickup_net,$dropoff_net,4);
+                                        switch ($ii) {
+                                            case -1:
+                                                $transportschedule->bales = $transportschedule->weightticket->weightticketscale_dropoff->bales;
+                                                $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare);
+                                                unset($transportschedule->weightticket);
+                                                break;
+
+                                            case 1:
+                                            case 0:
+                                            default:
+                                                $transportschedule->bales = $transportschedule->weightticket->weightticketscale_pickup->bales;
+                                                $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare);
+                                                unset($transportschedule->weightticket);
+                                                break;
+                                        }
+                                    } else if(
+                                            !is_null($transportschedule->weightticket->weightticketscale_pickup) && 
+                                            is_null($transportschedule->weightticket->weightticketscale_dropoff
+                                        )) {
+                                        $transportschedule->bales = $transportschedule->weightticket->weightticketscale_pickup->bales;
+                                        $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare);
+                                        unset($transportschedule->weightticket);
+                                    } else {
+                                        $transportschedule->bales = $transportschedule->weightticket->weightticketscale_dropoff->bales;
+                                        $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare);
+                                        unset($transportschedule->weightticket);
+                                    }
+
+                                    $transportschedule->gross = $transportschedule->tons * $transportschedule->truckingrate;
+                                    $transportschedule->pay = $transportschedule->gross * ($trucker->rate / 100);
+
+                                    $trucker->amount = floatval($trucker->amount) + floatval($transportschedule->pay);
+                                })->toArray();
+                        });
+                    })->shift();
+
+		if(!$report_o) return false;
+		return $this->parse($report_o->toArray());
+	}
+
+	private function generateBetweenDates($_params = array()) {
+		$_dates['start'] = array_key_exists('dateStart',$_params) ? date('Y-m-d \0\0\:\0\0\:\0\0', strtotime($_params['dateStart'])) : date('Y-m-d \0\0\:\0\0\:\0\0');
+		$_dates['end'] = array_key_exists('dateEnd',$_params) ? date('Y-m-d \2\3\:\5\9\:\5\9', strtotime($_params['dateEnd'])) : date('Y-m-d \2\3\:\5\9\:\5\9');
+
+		return $_dates;
 	}
 
 	private function intcmp($a, $b) {

@@ -232,14 +232,87 @@ Route::group(array('before' => 'auth.session'),function(){
 });
 
 Route::get('/', function(){ return View::make('main'); });
-// Route::get('pdf', function(){
-//     // return PDF::loadHtml(View::make('pdf.base')->nest('child','pdf.order',array('order' => Order::find(1))))->stream();
-//     // return View::make('pdf.base',array('title' => 'export'))->nest('child','pdf.order',array('order' => 'P09123127-231'));
+Route::get('pdf', function(){
+    // return PDF::loadHtml(View::make('pdf.base')->nest('child','pdf.order',array('order' => Order::find(1))))->stream();
+    // return View::make('pdf.base',array('title' => 'export'))->nest('child','pdf.order',array('order' => 'P09123127-231'));
 
-//     // return Excel::create('Test', function($excel) {
-//     //     $excel->sheet('First sheet', function($sheet) { $sheet->prependRow(array('prepended1', 'prepended2'));  });
-//     //     $excel->sheet('Second sheet', function($sheet) { $sheet->prependRow(array('asdasdsadadasdasd', 'sadas'));  });
-//     // })->download('xls');
-// });
+    // return Excel::create('Test', function($excel) {
+    //     $excel->sheet('First sheet', function($sheet) { $sheet->prependRow(array('prepended1', 'prepended2'));  });
+    //     $excel->sheet('Second sheet', function($sheet) { $sheet->prependRow(array('asdasdsadadasdasd', 'sadas'));  });
+    // })->download('xls');
+    $_dates = array('2014-09-01 22:50:00','2014-09-12 23:59:59');
+    $report_o = Contact::join('account','account.id','=','account')
+                    ->with(array('order' => function($query) use($_dates) {
+                        $query->whereBetween('transportschedule.updated_at',$_dates)
+                            ->select(array('trucker_id','order.id as id','order.order_number'))
+                            ->where('transportschedule.status_id','=',Config::get('constants.STATUS_CLOSED'))
+                            ->orderBy('order.created_at','desc');
+                    }))
+                    ->where('contact.id','=',4)
+                    ->select(array('contact.id','contact.firstname','contact.lastname','contact.suffix','account.name as account','contact.email','contact.phone','contact.rate'))
+                    ->take(1)
+                    ->get()
+                    ->each(function($trucker) use($_dates) {
+                        $trucker->amount = 0.00;
+                        $trucker->report_date = (object) $_dates;
+                        $trucker->order->each(function($order) use($trucker,$_dates) {
+                            (object) $order->transportschedule = TransportSchedule::join('truck','truck.id','=','transportschedule.truck_id')
+                                ->with('weightticket.weightticketscale_pickup')
+                                ->with('weightticket.weightticketscale_dropoff')
+                                ->select(array('transportschedule.id','truck.trucknumber as truck','transportschedule.truckingrate','transportschedule.updated_at'))
+                                ->where('order_id','=',$order->id)
+                                ->where('trucker_id','=',$order->trucker_id)
+                                ->where('status_id','=',Config::get('constants.STATUS_CLOSED'))
+                                ->whereBetween('transportschedule.updated_at',$_dates)
+                                ->get()
+                                ->each(function($transportschedule) use($trucker) {
+                                    $transportschedule->weightticket->setVisible(array('weightticketscale_pickup','weightticketscale_dropoff'));
+
+                                    if(
+                                        !is_null($transportschedule->weightticket->weightticketscale_pickup) && 
+                                        !is_null($transportschedule->weightticket->weightticketscale_dropoff)
+                                    ) {
+                                        $pickup_net = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare);
+                                        $dropoff_net = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare);
+                                        $ii = bccomp($pickup_net,$dropoff_net,4);
+                                        switch ($ii) {
+                                            case -1:
+                                                $transportschedule->bales = $transportschedule->weightticket->weightticketscale_dropoff->bales;
+                                                $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare);
+                                                unset($transportschedule->weightticket);
+                                                break;
+
+                                            case 1:
+                                            case 0:
+                                            default:
+                                                $transportschedule->bales = $transportschedule->weightticket->weightticketscale_pickup->bales;
+                                                $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare);
+                                                unset($transportschedule->weightticket);
+                                                break;
+                                        }
+                                    } else if(
+                                            !is_null($transportschedule->weightticket->weightticketscale_pickup) && 
+                                            is_null($transportschedule->weightticket->weightticketscale_dropoff
+                                        )) {
+                                        $transportschedule->bales = $transportschedule->weightticket->weightticketscale_pickup->bales;
+                                        $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare);
+                                        unset($transportschedule->weightticket);
+                                    } else {
+                                        $transportschedule->bales = $transportschedule->weightticket->weightticketscale_dropoff->bales;
+                                        $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare);
+                                        unset($transportschedule->weightticket);
+                                    }
+
+                                    $transportschedule->gross = $transportschedule->tons * $transportschedule->truckingrate;
+                                    $transportschedule->pay = $transportschedule->gross * ($trucker->rate / 100);
+
+                                    $trucker->amount = floatval($trucker->amount) + floatval($transportschedule->pay);
+                                })->toArray();
+                        });
+                    })->shift();
+    
+    return Response::json($report_o);
+    
+});
 Route::get('404', function(){ return View::make('errors/404'); });
 Route::get('{dump}', function(){ return Redirect::to('404'); });
