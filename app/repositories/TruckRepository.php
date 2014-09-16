@@ -15,12 +15,8 @@ class TruckRepository implements TruckRepositoryInterface {
         $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
 
         return Truck::join('account', 'truck.account_id', '=', 'account.id')
-//            ->join('account_accounttype', 'account.id','=','account_accounttype.account_id')
-//            ->join('accounttype', 'account_accounttype.accounttype_id', '=', 'accounttype.id')
-//            ->select('truck.id', 'truck.trucknumber', 'truck.fee', 'account.id as account_id', 'account.name as account_name', 'accounttype.name as account_type')
             ->with('account.accounttype')
             ->select('truck.id', 'truck.trucknumber', 'truck.fee', 'account.id as account_id', 'account.name as account_name')
-//            ->groupBy('account.id')
             ->orderBy($sortby, $orderby)
             ->paginate($perPage);
     }
@@ -35,15 +31,12 @@ class TruckRepository implements TruckRepositoryInterface {
             $searchWord = $params['search'];
 
             return Truck::join('account', 'truck.account_id', '=', 'account.id')
-//                ->join('account_accounttype', 'account.id','=','account_accounttype.account_id')
-//                ->join('accounttype', 'account_accounttype.accounttype_id', '=', 'accounttype.id')
-//                ->select('truck.id', 'truck.trucknumber', 'truck.fee', 'account.id as account_id', 'account.name as account_name', 'accounttype.name as account_type')
+                ->with('account.accounttype')
                 ->select('truck.id', 'truck.trucknumber', 'truck.fee', 'account.id as account_id', 'account.name as account_name')
                 ->where(function ($query) use ($searchWord) {
                     $query->orWhere('trucknumber','like','%'.$searchWord.'%');
                     $query->orWhere('account.name','like','%'.$searchWord.'%');
                 })
-//                ->groupBy('account.id')
                 ->orderBy($sortby, $orderby)
                 ->paginate($perPage);
         }
