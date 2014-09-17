@@ -73,23 +73,7 @@
                     <tr>                        
                         <td>
                              <% 
-                                var d = Date.parse(ticket.created_at);
-                                if (isNaN(d)==false)
-                                {
-                                    var d = new Date(ticket.created_at), 
-                                    fragments = [                                
-                                        d.getMonth() + 1,
-                                        d.getDate(),
-                                        d.getFullYear()
-                                    ]; 
-                                    print(fragments.join('/'));
-
-                                }     
-                                else {
-                                    d = (ticket.created_at).split(' ')[0];
-                                    var t = d.split('-');
-                                    print(t[1]+'/'+t[2]+'/'+t[0]);
-                                }                  
+                                formatDateBy(transaction.created_at, 'm/d/Y')
                             %>
                            
                         </td>

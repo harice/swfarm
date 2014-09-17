@@ -25,8 +25,8 @@ define([
 	var BarGraphView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 
-		graphData: function (id, data, xData, label, decimals){			
-
+		graphData: function (id, data, xData, label, decimals){		
+			
 			var graph = $.plot($("#"+id), data, {
 		        series: {
 		          bars: {
@@ -225,6 +225,7 @@ define([
 					
 					var d = [];
 					for(var i = 0; i < data.length; i++) {
+						console.log([i, data[i].label]);
 						graphXData.push([i, data[i].label]); //console.log(data[i].label);
 						d.push([i, data[i].value]); //console.log(data[i].value);
 					}
@@ -233,10 +234,29 @@ define([
 					
 					break;
 				default:
+					var d = [];
+					for(var i = 0; i < data.length; i++) {						
+						graphXData.push([i, data[i].label]); //console.log(data[i].label);
+						d.push([i, data[i].value]); //console.log(data[i].value);
+					}
+					
+					graphData.push({ data:d, yPositionAdjustLabel: -10 });
+
 					break;
 			}
 			
 			return { data: graphData, xData: graphXData, };
+		},
+
+		resetGraphData: function (element, data, xData) {
+			var plot = $.plot($('.graph-cont[data-id='+ element +'] .graph-container'));
+			//var axes = plot.getAxes();
+			//axes.xaxis.options.tickData = xData;
+			
+			//plot.setData(data);
+			//plot.setupGrid();
+			//plot.draw()
+			
 		},
 
 	});

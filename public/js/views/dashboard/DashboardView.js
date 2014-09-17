@@ -1,7 +1,7 @@
 define([
 	'backbone',	
 	'views/base/BarGraphView',
-	'models/dashboard/DashboardModel',
+	'models/dashboard/GraphModel',
 	'collections/dashboard/GraphCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/dashboard/barGraphTemplate.html',
@@ -10,7 +10,7 @@ define([
 ], function(
 	Backbone,
 	BarGraphView, 
-	DashboardModel,
+	GraphModel,
 	GraphCollection,
 	contentTemplate,
 	barGraphTemplate,
@@ -19,20 +19,18 @@ define([
 ){
 
 	var DashboardView = BarGraphView.extend({
-		el: $("#"+Const.CONTAINER.MAIN),	
+		el: $("#"+Const.CONTAINER.MAIN),		
 
 		initialize: function (){			
 			this.initSubContainer();
 			var thisObj = this;	
 			
-			this.isInitProcess = true;
-			
-			this.model = new DashboardModel();	
-			this.model.on('sync', function (){
-				thisObj.displayAdminDashboard();
-				this.off("sync");
-			});				
-			
+			this.isInitProcess = true;	
+			this.changedData = null;
+			this.changedId = null;
+			this.changedType = null;
+			this.model = new GraphModel();
+								
 			this.graphCollection = new GraphCollection();
 			this.graphCollection.on('sync', function() {	
 				if(thisObj.isInitProcess) {
@@ -41,13 +39,20 @@ define([
 						thisObj.displayAdminDashboard();
 					}
 				}
-				else {
-					console.log(this.models);
+				else {	
+
+					var graphData = thisObj.formatGraphData(thisObj.changedData, thisObj.changedType); //console.log(graphData);
+					var data = graphData.data;
+					var xData = graphData.xData;
+					thisObj.resetGraphData(thisObj.changedId, data, xData);
 				}
-			});
+			});			
 			
 			this.graphCollection.on('error', function(collection, response, options) {
+				
 			});
+
+
 		},
 		render: function(){	
 			this.graphCollection.getModels();
@@ -83,7 +88,7 @@ define([
 					currency = '$';
 					tickDecimals = 2;
 				}
-				
+				//console.log(graph.get('data'));
 				var graphData = thisObj.formatGraphData(graph.get('data'), graph.get('graphType')); //console.log(graphData);
 				
 				switch(graph.get('graphType')){
@@ -161,10 +166,16 @@ define([
 				if(endDate != '' && typeof endDate != 'undefined')
 					eDate = thisObj.convertDateFormat(endDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
 				
-				if(sDate != null && eDate != null)
+				if(sDate != null && eDate != null) {
 					thisObj.graphCollection.fetchGraphData(graphId, sDate, eDate);
-				else
+					//console.log(thisObj.graphCollection.models());
+				}
+				else {
 					thisObj.graphCollection.fetchGraphData(graphId);
+					thisObj.changedData = thisObj.graphCollection.at(graphId-1).get('data');
+					thisObj.changedId = thisObj.graphCollection.at(graphId-1).get('graphId');
+					thisObj.changedType = thisObj.graphCollection.at(graphId-1).get('graphType');
+				}
 			});
 			
 			this.$el.find('#'+endId+' .input-group.date').datepicker({
@@ -187,12 +198,15 @@ define([
 				if(startDate != '' && typeof startDate != 'undefined')
 					sDate = thisObj.convertDateFormat(startDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					
-				if(sDate != null && eDate != null)
+				if(sDate != null && eDate != null) {
 					thisObj.graphCollection.fetchGraphData(graphId, sDate, eDate);
+					
+				}
 				else
 					thisObj.graphCollection.fetchGraphData(graphId);
+
 			});
-		},
+		},	
 		
 
 	});
