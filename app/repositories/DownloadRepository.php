@@ -99,6 +99,15 @@ class DownloadRepository implements DownloadInterface
 							return PDF::loadView('pdf.base',array('child' => View::make('reports.driver-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.driver-content', array('report_o' => $report_o))))->stream('SOA - '.$report_o->lastname.'-'.$report_o->firstname.'.pdf');
 							break;
 
+						case 'trucking-statement':
+							if(!$this->filterParams($q,array('filterId'))) { $_404 = true; break; }
+
+							$report_o = $this->generateTruckingStatement($q);
+							if(!$report_o) { $_404 = true; break; }
+
+							return PDF::loadView('pdf.base',array('child' => View::make('reports.truck-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.truck-content', array('report_o' => $report_o))))->stream('TS - '.$report_o->trucknumber.'.pdf');
+							break;
+
 						default:
 							$_404 = true;
 							break;
@@ -477,7 +486,7 @@ class DownloadRepository implements DownloadInterface
 	    return $this->parse($report_a);
 	}
 
-	public function generateCustomerStatement($_params = array()) {
+	private function generateCustomerStatement($_params = array()) {
 		$_dateBetween = $this->generateBetweenDates($_params);
 		$report_o = Account::with('businessaddress.state')
                         ->with(array('order' => function($query) use($_dateBetween) {
@@ -668,7 +677,14 @@ class DownloadRepository implements DownloadInterface
 						->take(1)
 						->get()
 						->each(function($truck) use($_dateBetween) {
-	                        $truck->amount = 0.00;
+							$truck->amount = 0.00;
+	                        $truck->hauling = 0.00;
+	                        $truck->adminfee = 0.00;
+	                        $truck->loadingfee = 0.00;
+	                        $truck->fuelcharge = 0.00;
+	                        $truck->trailerrent = 0.00;
+	                        $truck->bales = 0;
+	                        $truck->tons = 0.0000;
 	                        $truck->report_date = (object) $_dateBetween;
 	                        $truck->order->each(function($order) use($truck,$_dateBetween) {
 	                            $order->transportschedule = TransportSchedule::join('truck','truck.id','=','transportschedule.truck_id')
@@ -706,13 +722,14 @@ class DownloadRepository implements DownloadInterface
 	                                        !is_null($transportschedule->weightticket->weightticketscale_pickup) && 
 	                                        !is_null($transportschedule->weightticket->weightticketscale_dropoff)
 	                                    ) {
-	                                        $pickup_net = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare);
-	                                        $dropoff_net = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare);
+	                                        $pickup_net = bcsub($transportschedule->weightticket->weightticketscale_pickup->gross,$transportschedule->weightticket->weightticketscale_pickup->tare,4);
+	                                        $dropoff_net = bcsub($transportschedule->weightticket->weightticketscale_dropoff->gross,$transportschedule->weightticket->weightticketscale_dropoff->tare,4);
 	                                        $ii = bccomp($pickup_net,$dropoff_net,4);
 	                                        switch ($ii) {
 	                                            case -1:
 	                                                $transportschedule->bales = $transportschedule->weightticket->weightticketscale_pickup->bales;
 	                                                $transportschedule->tons = $pickup_net;
+	                                                $transportschedule->pounds = bcmul($transportschedule->tons,2000,2);
 	                                                unset($transportschedule->weightticket);
 	                                                break;
 
@@ -721,6 +738,7 @@ class DownloadRepository implements DownloadInterface
 	                                            default:
 	                                            	$transportschedule->bales = $transportschedule->weightticket->weightticketscale_dropoff->bales;
 	                                                $transportschedule->tons = $dropoff_net;
+	                                                $transportschedule->pounds = bcmul($transportschedule->tons,2000,2);
 	                                                unset($transportschedule->weightticket);
 	                                                break;
 	                                        }
@@ -729,15 +747,25 @@ class DownloadRepository implements DownloadInterface
 	                                            is_null($transportschedule->weightticket->weightticketscale_dropoff
 	                                        )) {
 	                                        $transportschedule->bales = $transportschedule->weightticket->weightticketscale_pickup->bales;
-	                                        $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare);
+	                                        $transportschedule->tons = bcsub($transportschedule->weightticket->weightticketscale_pickup->gross,$transportschedule->weightticket->weightticketscale_pickup->tare,4);
+	                                        $transportschedule->pounds = bcmul($transportschedule->tons,2000,2);
 	                                        unset($transportschedule->weightticket);
 	                                    } else {
 	                                        $transportschedule->bales = $transportschedule->weightticket->weightticketscale_dropoff->bales;
-	                                        $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare);
+	                                        $transportschedule->tons = bcsub($transportschedule->weightticket->weightticketscale_dropoff->gross,$transportschedule->weightticket->weightticketscale_dropoff->tare,4);
+	                                        $transportschedule->pounds = bcmul($transportschedule->tons,2000,2);
 	                                        unset($transportschedule->weightticket);
 	                                    }
 
-	                                    $transportschedule->gross = $transportschedule->tons * $transportschedule->truckingrate;
+	                                    $transportschedule->gross = bcmul($transportschedule->tons, $transportschedule->truckingrate,2);
+	                                    $truck->hauling = bcadd($truck->hauling,$transportschedule->gross,2);
+	                                    $truck->adminfee = bcadd($truck->adminfee,$truck->fee,2);
+	                                    $truck->loadingfee = bcadd($truck->loadingfee,bcadd($transportschedule->originloaderfee,$transportschedule->destinationloaderfee,2),2);
+	                                    $truck->fuelcharge = bcadd($truck->fuelcharge,$transportschedule->fuelcharge,2);
+	                                    $truck->trailerrent = bcadd($truck->trailerrent,$transportschedule->trailerrate,2);
+	                                    $truck->bales = bcadd($truck->bales, $transportschedule->bales);
+	                                    $truck->tons = bcadd($truck->tons, $transportschedule->tons,4);
+	                                    $truck->amount = bcsub(bcsub(bcadd(bcsub($truck->hauling, $truck->adminfee, 2),$truck->fuelcharge,2),$truck->trailerrent,2),$truck->loadingfee,2);
 	                                })->toArray();
 	                        });
 	                    })->shift();
