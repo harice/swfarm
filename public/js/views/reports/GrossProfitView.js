@@ -49,7 +49,7 @@ define([
 			this.filterId = $("#filtername").val();
 			
 			if(this.checkDate()) {
-				this.model.fetchGrossProfit(this.startDate, this.endDate);
+				this.model.fetchGrossProfit(this.reportId, this.startDate, this.endDate);
 				$("#report-form").collapse("toggle");
 				$(".collapse-form").addClass("collapsed");
 			}

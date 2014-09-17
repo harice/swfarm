@@ -65,7 +65,7 @@ define([
 			this.filterId = $("#filtername").val();
 				
 			if(this.checkFields()){								
-				this.model.fetchInventory(this.filterId, this.startDate, this.endDate);
+				this.model.fetchStatement(this.reportId, this.filterId, this.startDate, this.endDate);
 				$("#report-form").collapse("toggle");
 				$(".collapse-form").addClass("collapsed");
 			}

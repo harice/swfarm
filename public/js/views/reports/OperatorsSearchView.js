@@ -23,8 +23,7 @@ define([
 	var OperatorSearchView = ReportView.extend({	
 
 		initialize: function() {
-			var thisObj = this;
-			this.filterId = null;	
+			var thisObj = this;			
 			this.filtername = "Operator's Name";
 
 			this.model = new Report();
@@ -66,7 +65,7 @@ define([
 			this.filterId = $("#filtername").val();
 				
 			if(this.checkFields()){								
-				this.model.fetchOperatorsPay(this.filterId, this.startDate, this.endDate);
+				this.model.fetchStatement(this.reportId, this.filterId, this.startDate, this.endDate);
 				$("#report-form").collapse("toggle");
 				$(".collapse-form").addClass("collapsed");
 			}
