@@ -84,7 +84,7 @@ class DownloadRepository implements DownloadInterface
 						case 'customer-sales-statement':
 							if(!$this->filterParams($q,array('filterId'))) { $_404 = true; break; }
 
-							$report_o = $this->generateSalesReport($q);
+							$report_o = $this->generateCustomerStatement($q);
 							if(!$report_o) { $_404 = true; break; }
 
 							return PDF::loadView('pdf.base',array('child' => View::make('reports.customer-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.customer-content', array('report_o' => $report_o))))->stream('SOA - '.$report_o->name.'.pdf');
@@ -178,7 +178,7 @@ class DownloadRepository implements DownloadInterface
 						case 'customer-sales-statement':
 							if(!$this->filterParams($q,array('filterId'))) { $_404 = true; break; }
 							
-							$report_o = $this->generateSalesReport($q);
+							$report_o = $this->generateCustomerStatement($q);
 							
 							if(!$report_o) { $_404 = true; break; }
 
@@ -295,7 +295,7 @@ class DownloadRepository implements DownloadInterface
 			case Config::get('constants.REPORT_CUSTOMER'):
 				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
 
-				$report_o = $this->generateSalesReport($q);
+				$report_o = $this->generateCustomerStatement($q);
 				if(!$report_o) { $_404 = true; break; }
 				break;
 
@@ -326,6 +326,9 @@ class DownloadRepository implements DownloadInterface
 
 			case Config::get('constants.REPORT_TRUCKING'):
 				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
+
+				$report_o = $this->generateTruckingStatement($q);
+				if(!$report_o) { $_error = true; break; }
 				break;
 		}
 
@@ -474,7 +477,7 @@ class DownloadRepository implements DownloadInterface
 	    return $this->parse($report_a);
 	}
 
-	public function generateSalesReport($_params = array()) {
+	public function generateCustomerStatement($_params = array()) {
 		$_dateBetween = $this->generateBetweenDates($_params);
 		$report_o = Account::with('businessaddress.state')
                         ->with(array('order' => function($query) use($_dateBetween) {
@@ -648,6 +651,96 @@ class DownloadRepository implements DownloadInterface
                     })->shift();
 
 		if(!$report_o) return false;
+		return $this->parse($report_o->toArray());
+	}
+
+	private function generateTruckingStatement($_params = array()){
+		$_dateBetween = $this->generateBetweenDates($_params);
+		$report_o = Truck::with('account.businessaddress.state')
+						->with(array('order' => function($query) use($_dateBetween) {
+	                        $query->whereBetween('transportschedule.updated_at',array_values($_dateBetween))
+	                            ->select(array('transportschedule.truck_id','order.id as id','order.order_number'))
+	                            ->where('transportschedule.status_id','=',Config::get('constants.STATUS_CLOSED'))
+	                            ->orderBy('order.created_at','desc');
+	                    }))
+						->where('id',$_params['filterId'])
+						->select(array('id','trucknumber','fee','account_id'))
+						->take(1)
+						->get()
+						->each(function($truck) use($_dateBetween) {
+	                        $truck->amount = 0.00;
+	                        $truck->report_date = (object) $_dateBetween;
+	                        $truck->order->each(function($order) use($truck,$_dateBetween) {
+	                            $order->transportschedule = TransportSchedule::join('truck','truck.id','=','transportschedule.truck_id')
+	                                ->with('weightticket.weightticketscale_pickup')
+	                                ->with('weightticket.weightticketscale_dropoff')
+	                                ->with('originloader')
+	                                ->with('destinationloader')
+	                                ->select(array(
+	                                	'transportschedule.id',
+	                                	'transportschedule.originloader_id',
+	                                	'transportschedule.destinationloader_id',
+	                                	'transportschedule.truckingrate',
+	                                	'transportschedule.trailerrate',
+	                                	'transportschedule.originloaderfee',
+	                                	'transportschedule.destinationloaderfee',
+	                                	'transportschedule.fuelcharge',
+	                                	'transportschedule.updated_at'
+                                	))
+	                                ->where('transportschedule.order_id','=',$order->id)
+	                                ->where('transportschedule.truck_id','=',$order->truck_id)
+	                                ->where('transportschedule.status_id','=',Config::get('constants.STATUS_CLOSED'))
+	                                ->whereBetween('transportschedule.updated_at',array_values($_dateBetween))
+	                                ->orderBy('transportschedule.updated_at','desc')
+	                                ->get()
+	                                ->each(function($transportschedule) use($truck) {
+	                                    $transportschedule->weightticket->setVisible(array(
+	                                    	'weightTicketNumber',
+	                                    	'weightticketscale_pickup',
+	                                    	'weightticketscale_dropoff'
+                                    	));
+
+                                    	$transportschedule->weightticketnumber = $transportschedule->weightticket->weightTicketNumber;
+
+	                                    if(
+	                                        !is_null($transportschedule->weightticket->weightticketscale_pickup) && 
+	                                        !is_null($transportschedule->weightticket->weightticketscale_dropoff)
+	                                    ) {
+	                                        $pickup_net = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare);
+	                                        $dropoff_net = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare);
+	                                        $ii = bccomp($pickup_net,$dropoff_net,4);
+	                                        switch ($ii) {
+	                                            case -1:
+	                                                $transportschedule->bales = $transportschedule->weightticket->weightticketscale_pickup->bales;
+	                                                $transportschedule->tons = $pickup_net;
+	                                                unset($transportschedule->weightticket);
+	                                                break;
+
+	                                            case 1:
+	                                            case 0:
+	                                            default:
+	                                            	$transportschedule->bales = $transportschedule->weightticket->weightticketscale_dropoff->bales;
+	                                                $transportschedule->tons = $dropoff_net;
+	                                                unset($transportschedule->weightticket);
+	                                                break;
+	                                        }
+	                                    } else if(
+	                                            !is_null($transportschedule->weightticket->weightticketscale_pickup) && 
+	                                            is_null($transportschedule->weightticket->weightticketscale_dropoff
+	                                        )) {
+	                                        $transportschedule->bales = $transportschedule->weightticket->weightticketscale_pickup->bales;
+	                                        $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare);
+	                                        unset($transportschedule->weightticket);
+	                                    } else {
+	                                        $transportschedule->bales = $transportschedule->weightticket->weightticketscale_dropoff->bales;
+	                                        $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare);
+	                                        unset($transportschedule->weightticket);
+	                                    }
+
+	                                    $transportschedule->gross = $transportschedule->tons * $transportschedule->truckingrate;
+	                                })->toArray();
+	                        });
+	                    })->shift();
 		return $this->parse($report_o->toArray());
 	}
 
