@@ -81,10 +81,10 @@ define([
 				'date_from': thisObj.parseDate($('#filter-operator-date-start .input-group.date input').val()),
 				'date_to': thisObj.parseDate($('#filter-operator-date-end .input-group.date input').val()),
 				'drivers': this.model,
-				'export_pdf_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.filterId, type:'pdf', model:'drivers-pay', dateStart:this.startDate, dateEnd:this.endDate})),
-				'export_xlsx_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.filterId, type:'excel', format:'xlsx', model:'drivers-pay', dateStart:this.startDate, dateEnd:this.endDate})),
-				'export_xls_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.filterId, type:'excel', format:'xls', model:'drivers-pay', dateStart:this.startDate, dateEnd:this.endDate})),
-				'export_csv_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.filterId, type:'excel', format:'csv', model:'drivers-pay', dateStart:this.startDate, dateEnd:this.endDate}))
+				'export_pdf_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'pdf', model:'driver-pay-statement', dateStart:this.startDate, dateEnd:this.endDate})),
+				'export_xlsx_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'xlsx', model:'driver-pay-statement', dateStart:this.startDate, dateEnd:this.endDate})),
+				'export_xls_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'xls', model:'driver-pay-statement', dateStart:this.startDate, dateEnd:this.endDate})),
+				'export_csv_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'csv', model:'driver-pay-statement', dateStart:this.startDate, dateEnd:this.endDate}))
 			}
 
 			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);

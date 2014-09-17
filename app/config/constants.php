@@ -46,6 +46,15 @@ return array(
     'COMMISSION_TYPE_FLATRATE' => 1,
     'COMMISSION_TYPE_PERTONRATE' => 2,
 
+    'REPORT_COMMISSION' => 1,
+    'REPORT_CUSTOMER' => 2,
+    'REPORT_DRIVER' => 3,
+    'REPORT_GROSS_PROFIT' => 4,
+    'REPORT_INVENTORY' => 5,
+    'REPORT_OPERATOR' => 6,
+    'REPORT_PRODUCER' => 7,
+    'REPORT_TRUCKING' => 8,
+
     'VERSION' => "3.0"
 
 );
