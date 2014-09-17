@@ -2,8 +2,7 @@
 
 class DownloadRepository implements DownloadInterface 
 {
-	public function download($params)
-	{
+	public function download($params) {
 		$_404 = false;
 		$q = unserialize(base64_decode($params['q']));
 		// var_dump($q);exit;
@@ -49,11 +48,11 @@ class DownloadRepository implements DownloadInterface
 					break;
 
 				case 'pdf':
-					if(!array_key_exists('model', $q)) { $_404 = true; break; }
+					if(!$this->filterParams($q,array('model'))) { $_404 = true; break; }
 
 					switch ($q['model']) {
 						case 'order':
-							if(!array_key_exists('id', $q)) { $_404 = true; break; }
+							if(!$this->filterParams($q,array('id'))) { $_404 = true; break; }
 
 							$order = Order::with('productsummary.productname')
 						                ->with('productsummary.productorder.product')
@@ -74,7 +73,7 @@ class DownloadRepository implements DownloadInterface
 							break;
 
 						case 'producer-statement':
-							if(!array_key_exists('id', $q)) { $_404 = true; break; }
+							if(!$this->filterParams($q,array('filterId'))) { $_404 = true; break; }
 							
 							$report_o = $this->generateProducerStatement($q);
 							if(!$report_o) { $_404 = true; break; }
@@ -83,12 +82,21 @@ class DownloadRepository implements DownloadInterface
 							break;
 
 						case 'customer-sales-statement':
-							if(!array_key_exists('id', $q)) { $_404 = true; break; }
+							if(!$this->filterParams($q,array('filterId'))) { $_404 = true; break; }
 
 							$report_o = $this->generateSalesReport($q);
 							if(!$report_o) { $_404 = true; break; }
 
 							return PDF::loadView('pdf.base',array('child' => View::make('reports.customer-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.customer-content', array('report_o' => $report_o))))->stream('SOA - '.$report_o->name.'.pdf');
+							break;
+
+						case 'driver-pay-statement':
+							if(!$this->filterParams($q,array('filterId'))) { $_404 = true; break; }
+
+							$report_o = $this->generateDriversPay($q);
+							if(!$report_o) { $_404 = true; break; }
+
+							return PDF::loadView('pdf.base',array('child' => View::make('reports.driver-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.driver-content', array('report_o' => $report_o))))->stream('SOA - '.$report_o->lastname.'-'.$report_o->firstname.'.pdf');
 							break;
 
 						default:
@@ -98,7 +106,7 @@ class DownloadRepository implements DownloadInterface
 					break;
 
 				case 'excel':
-					if(!array_key_exists('model', $q)) { $_404 = true; break; }
+					if(!$this->filterParams($q,array('model'))) { $_404 = true; break; }
 
 					if(!array_key_exists('format', $q)) $format = 'xls';
 					else {
@@ -120,7 +128,7 @@ class DownloadRepository implements DownloadInterface
 
 					switch($q['model']) {
 						case 'producer-statement':
-							if(!array_key_exists('id', $q)) { $_404 = true; break; }
+							if(!$this->filterParams($q,array('filterId'))) { $_404 = true; break; }
 							
 							$report_o = $this->generateProducerStatement($q);
 							
@@ -168,7 +176,7 @@ class DownloadRepository implements DownloadInterface
 							break;
 
 						case 'customer-sales-statement':
-							if(!array_key_exists('id', $q)) { $_404 = true; break; }
+							if(!$this->filterParams($q,array('filterId'))) { $_404 = true; break; }
 							
 							$report_o = $this->generateSalesReport($q);
 							
@@ -214,6 +222,52 @@ class DownloadRepository implements DownloadInterface
 							}
 							break;
 
+						case 'driver-pay-statement':
+							if(!$this->filterParams($q,array('filterId'))) { $_404 = true; break; }
+
+							$report_o = $this->generateDriversPay($q);
+							if(!$report_o) { $_404 = true; break; }
+
+							if(strcmp($format,'csv') === 0) {
+								return Excel::create('SOA - '.$report_o->lastname.'-'.$report_o->firstname, function($excel) use($report_o) {
+										        $excel->sheet($report_o->lastname.'-'.$report_o->firstname, function($sheet) use($report_o) {
+										        	$sheet->setColumnFormat(array('C' => '0.00','E' => '0.0000','F' => '0.00','H' => '0.00'));
+										        	$sheet->loadView(
+										        		'reports.driver-header-excel',
+										        		array(
+										        			'report_o' => $report_o,
+										        			'_nest_content' => View::make('reports.driver-content', array('report_o' => $report_o))
+									        			)
+								        			);
+										        });
+										    })->download($format);
+							} else {
+								return Excel::create('SOA - '.$report_o->lastname.'-'.$report_o->firstname, function($excel) use($report_o) {
+										        $excel->sheet($report_o->lastname.'-'.$report_o->firstname, function($sheet) use($report_o) {
+													$sheet->setAutoSize(true);
+										        	$sheet->mergeCells('A1:A3');
+										        	$sheet->setFreeze('A4');
+
+										        	$objDrawing = new PHPExcel_Worksheet_Drawing();
+										        	$objDrawing->setPath(public_path("images/southwest-farm-services-logo-pdf.jpg"));
+										        	$objDrawing->setCoordinates('A1');
+										        	$objDrawing->setWorksheet($sheet);
+
+										        	$sheet->setColumnFormat(array('C' => '0.00','E' => '0.0000','F' => '0.00','H' => '0.00'));
+										        	$sheet->setWidth(array('A' =>  24,'B' =>  15,'C' =>  20,'D' =>  10,'E' =>  15,'F' =>  12,'G' =>  10,'H' =>  15));
+
+										        	$sheet->loadView(
+										        		'excel.base',
+										        		array(
+										        			'colspan' => 7,
+										        			'child' => View::make('reports.driver-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.driver-content', array('report_o' => $report_o))
+									        			)
+								        			);
+										        });
+										    })->download($format);
+							}
+							break;
+
 						default:
 							$_404 = true;
 							break;
@@ -230,10 +284,57 @@ class DownloadRepository implements DownloadInterface
 		exit();
 	}
 
+	public function report($q, $type){
+		$_error = false;
+		$report_o = array();
+		switch($type){
+			case Config::get('constants.REPORT_COMMISSION'):
+				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
+				break;
+
+			case Config::get('constants.REPORT_CUSTOMER'):
+				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
+
+				$report_o = $this->generateSalesReport($q);
+				if(!$report_o) { $_404 = true; break; }
+				break;
+
+			case Config::get('constants.REPORT_DRIVER'):
+				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
+
+				$report_o = $this->generateDriversPay($q);
+				if(!$report_o) { $_error = true; break; }
+				break;
+
+			case Config::get('constants.REPORT_GROSS_PROFIT'):
+				break;
+
+			case Config::get('constants.REPORT_INVENTORY'):
+				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
+				break;
+
+			case Config::get('constants.REPORT_OPERATOR'):
+				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
+				break;
+
+			case Config::get('constants.REPORT_PRODUCER'):
+				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
+
+				$report_o = $this->generateProducerStatement($q);
+				if(!$report_o) { $_error = true; break; }
+				break;
+
+			case Config::get('constants.REPORT_TRUCKING'):
+				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
+				break;
+		}
+
+		if($_error) return App::abort(501,'Not implemented');
+		return Response::json($report_o);
+	}
+
 	private function generateProducerStatement($_params = array()){
-		$_dateBetween['start'] = array_key_exists('dateStart',$_params) ? date('Y-m-d \0\0\:\0\0\:\0\0', strtotime($_params['dateStart'])) : date('Y-m-d \0\0\:\0\0\:\0\0');
-		$_dateBetween['end'] = array_key_exists('dateEnd',$_params) ? date('Y-m-d \2\3\:\5\9\:\5\9', strtotime($_params['dateEnd'])) : date('Y-m-d \2\3\:\5\9\:\5\9');
-		
+		$_dateBetween = $this->generateBetweenDates($_params);
 		$report_o = Account::with('businessaddress.state')
 	                        ->with('storagelocation')
 	                        ->with('storagelocation.section')
@@ -261,7 +362,7 @@ class DownloadRepository implements DownloadInterface
 	                                    )
 	                                );
 	                        }))
-	                        ->where('id','=',$_params['id'])
+	                        ->where('id','=',$_params['filterId'])
 	                        ->first();
 
         if(!$report_o) return false;
@@ -271,7 +372,7 @@ class DownloadRepository implements DownloadInterface
         $report_a['scale_fees'] = 0.00;
         $report_a['amount'] = 0.00;
 
-        if(sizeof($report_a['storagelocation']) == 0) return $report_o;
+        if(sizeof($report_a['storagelocation']) == 0) return $this->parse($report_a);
 
         $weightticket_a = array();
 	    $scale_i = $amount_i = 0.00;
@@ -328,7 +429,7 @@ class DownloadRepository implements DownloadInterface
 	                }
 
 	                if(!is_null($ticket_o->weightticketscale_pickup) && !is_null($ticket_o->weightticketscale_dropoff)) {
-	                    $ii = $this->intcmp($pickup_gross_i,$dropoff_gross_i);
+	                    $ii = bccomp($pickup_gross_i,$dropoff_gross_i,4);
 	                    switch ($ii) {
 	                        case -1:
 	                            $product_a = array_merge($product_a,$pickup_a);
@@ -373,10 +474,8 @@ class DownloadRepository implements DownloadInterface
 	    return $this->parse($report_a);
 	}
 
-	private function generateSalesReport($_params = array()) {
-		$_dateBetween['start'] = array_key_exists('dateStart',$_params) ? date('Y-m-d \0\0\:\0\0\:\0\0', strtotime($_params['dateStart'])) : date('Y-m-d \0\0\:\0\0\:\0\0');
-		$_dateBetween['end'] = array_key_exists('dateEnd',$_params) ? date('Y-m-d \2\3\:\5\9\:\5\9', strtotime($_params['dateEnd'])) : date('Y-m-d \2\3\:\5\9\:\5\9');
-
+	public function generateSalesReport($_params = array()) {
+		$_dateBetween = $this->generateBetweenDates($_params);
 		$report_o = Account::with('businessaddress.state')
                         ->with(array('order' => function($query) use($_dateBetween) {
                             $query->join('natureofsale','natureofsale.id','=','order.natureofsale_id')
@@ -398,17 +497,18 @@ class DownloadRepository implements DownloadInterface
                                             'natureofsale.name as natureofsale'
                                         ));
                         }))
-                        ->where('id','=',$_params['id'])
+                        ->where('id','=',$_params['filterId'])
                         ->first();
-                       
+    	
 	    if(!$report_o) return false;
-
-	    if($report_o->order->count() == 0) return Response::json($report_o);
 
 	    $report_a = $report_o->toArray();
 	    $report_a['report_date'] = $_dateBetween;
 	    $report_a['amount'] = 0.00;
 	    $amount_i = 0.00;
+	    
+	    if($report_o->order->count() == 0) return $this->parse($report_a);
+
 	    foreach ($report_a['order'] as $order_key => $order_a) {
 	        $product_a = ProductOrderSummary::join('products','products.id','=','productordersummary.product_id')
 	                                ->with(array('productorder' => function($query) use($_dateBetween) {
@@ -474,11 +574,105 @@ class DownloadRepository implements DownloadInterface
 	    return $this->parse($report_a);
 	}
 
-	private function intcmp($a, $b) {
-		return (intval($a) - intval($b)) ? (intval($a) - intval($b)) / abs(intval($a) - intval($b)) : 0;
+	private function generateDriversPay($_params = array()) {
+		$_dateBetween = $this->generateBetweenDates($_params);
+		$report_o = Contact::join('account','account.id','=','account')
+                    ->with(array('order' => function($query) use($_dateBetween) {
+                        $query->whereBetween('transportschedule.updated_at',array_values($_dateBetween))
+                            ->select(array('trucker_id','order.id as id','order.order_number'))
+                            ->where('transportschedule.status_id','=',Config::get('constants.STATUS_CLOSED'))
+                            ->orderBy('order.created_at','desc');
+                    }))
+                    ->where('contact.id','=',$_params['filterId'])
+                    ->select(array('contact.id','contact.firstname','contact.lastname','contact.suffix','account.name as account','contact.email','contact.phone','contact.rate'))
+                    ->take(1)
+                    ->get()
+                    ->each(function($trucker) use($_dateBetween) {
+                        $trucker->amount = 0.00;
+                        $trucker->report_date = (object) $_dateBetween;
+                        $trucker->order->each(function($order) use($trucker,$_dateBetween) {
+                            $order->transportschedule = TransportSchedule::join('truck','truck.id','=','transportschedule.truck_id')
+                                ->with('weightticket.weightticketscale_pickup')
+                                ->with('weightticket.weightticketscale_dropoff')
+                                ->select(array('transportschedule.id','truck.trucknumber as truck','transportschedule.truckingrate','transportschedule.updated_at'))
+                                ->where('transportschedule.order_id','=',$order->id)
+                                ->where('transportschedule.trucker_id','=',$order->trucker_id)
+                                ->where('transportschedule.status_id','=',Config::get('constants.STATUS_CLOSED'))
+                                ->whereBetween('transportschedule.updated_at',array_values($_dateBetween))
+                                ->orderBy('transportschedule.updated_at','desc')
+                                ->get()
+                                ->each(function($transportschedule) use($trucker) {
+                                    $transportschedule->weightticket->setVisible(array('weightticketscale_pickup','weightticketscale_dropoff'));
+
+                                    if(
+                                        !is_null($transportschedule->weightticket->weightticketscale_pickup) && 
+                                        !is_null($transportschedule->weightticket->weightticketscale_dropoff)
+                                    ) {
+                                        $pickup_net = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare);
+                                        $dropoff_net = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare);
+                                        $ii = bccomp($pickup_net,$dropoff_net,4);
+                                        switch ($ii) {
+                                            case -1:
+                                                $transportschedule->bales = $transportschedule->weightticket->weightticketscale_pickup->bales;
+                                                $transportschedule->tons = $pickup_net;
+                                                unset($transportschedule->weightticket);
+                                                break;
+
+                                            case 1:
+                                            case 0:
+                                            default:
+                                            	$transportschedule->bales = $transportschedule->weightticket->weightticketscale_dropoff->bales;
+                                                $transportschedule->tons = $dropoff_net;
+                                                unset($transportschedule->weightticket);
+                                                break;
+                                        }
+                                    } else if(
+                                            !is_null($transportschedule->weightticket->weightticketscale_pickup) && 
+                                            is_null($transportschedule->weightticket->weightticketscale_dropoff
+                                        )) {
+                                        $transportschedule->bales = $transportschedule->weightticket->weightticketscale_pickup->bales;
+                                        $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare);
+                                        unset($transportschedule->weightticket);
+                                    } else {
+                                        $transportschedule->bales = $transportschedule->weightticket->weightticketscale_dropoff->bales;
+                                        $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare);
+                                        unset($transportschedule->weightticket);
+                                    }
+
+                                    $transportschedule->gross = $transportschedule->tons * $transportschedule->truckingrate;
+                                    $transportschedule->pay = $transportschedule->gross * ($trucker->rate / 100);
+
+                                    $trucker->amount = floatval($trucker->amount) + floatval($transportschedule->pay);
+                                })->toArray();
+                        });
+                    })->shift();
+
+		if(!$report_o) return false;
+		return $this->parse($report_o->toArray());
+	}
+
+	private function generateBetweenDates($_params = array()) {
+		$_dates['start'] = array_key_exists('dateStart',$_params) ? date('Y-m-d \0\0\:\0\0\:\0\0', strtotime($_params['dateStart'])) : date('Y-m-d \0\0\:\0\0\:\0\0');
+		$_dates['end'] = array_key_exists('dateEnd',$_params) ? date('Y-m-d \2\3\:\5\9\:\5\9', strtotime($_params['dateEnd'])) : date('Y-m-d \2\3\:\5\9\:\5\9');
+
+		return $_dates;
 	}
 
 	private function parse(array $arr) {
 	    return json_decode(json_encode($arr));
+	}
+
+	private function filterParams($_params,$columns) {
+		if(sizeof($_params) < 1) return false;
+
+		foreach ($columns as $key => $value) {
+			$bool = array_key_exists($value, $_params);
+			if(!$bool) {
+				return false;
+				break;
+			}
+		}
+
+		return true;
 	}
 }
