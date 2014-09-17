@@ -270,6 +270,7 @@ class ContractRepository implements ContractRepositoryInterface {
     }
 
     /**
+     * Get Sales Orders per Contract
      *
      * @param type $id Contract ID
      * @return type
@@ -298,7 +299,6 @@ class ContractRepository implements ContractRepositoryInterface {
                     $_product['total_tons'] = $_product['tons'];
                     $delivered_tons = 0.000;
 
-//                    $product = Product::find($_product['product_id']);
                     $product = Product::where('id', '=', $_product['product_id'])->withTrashed()->first();
                     $_product['product_name'] = $product->name;
 
@@ -319,7 +319,10 @@ class ContractRepository implements ContractRepositoryInterface {
                             $_so['status']['class'] = "success";
                         }
 
-                        $salesorder = Order::with('productorder')->find($_so['id']);
+                        $salesorder = Order::with('productorder')
+                            ->where('ordertype', '=', 2)
+                            ->find($_so['id']);
+
                         if ($salesorder->productorder) {
                             foreach ($salesorder->productorder as $product_order) {
                                 if ($product_order->id == $_product['product_id']) {
@@ -440,7 +443,8 @@ class ContractRepository implements ContractRepositoryInterface {
             $orders = Order::with('transportschedule.transportscheduleproduct.weightticketproducts')
                 ->with('transportschedule.transportscheduleproduct.weightticketproducts.weightticketscale.pickup')
                 ->with('transportschedule.transportscheduleproduct.productorder')
-                ->where('contract_id', '=', $contract_id);
+                ->where('contract_id', '=', $contract_id)
+                ->where('ordertype', '=', 2);
 
             if ($product_id) {
                 $orders = $orders->whereHas('productorder', function($q) use($product_id)
