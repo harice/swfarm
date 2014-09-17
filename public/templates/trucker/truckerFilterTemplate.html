@@ -1,0 +1,13 @@
+<ul class="dropdown-menu pull-right filter" role="menu">
+	<li class="dropdown-header"><i class='fa fa-filter width-10'></i> Filter By Type</li>
+	<li>
+		<input class="accounttypeFilter" type="radio" name="accounttypeFilter" value="" checked> All
+	</li>
+
+	<% _.each(filters, function(filter){ %>
+	<li>
+		<input class="accounttypeFilter" type="radio" name="accounttypeFilter" value="<%= filter.id %>"> <%= filter.name %>
+	</li>
+	<% }); %>
+
+</ul>

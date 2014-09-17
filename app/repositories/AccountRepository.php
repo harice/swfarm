@@ -226,6 +226,8 @@ class AccountRepository implements AccountRepositoryInterface {
       $addressTypes = AddressType::orderby('name', 'asc')->get();
       $states = AddressStates::orderby('state', 'asc')->get();
 
+      Log::debug($accountTypes->toArray());
+
       return Response::json(
           array(
             'accountTypes' => $accountTypes->toArray(),

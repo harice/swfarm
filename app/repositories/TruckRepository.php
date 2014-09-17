@@ -9,36 +9,42 @@ class TruckRepository implements TruckRepositoryInterface {
 
     public function findAll($params)
     {
-
-        $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
-        $sortby = isset($params['sortby']) ? $params['sortby'] : 'trucknumber';
-        $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
-
-        return Truck::join('account', 'truck.account_id', '=', 'account.id')
-            ->with('account.accounttype')
-            ->select('truck.id', 'truck.trucknumber', 'truck.fee', 'account.id as account_id', 'account.name as account_name')
-            ->orderBy($sortby, $orderby)
-            ->paginate($perPage);
-    }
-
-    public function search($params)
-    {
         try
         {
             $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
             $sortby = isset($params['sortby']) ? $params['sortby'] : 'trucknumber';
             $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
-            $searchWord = $params['search'];
+            $searchWord = isset($params['search']) ? $params['search'] : '';
 
-            return Truck::join('account', 'truck.account_id', '=', 'account.id')
-                ->with('account.accounttype')
-                ->select('truck.id', 'truck.trucknumber', 'truck.fee', 'account.id as account_id', 'account.name as account_name')
-                ->where(function ($query) use ($searchWord) {
+            $truck = Truck::join('account', 'truck.account_id', '=', 'account.id')
+                ->with('account.accounttype');
+
+            if (isset($params['filter']))
+            {
+                $truck = $truck->whereHas('account', function($q) use($params)
+                {
+                    $q->whereHas('accounttype', function($t) use($params)
+                    {
+                        $t->where('accounttype.id', '=', $params['filter']);
+                    });
+                });
+            } else {
+                $truck = $truck->with('account.accounttype');
+            }
+
+            if (isset($params['search']))
+            {
+                $truck = $truck->where(function ($query) use ($searchWord) {
                     $query->orWhere('trucknumber','like','%'.$searchWord.'%');
                     $query->orWhere('account.name','like','%'.$searchWord.'%');
-                })
-                ->orderBy($sortby, $orderby)
-                ->paginate($perPage);
+                });
+            }
+
+            $truck = $truck->select('truck.id', 'truck.trucknumber', 'truck.fee', 'account.id as account_id', 'account.name as account_name');
+
+            $truck = $truck->orderBy($sortby, $orderby)->paginate($perPage);
+
+            return $truck;
         }
         catch (Exception $e)
         {
