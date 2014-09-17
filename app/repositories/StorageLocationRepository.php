@@ -56,7 +56,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
     
     public function findById($id)
     {
-        $storagelocation = StorageLocation::with('section')->find($id);
+        $storagelocation = StorageLocation::with('account')->with('section')->with('section.stacklocation')->find($id);
         
         if (!$storagelocation) {
             return array(
@@ -65,7 +65,15 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
             );
         }
         
-        return $storagelocation->toArray();
+        $result = $storagelocation->toArray();
+        $totalTons = 0;
+        foreach($result['section'] as &$section){
+            $totalTons += floatval($section['stacklocation']['tons']);
+        }
+
+        $result['totalTons'] = $totalTons;
+
+        return $result;
         
     }
 
