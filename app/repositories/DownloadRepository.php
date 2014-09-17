@@ -335,7 +335,7 @@ class DownloadRepository implements DownloadInterface
 	                }
 
 	                if(!is_null($ticket_o->weightticketscale_pickup) && !is_null($ticket_o->weightticketscale_dropoff)) {
-	                    $ii = $this->intcmp($pickup_gross_i,$dropoff_gross_i);
+	                    $ii = bccomp($pickup_gross_i,$dropoff_gross_i,4);
 	                    switch ($ii) {
 	                        case -1:
 	                            $product_a = array_merge($product_a,$pickup_a);
@@ -504,6 +504,7 @@ class DownloadRepository implements DownloadInterface
                                 ->where('transportschedule.trucker_id','=',$order->trucker_id)
                                 ->where('transportschedule.status_id','=',Config::get('constants.STATUS_CLOSED'))
                                 ->whereBetween('transportschedule.updated_at',array_values($_dateBetween))
+                                ->orderBy('transportschedule.updated_at','desc')
                                 ->get()
                                 ->each(function($transportschedule) use($trucker) {
                                     $transportschedule->weightticket->setVisible(array('weightticketscale_pickup','weightticketscale_dropoff'));
@@ -517,16 +518,16 @@ class DownloadRepository implements DownloadInterface
                                         $ii = bccomp($pickup_net,$dropoff_net,4);
                                         switch ($ii) {
                                             case -1:
-                                                $transportschedule->bales = $transportschedule->weightticket->weightticketscale_dropoff->bales;
-                                                $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare);
+                                                $transportschedule->bales = $transportschedule->weightticket->weightticketscale_pickup->bales;
+                                                $transportschedule->tons = $pickup_net;
                                                 unset($transportschedule->weightticket);
                                                 break;
 
                                             case 1:
                                             case 0:
                                             default:
-                                                $transportschedule->bales = $transportschedule->weightticket->weightticketscale_pickup->bales;
-                                                $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare);
+                                            	$transportschedule->bales = $transportschedule->weightticket->weightticketscale_dropoff->bales;
+                                                $transportschedule->tons = $dropoff_net;
                                                 unset($transportschedule->weightticket);
                                                 break;
                                         }
@@ -560,10 +561,6 @@ class DownloadRepository implements DownloadInterface
 		$_dates['end'] = array_key_exists('dateEnd',$_params) ? date('Y-m-d \2\3\:\5\9\:\5\9', strtotime($_params['dateEnd'])) : date('Y-m-d \2\3\:\5\9\:\5\9');
 
 		return $_dates;
-	}
-
-	private function intcmp($a, $b) {
-		return (intval($a) - intval($b)) ? (intval($a) - intval($b)) / abs(intval($a) - intval($b)) : 0;
 	}
 
 	private function parse(array $arr) {
