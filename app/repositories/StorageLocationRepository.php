@@ -34,6 +34,17 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
                 ->with('section.stacklocation')
                 ->orderBy($sortby, $orderby)
                 ->paginate($perPage);
+
+            $result = $result->toArray();
+
+            //get total tons of stacks per storage location
+            foreach($result['data'] as &$data){
+                $totalTons = 0;
+                foreach($data['section'] as &$section){
+                    $totalTons += floatval($section['stacklocation']['tons']);
+                }
+                $data['totalTons'] = $totalTons;
+            }
             
             return $result;
         }
