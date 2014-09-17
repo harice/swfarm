@@ -43,7 +43,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
                 foreach($data['section'] as &$section){
                     $totalTons += floatval($section['stacklocation']['tons']);
                 }
-                $data['totalTons'] = $totalTons;
+                $data['totalTons'] = number_format($totalTons,2);
             }
             
             return $result;
@@ -56,8 +56,19 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
     
     public function findById($id)
     {
-        $storagelocation = StorageLocation::with('section')->find($id);
-        
+        $storagelocation = StorageLocation::join('account', 'account_id', '=', 'account.id')->with('section')->with('section.stacklocation');
+        $storagelocation = $storagelocation->select(
+                    'storagelocation.id',
+                    'storagelocation.name',
+                    'storagelocation.description',
+                    'storagelocation.account_id',
+                    'storagelocation.longitude',
+                    'storagelocation.latitude',
+                    'account.name as account_name'
+                );
+
+        $storagelocation = $storagelocation->where('storagelocation.id', '=', $id)->first();
+
         if (!$storagelocation) {
             return array(
                 'error' => true,
@@ -65,8 +76,16 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
             );
         }
         
-        return $storagelocation->toArray();
-        
+        $result = $storagelocation->toArray();
+        $totalTons = 0;
+        foreach($result['section'] as &$section){
+            $totalTons += floatval($section['stacklocation']['tons']);
+        }
+        // unset($result['section']);
+
+        $result['totalTons'] = number_format($totalTons, 2);
+
+        return $result;
     }
 
     public function getStorageLocationByAccount($accountId)
