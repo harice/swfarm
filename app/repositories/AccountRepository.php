@@ -284,9 +284,7 @@ class AccountRepository implements AccountRepositoryInterface {
      */
     public function getStackAddress($id)
     {
-        $address = Address::join('account_accounttype', 'account_accounttype.account_id', '=', 'address.account')
-            ->join('addressstates', 'addressstates.id', '=', 'address.state')
-            ->join('addresstype', 'address.type', '=', 'addresstype.id')
+        $address = Address::join('addressstates', 'addressstates.id', '=', 'address.state')
             ->where('account', '=', $id)
             ->where('type', '=', 3);
 
@@ -296,23 +294,19 @@ class AccountRepository implements AccountRepositoryInterface {
             'address.street as street',
             'address.city as city',
             'address.zipcode as zipcode',
-            'addressstates.state_code as address_state_code',
-            'addresstype.name as address_type'
+            'addressstates.state_code as address_state_code'
         );
 
         $address = $address->get()->toArray();
+        $result = array();
         foreach ($address as &$detail)
         {
-            $detail['name'] = $detail['street'] .', ' .$detail['city'] .', ' .$detail['address_state_code'] .', ' .'US' .' ' .$detail['zipcode'];
-            unset($detail['account_id']);
-            unset($detail['street']);
-            unset($detail['city']);
-            unset($detail['zipcode']);
-            unset($detail['address_state_code']);
-            unset($detail['address_type']);
+            $result[] = array(
+                'name' => $detail['street'] .', ' .$detail['city'] .', ' .$detail['address_state_code'] .', ' .'US' .' ' .$detail['zipcode']
+            );
         }
 
-        return Response::json( $address, 200 );
+        return Response::json( $result, 200 );
     }
 
   public function getAccountsByType($types)
@@ -349,7 +343,7 @@ class AccountRepository implements AccountRepositoryInterface {
   }
 
   public function getProducerAndWarehouseAccount(){
-    $types = array(5, 10); //producer and warehouse [accounttype ids]
+    $types = array(5, 9, 10); //producer and warehouse [accounttype ids]
     $accounts = Account::with('accounttype')
                 ->whereHas('accounttype', function($q) use($types) { $q->whereIn('accounttype_id', $types); } )
                 ->groupBy('id')
