@@ -10,11 +10,11 @@ define([
 
 	var ContactView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
-		
+
 		initialize: function(option) {
 			this.initSubContainer();
 			var thisObj = this;
-			
+
 			this.model = new ContactModel({id:option.id});
 			this.model.on("change", function() {
 				if(thisObj.subContainerExist())
@@ -22,12 +22,12 @@ define([
 				this.off("change");
 			});
 		},
-		
+
 		render: function(){
 			this.model.runFetch();
 			Backbone.View.prototype.refreshTitle('Contacts','view');
 		},
-		
+
 		displayContact: function (contactModel) {
 			var innerTemplateVariables = {
 				contact:contactModel,
@@ -35,32 +35,33 @@ define([
 				contact_edit_url:'#/'+Const.URL.CONTACT+'/'+Const.CRUD.EDIT,
 			}
 			var innerTemplate = _.template(contactViewTemplate, innerTemplateVariables);
-			
+
 			var variables = {
 				h1_title: contactModel.get('lastname')+', '+contactModel.get('firstname'),
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
-			
+
 			this.initConfirmationWindow('Are you sure you want to delete this contact?',
 										'confirm-delete-contact',
-										'Delete');
+										'Delete',
+                                        'Delete Contact');
 		},
-		
+
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #delete-contact': 'showDeleteConfirmationWindow',
 			'click #confirm-delete-contact': 'deleteContact',
 		},
-		
+
 		showDeleteConfirmationWindow: function () {
 			this.showConfirmationWindow();
 		},
-		
+
 		deleteContact: function (){
 			var thisObj = this;
-            
+
             this.model.destroy({
                 success: function (model, response, options) {
                     thisObj.displayMessage(response);
@@ -74,9 +75,9 @@ define([
                 headers: thisObj.model.getAuth(),
             });
 		},
-		
+
 	});
 
   return ContactView;
-  
+
 });
