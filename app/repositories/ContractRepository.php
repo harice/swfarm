@@ -280,6 +280,7 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         try
         {
+            // Get Contract with its products.
             $contract = Contract::with('contractproducts')
                 ->find($id);
 
@@ -294,6 +295,7 @@ class ContractRepository implements ContractRepositoryInterface {
             }
 
             if ($contract_products) {
+                // Loop through each product and get it salesorders.
                 $products = $contract_products->toArray();
                 foreach($products as $i => &$_product) {
                     $_product['total_tons'] = $_product['tons'];
@@ -302,6 +304,17 @@ class ContractRepository implements ContractRepositoryInterface {
                     $product = Product::where('id', '=', $_product['product_id'])->withTrashed()->first();
                     $_product['product_name'] = $product->name;
 
+                    // Get Product Orders
+                    // This is the better way to get Product Orders per Product and Contract
+//                    $my_productorders = ProductOrder::where('product_id', '=', $_product['product_id'])
+//                        ->whereHas('order', function($q) use($_product)
+//                        {
+//                            $q->where('contract_id', '=', $_product['contract_id'])
+//                              ->where('ordertype', '=', 2);
+//                        })
+//                        ->get();
+
+                    // @todo: Replace this with the code above.
                     // Get Sales Orders
                     $salesorders = $this->getSalesOrders($id, $_product['product_id']);
                     $_product['salesorders'] = $salesorders->toArray();
@@ -326,7 +339,7 @@ class ContractRepository implements ContractRepositoryInterface {
                         if ($salesorder->productorder) {
                             foreach ($salesorder->productorder as $product_order) {
                                 if ($product_order->id == $_product['product_id']) {
-                                    $_so['tons'] = $product_order->tons;
+                                    $_so['tons'] += $product_order->tons;
                                 }
                             }
                         }
@@ -339,7 +352,7 @@ class ContractRepository implements ContractRepositoryInterface {
                                         $_so['stacknumber'] = $transportscheduleproduct['productorder']['stacknumber'];
 
                                         // Expected Quantity per SO
-                                        // $_so['tons'] = $transportscheduleproduct['productorder']['tons'];
+                                        $_so['tons'] = $transportscheduleproduct['productorder']['tons'];
 
                                         // Delivered Quantity per SO
                                         if ($transportscheduleproduct['weightticketproducts']) {
