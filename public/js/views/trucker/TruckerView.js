@@ -25,7 +25,7 @@ define([
 
 		render: function(){
 			this.model.runFetch();
-			Backbone.View.prototype.refreshTitle('Truckers','view');
+			Backbone.View.prototype.refreshTitle('Trucker','view');
 		},
 
 		displayTrucker: function () {
