@@ -25,7 +25,7 @@ define([
 
 		render: function(){
 			this.model.runFetch();
-			Backbone.View.prototype.refreshTitle('Scales','view');
+			Backbone.View.prototype.refreshTitle('Scale','view');
 		},
 
 		displayScale: function () {
