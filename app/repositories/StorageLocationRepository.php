@@ -6,7 +6,7 @@
  * @author Avs
  */
 class StorageLocationRepository implements StorageLocationRepositoryInterface {
-    
+
     public function findAll($params)
     {
         try
@@ -14,13 +14,14 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
             $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.USERS_PER_LIST');
             $sortby = isset($params['sortby']) ? $params['sortby'] : 'account_name';
             $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
-            
-            $result = StorageLocation::join('account', 'account_id', '=', 'account.id');
-            
+
+            $result = StorageLocation::with('address.state')
+                ->join('account', 'account_id', '=', 'account.id');
+
             if (isset($params['accountId'])) {
                 $result = $result->where('account_id', '=', $params['accountId']);
             }
-            
+
             $result = $result->select(
                     'storagelocation.id',
                     'storagelocation.name',
@@ -28,13 +29,14 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
                     'storagelocation.account_id',
                     'storagelocation.longitude',
                     'storagelocation.latitude',
-                    'account.name as account_name'
+                    'account.name as account_name',
+                    'storagelocation.address_id'
                 )
                 ->with('section')
                 ->with('section.stacklocation')
                 ->orderBy($sortby, $orderby)
                 ->paginate($perPage);
-            
+
             return $result;
         }
         catch (Exception $e)
@@ -42,35 +44,35 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
             return $e->getMessage();
         }
     }
-    
+
     public function findById($id)
     {
         $storagelocation = StorageLocation::with('section')->find($id);
-        
+
         if (!$storagelocation) {
             return array(
                 'error' => true,
                 'message' => 'Stack location not found.'
             );
         }
-        
+
         return $storagelocation->toArray();
-        
+
     }
 
     public function getStorageLocationByAccount($accountId)
     {
         $storagelocation = StorageLocation::with('section')->where('account_id', '=', $accountId)->get();
-        
+
         if (!$storagelocation) {
             return array(
                 'error' => true,
                 'message' => 'Stack location not found.'
             );
         }
-        
+
         return $storagelocation->toArray();
-        
+
     }
 
     public function getStorageLocationOfWarehouse()
@@ -80,20 +82,20 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
                 $accounttype->where('accounttype_id', '=', 10); //warehouse account type
             });
         })->get();
-        
+
         if (!$storagelocation) {
             return array(
                 'error' => true,
                 'message' => 'Stack location not found.'
             );
         }
-        
+
         return $storagelocation->toArray();
-        
+
     }
 
 
-    
+
     public function search($params)
     {
         try
@@ -102,7 +104,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
             $sortby = isset($params['sortby']) ? $params['sortby'] : 'account_name';
             $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
             $searchWord = $params['search'];
-            
+
             return StorageLocation::join('account', 'account_id', '=', 'account.id')
                 ->select(
                     'storagelocation.id',
@@ -124,7 +126,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
             return $e->getMessage();
         }
     }
-    
+
     public function store($data)
     {
         DB::beginTransaction();
@@ -140,7 +142,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         }
 
         $sections = $this->addSection($storagelocation->id, $data['sections']);
-        
+
         if($sections){
             DB::commit();
             return Response::json(array(
@@ -154,7 +156,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
                 'message' => "Please enter a unique Section name."
             ), 500);
         }
-        
+
     }
 
     private function addSection($storagelocation_id, $sections = array())
@@ -162,8 +164,8 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         $response = false;
         foreach ($sections as $section) {
             $section['storagelocation_id'] = $storagelocation_id;
-            
-            
+
+
             if(isset($section['id'])) {
                 if (!$this->validateSection($section, 'Section', $section['id'])) {
                     return false;
@@ -179,38 +181,38 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
 
             $sectionLocation->fill($section);
             $sectionLocation->save();
-            
+
             $response = true;
         }
-        
+
         return $response;
     }
-    
+
     public function validateSection($data, $entity, $id = null)
     {
         $messages = array(
             'name.unique' => 'Section name should be unique.'
         );
-        
+
         if ($id) {
             $entity::$rules['name'] = 'required|unique:section,name,' .$id;
         }
-        
+
         $validator = Validator::make($data, $entity::$rules, $messages);
-        
+
         if($validator->passes()) {
             return true;
         }
-        
+
         return false;
     }
-    
+
     public function hasDuplicateSectionName(array $sections) {
         $names = array();
         foreach ($sections as $section) {
             $names[] = $section['name'];
         }
-        
+
         $dupe_array = array_count_values($names);
         foreach($dupe_array as $name){
             if($name > 1){
@@ -252,15 +254,15 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         }
         return $result;
     }
-    
+
     public function update($id, $data)
-    {   
+    {
         DB::beginTransaction();
         $this->validate($data, 'StorageLocation', $id);
         $storagelocation = StorageLocation::find($id);
         // var_dump(storagelocation);
         $storagelocation->fill($data);
-        
+
         if (!$storagelocation->update()) {
             return Response::json(array(
                 'error' => true,
@@ -275,10 +277,10 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
                     'message' => "Please enter a unique Section name."
                 ), 500);
             }
-            
+
             $removeSectionResult = $this->removeSection($id, $data['sections']); //delete sections that is remove by client
             $sectionResult = $this->addSection($storagelocation->id, $data['sections']);
-            
+
             if($sectionResult){
                 DB::commit();
                 return Response::json(array(
@@ -300,7 +302,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
             ), 500);
         }
     }
-    
+
     public function destroy($id)
     {
         $storagelocation = StorageLocation::find($id);
@@ -316,7 +318,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
                 'message' => 'Stack location was not found.'
             );
         }
-        
+
     }
 
     public function validate($data, $entity, $id = null)
@@ -324,32 +326,32 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         $messages = array(
             'name.unique' => 'Location name should be unique.'
         );
-        
+
         if ($entity == 'StorageLocation') {
             if ($id) {
                 $entity::$rules['name'] = 'required|unique:storagelocation,name,'.$id;
             }
         }
-        
+
         if ($entity == 'Section') {
             $messages['name.unique'] = 'Section name should be unique.';
             $entity::$rules['name'] = 'required|unique:section,name';
-            
+
             if ($id) {
                 // To Do: Modify this rule to enforce unique Section name in each Storage Location.
                 $entity::$rules['name'] = 'required|unique:section,name,' .$id;
             }
         }
-        
+
         $validator = Validator::make($data, $entity::$rules, $messages);
-       
-        if($validator->fails()) { 
-            throw new ValidationException($validator); 
+
+        if($validator->fails()) {
+            throw new ValidationException($validator);
         }
-        
+
         return true;
     }
-    
+
     public function instance($data = array())
     {
         return new StorageLocation($data);
@@ -376,5 +378,5 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
         // }
         return $storageLocation;
     }
-    
+
 }

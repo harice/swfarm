@@ -28,4 +28,9 @@ class Address extends Eloquent {
         return $this->hasOne('AddressStates', 'id','state');
     }
 
+    public function storagelocation()
+    {
+        return $this->belongsTo('StorageLocation', 'address_id', 'id');
+    }
+
 }
