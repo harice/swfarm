@@ -51,7 +51,7 @@ class Section extends BaseModel {
 
     public function storagelocationName()
     {
-        return $this->belongsTo('StorageLocation', 'storagelocation_id', 'id')->select(array('id', 'name'))->withTrashed();
+        return $this->belongsTo('StorageLocation', 'storagelocation_id', 'id')->select(array('id', 'name', 'address_id'))->withTrashed();
     }
 
     public function stacklocation(){

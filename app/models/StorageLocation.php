@@ -43,4 +43,8 @@ class StorageLocation extends Eloquent {
         return parent::delete();
     }
 
+    public function address(){
+        return $this->hasOne('Address', 'id', 'address_id');
+    }
+
 }
