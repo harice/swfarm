@@ -95,6 +95,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           $trailerPercentageRateArr = Settings::where('name','=','trailer_percentage_rate')->first(array('value'))->toArray();
           $trailerPercentageRate = floatval($trailerPercentageRateArr['value'])/100; //get trailer perentage and convert it to decimal
           $data['trailerrate'] = $trailerPercentageRate * $data['truckingrate'];
+          $data['adminfee'] = Truck::find($data['truck_id'])->fee;
 
           if($data['truckerAccountType_id'] == 9) { //for SFS account type
               $freightRateArr = Settings::where('name','=','freight_rate')->first(array('value'))->toArray();
@@ -108,7 +109,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
 
               $totalWeight = $this->getTotalWeightOfSchedule($data['products']);
               $data['truckingrate'] = ($freightRate * $data['distance'] + ($loadingRate + $unloadingRate))/$totalWeight;
-          } 
+          }
 
           $transportschedule->fill($data);
           $transportschedule->save();
