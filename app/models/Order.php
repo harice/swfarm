@@ -1,7 +1,7 @@
 <?php
 
 class Order extends BaseModel {
-    
+
     /**
 	 * The database table used by the model.
 	 *
@@ -10,10 +10,10 @@ class Order extends BaseModel {
 	protected $table = 'order';
 
     protected $softDelete = true;
-    
+
     /**
      * Define fillable attributes in a model.
-     * 
+     *
      * @var array
      */
     protected $fillable = array(
@@ -37,10 +37,10 @@ class Order extends BaseModel {
         'created_at',
         'updated_at'
     );
-    
+
     /**
      * Define field validation rules.
-     * 
+     *
      * @var array
      */
 	public static $so_rules = array(
@@ -53,7 +53,7 @@ class Order extends BaseModel {
         'account_id' => 'required',
         'contact_id' => 'required'
     );
-    
+
     public function productorder()
     {
         return $this->hasMany('ProductOrder', 'order_id', 'id');
@@ -62,17 +62,17 @@ class Order extends BaseModel {
     public function account(){
         return $this->hasOne('Account', 'id', 'account_id')->select(array('id', 'name'))->withTrashed();
     }
-    
+
     public function orderaddress()
     {
         return $this->hasOne('OrderAddress', 'id', 'orderaddress_id');
     }
-    
+
     public function location()
     {
         return $this->hasOne('Location', 'id', 'location_id');
     }
-    
+
     public function natureofsale()
     {
         return $this->hasOne('NatureOfSale', 'id', 'natureofsale_id');
@@ -90,14 +90,14 @@ class Order extends BaseModel {
     public function ordercancellingreason(){
         return $this->hasOne('OrderCancellingReason', 'order', 'id');
     }
-    
+
     public function contract()
     {
         return $this->belongsTo('Contract');
     }
 
     public function contractnumber(){
-        return $this->belongsTo('Contract', 'contract_id', 'id')->select(array('id', 'contract_number','account_id'));   
+        return $this->belongsTo('Contract', 'contract_id', 'id')->select(array('id', 'contract_number','account_id'));
     }
 
     public function contact(){
@@ -110,6 +110,11 @@ class Order extends BaseModel {
 
     public function userfullname(){
         return $this->hasOne('User', 'id', 'user_id')->select(array('id', 'firstname', 'lastname', 'suffix'));
+    }
+
+    public function purchaseorder()
+    {
+        return $this->hasOne('Order', 'id', 'purchaseorder_id');
     }
 
 }

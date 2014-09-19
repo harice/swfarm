@@ -456,6 +456,7 @@ class ContractRepository implements ContractRepositoryInterface {
             $orders = Order::with('transportschedule.transportscheduleproduct.weightticketproducts')
                 ->with('transportschedule.transportscheduleproduct.weightticketproducts.weightticketscale.pickup')
                 ->with('transportschedule.transportscheduleproduct.productorder')
+                ->with('purchaseorder')
                 ->where('contract_id', '=', $contract_id)
                 ->where('ordertype', '=', 2);
 
