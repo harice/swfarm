@@ -33,16 +33,16 @@ define([
 
 	var ContactEditView = ContactAddView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
-		
+
 		accountAutoCompleteView: null,
-		
+
 		initialize: function(option) {
 			this.initSubContainer();
 			var thisObj = this;
 			this.contactId = option.id;
-			this.h1Title = 'Contacts';
+			this.h1Title = 'Contact';
 			this.h1Small = 'edit';
-			
+
 			this.model = new ContactModel({id:option.id});
 			this.model.on("change", function() {
 				if(thisObj.subContainerExist()) {
@@ -52,20 +52,20 @@ define([
 				}
 				this.off("change");
 			});
-            
+
 		},
-		
+
 		render: function(){
             this.model.runFetch();
             Backbone.View.prototype.refreshTitle('Contacts','edit');
 		},
-		
+
 		supplyContactData: function () {
 			var contact = this.model;
 			var account = this.model.get('account');
-            
+
             this.hasRate(contact.get('account').id);
-			
+
 			this.$el.find('#firstname').val(contact.get('firstname'));
             this.$el.find('#lastname').val(contact.get('lastname'));
             this.$el.find('#suffix').val(contact.get('suffix'));
@@ -79,59 +79,8 @@ define([
             this.$el.find('#account_id').val(contact.get('account').id);
             this.$el.find('#rate').val(contact.get('rate'));
 		},
-                
-        hasRate: function (account_id) {
-            var account = new AccountModel({id: account_id});
-            
-            account.fetch({
-                success: function (account) {
-                    console.log(account.get("accounttype")[0].id);
-                    if (
-                        account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.LOADER ||
-                        account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.OPERATOR ||
-                        account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.TRUCKER ||
-                        account.get("accounttype")[0].id == Const.ACCOUNT_TYPE.SWFTRUCKER
-                    ) {
-                        $('#rate').attr("disabled", false);
-                    } else {
-                        $('#rate').val('0.00');
-                        $('#rate').attr("disabled", true);
-                    }
-                },
-                error: function (model, response, options) {
-                    console.log('Fail to fetch account.');
-                },
-                headers: account.getAuth(),
-            });
-        },
-        
-        survey: function (selector, callback)
-        {
-            var input = $(selector);
-            var oldvalue = input.val();
-            setInterval(function(){
-                if (input.val()!=oldvalue) {
-                    oldvalue = input.val();
-                    callback();
-                }
-            }, 100);
-        },
-		
-		events: {
-            'change #account': 'toggleRate'
-		},
-        
-        toggleRate: function (ev)
-        {
-            var that = this;
-            
-            this.survey('#account_id', function () {
-                var account_id = $('#addContactForm #account_id').val();
-                that.hasRate(account_id);
-            });
-        }
 	});
 
   return ContactEditView;
-  
+
 });
