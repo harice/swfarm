@@ -105,7 +105,7 @@ class DownloadRepository implements DownloadInterface
 							$report_o = $this->generateTruckingStatement($q);
 							if(!$report_o) { $_404 = true; break; }
 
-							return PDF::loadView('pdf.base',array('child' => View::make('reports.truck-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.truck-content', array('report_o' => $report_o))))->stream('TS - '.$report_o->trucknumber.'.pdf');
+							return PDF::setOrientation('landscape')->setPaper('legal')->loadView('pdf.base',array('child' => View::make('reports.truck-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.truck-content', array('report_o' => $report_o))))->stream('TS - '.$report_o->trucknumber.'.pdf');
 							break;
 
 						default:
@@ -270,6 +270,53 @@ class DownloadRepository implements DownloadInterface
 										        		array(
 										        			'colspan' => 7,
 										        			'child' => View::make('reports.driver-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.driver-content', array('report_o' => $report_o))
+									        			)
+								        			);
+										        });
+										    })->download($format);
+							}
+							break;
+
+						case 'trucking-statement':
+							if(!$this->filterParams($q,array('filterId'))) { $_404 = true; break; }
+							
+							$report_o = $this->generateTruckingStatement($q);
+							
+							if(!$report_o) { $_404 = true; break; }
+
+							if(strcmp($format,'csv') === 0) {
+								return Excel::create('TS - '.$report_o->trucknumber, function($excel) use($report_o) {
+										        $excel->sheet($report_o->trucknumber, function($sheet) use($report_o) {
+										        	$sheet->setColumnFormat(array('E' => '0.00','F' => '0.0000','G' => '0.00','H' => '0.00'));
+										        	$sheet->loadView(
+										        		'reports.truck-header-excel',
+										        		array(
+										        			'report_o' => $report_o,
+										        			'_nest_content' => View::make('reports.truck-content', array('report_o' => $report_o))
+									        			)
+								        			);
+										        });
+										    })->download($format);
+							} else {
+								return Excel::create('TS - '.$report_o->trucknumber, function($excel) use($report_o) {
+										        $excel->sheet($report_o->trucknumber, function($sheet) use($report_o) {
+													$sheet->setAutoSize(true);
+										        	$sheet->mergeCells('A1:A3');
+										        	$sheet->setFreeze('A4');
+
+										        	$objDrawing = new PHPExcel_Worksheet_Drawing();
+										        	$objDrawing->setPath(public_path("images/southwest-farm-services-logo-pdf.jpg"));
+										        	$objDrawing->setCoordinates('A1');
+										        	$objDrawing->setWorksheet($sheet);
+
+										        	$sheet->setColumnFormat(array('E' => '0.00','F' => '0.0000','G' => '0.00','H' => '0.00'));
+										        	$sheet->setWidth(array('A' =>  24,'B' =>  15,'C' =>  20,'D' =>  10,'E' =>  15,'F' =>  12,'G' =>  10,'H' =>  15));
+
+										        	$sheet->loadView(
+										        		'excel.base',
+										        		array(
+										        			'colspan' => 7,
+										        			'child' => View::make('reports.truck-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.truck-content', array('report_o' => $report_o))
 									        			)
 								        			);
 										        });
@@ -684,6 +731,7 @@ class DownloadRepository implements DownloadInterface
 	                        $truck->fuelcharge = 0.00;
 	                        $truck->trailerrent = 0.00;
 	                        $truck->bales = 0;
+	                        $truck->pounds = 0.00;
 	                        $truck->tons = 0.0000;
 	                        $truck->report_date = (object) $_dateBetween;
 	                        $truck->order->each(function($order) use($truck,$_dateBetween) {
@@ -701,6 +749,7 @@ class DownloadRepository implements DownloadInterface
 	                                	'transportschedule.originloaderfee',
 	                                	'transportschedule.destinationloaderfee',
 	                                	'transportschedule.fuelcharge',
+	                                	'transportschedule.adminfee',
 	                                	'transportschedule.updated_at'
                                 	))
 	                                ->where('transportschedule.order_id','=',$order->id)
@@ -758,18 +807,25 @@ class DownloadRepository implements DownloadInterface
 	                                    }
 
 	                                    $transportschedule->gross = bcmul($transportschedule->tons, $transportschedule->truckingrate,2);
+	                                    $transportschedule->amount = bcsub(bcsub(bcsub(bcadd($transportschedule->gross, $transportschedule->fuelcharge,2),$transportschedule->trailerrate,2),bcadd($transportschedule->originloaderfee,$transportschedule->destinationloaderfee,2),2),$transportschedule->adminfee,2);
+
 	                                    $truck->hauling = bcadd($truck->hauling,$transportschedule->gross,2);
-	                                    $truck->adminfee = bcadd($truck->adminfee,$truck->fee,2);
+	                                    $truck->adminfee = bcadd($truck->adminfee,$transportschedule->adminfee,2);
 	                                    $truck->loadingfee = bcadd($truck->loadingfee,bcadd($transportschedule->originloaderfee,$transportschedule->destinationloaderfee,2),2);
 	                                    $truck->fuelcharge = bcadd($truck->fuelcharge,$transportschedule->fuelcharge,2);
 	                                    $truck->trailerrent = bcadd($truck->trailerrent,$transportschedule->trailerrate,2);
-	                                    $truck->bales = bcadd($truck->bales, $transportschedule->bales);
+	                                    $truck->bales = bcadd($truck->bales, $transportschedule->bales,0);
 	                                    $truck->tons = bcadd($truck->tons, $transportschedule->tons,4);
-	                                    $truck->amount = bcsub(bcsub(bcadd(bcsub($truck->hauling, $truck->adminfee, 2),$truck->fuelcharge,2),$truck->trailerrent,2),$truck->loadingfee,2);
+	                                    $truck->pounds = bcmul($truck->tons, 2000,2);
+	                                    $truck->amount = bcadd($truck->amount,$transportschedule->amount,2);
 	                                })->toArray();
 	                        });
 	                    })->shift();
 		return $this->parse($report_o->toArray());
+	}
+
+	private function generateOperatorStatement($_params = array()){
+		//
 	}
 
 	private function generateBetweenDates($_params = array()) {

@@ -22,7 +22,7 @@ Route::group(array('prefix' => 'apiv1'), function()
 });
 
 /* API ROUTES */
-Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
+Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokenizer'), function()
 {
     //Queue
     Route::resource('queue','APIv1\ProcessorController', array('only' => array('store')));

@@ -2,7 +2,20 @@
     <div class="header">
         <div class="row margin-top-0">
             <div class="col-md-12">
-                <h2>Trucking Statement</h2>
+                <h2>
+                    Trucking Statement
+                    <div class="btn-group pull-right">
+                        <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
+                            Export <span class="caret"></span>
+                        </button>
+                        <ul role="menu" class="dropdown-menu">
+                            <li><a href="<%= export_pdf_url %>" target="_blank">Adobe PDF (*.pdf)</a></li>
+                            <li><a href="<%= export_xlsx_url %>">Excel (*.xlsx)</a></li>
+                            <li><a href="<%= export_xls_url %>">Excel (*.xls)</a></li>
+                            <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
+                        </ul>
+                    </div>
+                </h2>
                 <h5><%= cur_date %></h5>
             </div>
         </div>

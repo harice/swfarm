@@ -6,11 +6,11 @@
 	<address>
 		<strong>{{ $report_o->account->name }}</strong>
 		<br>
-		{{ $report_o->businessaddress->street }}
+		{{ $report_o->account->businessaddress->street }}
 		<br>
-		{{ $report_o->businessaddress->city }},
-		{{ $report_o->businessaddress->state->state_code }}
-		{{ $report_o->businessaddress->zipcode }}
+		{{ $report_o->account->businessaddress->city }},
+		{{ $report_o->account->businessaddress->state->state_code }}
+		{{ $report_o->account->businessaddress->zipcode }}
 	</address>
 </div>
 
@@ -20,11 +20,20 @@
 		<br>
 		Total Bales:
 		<br>
+		Total Pounds:
+		<br>
 		Total Tons:
 		<br>
-		Total Hauling:
 		<br>
-		Less (Scale Fees):
+		Trucking Fee:
+		<br>
+		Fuel Charge:
+		<br>
+		Less (Admin Fees):
+		<br>
+		Less (Trailer Rent):
+		<br>
+		Less (Loading Fees):
 		<br>
 		<hr>
 		Total Amount Due:
@@ -32,13 +41,25 @@
 	<div class='width-60 float-right text-right'>
 		{{ date('F d, Y') }}
 		<br>
-		<br><br>
-		<strong>$ {{ number_format($report_o->amount, 2, '.', ',') }}</strong>
+		{{ number_format($report_o->bales, 0, '.', ',') }}
 		<br>
-		<span class='text-danger'>- $ {{ number_format($report_o->fee, 2, '.', ',') }}</span>
+		{{ number_format($report_o->pounds, 2, '.', ',') }}
+		<br>
+		{{ number_format($report_o->tons, 4, '.', ',') }}
+		<br>
+		<br>
+		<strong>$ {{ number_format($report_o->hauling, 2, '.', ',') }}</strong>
+		<br>
+		<strong>$ {{ number_format($report_o->fuelcharge, 2, '.', ',') }}</strong>
+		<br>
+		<span class='text-danger'>- $ {{ number_format($report_o->adminfee, 2, '.', ',') }}</span>
+		<br>
+		<span class='text-danger'>- $ {{ number_format($report_o->trailerrent, 2, '.', ',') }}</span>
+		<br>
+		<span class='text-danger'>- $ {{ number_format($report_o->loadingfee, 2, '.', ',') }}</span>
 		<br>
 		<hr>
-		<strong class='padding-right-5'>$ {{ number_format(($report_o->amount - $report_o->fee), 2, '.', ',') }}</strong>
+		<strong class='padding-right-5'>$ {{ number_format($report_o->amount, 2, '.', ',') }}</strong>
 	</div>
 
 	<span class='clear'></span>
