@@ -19,10 +19,9 @@ define([
 	var ProducerSearchView = ReportView.extend({		
 		
 		initialize: function() {
-			var thisObj = this;
-			this.filterId = null;	
+			var thisObj = this;		
 			this.filtername = "Producer's Name";				
-
+			this.reportId = $("#reporttype").val();
 			this.model = new Report();
 			this.model.on('change', function (){
 				thisObj.processData();

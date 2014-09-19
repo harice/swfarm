@@ -23,9 +23,8 @@ define([
 			if(dateTo != null)
 				params['dateTo'] = dateTo;
 			
-			this.url = this.getDefaultURL() + '?' + $.param(params);
-			console.log(this.url);
-			this.getModels();
+			this.url = this.getDefaultURL() + '?' + $.param(params);			
+			this.getModels();			
 		},
 	});
 

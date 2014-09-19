@@ -31,78 +31,82 @@
                 <h3>
                     Customer Name:
                     <strong>
-                        <%= customers.get('customer').name %>
+                        <%= customers.get('name') %>
                     </strong>
                 </h3> 
             </div>      
         </div>
     </div>    
-    <% if (customers.get('summary').total_transactions) { %>    
+    <% if (!_.isEmpty(customers.get('order'))) { %>    
     <div class="content">
-        <div class="content-inner table-responsive">    
-            <table id="operator-list" class="table-bordered table">
-                <thead class="no-border">
-                    <tr>
-                        <th><strong>SO No.</strong></th>
-                        <th><strong>Type</strong></th>
-                        <th><strong>Weight Ticket No.</strong></th>                      
-                        <th><strong>Date</strong></th>
-                        <th><strong>Commodity</strong></th>
-                        <th><strong>Bales</strong></th>                
-                        <th><strong>Tons</strong></th>
-                        <th><strong>Price</strong></th>
-                        <th><strong>Customer Total</strong></th>
-                    </tr>
-                </thead>
-                <tbody class="no-border-y">
-                    <% 
-                        var grand_total = 0;
-                      
-                        _.each(customers.get('transactions'),function(transaction){ 
-                        var tons = convertLbsToTons(transaction.pounds);
-                        var customer_total = tons * transaction.unitprice;
-                       
-                        grand_total += customer_total;
-                    %>       
-                        <tr>   
-                            <td><%= transaction.order_number %></td>
-                            <td>
-                                <%= transaction.natureofsale %>
-                            </td> 
-                            <td><%= transaction.weightTicketNumber %></td>                               
-                            <td>
-                                <%= 
-                                    formatDateBy(transaction.created_at, 'm/d/Y')
-                                %>
-                            </td>  
-                            <td>
-                                <%= transaction.product_name %>
-                            </td>  
-                            <td>
-                                <%= numberFormatBales(transaction.bales) %>
-                            </td>  
-                            <td>
-                                <%= tons %>
-                            </td>  
-                            <td>
-                                $ <%= numberFormat(transaction.unitprice) %>
-                            </td>  
-                            <td>
-                                $ <%= numberFormat(customer_total) %>
-                            </td>                                                 
-                        </tr>
-                    <%}); %>  
-                </tbody> 
-                <tfoot>
-                    <tr>
-                        <td colspan="5" align="center"><strong>TOTAL<strong></td>
-                        <td><strong><%= numberFormatBales(customers.get('summary').total_bales) %></strong></td>
-                        <td><strong><%= convertLbsToTons(customers.get('summary').total_pounds) %></strong></td>
-                        <td></td>
-                        <td> <strong>$ <%= numberFormat(grand_total) %></strong></td>
-                    </tr>
-                </tfoot>
-            </table>   
+        <div class="content-inner table-responsive">                
+            <%                             
+                _.each(customers.get('order'),function(order){
+                    var total_amount = 0;
+                %>
+                    <h3><%= order.order_number %></h3>
+                    <table id="operator-list" class="table-bordered table">
+                        <thead class="no-border">
+                            <tr>                             
+                                <th><strong>Date</strong></th>
+                                <th><strong>Product</strong></th>
+                                <th><strong>Weight Ticket No.</strong></th>                                                     
+                                <th><strong>Bales</strong></th>
+                                <th><strong>Pounds</strong></th>                
+                                <th><strong>Tons</strong></th>
+                                <th><strong>Price</strong></th>
+                                <th><strong>Amount</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody class="no-border-y"> 
+                        <%
+
+                        _.each(order.productsummary, function(product){
+                            if(!_.isEmpty(product.productorder)){
+                                var amount = 0;
+                                _.each(product.productorder, function(order){
+                                    amount = order.tons * product.unitprice;                                   
+                                    %>
+                                    <tr>  
+                                        <td>
+                                            <%= 
+                                                formatDate(order.updated_at)
+                                            %>
+                                        </td> 
+                                        <td><%= product.product %></td> 
+                                        <td><%= order.weightTicketNumber %></td>                                                                                                              
+                                        <td>
+                                            <%= order.bales %>
+                                        </td>                                         
+                                        <td>
+                                            <%= order.pounds %>
+                                        </td>  
+                                        <td>
+                                            <%= order.tons %>
+                                        </td>  
+                                        <td>
+                                            $ <%= numberFormat(product.unitprice) %>
+                                        </td>  
+                                        <td>
+                                            <% total_amount += amount %>
+                                            $ <%= numberFormat(amount) %>
+                                        </td>                                                 
+                                    </tr>
+                                    <%
+                                });
+                            }
+                        });  
+                        %>
+                        </tbody> 
+                        <tfoot>
+                            <tr>
+                                <td colspan="7" align="right"><strong>TOTAL<strong></td>
+                                <td> <strong>$ <%= numberFormat(total_amount) %> </strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                <%                                                              
+                }); %>    
         </div>        
     </div>
     <% } else { %>

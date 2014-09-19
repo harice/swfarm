@@ -29,23 +29,21 @@ define([
 			this.changedData = null;
 			this.changedId = null;
 			this.changedType = null;
+
 			this.model = new GraphModel();
+
+			this.model.on("change", function() {
+				console.log(this.get('graphId'));
+			});
 								
 			this.graphCollection = new GraphCollection();
 			this.graphCollection.on('sync', function() {	
 				if(thisObj.isInitProcess) {
 					if(thisObj.subContainerExist()) {
 						thisObj.isInitProcess = false;
-						thisObj.displayAdminDashboard();
+						thisObj.displayAdminDashboard();				
 					}
-				}
-				else {	
-
-					var graphData = thisObj.formatGraphData(thisObj.changedData, thisObj.changedType); //console.log(graphData);
-					var data = graphData.data;
-					var xData = graphData.xData;
-					thisObj.resetGraphData(thisObj.changedId, data, xData);
-				}
+				}				
 			});			
 			
 			this.graphCollection.on('error', function(collection, response, options) {
@@ -167,14 +165,10 @@ define([
 					eDate = thisObj.convertDateFormat(endDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
 				
 				if(sDate != null && eDate != null) {
-					thisObj.graphCollection.fetchGraphData(graphId, sDate, eDate);
-					//console.log(thisObj.graphCollection.models());
+					thisObj.model.fetchGraphData(graphId, sDate, eDate);																
 				}
 				else {
-					thisObj.graphCollection.fetchGraphData(graphId);
-					thisObj.changedData = thisObj.graphCollection.at(graphId-1).get('data');
-					thisObj.changedId = thisObj.graphCollection.at(graphId-1).get('graphId');
-					thisObj.changedType = thisObj.graphCollection.at(graphId-1).get('graphType');
+					thisObj.model.fetchGraphData(graphId);				
 				}
 			});
 			
@@ -199,11 +193,11 @@ define([
 					sDate = thisObj.convertDateFormat(startDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					
 				if(sDate != null && eDate != null) {
-					thisObj.graphCollection.fetchGraphData(graphId, sDate, eDate);
-					
+					//thisObj.graphCollection.fetchGraphData(graphId, sDate, eDate);				
+					thisObj.model.fetchGraphData(graphId, sDate, eDate);					
 				}
 				else
-					thisObj.graphCollection.fetchGraphData(graphId);
+					thisObj.model.fetchGraphData(graphId);
 
 			});
 		},	

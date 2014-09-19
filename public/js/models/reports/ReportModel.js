@@ -33,7 +33,7 @@ define([
         },
 
         fetchStatement: function (reportId, filterId, startDate, endDate) {
-            this.urlRoot = this.urlRoot + reportId + '?filterId=' + reportId + '&dateStart=' + startDate + '&dateEnd=' + endDate;
+            this.urlRoot = this.urlRoot + reportId + '?filterId=' + filterId + '&dateStart=' + startDate + '&dateEnd=' + endDate;
             this.runFetch();
         },
 

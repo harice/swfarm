@@ -212,8 +212,6 @@ define([
 		
 		showModalSetLocation: function (markers) {
 			var thisObj = this;
-
-			console.log(markers);
 			
 			this.shownModalCallback = function () {
 				thisObj.removeMarkers();
@@ -223,6 +221,7 @@ define([
 					var locationMarkerInfoWindowTemplateVariables = {
 						account_name: markers[i].accountName,
 						location_name: markers[i].name,
+						total_tons: markers[i].totalTons
 					};
 			
 					var infoWindowTemplateVariables = _.template(locationMarkerInfoWindowTemplate, locationMarkerInfoWindowTemplateVariables);

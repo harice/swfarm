@@ -99,6 +99,7 @@ class DownloadRepository implements DownloadInterface
 							return PDF::loadView('pdf.base',array('child' => View::make('reports.driver-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.driver-content', array('report_o' => $report_o))))->stream('SOA - '.$report_o->lastname.'-'.$report_o->firstname.'.pdf');
 							break;
 
+
 						default:
 							$_404 = true;
 							break;
@@ -267,6 +268,8 @@ class DownloadRepository implements DownloadInterface
 										    })->download($format);
 							}
 							break;
+
+							
 
 						default:
 							$_404 = true;
