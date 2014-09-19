@@ -371,6 +371,9 @@ class DownloadRepository implements DownloadInterface
 
 			case Config::get('constants.REPORT_OPERATOR'):
 				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
+
+				$report_o = $this->generateOperatorStatement($q);
+				if(!$report_o) { $_error = true; break; }
 				break;
 
 			case Config::get('constants.REPORT_PRODUCER'):
@@ -825,7 +828,42 @@ class DownloadRepository implements DownloadInterface
 	}
 
 	private function generateOperatorStatement($_params = array()){
-		//
+		$_dateBetween = $this->generateBetweenDates($_params);
+		$report_o = Contact::join('account','account.id','=','account')
+                    ->with(array('order' => function($query) use($_dateBetween) {
+                        $query->whereBetween('transportschedule.updated_at',array_values($_dateBetween))
+                            ->select(array('trucker_id','order.id as id','order.order_number'))
+                            ->where('transportschedule.status_id','=',Config::get('constants.STATUS_CLOSED'))
+                            ->where('transportschedule.truckeraccounttype_id','=',Config::get('constants.ACCOUNTTYPE_OPERATOR'))
+                            ->orderBy('order.created_at','desc');
+                    }))
+                    ->where('contact.id','=',$_params['filterId'])
+                    ->select(array('contact.id','contact.firstname','contact.lastname','contact.suffix','account.name as account','contact.email','contact.phone'))
+                    ->take(1)
+                    ->get()
+                    ->each(function($trucker) use($_dateBetween) {
+                        $trucker->amount = 0.00;
+                        $trucker->report_date = (object) $_dateBetween;
+                        $trucker->order->each(function($order) use($trucker,$_dateBetween) {
+                            $order->transportschedule = TransportSchedule::with('originloader')
+                                ->with('destinationloader')
+                                ->join('weightticket','weightticket.transportschedule_id','=','transportschedule.id')
+                                ->select(array('transportschedule.id','transportschedule.originloader_id','transportschedule.originloaderfee','transportschedule.destinationloader_id','transportschedule.destinationloaderfee','transportschedule.updated_at','weightticket.weightticketnumber'))
+                                ->where('transportschedule.order_id','=',$order->id)
+                                ->where('transportschedule.trucker_id','=',$order->trucker_id)
+                                ->where('transportschedule.truckerAccountType_id','=',Config::get('constants.ACCOUNTTYPE_OPERATOR'))
+                                ->where('transportschedule.status_id','=',Config::get('constants.STATUS_CLOSED'))
+                                ->whereBetween('transportschedule.updated_at',array_values($_dateBetween))
+                                ->orderBy('transportschedule.updated_at','desc')
+                                ->get()
+                                ->each(function($transportschedule) use($trucker) {
+                                    $trucker->amount = bcadd(bcadd($trucker->amount,$transportschedule->originloaderfee,2),$transportschedule->destinationloaderfee,2);
+                                })->toArray();
+                        });
+                    })->shift();
+
+		if(!$report_o) return false;
+		return $this->parse($report_o->toArray());
 	}
 
 	private function generateBetweenDates($_params = array()) {
