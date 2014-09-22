@@ -31,171 +31,102 @@
                 <h3>
                     Truck Number
                     <strong>
-                        <%= truckers.get('truck').trucknumber %>
+                        <%= truckers.get('trucknumber') %>
                     </strong>
             </div>            
         </div>
     </div>    
-    <% if (truckers.get('summary').total_transactions) { %>      
+    <% if (!_.isEmpty(truckers.get('order'))) { %>      
     <div class="content">        
         <div class="content-inner table-responsive">
-            <table id="operator-list" class="table table-bordered">
-                <thead class="no-border">
-                    <tr>         
-                        <th><strong>Order No.</strong></th>
-                        <th><strong>Date</strong></th>
-                        <th><strong>Origin</strong></th>
-                        <th><strong>Destination</strong></th>
-                        <th><strong>Bale</strong></th>
-                        <th><strong>Net</strong></th>
-                        <th><strong>Tons</strong></th>
-                        <th><strong>Rate</strong></th>
-                        <th><strong>Total</strong></th>
-                        <th><strong>Rent</strong></th>                     
-                    </tr>
-                </thead>
-                <tbody class="no-border-y">               
-                    <% 
-                        var total_bales = 0;
-                        var total_tons = 0;
-                        _.each(truckers.get('transactions'),function(transaction){ 
-                        var tons = convertLbsToTons(transaction.pounds);
-                        var net = tons * 2;
-                        var total = tons * transaction.truckingrate;
-                        var rent = total * .1;
-                        var amount = parseFloat(transaction.loader_origin_fee) + parseFloat(transaction.loader_destination_fee);
-                        total_bales += transaction.bales;
-                        (transaction.loading_type=='1') ? total_tons += tons : total_tons += 0;
-                    %>    
-                        <tr>   
-                            <td><%= transaction.order_number %> </td>                                              
-                            <td>
-                                <% 
-                                    formatDateBy(transaction.created_at, 'm/d/Y')                  
-                                %>
-                            </td>
-                            <td><%= transaction.section_origin_name %></td>
-                            <td><%= transaction.section_destination_name %></td>                        
-                            <td><%= transaction.bales %></td> 
-                            <td><%= net.toFixed(2) %></td>
-                            <td><%= tons %></td>
-                            <td>$ <%= numberFormat(transaction.truckingrate) %></td>
-                            <td>$ <%= numberFormat(total) %></td>
-                            <td>$ <%= numberFormat(rent) %></td>                                          
-                        </tr>   
-                    <%}); %>                     
-                </tbody>                
-            </table>  
-
-            <table class="table table-bordered" style="width:50%">
-                <thead>
-                    <tr>
-                        <th><strong>Order No.</strong></th>
-                        <th><strong>Ticket No.</strong></th>
-                        <th><strong>Type</strong></th>
-                        <th><strong>Loader</strong></th>
-                        <th><strong>Amount</strong></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <%                        
-                    _.each(truckers.get('truck_loads'),function(load){                        
+            <%
+                _.each(truckers.get('order'), function(order)                       
+                    var gross_i = 0;
+                    var trailer_i = 0;
+                    var trucking_i = 0;
+                    var tons_i = 0;
+                    var bales_i = 0;
+                    var pounds_i = 0;
+                    var loader_i = 0;
+                    var fuelcharge_i = 0;
+                    var adminfee_i = 0;
+                    var amount_i = 0;
+            %>
+                <h3><%= order.order_number %></h3>
+                <table id="operator-list" class="table table-bordered">
+                    <thead class="no-border">
+                        <tr>         
+                            <th><strong>Date</strong></th>
+                            <th><strong>Weight Ticket No.</strong></th>                        
+                            <th><strong>Origin Loader</strong></th>
+                            <th><strong>Destination Loader</strong></th>
+                            <th><strong>Loaders Fee</strong></th>                            
+                            <th><strong>Bales</strong></th>
+                            <th><strong>Pounds</strong></th>
+                            <th><strong>Tons</strong></th>
+                            <th><strong>Rate</strong></th>
+                            <th><strong>Gross Rate</strong></th>
+                            <th><strong>Rent</strong></th>   
+                            <th><strong>Fuel Charge</strong></th>   
+                            <th><strong>Admin Fee</strong></th>
+                            <th><strong>Amount</strong></th>                                              
+                        </tr>
+                    </thead>
+                    <tbody class="no-border-y">               
+                    <%
+                        _.each(order.transportschedule, function(schedule){
                     %>
-                    <tr>
-                        <td><%= load.order_number %> </td>
-                        <td><%= load.receipt_no %> </td>
-                        <td><%= load.type %></td>  
-                        <td><%= load.loader %></td>
-                        <td> 
-                            <%
-                                if(load.amount != null) {
-                                    print('$ ' +numberFormat(load.amount));
-                                }          
-                                else {
-                                    
-                                }                      
-                            %>
-                        </td>  
-                    </tr>
-                    <%}); %>    
-                </tbody>
-            </table>
-
-            <table class="table-bordered" style="width:30%">
-                <thead class="no-border">
-                    <tr>
-                        <td colspan="2" align="center"><strong>SUMMARY</strong></td>
-                    </tr>
-                </thead>
-                <tbody class="no-border-y">
-                    <tr>
-                        <td>
-                            Total Bales: 
-                        </td>
-                        <td>
-                            <strong><%= total_bales %></strong>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Total Tons: 
-                        </td>
-                        <td>
-                            <strong><%= numberFormatTons(total_tons) %></strong>  
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Total Hauling: 
-                        </td>
-                        <td>
-                            <strong>$ <%= numberFormat(truckers.get('summary').total_hauling_fee) %></strong>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Total Admin Fee: 
-                        </td>
-                        <td>
-                            <strong>$ <%= numberFormat(truckers.get('summary').total_admin_fee) %></strong>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Total Fuel Fee: 
-                        </td>
-                        <td>
-                            <strong>$ <%= numberFormat(truckers.get('summary').total_fuel_fee) %></strong>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Total Trailer Rent: 
-                        </td>
-                        <td>
-                            <strong>$ <%= numberFormat(truckers.get('summary').total_trailer_rent) %></strong>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Total Loading: 
-                        </td>
-                        <td>
-                            <strong>$ <%= numberFormat(truckers.get('summary').total_loading_fee) %></strong>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Total Statement: 
-                        </td>
-                        <td>
-                            <strong>$ <%= numberFormat(truckers.get('summary').total_statement) %></strong>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-
+                        <tr>
+                            <td><%= schedule.updated_at %></td>
+                            <td><%= schedule.weightticketnumber %></td>
+                            <td><%= schedule.originloader.lastname %>, <%= schedule.originloader.firstname %></td>
+                            <td><%= schedule.destinationloader.lastname %>, <%= schedule.destinationloader.firstname %></td>
+                            <td><%= numberFormat(schedule.originloaderfee + schedule.destinationloaderfee) %></td>
+                            <% loader_i += schedule.originloaderfee + schedule.destinationloaderfee %>
+                            <td><%= schedule.bales %></td>
+                            <% bales_i += schedule.bales %>
+                            <td><%= schedule.pounds %></td>
+                            <% pounds_i += schedule.pounds %>
+                            <td><%= schedule.tons %></td>
+                            <% tons_i += schedule.tons %>
+                            <td><%= schedule.truckingrate %></td>
+                            <% trucking_i += schedule.truckingrate %>
+                            <td><%= schedule.gross %></td>
+                            <% gross_i += schedule.gross %>
+                            <td><%= schedule.trailerrate %></td>
+                            <% trailer_i += schedule.trailerrate %>
+                            <td><%= schedule.fuelcharge %></td>
+                            <% fuelcharge_i += schedule.fuelcharge %>
+                            <td><%= schedule.adminfee %></td>
+                            <% adminfee_i += schedule.adminfee %>
+                            <td><%= schedule.amount %></td>
+                            <% amount_i += schedule.amount %>
+                        </tr>
+                    <%
+                        })
+                    %>               
+                    </tbody>  
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" align="right">
+                                <strong>Total</strong>
+                            </td>
+                            <td><%= loader_i %></td>
+                            <td><%= bales_i %></td>
+                            <td><%= pounds_i %></td>
+                            <td><%= tons_i %></td>
+                            <td><%= trucking_i %></td>
+                            <td><%= gross_i %></td>
+                            <td><%= trailer_i %></td>
+                            <td><%= fuelcharge_i %></td>
+                            <td><%= adminfee_i %></td>
+                            <td><%= amount_i %></td>
+                        </tr>
+                    </tfoot>              
+                </table>  
+            <%
+                })
+            %>     
         </div>
     </div>
     <% } else { %>

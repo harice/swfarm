@@ -224,8 +224,7 @@ define([
 				case Const.GRAPH.TYPE.BAR:
 					
 					var d = [];
-					for(var i = 0; i < data.length; i++) {
-						console.log([i, data[i].label]);
+					for(var i = 0; i < data.length; i++) {						
 						graphXData.push([i, data[i].label]); //console.log(data[i].label);
 						d.push([i, data[i].value]); //console.log(data[i].value);
 					}
@@ -247,18 +246,6 @@ define([
 			
 			return { data: graphData, xData: graphXData, };
 		},
-
-		resetGraphData: function (element, data, xData) {
-			var plot = $.plot($('.graph-cont[data-id='+ element +'] .graph-container'));
-			//var axes = plot.getAxes();
-			//axes.xaxis.options.tickData = xData;
-			
-			//plot.setData(data);
-			//plot.setupGrid();
-			//plot.draw()
-			
-		},
-
 	});
 
 	return BarGraphView;

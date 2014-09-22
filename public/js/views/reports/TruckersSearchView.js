@@ -19,10 +19,9 @@ define([
 	var TruckersSearchView = ReportView.extend({
 		
 		initialize: function() {
-			var thisObj = this;
-			this.filterId = null;	
+			var thisObj = this;			
 			this.filtername = "Truck Name";
-
+			this.reportId = $("#reporttype").val();
 			this.model = new Report();
 			this.model.on('change', function (){
 				thisObj.processData();
@@ -69,7 +68,6 @@ define([
 		onclickgenerate: function() {
 			var thisObj = this;					
 			this.filterId = $("#filtername").val();
-
 			if(this.checkFields()){	
 				this.model.fetchStatement(this.reportId, this.filterId, this.startDate, this.endDate);
 				$("#report-form").collapse("toggle");
