@@ -21,10 +21,10 @@ define([
 		initialize: function() {
 			var thisObj = this;			
 			this.filtername = "Customer's Name";
-
+			this.reportId = $("#reporttype").val();
 			this.model = new Report();
 			this.model.on('change', function (){
-				thisObj.processData(customersListTemplate);
+				thisObj.processData();
 				this.off("change");
 			});	
 
@@ -71,14 +71,15 @@ define([
 			this.filterId = $("#filtername").val();
 			
 			if(this.checkFields()){							
-				this.model.fetchCustomerSales(this.filterId, this.startDate, this.endDate);
+				this.model.fetchStatement(this.reportId, this.filterId, this.startDate, this.endDate);
+				//this.model.fetchCustomerSales(this.filterId, this.startDate, this.endDate);
 
 				$("#report-form").collapse("toggle");
 				$(".collapse-form").addClass("collapsed");
 			}
 
 			this.model.on('sync', function (){				
-				thisObj.processData(customersListTemplate);				
+				thisObj.processData();				
 				this.off("sync");
 			});				
 

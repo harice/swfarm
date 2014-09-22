@@ -50,5 +50,10 @@ class DashboardController extends BaseController {
         return Response::json($result);
     }
 
+    public function inventoryProductOnHand(){
+        $result = $this->repo->inventoryProductOnHand(Input::all());
+        return Response::json($result);
+    }
+
 
 }

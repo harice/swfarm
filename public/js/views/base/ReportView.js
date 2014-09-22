@@ -102,7 +102,7 @@ define([
 			var type = this.$el.find("#reporttype").val();
 			
 			switch(type) {
-				case '1':
+				case '1':					
 					return this.commission();						
 					break;
 				case '2':
@@ -126,7 +126,7 @@ define([
 				case '8':				
 					return this.trucker();
 					break;
-			}
+			}			
 			
 		},
 

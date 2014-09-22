@@ -19,10 +19,9 @@ define([
 	var TruckersSearchView = ReportView.extend({
 		
 		initialize: function() {
-			var thisObj = this;
-			this.filterId = null;	
+			var thisObj = this;			
 			this.filtername = "Truck Name";
-
+			this.reportId = $("#reporttype").val();
 			this.model = new Report();
 			this.model.on('change', function (){
 				thisObj.processData();
@@ -69,9 +68,8 @@ define([
 		onclickgenerate: function() {
 			var thisObj = this;					
 			this.filterId = $("#filtername").val();
-
 			if(this.checkFields()){	
-				this.model.fetchTruckingStatement(this.filterId, this.startDate, this.endDate);
+				this.model.fetchStatement(this.reportId, this.filterId, this.startDate, this.endDate);
 				$("#report-form").collapse("toggle");
 				$(".collapse-form").addClass("collapsed");
 			}	
@@ -91,6 +89,10 @@ define([
 				'date_from': thisObj.parseDate($('#filter-operator-date-start .input-group.date input').val()),
 				'date_to': thisObj.parseDate($('#filter-operator-date-end .input-group.date input').val()),
 				'truckers': this.model,
+				'export_pdf_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'pdf', model:'trucking-statement', dateStart:this.startDate, dateEnd:this.endDate})),
+				'export_xlsx_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'xlsx', model:'trucking-statement', dateStart:this.startDate, dateEnd:this.endDate})),
+				'export_xls_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'xls', model:'trucking-statement', dateStart:this.startDate, dateEnd:this.endDate})),
+				'export_csv_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'csv', model:'trucking-statement', dateStart:this.startDate, dateEnd:this.endDate}))
 			}
 
 			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);

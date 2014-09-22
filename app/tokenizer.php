@@ -23,17 +23,19 @@ class Tokenizer {
 
 	public static function store()
 	{
-		$ip_address = ip2long(Request::server('REMOTE_ADDR'));
-		if(!$ip_address) $ip_address = ip2long('127.0.0.1');
+		if(Cookie::get('ihYF23kouGY') != null) {
+			$ip_address = ip2long(Request::server('REMOTE_ADDR'));
+			if(!$ip_address) $ip_address = ip2long('127.0.0.1');
 
-		$data = array(
-					'id' 			=> Cookie::get('ihYF23kouGY'),
-					'ip_address' 	=> $ip_address,
-					'user_agent'	=> Request::header('user_agent')
-				);
+			$data = array(
+						'id' 			=> Cookie::get('ihYF23kouGY'),
+						'ip_address' 	=> $ip_address,
+						'user_agent'	=> Request::header('user_agent')
+					);
 
-		$token = Token::firstOrNew($data);
-		$token->last_activity = time();
-		$token->save();
+			$token = Token::firstOrNew($data);
+			$token->last_activity = time();
+			$token->save();
+		}
 	}
 }

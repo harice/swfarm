@@ -22,7 +22,7 @@ Route::group(array('prefix' => 'apiv1'), function()
 });
 
 /* API ROUTES */
-Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
+Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokenizer'), function()
 {
     //Queue
     Route::resource('queue','APIv1\ProcessorController', array('only' => array('store')));
@@ -217,6 +217,8 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
     Route::get('report/sales/{id}', 'APIv1\ReportController@generateSales');
     Route::get('report/producer-statement/{id}', 'APIv1\ReportController@generateProducerStatement');
     Route::get('report/inventoryPerLocation', 'APIv1\ReportController@inventoryReportPerLocation');
+
+    Route::resource('reports', 'APIv1\ReportsController',array('only' => array('show')));
 
     //Dashboard
     Route::get('dashboard/reservedDeliveredVsBalanceOrderPerCustomerAccount', 'APIv1\DashboardController@reservedDeliveredVsBalanceOrderPerCustomerAccount');

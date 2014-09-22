@@ -19,7 +19,7 @@ class Stack extends BaseModel {
      * 
      * @var array
      */
-    protected $fillable = array('stacknumber', 'product_id');
+    protected $fillable = array('stacknumber', 'product_id', 'unitprice');
 
     /**
      * Define field validation rules.
@@ -48,5 +48,9 @@ class Stack extends BaseModel {
 
     public function inventoryproduct(){
         return $this->belongsTo('InventoryProduct', 'id', 'stack_id');
+    }
+
+    public function account(){
+        return $this->hasOne('Account', 'id', 'account_id')->select(array('id', 'name'));
     }
 }

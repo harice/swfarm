@@ -177,8 +177,10 @@ class InventoryRepository implements InventoryRepositoryInterface {
     public function getStackListByProduct($params){
         $productId = isset($params['productId']) ? $params['productId'] : null;
         $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
-        $stackList = Stack::with('stacklocation.section.storagelocationName')
-                            ->with('productName');
+        $stackList = Stack::with('stacklocation.section.storagelocationName.address.state')
+                            ->with('productName')
+                            ->with('account')
+                            ->has('stacklocation');
         if($productId != null) {
             $stackList = $stackList->where('product_id', '=', $productId);
         }
@@ -196,18 +198,23 @@ class InventoryRepository implements InventoryRepositoryInterface {
             $result['data'] = array();
             $index = 0;
             foreach($stackList['data'] as $product){
-                if($product['stacklocation'] == null){
-                    continue;
-                }
+                // if($product['stacklocation'] == null){
+                //     continue;
+                // }
                 $result['data'][$index]['committed'] = number_format($this->getCommittedByStack($product['stacknumber']), 4);
                 $result['data'][$index]['ordered'] = number_format($this->getOrderedByStack($product['stacknumber']), 4);
 
                 $result['data'][$index]['productname'] = $product['product_name']['name'];
                 $result['data'][$index]['stacknumber'] = $product['stacknumber'];
+                $result['data'][$index]['unitprice'] = $product['unitprice'];
+                $result['data'][$index]['producer'] = $product['account']['name'];
                 $result['data'][$index]['stacklocation'] = "";
                 $result['data'][$index]['onHandTons'] = 0;
                 foreach($product['stacklocation'] as $stacklocation){
                     if($stacklocation['tons'] != 0) {
+                        if(!isset($result['data'][$index]['cityState'])){
+                            $result['data'][$index]['cityState'] = $stacklocation['section'][0]['storagelocation_name']['address']['city'].", ".$stacklocation['section'][0]['storagelocation_name']['address']['state']['state'];    
+                        }
                         $result['data'][$index]['stacklocation'] .= $stacklocation['section'][0]['storagelocation_name']['name']." - ".$stacklocation['section'][0]['name']." | ";
                         $result['data'][$index]['onHandTons'] += $stacklocation['tons'];
                     }                        
@@ -817,11 +824,11 @@ class InventoryRepository implements InventoryRepositoryInterface {
     //     return $stackList->toArray();
     // }
 
-    public function getStackList($productId = null){
-        if($productId != null){
-            $stackList = Stack::with('stacklocation.section')->where('product_id', '=', $productId)->orderBy('stacknumber', 'ASC')->get(array('id', 'stacknumber'));    
+    public function getStackList($productId = null, $accountId = null){
+        if($productId != null && $accountId != null){
+            $stackList = Stack::with('stacklocation.section')->where('product_id', '=', $productId)->where('account_id', '=', $accountId)->orderBy('stacknumber', 'ASC')->get(array('id', 'stacknumber', 'unitprice'));    
         } else {
-            $stackList = Stack::with('stacklocation.section')->orderBy('stacknumber', 'ASC')->get(array('id', 'stacknumber'));    
+            $stackList = Stack::with('stacklocation.section')->orderBy('stacknumber', 'ASC')->get(array('id', 'stacknumber', 'unitprice'));    
         }
         
         return $stackList->toArray();

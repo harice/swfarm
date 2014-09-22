@@ -84,7 +84,7 @@ class InventoryController extends BaseController {
 	}
 
 	public function stackList(){
-		$response = $this->repo->getStackList(Input::get('productId'));
+		$response = $this->repo->getStackList(Input::get('productId'), Input::get('accountId'));
         return Response::json($response);
 	}
 

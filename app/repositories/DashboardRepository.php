@@ -20,19 +20,28 @@ class DashboardRepository implements DashboardRepositoryInterface {
             $graph['graphId'] = $params['graphId'];
             switch ($params['graphId']) {
                 case Config::get('constants.GRAPH_PURCHASE_IN_TONS'):
+                    $graph['graphType'] = Config::get('constants.GRAPH_TYPE_1');
                     $graph['data'] = $this->purchaseInTons($params);
                     break;
                 case Config::get('constants.GRAPH_PURCHASE_IN_DOLLAR_VALUES'):
+                    $graph['graphType'] = Config::get('constants.GRAPH_TYPE_1');
                     $graph['data'] = $this->purchaseInDollarValues($params);
                     break;
                 case Config::get('constants.GRAPH_SALES_IN_TONS'):
-                     $graph['data'] = $this->salesInTons($params);
+                    $graph['graphType'] = Config::get('constants.GRAPH_TYPE_1');
+                    $graph['data'] = $this->salesInTons($params);
                     break;
                 case Config::get('constants.GRAPH_SALES_IN_DOLLAR_VALUES'):
-                     $graph['data'] = $this->salesInDollarValues($params);
+                    $graph['graphType'] = Config::get('constants.GRAPH_TYPE_1');
+                    $graph['data'] = $this->salesInDollarValues($params);
                     break;
                 case Config::get('constants.GRAPH_CUSTOMER_ORDER_VS_DELIVERED'):
+                    $graph['graphType'] = Config::get('constants.GRAPH_TYPE_2');
                     $graph['data'] = $this->reservedDeliveredVsBalanceOrderPerCustomerAccount($params);
+                    break;
+                case Config::get('constants.GRAPH_INVENTORY_PRODUCT_ON_HAND'):
+                    $graph['data'] = $this->inventoryProductOnHand($params);
+                    break;
                 default:
                     # code...
                     break;
@@ -250,6 +259,42 @@ class DashboardRepository implements DashboardRepositoryInterface {
         }
         
         return $data;
+    }
+
+    public function inventoryProductOnHand($params){
+        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d 00:00:00', strtotime("today"));
+        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d 23:59:59', strtotime("today"));
+
+        $products = Product::with('stack.stacklocation')->orderby('name', 'asc')->get()->toArray();
+        // return $products;
+        $temp =  array();
+        foreach($products as $product){
+            $result = Product::with(array('productorder.transportscheduleproduct.transportschedule.order' => function($query){
+                                    $query->addSelect(array('id', 'ordertype'));
+                                }))
+                                ->with(array('productorder.transportscheduleproduct.transportschedule' => function($query) use ($dateFrom, $dateTo){
+                                    $query->addSelect(array('id', 'order_id', 'date'))
+                                          ->whereBetween('date', array($dateFrom, $dateTo));
+                                          // ->whereHas('order', function($query){
+                                          //       $query->where('ordertype', '=', Config::get('constants.ORDERTYPE_PO'));
+                                          // });
+                                }))
+                                // ->wherehas('productorder', function($query){
+                                //     $query->whereHas('transportscheduleproduct', function($query){
+                                //         $query->has('transportschedule', '>=', DB::raw(1));
+                                //     });
+                                // })
+                                ->with(array('productorder' => function($query){
+                                    $query->addSelect(array('id', 'order_id', 'product_id'))
+                                            ->has('transportscheduleproduct');
+                                }))
+                                // ->has('productorder.transportscheduleproduct.transportschedule')
+                                ->where('id', '=', $product['id'])
+                                ->get(array('id', 'name'))->toArray();
+
+            array_push($temp, $result);
+        }
+        return $temp;
     }
     
 }

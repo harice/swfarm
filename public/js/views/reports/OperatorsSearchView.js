@@ -23,8 +23,7 @@ define([
 	var OperatorSearchView = ReportView.extend({	
 
 		initialize: function() {
-			var thisObj = this;
-			this.filterId = null;	
+			var thisObj = this;			
 			this.filtername = "Operator's Name";
 
 			this.model = new Report();
@@ -66,7 +65,7 @@ define([
 			this.filterId = $("#filtername").val();
 				
 			if(this.checkFields()){								
-				this.model.fetchOperatorsPay(this.filterId, this.startDate, this.endDate);
+				this.model.fetchStatement(this.reportId, this.filterId, this.startDate, this.endDate);
 				$("#report-form").collapse("toggle");
 				$(".collapse-form").addClass("collapsed");
 			}
@@ -85,7 +84,10 @@ define([
 				'date_from': thisObj.parseDate($('#filter-operator-date-start .input-group.date input').val()),
 				'date_to': thisObj.parseDate($('#filter-operator-date-end .input-group.date input').val()),
 				'operators': this.model,
-				print_url : Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.model.id, type:'pdf', model:'order'})),
+				'export_pdf_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.filterId, type:'pdf', model:'operators-pay', dateStart:this.startDate, dateEnd:this.endDate})),
+				'export_xlsx_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.filterId, type:'excel', format:'xlsx', model:'operators-pay', dateStart:this.startDate, dateEnd:this.endDate})),
+				'export_xls_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.filterId, type:'excel', format:'xls', model:'operators-pay', dateStart:this.startDate, dateEnd:this.endDate})),
+				'export_csv_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.filterId, type:'excel', format:'csv', model:'operators-pay', dateStart:this.startDate, dateEnd:this.endDate}))
 			}
 
 			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);

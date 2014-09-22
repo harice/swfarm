@@ -751,7 +751,9 @@ class OrderRepository implements OrderRepositoryInterface {
             $productorder->save();
 
             if($product['stacknumber'] != ''){ //insert in stack table
-                $this->addToStackTable($product['stacknumber'], $product['product_id']);
+                //get the account id who owns the stacknumber
+                $account = Order::find($order_id)->first(array('id'));
+                $this->addToStackTable($product['stacknumber'], $product['unitprice'], $product['product_id'], $account['id']);
             }
 
             if(isset($product['uploadedfile']) && !empty($product['uploadedfile'])){
@@ -762,12 +764,14 @@ class OrderRepository implements OrderRepositoryInterface {
         return $result;
     }
 
-    private function addToStackTable($stacknumber, $productId){
+    private function addToStackTable($stacknumber, $unitprice, $productId, $accountId = null){
         $isExist = Stack::where('stacknumber', '=', $stacknumber)->where('product_id', '=', $productId)->count();
         if($isExist == 0){
             $stack = new Stack;
             $stack->stacknumber = $stacknumber;
             $stack->product_id = $productId;
+            $stack->account_id = $accountId;
+            $stack->unitprice = $unitprice;
             $stack->save();
         }
     }

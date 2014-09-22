@@ -39,7 +39,7 @@ define([
 			var thisObj = this;
 			this.startDate = null;
 			this.endDate = null;
-
+			this.reportId = null;
 			this.displayFilter();			
 		},
 		render: function(){									

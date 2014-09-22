@@ -6,7 +6,7 @@ define([
 
 	var ReportModel = Backbone.Model.extend({
 		
-		urlRoot: '',
+		urlRoot: '/apiv1/reports/',
 		defaults: {
 
         },
@@ -30,6 +30,11 @@ define([
         
         label: function () {
             return this.get('name');
+        },
+
+        fetchStatement: function (reportId, filterId, startDate, endDate) {
+            this.urlRoot = this.urlRoot + reportId + '?filterId=' + filterId + '&dateStart=' + startDate + '&dateEnd=' + endDate;
+            this.runFetch();
         },
 
         fetchOperatorsPay: function (id, startDate, endDate) {

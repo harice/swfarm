@@ -302,6 +302,7 @@ class AccountRepository implements AccountRepositoryInterface {
         foreach ($address as &$detail)
         {
             $result[] = array(
+                'address_id' => $detail['id'],
                 'name' => $detail['street'] .', ' .$detail['city'] .', ' .$detail['address_state_code'] .', ' .'US' .' ' .$detail['zipcode']
             );
         }

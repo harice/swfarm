@@ -23,10 +23,13 @@
 		.padding-right-5 { padding-right: 5px; }
 
 		.width-6 { width: 6%; }
+		.width-7 { width: 7%; }
 		.width-8 { width: 8%; }
+		.width-9 { width: 9%; }
 		.width-10 { width: 10%; }
 		.width-12 { width: 12%; }
 		.width-13 { width: 13%; }
+		.width-14 { width: 14%; }
 		.width-15 { width: 15%; }
 		.width-18 { width: 18%; }
 		.width-20 { width: 20%; }

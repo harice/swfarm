@@ -217,9 +217,9 @@ define([
 			this.addressCollection.fetchStackAddress(acct_id);
 
 			this.addressCollection.fetch({
-				success: function (collection, response, options) {							
+				success: function (collection, response, options) {					
 					address = thisObj.showAddressList();	
-					thisObj.$el.find('#address').append(address);																
+					thisObj.$el.find('#address').html(address);																
 				},
 				error: function (collection, response, options) {
 				},
