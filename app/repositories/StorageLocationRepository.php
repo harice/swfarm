@@ -66,6 +66,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
                     'storagelocation.account_id',
                     'storagelocation.longitude',
                     'storagelocation.latitude',
+                    'storagelocation.address_id',
                     'account.name as account_name'
                 );
 
