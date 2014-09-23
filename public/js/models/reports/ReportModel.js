@@ -6,7 +6,7 @@ define([
 
 	var ReportModel = Backbone.Model.extend({
 		
-		urlRoot: '',
+		urlRoot: '/apiv1/reports/',
 		defaults: {
 
         },
@@ -32,45 +32,16 @@ define([
             return this.get('name');
         },
 
-        fetchOperatorsPay: function (id, startDate, endDate) {
-        	this.urlRoot = '/apiv1/report/operator-pay/' + id + '?dateStart=' +startDate+'&dateEnd='+endDate;
-        	this.runFetch();            
+        fetchStatement: function (reportId, filterId, startDate, endDate) {
+            this.urlRoot = this.urlRoot + reportId + '?filterId=' + filterId + '&dateStart=' + startDate + '&dateEnd=' + endDate;
+            this.runFetch();
         },
 
-		fetchTruckingStatement: function (id, startDate, endDate) {
-        	this.urlRoot = '/apiv1/report/trucking-statement/' + id + '?dateStart=' +startDate+'&dateEnd='+endDate;
-        	this.runFetch();
+        fetchGrossProfit: function (reportId, startDate, endDate) {
+            this.urlRoot = this.urlRoot + reportId + '?dateStart=' +startDate+'&dateEnd='+endDate;
+            this.runFetch();
         },
-
-        fetchProducersStatement: function (id, startDate, endDate) {
-        	this.urlRoot = '/apiv1/report/producer-statement/' + id + '?dateStart=' +startDate+'&dateEnd='+endDate;
-        	this.runFetch();
-        },        
-
-        fetchInventory: function (id, startDate, endDate) {
-        	this.urlRoot = '/apiv1/report/inventoryPerLocation?storagelocationId=' + id + '&dateFrom=' +startDate+'&dateTo='+endDate;
-        	this.runFetch();
-        },
-
-        fetchCustomerSales: function (id, startDate, endDate) {
-        	this.urlRoot = '/apiv1/report/sales/' + id + '?dateStart=' +startDate+'&dateEnd='+endDate;
-        	this.runFetch();
-        },
-
-        fetchCommissionStatement: function (id, startDate, endDate) {
-        	this.urlRoot = '/apiv1/report/commission/' + id + '?dateStart=' +startDate+'&dateEnd='+endDate;
-        	this.runFetch();
-        },
-
-        fetchGrossProfit: function (startDate, endDate) {
-        	this.urlRoot = '/apiv1/report/gross-profit?dateStart=' +startDate+'&dateEnd='+endDate;
-        	this.runFetch();
-        },
-
-        fetchDriverStatement: function (id, startDate, endDate) {
-        	this.urlRoot = '/apiv1/report/driver-pay/' + id + '?dateStart=' +startDate+'&dateEnd='+endDate;
-        	this.runFetch();
-        },
+       
 	});
 
 	return ReportModel;

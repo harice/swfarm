@@ -154,7 +154,7 @@ define([
 			model.fetch({
 				success: function(model,response,options){
 					if(model.get('latitude') && model.get('longitude')) {
-						var markers = [{accountName:model.get('account_name'),name:model.get('name'),lat:model.get('latitude'),lng:model.get('longitude')}];
+						var markers = [{accountName:model.get('account_name'),name:model.get('name'),totalTons: model.get('totalTons'),lat:model.get('latitude'),lng:model.get('longitude')}];
 						thisObj.googleMaps.showModalSetLocation(markers);
 					}
 					else
@@ -172,8 +172,8 @@ define([
 			var i = 0;
 			
 			_.each(this.collection.models, function (model) {
-				if(model.get('latitude') && model.get('longitude')) {
-					markers.push({accountName:model.get('account_name'),name:model.get('name'),lat:model.get('latitude'),lng:model.get('longitude')});
+				if(model.get('latitude') && model.get('longitude')) {					
+					markers.push({accountName:model.get('account_name'),name:model.get('name'),totalTons: model.get('totalTons'),lat:model.get('latitude'),lng:model.get('longitude')});
 				}
 			});
 			

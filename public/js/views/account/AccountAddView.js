@@ -40,7 +40,6 @@ define([
 			this.accountId = null;
 			this.h1Title = 'Account';
 			this.h1Small = 'add';
-		
 			this.options = {
 				addressFieldClone: null,
 				addressFieldCounter: 0,
@@ -168,6 +167,16 @@ define([
 			'click #add-address-field' : 'addAddressFields',
 			'click .remove-address-fields' : 'removeAddressFields',
 			'change #accounttype': 'onChangeAccountType',
+			'click .type': 'checkType'
+		},
+
+		checkType: function(ev){
+			
+			if($(ev.target).find("option[value='2']").length == 0) {
+				if($(".type").find("option:selected[value='2']").length == 0) {					
+					$(ev.target).append("<option value='2'>Mailing Address</option>");
+				}
+			}
 		},
 		
 		addAddressFields: function () {
@@ -177,7 +186,8 @@ define([
 			var accountTypeText = $('#accounttype').find('option:selected').text();
 
 			
-			if(this.options.addressFieldClone == null) {
+			if(this.options.addressFieldClone == null) {							
+
 				var varAccountAddressTemplate = {
 					'address_types': this.accountExtrasModel.get('addressTypes'),
 					'address_states' : this.accountExtrasModel.get('states'),
@@ -204,8 +214,12 @@ define([
 			}
 			else {	
 				//if(multipleAddress.indexOf(accountTypeText) > -1) {					
-					var clone = this.options.addressFieldClone.clone();					
-					
+					var clone = this.options.addressFieldClone.clone();	
+
+					if($(".type").find("option:selected[value='2']").length > 0) {					
+						clone.find('.type option').filter(function () { return $(this).html() == "Mailing Address" }).remove();
+					}
+
 					if(accountTypeText == 'Producer')
 						clone.find('.type option').filter(function () { return $(this).html() == Const.ACCOUNT.UNIQUEADDRESS.CUSTOMER; }).remove();
 					else if(accountTypeText == 'Customer')
@@ -293,7 +307,7 @@ define([
 		
 		onChangeAccountType: function (ev) {
 			var multipleAddress = Const.ACCOUNT.MULTIPLEADDRESS;
-			var accountTypeText = $(ev.target).find('option:selected').text();			
+			var accountTypeText = $(ev.target).find('option:selected').text();				
 			
 			if(multipleAddress.indexOf(accountTypeText) < 0) {				
 				$('#account-adresses').find('.address-fields-container:gt(0)').remove();

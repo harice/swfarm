@@ -31,14 +31,14 @@ define([
 
 	var StackLocationAddView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
-		
+
 		initialize: function() {
 			this.initSubContainer();
 			var thisObj = this;
 			this.slId = null;
 			this.h1Title = 'Stack Location';
 			this.h1Small = 'add';
-			
+
 			this.options = {
 				sectionFieldClone: null,
 				sectionFieldCounter: 0,
@@ -48,7 +48,7 @@ define([
 				sectionFieldSeparator: '.',
 				removeComma: [],
 			};
-			
+
 			this.producerAndWarehouseAccount = new AccountCollection();
 			this.producerAndWarehouseAccount.on('sync', function() {
 				if(thisObj.subContainerExist())
@@ -59,28 +59,28 @@ define([
 				this.off('error');
 			});
 
-			this.addressCollection = new AddressCollection();									
+			this.addressCollection = new AddressCollection();
 
 		},
-		
+
 		render: function(){
 			this.producerAndWarehouseAccount.getProducerAndWarehouseAccount();
 			Backbone.View.prototype.refreshTitle('Stack Location','add');
 		},
-		
+
 		displayForm: function () {
 			var thisObj = this;
-			
+
 			var innerTemplateVariables = {
 				'sl_url' : '#/'+Const.URL.STACKLOCATION,
 				'account_list' : '',
 			};
-			
+
 			if(this.slId != null)
 				innerTemplateVariables['sl_id'] = this.slId;
-			
+
 			var innerTemplate = _.template(stackLocationAddTemplate, innerTemplateVariables);
-			
+
 			var variables = {
 				h1_title: this.h1Title,
 				h1_small: this.h1Small,
@@ -88,10 +88,10 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
-			
+
 			this.googleMaps = new GoogleMapsView();
 			this.googleMaps.initGetMapLocation(function (data) {
-				if(typeof data.location !== 'undefined') {	
+				if(typeof data.location !== 'undefined') {
 					thisObj.subContainer.find('#latitude').val(data.location.lat());
 					thisObj.subContainer.find('#longitude').val(data.location.lng());
 				}
@@ -100,30 +100,30 @@ define([
 					thisObj.subContainer.find('#longitude').val('');
 				}
 			});
-			
+
 			this.initValidateForm();
 			this.generateAccount();
 			this.addSection();
 			this.focusOnFirstField();
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
-			
-			this.otherInitializations();			
+
+			this.otherInitializations();
 		},
-		
+
 		initValidateForm: function () {
 			var thisObj = this;
-			
+
 			var validate = $('#locationForm').validate({
 				submitHandler: function(form) {
 					//var data = $(form).serializeObject();
 					var data = thisObj.formatFormField($(form).serializeObject());
 					//console.log(data);
-					
+
 					var stackLocationModel = new StackLocationModel(data);
 
 
 					stackLocationModel.save(
-						null, 
+						null,
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
@@ -141,14 +141,14 @@ define([
 				},
 			});
 		},
-		
+
 		addSection: function () {
 			var clone = null;
-			
+
 			if(this.options.sectionFieldClone == null) {
 				var sectionTemplateVars = {};
 				var sectionTemplate = _.template(stackLocationSectionItemTemplate, sectionTemplateVars);
-				
+
 				this.$el.find('#section-list tbody').append(sectionTemplate);
 				var sectionItem = this.$el.find('#section-list tbody').find('.section-item:first-child');
 				this.options.sectionFieldClone = sectionItem.clone();
@@ -160,11 +160,11 @@ define([
 				this.addIndexToSectionFields(clone);
 				this.$el.find('#section-list tbody').append(clone);
 			}
-				
+
 			this.addValidationToSection();
 			return clone;
 		},
-		
+
 		addIndexToSectionFields: function (sectionItem) {
 			var sectionFieldClass = this.options.sectionFieldClass;
 			for(var i=0; i < sectionFieldClass.length; i++) {
@@ -172,10 +172,10 @@ define([
 				var name = field.attr('name');
 				field.attr('name', name + this.options.sectionFieldSeparator + this.options.sectionFieldCounter);
 			}
-			
+
 			this.options.sectionFieldCounter++;
 		},
-		
+
 		addValidationToSection: function () {
 			var thisObj = this;
 			var sectionFieldClassRequired = this.options.sectionFieldClassRequired;
@@ -185,16 +185,16 @@ define([
 				});
 			}
 		},
-		
+
 		generateAccount: function () {
 			var options = '';
 			_.each(this.producerAndWarehouseAccount.models, function (model) {
 				options += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
-			
+
 			this.$el.find('#account_id').append(options);
 		},
-		
+
 		events: {
 			'click #add-section': 'addSection',
 			'click .remove-section': 'removeSection',
@@ -205,54 +205,67 @@ define([
 			'click #map': 'showMap',
 			'change #address': 'setCoordinates'
 		},
-		
+
 		generateAddress: function (){
-			var thisObj = this;	
-			var address = ''; 
+			var thisObj = this;
+			var address = '';
 			var acct_id = this.subContainer.find("#account_id").val();
 
 			if(acct_id == undefined)
 				acct_id = this.model.get('account_id');
-			
+
 			this.addressCollection.fetchStackAddress(acct_id);
 
 			this.addressCollection.fetch({
-				success: function (collection, response, options) {							
+<<<<<<< HEAD
+				success: function (collection, response, options) {					
 					address = thisObj.showAddressList();	
-					thisObj.$el.find('#address').append(address);																
+					thisObj.$el.find('#address').html(address);																
+					thisObj.$el.find('#address').val('');					
+=======
+				success: function (collection, response, options) {
+					address = thisObj.showAddressList();
+					thisObj.$el.find('#address').html(address);
+>>>>>>> b3576755c3a9e08e6f4d25b4d856fd42fd283cae
 				},
 				error: function (collection, response, options) {
 				},
 				headers: this.addressCollection.getAuth()
 			});
-					
+
 		},
 
 		showAddressList: function () {
 			var thisObj = this;
-			var address = '';
+<<<<<<< HEAD
+			var address = '<option disabled>Select Address</option>';
+
 			_.each(this.addressCollection.models, function (model) {				
+=======
+			var address = '';
+			_.each(this.addressCollection.models, function (model) {
+>>>>>>> b3576755c3a9e08e6f4d25b4d856fd42fd283cae
 				address += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
-			
+
 			return address;
-		
+
 		},
 
 		removeSection: function (ev) {
 			$(ev.target).closest('tr').remove();
-			
+
 			if(!this.hasSection())
 				this.addSection();
 		},
-		
+
 		hasSection: function () {
 			return (this.$el.find('#section-list tbody .section-item').length)? true : false;
 		},
-		
+
 		deleteStockLocation: function () {
 			var thisObj = this;
-            
+
             this.model.destroy({
                 success: function (model, response, options) {
                     thisObj.displayMessage(response);
@@ -266,16 +279,16 @@ define([
                 headers: thisObj.model.getAuth(),
             });
 		},
-		
+
 		formatFormField: function (data) {
 			var formData = {sections:[]};
 			var sectionFieldClass = this.options.sectionFieldClass;
-			
+
 			for(var key in data) {
 				if(typeof data[key] !== 'function'){
 					var value = data[key];
 					var arrayKey = key.split(this.options.sectionFieldSeparator);
-					
+
 					if(arrayKey.length < 2)
 						if(this.options.removeComma.indexOf(key) < 0)
 							formData[key] = value;
@@ -285,7 +298,7 @@ define([
 						if(arrayKey[0] == sectionFieldClass[0]) {
 							var index = arrayKey[1];
 							var arraySectionFields = {};
-							
+
 							for(var i = 0; i < sectionFieldClass.length; i++) {
 								if(this.options.sectionFieldExempt.indexOf(sectionFieldClass[i]) < 0) {
 									var fieldValue = data[sectionFieldClass[i]+this.options.sectionFieldSeparator+index];
@@ -297,55 +310,55 @@ define([
 									}
 								}
 							}
-								
+
 							formData.sections.push(arraySectionFields);
 						}
 					}
 				}
 			}
-			
+
 			return formData;
 		},
-                
+
         showDeleteConfirmationWindow: function () {
             this.showConfirmationWindow();
         },
-		
+
 		showDeleteConfirmationWindow: function () {
 			this.showConfirmationWindow();
 		},
-		
+
 
 		showMap: function () {
 			var thisObj = this;
 			var addressVal = this.subContainer.find("#address").val();
 			var address = this.subContainer.find("#address option:selected").text();
 
-			
-			if(addressVal == '') {				
+
+			if(addressVal == '') {
 				$("#map").next('.error-msg-cont').fadeOut();
 				$("<span class='error-msg-cont'><label class='error margin-bottom-0'>Select an Address</label></div>").insertAfter($("#map"));
 			}
 			else {
 				var lat = '';
 				var lng = '';
-				
+
 				var geocoder = new google.maps.Geocoder();
 
 			   if (geocoder) {
 			      geocoder.geocode({ 'address': address }, function (results, status) {
 			         if (status == google.maps.GeocoderStatus.OK) {
 			         	$("#map").next('.error-msg-cont').fadeOut();
-			            thisObj.googleMaps.showModalGetLocation({lat: results[0].geometry.location.k, lng: results[0].geometry.location.B});		           	           
-			           
+			            thisObj.googleMaps.showModalGetLocation({lat: results[0].geometry.location.k, lng: results[0].geometry.location.B});
+
 			         }
 			         else {
 			         	$("#map").next('.error-msg-cont').fadeOut();
 			            $("<span class='error-msg-cont'><label class='error margin-bottom-0'>Invalid Address</label></div>").insertAfter($("#map"));
 			         }
 			      });
-			   } 
-			}   
+			   }
+			}
 
 		},
 
@@ -353,29 +366,29 @@ define([
 			var lat = '';
 			var lng = '';
 
-			var address = $("#address option:selected").text();			
+			var address = $("#address option:selected").text();
 
 			var geocoder = new google.maps.Geocoder();
 
 		   if (geocoder) {
 		      geocoder.geocode({ 'address': address }, function (results, status) {
 		         if (status == google.maps.GeocoderStatus.OK) {
-		         	$("#map").next('.error-msg-cont').fadeOut();		         	
+		         	$("#map").next('.error-msg-cont').fadeOut();
 		         	$("#latitude").val(results[0].geometry.location.k);
 		            $("#longitude").val(results[0].geometry.location.B);
-		           
+
 		         }
 		         else {
 		         	$("#map").next('.error-msg-cont').fadeOut();
 		            $("<span class='error-msg-cont'><label class='error margin-bottom-0'>Invalid Address</label></div>").insertAfter($("#map"));
 		         }
 		      });
-		   } 
+		   }
 
 		},
-		
+
 		otherInitializations: function () {},
-		
+
 		destroySubViews: function () {
 			if(this.googleMaps != null)
 				this.googleMaps.destroyView();
@@ -383,5 +396,5 @@ define([
 	});
 
 	return StackLocationAddView;
-  
+
 });

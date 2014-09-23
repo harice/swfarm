@@ -73,7 +73,7 @@ define([
 			this.filterId = $("#filtername").val();
 			
 			if(this.checkFields()){							
-				this.model.fetchCommissionStatement(this.filterId, this.startDate, this.endDate);
+				this.model.fetchStatement(this.reportId, this.filterId, this.startDate, this.endDate);
 
 				$("#report-form").collapse("toggle");
 				$(".collapse-form").addClass("collapsed");
@@ -94,6 +94,10 @@ define([
 				'date_from': thisObj.parseDate($('#filter-operator-date-start .input-group.date input').val()),
 				'date_to': thisObj.parseDate($('#filter-operator-date-end .input-group.date input').val()),
 				'users': this.model,
+				'export_pdf_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.filterId, type:'pdf', model:'commission-statement', dateStart:this.startDate, dateEnd:this.endDate})),
+				'export_xlsx_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.filterId, type:'excel', format:'xlsx', model:'commission-statement', dateStart:this.startDate, dateEnd:this.endDate})),
+				'export_xls_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.filterId, type:'excel', format:'xls', model:'commission-statement', dateStart:this.startDate, dateEnd:this.endDate})),
+				'export_csv_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.filterId, type:'excel', format:'csv', model:'commission-statement', dateStart:this.startDate, dateEnd:this.endDate}))
 			}
 
 			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);

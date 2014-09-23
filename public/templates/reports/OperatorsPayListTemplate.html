@@ -2,10 +2,22 @@
     <div class="header">
         <div class="row margin-top-0">
             <div class="col-md-12">
-                <h2>Admin - Operator Pay</h2>
-                <div class="pull-right">
-                    <a href='<%= print_url %>' target='_blank' class='btn btn-link btn-sm padding-right-0'><i class='fa fa-print'></i>print</a>
-                </div>
+                <h2 class="pull-left">
+                    Admin - Operator Pay
+                    <div class="btn-group">
+                        <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
+                            Export <span class="caret"></span>
+                        </button>
+                        <ul role="menu" class="dropdown-menu">
+                            <li><a href="<%= export_pdf_url %>" target="_blank">Adobe PDF (*.pdf)</a></li>
+                            <li><a href="<%= export_xlsx_url %>">Excel (*.xlsx)</a></li>
+                            <li><a href="<%= export_xls_url %>">Excel (*.xls)</a></li>
+                            <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
+                        </ul>
+                    </div>
+                </h2>
+                <button class='btn btn-link btn-sm margin-left-0 margin-top-5 sendmail pull-right'><i class='fa fa-envelope-o'></i>email</button>
+                <div class="clearfix"></div>
                 <h5><%= cur_date %></h5>
             </div>
         </div>
@@ -21,49 +33,52 @@
                 <h3>
                     Operator:
                     <strong>
-                        <%= operators.get('operator').firstname %> <%= operators.get('operator').lastname %>
+                        <%= operators.get('firstname') %> <%= operators.get('lastname') %>
                     </strong>
                 </h3> 
             </div>
         </div>
     </div>
-    <% if (!_.isEmpty(operators.get('transactions'))) { %>         
+    <% if (!_.isEmpty(operators.get('order'))) { %>         
     <div class="content">            
-        <div class="content-inner table-responsive">
+        <div class="content-inner table-responsive">            
+        <%                         
+            _.each(operators.get('order'),function(order){     
+        %>    
+            <h3><%= order.order_number %></h3>
             <table id="operator-list" class="table table-bordered">
                 <thead class="no-border">
                     <tr>
-                        <th><strong>Order No.</strong></th>                        
-                        <th><strong>Cust Name</strong></th>
-                        <th><strong>Load Type</strong></th>
-                        <th><strong>Sqeeze</strong></th>
-                        <th><strong>Amount</strong></th>
+                        <th><strong>Date</strong></th>                                        
+                        <th><strong>Weight Ticket Number</strong></th>
+                        <th><strong>Origin Loader</strong></th>
+                        <th><strong>Origin Loader's Fee</strong></th>
+                        <th><strong>Destination Loader</strong></th>
+                        <th><strong>Destination Loader's Fee</strong></th>                      
                     </tr>
                 </thead>
                 <tbody class="no-border-y">
-                    <%                         
-                        _.each(operators.get('transactions'),function(transaction){                        
-                    %>    
-                        <tr>   
-                            <td><%= transaction.order_number %></td>  
-                            <td><%= transaction.account_name %></td>
-                            <td><%= transaction.type %></td>
-                            <td><%= transaction.loader %></td>
-                            <td>$ <%= numberFormat(transaction.amount) %></td>                       
-                        </tr>   
-                    <%}); %>                     
-                </tbody>   
-                <tfoot>
-                    <tr>
-                        <td colspan="3" align="right">
-                            TOTAL
-                        </td>
-                        <td>
-                            <strong>$ <%= numberFormat(operators.get('summary').total) %></strong>
-                        </td>
-                    </tr>
-                </tfoot>             
-            </table>                
+                    <%
+                        _.each(order.transportschedule, function(transport){
+                    %>
+                        <tr>  
+                            <td><%= formatDate(transport.updated_at) %></td>
+                            <td><%= transport.weightticketnumber %></td>
+                            <td><%= transport.originloader.firstname %> <%= transport.originloader.lastname %></td>
+                            <td><%= transport.originloaderfee %></td>
+                            <td><%= transport.destinationloader.firstname %> <%= transport.destinationloader.lastname %></td>
+                            <td><%= transport.destinationloaderfee %></td>
+                        </tr>  
+                    <%});%>                    
+                </tbody>                  
+            </table>          
+        <%}); %> 
+        <table id="operator-list" class="table table-bordered" style="width:30%">
+            <tbody class="no-border-y">
+                <td><strong>Total Amount</strong></td>
+                <td><%= operators.get('amount') %></td>
+            </tbody>
+        </table>                                                               
         </div>        
     </div>
     <% } else { %>

@@ -7,6 +7,11 @@ define([
 	var GraphModel = Backbone.Model.extend({
 		urlRoot: '/apiv1/dashboard',
 		defaults: {},
+
+		initialize: function() {
+			this.defaultURL = this.urlRoot;
+		},
+		
 		runFetch: function () {
 			var thisObj = this;
 			
@@ -17,6 +22,22 @@ define([
 				},
 				headers: thisObj.getAuth(),
 			});
+		},
+		
+		fetchGraphData: function (graphId, dateFrom, dateTo){
+			var params = {};
+			
+			if(graphId != null)
+				params['graphId'] = graphId;
+				
+			if(dateFrom != null)
+				params['dateFrom'] = dateFrom;
+				
+			if(dateTo != null)
+				params['dateTo'] = dateTo;
+			
+			this.urlRoot = this.defaultURL + '?' + $.param(params);			
+			this.runFetch();			
 		},
 	});
 

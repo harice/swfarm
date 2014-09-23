@@ -77,7 +77,7 @@ define([
 		},
 
 		render: function(){
-			this.productCollection.getModels();
+			this.productCollection.getAllModel();
 			Backbone.View.prototype.refreshTitle('Contract','add');
 		},
 

@@ -62,13 +62,17 @@
                     'x': shiftX(points[i]),
                     'y': shiftY(points[i+1])
                 };
-                if(series.stack != null){
+
+                if(series.stack != null){                  
                     point[axes[hs]] = (points[barNumber] - series.data[i/3][hs] / 2);
                     text = series.data[i/3][hs];
-                } else {
-                    if(series.bars.numbers.showDataValue) {
-						var counter = (i > 0)? i - ps : i;
+
+                } else {                                    
+                    if(series.bars.numbers.showDataValue) {                       
+						var counter = (i > 0)? i - ps : i;                    
 						text = series.data[i/3][hs];
+                        if(text == undefined)
+                            text = points[barNumber];
 					}
 					else
 						text = points[barNumber];
@@ -78,7 +82,7 @@
 				if(typeof series.yPositionAdjustLabel !== 'undefined')
 					c.top = c.top + series.yPositionAdjustLabel;
 					
-					
+			   
 				ctx.fillText(text.toString(10), c.left + offset.left, c.top + offset.top)
             }
         }

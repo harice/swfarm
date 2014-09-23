@@ -1,7 +1,7 @@
 define([
 	'backbone',
 	'views/base/ReportView',
-	'models/reports/ReportModel',
+	'models/reports/ReportModel',	
 	'collections/account/AccountProducerCollection',
 	'text!templates/reports/ProducersListTemplate.html',
 	'global',
@@ -19,10 +19,9 @@ define([
 	var ProducerSearchView = ReportView.extend({		
 		
 		initialize: function() {
-			var thisObj = this;
-			this.filterId = null;	
+			var thisObj = this;		
 			this.filtername = "Producer's Name";				
-
+			this.reportId = $("#reporttype").val();
 			this.model = new Report();
 			this.model.on('change', function (){
 				thisObj.processData();
@@ -73,7 +72,7 @@ define([
 			this.filterId = $("#filtername").val();
 						
 			if(this.checkFields()){								
-				this.model.fetchProducersStatement(this.filterId, this.startDate, this.endDate);
+				this.model.fetchStatement(this.reportId, this.filterId, this.startDate, this.endDate);
 				$("#report-form").collapse("toggle");
 				$(".collapse-form").addClass("collapsed");
 			}
@@ -86,7 +85,7 @@ define([
 
 		processData: function() {
 			var thisObj = this;
-			
+
 			var innerTemplateVariables= {
 				'cur_date': this.setCurDate(),
 				'date_from': thisObj.parseDate($('#filter-operator-date-start .input-group.date input').val()),
@@ -104,7 +103,7 @@ define([
 			$(".reportlist").removeClass("hidden");
 			$("#report-list").removeClass("hidden");
 			$("#report-list").html(compiledTemplate);
-		},
+		},			
 
 		
 	});

@@ -25,14 +25,14 @@ define([
 
 	var ScaleAddView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
-		
+
 		initialize: function() {
 			this.initSubContainer();
 			var thisObj = this;
 			this.scaleId = null;
 			this.h1Title = 'Scale';
 			this.h1Small = 'add';
-			
+
 			this.scalerAccountCollection = new AccountCollection();
 			this.scalerAccountCollection.on('sync', function() {
 				if(thisObj.subContainerExist())
@@ -43,22 +43,22 @@ define([
 				this.off('error');
 			});
 		},
-		
+
 		render: function(){
 			this.scalerAccountCollection.getScalerAccounts();
 			Backbone.View.prototype.refreshTitle('Scale','add');
 		},
-		
+
 		displayForm: function () {
 			var thisObj = this;
-			
+
 			var innerTemplateVariables = {};
-			
+
 			if(this.scaleId != null)
 				innerTemplateVariables['scale_id'] = this.scaleId;
-			
+
 			var innerTemplate = _.template(scaleAddTemplate, innerTemplateVariables);
-			
+
 			var variables = {
 				h1_title: this.h1Title,
 				h1_small: this.h1Small,
@@ -66,27 +66,27 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
-			
+
 			this.generateScalerAccount();
 			this.focusOnFirstField();
 			this.initValidateForm();
 			this.maskInputs();
 			this.otherInitializations();
 		},
-		
+
 		initValidateForm: function () {
 			var thisObj = this;
-			
+
 			var validate = $('#scalerForm').validate({
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
-					
+
 					data['rate'] = thisObj.removeCommaFromNumber(data['rate']);
-					
+
 					var scaleModel = new ScaleModel(data);
-					
+
 					scaleModel.save(
-						null, 
+						null,
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);
@@ -104,31 +104,30 @@ define([
 				},
 			});
 		},
-		
+
 		generateScalerAccount: function () {
 			var options = '';
 			_.each(this.scalerAccountCollection.models, function (model) {
 				options += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
-			
+
 			this.$el.find('#account_id').append(options);
 		},
-		
+
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
-			'click #delete-scale': 'showConfirmationWindow',
-			'click #confirm-delete-scale': 'deleteTrailer',
+			'click #delete-scale': 'showDeleteConfirmationWindow',
+			'click #confirm-delete-scale': 'deleteScale',
 			'keyup #rate': 'formatMoney',
-			'blur #rate': 'onBlurMoney',
+			'blur #rate': 'onBlurMoney'
 		},
-		
-		deleteTrailer: function () {
+
+		deleteScale: function () {
 			var thisObj = this;
-            
+
             this.model.destroy({
                 success: function (model, response, options) {
                     thisObj.displayMessage(response);
-                    //Global.getGlobalVars().app_router.navigate(Const.URL.TRAILER, {trigger: true});
 					Backbone.history.history.back();
                 },
                 error: function (model, response, options) {
@@ -138,10 +137,14 @@ define([
                 headers: thisObj.model.getAuth(),
             });
 		},
-		
+
+        showDeleteConfirmationWindow: function () {
+			this.showConfirmationWindow();
+		},
+
 		otherInitializations: function () {},
 	});
 
 	return ScaleAddView;
-  
+
 });

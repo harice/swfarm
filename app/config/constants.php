@@ -57,6 +57,8 @@ return array(
     'REPORT_PRODUCER' => 7,
     'REPORT_TRUCKING' => 8,
 
+    'ACCOUNTTYPE_OPERATOR' => 4,
+
     'VERSION' => "3.0"
 
 );

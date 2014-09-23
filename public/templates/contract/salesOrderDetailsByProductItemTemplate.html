@@ -10,6 +10,7 @@
 						<thead>
 							<tr>
 								<th>SO No.</th>
+                                <th>PO No.</th>
 								<th>Stack No.</th>
 								<th>Expected</th>
 								<th>Delivered</th>
@@ -23,6 +24,9 @@
 									<td>
 										<a href="<%= sales_order_url %>/<%= salesorder.id %>" title="view"><%= salesorder.order_number %></a>
 									</td>
+                                    <td>
+                                        <a href="<%= purchase_order_url %>/<%= salesorder.purchaseorder.id %>" title="view"><%= salesorder.purchaseorder.order_number %></a>
+                                    </td>
 									<td><%= salesorder.stacknumber %></td>
 									<td><%= numberFormatTons(salesorder.tons) %></td>
 									<td><%= numberFormatTons(salesorder.delivered_tons) %></td>
@@ -31,7 +35,7 @@
 								<% }); %>
 							<% } else { %>
 								<tr>
-									<td colspan="5">No Sales Order found.</td>
+									<td colspan="6">No Sales Order found.</td>
 								</tr>
 							<% } %>
 						</tbody>

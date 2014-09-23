@@ -10,11 +10,11 @@ define([
 
 	var AccountView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
-		
+
 		initialize: function(option) {
 			this.initSubContainer();
 			var thisObj = this;
-			
+
 			this.model = new AccountModel({id:option.id});
 			this.model.on("change", function() {
 				if(thisObj.subContainerExist())
@@ -22,12 +22,12 @@ define([
 				this.off("change");
 			});
 		},
-		
+
 		render: function(){
 			this.model.runFetch();
 			Backbone.View.prototype.refreshTitle('Accounts','view');
 		},
-		
+
 		displayAccount: function () {
 			//console.log(this.model);
 			var innerTemplateVariables = {
@@ -36,32 +36,33 @@ define([
 				account_edit_url:'#/'+Const.URL.ACCOUNT+'/'+Const.CRUD.EDIT,
 			}
 			var innerTemplate = _.template(accountViewTemplate, innerTemplateVariables);
-			
+
 			var variables = {
 				h1_title: this.model.get('name'),
 				sub_content_template: innerTemplate,
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
-			
+
 			this.initConfirmationWindow('Are you sure you want to delete this account?',
 										'confirm-delete-account',
-										'Delete');
+										'Delete',
+                                        'Delete Account');
 		},
-		
+
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #delete-account': 'showDeleteConfirmationWindow',
 			'click #confirm-delete-account': 'deleteAccount',
 		},
-		
+
 		showDeleteConfirmationWindow: function () {
 			this.showConfirmationWindow();
 		},
-		
+
 		deleteAccount: function (){
 			var thisObj = this;
-            
+
             this.model.destroy({
                 success: function (model, response, options) {
                     thisObj.displayMessage(response);
@@ -78,5 +79,5 @@ define([
 	});
 
 	return AccountView;
-  
+
 });

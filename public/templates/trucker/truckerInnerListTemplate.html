@@ -3,7 +3,13 @@
 	<tr>
         <td><a href="<%= trucker_url %>/<%= trucker.get('id') %>"><%= trucker.get("trucknumber") %></a></td>
 		<td><%= trucker.get("account_name") %></td>
-		<td><%= trucker.get("account_type") %></td>
+
+		<td>
+        <% _.each(trucker.get("account").accounttype, function(type) { %>
+            <span class="label label-default margin-right-3"><%= type.name %></span>
+        <% }) %>
+        </td>
+
 		<td>$ <%= numberFormat(trucker.get("fee")) %></td>
 		<td>
 			<a href="<%= trucker_edit_url %>/<%= trucker.get("id") %>" class="text-primary" title="edit">
@@ -23,6 +29,6 @@
 	<% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="3">No result found.</td>
+		<td colspan="5">No result found.</td>
 	</tr>
 <% } %>

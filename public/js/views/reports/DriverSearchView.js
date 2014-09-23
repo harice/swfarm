@@ -19,10 +19,9 @@ define([
 	var DriverSearchView = ReportView.extend({
 		
 		initialize: function() {
-			var thisObj = this;
-			this.filterId = null;
+			var thisObj = this;			
 			this.filtername = "Driver's Name";	
-
+			this.reportId = $("#reporttype").val();
 			this.model = new Report();
 			this.model.on('change', function (){				
 				thisObj.processData();
@@ -62,7 +61,8 @@ define([
 			this.filterId = $("#filtername").val();
 									
 			if(this.checkFields()){			
-				this.model.fetchDriverStatement(this.filterId, this.startDate, this.endDate);
+				this.model.fetchStatement(this.reportId, this.filterId, this.startDate, this.endDate);
+				//this.model.fetchDriverStatement(this.filterId, this.startDate, this.endDate);
 				$("#report-form").collapse("toggle");
 				$(".collapse-form").addClass("collapsed");
 			}
