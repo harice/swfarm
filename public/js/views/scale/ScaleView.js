@@ -9,12 +9,12 @@ define([
 
 	var ScaleView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
-		
+
 		initialize: function(option) {
 			this.initSubContainer();
             this.scaleId = option.id;
 			var thisObj = this;
-			
+
 			this.model = new ScaleModel({id:option.id});
 			this.model.on("change", function() {
 				if(thisObj.subContainerExist())
@@ -22,12 +22,12 @@ define([
 				this.off("change");
 			});
 		},
-		
+
 		render: function(){
 			this.model.runFetch();
-			Backbone.View.prototype.refreshTitle('Scales','view');
+			Backbone.View.prototype.refreshTitle('Scale','view');
 		},
-		
+
 		displayScale: function () {
 			var innerTemplateVariables = {
                 _: _,
@@ -35,36 +35,37 @@ define([
 				scale_url:'#/'+Const.URL.SCALE,
 				scale_edit_url:'#/'+Const.URL.SCALE+'/'+Const.CRUD.EDIT
 			};
-            
+
             _.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
-            
+
 			var innerTemplate = _.template(scaleViewTemplate, innerTemplateVariables);
-			
+
 			var variables = {
 				h1_title: this.model.get('name'),
 				sub_content_template: innerTemplate
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
-			
+
 			this.initConfirmationWindow('Are you sure you want to delete this scale?',
 										'confirm-delete-scale',
-										'Delete');
+										'Delete',
+                                        'Delete Scale');
 		},
-		
+
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
             'click #delete-scale': 'showDeleteConfirmationWindow',
 			'click #confirm-delete-scale': 'deleteScale',
 		},
-        
+
         showDeleteConfirmationWindow: function () {
 			this.showConfirmationWindow();
 		},
-		
+
 		deleteScale: function (){
 			var thisObj = this;
-            
+
             this.model.destroy({
                 success: function (model, response, options) {
                     thisObj.displayMessage(response);
@@ -81,5 +82,5 @@ define([
 	});
 
 	return ScaleView;
-  
+
 });

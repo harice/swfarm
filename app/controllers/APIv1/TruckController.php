@@ -14,7 +14,7 @@ use Input;
  */
 
 class TruckController extends BaseController {
-    
+
     public function __construct(TruckRepositoryInterface $repo)
     {
         $this->repo = $repo;
@@ -30,7 +30,7 @@ class TruckController extends BaseController {
         $result = $this->repo->findAll( Input::all() );
         return Response::json($result);
 	}
-    
+
     /**
 	 * Search for a specfic record.
 	 *
@@ -38,7 +38,7 @@ class TruckController extends BaseController {
 	 */
 	public function search()
 	{
-        $result = $this->repo->search( Input::all() );
+        $result = $this->repo->findAll( Input::all() );
         return Response::json($result);
 	}
 

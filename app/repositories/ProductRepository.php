@@ -2,22 +2,22 @@
 
 /**
  * Short description of file
- * 
+ *
  * PHP version 5
- * 
+ *
  * LICENSE: This source file is subject to version 3.01 of the PHP license
  * that is available through the world-wide-web at the following URI:
  * http://www.php.net/license/3_01.txt.  If you did not receive a copy of
  * the PHP License and are unable to obtain it through the web, please
  * send a note to license@php.net so we can mail you a copy immediately.
- * 
+ *
  * @category  Repository
  * @package   ProductRepository
  * @author    Romualdo Dasig <romualdo.dasig@elementzinteractive.com>
  * @copyright 2014 Elementz Interactive
  * @license   http://www.php.net/license/3_01.txt  PHP License 3.01
  * @link      http://pear.php.net/package/PackageName
- * 
+ *
  */
 
 /**
@@ -44,6 +44,7 @@ class ProductRepository implements ProductRepositoryInterface {
             $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
             $sortby = isset($params['sortby']) ? $params['sortby'] : 'name';
             $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
+            $all = isset($params['all']) ? $params['all'] : false;
 
             $product = Product::orderBy($sortby, $orderby);
 
@@ -51,8 +52,13 @@ class ProductRepository implements ProductRepositoryInterface {
                 $product = $product->where('name', 'like', '%' . $params['search'] . '%');
             }
 
+            if($all == true)
+            {
+                $perPage = $product->count();
+            }
+
             return $product->paginate($perPage);
-            
+
         } catch (Exception $e) {
             return $e->getMessage();
         }
@@ -176,7 +182,7 @@ class ProductRepository implements ProductRepositoryInterface {
 //                    );
 //                }
             }
-            
+
             return Response::json(array(
                 'error' => false,
                 'message' => Lang::get('messages.success.deleted', array('entity' => 'Product'))), 200
@@ -232,7 +238,7 @@ class ProductRepository implements ProductRepositoryInterface {
 
     /**
      * Check if Product has existing transaction.
-     * 
+     *
      * @param   type     $id Product Id
      * @return  boolean
      */
@@ -251,7 +257,7 @@ class ProductRepository implements ProductRepositoryInterface {
     }
 
     /**
-     * 
+     *
      * @param Model $product
      */
     public function hasOpenTransaction($product)

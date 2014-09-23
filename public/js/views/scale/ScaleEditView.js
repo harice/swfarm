@@ -70,7 +70,8 @@ define([
 		initDeleteConfirmation: function () {
 			this.initConfirmationWindow('Are you sure you want to delete this Scale?',
 										'confirm-delete-scale',
-										'Delete');
+										'Delete',
+                                        'Delete Scale');
 		},
 	});
 

@@ -226,6 +226,8 @@ class AccountRepository implements AccountRepositoryInterface {
       $addressTypes = AddressType::orderby('name', 'asc')->get();
       $states = AddressStates::orderby('state', 'asc')->get();
 
+      Log::debug($accountTypes->toArray());
+
       return Response::json(
           array(
             'accountTypes' => $accountTypes->toArray(),
@@ -282,9 +284,7 @@ class AccountRepository implements AccountRepositoryInterface {
      */
     public function getStackAddress($id)
     {
-        $address = Address::join('account_accounttype', 'account_accounttype.account_id', '=', 'address.account')
-            ->join('addressstates', 'addressstates.id', '=', 'address.state')
-            ->join('addresstype', 'address.type', '=', 'addresstype.id')
+        $address = Address::join('addressstates', 'addressstates.id', '=', 'address.state')
             ->where('account', '=', $id)
             ->where('type', '=', 3);
 
@@ -294,29 +294,27 @@ class AccountRepository implements AccountRepositoryInterface {
             'address.street as street',
             'address.city as city',
             'address.zipcode as zipcode',
-            'addressstates.state_code as address_state_code',
-            'addresstype.name as address_type'
+            'addressstates.state_code as address_state_code'
         );
 
         $address = $address->get()->toArray();
+        $result = array();
         foreach ($address as &$detail)
         {
-            $detail['name'] = $detail['street'] .', ' .$detail['city'] .', ' .$detail['address_state_code'] .', ' .'US' .' ' .$detail['zipcode'];
-            unset($detail['account_id']);
-            unset($detail['street']);
-            unset($detail['city']);
-            unset($detail['zipcode']);
-            unset($detail['address_state_code']);
-            unset($detail['address_type']);
+            $result[] = array(
+                'id' => $detail['id'],
+                'name' => $detail['street'] .', ' .$detail['city'] .', ' .$detail['address_state_code'] .', ' .'US' .' ' .$detail['zipcode']
+            );
         }
 
-        return Response::json( $address, 200 );
+        return Response::json( $result, 200 );
     }
 
   public function getAccountsByType($types)
   {
     $accounts = Account::with('accounttype')
                   ->whereHas('accounttype', function($q) use($types) { $q->where('accounttype_id', '=', $types); } )
+                  ->orderBy('name', 'asc')
                   ->get(array('id', 'name'));
 
     return Response::json( $accounts->toArray(), 200 );
@@ -328,6 +326,7 @@ class AccountRepository implements AccountRepositoryInterface {
     $accounts = Account::with('accounttype','trailer')
                   ->whereHas('accounttype', function($q) use($types) { $q->whereIn('accounttype_id', $types); } )
                   ->groupBy('id')
+                  ->orderBy('name', 'asc')
                   ->get(array('id', 'name'));
 
     return Response::json( $accounts->toArray(), 200 );
@@ -338,13 +337,14 @@ class AccountRepository implements AccountRepositoryInterface {
     $accounts = Account::with('accounttype','scaler')
                 ->whereHas('accounttype', function($q) use($types) { $q->whereIn('accounttype_id', $types); } )
                 ->groupBy('id')
+                ->orderBy('name', 'asc')
                 ->get(array('id', 'name'));
 
     return Response::json( $accounts->toArray(), 200 );
   }
 
   public function getProducerAndWarehouseAccount(){
-    $types = array(5, 10); //producer and warehouse [accounttype ids]
+    $types = array(5, 9, 10); //producer and warehouse [accounttype ids]
     $accounts = Account::with('accounttype')
                 ->whereHas('accounttype', function($q) use($types) { $q->whereIn('accounttype_id', $types); } )
                 ->groupBy('id')
