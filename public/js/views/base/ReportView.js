@@ -4,6 +4,7 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'views/base/AppView',
+	'models/queue/QueueModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/reports/ReportFormTemplate.html',
 	'text!templates/reports/FilterFormTemplate.html',
@@ -14,6 +15,7 @@ define([
 	Validate,
 	TextFormatter,
 	AppView, 
+	QueueModel,
 	contentTemplate, 
 	reportFormTemplate, 
 	filterFormTemplate,
@@ -278,14 +280,14 @@ define([
             }
 
 			return date;
-		},
+		},	
 		
 		events: {
 			'click #generate': 'onclickgenerate',
 			'change #reporttype': 'filterAction',
 			'click #filter-operator-date-start': 'checkdate',
-			'click #filter-operator-date-end': 'checkdate'
-		},	
+			'click #filter-operator-date-end': 'checkdate',			
+		},		
 
 	})
 

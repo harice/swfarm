@@ -46,7 +46,16 @@ define([
 
 				if($("#start-"+this.get('graphId') + " input").val() !='' && $("#end-"+this.get('graphId') + " input").val() != '')	{
 					var graphData = thisObj.formatGraphData(this.get('data'), this.get('graphType'));
-					thisObj.graphData(elementId, graphData.data, graphData.xData, currency, tickDecimals);
+					switch(this.get('graphType')){
+						case Const.GRAPH.TYPE.STACKEDBAR:							
+							thisObj.graphStackedData(graphIdName, graphData.data, graphData.xData, currency, tickDecimals);
+							break;
+						case Const.GRAPH.TYPE.BAR:
+							thisObj.graphData(graphIdName, graphData.data, graphData.xData, currency, tickDecimals);
+							break;
+						default:
+							break;
+					}
 				}
 			});
 								
@@ -104,6 +113,8 @@ define([
 				
 				switch(graph.get('graphType')){
 					case Const.GRAPH.TYPE.STACKEDBAR:
+						console.log(graphData);	
+						thisObj.graphStackedData(graphIdName, graphData.data, graphData.xData, currency, tickDecimals);
 						break;
 					case Const.GRAPH.TYPE.BAR:
 						thisObj.graphData(graphIdName, graphData.data, graphData.xData, currency, tickDecimals);

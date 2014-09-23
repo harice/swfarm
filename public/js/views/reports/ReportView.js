@@ -9,7 +9,7 @@ define([
 	'views/reports/InventorySearchView',
 	'views/reports/GrossProfitView',
 	'views/reports/CommissionView',	
-	'models/reports/ReportModel',
+	'models/reports/ReportModel',	
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/reports/ReportFormTemplate.html',
 	'global',
@@ -24,7 +24,7 @@ define([
 			Inventory,
 			GrossProfit,
 			CommissionView,
-			Report,
+			Report,			
 			contentTemplate,
 			reportFormTemplate,
 			Global,
@@ -93,6 +93,9 @@ define([
 			this.currView = new CommissionView();
 			this.currView.setElement($("#report-filter")).render();	
 		},
+
+		
+
 	});
 
   return ReportView;

@@ -630,7 +630,7 @@ define([
 					var value = data[key];
 					var arrayKey = key.split(this.options.productFieldSeparator);
 					
-					
+					alert(arrayKey);
 					if(arrayKey.length < 2) {
 						if(this.options.removeComma.indexOf(key) < 0)
 							formData[key] = value;
@@ -725,7 +725,7 @@ define([
 			'click #undo-remove': 'undoRemove',
 			
 			'change .product_id': 'generateStackNumberSuggestions',
-			
+			'change .stacknumber': 'generatePrice',
 			'click #save-and-check-in': 'showSaveAndCheckInConfirmationWindow',
 			'click #confirm-save-and-check-in-order': 'saveAndCheckIn',
 			'change .location_id': 'onChangeDestination',
@@ -1153,15 +1153,33 @@ define([
 		
 		generateStackNumberSuggestions: function (ev) {
 			var productId = $(ev.currentTarget).val();
+			var accountId = $("#account_id").val();
 			var stackTBODY = $(ev.currentTarget).closest('.product-item').next('.product-stack').find('.product-stack-table tbody');
 			
 			if(productId != '') {
 				if(typeof this.stackNumberByProductPool[productId] === 'undefined') {
 					this.showFieldThrobber(stackTBODY.find('.stacknumber'));
-					this.stackNumberCollection.getStackNumbersByProduct({id:productId, dataId:stackTBODY.attr('data-id')});
+					this.stackNumberCollection.getStackNumbersByProduct({id:productId, account_id:accountId, dataId:stackTBODY.attr('data-id')});
 				}
 				else
 					this.initStackNumberAutocomplete(stackTBODY.find('.stacknumber'));
+			}
+		},
+
+		generatePrice: function(ev){
+			var thisObj = this;
+			var stacknumber = $(ev.currentTarget).val();
+			var stackRowNumber = $(ev.currentTarget).closest('tbody').attr('data-id');
+			var rowNumber = $(ev.currentTarget).closest('tr').index('.product-stack-item');		
+			var s = 'unitprice.'+stackRowNumber+'.'+rowNumber;
+			var model = this.stackNumberCollection.where({stacknumber: stacknumber});
+
+			if(model[0] != undefined) {
+				var price = model[0].get('unitprice');				
+				$('.unitprice[name="'+s+'"]').val(price).attr("disabled", "disabled");
+			}
+			else {
+				$('.unitprice[name="'+s+'"]').val('').removeAttr("disabled");
 			}
 		},
 		
@@ -1185,8 +1203,9 @@ define([
 							}
 						});
 					}
-					else
-						field.autocomplete('option', 'source', thisObj.stackNumberByProductPool[productId]);
+					else {
+						field.autocomplete('option', 'source', thisObj.stackNumberByProductPool[productId]);						
+					}
 				}
 			});
 		},

@@ -11,7 +11,7 @@ define([
 		},
 		
 		getStackNumbersByProduct: function (option) {
-			this.url = this.getDefaultURL()+'?productId='+option.id;
+			this.url = this.getDefaultURL()+'?productId='+option.id+'&accountId='+option.account_id;
 			this.getModels(option);
 		},
 	});

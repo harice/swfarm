@@ -81,8 +81,7 @@ define([
 		    this.plotHover(id, label, decimals);
 		},
 
-		graphStackedData: function(id, data, xData, label, decimals) {			
-			
+		graphStackedData: function(id, data, xData, label, decimals) {						
 			var options = {
 		        series: {
 		            stackpercent : true,    // enable stackpercent
@@ -219,7 +218,25 @@ define([
 			var graphXData = [];
 			
 			switch(type){
-				case Const.GRAPH.TYPE.STACKEDBAR:
+				case Const.GRAPH.TYPE.STACKEDBAR:			
+					var d = [];					
+					d.push({
+						label: 'delivered',
+						data: []
+					});
+					d.push({
+						label: 'balance',
+						data: []
+					});
+
+					for(var i = 0; i < data.length; i++) {						
+						graphXData.push([i, data[i].name]); 
+						d[0].data.push([i, data[i].totalTonsDelivered]);										
+						d[1].data.push([i, data[i].totalTonsOrdered]);										
+					}					
+															
+					graphData.push({ data:d, yPositionAdjustLabel: -10 });
+
 					break;
 				case Const.GRAPH.TYPE.BAR:
 					

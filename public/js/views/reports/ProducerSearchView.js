@@ -1,7 +1,7 @@
 define([
 	'backbone',
 	'views/base/ReportView',
-	'models/reports/ReportModel',
+	'models/reports/ReportModel',	
 	'collections/account/AccountProducerCollection',
 	'text!templates/reports/ProducersListTemplate.html',
 	'global',
@@ -85,7 +85,7 @@ define([
 
 		processData: function() {
 			var thisObj = this;
-			
+
 			var innerTemplateVariables= {
 				'cur_date': this.setCurDate(),
 				'date_from': thisObj.parseDate($('#filter-operator-date-start .input-group.date input').val()),
@@ -103,7 +103,7 @@ define([
 			$(".reportlist").removeClass("hidden");
 			$("#report-list").removeClass("hidden");
 			$("#report-list").html(compiledTemplate);
-		},
+		},			
 
 		
 	});

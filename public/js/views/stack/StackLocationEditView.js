@@ -80,7 +80,6 @@ define([
 			var thisObj = this;
 			var section = this.model.get('section');					
 
-			console.log(this.model);
 			this.subContainer.find('#account_id').val(this.model.get('account_id'));
 			this.subContainer.find('#name').val(this.model.get('name'));
 			this.subContainer.find('#description').val(this.model.get('description'));
