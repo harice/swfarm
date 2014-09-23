@@ -217,16 +217,10 @@ define([
 			this.addressCollection.fetchStackAddress(acct_id);
 
 			this.addressCollection.fetch({
-<<<<<<< HEAD
 				success: function (collection, response, options) {					
 					address = thisObj.showAddressList();	
 					thisObj.$el.find('#address').html(address);																
 					thisObj.$el.find('#address').val('');					
-=======
-				success: function (collection, response, options) {
-					address = thisObj.showAddressList();
-					thisObj.$el.find('#address').html(address);
->>>>>>> b3576755c3a9e08e6f4d25b4d856fd42fd283cae
 				},
 				error: function (collection, response, options) {
 				},
@@ -237,14 +231,9 @@ define([
 
 		showAddressList: function () {
 			var thisObj = this;
-<<<<<<< HEAD
 			var address = '<option disabled>Select Address</option>';
 
-			_.each(this.addressCollection.models, function (model) {				
-=======
-			var address = '';
 			_.each(this.addressCollection.models, function (model) {
->>>>>>> b3576755c3a9e08e6f4d25b4d856fd42fd283cae
 				address += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
 			});
 
