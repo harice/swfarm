@@ -42,6 +42,10 @@ class DashboardRepository implements DashboardRepositoryInterface {
                 case Config::get('constants.GRAPH_INVENTORY_PRODUCT_ON_HAND'):
                     $graph['data'] = $this->inventoryProductOnHand($params);
                     break;
+
+                case Config::get('constants.GRAPH_YEAR_TO_DATE_SALES'):
+                    $graph['data'] = $this->yearToDateSalesPerAccount($params);
+                    break;                
                 default:
                     # code...
                     break;
@@ -295,6 +299,77 @@ class DashboardRepository implements DashboardRepositoryInterface {
             array_push($temp, $result);
         }
         return $temp;
+    }
+
+    public function yearToDateSalesPerAccount(){
+        $yearAgo = date('Y-m-d 00:00:00', strtotime("-1 year"));
+        $dateToday = date('Y-m-d 23:59:59', strtotime("today"));
+        // $dateToday = date('Y-m-d 23:59:59', strtotime("2014-09-01"));
+
+        $response = Account::with('order.transportschedule.weightticket.weightticketscale_pickup.weightticketproducts')
+                            ->whereHas('order', function($query){
+                                $query->where('ordertype', '=', Config::get('constants.ORDERTYPE_SO'))
+                                      ->where('status_id', '!=', Config::get('constants.STATUS_CANCELLED'));
+                            })
+                            ->with(array('order.transportschedule' => function($query) use ($yearAgo, $dateToday){
+                                $query->has('weightticket')->wherehas('weightticket', function($query) use ($yearAgo, $dateToday){
+                                        $query->whereBetween('created_at', array($yearAgo, $dateToday))
+                                              ->where('status_id', '=', Config::get('constants.STATUS_CLOSED'));
+                                    });
+                            }))
+
+                            // ->with(array('order.transportschedule' => function($query) use ($yearAgo, $dateToday){
+                            //      $query->wherehas('weightticket', function($query) use ($yearAgo, $dateToday){
+                            //                     $query->whereBetween('created_at', array($yearAgo, $dateToday))
+                            //                           ->where('status_id', '=', Config::get('constants.STATUS_CLOSED'));
+                            //                 });
+                            // }))
+                            // ->with(array('order' => function($query) use ($yearAgo, $dateToday){
+                            //     $query->where('ordertype', '=', Config::get('constants.ORDERTYPE_SO'))
+                            //           ->where('status_id', '!=', Config::get('constants.STATUS_CANCELLED'));
+                            // }))
+                            // ->with(array('order' => function($query){
+                            //     $query->has('transportschedule');
+                            // }))
+                            
+                            // ->has('order')
+                            ->get()
+                            ->toArray();
+                    // return $response;
+        $result = array();
+        $cnt = 0;
+        foreach($response as $account){
+            if(count($account['order']) == 0){
+                continue;
+            }
+            $result[$cnt]['account'] = $account['name'];
+            $result[$cnt]['totalSales'] = 0;
+            foreach($account['order'] as $order){
+                if(count($order['transportschedule']) == 0){
+                    continue;
+                }
+                foreach($order['transportschedule'] as $transportschedule){
+                    // var_dump($transportschedule['weightticket']['weightticketscale_pickup']['weightticketproducts']);exit;
+                    // var_dump($result[$cnt]['account']);
+                    foreach($transportschedule['weightticket']['weightticketscale_pickup']['weightticketproducts'] as $product){
+                        //getting the unitprice for the formula
+                        $productOrder = ProductOrder::with('transportscheduleproduct.weightticketproducts')
+                                    ->whereHas('transportscheduleproduct', function($query) use ($product){
+                                        $query->whereHas('weightticketproducts', function($query) use ($product){
+                                            $query->where('id', '=', $product['id']);
+                                        });
+                                    })->first(array('id', 'unitprice'))->toArray();
+                        // var_dump($product['pounds'].'-'.$productOrder['unitprice']);
+
+                        $result[$cnt]['totalSales'] += ($product['pounds'] * 0.0005) * $productOrder['unitprice']; //convert to tons first
+                        // var_dump($result[$cnt]['totalSales']);
+                    }
+                }
+            }
+            $cnt++;
+        }
+        return $result;
+
     }
     
 }
