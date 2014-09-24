@@ -48,10 +48,10 @@ define([
 					var graphData = thisObj.formatGraphData(this.get('data'), this.get('graphType'));
 					switch(this.get('graphType')){
 						case Const.GRAPH.TYPE.STACKEDBAR:							
-							thisObj.graphStackedData(graphIdName, graphData.data, graphData.xData, currency, tickDecimals);
+							thisObj.graphStackedData(elementId, graphData.data, graphData.xData, currency, tickDecimals);
 							break;
 						case Const.GRAPH.TYPE.BAR:
-							thisObj.graphData(graphIdName, graphData.data, graphData.xData, currency, tickDecimals);
+							thisObj.graphData(elementId, graphData.data, graphData.xData, currency, tickDecimals);
 							break;
 						default:
 							break;
@@ -112,8 +112,7 @@ define([
 				var graphData = thisObj.formatGraphData(graph.get('data'), graph.get('graphType'));
 				
 				switch(graph.get('graphType')){
-					case Const.GRAPH.TYPE.STACKEDBAR:
-						console.log(graphData);	
+					case Const.GRAPH.TYPE.STACKEDBAR:						
 						thisObj.graphStackedData(graphIdName, graphData.data, graphData.xData, currency, tickDecimals);
 						break;
 					case Const.GRAPH.TYPE.BAR:

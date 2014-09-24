@@ -70,9 +70,7 @@
                 } else {                                    
                     if(series.bars.numbers.showDataValue) {                       
 						var counter = (i > 0)? i - ps : i;                    
-						text = series.data[i/3][hs];
-                        if(text == undefined)
-                            text = points[barNumber];
+						text = series.data[i/3][hs];                       
 					}
 					else
 						text = points[barNumber];

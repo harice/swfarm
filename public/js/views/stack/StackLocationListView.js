@@ -73,7 +73,6 @@ define([
 		},
 		
 		displayList: function () {
-			
 			var data = {
                 sl_url: '#/'+Const.URL.STACKLOCATION,
 				sl_edit_url: '#/'+Const.URL.STACKLOCATION+'/'+Const.CRUD.EDIT,

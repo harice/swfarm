@@ -26,7 +26,7 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 
 		graphData: function (id, data, xData, label, decimals){		
-			
+
 			var graph = $.plot($("#"+id), data, {
 		        series: {
 		          bars: {
@@ -81,7 +81,7 @@ define([
 		    this.plotHover(id, label, decimals);
 		},
 
-		graphStackedData: function(id, data, xData, label, decimals) {						
+		graphStackedData: function(id, data, xData, label, decimals) {	
 			var options = {
 		        series: {
 		            stackpercent : true,    // enable stackpercent
@@ -100,7 +100,7 @@ define([
 		                numbers :{
 		                    show: true,
 		                    xAlign: function(x) { return x; },
-							yAlign: function(y) { return y; },
+							yAlign: function(y) { return y+2; },
 							showDataValue: true,
 		                },
 		            }
@@ -130,14 +130,18 @@ define([
 		        }
 		    }
 
+
 			$.plot($("#"+id), data, options);	
 
 			$("#"+id)
 				.find('.legend table')
 				.css({
 					"width": "auto",
-					"right": "0"				
+					"right": "0",
+					"top": -100 + "px"				
 				})
+				.find('tr')
+				.css("background", "#f8f8f8")
 				.find('td')
 				.css({
 					"border": 0,
@@ -197,7 +201,6 @@ define([
 	        var str = "(" + pos.x.toFixed(2) + ", " + pos.y.toFixed(2) + ")";
 
 	        if (item) {
-	          console.log("Test");
 	          if (previousPoint != item.dataIndex) {
 	            previousPoint = item.dataIndex;
 	            $("#tooltip").remove();
@@ -234,8 +237,8 @@ define([
 						d[0].data.push([i, data[i].totalTonsDelivered]);										
 						d[1].data.push([i, data[i].totalTonsOrdered]);										
 					}					
-															
-					graphData.push({ data:d, yPositionAdjustLabel: -10 });
+							
+					graphData = d;
 
 					break;
 				case Const.GRAPH.TYPE.BAR:
