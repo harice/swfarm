@@ -216,10 +216,10 @@ define([
 	      
 	    },
 		
-		formatGraphData: function (data, type) { //console.log('type: '+type); console.log('Const.GRAPH.TYPE.BAR: '+Const.GRAPH.TYPE.BAR);
+		formatGraphData: function (id, data, type) { 
 			var graphData = [];
 			var graphXData = [];
-			
+
 			switch(type){
 				case Const.GRAPH.TYPE.STACKEDBAR:			
 					var d = [];					
@@ -244,9 +244,16 @@ define([
 				case Const.GRAPH.TYPE.BAR:
 					
 					var d = [];
-					for(var i = 0; i < data.length; i++) {						
-						graphXData.push([i, data[i].label]); //console.log(data[i].label);
-						d.push([i, data[i].value]); //console.log(data[i].value);
+					for(var i = 0; i < data.length; i++) {	
+						
+						if(id == 7) {
+							graphXData.push([i, data[i].account]); 
+							d.push([i, data[i].totalSales]); 
+						}
+						else {							
+							graphXData.push([i, data[i].label]); 
+							d.push([i, data[i].value]); 
+						}						
 					}
 					
 					graphData.push({ data:d, yPositionAdjustLabel: -10 });
@@ -255,8 +262,8 @@ define([
 				default:
 					var d = [];
 					for(var i = 0; i < data.length; i++) {						
-						graphXData.push([i, data[i].label]); //console.log(data[i].label);
-						d.push([i, data[i].value]); //console.log(data[i].value);
+						graphXData.push([i, data[i].label]); 
+						d.push([i, data[i].value]);
 					}
 					
 					graphData.push({ data:d, yPositionAdjustLabel: -10 });

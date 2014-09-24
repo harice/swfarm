@@ -45,7 +45,8 @@ define([
 				var elementId = $('.graph-cont[data-id='+ this.get('graphId') +'] .graph-container').attr('id');
 
 				if($("#start-"+this.get('graphId') + " input").val() !='' && $("#end-"+this.get('graphId') + " input").val() != '')	{
-					var graphData = thisObj.formatGraphData(this.get('data'), this.get('graphType'));
+					var graphId = this.get('graphId');
+					var graphData = thisObj.formatGraphData(graphId, this.get('data'), this.get('graphType'));
 					switch(this.get('graphType')){
 						case Const.GRAPH.TYPE.STACKEDBAR:							
 							thisObj.graphStackedData(elementId, graphData.data, graphData.xData, currency, tickDecimals);
@@ -109,7 +110,7 @@ define([
 					currency = '$';
 					tickDecimals = 2;
 				}
-				var graphData = thisObj.formatGraphData(graph.get('data'), graph.get('graphType'));
+				var graphData = thisObj.formatGraphData(graphId, graph.get('data'), graph.get('graphType'));
 				
 				switch(graph.get('graphType')){
 					case Const.GRAPH.TYPE.STACKEDBAR:						
