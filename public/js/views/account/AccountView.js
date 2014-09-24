@@ -66,6 +66,7 @@ define([
             this.model.destroy({
                 success: function (model, response, options) {
                     thisObj.displayMessage(response);
+                    console.log("Delete account");
                     //Global.getGlobalVars().app_router.navigate(Const.URL.ACCOUNT, {trigger: true});
 					Backbone.history.history.back();
                 },

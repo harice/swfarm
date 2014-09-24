@@ -94,7 +94,6 @@ define([
 					var address = thisObj.showAddressList();
 					thisObj.$el.find('#address').html(address);
 					var address_id = thisObj.model.get('address_id');
-					console.log(thisObj.model.get('address_id'));
 					thisObj.$el.find('#address').val(address_id);
 				},
 				error: function (collection, response, options) {

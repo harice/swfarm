@@ -222,8 +222,9 @@ define([
 				'po_url' : '#/'+Const.URL.PO,
 			};
 			
-			if(this.isBid)
+			if(this.isBid){
 				innerTemplateVariables['is_bid'] = true;
+			}
 			
 			if(this.poId != null)
 				innerTemplateVariables['po_id'] = this.poId;
@@ -246,10 +247,13 @@ define([
 			this.addProduct();
             this.initPDFUpload();
 			this.options.fileFileClone = $('#pdf-file').clone(true);
-			
-			this.otherInitializations();
+						
 			this.postDisplayForm();
-			
+
+			if(!this.isBid){
+				this.otherInitializations();				
+			}			
+
 			this.toggleSOFields(thisObj.subContainer.find('input[name=location_id]:checked').val());
 		},
 		
@@ -630,7 +634,6 @@ define([
 					var value = data[key];
 					var arrayKey = key.split(this.options.productFieldSeparator);
 					
-					alert(arrayKey);
 					if(arrayKey.length < 2) {
 						if(this.options.removeComma.indexOf(key) < 0)
 							formData[key] = value;
@@ -1044,8 +1047,10 @@ define([
 			
 			this.$el.find('#upload-field-cont').hide();
 			this.$el.find('#pdf-icon-cont').show();
-			
-			return false;
+			console.log("rtes1");
+			initConvertToPOWindow;
+
+			//return false;
 		},
 		
 		showConvertToPOConfirmationWindow: function (ev) {
@@ -1229,6 +1234,7 @@ define([
 		
 		showSaveAndCheckInConfirmationWindow: function (ev) {
 			var destinationId = this.subContainer.find('input[name=location_id]:checked').val();
+
 			if(destinationId == Const.PO.DESTINATION.PRODUCER || destinationId == Const.PO.DESTINATION.DROPSHIP) {			
 				this.initConfirmationWindow('Are you sure you want to save and check-in this purchase order?',
 											'confirm-save-and-check-in-order',
@@ -1251,7 +1257,7 @@ define([
 		
 		onChangeDestination: function (ev) {
 			var value = parseInt($(ev.currentTarget).val());
-			this.toggleSOFields(value);
+			this.toggleSOFields(value);			
 		},
 		
 		toggleSOFields: function (destinationId) {
@@ -1260,6 +1266,7 @@ define([
 				this.subContainer.find('.so-field').show();
 				if(!this.isInitCustomerAutoCompleteView)
 					this.initCustomerAutocomplete();
+
 			}
 			else {
 				this.subContainer.find('.so-field').attr('disabled', true);
