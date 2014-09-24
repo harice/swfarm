@@ -492,6 +492,7 @@ class DownloadRepository implements DownloadInterface
 	    return $this->parse($report_a);
 	}
 
+	// bug on weightticket total gross
 	private function generateCustomerStatement($_params = array()) {
 		$_dateBetween = $this->generateBetweenDates($_params);
 		$report_o = Account::with('businessaddress.state')
@@ -861,6 +862,7 @@ class DownloadRepository implements DownloadInterface
         return $this->parse($report_o->toArray());
 	}
 
+	// bug on weightticket total gross
 	private function generateGrossProfitReport($_params = array()) {
 		$_dateBetween = $this->generateBetweenDates($_params);
 		global $report_a;
@@ -868,6 +870,7 @@ class DownloadRepository implements DownloadInterface
 		$report_a['fees'] = 0.00;
 		$report_a['freight'] = 0.00;
 		$report_a['commission'] = 0.00;
+		$report_a['haycost'] = 0.00;
 		$report_o = Order::join('natureofsale','natureofsale.id','=','order.natureofsale_id')
                 	->join('productorder','productorder.order_id','=','order.id')
                     ->join('transportscheduleproduct','transportscheduleproduct.productorder_id','=','productorder.id')
@@ -900,8 +903,13 @@ class DownloadRepository implements DownloadInterface
 	                                        ->where('weightticket.status_id','=',Config::get('constants.STATUS_CLOSED'))
 	                                        ->whereBetween('weightticket.updated_at',array_values($_dateBetween))
 	                                        ->whereNotNull('weightticket.pickup_id')
+	                                        ->groupBy('productorder.id')
 	                                        ->select(array(
 	                                            'productordersummary_id',
+
+	                                            'productorder.stacknumber',
+	                                            'productorder.section_id',
+
 	                                            'weightticket.id as wid',
 	                                            'weightticket.updated_at',
 	                                            'weightticket.weightTicketNumber',
@@ -914,6 +922,10 @@ class DownloadRepository implements DownloadInterface
 	                                            'transportschedule.originloaderfee',
 	                                            'transportschedule.destinationloaderfee',
 	                                            'commission.amountdue as commission',
+
+	                                            // 'inventory.transactiontype_id as inv_transactiontype_id',
+	                                            // 'inventory.weightticket_id as inv_weightticket',
+	                                            // 'inventory.order_id as inv_order_id',
 	                                        ));
 	                                }))
 	                                ->whereHas('productorder', function($query) use($_dateBetween) {
@@ -971,8 +983,10 @@ class DownloadRepository implements DownloadInterface
 								        $report_a['fees'] = bcadd($report_a['fees'],$_fees,2);
 								        $report_a['freight'] = bcadd($report_a['freight'],$_freight,2);
 								        $report_a['commission'] = bcadd($report_a['commission'],$_commission,2);
-								        unset($product_o->productorder);
-								        $product_o->productorder = array_values($productorder_a);
+								        // unset($product_o->productorder);
+								        // $product_o->productorder = array_values($productorder_a);
+
+								        $product_o->prod = array_values($productorder_a);
 	                                })->toArray();
 					});
 

@@ -16,11 +16,14 @@ class CreateStackTable extends Migration {
 		{
 			$table->engine = 'InnoDB';
             $table->increments('id');
-			$table->string('stacknumber', 20)->unique();
             $table->integer('product_id')->unsigned();
+            $table->integer('account_id')->unsigned()->nullable();
+			$table->string('stacknumber', 20)->unique();
+            $table->decimal('unitprice', 8, 2)->nullable();
 			$table->timestamps();
             
             $table->foreign('product_id')->references('id')->on('products');
+            $table->foreign('account_id')->references('id')->on('account');
 		});
 	}
 
