@@ -77,4 +77,9 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	{
 	    return 'remember_token';
 	}
+
+	public function commission()
+	{
+		return $this->hasMany('Commission');
+	}
 }

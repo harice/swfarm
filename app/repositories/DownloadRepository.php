@@ -5,7 +5,6 @@ class DownloadRepository implements DownloadInterface
 	public function download($params) {
 		$_404 = false;
 		$q = unserialize(base64_decode($params['q']));
-		// var_dump($q);exit;
 		if(!is_array($q) && !array_key_exists('type', $q)) $_404 = true;
 
 		if(!$_404) {
@@ -285,57 +284,71 @@ class DownloadRepository implements DownloadInterface
 
 	public function report($q, $type){
 		$_error = false;
+		$_notfound = false;
 		$report_o = array();
 		switch($type){
 			case Config::get('constants.REPORT_COMMISSION'):
 				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
+
+				$report_o = $this->generateCommissionStatement($q);
+				if(!$report_o) { $_notfound = true; break; }
 				break;
 
 			case Config::get('constants.REPORT_CUSTOMER'):
 				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
 
 				$report_o = $this->generateCustomerStatement($q);
-				if(!$report_o) { $_404 = true; break; }
+				if(!$report_o) { $_notfound = true; break; }
 				break;
 
 			case Config::get('constants.REPORT_DRIVER'):
 				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
 
 				$report_o = $this->generateDriversPay($q);
-				if(!$report_o) { $_error = true; break; }
+				if(!$report_o) { $_notfound = true; break; }
 				break;
 
 			case Config::get('constants.REPORT_GROSS_PROFIT'):
+				$report_o = $this->generateGrossProfitReport($q);
+				if(!$report_o) { $_notfound = true; break; }
 				break;
 
 			case Config::get('constants.REPORT_INVENTORY'):
 				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
+
+				$report_o = $this->generateInventoryReport($q);
+				if(!$report_o) { $_notfound = true; break; }
 				break;
 
 			case Config::get('constants.REPORT_OPERATOR'):
 				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
 
 				$report_o = $this->generateOperatorStatement($q);
-				if(!$report_o) { $_error = true; break; }
+				if(!$report_o) { $_notfound = true; break; }
 				break;
 
 			case Config::get('constants.REPORT_PRODUCER'):
 				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
 
 				$report_o = $this->generateProducerStatement($q);
-				if(!$report_o) { $_error = true; break; }
+				if(!$report_o) { $_notfound = true; break; }
 				break;
 
 			case Config::get('constants.REPORT_TRUCKING'):
 				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
 
 				$report_o = $this->generateTruckingStatement($q);
-				if(!$report_o) { $_error = true; break; }
+				if(!$report_o) { $_notfound = true; break; }
 				break;
 		}
 
 		if($_error) return App::abort(501,'Not implemented');
+		if($_notfound) return App::abort(501,'Search not found. Please try again.');
 		return Response::json($report_o);
+	}
+
+	public function fire($job, $_params){
+		// for mail queue
 	}
 
 	private function generateProducerStatement($_params = array()){
@@ -767,6 +780,7 @@ class DownloadRepository implements DownloadInterface
 	                                })->toArray();
 	                        });
 	                    })->shift();
+		if(!$report_o) return false;
 		return $this->parse($report_o->toArray());
 	}
 
@@ -807,6 +821,201 @@ class DownloadRepository implements DownloadInterface
 
 		if(!$report_o) return false;
 		return $this->parse($report_o->toArray());
+	}
+
+	private function generateInventoryReport($_params = array()) {
+		$_dateBetween = $this->generateBetweenDates($_params);
+
+		$report_o = Stack::with('product')
+						->with(array('inventory' => function($query) use($_dateBetween) {
+							$query->join('inventory','inventory.id','=','inventoryproduct.inventory_id')
+								->join('inventorytransactiontype','inventorytransactiontype.id','=','inventory.transactiontype_id')
+								->leftJoin('order','order.id','=','inventory.order_id')
+								->leftJoin('contract','contract.id','=','order.contract_id')
+								->leftJoin('account','account.id','=','order.account_id')
+								->leftJoin('order as returnOrder','returnOrder.id','=','inventory.returnedOrder_id')
+								->leftJoin('weightticket','weightticket.id','=','inventory.weightticket_id')
+								->whereBetween('inventoryproduct.created_at',array_values($_dateBetween))
+								->select(array(
+										'inventoryproduct.stack_id',
+										'inventoryproduct.price',
+										'inventoryproduct.bales',
+										'inventoryproduct.tons',
+										'inventoryproduct.updated_at',
+										'inventorytransactiontype.type as transaction_type',
+										'inventorytransactiontype.operation as transaction_operation',
+										'account.name as account',
+										'order.order_number',
+										'contract.contract_number',
+										'returnOrder.order_number as order_return',
+										'weightticket.weightticketnumber',
+									));
+						}))
+						->select(array('id','stacknumber','product_id'))
+						->where('id','=',$_params['filterId'])
+						->first();
+
+		if(!$report_o) return false;
+
+		$report_o->report_date = (object) $_dateBetween;
+        return $this->parse($report_o->toArray());
+	}
+
+	private function generateGrossProfitReport($_params = array()) {
+		$_dateBetween = $this->generateBetweenDates($_params);
+		global $report_a;
+		$report_a['netsale'] = 0.00;
+		$report_a['fees'] = 0.00;
+		$report_a['freight'] = 0.00;
+		$report_a['commission'] = 0.00;
+		$report_o = Order::join('natureofsale','natureofsale.id','=','order.natureofsale_id')
+                	->join('productorder','productorder.order_id','=','order.id')
+                    ->join('transportscheduleproduct','transportscheduleproduct.productorder_id','=','productorder.id')
+                    ->join('transportschedule','transportschedule.id','=','transportscheduleproduct.transportschedule_id')
+                    ->join('weightticket','weightticket.transportschedule_id','=','transportschedule.id')
+                    ->where('order.ordertype','=',Config::get('constants.ORDERTYPE_SO'))
+                    ->where('transportschedule.status_id','=',Config::get('constants.STATUS_CLOSED'))
+                    ->where('weightticket.status_id','=',Config::get('constants.STATUS_CLOSED'))
+                    ->whereBetween('weightticket.updated_at',array_values($_dateBetween))
+                    ->whereNotNull('weightticket.pickup_id')
+                    ->orderBy('order.created_at','DESC')
+                    ->groupBy('order.id')
+                    ->select(array(
+                                'order.id', 
+                                'account_id', 
+                                'order_number'
+                            ))
+					->get()
+					->each(function($order) use($_dateBetween,$report_a){
+						global $report_a;
+						$order->productsummary = ProductOrderSummary::join('products','products.id','=','productordersummary.product_id')
+	                                ->with(array('productorder' => function($query) use($_dateBetween,$order,$report_a) {
+	                                    $query->join('transportscheduleproduct','transportscheduleproduct.productorder_id','=','productorder.id')
+	                                        ->join('transportschedule','transportschedule.id','=','transportscheduleproduct.transportschedule_id')
+	                                        ->join('weightticket','weightticket.transportschedule_id','=','transportschedule.id')
+	                                        ->leftJoin('commission','commission.weightticket_id','=','weightticket.id')
+	                                        ->join('weightticketscale','weightticketscale.id','=','weightticket.pickup_id')
+	                                        ->leftJoin('weightticketscale as dropscale','dropscale.id','=','weightticket.dropoff_id')
+	                                        ->join('weightticketproducts','weightticketproducts.weightticketscale_id','=','weightticketscale.id')
+	                                        ->where('weightticket.status_id','=',Config::get('constants.STATUS_CLOSED'))
+	                                        ->whereBetween('weightticket.updated_at',array_values($_dateBetween))
+	                                        ->whereNotNull('weightticket.pickup_id')
+	                                        ->select(array(
+	                                            'productordersummary_id',
+	                                            'weightticket.id as wid',
+	                                            'weightticket.updated_at',
+	                                            'weightticket.weightTicketNumber',
+	                                            'weightticketproducts.bales',
+	                                            'weightticketproducts.pounds',
+	                                            'weightticketscale.fee as pickupscale_fee',
+	                                            'dropscale.fee as dropscale_fee',
+	                                            'transportschedule.truckingrate',
+	                                            'transportschedule.trailerrate',
+	                                            'transportschedule.originloaderfee',
+	                                            'transportschedule.destinationloaderfee',
+	                                            'commission.amountdue as commission',
+	                                        ));
+	                                }))
+	                                ->whereHas('productorder', function($query) use($_dateBetween) {
+	                                    $query->join('transportscheduleproduct','transportscheduleproduct.productorder_id','=','productorder.id')
+	                                        ->join('transportschedule','transportschedule.id','=','transportscheduleproduct.transportschedule_id')
+	                                        ->join('weightticket','weightticket.transportschedule_id','=','transportschedule.id')
+	                                        ->leftJoin('commission','commission.weightticket_id','=','weightticket.id')
+	                                        ->join('weightticketscale','weightticketscale.id','=','weightticket.pickup_id')
+	                                        ->leftJoin('weightticketscale as dropscale','dropscale.id','=','weightticket.dropoff_id')
+	                                        ->join('weightticketproducts','weightticketproducts.weightticketscale_id','=','weightticketscale.id')
+	                                        ->where('weightticket.status_id','=',Config::get('constants.STATUS_CLOSED'))
+	                                        ->whereBetween('weightticket.updated_at',array_values($_dateBetween))
+	                                        ->whereNotNull('weightticket.pickup_id');
+	                                })
+	                                ->where('order_id','=',$order->id)
+	                                ->orderBy('products.name','ASC')
+	                                ->select(array('productordersummary.id','products.name as product','unitprice'))
+	                                ->get()
+	                                ->each(function($product_o) use($order,$report_a){
+	                                	global $report_a;
+	                                	$product_a = $product_o->toArray();
+
+	                                	$productorder_a = array();
+							            $_fees = $_freight = $_netsale = $_commission = 0.00;
+	                                	foreach ($product_a['productorder'] as $productorder_key => $productorder) {
+							                if(array_key_exists($productorder['wid'], $productorder_a)) {
+							                    $productorder_a[$productorder['wid']]['netsale'] = bcadd($productorder_a[$productorder['wid']]['netsale'],bcmul(bcmul($productorder['pounds'],0.0005,4),$product_o->unitprice,2),2);
+							                    $_netsale = bcadd($_netsale, bcmul(bcmul($productorder['pounds'],0.0005,4),$product_o->unitprice,2),2);
+							                } else {
+							                    $productorder_a[$productorder['wid']] = $productorder;
+							                    $productorder_a[$productorder['wid']]['netsale'] = bcmul(bcmul($productorder['pounds'],0.0005,4),$product_o->unitprice,2);
+
+							                    $productorder_a[$productorder['wid']]['fees'] = bcadd($productorder['originloaderfee'], $productorder['destinationloaderfee'],2);
+							                    $productorder_a[$productorder['wid']]['freight'] = bcadd(bcadd($productorder['truckingrate'], $productorder['trailerrate'],2),bcadd($productorder['pickupscale_fee'], $productorder['dropscale_fee'],2),2);
+
+							                    $_fees = bcadd($_fees, $productorder_a[$productorder['wid']]['fees'],2);
+							                	$_freight = bcadd($_freight,$productorder_a[$productorder['wid']]['freight'],2);
+							                	$_netsale = bcadd($_netsale, $productorder_a[$productorder['wid']]['netsale'],2);
+							                	$_commission = bcadd($_commission, $productorder_a[$productorder['wid']]['commission'],2);
+							                }
+
+							                unset($productorder_a[$productorder['wid']]['productordersummary_id']);
+						                    unset($productorder_a[$productorder['wid']]['wid']);
+						                    unset($productorder_a[$productorder['wid']]['pickupscale_fee']);
+						                    unset($productorder_a[$productorder['wid']]['dropscale_fee']);
+						                    unset($productorder_a[$productorder['wid']]['truckingrate']);
+						                    unset($productorder_a[$productorder['wid']]['trailerrate']);
+						                    unset($productorder_a[$productorder['wid']]['bales']);
+						                    unset($productorder_a[$productorder['wid']]['pounds']);
+						                    unset($productorder_a[$productorder['wid']]['originloaderfee']);
+						                    unset($productorder_a[$productorder['wid']]['destinationloaderfee']);
+								        }
+
+								        $report_a['netsale'] = bcadd($report_a['netsale'],$_netsale,2);
+								        $report_a['fees'] = bcadd($report_a['fees'],$_fees,2);
+								        $report_a['freight'] = bcadd($report_a['freight'],$_freight,2);
+								        $report_a['commission'] = bcadd($report_a['commission'],$_commission,2);
+								        unset($product_o->productorder);
+								        $product_o->productorder = array_values($productorder_a);
+	                                })->toArray();
+					});
+
+		if(!$report_o) return false;
+
+		$report_a['report_date'] = $_dateBetween;
+		$report_a['orders'] = $report_o->toArray();
+        return $this->parse($report_a);
+	}
+
+	private function generateCommissionStatement($_params = array()){
+		$_dateBetween = $this->generateBetweenDates($_params);
+		$report_o = Commission::with('order.account')
+						->with('weightticket.weightticketscale_pickup')
+						->with('weightticket.weightticketscale_dropoff')
+						->where('user_id','=',$_params['filterId'])
+						->whereBetween('updated_at',array_values($_dateBetween))
+						->get()
+						->each(function($commission){
+							$commission->order_number = $commission->order->order_number;
+							$commission->account = $commission->order->account->name;
+							unset($commission->order);
+
+							$commission->weightTicketNumber = $commission->weightticket->weightTicketNumber;
+							if(!is_null($commission->weightticket->weightticketscale_dropoff)) {
+								$commission->bales = $commission->weightticket->weightticketscale_dropoff->bales;
+							} else {
+								$commission->bales = $commission->weightticket->weightticketscale_pickup->bales;
+							}
+
+							unset($commission->weightticket);
+							unset($commission->weightticket_id);
+							unset($commission->id);
+							unset($commission->order_id);
+							unset($commission->user_id);
+							unset($commission->created_at);
+						});
+		if(!$report_o) return false;
+
+		$report_a['user'] = User::select(array('firstname','lastname','suffix','email','emp_no'))->where('id','=',$_params['filterId'])->first()->toArray();
+		$report_a['report_date'] = $_dateBetween;
+		$report_a['commission'] = $report_o->toArray();
+        return $this->parse($report_a);
 	}
 
 	private function generateBetweenDates($_params = array()) {
