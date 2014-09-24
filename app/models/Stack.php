@@ -30,11 +30,14 @@ class Stack extends BaseModel {
         'stacknumber' => 'required',
         'product_id' => 'required',
     );
-    
+
+    public function inventory() {
+        return $this->hasMany('InventoryProduct');
+    }
     
     public function product()
     {
-        return $this->belongsTo('Product')->withTrashed();
+        return $this->belongsTo('Product')->select(array('id','name'))->withTrashed();
     }
 
     public function productName()
