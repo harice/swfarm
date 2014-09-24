@@ -33,7 +33,7 @@ class WeightTicketProducts extends BaseModel {
      * 
      * @var array
      */
-    protected $appends = array('tons', 'total_price');
+    protected $appends = array('tons');
 
     /**
      * Define the relationship with the weightinfo table
@@ -62,16 +62,5 @@ class WeightTicketProducts extends BaseModel {
     public function getTonsAttribute()
     {
         return $this->attributes['tons'] = $this->attributes['pounds'] * 0.0005;
-    }
-    
-    /**
-     * Get total price
-     * 
-     * @return float
-     */
-    public function getTotalPriceAttribute()
-    {
-        //return $this->attributes['total_price'] = $this->attributes['tons'] * $this->attributes['unitprice'];
-        return 0;
     }
 }

@@ -348,7 +348,66 @@ class DownloadRepository implements DownloadInterface
 	}
 
 	public function fire($job, $_params){
-		// for mail queue
+		switch ($data['process']) {
+			case 'mail':
+				switch ($data['model']) {
+					case 'order':
+						if ($job->attempts() > 3) { $job->delete(); break; }
+
+						$order = Order::with('productsummary.productname')
+					                ->with('productsummary.productorder.product')
+					                ->with('productsummary.productorder.document')
+					                ->with('productsummary.productorder.sectionfrom.storagelocation')
+					                ->with('account')
+					                ->with('contact')
+					                ->with('orderaddress', 'orderaddress.addressStates')
+					                ->with('location')
+					                ->with('status')
+					                ->with('ordercancellingreason.reason')
+									->with('contract.account')
+									->find($data['model_id']);
+
+						if(!$order) { $job->delete(); break; }
+						
+						$_pathtoFile = storage_path('queue/'.$order->order_number.'.pdf');
+						$_data['pathtofile'] = $_pathtoFile;
+						$_data['display_name'] = $order->order_number;
+						$_data['order'] = $order;
+						$_data['mime'] = 'application/pdf';
+						$_data['subject'] = ( $order->isfrombid == 0 ? ( $order->ordertype == 1 ? 'Purchase Order': 'Sales Order' ) : 'Bid Details' ).':'. $order->order_number;
+						$_data['recipients'] = array_filter(preg_split( "/[;,]/", $data['recipients'] ));
+
+						PDF::loadView('pdf.base',array('child' => View::make('pdf.order',array('order'=>$order))))->save($_pathtoFile);
+						Mail::send('emails.order', $data, function($message) use($_data) {
+							$message->to($_data['recipients']);
+							$message->subject($_data['subject']);
+							$message->attach($_data['pathtofile'], array('as' => $_data['display_name'], 'mime' => $_data['mime']));
+						});
+
+						unlink($_pathtoFile);
+
+						$job->delete();
+						break;
+					
+					default:
+						$job->delete();
+						break;
+				}
+				break;
+			
+			default:
+				$job->delete();
+				break;
+	}
+
+	private function processMail($_data = array()){
+		Mail::send('emails.order', $data, function($message) use($_data) {
+			$message->to($_data['recipients']);
+			$message->subject($_data['subject']);
+			$message->attach($_data['pathtofile'], array('as' => $_data['display_name'], 'mime' => $_data['mime']));
+		});
+
+		unlink($_data['pathtofile']);
 	}
 
 	private function generateProducerStatement($_params = array()){
@@ -492,7 +551,6 @@ class DownloadRepository implements DownloadInterface
 	    return $this->parse($report_a);
 	}
 
-	// bug on weightticket total gross
 	private function generateCustomerStatement($_params = array()) {
 		$_dateBetween = $this->generateBetweenDates($_params);
 		$report_o = Account::with('businessaddress.state')
@@ -529,57 +587,57 @@ class DownloadRepository implements DownloadInterface
 	    if($report_o->order->count() == 0) return $this->parse($report_a);
 
 	    foreach ($report_a['order'] as $order_key => $order_a) {
-	        $product_a = ProductOrderSummary::join('products','products.id','=','productordersummary.product_id')
-	                                ->with(array('productorder' => function($query) use($_dateBetween) {
-	                                    $query->join('transportscheduleproduct','transportscheduleproduct.productorder_id','=','productorder.id')
-	                                        ->join('transportschedule','transportschedule.id','=','transportscheduleproduct.transportschedule_id')
-	                                        ->join('weightticket','weightticket.transportschedule_id','=','transportschedule.id')
-	                                        ->join('weightticketscale','weightticketscale.id','=','weightticket.pickup_id')
-	                                        ->join('weightticketproducts','weightticketproducts.transportscheduleproduct_id','=','transportscheduleproduct.id')
-	                                        ->where('weightticket.status_id','=',Config::get('constants.STATUS_CLOSED'))
-	                                        ->whereBetween('weightticket.updated_at',array_values($_dateBetween))
-	                                        ->whereNotNull('weightticket.pickup_id')
-	                                        ->select(array(
-	                                            'productordersummary_id',
-	                                            'weightticket.id as wid',
-	                                            'weightticket.updated_at',
-	                                            'weightticket.weightTicketNumber',
-	                                            'weightticketproducts.bales',
-	                                            'weightticketproducts.pounds'
-	                                        ));
-	                                }))
-	                                ->whereHas('productorder', function($query) use($_dateBetween) {
-	                                    $query->join('transportscheduleproduct','transportscheduleproduct.productorder_id','=','productorder.id')
-	                                        ->join('transportschedule','transportschedule.id','=','transportscheduleproduct.transportschedule_id')
-	                                        ->join('weightticket','weightticket.transportschedule_id','=','transportschedule.id')
-	                                        ->join('weightticketscale','weightticketscale.id','=','weightticket.pickup_id')
-	                                        ->join('weightticketproducts','weightticketproducts.transportscheduleproduct_id','=','transportscheduleproduct.id')
-	                                        ->where('weightticket.status_id','=',Config::get('constants.STATUS_CLOSED'))
-	                                        ->whereBetween('weightticket.updated_at',array_values($_dateBetween))
-	                                        ->whereNotNull('weightticket.pickup_id');
-	                                })
-	                                ->where('order_id','=',$order_a['id'])
-	                                ->orderBy('products.name','ASC')
-	                                ->select(array('productordersummary.id','products.name as product','unitprice'))
-	                                ->get()
-	                                ->toArray();
+	    	$product_a = ProductOrderSummary::join('products','products.id','=','productordersummary.product_id')
+	    					->with(array('productorder.transportscheduleproduct.transportschedule.weightticket' => function($query) use($_dateBetween) {
+	    						$query->where('weightticket.status_id','=',Config::get('constants.STATUS_CLOSED'))
+	                                ->whereBetween('weightticket.updated_at',array_values($_dateBetween))
+	                                ->whereNotNull('weightticket.pickup_id')
+	                                ->select(array('weightticket.id as wid','transportSchedule_id','weightTicketNumber','updated_at','pickup_id'));
+	    					}))
+                            ->where('order_id','=',$order_a['id'])
+                            ->orderBy('products.name','ASC')
+                            ->select(array('productordersummary.id','products.name as product','unitprice'))
+                            ->get()
+                            ->each(function($productordersummary){
+                            	$productordersummary->productorder->each(function($productorder){
+                            		$productorder->transportscheduleproduct->each(function($transportscheduleproduct) use($productorder) {
+                            			$weightticketproduct_o = WeightTicketProducts::join('transportscheduleproduct','transportscheduleproduct.id','=','weightticketproducts.transportscheduleproduct_id')
+                            										->where('weightticketproducts.transportscheduleproduct_id','=',$transportscheduleproduct->id)
+                            										->where('weightticketproducts.weightticketscale_id','=',$transportscheduleproduct->transportschedule->weightticket->pickup_id)
+                            										->where('transportscheduleproduct.productorder_id','=',$productorder->id)
+                            										->select(array('bales','pounds'))
+                            										->first();
 
-	        foreach ($product_a as $product_key => $product) {
+										$transportscheduleproduct->bales = $weightticketproduct_o->bales;
+										$transportscheduleproduct->pounds = $weightticketproduct_o->pounds;
+										$transportscheduleproduct->tons = $weightticketproduct_o->tons;
+										$transportscheduleproduct->weightTicketNumber = $transportscheduleproduct->transportschedule->weightticket->weightTicketNumber;
+										$transportscheduleproduct->updated_at = $transportscheduleproduct->transportschedule->weightticket->updated_at;
+										$transportscheduleproduct->wid = $transportscheduleproduct->transportschedule->weightticket->wid;
+
+										$transportscheduleproduct->setVisible(array('bales','tons','pounds','weightTicketNumber','updated_at','wid'));
+                            		});
+
+                            		$productorder->setVisible(array('id','stacknumber','transportscheduleproduct'));
+                            	});
+                            })
+                            ->toArray();
+
+            foreach ($product_a as $product_key => $product) {
 	            $productorder_a = array();
 	            $_tons = 0.0000;
 	            foreach ($product['productorder'] as $productorder_key => $productorder) {
-	                if(array_key_exists($productorder['wid'], $productorder_a)) {
-	                    $productorder_a[$productorder['wid']]['bales'] = intval($productorder_a[$productorder['wid']]['bales']) + intval($productorder['bales']);
-	                    $productorder_a[$productorder['wid']]['pounds'] = floatval($productorder_a[$productorder['wid']]['pounds']) + floatval($productorder['pounds']);
-	                    $productorder_a[$productorder['wid']]['tons'] = floatval($productorder_a[$productorder['wid']]['pounds']) * 0.0005;
-
-	                    $_lbstons = floatval($productorder['pounds']) * 0.0005;
-                    	$_tons += $_lbstons;
-	                } else {
-	                    $productorder_a[$productorder['wid']] = $productorder;
-	                    $productorder_a[$productorder['wid']]['tons'] = floatval($productorder['pounds']) * 0.0005;
-	                    $_tons += $productorder_a[$productorder['wid']]['tons'];
-	                }
+	            	foreach ($productorder['transportscheduleproduct'] as $key => $weightticket) {
+		                if(array_key_exists($weightticket['wid'], $productorder_a)) {
+		                    $productorder_a[$weightticket['wid']]['bales'] = bcadd($productorder_a[$weightticket['wid']]['bales'],$weightticket['bales'],0);
+		                    $productorder_a[$weightticket['wid']]['pounds'] = bcadd($productorder_a[$weightticket['wid']]['pounds'],$weightticket['pounds'],2);
+		                    $productorder_a[$weightticket['wid']]['tons'] = bcadd($productorder_a[$weightticket['wid']]['tons'],$weightticket['tons'],4);
+	                    	$_tons = bcadd($_tons,$weightticket['tons'],4);
+		                } else {
+		                    $productorder_a[$weightticket['wid']] = $weightticket;
+		                    $_tons += $weightticket['tons'];
+		                }
+		            }
 	            }
 	            $product_a[$product_key]['productorder'] = array_values($productorder_a);
 	            $amount_p = $_tons * $product['unitprice'];
@@ -862,17 +920,17 @@ class DownloadRepository implements DownloadInterface
         return $this->parse($report_o->toArray());
 	}
 
-	// bug on weightticket total gross
 	private function generateGrossProfitReport($_params = array()) {
 		$_dateBetween = $this->generateBetweenDates($_params);
+
 		global $report_a;
 		$report_a['netsale'] = 0.00;
+		$report_a['haycost'] = 0.00;
 		$report_a['fees'] = 0.00;
 		$report_a['freight'] = 0.00;
 		$report_a['commission'] = 0.00;
-		$report_a['haycost'] = 0.00;
-		$report_o = Order::join('natureofsale','natureofsale.id','=','order.natureofsale_id')
-                	->join('productorder','productorder.order_id','=','order.id')
+
+		$report_o = Order::join('productorder','productorder.order_id','=','order.id')
                     ->join('transportscheduleproduct','transportscheduleproduct.productorder_id','=','productorder.id')
                     ->join('transportschedule','transportschedule.id','=','transportscheduleproduct.transportschedule_id')
                     ->join('weightticket','weightticket.transportschedule_id','=','transportschedule.id')
@@ -891,103 +949,93 @@ class DownloadRepository implements DownloadInterface
 					->get()
 					->each(function($order) use($_dateBetween,$report_a){
 						global $report_a;
-						$order->productsummary = ProductOrderSummary::join('products','products.id','=','productordersummary.product_id')
-	                                ->with(array('productorder' => function($query) use($_dateBetween,$order,$report_a) {
-	                                    $query->join('transportscheduleproduct','transportscheduleproduct.productorder_id','=','productorder.id')
-	                                        ->join('transportschedule','transportschedule.id','=','transportscheduleproduct.transportschedule_id')
-	                                        ->join('weightticket','weightticket.transportschedule_id','=','transportschedule.id')
-	                                        ->leftJoin('commission','commission.weightticket_id','=','weightticket.id')
-	                                        ->join('weightticketscale','weightticketscale.id','=','weightticket.pickup_id')
-	                                        ->leftJoin('weightticketscale as dropscale','dropscale.id','=','weightticket.dropoff_id')
-	                                        ->join('weightticketproducts','weightticketproducts.weightticketscale_id','=','weightticketscale.id')
-	                                        ->where('weightticket.status_id','=',Config::get('constants.STATUS_CLOSED'))
-	                                        ->whereBetween('weightticket.updated_at',array_values($_dateBetween))
-	                                        ->whereNotNull('weightticket.pickup_id')
-	                                        ->groupBy('productorder.id')
-	                                        ->select(array(
-	                                            'productordersummary_id',
+						$product_a = ProductOrderSummary::join('products','products.id','=','productordersummary.product_id')
+				    					->with(array('productorder.transportscheduleproduct.transportschedule.weightticket' => function($query) use($_dateBetween) {
+				    						$query->leftJoin('commission','commission.weightticket_id','=','weightticket.id')
+				    							->join('weightticketscale as pickupscale','pickupscale.id','=','weightticket.pickup_id')
+				    							->leftJoin('weightticketscale as dropscale','dropscale.id','=','weightticket.dropoff_id')
+				    							->where('weightticket.status_id','=',Config::get('constants.STATUS_CLOSED'))
+				                                ->whereBetween('weightticket.updated_at',array_values($_dateBetween))
+				                                ->whereNotNull('weightticket.pickup_id')
+				                                ->select(array(
+					                                	'weightticket.id as wid',
+					                                	'weightticket.transportSchedule_id',
+					                                	'weightticket.weightTicketNumber',
+					                                	'weightticket.updated_at',
+					                                	'weightticket.pickup_id',
+					                                	'pickupscale.fee as pickupscale_fee',
+					                                	'dropscale.fee as dropscale_fee',
+					                                	'commission.amountdue as commission'
+				                                	));
+				    					}))
+			                            ->where('order_id','=',$order->id)
+			                            ->orderBy('products.name','ASC')
+			                            ->select(array('productordersummary.id','products.name as product','unitprice'))
+			                            ->get()
+			                            ->each(function($productordersummary){
+			                            	$productordersummary->productorder->each(function($productorder){
+			                            		$productorder->haycost = Stack::where('stacknumber','=',$productorder->stacknumber)->select(array('unitprice'))->first()->unitprice;
+			                            		$productorder->transportscheduleproduct->each(function($transportscheduleproduct) use($productorder) {
+			                            			$weightticketproduct_o = WeightTicketProducts::join('transportscheduleproduct','transportscheduleproduct.id','=','weightticketproducts.transportscheduleproduct_id')
+			                            										->where('weightticketproducts.transportscheduleproduct_id','=',$transportscheduleproduct->id)
+			                            										->where('weightticketproducts.weightticketscale_id','=',$transportscheduleproduct->transportschedule->weightticket->pickup_id)
+			                            										->where('transportscheduleproduct.productorder_id','=',$productorder->id)
+			                            										->select(array('bales','pounds'))
+			                            										->first();
 
-	                                            'productorder.stacknumber',
-	                                            'productorder.section_id',
+            										$transportscheduleproduct->wid = $transportscheduleproduct->transportschedule->weightticket->wid;
+													$transportscheduleproduct->weightTicketNumber = $transportscheduleproduct->transportschedule->weightticket->weightTicketNumber;
+													$transportscheduleproduct->updated_at = $transportscheduleproduct->transportschedule->weightticket->updated_at;
+													$transportscheduleproduct->netsale = bcmul($weightticketproduct_o->tons, $productorder->unitprice,2);
+													$transportscheduleproduct->haycost = bcmul($weightticketproduct_o->tons, $productorder->haycost,2);
+													$transportscheduleproduct->freight = bcadd(bcadd($transportscheduleproduct->transportschedule->truckingrate, $transportscheduleproduct->transportschedule->trailerrate,2),bcadd($transportscheduleproduct->transportschedule->weightticket->pickupscale_fee,$transportscheduleproduct->transportschedule->weightticket->dropscale_fee,2),2);
+													$transportscheduleproduct->fees = bcadd($transportscheduleproduct->transportschedule->originloaderfee,$transportscheduleproduct->transportschedule->destinationloaderfee,2);
+													$transportscheduleproduct->commission = number_format($transportscheduleproduct->transportschedule->weightticket->commission,2,'.','');
 
-	                                            'weightticket.id as wid',
-	                                            'weightticket.updated_at',
-	                                            'weightticket.weightTicketNumber',
-	                                            'weightticketproducts.bales',
-	                                            'weightticketproducts.pounds',
-	                                            'weightticketscale.fee as pickupscale_fee',
-	                                            'dropscale.fee as dropscale_fee',
-	                                            'transportschedule.truckingrate',
-	                                            'transportschedule.trailerrate',
-	                                            'transportschedule.originloaderfee',
-	                                            'transportschedule.destinationloaderfee',
-	                                            'commission.amountdue as commission',
+													$transportscheduleproduct->setVisible(array(
+																							'wid',
+																							'weightTicketNumber',
+																							'updated_at',
+																							'netsale',
+																							'haycost',
+																							'freight',
+																							'fees',
+																							'commission'
+																						));
+			                            		});
 
-	                                            // 'inventory.transactiontype_id as inv_transactiontype_id',
-	                                            // 'inventory.weightticket_id as inv_weightticket',
-	                                            // 'inventory.order_id as inv_order_id',
-	                                        ));
-	                                }))
-	                                ->whereHas('productorder', function($query) use($_dateBetween) {
-	                                    $query->join('transportscheduleproduct','transportscheduleproduct.productorder_id','=','productorder.id')
-	                                        ->join('transportschedule','transportschedule.id','=','transportscheduleproduct.transportschedule_id')
-	                                        ->join('weightticket','weightticket.transportschedule_id','=','transportschedule.id')
-	                                        ->leftJoin('commission','commission.weightticket_id','=','weightticket.id')
-	                                        ->join('weightticketscale','weightticketscale.id','=','weightticket.pickup_id')
-	                                        ->leftJoin('weightticketscale as dropscale','dropscale.id','=','weightticket.dropoff_id')
-	                                        ->join('weightticketproducts','weightticketproducts.weightticketscale_id','=','weightticketscale.id')
-	                                        ->where('weightticket.status_id','=',Config::get('constants.STATUS_CLOSED'))
-	                                        ->whereBetween('weightticket.updated_at',array_values($_dateBetween))
-	                                        ->whereNotNull('weightticket.pickup_id');
-	                                })
-	                                ->where('order_id','=',$order->id)
-	                                ->orderBy('products.name','ASC')
-	                                ->select(array('productordersummary.id','products.name as product','unitprice'))
-	                                ->get()
-	                                ->each(function($product_o) use($order,$report_a){
-	                                	global $report_a;
-	                                	$product_a = $product_o->toArray();
+			                            		$productorder->setVisible(array('id','stacknumber','transportscheduleproduct'));
+			                            	});
+			                            })
+			                            ->toArray();
 
-	                                	$productorder_a = array();
-							            $_fees = $_freight = $_netsale = $_commission = 0.00;
-	                                	foreach ($product_a['productorder'] as $productorder_key => $productorder) {
-							                if(array_key_exists($productorder['wid'], $productorder_a)) {
-							                    $productorder_a[$productorder['wid']]['netsale'] = bcadd($productorder_a[$productorder['wid']]['netsale'],bcmul(bcmul($productorder['pounds'],0.0005,4),$product_o->unitprice,2),2);
-							                    $_netsale = bcadd($_netsale, bcmul(bcmul($productorder['pounds'],0.0005,4),$product_o->unitprice,2),2);
-							                } else {
-							                    $productorder_a[$productorder['wid']] = $productorder;
-							                    $productorder_a[$productorder['wid']]['netsale'] = bcmul(bcmul($productorder['pounds'],0.0005,4),$product_o->unitprice,2);
+                        foreach ($product_a as $product_key => $product) {
+				            $productorder_a = array();
+				            $_fees = $_freight = $_netsale = $_commission = 0.00;
 
-							                    $productorder_a[$productorder['wid']]['fees'] = bcadd($productorder['originloaderfee'], $productorder['destinationloaderfee'],2);
-							                    $productorder_a[$productorder['wid']]['freight'] = bcadd(bcadd($productorder['truckingrate'], $productorder['trailerrate'],2),bcadd($productorder['pickupscale_fee'], $productorder['dropscale_fee'],2),2);
+				            foreach ($product['productorder'] as $productorder_key => $productorder) {
+				            	foreach ($productorder['transportscheduleproduct'] as $key => $weightticket) {
+					                if(array_key_exists($weightticket['wid'], $productorder_a)) {
+					                    $productorder_a[$weightticket['wid']]['netsale'] = bcadd($productorder_a[$weightticket['wid']]['netsale'],$weightticket['netsale'],2);
+					                    $productorder_a[$weightticket['wid']]['haycost'] = bcadd($productorder_a[$weightticket['wid']]['haycost'],$weightticket['haycost'],2);
 
-							                    $_fees = bcadd($_fees, $productorder_a[$productorder['wid']]['fees'],2);
-							                	$_freight = bcadd($_freight,$productorder_a[$productorder['wid']]['freight'],2);
-							                	$_netsale = bcadd($_netsale, $productorder_a[$productorder['wid']]['netsale'],2);
-							                	$_commission = bcadd($_commission, $productorder_a[$productorder['wid']]['commission'],2);
-							                }
+					                    $report_a['netsale'] = bcadd($report_a['netsale'],$weightticket['netsale'],2);
+					                    $report_a['haycost'] = bcadd($report_a['haycost'],$weightticket['haycost'],2);
+					                } else {
+					                    $productorder_a[$weightticket['wid']] = $weightticket;
 
-							                unset($productorder_a[$productorder['wid']]['productordersummary_id']);
-						                    unset($productorder_a[$productorder['wid']]['wid']);
-						                    unset($productorder_a[$productorder['wid']]['pickupscale_fee']);
-						                    unset($productorder_a[$productorder['wid']]['dropscale_fee']);
-						                    unset($productorder_a[$productorder['wid']]['truckingrate']);
-						                    unset($productorder_a[$productorder['wid']]['trailerrate']);
-						                    unset($productorder_a[$productorder['wid']]['bales']);
-						                    unset($productorder_a[$productorder['wid']]['pounds']);
-						                    unset($productorder_a[$productorder['wid']]['originloaderfee']);
-						                    unset($productorder_a[$productorder['wid']]['destinationloaderfee']);
-								        }
+					                    $report_a['netsale'] = bcadd($report_a['netsale'],$weightticket['netsale'],2);
+					                    $report_a['haycost'] = bcadd($report_a['haycost'],$weightticket['haycost'],2);
+					                    $report_a['fees'] = bcadd($report_a['fees'],$weightticket['fees'],2);
+					                    $report_a['freight'] = bcadd($report_a['freight'],$weightticket['freight'],2);
+					                    $report_a['commission'] = bcadd($report_a['commission'],$weightticket['commission'],2);
+					                }
+					            }
+				            }
+				            $product_a[$product_key]['productorder'] = array_values($productorder_a);
+				        }
 
-								        $report_a['netsale'] = bcadd($report_a['netsale'],$_netsale,2);
-								        $report_a['fees'] = bcadd($report_a['fees'],$_fees,2);
-								        $report_a['freight'] = bcadd($report_a['freight'],$_freight,2);
-								        $report_a['commission'] = bcadd($report_a['commission'],$_commission,2);
-								        // unset($product_o->productorder);
-								        // $product_o->productorder = array_values($productorder_a);
-
-								        $product_o->prod = array_values($productorder_a);
-	                                })->toArray();
+				        $order->productsummary = $product_a;
 					});
 
 		if(!$report_o) return false;
