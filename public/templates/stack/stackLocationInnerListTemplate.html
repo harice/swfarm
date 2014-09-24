@@ -6,6 +6,7 @@
 			<%= sl.get("account_name") %>
 			<span class="throbber_wrap" style="display: none;"><i class="fa fa-spinner fa-spin throbber_ajax"></i></span>
 		</td>
+		<td><%= sl.get('address').street %>, <%= sl.get('address').city %>, <%= sl.get('address').state.state_code %> <%= sl.get('address').zipcode %> USA</td>
 		<td><%= sl.get("name") %></td>
 		<td><%= sl.get("description") %></td>
 	</tr>

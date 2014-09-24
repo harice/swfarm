@@ -78,11 +78,12 @@ define([
 				else
 					thisObj.isBid = false;
 				
+
 				if(this.get('location') && parseInt(this.get('location').id) == parseInt(Const.PO.DESTINATION.DROPSHIP))
 					thisObj.contractByAccountCollection.getContractByAccount(this.get('contract').account.id);
 				else
 					thisObj.locationCollection.getLocationByAccount(this.get('account_id'));
-
+				
 				
 				this.off('change');
 			});
@@ -96,14 +97,15 @@ define([
 		supplyPOData: function () {
 			var thisObj = this;
 			
+
 			var account = this.model.get('account');
 			var address = [this.model.get('orderaddress')];
 			var products = this.model.get('productsummary');
-			var contract = this.model.get('contract');
+			var contract = this.model.get('contract');			
 			
 			this.$el.find('#ponumber').val(this.model.get('order_number'));
 			this.$el.find('#status').val(this.model.get('status').name);
-            if (this.model.get('location') !== null) {
+            if (this.model.get('location') !== null) {                	
                 this.$el.find('[name="location_id"][value="'+this.model.get('location').id+'"]').attr('checked', true);
             }
 			this.producerAutoCompleteView.autoCompleteResult = [{name:account.name, id:account.id, address:address}];
@@ -115,7 +117,7 @@ define([
 			this.$el.find('#zipcode').val(address[0].zipcode);
 			this.$el.find('#dateofpurchase').val(this.convertDateFormat(this.model.get('created_at').split(' ')[0], 'yyyy-mm-dd', thisObj.dateFormat, '-'));
 			
-			if(this.model.get('location') && parseInt(this.model.get('location').id) == parseInt(Const.PO.DESTINATION.DROPSHIP)) {
+			if(this.model.get('location') && parseInt(this.model.get('location').id) == parseInt(Const.PO.DESTINATION.DROPSHIP)) {				
 				this.toggleSOFields(this.model.get('location').id);
 				this.customerAutoCompleteView.autoCompleteResult = [{name:contract.account.name, id:contract.account.id}];
 				this.$el.find('#account_customer').val(contract.account.name);
