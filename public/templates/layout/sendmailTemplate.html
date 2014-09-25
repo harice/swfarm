@@ -10,8 +10,12 @@
                     <p class="confirm-content margin-bottom-0"><%= confirm_content %></p>
                     <form id="sendmail-form">
                         <input type='hidden' name='process' value='mail'>
+                        <input type='hidden' name='type' value='<%= confirm_type %>'>
                         <input type='hidden' name='model' value='<%= confirm_model %>'>
-                        <input type='hidden' name='model_id' value='<%= confirm_model_id %>'>
+                        <input type='hidden' name='filterId' value='<%= confirm_filter_id %>'>
+
+                        <% if(!_.isNull(confirm_date_start)) { %><input type='hidden' name='dateStart' value='<%= confirm_date_start %>'><% } %>
+                        <% if(!_.isNull(confirm_date_end)) { %><input type='hidden' name='dateEnd' value='<%= confirm_date_end %>'><% } %>
                         <div class="form-group">
                             <label for="recipients">Email address</label>
                             <input type="text" class="form-control" name="recipients" id='recipients' placeholder="Enter email address" multiple required>
@@ -19,7 +23,7 @@
                         </div>
                         <div class="form-group">
                             <label for="extra_msg">Optional Message</label>
-                            <textarea name='extra_msg' class='form-control height-70' placeholder='Enter optional message'></textarea>
+                            <textarea name='extra_msg' class='form-control height-100' placeholder='Enter optional message'></textarea>
                         </div>
                     </form>
                 </div>
