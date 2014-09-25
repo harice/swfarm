@@ -4,8 +4,13 @@ class DownloadRepository implements DownloadInterface
 {
 	public function download($params,$mail) {
 		$_404 = false;
-		$q = unserialize(base64_decode($params['q']));
-		if(!is_array($q) && !array_key_exists('type', $q)) $_404 = true;
+
+		if(!$mail) {
+			$q = unserialize(base64_decode($params['q']));
+			if(!is_array($q) && !array_key_exists('type', $q)) $_404 = true;
+		} else {
+			$q = $params;
+		}
 
 		if(!$_404) {
 			switch ($q['type']) {
@@ -47,15 +52,39 @@ class DownloadRepository implements DownloadInterface
 					break;
 
 				case 'pdf':
-					if(!$this->filterParams($q,array('model'))) { $_404 = true; break; }
+					if(!$this->filterParams($q,array('model'))) { 
+						if($mail) return false;
+						else $_404 = true;
+						break; 
+					}
 
 					switch ($q['model']) {
 						case 'order':
-							if(!$this->filterParams($q,array('filterId'))) { $_404 = true; break; }
+							if(!$this->filterParams($q,array('filterId'))) { 
+								if($mail) return false;
+								else $_404 = true;
+								break; 
+							}
+
 							$order = $this->getOrderDetails($q['filterId']);
 							if($order) {
-								return PDF::loadView('pdf.base', array('child' => View::make('pdf.order',array('order'=>$order))))->stream($order->order_number.'.pdf');
-							} else $_404 = true;
+								$pdf = PDF::loadView('pdf.base', array('child' => View::make('pdf.order',array('order'=>$order))));
+								if($mail) {
+									$_pathtoFile = storage_path('queue/'.$order->order_number.'.pdf');
+									$_data['pathtofile'] = $_pathtoFile;
+									$_data['display_name'] = $order->order_number;
+									$_data['order'] = $order;
+									$_data['mime'] = 'application/pdf';
+									$_data['subject'] = ( $order->isfrombid == 0 ? ( $order->ordertype == 1 ? 'Purchase Order': 'Sales Order' ) : 'Bid Details' ).' : '. $order->order_number;
+									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
+
+									$pdf->save($_pathtoFile);
+									return $this->processMail($q,$_data);
+								} else return $pdf->stream($order->order_number.'.pdf');
+							} else {
+								if($mail) return false;
+								else $_404 = true;
+							}
 							break;
 
 						case 'producer-statement':
@@ -340,29 +369,8 @@ class DownloadRepository implements DownloadInterface
 				switch ($_params['model']) {
 					case 'order':
 						if ($job->attempts() > 3) { $job->delete(); break; }
-						
 						$status = $this->download($_params,true);
-
 						if(!$status) { $job->delete(); break; }
-						
-						$_pathtoFile = storage_path('queue/'.$order->order_number.'.pdf');
-						$_data['pathtofile'] = $_pathtoFile;
-						$_data['display_name'] = $order->order_number;
-						$_data['order'] = $order;
-						$_data['mime'] = 'application/pdf';
-						$_data['subject'] = ( $order->isfrombid == 0 ? ( $order->ordertype == 1 ? 'Purchase Order': 'Sales Order' ) : 'Bid Details' ).':'. $order->order_number;
-						$_data['recipients'] = array_filter(preg_split( "/[;,]/", $data['recipients'] ));
-
-						PDF::loadView('pdf.base',array('child' => View::make('pdf.order',array('order'=>$order))))->save($_pathtoFile);
-						Mail::send('emails.order', $data, function($message) use($_data) {
-							$message->to($_data['recipients']);
-							$message->subject($_data['subject']);
-							$message->attach($_data['pathtofile'], array('as' => $_data['display_name'], 'mime' => $_data['mime']));
-						});
-
-						unlink($_pathtoFile);
-
-						$job->delete();
 						break;
 					
 					default:
@@ -377,14 +385,16 @@ class DownloadRepository implements DownloadInterface
 		}
 	}
 
-	private function processMail($_data = array()){
-		Mail::send('emails.order', $_data, function($message) use($_data) {
+	private function processMail($data = array(), $_data = array()){
+		Mail::send('emails.order', $data, function($message) use($_data) {
 			$message->to($_data['recipients']);
 			$message->subject($_data['subject']);
 			$message->attach($_data['pathtofile'], array('as' => $_data['display_name'], 'mime' => $_data['mime']));
 		});
 
 		unlink($_data['pathtofile']);
+
+		return true;
 	}
 
 	private function getOrderDetails($id){

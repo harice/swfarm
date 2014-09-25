@@ -167,6 +167,7 @@ define([
 					'Send',
 					this.model.get('order_number'),
 					'order',
+					'pdf',
 					this.model.get('id')
 				);
 			

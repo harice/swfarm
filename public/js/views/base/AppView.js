@@ -159,9 +159,14 @@ define([
 			this.$el.find(this.modalAlertContainer).append(modalTemplate);
 		},
 
-		initSendMailForm: function (content, buttonId, buttonLabel, title, model, filterId) {
+		initSendMailForm: function (content, buttonId, buttonLabel, title, model, type, filterId,  dateStart, dateEnd) {
 			if($(this.modalAlertContainer).find('#mdl_sendmail').length)
 				$(this.modalAlertContainer).find('#mdl_sendmail').remove();
+
+			if(type == null || typeof type == 'undefined') type = 'pdf';
+			if(filterId == null || typeof filterId == 'undefined') filterId = null;
+			if(dateStart == null || typeof dateStart == 'undefined') dateStart = null;
+			if(dateEnd == null || typeof dateEnd == 'undefined') dateEnd = null;
 
 			var modalTemplateVariables = {
 				confirm_title: title,
@@ -170,7 +175,10 @@ define([
 				confirm_button_label: buttonLabel,
 				confirm_modal_id: 'mdl_sendmail',
 				confirm_model: model,
-				confirm_filter_id : filterId
+				confirm_type : type,
+				confirm_filter_id : filterId,
+				confirm_date_start: dateStart,
+				confirm_date_end: dateEnd
 			};
 
 			var modalTemplate = _.template(sendmailTemplate, modalTemplateVariables);
