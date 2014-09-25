@@ -51,21 +51,8 @@ class DownloadRepository implements DownloadInterface
 
 					switch ($q['model']) {
 						case 'order':
-							if(!$this->filterParams($q,array('id'))) { $_404 = true; break; }
-
-							$order = Order::with('productsummary.productname')
-						                ->with('productsummary.productorder.product')
-						                ->with('productsummary.productorder.document')
-						                ->with('productsummary.productorder.sectionfrom.storagelocation')
-						                ->with('account')
-						                ->with('contact')
-						                ->with('orderaddress', 'orderaddress.addressStates')
-						                ->with('location')
-						                ->with('status')
-						                ->with('ordercancellingreason.reason')
-										->with('contract.account')
-										->find($q['id']);
-
+							if(!$this->filterParams($q,array('filterId'))) { $_404 = true; break; }
+							$order = $this->getOrderDetails($q['filterId']);
 							if($order) {
 								return PDF::loadView('pdf.base', array('child' => View::make('pdf.order',array('order'=>$order))))->stream($order->order_number.'.pdf');
 							} else $_404 = true;
@@ -348,25 +335,11 @@ class DownloadRepository implements DownloadInterface
 	}
 
 	public function fire($job, $_params){
-		switch ($data['process']) {
+		switch ($_params['process']) {
 			case 'mail':
-				switch ($data['model']) {
+				switch ($_params['model']) {
 					case 'order':
 						if ($job->attempts() > 3) { $job->delete(); break; }
-
-						$order = Order::with('productsummary.productname')
-					                ->with('productsummary.productorder.product')
-					                ->with('productsummary.productorder.document')
-					                ->with('productsummary.productorder.sectionfrom.storagelocation')
-					                ->with('account')
-					                ->with('contact')
-					                ->with('orderaddress', 'orderaddress.addressStates')
-					                ->with('location')
-					                ->with('status')
-					                ->with('ordercancellingreason.reason')
-									->with('contract.account')
-									->find($data['model_id']);
-
 						if(!$order) { $job->delete(); break; }
 						
 						$_pathtoFile = storage_path('queue/'.$order->order_number.'.pdf');
@@ -398,16 +371,32 @@ class DownloadRepository implements DownloadInterface
 			default:
 				$job->delete();
 				break;
+		}
 	}
 
 	private function processMail($_data = array()){
-		Mail::send('emails.order', $data, function($message) use($_data) {
+		Mail::send('emails.order', $_data, function($message) use($_data) {
 			$message->to($_data['recipients']);
 			$message->subject($_data['subject']);
 			$message->attach($_data['pathtofile'], array('as' => $_data['display_name'], 'mime' => $_data['mime']));
 		});
 
 		unlink($_data['pathtofile']);
+	}
+
+	private function getOrderDetails($id){
+		return Order::with('productsummary.productname')
+	                ->with('productsummary.productorder.product')
+	                ->with('productsummary.productorder.document')
+	                ->with('productsummary.productorder.sectionfrom.storagelocation')
+	                ->with('account')
+	                ->with('contact')
+	                ->with('orderaddress', 'orderaddress.addressStates')
+	                ->with('location')
+	                ->with('status')
+	                ->with('ordercancellingreason.reason')
+					->with('contract.account')
+					->find($id);
 	}
 
 	private function generateProducerStatement($_params = array()){
