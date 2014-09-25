@@ -289,7 +289,8 @@ class DownloadRepository implements DownloadInterface
 					break;
 
 				default:
-					$_404 = true;
+					if($mail) return false;
+					else $_404 = true;
 					break;
 			}
 		}
@@ -366,17 +367,9 @@ class DownloadRepository implements DownloadInterface
 	public function fire($job, $_params){
 		switch ($_params['process']) {
 			case 'mail':
-				switch ($_params['model']) {
-					case 'order':
-						if ($job->attempts() > 3) { $job->delete(); break; }
-						$status = $this->download($_params,true);
-						if(!$status) { $job->delete(); break; }
-						break;
-					
-					default:
-						$job->delete();
-						break;
-				}
+				if ($job->attempts() > 3) { $job->delete(); break; }
+				$status = $this->download($_params,true);
+				if(!$status) { $job->release(5); break; }
 				break;
 			
 			default:
