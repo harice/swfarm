@@ -23,7 +23,6 @@
             "app/errors.php",
 			"app/tests/TestCase.php",
 			"app/lib",
-			"app/queue"
 		]
 	},
 	"scripts": {

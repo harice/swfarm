@@ -9,7 +9,7 @@ class FileController extends BaseController
 
 	public function index()
 	{	
-		return $this->repo->download(Input::all());
+		return $this->repo->download(Input::all(),false);
 	}
 
 	public function missingMethod($parameters = array())

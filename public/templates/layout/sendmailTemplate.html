@@ -12,8 +12,8 @@
                         <input type='hidden' name='process' value='mail'>
                         <input type='hidden' name='type' value='<%= confirm_type %>'>
                         <input type='hidden' name='model' value='<%= confirm_model %>'>
-                        <input type='hidden' name='filterId' value='<%= confirm_filter_id %>'>
 
+                        <% if(!_.isNull(confirm_filter_id)) { %><input type='hidden' name='filterId' value='<%= confirm_filter_id %>'><% } %>
                         <% if(!_.isNull(confirm_date_start)) { %><input type='hidden' name='dateStart' value='<%= confirm_date_start %>'><% } %>
                         <% if(!_.isNull(confirm_date_end)) { %><input type='hidden' name='dateEnd' value='<%= confirm_date_end %>'><% } %>
                         <div class="form-group">
@@ -30,9 +30,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default btn-sm btn-rad btn-flat" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-warning btn-sm btn-rad btn-flat" id="<%= confirm_button_id %>">
-                    <%= confirm_button_label %>
-                </button>
+                <button type="button" class="btn btn-warning btn-sm btn-rad btn-flat" id="<%= confirm_button_id %>"><%= confirm_button_label %></button>
             </div>
         </div>
     </div>

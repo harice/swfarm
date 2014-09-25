@@ -258,8 +258,9 @@ define([
 					'Send Purchase Order as pdf',
 					'btn_sendmail',
 					'Send',
-					'mdl_sendmail',
+					this.model.get('order_number'),
 					'order',
+					'pdf',
 					this.model.get('id')
 				);
 			
