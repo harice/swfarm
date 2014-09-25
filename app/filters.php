@@ -95,7 +95,7 @@ Route::filter('auth.session', function()
 
 	if(!Cookie::get('ihYF23kouGY')) return Redirect::to('404')->withPage('file');
 
-	if(!Tokenizer::validate()) return Redirect::to('404')->withPage('file');
+	// if(!Tokenizer::validate()) return Redirect::to('404')->withPage('file');
 
 	if(!Input::get('q')) return Redirect::to('404')->withPage('file');
 });
