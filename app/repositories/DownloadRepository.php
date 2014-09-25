@@ -2,7 +2,7 @@
 
 class DownloadRepository implements DownloadInterface 
 {
-	public function download($params) {
+	public function download($params,$mail) {
 		$_404 = false;
 		$q = unserialize(base64_decode($params['q']));
 		if(!is_array($q) && !array_key_exists('type', $q)) $_404 = true;
@@ -340,7 +340,10 @@ class DownloadRepository implements DownloadInterface
 				switch ($_params['model']) {
 					case 'order':
 						if ($job->attempts() > 3) { $job->delete(); break; }
-						if(!$order) { $job->delete(); break; }
+						
+						$status = $this->download($_params,true);
+
+						if(!$status) { $job->delete(); break; }
 						
 						$_pathtoFile = storage_path('queue/'.$order->order_number.'.pdf');
 						$_data['pathtofile'] = $_pathtoFile;
@@ -919,7 +922,8 @@ class DownloadRepository implements DownloadInterface
 		$report_a['freight'] = 0.00;
 		$report_a['commission'] = 0.00;
 
-		$report_o = Order::join('productorder','productorder.order_id','=','order.id')
+		$report_o = Order::join('account','account.id','=','order.account_id')
+					->join('productorder','productorder.order_id','=','order.id')
                     ->join('transportscheduleproduct','transportscheduleproduct.productorder_id','=','productorder.id')
                     ->join('transportschedule','transportschedule.id','=','transportscheduleproduct.transportschedule_id')
                     ->join('weightticket','weightticket.transportschedule_id','=','transportschedule.id')
@@ -932,7 +936,7 @@ class DownloadRepository implements DownloadInterface
                     ->groupBy('order.id')
                     ->select(array(
                                 'order.id', 
-                                'account_id', 
+                                'account.name as account', 
                                 'order_number'
                             ))
 					->get()

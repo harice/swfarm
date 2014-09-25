@@ -130,7 +130,7 @@ define([
 				'po_url' : '#/'+Const.URL.PO,
 				'po_edit_url' : '#/'+Const.URL.PO+'/'+Const.CRUD.EDIT+'/'+this.poId,
 				po : this.model,
-				print_url : Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.model.id, type:'pdf', model:'order'})),
+				print_url : Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.model.id, type:'pdf', model:'order'})),
 				reason_others : Const.CANCELLATIONREASON.OTHERS,
 				_: _
 			};

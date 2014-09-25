@@ -82,7 +82,7 @@ define([
 				'so_url' : '#/'+Const.URL.SO,
 				'so_edit_url' : '#/'+Const.URL.SO+'/'+Const.CRUD.EDIT+'/'+this.soId,
 				so : this.model,
-				print_url : Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({id:this.model.id, type:'pdf', model:'order'})),
+				print_url : Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.model.id, type:'pdf', model:'order'})),
 				reason_others : Const.CANCELLATIONREASON.OTHERS
 			};
 			
@@ -166,7 +166,6 @@ define([
 					'btn_sendmail',
 					'Send',
 					this.model.get('order_number'),
-					'mdl_sendmail',
 					'order',
 					this.model.get('id')
 				);

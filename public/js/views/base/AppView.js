@@ -159,21 +159,18 @@ define([
 			this.$el.find(this.modalAlertContainer).append(modalTemplate);
 		},
 
-		initSendMailForm: function (content, buttonId, buttonLabel, title, modalId, model, modelId) {
+		initSendMailForm: function (content, buttonId, buttonLabel, title, model, filterId) {
 			if($(this.modalAlertContainer).find('#mdl_sendmail').length)
 				$(this.modalAlertContainer).find('#mdl_sendmail').remove();
-
-			if(modalId == null || typeof modalId == 'undefined')
-				modalId = 'mdl_sendmail';
 
 			var modalTemplateVariables = {
 				confirm_title: title,
 				confirm_content: content,
 				confirm_button_id: buttonId,
 				confirm_button_label: buttonLabel,
-				confirm_modal_id: modalId,
+				confirm_modal_id: 'mdl_sendmail',
 				confirm_model: model,
-				confirm_model_id : modelId
+				confirm_filter_id : filterId
 			};
 
 			var modalTemplate = _.template(sendmailTemplate, modalTemplateVariables);
