@@ -10,8 +10,13 @@ define([
 			this.setDefaultURL(this.url);
 		},
 		
-		getStackNumbersByProduct: function (option) {
-			this.url = this.getDefaultURL()+'?productId='+option.id+'&accountId='+option.account_id;
+		getStackNumbersByProduct: function (option) {			
+			if(option.account_id == undefined){
+				this.url = this.getDefaultURL()+'?productId='+option.id;
+			}
+			else {				
+				this.url = this.getDefaultURL()+'?productId='+option.id+'&accountId='+option.account_id;
+			}
 			this.getModels(option);
 		},
 	});
