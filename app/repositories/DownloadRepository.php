@@ -194,6 +194,9 @@ class DownloadRepository implements DownloadInterface
 							}
 							break;
 
+						case 'operator-statement':
+							break;
+
 						case 'inventory-report':
 							if(!$this->filterParams($q,array('filterId'))) { 
 								if($mail) return false;
@@ -215,6 +218,54 @@ class DownloadRepository implements DownloadInterface
 									$pdf->save($_pathtoFile);
 									return $this->processMail($q,$_data);
 								} else return $pdf->stream('INV-'.$report_o->stacknumber.'.pdf');
+							} else {
+								if($mail) return false;
+								else $_404 = true;
+							}
+							break;
+
+						case 'gross-profit-report':
+							$report_o = $this->generateGrossProfitReport($q);
+							if($report_o) { 
+								$pdf = PDF::loadView('pdf.base',array('child' => View::make('reports.gross-profit-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.gross-profit-content', array('report_o' => $report_o))));
+								if($mail) {
+									$_pathtoFile = storage_path('queue/GP-'.date('Ymd').'.pdf');
+									$_data['pathtofile'] = $_pathtoFile;
+									$_data['display_name'] = 'Gross Profit Report : '.date('Ymd');
+									$_data['mime'] = 'application/pdf';
+									$_data['subject'] = 'Gross Profit Report : '.date('Ymd');
+									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
+
+									$pdf->save($_pathtoFile);
+									return $this->processMail($q,$_data);
+								} else return $pdf->stream('GP-'.date('Ymd').'.pdf');
+							} else {
+								if($mail) return false;
+								else $_404 = true;
+							}
+							break;
+
+						case 'commission-statement':
+							if(!$this->filterParams($q,array('filterId'))) { 
+								if($mail) return false;
+								else $_404 = true;
+								break; 
+							}
+
+							$report_o = $this->generateCommissionStatement($q);
+							if($report_o) { 
+								$pdf = PDF::loadView('pdf.base',array('child' => View::make('reports.commission-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.commission-content', array('report_o' => $report_o))));
+								if($mail) {
+									$_pathtoFile = storage_path('queue/COM-'.$report_o->user->lastname.' '.$report_o->user->firstname.' '.$report_o->user->suffix.'.pdf');
+									$_data['pathtofile'] = $_pathtoFile;
+									$_data['display_name'] = 'Commission Statement : '.$report_o->user->lastname.' '.$report_o->user->firstname.' '.$report_o->user->suffix;
+									$_data['mime'] = 'application/pdf';
+									$_data['subject'] = 'Commission Statement : '.$report_o->user->lastname.' '.$report_o->user->firstname.' '.$report_o->user->suffix;
+									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
+
+									$pdf->save($_pathtoFile);
+									return $this->processMail($q,$_data);
+								} else return $pdf->stream('COM-'.$report_o->user->lastname.' '.$report_o->user->firstname.' '.$report_o->user->suffix.'.pdf');
 							} else {
 								if($mail) return false;
 								else $_404 = true;
@@ -1063,9 +1114,10 @@ class DownloadRepository implements DownloadInterface
 		global $report_a;
 		$report_a['netsale'] = 0.00;
 		$report_a['haycost'] = 0.00;
-		$report_a['fees'] = 0.00;
 		$report_a['freight'] = 0.00;
+		$report_a['fees'] = 0.00;
 		$report_a['commission'] = 0.00;
+		$report_a['profit'] = 0.00;
 
 		$report_o = Order::join('account','account.id','=','order.account_id')
 					->join('productorder','productorder.order_id','=','order.id')
@@ -1129,6 +1181,7 @@ class DownloadRepository implements DownloadInterface
 													$transportscheduleproduct->freight = bcadd(bcadd($transportscheduleproduct->transportschedule->truckingrate, $transportscheduleproduct->transportschedule->trailerrate,2),bcadd($transportscheduleproduct->transportschedule->weightticket->pickupscale_fee,$transportscheduleproduct->transportschedule->weightticket->dropscale_fee,2),2);
 													$transportscheduleproduct->fees = bcadd($transportscheduleproduct->transportschedule->originloaderfee,$transportscheduleproduct->transportschedule->destinationloaderfee,2);
 													$transportscheduleproduct->commission = number_format($transportscheduleproduct->transportschedule->weightticket->commission,2,'.','');
+													$transportscheduleproduct->profit = bcsub($transportscheduleproduct->netsale,$transportscheduleproduct->haycost,2);
 
 													$transportscheduleproduct->setVisible(array(
 																							'wid',
@@ -1138,7 +1191,8 @@ class DownloadRepository implements DownloadInterface
 																							'haycost',
 																							'freight',
 																							'fees',
-																							'commission'
+																							'commission',
+																							'profit'
 																						));
 			                            		});
 
@@ -1149,25 +1203,29 @@ class DownloadRepository implements DownloadInterface
 
                         foreach ($product_a as $product_key => $product) {
 				            $productorder_a = array();
-				            $_fees = $_freight = $_netsale = $_commission = 0.00;
-
 				            foreach ($product['productorder'] as $productorder_key => $productorder) {
 				            	foreach ($productorder['transportscheduleproduct'] as $key => $weightticket) {
 					                if(array_key_exists($weightticket['wid'], $productorder_a)) {
 					                    $productorder_a[$weightticket['wid']]['netsale'] = bcadd($productorder_a[$weightticket['wid']]['netsale'],$weightticket['netsale'],2);
 					                    $productorder_a[$weightticket['wid']]['haycost'] = bcadd($productorder_a[$weightticket['wid']]['haycost'],$weightticket['haycost'],2);
+					                    $productorder_a[$weightticket['wid']]['profit'] = bcadd($productorder_a[$weightticket['wid']]['profit'],$weightticket['profit'],2);
 
 					                    $report_a['netsale'] = bcadd($report_a['netsale'],$weightticket['netsale'],2);
 					                    $report_a['haycost'] = bcadd($report_a['haycost'],$weightticket['haycost'],2);
+					                    $report_a['profit'] = bcadd($report_a['profit'],$weightticket['profit'],2);
 					                } else {
 					                    $productorder_a[$weightticket['wid']] = $weightticket;
+					                    $productorder_a[$weightticket['wid']]['profit'] = bcsub(bcsub(bcsub($weightticket['profit'],$weightticket['fees'],2),$weightticket['freight'],2),$weightticket['commission'],2);
 
 					                    $report_a['netsale'] = bcadd($report_a['netsale'],$weightticket['netsale'],2);
 					                    $report_a['haycost'] = bcadd($report_a['haycost'],$weightticket['haycost'],2);
 					                    $report_a['fees'] = bcadd($report_a['fees'],$weightticket['fees'],2);
 					                    $report_a['freight'] = bcadd($report_a['freight'],$weightticket['freight'],2);
 					                    $report_a['commission'] = bcadd($report_a['commission'],$weightticket['commission'],2);
+					                    $report_a['profit'] = bcsub(bcsub(bcsub(bcadd($report_a['profit'],$weightticket['profit'],2),$weightticket['fees'],2),$weightticket['freight'],2),$weightticket['commission'],2);
 					                }
+
+					                $productorder_a[$weightticket['wid']]['profit_percentage'] = bcmul(bcdiv($productorder_a[$weightticket['wid']]['profit'],$productorder_a[$weightticket['wid']]['netsale'],4),100,2);
 					            }
 				            }
 				            $product_a[$product_key]['productorder'] = array_values($productorder_a);
@@ -1178,6 +1236,7 @@ class DownloadRepository implements DownloadInterface
 
 		if(!$report_o) return false;
 
+		$report_a['profit_percentage'] = bcmul(bcdiv($report_a['profit'], $report_a['netsale'],4),100,2);
 		$report_a['report_date'] = $_dateBetween;
 		$report_a['orders'] = $report_o->toArray();
         return $this->parse($report_a);
@@ -1185,13 +1244,17 @@ class DownloadRepository implements DownloadInterface
 
 	private function generateCommissionStatement($_params = array()){
 		$_dateBetween = $this->generateBetweenDates($_params);
+		global $amount_i;
+		$amount_i = 0.00;
 		$report_o = Commission::with('order.account')
 						->with('weightticket.weightticketscale_pickup')
 						->with('weightticket.weightticketscale_dropoff')
 						->where('user_id','=',$_params['filterId'])
 						->whereBetween('updated_at',array_values($_dateBetween))
+						->orderBy('updated_at','DESC')
 						->get()
-						->each(function($commission){
+						->each(function($commission) use($amount_i) {
+							global $amount_i;
 							$commission->order_number = $commission->order->order_number;
 							$commission->account = $commission->order->account->name;
 							unset($commission->order);
@@ -1202,6 +1265,8 @@ class DownloadRepository implements DownloadInterface
 							} else {
 								$commission->bales = $commission->weightticket->weightticketscale_pickup->bales;
 							}
+
+							$amount_i = bcadd($amount_i, $commission->amountdue,2);
 
 							unset($commission->weightticket);
 							unset($commission->weightticket_id);
@@ -1215,6 +1280,7 @@ class DownloadRepository implements DownloadInterface
 		$report_a['user'] = User::select(array('firstname','lastname','suffix','email','emp_no'))->where('id','=',$_params['filterId'])->first()->toArray();
 		$report_a['report_date'] = $_dateBetween;
 		$report_a['commission'] = $report_o->toArray();
+		$report_a['amount'] = $amount_i;
         return $this->parse($report_a);
 	}
 
