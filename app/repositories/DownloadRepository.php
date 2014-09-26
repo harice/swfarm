@@ -73,7 +73,6 @@ class DownloadRepository implements DownloadInterface
 									$_pathtoFile = storage_path('queue/'.$order->order_number.'.pdf');
 									$_data['pathtofile'] = $_pathtoFile;
 									$_data['display_name'] = $order->order_number;
-									$_data['order'] = $order;
 									$_data['mime'] = 'application/pdf';
 									$_data['subject'] = ( $order->isfrombid == 0 ? ( $order->ordertype == 1 ? 'Purchase Order': 'Sales Order' ) : 'Bid Details' ).' : '. $order->order_number;
 									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
@@ -88,21 +87,57 @@ class DownloadRepository implements DownloadInterface
 							break;
 
 						case 'producer-statement':
-							if(!$this->filterParams($q,array('filterId'))) { $_404 = true; break; }
+							if(!$this->filterParams($q,array('filterId'))) { 
+								if($mail) return false;
+								else $_404 = true;
+								break; 
+							}
 							
 							$report_o = $this->generateProducerStatement($q);
-							if(!$report_o) { $_404 = true; break; }
+							if($report_o) {
+								$pdf = PDF::loadView('pdf.base',array('child' => View::make('reports.producer-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.producer-content', array('report_o' => $report_o))));
+								if($mail) {
+									$_pathtoFile = storage_path('queue/SOA - '.$report_o->name.'.pdf');
+									$_data['pathtofile'] = $_pathtoFile;
+									$_data['display_name'] = $report_o->name;
+									$_data['mime'] = 'application/pdf';
+									$_data['subject'] = 'Producer Statement : '.$report_o->name;
+									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
 
-							return PDF::loadView('pdf.base',array('child' => View::make('reports.producer-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.producer-content', array('report_o' => $report_o))))->stream('SOA - '.$report_o->name.'.pdf');
+									$pdf->save($_pathtoFile);
+									return $this->processMail($q,$_data);
+								} else $pdf->stream('SOA - '.$report_o->name.'.pdf');
+							} else { 
+								if($mail) return false;
+								else $_404 = true;
+							}
 							break;
 
 						case 'customer-sales-statement':
-							if(!$this->filterParams($q,array('filterId'))) { $_404 = true; break; }
+							if(!$this->filterParams($q,array('filterId'))) { 
+								if($mail) return false;
+								else $_404 = true;
+								break; 
+							}
 
 							$report_o = $this->generateCustomerStatement($q);
-							if(!$report_o) { $_404 = true; break; }
+							if($report_o) { 
+								$pdf = PDF::loadView('pdf.base',array('child' => View::make('reports.customer-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.customer-content', array('report_o' => $report_o))));
+								if($mail) {
+									$_pathtoFile = storage_path('queue/SOA - '.$report_o->name.'.pdf');
+									$_data['pathtofile'] = $_pathtoFile;
+									$_data['display_name'] = $report_o->name;
+									$_data['mime'] = 'application/pdf';
+									$_data['subject'] = 'Customer Sales Statement : '.$report_o->name;
+									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
 
-							return PDF::loadView('pdf.base',array('child' => View::make('reports.customer-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.customer-content', array('report_o' => $report_o))))->stream('SOA - '.$report_o->name.'.pdf');
+									$pdf->save($_pathtoFile);
+									return $this->processMail($q,$_data);
+								} else $pdf->stream('SOA - '.$report_o->name.'.pdf');
+							} else { 
+								if($mail) return false;
+								else $_404 = true;
+							}
 							break;
 
 						case 'driver-pay-statement':
@@ -114,14 +149,46 @@ class DownloadRepository implements DownloadInterface
 							return PDF::loadView('pdf.base',array('child' => View::make('reports.driver-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.driver-content', array('report_o' => $report_o))))->stream('SOA - '.$report_o->lastname.'-'.$report_o->firstname.'.pdf');
 							break;
 
+						case 'trucking-statement':
+							if(!$this->filterParams($q,array('filterId'))) { 
+								if($mail) return false;
+								else $_404 = true;
+								break; 
+							}
+
+							$report_o = $this->generateTruckingStatement($q);
+							if($report_o) { 
+								$pdf = PDF::loadView('pdf.base',array('child' => View::make('reports.truck-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.truck-content', array('report_o' => $report_o))));
+								if($mail) {
+									$_pathtoFile = storage_path('queue/TS - '.$report_o->trucknumber.'.pdf');
+									$_data['pathtofile'] = $_pathtoFile;
+									$_data['display_name'] = $report_o->trucknumber;
+									$_data['mime'] = 'application/pdf';
+									$_data['subject'] = 'Trucking Statement : '.$report_o->trucknumber;
+									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
+
+									$pdf->save($_pathtoFile);
+									return $this->processMail($q,$_data);
+								} else $pdf->stream('TS - '.$report_o->trucknumber.'.pdf');
+							} else {
+								if($mail) return false;
+								else $_404 = true;
+							}
+							break;
+
 						default:
-							$_404 = true;
+							if($mail) return false;
+							else $_404 = true;
 							break;
 					}
 					break;
 
 				case 'excel':
-					if(!$this->filterParams($q,array('model'))) { $_404 = true; break; }
+					if(!$this->filterParams($q,array('model'))) { 
+						if($mail) return false;
+						else $_404 = true;
+						break; 
+					}
 
 					if(!array_key_exists('format', $q)) $format = 'xls';
 					else {
@@ -283,13 +350,15 @@ class DownloadRepository implements DownloadInterface
 							}
 
 						default:
-							$_404 = true;
+							if($mail) return false;
+							else $_404 = true;
 							break;
 					}
 					break;
 
 				default:
-					$_404 = true;
+					if($mail) return false;
+					else $_404 = true;
 					break;
 			}
 		}
@@ -366,17 +435,9 @@ class DownloadRepository implements DownloadInterface
 	public function fire($job, $_params){
 		switch ($_params['process']) {
 			case 'mail':
-				switch ($_params['model']) {
-					case 'order':
-						if ($job->attempts() > 3) { $job->delete(); break; }
-						$status = $this->download($_params,true);
-						if(!$status) { $job->delete(); break; }
-						break;
-					
-					default:
-						$job->delete();
-						break;
-				}
+				if ($job->attempts() > 3) { $job->delete(); break; }
+				$status = $this->download($_params,true);
+				if(!$status) { $job->release(3); break; }
 				break;
 			
 			default:
@@ -386,7 +447,7 @@ class DownloadRepository implements DownloadInterface
 	}
 
 	private function processMail($data = array(), $_data = array()){
-		Mail::send('emails.order', $data, function($message) use($_data) {
+		Mail::send('emails.content', $data, function($message) use($_data) {
 			$message->to($_data['recipients']);
 			$message->subject($_data['subject']);
 			$message->attach($_data['pathtofile'], array('as' => $_data['display_name'], 'mime' => $_data['mime']));
