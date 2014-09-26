@@ -195,6 +195,30 @@ class DownloadRepository implements DownloadInterface
 							break;
 
 						case 'operator-statement':
+							if(!$this->filterParams($q,array('filterId'))) { 
+								if($mail) return false;
+								else $_404 = true;
+								break; 
+							}
+
+							$report_o = $this->generateOperatorStatement($q);
+							if($report_o) { 
+								$pdf = PDF::loadView('pdf.base',array('child' => View::make('reports.operator-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.operator-content', array('report_o' => $report_o))));
+								if($mail) {
+									$_pathtoFile = storage_path('queue/OS-'.$report_o->lastname.' '.$report_o->firstname.' '.$report_o->suffix.'.pdf');
+									$_data['pathtofile'] = $_pathtoFile;
+									$_data['display_name'] = 'Operator Statement : '.$report_o->lastname.' '.$report_o->firstname.' '.$report_o->suffix;
+									$_data['mime'] = 'application/pdf';
+									$_data['subject'] = 'Operator Statement : '.$report_o->lastname.' '.$report_o->firstname.' '.$report_o->suffix;
+									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
+
+									$pdf->save($_pathtoFile);
+									return $this->processMail($q,$_data);
+								} else return $pdf->stream('OS-'.$report_o->lastname.' '.$report_o->firstname.' '.$report_o->suffix.'.pdf');
+							} else {
+								if($mail) return false;
+								else $_404 = true;
+							}
 							break;
 
 						case 'inventory-report':
@@ -1006,8 +1030,9 @@ class DownloadRepository implements DownloadInterface
 		$_dateBetween = $this->generateBetweenDates($_params);
 		$report_o = Contact::join('account','account.id','=','account')
                     ->with(array('order' => function($query) use($_dateBetween) {
-                        $query->whereBetween('transportschedule.updated_at',array_values($_dateBetween))
-                            ->select(array('trucker_id','order.id as id','order.order_number'))
+                        $query->join('account','account.id','=','order.account_id')
+                        	->whereBetween('transportschedule.updated_at',array_values($_dateBetween))
+                            ->select(array('trucker_id','order.id as id','order.order_number','account.name as account'))
                             ->where('transportschedule.status_id','=',Config::get('constants.STATUS_CLOSED'))
                             ->where('transportschedule.truckeraccounttype_id','=',Config::get('constants.ACCOUNTTYPE_OPERATOR'))
                             ->orderBy('order.created_at','desc');
