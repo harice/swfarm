@@ -27,12 +27,17 @@ define([
 			});
 			
 		},
+
+		setDefaultURL: function(url) {
+			this.urlRoot = url;
+		},
         
         label: function () {
             return this.get('name');
         },
 
         fetchStatement: function (reportId, filterId, startDate, endDate) {
+        	this.setDefaultURL('/apiv1/reports/');
             this.urlRoot = this.urlRoot + reportId + '?filterId=' + filterId + '&dateStart=' + startDate + '&dateEnd=' + endDate;
             this.runFetch();
         },
