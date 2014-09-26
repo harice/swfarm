@@ -97,16 +97,16 @@ class DownloadRepository implements DownloadInterface
 							if($report_o) {
 								$pdf = PDF::loadView('pdf.base',array('child' => View::make('reports.producer-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.producer-content', array('report_o' => $report_o))));
 								if($mail) {
-									$_pathtoFile = storage_path('queue/SOA - '.$report_o->name.'.pdf');
+									$_pathtoFile = storage_path('queue/SOA-'.$report_o->name.'.pdf');
 									$_data['pathtofile'] = $_pathtoFile;
-									$_data['display_name'] = $report_o->name;
+									$_data['display_name'] = 'Producer Statement : '.$report_o->name;
 									$_data['mime'] = 'application/pdf';
 									$_data['subject'] = 'Producer Statement : '.$report_o->name;
 									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
 
 									$pdf->save($_pathtoFile);
 									return $this->processMail($q,$_data);
-								} else return $pdf->stream('SOA - '.$report_o->name.'.pdf');
+								} else return $pdf->stream('SOA-'.$report_o->name.'.pdf');
 							} else { 
 								if($mail) return false;
 								else $_404 = true;
@@ -124,16 +124,16 @@ class DownloadRepository implements DownloadInterface
 							if($report_o) { 
 								$pdf = PDF::loadView('pdf.base',array('child' => View::make('reports.customer-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.customer-content', array('report_o' => $report_o))));
 								if($mail) {
-									$_pathtoFile = storage_path('queue/SOA - '.$report_o->name.'.pdf');
+									$_pathtoFile = storage_path('queue/SOA-'.$report_o->name.'.pdf');
 									$_data['pathtofile'] = $_pathtoFile;
-									$_data['display_name'] = $report_o->name;
+									$_data['display_name'] = 'Customer Sales Statement : '.$report_o->name;
 									$_data['mime'] = 'application/pdf';
 									$_data['subject'] = 'Customer Sales Statement : '.$report_o->name;
 									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
 
 									$pdf->save($_pathtoFile);
 									return $this->processMail($q,$_data);
-								} else return $pdf->stream('SOA - '.$report_o->name.'.pdf');
+								} else return $pdf->stream('SOA-'.$report_o->name.'.pdf');
 							} else { 
 								if($mail) return false;
 								else $_404 = true;
@@ -151,16 +151,16 @@ class DownloadRepository implements DownloadInterface
 							if($report_o) { 
 								$pdf = PDF::loadView('pdf.base',array('child' => View::make('reports.driver-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.driver-content', array('report_o' => $report_o))));
 								if($mail) {
-									$_pathtoFile = storage_path('queue/DS - '.$report_o->lastname.' '.$report_o->firstname.'.pdf');
+									$_pathtoFile = storage_path('queue/DS-'.$report_o->lastname.' '.$report_o->firstname.'.pdf');
 									$_data['pathtofile'] = $_pathtoFile;
-									$_data['display_name'] = 'DS - '.$report_o->lastname.'-'.$report_o->firstname;
+									$_data['display_name'] = 'Driver Statement : '.$report_o->lastname.'-'.$report_o->firstname;
 									$_data['mime'] = 'application/pdf';
 									$_data['subject'] = 'Driver Statement : '.$report_o->lastname.' '.$report_o->firstname;
 									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
 
 									$pdf->save($_pathtoFile);
 									return $this->processMail($q,$_data);
-								} else return $pdf->stream('DS - '.$report_o->lastname.'-'.$report_o->firstname.'.pdf');
+								} else return $pdf->stream('DS-'.$report_o->lastname.'-'.$report_o->firstname.'.pdf');
 							} else {
 								if($mail) return false;
 								else $_404 = true;
@@ -176,18 +176,45 @@ class DownloadRepository implements DownloadInterface
 
 							$report_o = $this->generateTruckingStatement($q);
 							if($report_o) { 
-								$pdf = PDF::loadView('pdf.base',array('child' => View::make('reports.truck-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.truck-content', array('report_o' => $report_o))));
+								$pdf = PDF::setPaper('legal')->setOrientation('landscape')->loadView('pdf.base',array('child' => View::make('reports.truck-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.truck-content', array('report_o' => $report_o))));
 								if($mail) {
-									$_pathtoFile = storage_path('queue/TS - '.$report_o->trucknumber.'.pdf');
+									$_pathtoFile = storage_path('queue/TS-'.$report_o->trucknumber.'.pdf');
 									$_data['pathtofile'] = $_pathtoFile;
-									$_data['display_name'] = $report_o->trucknumber;
+									$_data['display_name'] = 'Trucking Statement : '.$report_o->trucknumber;
 									$_data['mime'] = 'application/pdf';
 									$_data['subject'] = 'Trucking Statement : '.$report_o->trucknumber;
 									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
 
 									$pdf->save($_pathtoFile);
 									return $this->processMail($q,$_data);
-								} else return $pdf->stream('TS - '.$report_o->trucknumber.'.pdf');
+								} else return $pdf->stream('TS-'.$report_o->trucknumber.'.pdf');
+							} else {
+								if($mail) return false;
+								else $_404 = true;
+							}
+							break;
+
+						case 'inventory-report':
+							if(!$this->filterParams($q,array('filterId'))) { 
+								if($mail) return false;
+								else $_404 = true;
+								break; 
+							}
+
+							$report_o = $this->generateInventoryReport($q);
+							if($report_o) { 
+								$pdf = PDF::setPaper('legal')->setOrientation('landscape')->loadView('pdf.base',array('child' => View::make('reports.inventory-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.inventory-content', array('report_o' => $report_o))));
+								if($mail) {
+									$_pathtoFile = storage_path('queue/INV-'.$report_o->stacknumber.'.pdf');
+									$_data['pathtofile'] = $_pathtoFile;
+									$_data['display_name'] = 'Inventory : '.$report_o->stacknumber;
+									$_data['mime'] = 'application/pdf';
+									$_data['subject'] = 'Inventory : '.$report_o->stacknumber;
+									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
+
+									$pdf->save($_pathtoFile);
+									return $this->processMail($q,$_data);
+								} else return $pdf->stream('INV-'.$report_o->stacknumber.'.pdf');
 							} else {
 								if($mail) return false;
 								else $_404 = true;
@@ -969,6 +996,10 @@ class DownloadRepository implements DownloadInterface
 		$report_o = Stack::with('product')
 						->with(array('inventory' => function($query) use($_dateBetween) {
 							$query->join('inventory','inventory.id','=','inventoryproduct.inventory_id')
+								->leftJoin('section as sectionfrom','sectionfrom.id','=','inventoryproduct.sectionfrom_id')
+								->leftJoin('storagelocation as storagelocationfrom','storagelocationfrom.id','=','sectionfrom.storagelocation_id')
+								->leftJoin('section as sectionto','sectionto.id','=','inventoryproduct.sectionto_id')
+								->leftJoin('storagelocation as storagelocationto','storagelocationto.id','=','sectionto.storagelocation_id')
 								->join('inventorytransactiontype','inventorytransactiontype.id','=','inventory.transactiontype_id')
 								->leftJoin('order','order.id','=','inventory.order_id')
 								->leftJoin('contract','contract.id','=','order.contract_id')
@@ -976,12 +1007,14 @@ class DownloadRepository implements DownloadInterface
 								->leftJoin('order as returnOrder','returnOrder.id','=','inventory.returnedOrder_id')
 								->leftJoin('weightticket','weightticket.id','=','inventory.weightticket_id')
 								->whereBetween('inventoryproduct.created_at',array_values($_dateBetween))
+								->orderBy('inventoryproduct.created_at','ASC')
 								->select(array(
 										'inventoryproduct.stack_id',
 										'inventoryproduct.price',
 										'inventoryproduct.bales',
 										'inventoryproduct.tons',
 										'inventoryproduct.updated_at',
+										'inventorytransactiontype.id as transaction_id',
 										'inventorytransactiontype.type as transaction_type',
 										'inventorytransactiontype.operation as transaction_operation',
 										'account.name as account',
@@ -989,6 +1022,8 @@ class DownloadRepository implements DownloadInterface
 										'contract.contract_number',
 										'returnOrder.order_number as order_return',
 										'weightticket.weightticketnumber',
+										DB::raw('CONCAT(storagelocationfrom.name, " - ", sectionfrom.name) AS location_from'),
+										DB::raw('CONCAT(storagelocationto.name, " - ", sectionto.name) AS location_to'),
 									));
 						}))
 						->select(array('id','stacknumber','product_id'))
@@ -996,6 +1031,27 @@ class DownloadRepository implements DownloadInterface
 						->first();
 
 		if(!$report_o) return false;
+
+		$report_o->bales_in = 0;
+		$report_o->tons_in = 0.0000;
+		$report_o->bales_out = 0;
+		$report_o->tons_out = 0.0000;
+
+		$report_o->inventory->each(function($inventory) use($report_o) {
+			switch ($inventory->transaction_id) {
+				case Config::get('constants.TRANSACTIONTYPE_SO'):
+				case Config::get('constants.TRANSACTIONTYPE_ISSUE'):
+					$report_o->bales_out = bcadd($report_o->bales_out, $inventory->bales,0);
+					$report_o->tons_out = bcadd($report_o->tons_out, $inventory->tons,4);
+					break;
+
+				case Config::get('constants.TRANSACTIONTYPE_PO'):
+				case Config::get('constants.TRANSACTIONTYPE_RECEIPT'):
+					$report_o->bales_in = bcadd($report_o->bales_in, $inventory->bales,0);
+					$report_o->tons_in = bcadd($report_o->tons_in, $inventory->tons,4);
+					break;
+			}
+		});
 
 		$report_o->report_date = (object) $_dateBetween;
         return $this->parse($report_o->toArray());
