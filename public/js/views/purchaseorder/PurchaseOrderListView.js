@@ -68,7 +68,7 @@ define([
 				if(thisObj.subContainerExist()) {
 					
 					thisObj.displayPO();										
-					thisObj.renderList(2);
+					thisObj.renderList(thisObj.collection.listView.currentPage);
 				}
 				
 				this.off('sync');
