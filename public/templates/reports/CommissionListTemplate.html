@@ -37,13 +37,14 @@
             </div>
         </div>
     </div>    
-    <% if (users.get('summary').total_transactions) { %>    
+    <% if (!_.isEmpty(users.get('commission'))) { %>    
     <div class="content">
         <div class="content-inner table-responsive">
             <table id="operator-list" class="table-bordered table">
                 <thead class="no-border">
                     <tr>
                         <th><strong>Date</strong></th>
+                        <th><strong>Weight Ticket Number</strong></th>
                         <th><strong>Cust Name</strong></th>
                         <th><strong>Unit</strong></th>                
                         <th><strong>Per Unit Rate</strong></th>
@@ -53,38 +54,42 @@
                     </tr>
                 </thead>
                 <tbody class="no-border-y">
-                    <%           
-                        _.each(users.get('transactions'),function(transaction){                         
+                    <%  var total_bales = 0;
+                        var total_tons = 0;
+                        var total_commissions = 0;                             
+                        _.each(users.get('commission'),function(comm){                         
                     %>       
                         <tr>      
                             <td>
-                                <% 
-                                    formatDateBy(transaction.created_at, 'm/d/Y')
-                                %>
+                                <%= formatDate(comm.updated_at)%>
                             </td>  
                             <td>
-                                <%= transaction.account_name %>
+                                <%= comm.account %>
                             </td>  
+                            <td><%= comm.weightTicketNumber %></td>
                             <td>TONS</td>  
                             <td>
-                                $ <%= numberFormat(transaction.rate) %>
+                                $ <%= numberFormat(comm.rate) %>
                             </td>  
+                            <% total_bales += comm.bales %>
                             <td>
-                                <%= numberFormatBales(transaction.bales) %>
+                                <%= numberFormatBales(comm.bales) %>
                             </td>  
+                            <% total_tons += (comm.tons*1) %>
                             <td>
-                                <%= numberFormatTons(transaction.gross - transaction.tare) %>
+                                <%= numberFormatTons(comm.tons) %>
                             </td>   
-                            <td>$ <%= numberFormat(transaction.amountdue) %></td>                                              
+                            <% total_commissions = total_bales + comm.amountdue %>
+                            <td>$ <%= numberFormat(comm.amountdue) %></td>                                              
                         </tr>
-                    <%}); %>  
+                    <%}); %>   
                 </tbody> 
                 <tfoot>
                     <tr>
-                        <td colspan="4" align="right">TOTAL</td>
-                        <td><strong><%= numberFormatBales(users.get('summary').total_bales) %></strong></td>
-                        <td><strong><%= numberFormatTons(users.get('summary').total_tons) %></strong></td>
-                        <td><strong>$ <%= numberFormat(users.get('summary').total_commissions) %></strong></td>
+                        <td colspan="5" align="right">TOTAL</td>
+                        <td><strong><%= numberFormatBales(total_bales) %></strong></td>
+                        <td><strong><%= numberFormatTons(total_tons) %></strong></td>
+                        <td><strong>$ <%= numberFormat(total_commissions) %></strong></td>
                     </tr>
                 </tfoot>
             </table>               

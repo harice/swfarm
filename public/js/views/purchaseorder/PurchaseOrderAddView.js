@@ -305,8 +305,9 @@ define([
 											Global.getGlobalVars().fromPOId = parseInt(response.purchaseorder_id);
 											Backbone.history.navigate(Const.URL.SO+'/'+Const.CRUD.ADD, {trigger: true});
 										}
-										else
+										else{
 											Backbone.history.history.back();
+										}
 									});
 								}
 								else {

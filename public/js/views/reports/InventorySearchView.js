@@ -2,7 +2,7 @@ define([
 	'backbone',
 	'views/base/ReportView',
 	'models/reports/ReportModel',
-	'collections/stack/LocationCollection',
+	'collections/inventory/StackNumberCollection',
 	'text!templates/reports/InventoryListTemplate.html',
 	'global',
 	'constant',
@@ -10,7 +10,7 @@ define([
 	Backbone,
 	ReportView,			
 	Report,
-	LocationCollection,
+	StackNumberCollection,
 	inventoryListTemplate,
 	Global,
 	Const
@@ -28,17 +28,16 @@ define([
 				this.off("change");
 			});			
 
-			this.collection = new LocationCollection();			
+			this.collection = new StackNumberCollection();			
 		},
 		
 		render: function(){
-			this.getLocationList();								
+			this.getStackList();								
 			Backbone.View.prototype.refreshTitle('Report','Inventory');
 		},	
 
-		getLocationList: function(){
+		getStackList: function(){
 			var thisObj = this;	
-			this.collection.getLocations();
 
 			this.collection.fetch({
 				success: function (collection, response, options) {
@@ -53,7 +52,7 @@ define([
 		getFilterName: function (){
 			var locations = '<option disabled selected>Select Location</option>';			
 			_.each(this.collection.models, function (model) {
-				locations += '<option value="'+model.get('id')+'">'+model.get('name')+'</option>';
+				locations += '<option value="'+model.get('id')+'">'+model.get('stacknumber')+'</option>';
 			});
 
 			return locations;

@@ -29,65 +29,82 @@
             </div>
         </div>
     </div>
-    <% if (profits.get('summary').total_transactions) { %>        
+    <% if (!_.isEmpty(profits.get('orders'))) { %>        
     <div class="content">            
         <div class="content-inner table-responsive">
-            <table id="operator-list" class="table table-bordered">
-                <thead class="no-border">
-                    <tr>
-                        <th><strong>Order No.</strong></th>
-                        <th><strong>Date</strong></th>
-                        <th><strong>Customer</strong></th>
-                        <th><strong>Net Sale</strong></th>
-                        <th><strong>Cost Hay</strong></th>
-                        <th><strong>Freight</strong></th>
-                        <th><strong>Fees</strong></th>
-                        <th><strong>Commission</strong></th>
-                        <th><strong>Profit Amt</strong></th>
-                        <th><strong>Profit Prct</strong></th>
-                    </tr>
-                </thead>
-                <tbody class="no-border-y">
-                    <%                         
-                        _.each(profits.get('transactions'),function(transaction){ 
-                    %>    
-                        <tr> 
-                            <td><%= transaction.order_number %></td>
-                            <td>
-                            <%
-                                formatDateBy(transaction.created_at, 'm/d/Y')                           
-                                                                
-                            %>
-                            </td>
-                            <td><%= transaction.account %></td>
-                            <td>$ <%= numberFormat(transaction.net_sale) %></td>
-                            <td>$ <%= numberFormat(transaction.hay_cost) %></td>
-                            <td>$ <%= numberFormat(transaction.freight_cost) %></td>
-                            <td>$ <%= numberFormat(transaction.fees) %></td>
-                            <td>$ <%= numberFormat(transaction.commission) %></td>
-                            <td>$ <%= numberFormat(transaction.profit_amount) %></td>
-                            <td><%= transaction.profit_percentage %> %</td>
-                        </tr>   
-                    <%}); %>                     
-                </tbody>                
-            </table> 
+            <%
+                var ctr = 0;
+                var total_profit = 0;
+                var total_profit_percentage = 0; 
 
+                _.each(profits.get('orders'), function(order){                   
+            %>
+                <h3><%= order.order_number %> - <strong><%= order.account %></strong></h3>
+                <table id="operator-list" class="table table-bordered">
+                    <thead class="no-border">
+                        <tr>
+                            <th><strong>Date</strong></th>
+                            <th><strong>Weight Ticket Number</strong></th>
+                            <th><strong>Product</strong></th>
+                            <th><strong>Net Sale</strong></th>
+                            <th><strong>Cost Hay</strong></th>
+                            <th><strong>Freight</strong></th>
+                            <th><strong>Fees</strong></th>
+                            <th><strong>Commission</strong></th>
+                            <th><strong>Profit Amt</strong></th>
+                            <th><strong>Profit Prct</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody class="no-border-y">
+                        <%                                 
+                            var profit_amount = 0;
+                            var profit_prct = 0;              
+                            _.each(order.productsummary,function(product){ 
+                                _.each(product.productorder, function(prod){
+                                    ctr++;
+                            %>
+                                <tr> 
+                                    <td><%= formatDate(prod.updated_at) %></td>
+                                    <td><%= prod.weightTicketNumber %></td>
+                                    <td><%= product.product %></td>
+                                    <td>$ <%= prod.netsale %></td>
+                                    <td>$ <%= prod.haycost %></td>
+                                    <td>$ <%= prod.freight %></td>
+                                    <td>$ <%= prod.fees %></td>
+                                    <td>$ <%= prod.commission %></td>
+                                    <% 
+                                        profit_amount = prod.netsale - prod.haycost - prod.freight - prod.fees - prod.commission;
+                                        total_profit += profit_amount; 
+                                    %>
+                                    <td>$ <%= numberFormat(profit_amount) %></td>
+                                    <%  
+                                        profit_prct = profit_amount/prod.netsale;
+                                        total_profit_percentage += profit_prct;
+                                    %>
+                                    <td><%= numberFormat(profit_prct) %> %</td>
+                                </tr> 
+                            <%
+                                });
+                        %>                                
+                        <%}); %>                     
+                    </tbody>  
+                </table> 
+                <%});
+            %>
+                                            
             <table class="table-bordered" style="width:30%">
                 <thead class="no-border">
                     <tr>
                         <td colspan="2" align="center"><strong>SUMMARY</strong></td>
                     </tr>
-                    <tr>
-                        <td colspan="2">Grand Totals</td>
-                    </tr>
                 </thead>
                 <tbody class="no-border-y">
                     <tr>
                         <td>
-                            <strong>Total Cost:</strong> 
+                            <strong>Total Netsale:</strong> 
                         </td>
                         <td>
-                            $ <%= numberFormat(profits.get('summary').total_cost) %>
+                            $ <%= profits.get('netsale') %>
                         </td>
                     </tr>
                     <tr>
@@ -95,7 +112,7 @@
                             <strong>Cost of Hay:</strong> 
                         </td>
                         <td>
-                            $ <%= numberFormat(profits.get('summary').total_hay_cost) %>
+                            $ <%= profits.get('haycost') %>
                         </td>
                     </tr>
                     <tr>
@@ -103,7 +120,7 @@
                             <strong>Cost of Freight:</strong> 
                         </td>
                         <td>
-                            $ <%= numberFormat(profits.get('summary').total_freight_cost) %>
+                            $ <%= profits.get('freight') %>
                         </td>
                     </tr>
                     <tr>
@@ -111,7 +128,7 @@
                             <strong>Profit:</strong> 
                         </td>
                         <td>
-                            $ <%= numberFormat(profits.get('summary').total_profit_amount) %>
+                            $ <%= numberFormat(total_profit) %>
                         </td>
                     </tr>
                     <tr>
@@ -119,7 +136,7 @@
                             <strong>Average Percent</strong> 
                         </td>
                         <td>
-                            <%= profits.get('summary').total_profit_percentage %> %
+                            <%= numberFormat(total_profit_percentage/ctr) %> %
                         </td>
                     </tr>
                 </tbody>

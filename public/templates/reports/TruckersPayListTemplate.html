@@ -40,7 +40,7 @@
     <div class="content">        
         <div class="content-inner table-responsive">
             <%
-                _.each(truckers.get('order'), function(order)                       
+                _.each(truckers.get('order'), function(order){                      
                     var gross_i = 0;
                     var trailer_i = 0;
                     var trucking_i = 0;
@@ -74,33 +74,38 @@
                     </thead>
                     <tbody class="no-border-y">               
                     <%
+                        var fee = 0;
                         _.each(order.transportschedule, function(schedule){
                     %>
                         <tr>
-                            <td><%= schedule.updated_at %></td>
+                            <td><%= formatDate(schedule.updated_at) %></td>
                             <td><%= schedule.weightticketnumber %></td>
                             <td><%= schedule.originloader.lastname %>, <%= schedule.originloader.firstname %></td>
                             <td><%= schedule.destinationloader.lastname %>, <%= schedule.destinationloader.firstname %></td>
-                            <td><%= numberFormat(schedule.originloaderfee + schedule.destinationloaderfee) %></td>
-                            <% loader_i += schedule.originloaderfee + schedule.destinationloaderfee %>
+                            <% fee = schedule.originloaderfee + schedule.destinationloaderfee %>
+                            <td><%= numberFormat(fee) %></td>
+                            <% 
+                                
+                                loader_i += parseFloat(fee);
+                            %>
                             <td><%= schedule.bales %></td>
                             <% bales_i += schedule.bales %>
                             <td><%= schedule.pounds %></td>
-                            <% pounds_i += schedule.pounds %>
+                            <% pounds_i += parseFloat(schedule.pounds) %>
                             <td><%= schedule.tons %></td>
-                            <% tons_i += schedule.tons %>
+                            <% tons_i += parseFloat(schedule.tons) %>
                             <td><%= schedule.truckingrate %></td>
-                            <% trucking_i += schedule.truckingrate %>
+                            <% trucking_i += parseFloat(schedule.truckingrate) %>
                             <td><%= schedule.gross %></td>
-                            <% gross_i += schedule.gross %>
+                            <% gross_i += parseFloat(schedule.gross) %>
                             <td><%= schedule.trailerrate %></td>
-                            <% trailer_i += schedule.trailerrate %>
+                            <% trailer_i += parseFloat(schedule.trailerrate) %>
                             <td><%= schedule.fuelcharge %></td>
-                            <% fuelcharge_i += schedule.fuelcharge %>
+                            <% fuelcharge_i += parseFloat(schedule.fuelcharge) %>
                             <td><%= schedule.adminfee %></td>
-                            <% adminfee_i += schedule.adminfee %>
+                            <% adminfee_i += parseFloat(schedule.adminfee) %>
                             <td><%= schedule.amount %></td>
-                            <% amount_i += schedule.amount %>
+                            <% amount_i += parseFloat(schedule.amount) %>
                         </tr>
                     <%
                         })
@@ -111,16 +116,16 @@
                             <td colspan="4" align="right">
                                 <strong>Total</strong>
                             </td>
-                            <td><%= loader_i %></td>
+                            <td><%= numberFormat(loader_i) %></td>
                             <td><%= bales_i %></td>
-                            <td><%= pounds_i %></td>
-                            <td><%= tons_i %></td>
-                            <td><%= trucking_i %></td>
-                            <td><%= gross_i %></td>
-                            <td><%= trailer_i %></td>
-                            <td><%= fuelcharge_i %></td>
-                            <td><%= adminfee_i %></td>
-                            <td><%= amount_i %></td>
+                            <td><%= numberFormatLbs(pounds_i) %></td>
+                            <td><%= numberFormatTons(tons_i) %></td>
+                            <td><%= numberFormat(trucking_i) %></td>
+                            <td><%= numberFormat(gross_i) %></td>
+                            <td><%= numberFormat(trailer_i) %></td>
+                            <td><%= numberFormat(fuelcharge_i) %></td>
+                            <td><%= numberFormat(adminfee_i) %></td>
+                            <td><%= numberFormat(amount_i) %></td>
                         </tr>
                     </tfoot>              
                 </table>  

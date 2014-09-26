@@ -21,7 +21,7 @@ define([
 		initialize: function() {
 			var thisObj = this;			
 			this.filtername = "User's Name";
-
+			this.reportId = $("#reporttype").val();
 			this.model = new Report();
 			this.model.on('change', function (){
 				thisObj.processData(commissionListTemplate);

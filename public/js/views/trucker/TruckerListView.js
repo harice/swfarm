@@ -32,28 +32,29 @@ define([
 			this.h1Title = 'Trucker';
 			this.h1Small = 'list';
 
-            this.model = new AccountExtrasModel();
-			this.model.on('change', function() {
-				if(thisObj.subContainerExist()) {
-					thisObj.displayTrucker();
-					thisObj.renderList(1);
-				}
-				this.off('change');
-			});
-
 			this.collection = new TruckerCollection();
 			this.collection.on('sync', function() {
-				if(thisObj.subContainerExist())
-					thisObj.displayList();
+				if(thisObj.subContainerExist()){
+					thisObj.displayList();						
+				}
 			});
 			this.collection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
+			this.model = new AccountExtrasModel();
+			this.model.on('change', function() {
+				if(thisObj.subContainerExist()) {
+					thisObj.displayTrucker();
+					console.log(thisObj.collection.listView.currentPage);
+					thisObj.renderList(thisObj.collection.listView.currentPage);
+				}
+				this.off('change');
+			});
+
 		},
 
 		render: function(){
 //			this.displayTrucker();
-//			this.renderList(1);
             this.model.runFetch();
 			Backbone.View.prototype.refreshTitle(this.h1Title,this.h1Small);
 		},
