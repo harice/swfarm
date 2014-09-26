@@ -56,61 +56,68 @@
                         _.each(location.section, function(section){ 
                         var tot_amount = 0; 
                         var total_bales = 0;
-                        var total_tons = 0;              
-                        %>
-                        <h6>Location: <strong><%= location.name %> - <%= section.name %></strong></h6>
-                        <table id="operator-list" class="table-bordered table">
-                            <thead class="no-border">
-                                <tr>
-                                    <th><strong>Date</strong></th>
-                                    <th><strong>Order No.</strong></th>
-                                    <th><strong>Weight Ticket No.</strong></th>
-                                    <th><strong>Price</strong></th>
-                                    <th><strong>Net Pounds</strong></th>
-                                    <th><strong>Bales</strong></th>                                    
-                                    <th><strong>Tons</strong></th>                                    
-                                    <th><strong>Amount</strong></th>
-                                </tr>
-                            </thead>
-                            <tbody class="no-border-y">  
-                                <%                                                             
-                                _.each(section.productorder, function(order){                                         
-                                    var amount = order.unitprice * order.tons;
-                                    total_bales = total_bales + (order.bales * 1);
-                                    total_tons = total_tons + (order.tons * 1);
-                                %>                                                                    
-                                <tr>                        
-                                    <td>
-                                        <%= 
-                                            formatDate(order.updated_at)
-                                        %>                                           
-                                    </td>
-                                    <td><%= order.order_number %></td>
-                                    <td><%= order.weightticketnumber %></td>
-                                    <td>$ <%= numberFormat(order.unitprice) %></td>
-                                    <td><%= order.pounds %></td>                                    
-                                    <td><%= order.bales %></td>                                        
-                                    <td><%= order.tons %></td> 
-                                    <% tot_amount = tot_amount + amount %>                                       
-                                    <td>$ <%= numberFormat(amount) %></td>                                                                     
-                                </tr>                                                                          
-                                <% });  %>
-                            </tbody>               
-                            <tfoot>
-                                <tr>
-                                    <td colspan="4">
-                                        Load Count: <%= section.load_count %>
-                                    </td>
-                                    <td><strong>Total</strong></td>
-                                    <td><%= total_bales %></td>
-                                    <td><%= total_tons %></td>
-                                    <td>$ <%= numberFormat(tot_amount) %></td>
-                                </tr>
-                            </tfoot>
-                        </table>  
+                        var total_tons = 0;   
+                        if(!_.isEmpty(section.productorder)){           
+                            %>
+                            <h6>Location: <strong><%= location.name %> - <%= section.name %></strong></h6>
+                            <table id="operator-list" class="table-bordered table">
+                                <thead class="no-border">
+                                    <tr>
+                                        <th><strong>Date</strong></th>
+                                        <th><strong>Order No.</strong></th>
+                                        <th><strong>Weight Ticket No.</strong></th>
+                                        <th><strong>Price</strong></th>
+                                        <th><strong>Net Pounds</strong></th>
+                                        <th><strong>Bales</strong></th>                                    
+                                        <th><strong>Tons</strong></th>                                    
+                                        <th><strong>Amount</strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="no-border-y">  
+                                    <%                                                             
+                                    _.each(section.productorder, function(order){                                         
+                                        var amount = order.unitprice * order.tons;
+                                        total_bales = total_bales + (order.bales * 1);
+                                        total_tons = total_tons + (order.tons * 1);
+                                    %>                                                                    
+                                    <tr>                        
+                                        <td>
+                                            <%= 
+                                                formatDate(order.updated_at)
+                                            %>                                           
+                                        </td>
+                                        <td><%= order.order_number %></td>
+                                        <td><%= order.weightticketnumber %></td>
+                                        <td>$ <%= numberFormat(order.unitprice) %></td>
+                                        <td><%= order.pounds %></td>                                    
+                                        <td><%= order.bales %></td>                                        
+                                        <td><%= order.tons %></td> 
+                                        <% tot_amount = tot_amount + amount %>                                       
+                                        <td>$ <%= numberFormat(amount) %></td>                                                                     
+                                    </tr>                                                                          
+                                    <% });  %>
+                                </tbody>               
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="4">
+                                            Load Count: <%= section.load_count %>
+                                        </td>
+                                        <td><strong>Total</strong></td>
+                                        <td><%= total_bales %></td>
+                                        <td><%= total_tons %></td>
+                                        <td>$ <%= numberFormat(tot_amount) %></td>
+                                    </tr>
+                                </tfoot>
+                            </table>  
                         <%
+                        }
                         });
-                    }                                      
+                    }  
+                    else {
+                    %>
+                        <p>No transactions found.</p>
+                    <%
+                    }                                    
                 }); %>   
             <table class="table-bordered" style="width:30%">
                 <thead class="no-border">
