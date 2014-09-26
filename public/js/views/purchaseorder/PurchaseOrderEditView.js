@@ -97,7 +97,6 @@ define([
 		supplyPOData: function () {
 			var thisObj = this;
 			
-
 			var account = this.model.get('account');
 			var address = [this.model.get('orderaddress')];
 			var products = this.model.get('productsummary');
@@ -213,7 +212,7 @@ define([
 			});
 			
 			this.computeTotals();
-		},
+		},		
 		
 		postDisplayForm: function () {
 			if(this.subContainerExist())

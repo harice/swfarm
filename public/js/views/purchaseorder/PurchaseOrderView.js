@@ -11,6 +11,7 @@ define([
 	'collections/account/AccountProducerCollection',
 	'collections/purchaseorder/DestinationCollection',
 	'collections/product/ProductCollection',
+	'collections/purchaseorder/CancellingReasonCollection',
 	'models/purchaseorder/PurchaseOrderModel',
 	'models/queue/QueueModel',
 	'models/document/DocumentModel',
@@ -20,6 +21,7 @@ define([
 	'text!templates/purchaseorder/purchaseOrderViewProductItemTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderViewSubProductItemTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderDestinationTemplate.html',
+	'text!templates/purchaseorder/reasonForCancellationOptionTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -34,6 +36,7 @@ define([
 			AccountProducerCollection,
 			DestinationCollection,
 			ProductCollection,
+			CancellingReasonCollection,
 			PurchaseOrderModel,
 			QueueModel,
 			DocumentModel,
@@ -43,6 +46,7 @@ define([
 			productItemTemplate,
 			productSubItemTemplate,
 			purchaseOrderDestinationTemplate,
+			reasonForCancellationOptionTemplate,
 			Global,
 			Const
 ){
@@ -116,10 +120,21 @@ define([
 				thisObj.destinationCollection.getModels();
 				this.off('change');
 			});
+
+			this.cancellingReasonCollection = new CancellingReasonCollection();
+			this.cancellingReasonCollection.on('sync', function() {	
+				thisObj.destinationCollection.getModels();
+				this.off('sync');
+			});
+			
+			this.cancellingReasonCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 		},
 		
 		render: function(){
 			this.model.runFetch();
+			this.cancellingReasonCollection.getModels();
 			Backbone.View.prototype.refreshTitle('Purchase Order','view');
 		},
 		
@@ -171,6 +186,58 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.find('#with-tab-content').html(compiledTemplate);
+
+			this.initCancelWindow();			
+		},
+
+		initCancelWindow: function (){
+			var thisObj = this;
+			var options = '';
+
+			_.each(this.cancellingReasonCollection.models, function (model) {
+				options += '<option value="'+model.get('id')+'">'+model.get('reason')+'</option>';
+			});
+			var form = _.template(reasonForCancellationOptionTemplate, {'reasons': options});
+			
+			this.initConfirmationWindowWithForm('Are you sure you want to cancel this PO?',
+										'confirm-cancel-po',
+										'Yes',
+										form,
+										'Cancel Purchase Order');
+										
+			var validate = $('#cancellationReasonForm').validate({
+				submitHandler: function(form) {
+					
+					var data = $(form).serializeObject();
+					
+					var purchaseOrderModel = new PurchaseOrderModel(data);
+						
+					purchaseOrderModel.setCancelURL();		
+					purchaseOrderModel.save(
+						null, 
+						{
+							success: function (model, response, options) {								
+								thisObj.hideConfirmationWindow('modal-with-form-confirm', function(){
+									thisObj.displayMessage(response);																
+									Backbone.history.history.back();
+								});
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: purchaseOrderModel.getAuth(),
+						}
+					);
+				},
+				rules: {
+					others: {
+						require_reason_others: true,
+					},
+				},
+			});
 		},
 		
 		supplyPOData: function () {
@@ -250,6 +317,30 @@ define([
 			'click .sendmail':'showSendMailModal',
 			'click #btn_sendmail':'sendMail',
 			//'click .attach-pdf': 'showPDF',
+			'click .cancel-po': 'preShowConfirmationWindow',
+			'click #confirm-cancel-po': 'cancelPO',
+			'change #reason': 'onChangeReason',
+		},
+
+		preShowConfirmationWindow: function (ev) {
+			this.$el.find('#cancellationReasonForm #cancelled-order-id').val(this.poId);
+			
+			this.showConfirmationWindow('modal-with-form-confirm');
+			return false;
+		},
+		
+		cancelPO: function (ev) {
+			$('#cancellationReasonForm').submit();
+			return false;
+		},
+
+		onChangeReason: function (ev) {
+			var field = $(ev.target);
+			
+			if(field.val() == Const.CANCELLATIONREASON.OTHERS)
+				$('#cancellation-others-text').show();
+			else
+				$('#cancellation-others-text').hide();
 		},
 
 		showSendMailModal: function(){

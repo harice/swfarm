@@ -14,7 +14,7 @@ define([
 	'collections/contact/ContactCollection',
 	'collections/inventory/StackNumberCollection',
 	'collections/stack/LocationCollection',
-	'collections/contract/ContractByAccountCollection',
+	'collections/contract/ContractByAccountCollection',	
 	'models/purchaseorder/PurchaseOrderModel',
 	'models/document/DocumentModel',
 	'text!templates/layout/contentTemplate.html',
@@ -23,7 +23,7 @@ define([
 	'text!templates/purchaseorder/purchaseOrderSubProductItemTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderDestinationTemplate.html',
 	'text!templates/purchaseorder/convertToPOFormTemplate.html',
-	'text!templates/salesorder/salesOrderContractTemplate.html',
+	'text!templates/salesorder/salesOrderContractTemplate.html',	
 	'global',
 	'constant',
 ], function(Backbone,
@@ -41,7 +41,7 @@ define([
 			ContactCollection,
 			StackNumberCollection,
 			LocationCollection,
-			ContractByAccountCollection,
+			ContractByAccountCollection,			
 			PurchaseOrderModel,
 			DocumentModel,
 			contentTemplate,
@@ -50,7 +50,7 @@ define([
 			productSubItemTemplate,
 			purchaseOrderDestinationTemplate,
 			convertToPOFormTemplate,
-			contractTemplate,
+			contractTemplate,			
 			Global,
 			Const
 ){
@@ -208,10 +208,11 @@ define([
 			this.contractProductsCollection.on('error', function(collection, response, options) {
 				this.off('error');
 			});
+			
 		},
 		
 		render: function(){
-			this.destinationCollection.getModels();
+			this.destinationCollection.getModels();			
 			Backbone.View.prototype.refreshTitle('Purchase Order','add');
 		},
 		
@@ -734,7 +735,8 @@ define([
 			'click #confirm-save-and-check-in-order': 'saveAndCheckIn',
 			'change .location_id': 'onChangeDestination',
 			'change #contract_id': 'onChangeContract',
-		},
+			
+		},		
 		
 		removeProduct: function (ev) {
 			var tr = $(ev.currentTarget).closest('tr');
