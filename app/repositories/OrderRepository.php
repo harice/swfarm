@@ -462,22 +462,22 @@ class OrderRepository implements OrderRepositoryInterface {
                 }
             }
             
-            if(isset($data['location_id']) && isset($data['checkinorder'])){
-                if($order->status_id == 7){ //has testing products on order
-                    $result = array(
-                        "error" => true,
-                        'message' => "Cannot do check in to inventory when order contains hold product(s)."
-                    );
-                }
-                //if dropship and client click the button to create SO
-                if($data['location_id'] == Config::get('constants.LOCATION_DROPSHIP') && $data['checkinorder'] == true){
-                    $dropshipResult = $this->checkInPurchaseOrderProducts($order->id, true);  
-                    $result = array('dropship' => true, 'data' => $dropshipResult);  
-                } else if($data['location_id'] == Config::get('constants.LOCATION_PRODUCER') && $data['checkinorder'] == true){
-                    $producerResult = $this->checkInPurchaseOrderProducts($order->id, false);  
-                    $result = array('producer' => true, 'data' => $producerResult);
-                }
-            }
+            // if(isset($data['location_id']) && isset($data['checkinorder'])){
+            //     if($order->status_id == 7){ //has testing products on order
+            //         $result = array(
+            //             "error" => true,
+            //             'message' => "Cannot do check in to inventory when order contains hold product(s)."
+            //         );
+            //     }
+            //     //if dropship and client click the button to create SO
+            //     if($data['location_id'] == Config::get('constants.LOCATION_DROPSHIP') && $data['checkinorder'] == true){
+            //         $dropshipResult = $this->checkInPurchaseOrderProducts($order->id, true);  
+            //         $result = array('dropship' => true, 'data' => $dropshipResult);  
+            //     } else if($data['location_id'] == Config::get('constants.LOCATION_PRODUCER') && $data['checkinorder'] == true){
+            //         $producerResult = $this->checkInPurchaseOrderProducts($order->id, false);  
+            //         $result = array('producer' => true, 'data' => $producerResult);
+            //     }
+            // }
             
 
         //     return $order;
