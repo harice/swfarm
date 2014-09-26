@@ -969,6 +969,10 @@ class DownloadRepository implements DownloadInterface
 		$report_o = Stack::with('product')
 						->with(array('inventory' => function($query) use($_dateBetween) {
 							$query->join('inventory','inventory.id','=','inventoryproduct.inventory_id')
+								->leftJoin('section as sectionfrom','sectionfrom.id','=','inventoryproduct.sectionfrom_id')
+								->leftJoin('storagelocation as storagelocationfrom','storagelocationfrom.id','=','sectionfrom.storagelocation_id')
+								->leftJoin('section as sectionto','sectionto.id','=','inventoryproduct.sectionto_id')
+								->leftJoin('storagelocation as storagelocationto','storagelocationto.id','=','sectionto.storagelocation_id')
 								->join('inventorytransactiontype','inventorytransactiontype.id','=','inventory.transactiontype_id')
 								->leftJoin('order','order.id','=','inventory.order_id')
 								->leftJoin('contract','contract.id','=','order.contract_id')
@@ -982,6 +986,7 @@ class DownloadRepository implements DownloadInterface
 										'inventoryproduct.bales',
 										'inventoryproduct.tons',
 										'inventoryproduct.updated_at',
+										'inventorytransactiontype.id as transaction_id',
 										'inventorytransactiontype.type as transaction_type',
 										'inventorytransactiontype.operation as transaction_operation',
 										'account.name as account',
@@ -989,6 +994,8 @@ class DownloadRepository implements DownloadInterface
 										'contract.contract_number',
 										'returnOrder.order_number as order_return',
 										'weightticket.weightticketnumber',
+										DB::raw('CONCAT(storagelocationfrom.name, " - ", sectionfrom.name) AS location_from'),
+										DB::raw('CONCAT(storagelocationto.name, " - ", sectionto.name) AS location_to'),
 									));
 						}))
 						->select(array('id','stacknumber','product_id'))
@@ -996,6 +1003,27 @@ class DownloadRepository implements DownloadInterface
 						->first();
 
 		if(!$report_o) return false;
+
+		$report_o->bales_in = 0;
+		$report_o->tons_in = 0.0000;
+		$report_o->bales_out = 0;
+		$report_o->tons_out = 0.0000;
+
+		$report_o->inventory->each(function($inventory) use($report_o) {
+			switch ($inventory->transaction_id) {
+				case Config::get('constants.TRANSACTIONTYPE_SO'):
+				case Config::get('constants.TRANSACTIONTYPE_ISSUE'):
+					$report_o->bales_out = bcadd($report_o->bales_out, $inventory->bales,0);
+					$report_o->tons_out = bcadd($report_o->tons_out, $inventory->tons,4);
+					break;
+
+				case Config::get('constants.TRANSACTIONTYPE_PO'):
+				case Config::get('constants.TRANSACTIONTYPE_RECEIPT'):
+					$report_o->bales_in = bcadd($report_o->bales_in, $inventory->bales,0);
+					$report_o->tons_in = bcadd($report_o->tons_in, $inventory->tons,4);
+					break;
+			}
+		});
 
 		$report_o->report_date = (object) $_dateBetween;
         return $this->parse($report_o->toArray());
