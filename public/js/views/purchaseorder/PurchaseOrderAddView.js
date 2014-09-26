@@ -1048,7 +1048,6 @@ define([
 			
 			this.$el.find('#upload-field-cont').hide();
 			this.$el.find('#pdf-icon-cont').show();
-			console.log("rtes1");
 			initConvertToPOWindow;
 
 			//return false;

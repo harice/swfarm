@@ -65,10 +65,9 @@ define([
 			
 			this.poStatusCollection = new POStatusCollection();
 			this.poStatusCollection.on('sync', function() {	
-				if(thisObj.subContainerExist()) {
-					
+				if(thisObj.subContainerExist()) {					
 					thisObj.displayPO();										
-					thisObj.renderList(2);
+					thisObj.renderList(thisObj.collection.listView.currentPage);
 				}
 				
 				this.off('sync');
