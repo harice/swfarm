@@ -106,7 +106,7 @@ class DownloadRepository implements DownloadInterface
 
 									$pdf->save($_pathtoFile);
 									return $this->processMail($q,$_data);
-								} else $pdf->stream('SOA - '.$report_o->name.'.pdf');
+								} else return $pdf->stream('SOA - '.$report_o->name.'.pdf');
 							} else { 
 								if($mail) return false;
 								else $_404 = true;
@@ -133,7 +133,7 @@ class DownloadRepository implements DownloadInterface
 
 									$pdf->save($_pathtoFile);
 									return $this->processMail($q,$_data);
-								} else $pdf->stream('SOA - '.$report_o->name.'.pdf');
+								} else return $pdf->stream('SOA - '.$report_o->name.'.pdf');
 							} else { 
 								if($mail) return false;
 								else $_404 = true;
@@ -141,12 +141,30 @@ class DownloadRepository implements DownloadInterface
 							break;
 
 						case 'driver-pay-statement':
-							if(!$this->filterParams($q,array('filterId'))) { $_404 = true; break; }
+							if(!$this->filterParams($q,array('filterId'))) { 
+								if($mail) return false;
+								else $_404 = true;
+								break; 
+							}
 
 							$report_o = $this->generateDriversPay($q);
-							if(!$report_o) { $_404 = true; break; }
+							if($report_o) { 
+								$pdf = PDF::loadView('pdf.base',array('child' => View::make('reports.driver-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.driver-content', array('report_o' => $report_o))));
+								if($mail) {
+									$_pathtoFile = storage_path('queue/DS - '.$report_o->lastname.' '.$report_o->firstname.'.pdf');
+									$_data['pathtofile'] = $_pathtoFile;
+									$_data['display_name'] = 'DS - '.$report_o->lastname.'-'.$report_o->firstname;
+									$_data['mime'] = 'application/pdf';
+									$_data['subject'] = 'Driver Statement : '.$report_o->lastname.' '.$report_o->firstname;
+									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
 
-							return PDF::loadView('pdf.base',array('child' => View::make('reports.driver-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.driver-content', array('report_o' => $report_o))))->stream('SOA - '.$report_o->lastname.'-'.$report_o->firstname.'.pdf');
+									$pdf->save($_pathtoFile);
+									return $this->processMail($q,$_data);
+								} else return $pdf->stream('DS - '.$report_o->lastname.'-'.$report_o->firstname.'.pdf');
+							} else {
+								if($mail) return false;
+								else $_404 = true;
+							}
 							break;
 
 						case 'trucking-statement':
@@ -169,7 +187,7 @@ class DownloadRepository implements DownloadInterface
 
 									$pdf->save($_pathtoFile);
 									return $this->processMail($q,$_data);
-								} else $pdf->stream('TS - '.$report_o->trucknumber.'.pdf');
+								} else return $pdf->stream('TS - '.$report_o->trucknumber.'.pdf');
 							} else {
 								if($mail) return false;
 								else $_404 = true;
