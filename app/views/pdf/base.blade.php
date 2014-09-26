@@ -27,12 +27,14 @@
 		.width-8 { width: 8%; }
 		.width-9 { width: 9%; }
 		.width-10 { width: 10%; }
+		.width-11 { width: 11%; }
 		.width-12 { width: 12%; }
 		.width-13 { width: 13%; }
 		.width-14 { width: 14%; }
 		.width-15 { width: 15%; }
 		.width-18 { width: 18%; }
 		.width-20 { width: 20%; }
+		.width-25 { width: 25%; }
 		.width-30 { width: 30%; }
 		.width-35 { width: 35%; }
 		.width-40 { width: 40%; }
@@ -43,6 +45,7 @@
 		.height-60 { height: 60%; }
 
 		.text-danger { color: #a94442; }
+		.text-success { color: #428bca; }
 		.text-center { text-align: center; }
 		.text-right { text-align: right; }
 
