@@ -144,9 +144,9 @@ class OrderRepository implements OrderRepositoryInterface {
                         
                     } else {
                         if($pickupNetWeight <= $dropoffNetWeight){
-                            $deliveredWeight = number_format($pickupNetWeight, 4);
+                            $deliveredWeight = $pickupNetWeight;
                         } else {
-                            $deliveredWeight = number_format($dropoffNetWeight, 4);
+                            $deliveredWeight = $dropoffNetWeight;
                         }
                     }
                 } else if($weightTicket['pickup_id'] != null){ //pickup weighticket only
