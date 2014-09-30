@@ -113,7 +113,7 @@ define([
 			this.subContainer.html(compiledTemplate);
 			
 			this.initCalendars();
-			this.initCancelWindow();
+			this.updateCancelWindow();
 			this.setListOptions();
 		},
 		
@@ -217,55 +217,7 @@ define([
 				thisObj.collection.setFilter('transportend', date);
 				thisObj.renderList(1);
 			});
-		},
-		
-		initCancelWindow: function (){
-			var thisObj = this;
-			var options = '';
-			_.each(this.cancellingReasonCollection.models, function (model) {
-				options += '<option value="'+model.get('id')+'">'+model.get('reason')+'</option>';
-			});
-			var form = _.template(reasonForCancellationOptionTemplate, {'reasons': options});
-			
-			this.initConfirmationWindowWithForm('Are you sure you want to cancel this PO?',
-										'confirm-cancel-po',
-										'Yes',
-										form,
-										'Cancel Purchase Order');
-										
-			var validate = $('#cancellationReasonForm').validate({
-				submitHandler: function(form) {
-					
-					var data = $(form).serializeObject();
-					
-					var purchaseOrderModel = new PurchaseOrderModel(data);
-						
-					purchaseOrderModel.setCancelURL();		
-					purchaseOrderModel.save(
-						null, 
-						{
-							success: function (model, response, options) {
-								thisObj.displayMessage(response);
-								thisObj.renderList(1);
-								thisObj.hideConfirmationWindow('modal-with-form-confirm');
-							},
-							error: function (model, response, options) {
-								if(typeof response.responseJSON.error == 'undefined')
-									validate.showErrors(response.responseJSON);
-								else
-									thisObj.displayMessage(response);
-							},
-							headers: purchaseOrderModel.getAuth(),
-						}
-					);
-				},
-				rules: {
-					others: {
-						require_reason_others: true,
-					},
-				},
-			});
-		},
+		},		
 		
 		events: {
 			'click .sort-date-of-po' : 'sortPODate',
@@ -307,16 +259,88 @@ define([
 			return false;
 		},
 		
-		preShowConfirmationWindow: function (ev) {
-			this.$el.find('#cancellationReasonForm #cancelled-order-id').val($(ev.currentTarget).attr('data-id'));
-			
-			this.showConfirmationWindow('modal-with-form-confirm');
+		preShowConfirmationWindow: function (ev) {					
+			this.$el.find('#cancellationReasonForm #cancelled-order-id').val($(ev.currentTarget).attr('data-id'));		
+			this.showConfirmationWindow('modal-with-form-confirm');			
+
 			return false;
+		},
+
+		updateCancelWindow: function(ev){
+			var thisObj = this;		
+			var modalTitle = 'Cancel Purchase Order';
+			var buttonId = 'confirm-cancel-po';
+			var entity = 'PO';
+			var options = '';
+			_.each(this.cancellingReasonCollection.models, function (model) {
+				options += '<option value="'+model.get('id')+'">'+model.get('reason')+'</option>';
+			});
+			var form = _.template(reasonForCancellationOptionTemplate, {'reasons': options});
+			
+			if(ev != undefined){
+				var id = $(ev.currentTarget).attr('data-id');
+				var purchaseModel = this.collection.get({id: id});
+				if(purchaseModel.get('isfrombid')){
+					modalTitle = 'Cancel BID';
+					entity = 'BID';
+				}		
+			}
+
+			this.initConfirmationWindowWithForm('Are you sure you want to cancel this '+ entity + '?',
+										buttonId,
+										'Yes',
+										form,
+										modalTitle);
+
+			var validate = $('#cancellationReasonForm').validate({
+				submitHandler: function(form) {
+					
+					var data = $(form).serializeObject();
+					
+					var purchaseOrderModel = new PurchaseOrderModel(data);
+						
+					purchaseOrderModel.setCancelURL();		
+					purchaseOrderModel.save(
+						null, 
+						{
+							success: function (model, response, options) {								
+								thisObj.hideConfirmationWindow('modal-with-form-confirm', function(){
+									thisObj.displayMessage(response);																
+									thisObj.renderList(thisObj.collection.listView.currentPage);
+									thisObj.resetSelect(thisObj.subContainer.find('#reason'));
+									//Backbone.history.history.back();
+								});
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: purchaseOrderModel.getAuth(),
+						}
+					);
+				},
+				rules: {
+					others: {
+						require_reason_others: true,
+					},
+				},
+			});
 		},
 		
 		cancelPO: function (ev) {
 			$('#cancellationReasonForm').submit();
 			return false;
+		},
+
+		onChangeReason: function (ev) {
+			var field = $(ev.target);
+			
+			if(field.val() == Const.CANCELLATIONREASON.OTHERS)
+				$('#cancellation-others-text').show();
+			else
+				$('#cancellation-others-text').hide();
 		},
 		
 		toggleAccordion: function (ev) {

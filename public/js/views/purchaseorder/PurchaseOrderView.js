@@ -204,6 +204,7 @@ define([
 			var modalTitle = "Cancel Purchase Order";
 			var entity = "PO";
 			var buttonId = "confirm-cancel-po";
+			
 			if(thisObj.model.get('isfrombid')){
 				modalTitle = "Cancel BID";
 				entity = "BID";
