@@ -75,7 +75,7 @@
                             <td>
                                 <%= numberFormatBales(comm.bales) %>
                             </td>  
-                            <% total_tons += (comm.tons*1) %>
+                            <% total_tons += parseFloat(comm.tons) %>
                             <td>
                                 <%= numberFormatTons(comm.tons) %>
                             </td>   

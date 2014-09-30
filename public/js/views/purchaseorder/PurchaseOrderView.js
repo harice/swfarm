@@ -113,9 +113,12 @@ define([
 				if(parseInt(this.get('isfrombid')) == 1 && this.get('status').name.toLowerCase() == 'pending') {
 					thisObj.isBid = true;
 					thisObj.h1Title = 'Bid';
+					Backbone.View.prototype.refreshTitle(thisObj.h1Title,'view');
 				}
-				else
+				else{
 					thisObj.isBid = false;
+					Backbone.View.prototype.refreshTitle("Purchase Order",'view');
+				}
 				
 				thisObj.destinationCollection.getModels();
 				this.off('change');
@@ -134,9 +137,8 @@ define([
 		
 		render: function(){
 			this.model.runFetch();
-			this.cancellingReasonCollection.getModels();
-			Backbone.View.prototype.refreshTitle('Purchase Order','view');
-		},
+			this.cancellingReasonCollection.getModels();						
+		},		
 		
 		displayForm: function () {
 			var thisObj = this;
@@ -199,11 +201,20 @@ define([
 			});
 			var form = _.template(reasonForCancellationOptionTemplate, {'reasons': options});
 			
-			this.initConfirmationWindowWithForm('Are you sure you want to cancel this PO?',
-										'confirm-cancel-po',
+			var modalTitle = "Cancel Purchase Order";
+			var entity = "PO";
+			var buttonId = "confirm-cancel-po";
+			if(thisObj.model.get('isfrombid')){
+				modalTitle = "Cancel BID";
+				entity = "BID";
+				buttonId = "confirm-cancel-bid";
+			}
+
+			this.initConfirmationWindowWithForm('Are you sure you want to cancel this '+ entity +'?',
+										buttonId,
 										'Yes',
 										form,
-										'Cancel Purchase Order');
+										modalTitle);
 										
 			var validate = $('#cancellationReasonForm').validate({
 				submitHandler: function(form) {
@@ -318,7 +329,9 @@ define([
 			'click #btn_sendmail':'sendMail',
 			//'click .attach-pdf': 'showPDF',
 			'click .cancel-po': 'preShowConfirmationWindow',
+			'click .cancel-bid': 'preShowConfirmationWindow',
 			'click #confirm-cancel-po': 'cancelPO',
+			'click #confirm-cancel-bid': 'cancelPO',
 			'change #reason': 'onChangeReason',
 		},
 
@@ -345,8 +358,14 @@ define([
 
 		showSendMailModal: function(){
 			var thisObj = this;
+			var modalTitle = "Send Purchase Order as pdf";
+
+			if(thisObj.model.get('isfrombid')){
+				modalTitle = "Send BID as pdf";
+			}
+
 			this.initSendMailForm(
-					'Send Purchase Order as pdf',
+					modalTitle,
 					'btn_sendmail',
 					'Send',
 					this.model.get('order_number'),

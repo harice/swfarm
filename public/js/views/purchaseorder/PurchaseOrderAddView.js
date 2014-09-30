@@ -207,13 +207,22 @@ define([
 			});
 			this.contractProductsCollection.on('error', function(collection, response, options) {
 				this.off('error');
-			});
+			});			
 			
 		},
 		
 		render: function(){
-			this.destinationCollection.getModels();			
-			Backbone.View.prototype.refreshTitle('Purchase Order','add');
+			this.destinationCollection.getModels();	
+			this.updatePageTitle();
+		},
+
+		updatePageTitle: function(){
+			if(this.isBid){
+				Backbone.View.prototype.refreshTitle('BID','add');	
+			}
+			else {
+				Backbone.View.prototype.refreshTitle('Purchase Order','add');
+			}
 		},
 		
 		displayForm: function () {
@@ -1143,7 +1152,10 @@ define([
 		
 		generateProducerAccountContacts: function () {
 			var dropDown = '';
-			_.each(this.producerAccountCollection.models, function (model) {
+
+			var producers = this.sortProducerCollection();		
+
+			_.each(producers, function (model) {
 				dropDown += '<option value="'+model.get('id')+'">'+model.get('lastname')+', '+model.get('firstname')+' '+model.get('suffix')+'</option>';
 			});
 			this.$el.find('#contact_id').append(dropDown);
@@ -1156,6 +1168,13 @@ define([
 				if(this.producerAccountCollection.models.length == 1)
 					this.$el.find('#contact_id').val(this.producerAccountCollection.models[0].get('id')).change();
 			}
+		},
+
+		sortProducerCollection: function(){
+			return _.sortBy(this.producerAccountCollection.models, function(producer){
+				return producer.get('lastname');
+			});
+
 		},
 		
 		generateStackNumberSuggestions: function (ev) {
