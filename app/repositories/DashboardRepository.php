@@ -289,15 +289,24 @@ class DashboardRepository implements DashboardRepositoryInterface {
                                 //         $query->has('transportschedule', '>=', DB::raw(1));
                                 //     });
                                 // })
+                                // ->with(array('productorder.transportscheduleproduct' => function($query){
+                                //     $query->has('transportschedule');
+                                // }))
                                 ->with(array('productorder' => function($query){
                                     $query->addSelect(array('id', 'order_id', 'product_id'))
-                                            ->has('transportscheduleproduct');
+                                          ->whereHas('transportscheduleproduct', function($query){
+                                                $query->has('transportschedule', '>=', DB::raw(1));
+                                          });
                                 }))
                                 // ->has('productorder.transportscheduleproduct.transportschedule')
                                 ->where('id', '=', $product['id'])
                                 ->get(array('id', 'name'))->toArray();
 
             array_push($temp, $result);
+        }
+
+        foreach($products as $product){
+
         }
         return $temp;
     }
@@ -371,6 +380,10 @@ class DashboardRepository implements DashboardRepositoryInterface {
         }
         return $result;
 
+    }
+
+    public function accountMapCoordinates(){
+        
     }
     
 }
