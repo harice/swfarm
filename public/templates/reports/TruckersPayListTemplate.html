@@ -90,21 +90,21 @@
                             %>
                             <td><%= schedule.bales %></td>
                             <% bales_i += schedule.bales %>
-                            <td><%= schedule.pounds %></td>
+                            <td><%= numberFormatLbs(schedule.pounds) %></td>
                             <% pounds_i += parseFloat(schedule.pounds) %>
-                            <td><%= schedule.tons %></td>
+                            <td><%= numberFormatTons(schedule.tons) %></td>
                             <% tons_i += parseFloat(schedule.tons) %>
-                            <td>$ <%= schedule.truckingrate %></td>
+                            <td>$ <%= numberFormat(schedule.truckingrate) %></td>
                             <% trucking_i += parseFloat(schedule.truckingrate) %>
-                            <td>$ <%= schedule.gross %></td>
+                            <td>$ <%= numberFormat(schedule.gross) %></td>
                             <% gross_i += parseFloat(schedule.gross) %>
-                            <td>$ <%= schedule.trailerrate %></td>
+                            <td>$ <%= numberFormat(schedule.trailerrate) %></td>
                             <% trailer_i += parseFloat(schedule.trailerrate) %>
-                            <td>$ <%= schedule.fuelcharge %></td>
+                            <td>$ <%= numberFormat(schedule.fuelcharge) %></td>
                             <% fuelcharge_i += parseFloat(schedule.fuelcharge) %>
-                            <td>$ <%= schedule.adminfee %></td>
+                            <td>$ <%= numberFormat(schedule.adminfee) %></td>
                             <% adminfee_i += parseFloat(schedule.adminfee) %>
-                            <td>$ <%= schedule.amount %></td>
+                            <td>$ <%= numberFormat(schedule.amount) %></td>
                             <% amount_i += parseFloat(schedule.amount) %>
                         </tr>
                     <%
@@ -131,7 +131,49 @@
                 </table>  
             <%
                 })
-            %>     
+            %>  
+
+            <table class="table table-bordered" style="width:30%">               
+                <tbody class="no-border-y">
+                    <tr>
+                        <td colspan="2" align="center">
+                            <strong>Total</strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Total Loading Fee</td>
+                        <td>$ <%= numberFormat(truckers.get('loadingfee')) %></td>
+                    </tr>
+                    <tr>
+                        <td>Total Hauling Fee</td>
+                        <td>$ <%= numberFormat(truckers.get('hauling')) %></td>
+                    </tr>
+                    <tr>
+                        <td>Total Admin Fee</td>
+                        <td>$ <%= numberFormat(truckers.get('adminfee')) %></td>
+                    </tr>
+                    <tr>
+                        <td>Total Fuel Charge</td>
+                        <td>$ <%= numberFormat(truckers.get('fuelcharge')) %></td>
+                    </tr>
+                    <tr>
+                        <td>Total Rent</td>
+                        <td>$ <%= numberFormat(truckers.get('trailerrent')) %></td>
+                    </tr>
+                    <tr>
+                        <td>Total Bales</td>
+                        <td><%= numberFormatBales(truckers.get('bales')) %></td>
+                    </tr>
+                    <tr>
+                        <td>Total Pounds</td>
+                        <td><%= numberFormatLbs(truckers.get('pounds')) %></td>
+                    </tr>
+                    <tr>
+                        <td>Total Tons</td>
+                        <td><%= numberFormatTons(truckers.get('tons')) %></td>
+                    </tr>                   
+                </tbody>
+            </table>
         </div>
     </div>
     <% } else { %>

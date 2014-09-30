@@ -20,7 +20,7 @@ define([
 
 		initialize: function() {
 			var thisObj = this;			
-			this.filtername = "Storage Location";
+			this.filtername = "Stack No";
 			this.reportId = $("#reporttype").val();
 			this.model = new Report();
 			this.model.on('change', function (){				
@@ -50,7 +50,7 @@ define([
 		},			
 
 		getFilterName: function (){
-			var locations = '<option disabled selected>Select Location</option>';			
+			var locations = '<option disabled selected>Select Stack No.</option>';			
 			_.each(this.collection.models, function (model) {
 				locations += '<option value="'+model.get('id')+'">'+model.get('stacknumber')+'</option>';
 			});

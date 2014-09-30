@@ -79,7 +79,7 @@
                             <td>
                                 <%= numberFormatTons(comm.tons) %>
                             </td>   
-                            <% total_commissions = total_bales + comm.amountdue %>
+                            <% total_commissions += parseFloat(comm.amountdue) %>
                             <td>$ <%= numberFormat(comm.amountdue) %></td>                                              
                         </tr>
                     <%}); %>   

@@ -77,7 +77,7 @@
                                     <%                                                             
                                     _.each(section.productorder, function(order){                                         
                                         var amount = parseFloat(order.unitprice) * parseFloat(order.tons);
-                                        total_bales += parseFloat(order.bales);
+                                        total_bales += parseInt(order.bales);
                                         total_tons += parseFloat(order.tons);
                                     %>                                                                    
                                     <tr>                        
