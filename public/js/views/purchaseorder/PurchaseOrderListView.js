@@ -230,16 +230,7 @@ define([
 			'click .stop-propagation': 'linkStopPropagation',
 			'click .close-po': 'showCloseConfirmationWindow',
 			'click #confirm-close-order': 'closeOrder',
-		},
-		
-		onChangeReason: function (ev) {
-			var field = $(ev.target);
-			
-			if(field.val() == Const.CANCELLATIONREASON.OTHERS)
-				$('#cancellation-others-text').show();
-			else
-				$('#cancellation-others-text').hide();
-		},
+		},	
 		
 		sortPODate: function () {
 			this.sortByField('created_at');
@@ -261,6 +252,7 @@ define([
 		
 		preShowConfirmationWindow: function (ev) {					
 			this.$el.find('#cancellationReasonForm #cancelled-order-id').val($(ev.currentTarget).attr('data-id'));		
+			this.updateCancelWindow(ev);
 			this.showConfirmationWindow('modal-with-form-confirm');			
 
 			return false;
@@ -341,6 +333,7 @@ define([
 				$('#cancellation-others-text').show();
 			else
 				$('#cancellation-others-text').hide();
+
 		},
 		
 		toggleAccordion: function (ev) {

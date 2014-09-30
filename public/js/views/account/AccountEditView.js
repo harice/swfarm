@@ -44,7 +44,7 @@ define([
 			this.options = {
 				addressFieldClone: null,
 				addressFieldCounter: 0,
-				addressFieldClass: ['type', 'street', 'state', 'city', 'zipcode', 'country', 'id'],
+				addressFieldClass: ['type', 'street', 'state', 'city', 'zipcode', 'country', 'id', 'latitude', 'longitude'],
 				addressFieldClassRequired: ['street', 'state', 'city', 'zipcode'],
 				addressFieldSeparator: '.',
 			};
@@ -102,6 +102,8 @@ define([
 				addressFields.find('.city').val(address.city);
 				addressFields.find('.state').val(address.address_states[0].id);
 				addressFields.find('.zipcode').val(address.zipcode);
+				addressFields.find('.latitude').val(address.latitude);
+				addressFields.find('.longitude').val(address.longitude);
 			});
 		},
 	});

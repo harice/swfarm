@@ -87,7 +87,9 @@ class AccountRepository implements AccountRepositoryInterface {
         'state' => 'required_with:street,city,country,type,zipcode',
         'country' => 'required_with:street,city,state,type,zipcode',
         'zipcode' => 'required_with:street,city,state,type',
-        'type' => 'required_with:street,city,state,country'
+        'type' => 'required_with:street,city,state,country',
+        'longitude' => 'required',
+        'latitude' => 'required'
       );
 
       foreach($data['address'] as $addressData){
@@ -101,6 +103,8 @@ class AccountRepository implements AccountRepositoryInterface {
         $address->type = $addressData['type'];
         $address->zipcode = $addressData['zipcode'];
         $address->account = $account->id;
+        $address->longitude = $addressData['longitude'];
+        $address->latitude = $addressData['latitude'];
 
         $address->save();
       }
@@ -142,7 +146,9 @@ class AccountRepository implements AccountRepositoryInterface {
         'state' => 'required_with:street,city,country,type,zipcode',
         'country' => 'required_with:street,city,state,type,zipcode',
         'zipcode' => 'required_with:street,city,state,type',
-        'type' => 'required_with:street,city,state,country'
+        'type' => 'required_with:street,city,state,country',
+        'longitude' => 'required',
+        'latitude' => 'required'
       );
 
       //deleting addresses
@@ -166,6 +172,8 @@ class AccountRepository implements AccountRepositoryInterface {
         $address->type = $addressData['type'];
         $address->zipcode = $addressData['zipcode'];
         $address->account = $account->id;
+        $address->longitude = $addressData['longitude'];
+        $address->latitude = $addressData['latitude'];
 
         $address->save();
       }
