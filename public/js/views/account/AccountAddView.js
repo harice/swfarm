@@ -43,7 +43,7 @@ define([
 			this.options = {
 				addressFieldClone: null,
 				addressFieldCounter: 0,
-				addressFieldClass: ['type', 'street', 'state', 'city', 'zipcode', 'country', 'id'],
+				addressFieldClass: ['type', 'street', 'state', 'city', 'zipcode', 'country', 'id', 'latitude', 'longitude'],
 				addressFieldClassRequired: ['street', 'state', 'city', 'zipcode'],
 				addressFieldSeparator: '.',
 				addressTypeUniqueForCustomer: null,
@@ -115,19 +115,19 @@ define([
 		},
 		
 		initValidateForm: function () {
-			var thisObj = this;
+			var thisObj = this;			
 			
 			var validate = $('#addAccountForm').validate({
-				submitHandler: function(form) {
+				submitHandler: function(form) {						
 					var data = thisObj.formatFormField($(form).serializeObject());
-					
-					var accountModel = new AccountModel(data);
-					
+
+					var accountModel = new AccountModel(data);					
 					accountModel.save(
 						null, 
 						{
 							success: function (model, response, options) {
-								thisObj.displayMessage(response);
+								thisObj.displayMessage(response);	
+								console.log(data);							
 								//Global.getGlobalVars().app_router.navigate(Const.URL.ACCOUNT, {trigger: true});
 								Backbone.history.history.back();
 							},
@@ -161,13 +161,38 @@ define([
 				
 			});
 		},
+
+		setCoordinates: function (){				
+			var address = '';
+			var geocoder = new google.maps.Geocoder();
+			var data = this.formatFormField($("#addAccountForm").serializeObject());
+
+			_.each(data.address, function(add, index){
+				address += add.street + ', ' + add.city + ', ' + $(".state[name='state."+ index +"']").find("option[value='"+ add.state +"']").text() +', ' + add.zipcode + ' USA';
+
+				if (geocoder) {
+			      geocoder.geocode({ 'address': address }, function (results, status) {
+			         if (status == google.maps.GeocoderStatus.OK) {
+			         	$(".country").next('.error-msg-cont').fadeOut();
+			         	$(".latitude[name='latitude."+ index +"']").val(results[0].geometry.location.k);
+			         	$(".longitude[name='longitude."+ index +"']").val(results[0].geometry.location.B);
+			         }
+			         else {
+			         	$(".country").next('.error-msg-cont').fadeOut();
+			            $("<span class='error-msg-cont'><label class='error margin-bottom-0'>Invalid Address</label></div>").insertAfter($(".country"));
+			         }
+			      });
+			   }				
+			});
+		},
 		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #add-address-field' : 'addAddressFields',
 			'click .remove-address-fields' : 'removeAddressFields',
 			'change #accounttype': 'onChangeAccountType',
-			'click .type': 'checkType'
+			'click .type': 'checkType',
+			'change #addAccountForm': 'setCoordinates'
 		},
 
 		checkType: function(ev){
