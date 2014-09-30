@@ -74,6 +74,7 @@ define([
 				if(parseInt(this.get('isfrombid')) == 1 && this.get('status').name.toLowerCase() == 'pending') {
 					thisObj.isBid = true;
 					thisObj.h1Title = 'Bid';
+					Backbone.View.prototype.refreshTitle(thisObj.h1Title,'edit');
 				}
 				else
 					thisObj.isBid = false;

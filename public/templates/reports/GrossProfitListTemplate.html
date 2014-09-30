@@ -73,12 +73,12 @@
                                     <td>$ <%= prod.fees %></td>
                                     <td>$ <%= prod.commission %></td>
                                     <% 
-                                        profit_amount = prod.netsale - prod.haycost - prod.freight - prod.fees - prod.commission;
+                                        profit_amount = parseFloat(prod.netsale) - parseFloat(prod.haycost) - parseFloat(prod.freight) - parseFloat(prod.fees) - parseFloat(prod.commission);
                                         total_profit += profit_amount; 
                                     %>
                                     <td>$ <%= numberFormat(profit_amount) %></td>
                                     <%  
-                                        profit_prct = profit_amount/prod.netsale;
+                                        profit_prct = profit_amount/parseFloat(prod.netsale) * 100;
                                         total_profit_percentage += profit_prct;
                                     %>
                                     <td><%= numberFormat(profit_prct) %> %</td>

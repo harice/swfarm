@@ -61,19 +61,23 @@
                     <%     
                         var total_cost = 0;                    
                         var cost = 0;
+                        var total_bales = 0;
+                        var total_tons = 0;
                         _.each(locations.get('inventory'),function(inventory){ 
                     %>    
                         <tr>                        
                             <td><%= inventory.order_number %></td>   
-                            <td><%= (inventory.updated_at) %></td>
+                            <td><%= formatDate(inventory.updated_at) %></td>
                             <td><%= inventory.weightticketnumber %></td>
                             <td><%= inventory.account %></td>
-                            <td><%= inventory.contract_number %></td>                            
+                            <td><%= inventory.contract_number %></td>  
+                            <% total_bales += inventory.bales %>                          
                             <td><%= inventory.bales %></td>
+                            <% total_tons += parseFloat(inventory.tons) %>
                             <td><%= inventory.tons %></td>
                             <td>$ <%= inventory.price %></td>
                             <%
-                                cost = inventory.price * inventory.tons; 
+                                cost = parseFloat(inventory.price) * parseFloat(inventory.tons); 
                                 total_cost += cost;
                             %>
                             <td>$ <%= numberFormat(cost) %></td>
@@ -94,7 +98,7 @@
                             Total Bales In: 
                         </td>
                         <td>
-                            <strong><%= numberFormatBales() %></strong>
+                            <strong><%= numberFormatBales(locations.get('bales_in')) %></strong>
                         </td>
                     </tr>
                     <tr>
@@ -102,7 +106,7 @@
                             Total Bales Out: 
                         </td>
                         <td>
-                            <strong><%= numberFormatBales() %></strong>
+                            <strong><%= numberFormatBales(locations.get('bales_out')) %></strong>
                         </td>
                     </tr>
                     <tr>
@@ -110,7 +114,7 @@
                             Total Bales: 
                         </td>
                         <td>
-                            <strong><%= numberFormatBales() %></strong>
+                            <strong><%= numberFormatBales(total_bales) %></strong>
                         </td>
                     </tr>
                     <tr>
@@ -118,7 +122,7 @@
                             Total Tons In: 
                         </td>
                         <td>
-                            <strong><%= numberFormatTons() %></strong>
+                            <strong><%= numberFormatTons(locations.get('tons_in')) %></strong>
                         </td>
                     </tr>
                     <tr>
@@ -126,7 +130,7 @@
                             Total Tons Out: 
                         </td>
                         <td>
-                            <strong><%= numberFormatTons() %></strong>
+                            <strong><%= numberFormatTons(locations.get('tons_out')) %></strong>
                         </td>
                     </tr>
                     <tr>
@@ -134,7 +138,7 @@
                             Total Tons: 
                         </td>
                         <td>
-                            <strong><%= numberFormatTons() %></strong>
+                            <strong><%= numberFormatTons(total_tons) %></strong>
                         </td>
                     </tr>
                     <tr>

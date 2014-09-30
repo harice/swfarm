@@ -65,9 +65,9 @@
                             <td><%= formatDate(transport.updated_at) %></td>
                             <td><%= transport.weightticketnumber %></td>
                             <td><%= transport.originloader.firstname %> <%= transport.originloader.lastname %></td>
-                            <td><%= transport.originloaderfee %></td>
+                            <td>$ <%= transport.originloaderfee %></td>
                             <td><%= transport.destinationloader.firstname %> <%= transport.destinationloader.lastname %></td>
-                            <td><%= transport.destinationloaderfee %></td>
+                            <td>$ <%= transport.destinationloaderfee %></td>
                         </tr>  
                     <%});%>                    
                 </tbody>                  
@@ -76,7 +76,7 @@
         <table id="operator-list" class="table table-bordered" style="width:30%">
             <tbody class="no-border-y">
                 <td><strong>Total Amount</strong></td>
-                <td><%= operators.get('amount') %></td>
+                <td>$ <%= operators.get('amount') %></td>
             </tbody>
         </table>                                                               
         </div>        

@@ -65,12 +65,12 @@
                             <tr>
                                 <td><%= schedule.updated_at %></td>
                                 <td><%= schedule.truck %></td>
-                                <td><%= schedule.truckingrate %></td>
+                                <td>$ <%= schedule.truckingrate %></td>
                                 <td><%= schedule.bales %></td>
                                 <td><%= schedule.tons %></td>
                                 <td><%= schedule.gross %></td>
                                 <td>$ <%= numberFormat(drivers.get('rate')) %></td>
-                                <% total_pay += schedule.pay %>
+                                <% total_pay += parseFloat(schedule.pay) %>
                                 <td>$ <%= numberFormat(schedule.pay) %></td>
                             </tr>
                         <%
