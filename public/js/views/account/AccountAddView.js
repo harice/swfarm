@@ -1,6 +1,7 @@
 define([
 	'backbone',
 	'views/base/AppView',
+	'views/base/GoogleMapsView',
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
@@ -16,6 +17,7 @@ define([
 	'constant',
 ], function(Backbone,
 			AppView,
+			GoogleMapsView,
 			Validate,
 			TextFormatter,
 			PhoneNumber,
@@ -83,6 +85,18 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
+
+			this.googleMaps = new GoogleMapsView();
+			this.googleMaps.initGetMapLocation(function (data) {
+				if(typeof data.location !== 'undefined') {
+					thisObj.subContainer.find('#latitude').val(data.location.lat());
+					thisObj.subContainer.find('#longitude').val(data.location.lng());
+				}
+				else {
+					thisObj.subContainer.find('#latitude').val('');
+					thisObj.subContainer.find('#longitude').val('');
+				}
+			});
 			
 			this.focusOnFirstField();
 			
@@ -192,7 +206,15 @@ define([
 			'click .remove-address-fields' : 'removeAddressFields',
 			'change #accounttype': 'onChangeAccountType',
 			'click .type': 'checkType',
-			'change #addAccountForm': 'setCoordinates'
+			'change #addAccountForm': 'setCoordinates',
+			'click .map': 'showMap',
+		},
+
+		showMap: function (ev) {
+			var thisObj = this;
+			var latitude = $(ev.currentTarget).closest('.latitude').val();
+			var longitude = $(ev.currentTarget).closest('.longitude').val();
+			thisObj.googleMaps.showModalGetLocation({lat: latitude, lng: longitude});
 		},
 
 		checkType: function(ev){
