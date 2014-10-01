@@ -330,14 +330,16 @@ class DownloadRepository implements DownloadInterface
 
 					switch($q['model']) {
 						case 'producer-statement':
-							if(!$this->filterParams($q,array('filterId'))) { $_404 = true; break; }
+							if(!$this->filterParams($q,array('filterId'))) { 
+								if($mail) return false;
+								else $_404 = true;
+								break; 
+							}
 							
 							$report_o = $this->generateProducerStatement($q);
-							
-							if(!$report_o) { $_404 = true; break; }
-
-							if(strcmp($format,'csv') === 0) {
-								return Excel::create('SOA - '.$report_o->name, function($excel) use($report_o) {
+							if($report_o) {
+								if(strcmp($format,'csv') === 0) {
+									$excel_o = Excel::create('SOA - '.$report_o->name, function($excel) use($report_o) {
 										        $excel->sheet($report_o->name, function($sheet) use($report_o) {
 										        	$sheet->setColumnFormat(array('E' => '0.00','F' => '0.00','G' => '0.0000','I' => '0.00'));
 										        	$sheet->loadView(
@@ -348,9 +350,9 @@ class DownloadRepository implements DownloadInterface
 									        			)
 								        			);
 										        });
-										    })->download($format);
-							} else {
-								return Excel::create('SOA - '.$report_o->name, function($excel) use($report_o) {
+										    });
+								} else {
+									$excel_o = Excel::create('SOA - '.$report_o->name, function($excel) use($report_o) {
 										        $excel->sheet($report_o->name, function($sheet) use($report_o) {
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
@@ -373,32 +375,53 @@ class DownloadRepository implements DownloadInterface
 									        			)
 								        			);
 										        });
-										    })->download($format);
+										    });
+								}
+
+								if($mail) {
+									$store_a = $excel_o->store($format,false,true);
+
+									$finfo = finfo_open(FILEINFO_MIME_TYPE);
+									$_data['mime'] = finfo_file($finfo, $store_a['full']);
+									finfo_close($finfo);
+									
+									$_data['pathtofile'] = $store_a['full'];
+									$_data['display_name'] = 'Producer Statement : '.$report_o->name;
+									$_data['subject'] = 'Producer Statement : '.$report_o->name;
+									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
+
+									return $this->processMail($q,$_data);
+								} else return $excel_o->download($format);
+							} else {
+								if($mail) return false;
+								else $_404 = true;
 							}
 							break;
 
 						case 'customer-sales-statement':
-							if(!$this->filterParams($q,array('filterId'))) { $_404 = true; break; }
+							if(!$this->filterParams($q,array('filterId'))) { 
+								if($mail) return false;
+								else $_404 = true;
+								break; 
+							}
 							
 							$report_o = $this->generateCustomerStatement($q);
-							
-							if(!$report_o) { $_404 = true; break; }
-
-							if(strcmp($format,'csv') === 0) {
-								return Excel::create('SOA - '.$report_o->name, function($excel) use($report_o) {
-										        $excel->sheet($report_o->name, function($sheet) use($report_o) {
-										        	$sheet->setColumnFormat(array('E' => '0.00','F' => '0.0000','G' => '0.00','H' => '0.00'));
-										        	$sheet->loadView(
-										        		'reports.customer-header-excel',
-										        		array(
-										        			'report_o' => $report_o,
-										        			'_nest_content' => View::make('reports.customer-content', array('report_o' => $report_o))
-									        			)
-								        			);
-										        });
-										    })->download($format);
-							} else {
-								return Excel::create('SOA - '.$report_o->name, function($excel) use($report_o) {
+							if($report_o) { 
+								if(strcmp($format,'csv') === 0) {
+									$excel_o = Excel::create('SOA - '.$report_o->name, function($excel) use($report_o) {
+											        $excel->sheet($report_o->name, function($sheet) use($report_o) {
+											        	$sheet->setColumnFormat(array('E' => '0.00','F' => '0.0000','G' => '0.00','H' => '0.00'));
+											        	$sheet->loadView(
+											        		'reports.customer-header-excel',
+											        		array(
+											        			'report_o' => $report_o,
+											        			'_nest_content' => View::make('reports.customer-content', array('report_o' => $report_o))
+										        			)
+									        			);
+											        });
+											    });
+								} else {
+									$excel_o = Excel::create('SOA - '.$report_o->name, function($excel) use($report_o) {
 										        $excel->sheet($report_o->name, function($sheet) use($report_o) {
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
@@ -420,18 +443,40 @@ class DownloadRepository implements DownloadInterface
 									        			)
 								        			);
 										        });
-										    })->download($format);
+										    });
+								}
+
+								if($mail) {
+									$store_a = $excel_o->store($format,false,true);
+
+									$finfo = finfo_open(FILEINFO_MIME_TYPE);
+									$_data['mime'] = finfo_file($finfo, $store_a['full']);
+									finfo_close($finfo);
+									
+									$_data['pathtofile'] = $store_a['full'];
+									$_data['display_name'] = 'Customer Sales Statement : '.$report_o->name;
+									$_data['subject'] = 'Customer Sales Statement : '.$report_o->name;
+									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
+
+									return $this->processMail($q,$_data);
+								} else return $excel_o->download($format);
+							} else {
+								if($mail) return false;
+								else $_404 = true;
 							}
 							break;
 
 						case 'driver-pay-statement':
-							if(!$this->filterParams($q,array('filterId'))) { $_404 = true; break; }
+							if(!$this->filterParams($q,array('filterId'))) { 
+								if($mail) return false;
+								else $_404 = true;
+								break; 
+							}
 
 							$report_o = $this->generateDriversPay($q);
-							if(!$report_o) { $_404 = true; break; }
-
-							if(strcmp($format,'csv') === 0) {
-								return Excel::create('SOA - '.$report_o->lastname.'-'.$report_o->firstname, function($excel) use($report_o) {
+							if($report_o) {
+								if(strcmp($format,'csv') === 0) {
+									$excel_o = Excel::create('SOA - '.$report_o->lastname.'-'.$report_o->firstname, function($excel) use($report_o) {
 										        $excel->sheet($report_o->lastname.'-'.$report_o->firstname, function($sheet) use($report_o) {
 										        	$sheet->setColumnFormat(array('C' => '0.00','E' => '0.0000','F' => '0.00','H' => '0.00'));
 										        	$sheet->loadView(
@@ -442,9 +487,9 @@ class DownloadRepository implements DownloadInterface
 									        			)
 								        			);
 										        });
-										    })->download($format);
-							} else {
-								return Excel::create('SOA - '.$report_o->lastname.'-'.$report_o->firstname, function($excel) use($report_o) {
+										    });
+								} else {
+									$excel_o = Excel::create('SOA - '.$report_o->lastname.'-'.$report_o->firstname, function($excel) use($report_o) {
 										        $excel->sheet($report_o->lastname.'-'.$report_o->firstname, function($sheet) use($report_o) {
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
@@ -466,8 +511,63 @@ class DownloadRepository implements DownloadInterface
 									        			)
 								        			);
 										        });
-										    })->download($format);
+										    });
+								}
+								
+								if($mail) {
+									$store_a = $excel_o->store($format,false,true);
+
+									$finfo = finfo_open(FILEINFO_MIME_TYPE);
+									$_data['mime'] = finfo_file($finfo, $store_a['full']);
+									finfo_close($finfo);
+									
+									$_data['pathtofile'] = $store_a['full'];
+									$_data['display_name'] = 'Driver Statement : '.$report_o->lastname.'-'.$report_o->firstname;
+									$_data['subject'] = 'Driver Statement : '.$report_o->lastname.'-'.$report_o->firstname;
+									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
+
+									return $this->processMail($q,$_data);
+								} else return $excel_o->download($format);
+							} else {
+								if($mail) return false;
+								else $_404 = true;
 							}
+							break;
+
+						case 'trucking-statement':
+							if(!$this->filterParams($q,array('filterId'))) { 
+								if($mail) return false;
+								else $_404 = true;
+								break; 
+							}
+							break;
+
+						case 'operator-statement':
+							if(!$this->filterParams($q,array('filterId'))) { 
+								if($mail) return false;
+								else $_404 = true;
+								break; 
+							}
+							break;
+
+						case 'inventory-report':
+							if(!$this->filterParams($q,array('filterId'))) { 
+								if($mail) return false;
+								else $_404 = true;
+								break; 
+							}
+							break;
+
+						case 'gross-profit-report':
+							break;
+
+						case 'commission-statement':
+							if(!$this->filterParams($q,array('filterId'))) { 
+								if($mail) return false;
+								else $_404 = true;
+								break; 
+							}
+							break;
 
 						default:
 							if($mail) return false;
