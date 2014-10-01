@@ -15,7 +15,9 @@ class DashboardRepository implements DashboardRepositoryInterface {
                     array('graphName' => 'Sales in tons', 'graphId' => Config::get('constants.GRAPH_SALES_IN_TONS'), 'graphType' => Config::get('constants.GRAPH_TYPE_1'), 'data' => $this->salesInTons($params), 'filters' => array('date')),
                     array('graphName' => 'Sales in dollar values', 'graphId' => Config::get('constants.GRAPH_SALES_IN_DOLLAR_VALUES'), 'graphType' => Config::get('constants.GRAPH_TYPE_1'), 'data' => $this->salesInDollarValues($params), 'filters' => array('date')),
                     array('graphName' => 'Reserve Customers', 'graphId' => Config::get('constants.GRAPH_CUSTOMER_ORDER_VS_DELIVERED'), 'graphType' => Config::get('constants.GRAPH_TYPE_2'), 'data' => $this->reservedDeliveredVsBalanceOrderPerCustomerAccount($params), 'filters' => array('date')),
-                    array('graphName' => 'Year to date sales', 'graphId' => Config::get('constants.GRAPH_YEAR_TO_DATE_SALES'), 'graphType' => Config::get('constants.GRAPH_TYPE_1'), 'data' => $this->yearToDateSalesPerAccount(), 'filters' => array())
+                    array('graphName' => 'Year to date sales', 'graphId' => Config::get('constants.GRAPH_YEAR_TO_DATE_SALES'), 'graphType' => Config::get('constants.GRAPH_TYPE_1'), 'data' => $this->yearToDateSalesPerAccount(), 'filters' => array()),
+                    array('graphName' => 'Dashboard Purchases', 'graphId' => Config::get('constants.DASHBOARD_MAP_PRODUCER'), 'data' => $this->accountMapCoordinates(Config::get('constants.ACCOUNTTYPE_PRODUCER'))),
+                    array('graphName' => 'Dashboard Sales', 'graphId' => Config::get('constants.DASHBOARD_MAP_CUSTOMER'), 'data' => $this->accountMapCoordinates(Config::get('constants.ACCOUNTTYPE_CUSTOMER')))
                 );
         } else {
             $graph['graphId'] = $params['graphId'];
@@ -43,10 +45,15 @@ class DashboardRepository implements DashboardRepositoryInterface {
                 case Config::get('constants.GRAPH_INVENTORY_PRODUCT_ON_HAND'):
                     $graph['data'] = $this->inventoryProductOnHand($params);
                     break;
-
                 case Config::get('constants.GRAPH_YEAR_TO_DATE_SALES'):
                     $graph['data'] = $this->yearToDateSalesPerAccount($params);
-                    break;                
+                    break;  
+                case Config::get('constants.DASHBOARD_MAP_PRODUCER'):    
+                    $graph['data'] = $this->accountMapCoordinates(Config::get('constants.ACCOUNTTYPE_PRODUCER'));
+                    break;            
+                case Config::get('constants.DASHBOARD_MAP_CUSTOMER'):    
+                    $graph['data'] = $this->accountMapCoordinates(Config::get('constants.ACCOUNTTYPE_CUSTOMER'));
+                    break;            
                 default:
                     # code...
                     break;
@@ -382,8 +389,19 @@ class DashboardRepository implements DashboardRepositoryInterface {
 
     }
 
-    public function accountMapCoordinates(){
-        
+    public function accountMapCoordinates($accountType){
+        $accounts = Account::with('address')
+                  ->with('address.addressStates')
+                  ->with(array('address' => function($query){
+                        $query->addSelect(array('id', 'account', 'street', 'state', 'city', 'country', 'longitude', 'latitude'));
+                  }))
+                  ->whereHas('accounttype', function($q) use($accountType) { $q->where('accounttype_id','=', $accountType); } )
+                  ->orderBy('name', 'asc')
+                  ->get(array('id', 'name'));
+                  // var_dump(DB::getQueryLog());
+                  // var_dump($accounts);
+
+        return $accounts->toArray();
     }
     
 }
