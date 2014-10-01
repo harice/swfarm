@@ -367,21 +367,6 @@ class DashboardRepository implements DashboardRepositoryInterface {
                             ->whereHas('order', function($query){
                                 $query->has('transportschedule');
                             })
-                            // ->with(array('order.transportschedule' => function($query) use ($yearAgo, $dateToday){
-                            //      $query->wherehas('weightticket', function($query) use ($yearAgo, $dateToday){
-                            //                     $query->whereBetween('created_at', array($yearAgo, $dateToday))
-                            //                           ->where('status_id', '=', Config::get('constants.STATUS_CLOSED'));
-                            //                 });
-                            // }))
-                            // ->with(array('order' => function($query) use ($yearAgo, $dateToday){
-                            //     $query->where('ordertype', '=', Config::get('constants.ORDERTYPE_SO'))
-                            //           ->where('status_id', '!=', Config::get('constants.STATUS_CANCELLED'));
-                            // }))
-                            // ->with(array('order' => function($query){
-                            //     $query->has('transportschedule');
-                            // }))
-                            
-                            // ->has('order')
                             ->get()
                             ->toArray();
                     // return $response;
