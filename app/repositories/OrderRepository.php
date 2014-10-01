@@ -345,6 +345,9 @@ class OrderRepository implements OrderRepositoryInterface {
                 );
             }
         } else if(isset($result['dropship']) || isset($result['producer'])){
+            if($result['data']['error'] == false){ //no error
+                DB::commit();    
+            }
             return $result['data'];
         }
 
@@ -493,6 +496,9 @@ class OrderRepository implements OrderRepositoryInterface {
                 );
             }
         } else if(isset($result['dropship']) || isset($result['producer'])){
+            if($result['data']['error'] == false){ //no error
+                DB::commit();    
+            }
             return $result['data'];
         }
 
