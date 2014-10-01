@@ -53,7 +53,10 @@ class DashboardRepository implements DashboardRepositoryInterface {
                     break;            
                 case Config::get('constants.DASHBOARD_MAP_CUSTOMER'):    
                     $graph['data'] = $this->accountMapCoordinates(Config::get('constants.ACCOUNTTYPE_CUSTOMER'));
-                    break;            
+                    break;   
+                case Config::get('constants.DASHBOARD_LOGISTICS_MAP'):    
+                    $graph['data'] = $this->logisticRouteMap($params);
+                    break;               
                 default:
                     # code...
                     break;
@@ -381,7 +384,7 @@ class DashboardRepository implements DashboardRepositoryInterface {
                             // ->has('order')
                             ->get()
                             ->toArray();
-                    return $response;
+                    // return $response;
         $result = array();
         $cnt = 0;
         foreach($response as $account){
@@ -429,6 +432,27 @@ class DashboardRepository implements DashboardRepositoryInterface {
                   ->get(array('id', 'name'));
 
         return $accounts->toArray();
+    }
+
+    public function logisticRouteMap($params){
+        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d 00:00:00', strtotime("today"));
+        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d 23:59:59', strtotime("today"));
+
+        $order = Order::with('transportschedule.transportmap')
+                        ->with(array('transportschedule.transportmap' => function($query){
+                            $query->addSelect(array('id', 'transportschedule_id', 'longitudeFrom', 'latitudeFrom', 'longitudeTo', 'latitudeTo', 'distance', 'isLoadedDistance'));
+                        }))
+                        ->with(array('transportschedule' => function($query){
+                            // $query->whereHas('transportmap');
+                            $query->addSelect(array('id', 'order_id', 'date'))->has('transportmap', '>=', DB::raw(1));
+                        }))
+                        ->whereHas('transportschedule', function($query) use ($dateFrom, $dateTo){
+                            $query->has('transportmap')->whereBetween('date', array($dateFrom, $dateTo));
+                        })
+
+                        ->get(array('id', 'order_number'))->toArray();
+
+        return $order;
     }
     
 }
