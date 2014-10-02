@@ -53,7 +53,10 @@ class DashboardRepository implements DashboardRepositoryInterface {
                     break;            
                 case Config::get('constants.DASHBOARD_MAP_CUSTOMER'):    
                     $graph['data'] = $this->accountMapCoordinates(Config::get('constants.ACCOUNTTYPE_CUSTOMER'));
-                    break;            
+                    break;   
+                case Config::get('constants.DASHBOARD_LOGISTICS_MAP'):    
+                    $graph['data'] = $this->logisticRouteMap($params);
+                    break;               
                 default:
                     # code...
                     break;
@@ -273,7 +276,7 @@ class DashboardRepository implements DashboardRepositoryInterface {
         return $data;
     }
 
-    public function inventoryProductOnHand($params){
+    /*public function inventoryProductOnHand($params){
         $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d 00:00:00', strtotime("today"));
         $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d 23:59:59', strtotime("today"));
 
@@ -316,6 +319,33 @@ class DashboardRepository implements DashboardRepositoryInterface {
 
         }
         return $temp;
+    }*/
+
+    public function inventoryProductOnHand($params){
+        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d 00:00:00', strtotime("today"));
+        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d 23:59:59', strtotime("today"));
+
+        $products = Product::with('stack.stacklocation')
+                            ->whereHas('stack', function($query){
+                                $query->has('stacklocation');
+                            })
+                            ->orderby('name', 'asc')->get(array('id', 'name'))->toArray();
+        
+        $response = array();
+        $index = 0;
+        foreach($products as $product){
+            $response[$index]['name'] = $product['name'];
+            $response[$index]['tons'] = 0;
+            foreach($product['stack'] as $stack){
+                foreach($stack['stacklocation'] as $stacklocation){
+                    $response[$index]['tons'] += $stacklocation['tons'];
+                }
+            }
+            $response[$index]['tons'] = number_format($response[$index]['tons'], 2);
+            $index++;
+        }
+
+        return $response;
     }
 
     public function yearToDateSalesPerAccount(){
@@ -334,22 +364,9 @@ class DashboardRepository implements DashboardRepositoryInterface {
                                               ->where('status_id', '=', Config::get('constants.STATUS_CLOSED'));
                                     });
                             }))
-
-                            // ->with(array('order.transportschedule' => function($query) use ($yearAgo, $dateToday){
-                            //      $query->wherehas('weightticket', function($query) use ($yearAgo, $dateToday){
-                            //                     $query->whereBetween('created_at', array($yearAgo, $dateToday))
-                            //                           ->where('status_id', '=', Config::get('constants.STATUS_CLOSED'));
-                            //                 });
-                            // }))
-                            // ->with(array('order' => function($query) use ($yearAgo, $dateToday){
-                            //     $query->where('ordertype', '=', Config::get('constants.ORDERTYPE_SO'))
-                            //           ->where('status_id', '!=', Config::get('constants.STATUS_CANCELLED'));
-                            // }))
-                            // ->with(array('order' => function($query){
-                            //     $query->has('transportschedule');
-                            // }))
-                            
-                            // ->has('order')
+                            ->whereHas('order', function($query){
+                                $query->has('transportschedule');
+                            })
                             ->get()
                             ->toArray();
                     // return $response;
@@ -398,10 +415,29 @@ class DashboardRepository implements DashboardRepositoryInterface {
                   ->whereHas('accounttype', function($q) use($accountType) { $q->where('accounttype_id','=', $accountType); } )
                   ->orderBy('name', 'asc')
                   ->get(array('id', 'name'));
-                  // var_dump(DB::getQueryLog());
-                  // var_dump($accounts);
 
         return $accounts->toArray();
+    }
+
+    public function logisticRouteMap($params){
+        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d 00:00:00', strtotime("today"));
+        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d 23:59:59', strtotime("today"));
+
+        $order = Order::with('transportschedule.transportmap')
+                        ->with(array('transportschedule.transportmap' => function($query){
+                            $query->addSelect(array('id', 'transportschedule_id', 'longitudeFrom', 'latitudeFrom', 'longitudeTo', 'latitudeTo', 'distance', 'isLoadedDistance'));
+                        }))
+                        ->with(array('transportschedule' => function($query){
+                            // $query->whereHas('transportmap');
+                            $query->addSelect(array('id', 'order_id', 'date'))->has('transportmap', '>=', DB::raw(1));
+                        }))
+                        ->whereHas('transportschedule', function($query) use ($dateFrom, $dateTo){
+                            $query->has('transportmap')->whereBetween('date', array($dateFrom, $dateTo));
+                        })
+
+                        ->get(array('id', 'order_number'))->toArray();
+
+        return $order;
     }
     
 }

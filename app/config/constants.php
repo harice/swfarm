@@ -39,6 +39,7 @@ return array(
     'GRAPH_YEAR_TO_DATE_SALES' => 7,
     'DASHBOARD_MAP_PRODUCER' => 8,
     'DASHBOARD_MAP_CUSTOMER' => 9,
+    'DASHBOARD_LOGISTICS_MAP' => 10,
 
     'GRAPH_TYPE_1' => 1,
     'GRAPH_TYPE_2' => 2,
