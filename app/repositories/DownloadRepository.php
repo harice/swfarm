@@ -340,6 +340,7 @@ class DownloadRepository implements DownloadInterface
 							if($report_o) {
 								if(strcmp($format,'csv') === 0) {
 									$excel_o = Excel::create('SOA - '.$report_o->name, function($excel) use($report_o) {
+												$excel->setDescription('Producer Statement : '.$report_o->name)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
 										        $excel->sheet($report_o->name, function($sheet) use($report_o) {
 										        	$sheet->setColumnFormat(array('E' => '0.00','F' => '0.00','G' => '0.0000','I' => '0.00'));
 										        	$sheet->loadView(
@@ -353,6 +354,7 @@ class DownloadRepository implements DownloadInterface
 										    });
 								} else {
 									$excel_o = Excel::create('SOA - '.$report_o->name, function($excel) use($report_o) {
+												$excel->setDescription('Producer Statement : '.$report_o->name)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
 										        $excel->sheet($report_o->name, function($sheet) use($report_o) {
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
@@ -424,6 +426,7 @@ class DownloadRepository implements DownloadInterface
 							if($report_o) { 
 								if(strcmp($format,'csv') === 0) {
 									$excel_o = Excel::create('SOA - '.$report_o->name, function($excel) use($report_o) {
+													$excel->setDescription('Customer Sales Statement : '.$report_o->name)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
 											        $excel->sheet($report_o->name, function($sheet) use($report_o) {
 											        	$sheet->setColumnFormat(array('E' => '0.00','F' => '0.0000','G' => '0.00','H' => '0.00'));
 											        	$sheet->loadView(
@@ -437,6 +440,7 @@ class DownloadRepository implements DownloadInterface
 											    });
 								} else {
 									$excel_o = Excel::create('SOA - '.$report_o->name, function($excel) use($report_o) {
+												$excel->setDescription('Customer Sales Statement : '.$report_o->name)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
 										        $excel->sheet($report_o->name, function($sheet) use($report_o) {
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
@@ -507,6 +511,7 @@ class DownloadRepository implements DownloadInterface
 							if($report_o) {
 								if(strcmp($format,'csv') === 0) {
 									$excel_o = Excel::create('SOA - '.$report_o->lastname.'-'.$report_o->firstname, function($excel) use($report_o) {
+												$excel->setDescription('Driver Statement : '.$report_o->lastname.'-'.$report_o->firstname)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
 										        $excel->sheet($report_o->lastname.'-'.$report_o->firstname, function($sheet) use($report_o) {
 										        	$sheet->setColumnFormat(array('C' => '0.00','E' => '0.0000','F' => '0.00','H' => '0.00'));
 										        	$sheet->loadView(
@@ -520,6 +525,7 @@ class DownloadRepository implements DownloadInterface
 										    });
 								} else {
 									$excel_o = Excel::create('SOA - '.$report_o->lastname.'-'.$report_o->firstname, function($excel) use($report_o) {
+												$excel->setDescription('Driver Statement : '.$report_o->lastname.'-'.$report_o->firstname)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
 										        $excel->sheet($report_o->lastname.'-'.$report_o->firstname, function($sheet) use($report_o) {
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
@@ -588,6 +594,7 @@ class DownloadRepository implements DownloadInterface
 							if($report_o) {
 								if(strcmp($format,'csv') === 0) {
 									$excel_o = Excel::create('TS-'.$report_o->trucknumber, function($excel) use($report_o) {
+												$excel->setDescription('Trucking Statement : '.$report_o->trucknumber)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
 										        $excel->sheet($report_o->trucknumber, function($sheet) use($report_o) {
 										        	$sheet->setColumnFormat(array('E' => '0.00','G' => '0.00','H' => '0.0000','I' => '0.00','J' => '0.00','K' => '0.00','L' => '0.00','M' => '0.00','N' => '0.00'));
 										        	$sheet->loadView(
@@ -601,6 +608,7 @@ class DownloadRepository implements DownloadInterface
 										    });
 								} else {
 									$excel_o = Excel::create('TS-'.$report_o->trucknumber, function($excel) use($report_o) {
+												$excel->setDescription('Trucking Statement : '.$report_o->trucknumber)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
 										        $excel->sheet($report_o->trucknumber, function($sheet) use($report_o) {
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
@@ -665,6 +673,81 @@ class DownloadRepository implements DownloadInterface
 								else $_404 = true;
 								break; 
 							}
+							$report_o = $this->generateOperatorStatement($q);
+							if($report_o) {
+								if(strcmp($format,'csv') === 0) {
+									$excel_o = Excel::create('OS-'.$report_o->lastname.' '.$report_o->firstname.' '.$report_o->suffix, function($excel) use($report_o) {
+												$excel->setDescription('Operator Statement : '.$report_o->lastname.' '.$report_o->firstname.' '.$report_o->suffix)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
+										        $excel->sheet($report_o->lastname.' '.$report_o->firstname.' '.$report_o->suffix, function($sheet) use($report_o) {
+										        	$sheet->setColumnFormat(array('G' => '0.00'));
+										        	$sheet->loadView(
+										        		'reports.operator-header-excel',
+										        		array(
+										        			'report_o' => $report_o,
+										        			'_nest_content' => View::make('reports.operator-content', array('report_o' => $report_o))
+									        			)
+								        			);
+										        });
+										    });
+								} else {
+									$excel_o = Excel::create('OS-'.$report_o->lastname.' '.$report_o->firstname.' '.$report_o->suffix, function($excel) use($report_o) {
+												$excel->setDescription('Operator Statement : '.$report_o->lastname.' '.$report_o->firstname.' '.$report_o->suffix)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
+										        $excel->sheet($report_o->lastname.' '.$report_o->firstname.' '.$report_o->suffix, function($sheet) use($report_o) {
+													$sheet->setAutoSize(true);
+										        	$sheet->mergeCells('A1:A3');
+										        	$sheet->mergeCells('B1:G1');
+										        	$sheet->cell('B1', function($cell) {
+										        		$cell->setValue('Southwest Farm Services');
+										        		$cell->setFontWeight('bold');
+										        	});
+										        	$sheet->mergeCells('B2:G2');
+										        	$sheet->setCellValue('B2','11926 W. Southern Ave.');
+										        	$sheet->mergeCells('B3:C3');
+										        	$sheet->setCellValue('B3','Tolleson, AZ 85353');
+										        	$sheet->mergeCells('D3:G3');
+										        	$sheet->cell('D3', function($cell) {
+										        		$cell->setValue('Phone : (800) 936-4339 / (623) 936-4339 Fax : (623) 936-7360');
+										        		$cell->setAlignment('right');
+										        	});
+										        	$sheet->setFreeze('A4');
+
+										        	$objDrawing = new PHPExcel_Worksheet_Drawing();
+										        	$objDrawing->setPath(public_path("images/southwest-farm-services-logo-pdf.jpg"));
+										        	$objDrawing->setCoordinates('A1');
+										        	$objDrawing->setWorksheet($sheet);
+
+										        	$sheet->getStyle('G11')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->setColumnFormat(array('G' => '0.00'));
+										        	$sheet->setWidth(array('A' =>  24,'B' =>  18,'C' =>  20,'D' =>  20,'E' =>  18,'F' =>  18,'G' =>  18));
+
+										        	$sheet->loadView(
+										        		'excel.base',
+										        		array(
+										        			'child' => View::make('reports.operator-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.operator-content', array('report_o' => $report_o))
+									        			)
+								        			);
+										        });
+										    });
+								}
+
+								if($mail) {
+									$store_a = $excel_o->store($format,false,true);
+
+									$finfo = finfo_open(FILEINFO_MIME_TYPE);
+									$_data['mime'] = finfo_file($finfo, $store_a['full']);
+									finfo_close($finfo);
+									
+									$_data['pathtofile'] = $store_a['full'];
+									$_data['display_name'] = 'Operator Statement : '.$report_o->lastname.' '.$report_o->firstname.' '.$report_o->suffix;
+									$_data['subject'] = 'Operator Statement : '.$report_o->lastname.' '.$report_o->firstname.' '.$report_o->suffix;
+									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
+
+									return $this->processMail($q,$_data);
+								} else return $excel_o->download($format);
+							} else {
+								if($mail) return false;
+								else $_404 = true;
+							}
 							break;
 
 						case 'inventory-report':
@@ -673,9 +756,159 @@ class DownloadRepository implements DownloadInterface
 								else $_404 = true;
 								break; 
 							}
+							$report_o = $this->generateInventoryReport($q);
+							if($report_o) {
+								if(strcmp($format,'csv') === 0) {
+									$excel_o = Excel::create('OS-'.$report_o->stacknumber, function($excel) use($report_o) {
+												$excel->setDescription('Inventory : '.$report_o->stacknumber)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
+										        $excel->sheet($report_o->stacknumber, function($sheet) use($report_o) {
+										        	$sheet->setColumnFormat(array('G' => '0.00'));
+										        	$sheet->loadView(
+										        		'reports.inventory-header-excel',
+										        		array(
+										        			'report_o' => $report_o,
+										        			'_nest_content' => View::make('reports.inventory-content', array('report_o' => $report_o))
+									        			)
+								        			);
+										        });
+										    });
+								} else {
+									$excel_o = Excel::create('OS-'.$report_o->stacknumber, function($excel) use($report_o) {
+												$excel->setDescription('Inventory : '.$report_o->stacknumber)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
+										        $excel->sheet($report_o->stacknumber, function($sheet) use($report_o) {
+													$sheet->setAutoSize(true);
+										        	$sheet->mergeCells('A1:A3');
+										        	$sheet->mergeCells('B1:M1');
+										        	$sheet->cell('B1', function($cell) {
+										        		$cell->setValue('Southwest Farm Services');
+										        		$cell->setFontWeight('bold');
+										        	});
+										        	$sheet->mergeCells('B2:M2');
+										        	$sheet->setCellValue('B2','11926 W. Southern Ave.');
+										        	$sheet->mergeCells('B3:C3');
+										        	$sheet->setCellValue('B3','Tolleson, AZ 85353');
+										        	$sheet->mergeCells('D3:M3');
+										        	$sheet->cell('D3', function($cell) {
+										        		$cell->setValue('Phone : (800) 936-4339 / (623) 936-4339 Fax : (623) 936-7360');
+										        		$cell->setAlignment('right');
+										        	});
+										        	$sheet->setFreeze('A4');
+
+										        	$objDrawing = new PHPExcel_Worksheet_Drawing();
+										        	$objDrawing->setPath(public_path("images/southwest-farm-services-logo-pdf.jpg"));
+										        	$objDrawing->setCoordinates('A1');
+										        	$objDrawing->setWorksheet($sheet);
+
+										        	$sheet->getStyle('G11')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->setColumnFormat(array('K' => '0.0000','L' => '0.00','L' => '0.00'));
+										        	$sheet->setWidth(array('A' =>  24,'B' =>  18,'C' =>  20,'D' =>  20,'E' =>  18,'F' =>  18,'G' =>  18,'H' =>  20,'I' =>  20,'J' =>  10,'K' =>  15,'L' =>  15,'M' =>  15));
+
+										        	$sheet->loadView(
+										        		'excel.base',
+										        		array(
+										        			'child' => View::make('reports.inventory-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.inventory-content', array('report_o' => $report_o))
+									        			)
+								        			);
+										        });
+										    });
+								}
+
+								if($mail) {
+									$store_a = $excel_o->store($format,false,true);
+
+									$finfo = finfo_open(FILEINFO_MIME_TYPE);
+									$_data['mime'] = finfo_file($finfo, $store_a['full']);
+									finfo_close($finfo);
+									
+									$_data['pathtofile'] = $store_a['full'];
+									$_data['display_name'] = 'Inventory : '.$report_o->stacknumber;
+									$_data['subject'] = 'Inventory : '.$report_o->stacknumber;
+									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
+
+									return $this->processMail($q,$_data);
+								} else return $excel_o->download($format);
+							} else {
+								if($mail) return false;
+								else $_404 = true;
+							}
 							break;
 
 						case 'gross-profit-report':
+							$report_o = $this->generateGrossProfitReport($q);
+							if($report_o) {
+								if(strcmp($format,'csv') === 0) {
+									$excel_o = Excel::create('GP-'.date('Ymd'), function($excel) use($report_o) {
+												$excel->setDescription('Gross Profit Report : '.date('Ymd'))->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
+										        $excel->sheet(date('Ymd'), function($sheet) use($report_o) {
+										        	$sheet->setColumnFormat(array('C' => '0.00','D' => '0.00','E' => '0.00','F' => '0.00','G' => '0.00','H' => '0.00','I' => '0.00'));
+										        	$sheet->loadView(
+										        		'reports.gross-profit-header-excel',
+										        		array(
+										        			'report_o' => $report_o,
+										        			'_nest_content' => View::make('reports.gross-profit-content', array('report_o' => $report_o))
+									        			)
+								        			);
+										        });
+										    });
+								} else {
+									$excel_o = Excel::create('GP-'.date('Ymd'), function($excel) use($report_o) {
+												$excel->setDescription('Gross Profit Report : '.date('Ymd'))->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
+										        $excel->sheet(date('Ymd'), function($sheet) use($report_o) {
+													$sheet->setAutoSize(true);
+										        	$sheet->mergeCells('A1:A3');
+										        	$sheet->mergeCells('B1:I1');
+										        	$sheet->cell('B1', function($cell) {
+										        		$cell->setValue('Southwest Farm Services');
+										        		$cell->setFontWeight('bold');
+										        	});
+										        	$sheet->mergeCells('B2:I2');
+										        	$sheet->setCellValue('B2','11926 W. Southern Ave.');
+										        	$sheet->mergeCells('B3:C3');
+										        	$sheet->setCellValue('B3','Tolleson, AZ 85353');
+										        	$sheet->mergeCells('D3:I3');
+										        	$sheet->cell('D3', function($cell) {
+										        		$cell->setValue('Phone : (800) 936-4339 / (623) 936-4339 Fax : (623) 936-7360');
+										        		$cell->setAlignment('right');
+										        	});
+										        	$sheet->setFreeze('A4');
+
+										        	$objDrawing = new PHPExcel_Worksheet_Drawing();
+										        	$objDrawing->setPath(public_path("images/southwest-farm-services-logo-pdf.jpg"));
+										        	$objDrawing->setCoordinates('A1');
+										        	$objDrawing->setWorksheet($sheet);
+
+										        	$sheet->getStyle('G11')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->setColumnFormat(array('C' => '0.00','D' => '0.00','E' => '0.00','F' => '0.00','G' => '0.00','H' => '0.00','I' => '0.00'));
+										        	$sheet->setWidth(array('A' =>  24,'B' =>  18,'C' =>  15,'D' =>  15,'E' =>  15,'F' =>  15,'G' =>  15,'H' =>  15,'I' =>  15));
+
+										        	$sheet->loadView(
+										        		'excel.base',
+										        		array(
+										        			'child' => View::make('reports.gross-profit-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.gross-profit-content', array('report_o' => $report_o))
+									        			)
+								        			);
+										        });
+										    });
+								}
+
+								if($mail) {
+									$store_a = $excel_o->store($format,false,true);
+
+									$finfo = finfo_open(FILEINFO_MIME_TYPE);
+									$_data['mime'] = finfo_file($finfo, $store_a['full']);
+									finfo_close($finfo);
+									
+									$_data['pathtofile'] = $store_a['full'];
+									$_data['display_name'] = 'Gross Profit Report : '.date('Ymd');
+									$_data['subject'] = 'Gross Profit Report : '.date('Ymd');
+									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
+
+									return $this->processMail($q,$_data);
+								} else return $excel_o->download($format);
+							} else {
+								if($mail) return false;
+								else $_404 = true;
+							}
 							break;
 
 						case 'commission-statement':
@@ -683,6 +916,81 @@ class DownloadRepository implements DownloadInterface
 								if($mail) return false;
 								else $_404 = true;
 								break; 
+							}
+							$report_o = $this->generateCommissionStatement($q);
+							if($report_o) {
+								if(strcmp($format,'csv') === 0) {
+									$excel_o = Excel::create('COM-'.$report_o->user->lastname.' '.$report_o->user->firstname.' '.$report_o->user->suffix, function($excel) use($report_o) {
+												$excel->setDescription('Commission Statement : '.$report_o->user->lastname.' '.$report_o->user->firstname.' '.$report_o->user->suffix)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
+										        $excel->sheet($report_o->user->lastname.' '.$report_o->user->firstname.' '.$report_o->user->suffix, function($sheet) use($report_o) {
+										        	$sheet->setColumnFormat(array('F' => '0.00','H' => '0.0000','I' => '0.00'));
+										        	$sheet->loadView(
+										        		'reports.commission-header-excel',
+										        		array(
+										        			'report_o' => $report_o,
+										        			'_nest_content' => View::make('reports.commission-content', array('report_o' => $report_o))
+									        			)
+								        			);
+										        });
+										    });
+								} else {
+									$excel_o = Excel::create('COM-'.$report_o->user->lastname.' '.$report_o->user->firstname.' '.$report_o->user->suffix, function($excel) use($report_o) {
+												$excel->setDescription('Commission Statement : '.$report_o->user->lastname.' '.$report_o->user->firstname.' '.$report_o->user->suffix)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
+										        $excel->sheet($report_o->user->lastname.' '.$report_o->user->firstname.' '.$report_o->user->suffix, function($sheet) use($report_o) {
+													$sheet->setAutoSize(true);
+										        	$sheet->mergeCells('A1:A3');
+										        	$sheet->mergeCells('B1:I1');
+										        	$sheet->cell('B1', function($cell) {
+										        		$cell->setValue('Southwest Farm Services');
+										        		$cell->setFontWeight('bold');
+										        	});
+										        	$sheet->mergeCells('B2:I2');
+										        	$sheet->setCellValue('B2','11926 W. Southern Ave.');
+										        	$sheet->mergeCells('B3:C3');
+										        	$sheet->setCellValue('B3','Tolleson, AZ 85353');
+										        	$sheet->mergeCells('D3:I3');
+										        	$sheet->cell('D3', function($cell) {
+										        		$cell->setValue('Phone : (800) 936-4339 / (623) 936-4339 Fax : (623) 936-7360');
+										        		$cell->setAlignment('right');
+										        	});
+										        	$sheet->setFreeze('A4');
+
+										        	$objDrawing = new PHPExcel_Worksheet_Drawing();
+										        	$objDrawing->setPath(public_path("images/southwest-farm-services-logo-pdf.jpg"));
+										        	$objDrawing->setCoordinates('A1');
+										        	$objDrawing->setWorksheet($sheet);
+
+										        	$sheet->getStyle('G11')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->setColumnFormat(array('F' => '0.00','H' => '0.0000','I' => '0.00'));
+										        	$sheet->setWidth(array('A' =>  24,'B' =>  18,'C' =>  18,'D' =>  25,'E' =>  10,'F' =>  15,'G' =>  10,'H' =>  15,'I' =>  18));
+
+										        	$sheet->loadView(
+										        		'excel.base',
+										        		array(
+										        			'child' => View::make('reports.commission-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.commission-content', array('report_o' => $report_o))
+									        			)
+								        			);
+										        });
+										    });
+								}
+
+								if($mail) {
+									$store_a = $excel_o->store($format,false,true);
+
+									$finfo = finfo_open(FILEINFO_MIME_TYPE);
+									$_data['mime'] = finfo_file($finfo, $store_a['full']);
+									finfo_close($finfo);
+									
+									$_data['pathtofile'] = $store_a['full'];
+									$_data['display_name'] = 'Commission Statement : '.$report_o->user->lastname.' '.$report_o->user->firstname.' '.$report_o->user->suffix;
+									$_data['subject'] = 'Commission Statement : '.$report_o->user->lastname.' '.$report_o->user->firstname.' '.$report_o->user->suffix;
+									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
+
+									return $this->processMail($q,$_data);
+								} else return $excel_o->download($format);
+							} else {
+								if($mail) return false;
+								else $_404 = true;
 							}
 							break;
 
