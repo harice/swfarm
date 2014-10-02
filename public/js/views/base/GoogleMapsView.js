@@ -194,8 +194,8 @@ define([
 		},
 		
 		showModalGetLocation: function (marker) {
-			var thisObj = this;			
-			
+			var thisObj = this;	
+
 			this.shownModalCallback = function () {
 				thisObj.removeMarkers();
 				

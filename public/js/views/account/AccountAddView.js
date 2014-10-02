@@ -180,15 +180,16 @@ define([
 			var address;
 			var geocoder = new google.maps.Geocoder();
 			var data = this.formatFormField($("#addAccountForm").serializeObject());			
-			var state = '';
+			var state;
 			var index = $(ev.target).parents('.address-fields-container').attr('data-id');
 
-			_.each(data.address, function(add){
-				if(add.street != '')
+			_.each(data.address, function(add){	
+				if(add.state != '')
 					state = $(".state[name='state."+ index +"']").find("option[value='"+ add.state +"']").text();
-
+				else 
+					state = '';
+				
 				address = add.street + ', ' + add.city + ', ' + state +', ' + add.zipcode + ' USA';
-				console.log(address);
 
 				if (geocoder) {
 			      geocoder.geocode({ 'address': address }, function (results, status) {
@@ -198,6 +199,7 @@ define([
 			         	$(".longitude[name='longitude."+ index +"']").val(results[0].geometry.location.B);
 			         }
 			         else {
+			         	console.log(status);
 			         	$(".country").next('.error-msg-cont').fadeOut();
 			            $("<span class='error-msg-cont'><label class='error margin-bottom-0'>Invalid Address</label></div>").insertAfter($(".country"));
 			         }
@@ -221,8 +223,6 @@ define([
 			var latitude = '';
 			var longitude = '';
 			var index = $(ev.target).parents('.address-fields-container').attr('data-id');		
-
-			console.log(index);
 
 			if($('.street[name="street.'+ index +'"]').val() == ''){
 				$(".map").next('.error-msg-cont').fadeOut();
