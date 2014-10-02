@@ -28,6 +28,7 @@ class TransportSchedule extends Eloquent {
         'destinationloader_id',
         'destinationloaderfee',
         'truckingrate',
+        'handlingfee',
         'trailerrate',
         'adminfee',
         'type',
