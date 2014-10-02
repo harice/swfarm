@@ -291,10 +291,11 @@ class AccountRepository implements AccountRepositoryInterface {
      * @return Response
      */
     public function getStackAddress($id)
-    {
+    {   $addressType = array(1, 3); //stack and business address
         $address = Address::join('addressstates', 'addressstates.id', '=', 'address.state')
             ->where('account', '=', $id)
-            ->where('type', '=', 3);
+            //->where('type', '=', 3)
+            ->whereIn('type', $addressType);
 
         $address = $address->select(
             'address.id',
@@ -302,7 +303,9 @@ class AccountRepository implements AccountRepositoryInterface {
             'address.street as street',
             'address.city as city',
             'address.zipcode as zipcode',
-            'addressstates.state_code as address_state_code'
+            'addressstates.state_code as address_state_code',
+            'address.longitude',
+            'address.latitude'
         );
 
         $address = $address->get()->toArray();
@@ -311,7 +314,9 @@ class AccountRepository implements AccountRepositoryInterface {
         {
             $result[] = array(
                 'id' => $detail['id'],
-                'name' => $detail['street'] .', ' .$detail['city'] .', ' .$detail['address_state_code'] .', ' .'US' .' ' .$detail['zipcode']
+                'name' => $detail['street'] .', ' .$detail['city'] .', ' .$detail['address_state_code'] .', ' .'US' .' ' .$detail['zipcode'],
+                'longitude' => $detail['longitude'],
+                'latitude' => $detail['latitude']
             );
         }
 
