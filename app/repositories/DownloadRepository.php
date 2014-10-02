@@ -610,6 +610,7 @@ class DownloadRepository implements DownloadInterface
 									$excel_o = Excel::create('TS-'.$report_o->trucknumber, function($excel) use($report_o) {
 												$excel->setDescription('Trucking Statement : '.$report_o->trucknumber)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
 										        $excel->sheet($report_o->trucknumber, function($sheet) use($report_o) {
+										        	$sheet->setShowGridlines(false);
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
 										        	$sheet->mergeCells('B1:N1');
@@ -633,14 +634,16 @@ class DownloadRepository implements DownloadInterface
 										        	$objDrawing->setCoordinates('A1');
 										        	$objDrawing->setWorksheet($sheet);
 
-										        	$sheet->getStyle('G11')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->getStyle('L15')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->getStyle('L16')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->getStyle('L17')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
 										        	$sheet->setColumnFormat(array('E' => '0.00','G' => '0.00','H' => '0.0000','I' => '0.00','J' => '0.00','K' => '0.00','L' => '0.00','M' => '0.00','N' => '0.00'));
 										        	$sheet->setWidth(array('A' =>  24,'B' =>  18,'C' =>  20,'D' =>  20,'E' =>  15,'F' =>  10,'G' =>  18,'H' =>  15,'I' =>  15,'J' =>  15,'K' =>  10,'L' =>  15,'M' =>  15,'N' =>  15));
 
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
-										        			'child' => View::make('reports.truck-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.truck-content', array('report_o' => $report_o))
+										        			'child' => View::make('reports.truck-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.truck-content', array('report_o' => $report_o, 'excel' => true ))
 									        			)
 								        			);
 										        });
