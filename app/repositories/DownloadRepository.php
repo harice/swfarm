@@ -356,6 +356,22 @@ class DownloadRepository implements DownloadInterface
 										        $excel->sheet($report_o->name, function($sheet) use($report_o) {
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
+
+										        	$sheet->mergeCells('B1:I1');
+										        	$sheet->cell('B1', function($cell) {
+										        		$cell->setValue('Southwest Farm Services');
+										        		$cell->setFontWeight('bold');
+										        	});
+										        	$sheet->mergeCells('B2:I2');
+										        	$sheet->setCellValue('B2','11926 W. Southern Ave.');
+										        	$sheet->mergeCells('B3:C3');
+										        	$sheet->setCellValue('B3','Tolleson, AZ 85353');
+										        	$sheet->mergeCells('D3:I3');
+										        	$sheet->cell('D3', function($cell) {
+										        		$cell->setValue('Phone : (800) 936-4339 / (623) 936-4339 Fax : (623) 936-7360');
+										        		$cell->setAlignment('right');
+										        	});
+
 										        	$sheet->setFreeze('A4');
 
 										        	$objDrawing = new PHPExcel_Worksheet_Drawing();
@@ -370,7 +386,6 @@ class DownloadRepository implements DownloadInterface
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
-										        			'colspan' => 8,
 										        			'child' => View::make('reports.producer-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.producer-content', array('report_o' => $report_o))
 									        			)
 								        			);
@@ -425,6 +440,22 @@ class DownloadRepository implements DownloadInterface
 										        $excel->sheet($report_o->name, function($sheet) use($report_o) {
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
+
+										        	$sheet->mergeCells('B1:H1');
+										        	$sheet->cell('B1', function($cell) {
+										        		$cell->setValue('Southwest Farm Services');
+										        		$cell->setFontWeight('bold');
+										        	});
+										        	$sheet->mergeCells('B2:H2');
+										        	$sheet->setCellValue('B2','11926 W. Southern Ave.');
+										        	$sheet->mergeCells('B3:C3');
+										        	$sheet->setCellValue('B3','Tolleson, AZ 85353');
+										        	$sheet->mergeCells('D3:H3');
+										        	$sheet->cell('D3', function($cell) {
+										        		$cell->setValue('Phone : (800) 936-4339 / (623) 936-4339 Fax : (623) 936-7360');
+										        		$cell->setAlignment('right');
+										        	});
+
 										        	$sheet->setFreeze('A4');
 
 										        	$objDrawing = new PHPExcel_Worksheet_Drawing();
@@ -438,7 +469,6 @@ class DownloadRepository implements DownloadInterface
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
-										        			'colspan' => 7,
 										        			'child' => View::make('reports.customer-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.customer-content', array('report_o' => $report_o))
 									        			)
 								        			);
@@ -493,6 +523,20 @@ class DownloadRepository implements DownloadInterface
 										        $excel->sheet($report_o->lastname.'-'.$report_o->firstname, function($sheet) use($report_o) {
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
+										        	$sheet->mergeCells('B1:H1');
+										        	$sheet->cell('B1', function($cell) {
+										        		$cell->setValue('Southwest Farm Services');
+										        		$cell->setFontWeight('bold');
+										        	});
+										        	$sheet->mergeCells('B2:H2');
+										        	$sheet->setCellValue('B2','11926 W. Southern Ave.');
+										        	$sheet->mergeCells('B3:C3');
+										        	$sheet->setCellValue('B3','Tolleson, AZ 85353');
+										        	$sheet->mergeCells('D3:H3');
+										        	$sheet->cell('D3', function($cell) {
+										        		$cell->setValue('Phone : (800) 936-4339 / (623) 936-4339 Fax : (623) 936-7360');
+										        		$cell->setAlignment('right');
+										        	});
 										        	$sheet->setFreeze('A4');
 
 										        	$objDrawing = new PHPExcel_Worksheet_Drawing();
@@ -506,14 +550,13 @@ class DownloadRepository implements DownloadInterface
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
-										        			'colspan' => 7,
 										        			'child' => View::make('reports.driver-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.driver-content', array('report_o' => $report_o))
 									        			)
 								        			);
 										        });
 										    });
 								}
-								
+
 								if($mail) {
 									$store_a = $excel_o->store($format,false,true);
 
@@ -539,6 +582,80 @@ class DownloadRepository implements DownloadInterface
 								if($mail) return false;
 								else $_404 = true;
 								break; 
+							}
+
+							$report_o = $this->generateTruckingStatement($q);
+							if($report_o) {
+								if(strcmp($format,'csv') === 0) {
+									$excel_o = Excel::create('TS-'.$report_o->trucknumber, function($excel) use($report_o) {
+										        $excel->sheet($report_o->trucknumber, function($sheet) use($report_o) {
+										        	$sheet->setColumnFormat(array('E' => '0.00','G' => '0.00','H' => '0.0000','I' => '0.00','J' => '0.00','K' => '0.00','L' => '0.00','M' => '0.00','N' => '0.00'));
+										        	$sheet->loadView(
+										        		'reports.truck-header-excel',
+										        		array(
+										        			'report_o' => $report_o,
+										        			'_nest_content' => View::make('reports.truck-content', array('report_o' => $report_o))
+									        			)
+								        			);
+										        });
+										    });
+								} else {
+									$excel_o = Excel::create('TS-'.$report_o->trucknumber, function($excel) use($report_o) {
+										        $excel->sheet($report_o->trucknumber, function($sheet) use($report_o) {
+													$sheet->setAutoSize(true);
+										        	$sheet->mergeCells('A1:A3');
+										        	$sheet->mergeCells('B1:N1');
+										        	$sheet->cell('B1', function($cell) {
+										        		$cell->setValue('Southwest Farm Services');
+										        		$cell->setFontWeight('bold');
+										        	});
+										        	$sheet->mergeCells('B2:N2');
+										        	$sheet->setCellValue('B2','11926 W. Southern Ave.');
+										        	$sheet->mergeCells('B3:G3');
+										        	$sheet->setCellValue('B3','Tolleson, AZ 85353');
+										        	$sheet->mergeCells('H3:N3');
+										        	$sheet->cell('H3', function($cell) {
+										        		$cell->setValue('Phone : (800) 936-4339 / (623) 936-4339 Fax : (623) 936-7360');
+										        		$cell->setAlignment('right');
+										        	});
+										        	$sheet->setFreeze('A4');
+
+										        	$objDrawing = new PHPExcel_Worksheet_Drawing();
+										        	$objDrawing->setPath(public_path("images/southwest-farm-services-logo-pdf.jpg"));
+										        	$objDrawing->setCoordinates('A1');
+										        	$objDrawing->setWorksheet($sheet);
+
+										        	$sheet->getStyle('G11')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->setColumnFormat(array('E' => '0.00','G' => '0.00','H' => '0.0000','I' => '0.00','J' => '0.00','K' => '0.00','L' => '0.00','M' => '0.00','N' => '0.00'));
+										        	$sheet->setWidth(array('A' =>  24,'B' =>  18,'C' =>  20,'D' =>  20,'E' =>  15,'F' =>  10,'G' =>  18,'H' =>  15,'I' =>  15,'J' =>  15,'K' =>  10,'L' =>  15,'M' =>  15,'N' =>  15));
+
+										        	$sheet->loadView(
+										        		'excel.base',
+										        		array(
+										        			'child' => View::make('reports.truck-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.truck-content', array('report_o' => $report_o))
+									        			)
+								        			);
+										        });
+										    });
+								}
+
+								if($mail) {
+									$store_a = $excel_o->store($format,false,true);
+
+									$finfo = finfo_open(FILEINFO_MIME_TYPE);
+									$_data['mime'] = finfo_file($finfo, $store_a['full']);
+									finfo_close($finfo);
+									
+									$_data['pathtofile'] = $store_a['full'];
+									$_data['display_name'] = 'Trucking Statement : '.$report_o->trucknumber;
+									$_data['subject'] = 'Trucking Statement : '.$report_o->trucknumber;
+									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
+
+									return $this->processMail($q,$_data);
+								} else return $excel_o->download($format);
+							} else {
+								if($mail) return false;
+								else $_404 = true;
 							}
 							break;
 
