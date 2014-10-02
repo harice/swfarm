@@ -352,7 +352,10 @@ define([
 
 		updateAddress: function(data) {
 			var index = $('#google-maps-modal-getlocation').attr('data-id');		
-			var street, city, state, zipcode;
+			var street = '';
+			var city = '';
+			var state = '';
+			var zipcode = '';
 			var lat = data.location.k;
 			var lng = data.location.B;
 			var statecode;
@@ -364,15 +367,23 @@ define([
 		      geocoder.geocode({ 'latLng': latlng }, function (results, status) {
 		         if (status == google.maps.GeocoderStatus.OK) {
 		         	_.each(results[0].address_components, function(address){
-		         		if(address.types[0] == "street_number")
+		         		if(address.types[0] == "street_number" && address.types[0] != undefined)
 		         			street = address.short_name + ', ';
-		         		if(address.types[0] == "route")
+		         		if(address.types[0] == "route" && address.types[0] != undefined)
 		         			street += address.long_name;
-		         		if(address.types[0] == "locality")
+		         		else if(address.types[0] == "route" && address.types[0] == undefined) {
+		         			street += '';
+		         		}
+		         		if(address.types[0] == "locality" && address.types[0] != undefined){
 		         			city =  address.long_name;
-		         		if(address.types[0] == "administrative_area_level_1")
+		         		}
+		         		else if(address.types[0] == "locality" && address.types[0] == undefined){		         		
+		         			if(address.types[0] == "administrative_area_level_2" && address.types[0] != undefined)
+		         				city =  address.long_name;
+		         		}
+		         		if(address.types[0] == "administrative_area_level_1" && address.types[0] != undefined)
 		         			state = address.long_name;
-		         		if(address.types[0] == "postal_code")
+		         		if(address.types[0] == "postal_code" && address.types[0] != undefined)
 		         			zipcode = address.long_name;
 		         	});
 		         		         			         
@@ -380,9 +391,9 @@ define([
 		         		if($('.state[name="state.'+ index +'"] option[value="'+ option.value +'"]').text() == state)	
 		         			statecode = option.value;	         			
 		         	});
-
-		         	$('.latitude[name="latitude.'+ index +'"]').val(lat);
-		         	$('.longitude[name="longitude.'+ index +'"]').val(lng);
+		       
+		         	$('.latitude[name="latitude.'+ index +'"]').val(latlng.k);
+		         	$('.longitude[name="longitude.'+ index +'"]').val(latlng.B);
 		         	$('.street[name="street.'+ index +'"]').val(street);
 		         	$('.city[name="city.'+ index +'"]').val(city);
 		         	$('.state[name="state.'+ index +'"]').val(statecode);
