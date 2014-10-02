@@ -89,12 +89,12 @@ define([
 			this.googleMaps = new GoogleMapsView();
 			this.googleMaps.initGetMapLocation(function (data) {
 				if(typeof data.location !== 'undefined') {
-					thisObj.subContainer.find('#latitude').val(data.location.lat());
-					thisObj.subContainer.find('#longitude').val(data.location.lng());
+					thisObj.subContainer.find('.latitude').val(data.location.lat());
+					thisObj.subContainer.find('.longitude').val(data.location.lng());
 				}
 				else {
-					thisObj.subContainer.find('#latitude').val('');
-					thisObj.subContainer.find('#longitude').val('');
+					thisObj.subContainer.find('.latitude').val('');
+					thisObj.subContainer.find('.longitude').val('');
 				}
 			});
 			
@@ -176,13 +176,19 @@ define([
 			});
 		},
 
-		setCoordinates: function (){				
-			var address = '';
+		setCoordinates: function (ev){				
+			var address;
 			var geocoder = new google.maps.Geocoder();
-			var data = this.formatFormField($("#addAccountForm").serializeObject());
+			var data = this.formatFormField($("#addAccountForm").serializeObject());			
+			var state = '';
+			var index = $(ev.target).parents('.address-fields-container').attr('data-id');
 
-			_.each(data.address, function(add, index){
-				address += add.street + ', ' + add.city + ', ' + $(".state[name='state."+ index +"']").find("option[value='"+ add.state +"']").text() +', ' + add.zipcode + ' USA';
+			_.each(data.address, function(add){
+				if(add.street != '')
+					state = $(".state[name='state."+ index +"']").find("option[value='"+ add.state +"']").text();
+
+				address = add.street + ', ' + add.city + ', ' + state +', ' + add.zipcode + ' USA';
+				console.log(address);
 
 				if (geocoder) {
 			      geocoder.geocode({ 'address': address }, function (results, status) {
@@ -212,9 +218,23 @@ define([
 
 		showMap: function (ev) {
 			var thisObj = this;
-			var latitude = $(ev.currentTarget).closest('.latitude').val();
-			var longitude = $(ev.currentTarget).closest('.longitude').val();
-			thisObj.googleMaps.showModalGetLocation({lat: latitude, lng: longitude});
+			var latitude = '';
+			var longitude = '';
+			var index = $(ev.target).parents('.address-fields-container').attr('data-id');		
+
+			console.log(index);
+
+			if($('.street[name="street.'+ index +'"]').val() == ''){
+				$(".map").next('.error-msg-cont').fadeOut();
+				$("<span class='error-msg-cont'><label class='error margin-bottom-0'>Input address</label></div>").insertAfter($(ev.target));
+			}
+			else {
+				$(".map").next('.error-msg-cont').fadeOut();
+				latitude = $('.latitude[name="latitude.'+ index +'"]').val();
+				longitude = $('.longitude[name="longitude.'+ index +'"]').val();
+				thisObj.googleMaps.showModalGetLocation({lat: latitude, lng: longitude});
+				$("#google-maps-modal-getlocation").attr('data-id', index);
+			}			
 		},
 
 		checkType: function(ev){
@@ -316,6 +336,7 @@ define([
 				//field.attr('name', name+'['+this.options.addressFieldCounter+']');
 				field.attr('name', name + this.options.addressFieldSeparator + this.options.addressFieldCounter);
 				//field.attr('name', name+'[]');
+				joAddressFields.attr('data-id', this.options.addressFieldCounter);
 			}
 			
 			this.options.addressFieldCounter++;

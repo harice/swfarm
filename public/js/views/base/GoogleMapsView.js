@@ -205,7 +205,7 @@ define([
 				}
 				
 				thisObj.centerMap();
-			};
+			};			
 			
 			this.showModal(this.modalIdGetLocation);
 		},
@@ -314,7 +314,7 @@ define([
 				this.destinationLeg[id].loaded = false;
 		},
 		
-		useData: function (ev) {
+		useData: function () {
 			
 			var thisObj = this;
 			var modalId;
@@ -328,8 +328,13 @@ define([
 					break;
 				case this.mapTypes.GETLOCATION:
 					modalId = this.modalIdGetLocation;
-					if(this.markers.length > 0)
-						returnData = {location:this.markers[0].getPosition()};
+					if(this.markers.length > 0){
+						returnData = {location:this.markers[0].getPosition()};					
+
+						if($("#addAccountForm").length > 0)
+							this.updateAddress(returnData);
+					}																			
+
 					break;
 				default:
 					break;
@@ -343,6 +348,52 @@ define([
 			$('#'+modalId).modal('hide');
 			
 			return false;
+		},
+
+		updateAddress: function(data) {
+			var index = $('#google-maps-modal-getlocation').attr('data-id');		
+			var street, city, state, zipcode;
+			var lat = data.location.k;
+			var lng = data.location.B;
+			var statecode;
+
+			var geocoder = new google.maps.Geocoder();
+			var latlng = new google.maps.LatLng(lat, lng);			
+
+			if (geocoder) {
+		      geocoder.geocode({ 'latLng': latlng }, function (results, status) {
+		         if (status == google.maps.GeocoderStatus.OK) {
+		         	_.each(results[0].address_components, function(address){
+		         		if(address.types[0] == "street_number")
+		         			street = address.short_name + ', ';
+		         		if(address.types[0] == "route")
+		         			street += address.long_name;
+		         		if(address.types[0] == "locality")
+		         			city =  address.long_name;
+		         		if(address.types[0] == "administrative_area_level_1")
+		         			state = address.long_name;
+		         		if(address.types[0] == "postal_code")
+		         			zipcode = address.long_name;
+		         	});
+		         		         			         
+		         	_.each($('.state[name="state.'+ index +'"] option'), function(option){		         		
+		         		if($('.state[name="state.'+ index +'"] option[value="'+ option.value +'"]').text() == state)	
+		         			statecode = option.value;	         			
+		         	});
+
+		         	$('.latitude[name="latitude.'+ index +'"]').val(lat);
+		         	$('.longitude[name="longitude.'+ index +'"]').val(lng);
+		         	$('.street[name="street.'+ index +'"]').val(street);
+		         	$('.city[name="city.'+ index +'"]').val(city);
+		         	$('.state[name="state.'+ index +'"]').val(statecode);
+		         	$('.zipcode[name="zipcode.'+ index +'"]').val(zipcode);    			         
+		         }
+		         else {
+		         	console.log("Invalid");
+		         }
+		      });
+		    }
+		   				
 		},
 		
 		calcRoute: function () { //console.log('calcRoute');

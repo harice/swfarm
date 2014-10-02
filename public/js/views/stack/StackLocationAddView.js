@@ -321,8 +321,7 @@ define([
 		showMap: function () {
 			var thisObj = this;
 			var addressVal = this.subContainer.find("#address").val();
-			var address = this.subContainer.find("#address option:selected").text();
-
+			var address = this.subContainer.find("#address option:selected").text();			
 
 			if(addressVal == '') {
 				$("#map").next('.error-msg-cont').fadeOut();
@@ -337,9 +336,8 @@ define([
 			   if (geocoder) {
 			      geocoder.geocode({ 'address': address }, function (results, status) {
 			         if (status == google.maps.GeocoderStatus.OK) {
-			         	$("#map").next('.error-msg-cont').fadeOut();
-			            thisObj.googleMaps.showModalGetLocation({lat: results[0].geometry.location.k, lng: results[0].geometry.location.B});
-
+			         	$("#map").next('.error-msg-cont').fadeOut();			         	
+			            thisObj.googleMaps.showModalGetLocation({lat: results[0].geometry.location.k, lng: results[0].geometry.location.B});			            
 			         }
 			         else {
 			         	$("#map").next('.error-msg-cont').fadeOut();
