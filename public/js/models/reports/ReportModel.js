@@ -28,19 +28,19 @@ define([
 			
 		},
 
-		setDefaultURL: function(url) {
-			this.urlRoot = url;
+		setDefaultURL: function() {
+			this.urlRoot = '/apiv1/reports/';			
 		},
         
         label: function () {
             return this.get('name');
         },
 
-        fetchStatement: function (reportId, filterId, startDate, endDate) {
-        	
-            this.urlRoot = '/apiv1/reports/' + reportId + '?filterId=' + filterId + '&dateStart=' + startDate + '&dateEnd=' + endDate;
-           
-            this.runFetch();
+        fetchStatement: function (reportId, filterId, startDate, endDate) {        
+        	this.setDefaultURL();
+            this.urlRoot = this.urlRoot + reportId + '?filterId=' + filterId + '&dateStart=' + startDate + '&dateEnd=' + endDate;
+            console.log(this.urlRoot);
+            this.runFetch();            
         },
 
         fetchGrossProfit: function (reportId, startDate, endDate) {

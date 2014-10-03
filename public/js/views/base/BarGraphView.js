@@ -273,6 +273,10 @@ define([
 			
 			return { data: graphData, xData: graphXData, };
 		},
+
+		drawMap: function (graphName) {
+
+		},
 	});
 
 	return BarGraphView;

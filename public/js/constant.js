@@ -243,6 +243,7 @@ define(function () {
 			'TYPE': {
 				'BAR': 1,
 				'STACKEDBAR': 2,
+				'MAP': 3,
 			},
 		},
 	};

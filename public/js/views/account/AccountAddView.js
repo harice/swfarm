@@ -88,9 +88,10 @@ define([
 
 			this.googleMaps = new GoogleMapsView();
 			this.googleMaps.initGetMapLocation(function (data) {
+				var index = $("#google-maps-modal-getlocation").attr('data-id', index);
 				if(typeof data.location !== 'undefined') {
-					thisObj.subContainer.find('.latitude').val(data.location.lat());
-					thisObj.subContainer.find('.longitude').val(data.location.lng());
+					thisObj.subContainer.find(".latitude[name='latitude."+ index +"']").val(data.location.lat());
+					thisObj.subContainer.find(".longitude[name='longitude."+ index +"']").val(data.location.lng());
 				}
 				else {
 					thisObj.subContainer.find('.latitude').val('');
@@ -176,7 +177,7 @@ define([
 			});
 		},
 
-		setCoordinates: function (ev){				
+		setCoordinates: function (ev){		
 			var address;
 			var geocoder = new google.maps.Geocoder();
 			var data = this.formatFormField($("#addAccountForm").serializeObject());			
@@ -199,7 +200,6 @@ define([
 			         	$(".longitude[name='longitude."+ index +"']").val(results[0].geometry.location.B);
 			         }
 			         else {
-			         	console.log(status);
 			         	$(".country").next('.error-msg-cont').fadeOut();
 			            $("<span class='error-msg-cont'><label class='error margin-bottom-0'>Invalid Address</label></div>").insertAfter($(".country"));
 			         }
@@ -219,16 +219,18 @@ define([
 		},
 
 		showMap: function (ev) {
+
+			console.log("test");
 			var thisObj = this;
 			var latitude = '';
 			var longitude = '';
 			var index = $(ev.target).parents('.address-fields-container').attr('data-id');		
 
-			if($('.street[name="street.'+ index +'"]').val() == ''){
+			if($('.street[name="street.'+ index +'"]').val() == '' && $('.city[name="city.'+ index +'"]').val() == '' && $('.state[name="state.'+ index +'"]').val() == '' && $('.zipcode[name="zipcode.'+ index +'"]').val() == ''){
 				$(".map").next('.error-msg-cont').fadeOut();
 				$("<span class='error-msg-cont'><label class='error margin-bottom-0'>Input address</label></div>").insertAfter($(ev.target));
 			}
-			else {
+			else {				
 				$(".map").next('.error-msg-cont').fadeOut();
 				latitude = $('.latitude[name="latitude.'+ index +'"]').val();
 				longitude = $('.longitude[name="longitude.'+ index +'"]').val();
@@ -238,13 +240,27 @@ define([
 		},
 
 		checkType: function(ev){
-			
-			if($(ev.target).find("option[value='2']").length == 0) {
-				if($(".type").find("option:selected[value='2']").length == 0) {					
-					$(ev.target).append("<option value='2'>Mailing Address</option>");
+			var element = $(ev.target);	
+
+			if(element.is("option")) {
+					element = $(ev.target).parent();
+			}
+
+			if($(".type").find("option:selected[value='2']").length == 0) {												
+				if(element.find("option[value='2']").length == 0) {					
+					element.append("<option value='2'>Mailing Address</option>");	
 				}
 			}
-		},
+			else {						
+				if(element.val() != 2){
+					if(element.find("option[value='2']").length > 0){
+						element.find("option[value='2']").remove();	
+					}
+				}
+				
+			}
+
+		},		
 		
 		addAddressFields: function () {
 
@@ -283,7 +299,7 @@ define([
 				//if(multipleAddress.indexOf(accountTypeText) > -1) {					
 					var clone = this.options.addressFieldClone.clone();	
 
-					if($(".type").find("option:selected[value='2']").length > 0) {					
+					if($(".type").find("option:selected[value='2']").length > 0) {		
 						clone.find('.type option').filter(function () { return $(this).html() == "Mailing Address" }).remove();
 					}
 
