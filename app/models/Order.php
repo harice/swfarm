@@ -34,6 +34,7 @@ class Order extends BaseModel {
         'ordertype',
         'purchaseorder_id',
         'user_id',
+        'totalPayment',
         'created_at',
         'updated_at'
     );
@@ -115,6 +116,11 @@ class Order extends BaseModel {
     public function purchaseorder()
     {
         return $this->hasOne('Order', 'id', 'purchaseorder_id');
+    }
+
+    public function payment()
+    {
+        return $this->hasMany('Payment', 'order_id', 'id');
     }
 
 }
