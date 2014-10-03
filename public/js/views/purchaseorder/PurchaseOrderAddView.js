@@ -291,8 +291,9 @@ define([
 					if(typeof data['transportdateend'] != 'undefined')
 						data['transportdateend'] = thisObj.convertDateFormat(data['transportdateend'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					
-					// console.log(data);
-					
+					//console.log(data);
+
+					console.log(data);
 					var purchaseOrderModel = new PurchaseOrderModel(data);
 					
 					purchaseOrderModel.save(
@@ -642,14 +643,15 @@ define([
 			
 			for(var key in data) {
 				if(typeof data[key] !== 'function'){
-					var value = data[key];
+					var value = data[key];					
 					var arrayKey = key.split(this.options.productFieldSeparator);
-					
-					if(arrayKey.length < 2) {
-						if(this.options.removeComma.indexOf(key) < 0)
+					if(arrayKey.length < 2) {						
+						if(this.options.removeComma.indexOf(key) < 0){
 							formData[key] = value;
-						else
+						}
+						else {	
 							formData[key] = this.removeCommaFromNumber(value);
+						}
 					}
 					else {
 						if(arrayKey[0] == productFieldClass[0]) {
@@ -662,8 +664,9 @@ define([
 									if(!(productFieldClass[i] == 'id' && fieldValue == '')) {
 										if(this.options.removeComma.indexOf(productFieldClass[i]) < 0)
 											arrayProductFields[productFieldClass[i]] = fieldValue;
-										else
-											arrayProductFields[productFieldClass[i]] = this.removeCommaFromNumber(fieldValue);
+										else {											
+											arrayProductFields[productFieldClass[i]] = this.removeCommaFromNumber(fieldValue);											
+										}					
 									}
 								}
 							}
@@ -685,24 +688,27 @@ define([
 		getProductStackFields: function (data, productIndex, otherData) {
 			var stacks = [];
 			var productFieldClass = this.options.productSubFieldClass;
-			
+
+			console.log(data['unitprice.0.0']);
 			for(var key in data) {
 				if(typeof data[key] !== 'function'){
 					var value = data[key];
+
 					var arrayKey = key.split(this.options.productFieldSeparator);
-					
 					if(arrayKey.length > 2 && arrayKey[0] == productFieldClass[0] && arrayKey[1] == productIndex) {
 						var index = arrayKey[2];
 						var arrayProductFields = {};
 						
 						for(var i = 0; i < productFieldClass.length; i++) {
-							if(this.options.productSubFieldExempt.indexOf(productFieldClass[i]) < 0) {
+							if(this.options.productSubFieldExempt.indexOf(productFieldClass[i]) < 0) {	
 								var fieldValue = data[productFieldClass[i]+this.options.productFieldSeparator+productIndex+this.options.productSubFieldSeparator+index];
 								if(!(productFieldClass[i] == 'id' && fieldValue == '')) {
-									if(this.options.removeComma.indexOf(productFieldClass[i]) < 0)
+									if(this.options.removeComma.indexOf(productFieldClass[i]) < 0){
 										arrayProductFields[productFieldClass[i]] = fieldValue;
-									else
+									}
+									else{
 										arrayProductFields[productFieldClass[i]] = this.removeCommaFromNumber(fieldValue);
+									}
 								}
 							}
 						}

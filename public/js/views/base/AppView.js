@@ -350,9 +350,10 @@ define([
 			return formatted;
 		},
 
-		removeCommaFromNumber: function (number) {
-			if(typeof number !== 'string')
+		removeCommaFromNumber: function (number) {			
+		    if(typeof number !== 'string'){
 				number = number.toString();
+			}
 
 			return parseFloat(number.replace(/,/g,''));
 		},
