@@ -356,6 +356,7 @@ class DownloadRepository implements DownloadInterface
 									$excel_o = Excel::create('SOA - '.$report_o->name, function($excel) use($report_o) {
 												$excel->setDescription('Producer Statement : '.$report_o->name)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
 										        $excel->sheet($report_o->name, function($sheet) use($report_o) {
+									        		$sheet->setShowGridlines(false);
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
 
@@ -442,6 +443,7 @@ class DownloadRepository implements DownloadInterface
 									$excel_o = Excel::create('SOA - '.$report_o->name, function($excel) use($report_o) {
 												$excel->setDescription('Customer Sales Statement : '.$report_o->name)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
 										        $excel->sheet($report_o->name, function($sheet) use($report_o) {
+										        	$sheet->setShowGridlines(false);
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
 
@@ -527,6 +529,7 @@ class DownloadRepository implements DownloadInterface
 									$excel_o = Excel::create('SOA - '.$report_o->lastname.'-'.$report_o->firstname, function($excel) use($report_o) {
 												$excel->setDescription('Driver Statement : '.$report_o->lastname.'-'.$report_o->firstname)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
 										        $excel->sheet($report_o->lastname.'-'.$report_o->firstname, function($sheet) use($report_o) {
+									        		$sheet->setShowGridlines(false);
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
 										        	$sheet->mergeCells('B1:H1');
@@ -696,6 +699,7 @@ class DownloadRepository implements DownloadInterface
 									$excel_o = Excel::create('OS-'.$report_o->lastname.' '.$report_o->firstname.' '.$report_o->suffix, function($excel) use($report_o) {
 												$excel->setDescription('Operator Statement : '.$report_o->lastname.' '.$report_o->firstname.' '.$report_o->suffix)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
 										        $excel->sheet($report_o->lastname.' '.$report_o->firstname.' '.$report_o->suffix, function($sheet) use($report_o) {
+										        	$sheet->setShowGridlines(false);
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
 										        	$sheet->mergeCells('B1:G1');
@@ -779,6 +783,7 @@ class DownloadRepository implements DownloadInterface
 									$excel_o = Excel::create('OS-'.$report_o->stacknumber, function($excel) use($report_o) {
 												$excel->setDescription('Inventory : '.$report_o->stacknumber)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
 										        $excel->sheet($report_o->stacknumber, function($sheet) use($report_o) {
+										        	$sheet->setShowGridlines(false);
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
 										        	$sheet->mergeCells('B1:M1');
@@ -857,6 +862,7 @@ class DownloadRepository implements DownloadInterface
 									$excel_o = Excel::create('GP-'.date('Ymd'), function($excel) use($report_o) {
 												$excel->setDescription('Gross Profit Report : '.date('Ymd'))->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
 										        $excel->sheet(date('Ymd'), function($sheet) use($report_o) {
+										        	$sheet->setShowGridlines(false);
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
 										        	$sheet->mergeCells('B1:I1');
@@ -940,6 +946,7 @@ class DownloadRepository implements DownloadInterface
 									$excel_o = Excel::create('COM-'.$report_o->user->lastname.' '.$report_o->user->firstname.' '.$report_o->user->suffix, function($excel) use($report_o) {
 												$excel->setDescription('Commission Statement : '.$report_o->user->lastname.' '.$report_o->user->firstname.' '.$report_o->user->suffix)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
 										        $excel->sheet($report_o->user->lastname.' '.$report_o->user->firstname.' '.$report_o->user->suffix, function($sheet) use($report_o) {
+										        	$sheet->setShowGridlines(false);
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
 										        	$sheet->mergeCells('B1:I1');
