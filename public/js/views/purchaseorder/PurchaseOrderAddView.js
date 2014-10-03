@@ -293,7 +293,7 @@ define([
 					
 					//console.log(data);
 
-					console.log(data);
+
 					var purchaseOrderModel = new PurchaseOrderModel(data);
 					
 					purchaseOrderModel.save(
@@ -645,13 +645,13 @@ define([
 				if(typeof data[key] !== 'function'){
 					var value = data[key];					
 					var arrayKey = key.split(this.options.productFieldSeparator);
+
 					if(arrayKey.length < 2) {						
-						if(this.options.removeComma.indexOf(key) < 0){
+						if(this.options.removeComma.indexOf(key) < 0)
 							formData[key] = value;
-						}
-						else {	
-							formData[key] = this.removeCommaFromNumber(value);
-						}
+						
+						else 
+							formData[key] = this.removeCommaFromNumber(value);						
 					}
 					else {
 						if(arrayKey[0] == productFieldClass[0]) {
@@ -689,12 +689,11 @@ define([
 			var stacks = [];
 			var productFieldClass = this.options.productSubFieldClass;
 
-			console.log(data['unitprice.0.0']);
 			for(var key in data) {
 				if(typeof data[key] !== 'function'){
 					var value = data[key];
-
 					var arrayKey = key.split(this.options.productFieldSeparator);
+
 					if(arrayKey.length > 2 && arrayKey[0] == productFieldClass[0] && arrayKey[1] == productIndex) {
 						var index = arrayKey[2];
 						var arrayProductFields = {};
@@ -907,6 +906,7 @@ define([
 				total += (!isNaN(parseFloat(value)))? parseFloat(value) : 0;
 			});
 			this.subContainer.find('#total-price').html('$ ' + Backbone.View.prototype.helpers.numberFormat(total));
+			this.subContainer.find('#total_payment').val(total);
 		},
 		
 		onKeyUpBales: function (ev) {

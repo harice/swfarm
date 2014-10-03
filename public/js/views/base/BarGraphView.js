@@ -7,6 +7,8 @@ define([
 	'jqueryflotbarnumbers',
 	'jqueryflotstackpercent',
 	'views/base/AppView',
+	'views/base/GoogleMapsView',
+	'text!templates/dashboard/barGraphTemplate.html',
 	'global',
 	'constant',
 ], function(
@@ -18,6 +20,8 @@ define([
 	FlotBarNumbers,
 	FlotStackPercent,
 	AppView, 
+	GoogleMapsView,
+	barGraphTemplate,
 	Global,
 	Const
 ){
@@ -274,8 +278,60 @@ define([
 			return { data: graphData, xData: graphXData, };
 		},
 
-		drawMap: function (graphName) {
 
+		drawGraph: function(graph, graphIdName, graphId){
+			var thisObj = this;
+			var innerTemplateVariables = {
+				'graph_heading': graph.get('graphName'),
+				'graph_id': graphIdName,
+				'gid': graphId,
+				'start_date_id': 'start-'+graphId,
+				'end_date_id': 'end-'+graphId,
+			};
+			var graphInnerTemplate = _.template(barGraphTemplate, innerTemplateVariables);
+			thisObj.subContainer.find('#graph-cont').append(graphInnerTemplate);
+
+			thisObj.initStartEndCalendarFilter(graphId);
+			
+			var label = false;			
+			var currency = '';
+			var tickDecimals = 0;
+
+			if(label) {
+				currency = '$';
+				tickDecimals = 2;
+			}
+			var graphData = thisObj.formatGraphData(graphId, graph.get('data'), graph.get('graphType'));
+
+			return { data: graphData.data, xData: graphData.xData, currency: currency, tickDecimals: tickDecimals };
+		},
+
+
+		drawMap: function (graph, graphIdName, graphId) {
+			var lat = 33.393532;
+			var lng = -112.315879;
+			var thisObj = this;
+			var innerTemplateVariables = {
+				'graph_heading': graph.get('graphName'),
+				'graph_id': graphIdName,
+				'gid': graphId,
+				'latitude': lat,
+				'longitude': lng
+			};
+			var graphInnerTemplate = _.template(barGraphTemplate, innerTemplateVariables);
+			thisObj.subContainer.find('#graph-cont').append(graphInnerTemplate);
+
+			this.googleMaps = new GoogleMapsView();
+			this.googleMaps.initGetMapLocation(function (data) {
+				if(typeof data.location !== 'undefined') {
+					thisObj.subContainer.find(".latitude[name='latitude."+ index +"']").val(data.location.lat());
+					thisObj.subContainer.find(".longitude[name='longitude."+ index +"']").val(data.location.lng());
+				}
+				else {
+					thisObj.subContainer.find('.latitude').val('');
+					thisObj.subContainer.find('.longitude').val('');
+				}
+			});
 		},
 	});
 

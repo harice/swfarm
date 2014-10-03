@@ -244,6 +244,7 @@ define(function () {
 				'BAR': 1,
 				'STACKEDBAR': 2,
 				'MAP': 3,
+				'LOGISTICS': 4
 			},
 		},
 	};

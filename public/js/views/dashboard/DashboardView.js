@@ -5,7 +5,6 @@ define([
 	'models/dashboard/GraphModel',
 	'collections/dashboard/GraphCollection',
 	'text!templates/layout/contentTemplate.html',
-	'text!templates/dashboard/barGraphTemplate.html',
 	'text!templates/dashboard/dashboardTemplate.html',
 	'global',
 	'constant',
@@ -16,7 +15,6 @@ define([
 	GraphModel,
 	GraphCollection,
 	contentTemplate,
-	barGraphTemplate,
 	dashboardTemplate,
 	Global,
 	Const
@@ -88,13 +86,7 @@ define([
 		displayAdminDashboard: function() {
 			var thisObj = this;	
 
-			var initTemp = {		
-				sub_content_template: dashboardTemplate
-			};
-			
-			var dashboardTemp = _.template(contentTemplate, initTemp);
-
-			thisObj.subContainer.html(dashboardTemp);
+			thisObj.subContainer.html(dashboardTemplate);
 
 			_.each(this.graphCollection.models, function (graph) {
 				var graphIdName = graph.get('graphName').replace(/\s+/g, '_').toLowerCase();
@@ -110,9 +102,11 @@ define([
 						thisObj.graphData(graphIdName, graphData.data, graphData.xData, graphData.currency, graphData.tickDecimals);
 						break;
 					case Const.GRAPH.TYPE.MAP:
+						thisObj.drawMap(graph, graphIdName, graphId);
+						break;
+					case Const.GRAPH.TYPE.LOGISTICS:
 
-					default:
-						thisObj.drawMap(graph);
+					default:						
 						break;
 				}
 			});
@@ -130,33 +124,6 @@ define([
 				}
 			});
 			
-		},
-
-		drawGraph: function(graph, graphIdName, graphId){
-			var thisObj = this;
-			var innerTemplateVariables = {
-				'graph_heading': graph.get('graphName'),
-				'graph_id': graphIdName,
-				'gid': graphId,
-				'start_date_id': 'start-'+graphId,
-				'end_date_id': 'end-'+graphId,
-			};
-			var graphInnerTemplate = _.template(barGraphTemplate, innerTemplateVariables);
-			thisObj.subContainer.find('#graph-cont').append(graphInnerTemplate);
-
-			thisObj.initStartEndCalendarFilter(graphId);
-			
-			var label = false;			
-			var currency = '';
-			var tickDecimals = 0;
-
-			if(label) {
-				currency = '$';
-				tickDecimals = 2;
-			}
-			var graphData = thisObj.formatGraphData(graphId, graph.get('data'), graph.get('graphType'));
-
-			return { data: graphData.data, xData: graphData.xData, currency: currency, tickDecimals: tickDecimals };
 		},
 		
 		initStartEndCalendarFilter: function (id) {

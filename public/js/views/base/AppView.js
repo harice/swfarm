@@ -351,9 +351,9 @@ define([
 		},
 
 		removeCommaFromNumber: function (number) {			
-		    if(typeof number !== 'string'){
-				number = number.toString();
-			}
+		    if(typeof number !== 'string')
+				number = number.toString();			
+
 
 			return parseFloat(number.replace(/,/g,''));
 		},

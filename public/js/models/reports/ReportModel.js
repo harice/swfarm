@@ -39,7 +39,6 @@ define([
         fetchStatement: function (reportId, filterId, startDate, endDate) {        
         	this.setDefaultURL();
             this.urlRoot = this.urlRoot + reportId + '?filterId=' + filterId + '&dateStart=' + startDate + '&dateEnd=' + endDate;
-            console.log(this.urlRoot);
             this.runFetch();            
         },
 
