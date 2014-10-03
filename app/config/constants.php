@@ -41,8 +41,10 @@ return array(
     'DASHBOARD_MAP_CUSTOMER' => 9,
     'DASHBOARD_LOGISTICS_MAP' => 10,
 
-    'GRAPH_TYPE_1' => 1,
-    'GRAPH_TYPE_2' => 2,
+    'GRAPH_TYPE_1' => 1, //bar graph
+    'GRAPH_TYPE_2' => 2, //double bar graph
+    'GRAPH_TYPE_3' => 3, //map with ballons
+    'GRAPH_TYPE_4' => 4, //map with ballons with route
 
     'NATUREOFSALES_RESERVATION' => 1,
     'NATUREOFSALES_INCOMING' => 2,
