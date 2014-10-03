@@ -250,15 +250,14 @@ define([
 			return false;
 		},
 		
-		preShowConfirmationWindow: function (ev) {					
-			this.$el.find('#cancellationReasonForm #cancelled-order-id').val($(ev.currentTarget).attr('data-id'));		
-			this.updateCancelWindow(ev);
+		preShowConfirmationWindow: function (ev) {		
+			var poId = $(ev.currentTarget).attr('data-id');			
+			this.updateCancelWindow(ev, poId);
 			this.showConfirmationWindow('modal-with-form-confirm');			
-
 			return false;
 		},
 
-		updateCancelWindow: function(ev){
+		updateCancelWindow: function(ev, poId){
 			var thisObj = this;		
 			var modalTitle = 'Cancel Purchase Order';
 			var buttonId = 'confirm-cancel-po';
@@ -284,6 +283,7 @@ define([
 										form,
 										modalTitle);
 
+			this.$el.find('#cancelled-order-id').val(poId);			
 			var validate = $('#cancellationReasonForm').validate({
 				submitHandler: function(form) {
 					
