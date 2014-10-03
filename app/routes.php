@@ -227,6 +227,10 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokeniz
     // Route::get('dashboard/salesInTons', 'APIv1\DashboardController@salesInTons');
     // Route::get('dashboard/purchaseInDollarValues', 'APIv1\DashboardController@purchaseInDollarValues');
     // Route::get('dashboard/salesInDollarValues', 'APIv1\DashboardController@salesInDollarValues');
+
+    Route::get('payment/purchaseOrderList', 'APIv1\PaymentController@getAllPurchaseOrderList');
+    Route::get('payment/paymentListOfOrder', 'APIv1\PaymentController@paymentListOfOrder');
+    Route::resource('payment', 'APIv1\PaymentController');
 });
 
 Route::group(array('before' => 'auth.session'),function(){
