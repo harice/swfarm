@@ -109,20 +109,7 @@ define([
 					default:						
 						break;
 				}
-			});
-
-			this.googleMaps = new GoogleMapsView();
-			this.googleMaps.initGetMapLocation(function (data) {
-				var index = $("#google-maps-modal-getlocation").attr('data-id', index);
-				if(typeof data.location !== 'undefined') {
-					thisObj.subContainer.find(".latitude[name='latitude."+ index +"']").val(data.location.lat());
-					thisObj.subContainer.find(".longitude[name='longitude."+ index +"']").val(data.location.lng());
-				}
-				else {
-					thisObj.subContainer.find('.latitude').val('');
-					thisObj.subContainer.find('.longitude').val('');
-				}
-			});
+			});		
 			
 		},
 		

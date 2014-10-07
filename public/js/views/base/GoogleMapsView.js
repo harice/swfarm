@@ -114,6 +114,17 @@ define([
 			if(this.isFunction(callback))
 				this.hiddenModalCallback = callback;
 		},
+
+		initGetDashboardMapLocation: function (callback) {
+			var thisObj = this;
+			this.mapType = this.mapTypes.GETLOCATION;
+						
+			if(!thisObj.isInitMap) {
+				thisObj.initMap(thisObj.mapCanvasIdGetLocation, function () {
+					thisObj.initDropMarker(1);
+				});
+			}
+		},
 		
 		initSetMapLocation: function () {
 			var thisObj = this;

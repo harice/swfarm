@@ -266,8 +266,8 @@ define([
 				default:
 					var d = [];
 					for(var i = 0; i < data.length; i++) {						
-						graphXData.push([i, data[i].label]); 
 						d.push([i, data[i].value]);
+						graphXData.push([i, data[i].label]); 
 					}
 					
 					graphData.push({ data:d, yPositionAdjustLabel: -10 });
@@ -286,7 +286,7 @@ define([
 				'graph_id': graphIdName,
 				'gid': graphId,
 				'start_date_id': 'start-'+graphId,
-				'end_date_id': 'end-'+graphId,
+				'end_date_id': 'end-'+graphId,				
 			};
 			var graphInnerTemplate = _.template(barGraphTemplate, innerTemplateVariables);
 			thisObj.subContainer.find('#graph-cont').append(graphInnerTemplate);
@@ -311,26 +311,22 @@ define([
 			var lat = 33.393532;
 			var lng = -112.315879;
 			var thisObj = this;
+
 			var innerTemplateVariables = {
 				'graph_heading': graph.get('graphName'),
 				'graph_id': graphIdName,
 				'gid': graphId,
 				'latitude': lat,
-				'longitude': lng
+				'longitude': lng,
 			};
 			var graphInnerTemplate = _.template(barGraphTemplate, innerTemplateVariables);
 			thisObj.subContainer.find('#graph-cont').append(graphInnerTemplate);
 
+			thisObj.subContainer.find('#' +graphIdName).append("<div id='map-canvas-getlocation'></div>");
+
 			this.googleMaps = new GoogleMapsView();
-			this.googleMaps.initGetMapLocation(function (data) {
-				if(typeof data.location !== 'undefined') {
-					thisObj.subContainer.find(".latitude[name='latitude."+ index +"']").val(data.location.lat());
-					thisObj.subContainer.find(".longitude[name='longitude."+ index +"']").val(data.location.lng());
-				}
-				else {
-					thisObj.subContainer.find('.latitude').val('');
-					thisObj.subContainer.find('.longitude').val('');
-				}
+			this.googleMaps.initGetDashboardMapLocation(function (data) {
+				console.log("test");
 			});
 		},
 	});
