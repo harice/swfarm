@@ -2,7 +2,7 @@
 <p class='text-center text-danger margin-bottom-30'>{{ date('F d, Y',strtotime($report_o->report_date->start)) }} - {{ date('F d, Y',strtotime($report_o->report_date->end)) }}</p>
 
 <div class='width-50 float-left'>
-	<h2 class='margin-bottom-0'>{{ strtoupper($report_o->trucknumber) }}</h2>
+	<h2 class='margin-bottom-0'>Truck No.: {{ strtoupper($report_o->trucknumber) }}</h2>
 	<address>
 		<strong>{{ $report_o->account->name }}</strong>
 		<br>
