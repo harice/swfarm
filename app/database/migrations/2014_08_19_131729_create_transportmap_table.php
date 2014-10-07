@@ -36,7 +36,7 @@ class CreateTransportmapTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('transportmap');
+		Schema::dropIfExists('transportmap');
 	}
 
 }

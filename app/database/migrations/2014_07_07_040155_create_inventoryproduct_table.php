@@ -39,7 +39,7 @@ class CreateInventoryproductTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('inventoryproduct');
+		Schema::dropIfExists('inventoryproduct');
 	}
 
 }
