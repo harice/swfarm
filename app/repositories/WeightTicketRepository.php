@@ -600,7 +600,16 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             $productTemp[$ctr]['tons'] = $product['pounds'] * 0.0005;
             $productTemp[$ctr]['stacknumber'] = $product['transportscheduleproduct']['productorder']['stacknumber'];
             $productTemp[$ctr]['product_id'] = $product['transportscheduleproduct']['productorder']['product_id'];
-            $productTemp[$ctr]['price'] = $product['transportscheduleproduct']['productorder']['unitprice'];
+            if($ordertype == Config::get('constants.ORDERTYPE_SO')){ //if SO, get the unitprice from PO
+                $unitprice = $this->getUnitPriceUsingStackNumber($product['transportscheduleproduct']['productorder']['stacknumber']);
+                if($unitprice != null){
+                    $productTemp[$ctr]['price'] = $unitprice;
+                } else {
+                    $productTemp[$ctr]['price'] = $product['transportscheduleproduct']['productorder']['unitprice'];
+                }
+            } else {
+                $productTemp[$ctr]['price'] = $product['transportscheduleproduct']['productorder']['unitprice'];    
+            }
             $productTemp[$ctr]['bales'] = $product['bales'];
             $productTemp[$ctr]['sectionto_id'] = $product['transportscheduleproduct']['sectionto_id'];
             $productTemp[$ctr]['sectionfrom_id'] = $product['transportscheduleproduct']['productorder']['section_id'];
@@ -611,6 +620,15 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
         // return Response::json($products);
         return $products;
+    }
+
+    public function getUnitPriceUsingStackNumber($stacknumber){
+        $result = Stack::where('stacknumber', 'like', $stacknumber)->first(array('id', 'unitprice'))->toArray();
+        if(count($result) > 0){
+            return $result['unitprice'];
+        } else {
+            return null;
+        }
     }
 
     public function checkoutWeightTicket($schedule_id){
