@@ -21,6 +21,8 @@ class CreateAddressTable extends Migration {
 			$table->string('city');
 			$table->integer('state')->unsigned();
 			$table->string('zipcode');
+			$table->string('longitude', 25)->nullable();
+			$table->string('latitude', 25)->nullable();
 			$table->string('country');
 			$table->integer('type')->unsigned();
 			$table->timestamps();

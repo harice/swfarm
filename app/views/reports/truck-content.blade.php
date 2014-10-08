@@ -5,7 +5,7 @@
 	{? $border_s = '' ?}
 @endif
 	@foreach ($report_o->order as $order_o)
-		{? $gross_i = $trailer_i = $trucking_i = $tons_i = $bales_i = $pounds_i = $loader_i = $fuelcharge_i = $adminfee_i = $amount_i = 0 ?}
+		{? $gross_i = $trailer_i = $trucking_i = $tons_i = $bales_i = $pounds_i = $loader_i = $fuelcharge_i = $adminfee_i = $amount_i = $handlingfee_i = 0 ?}
 		<h3 class="margin-top-20">{{ $order_o->order_number }}</h3>
 		<table>
 			<thead>
@@ -20,6 +20,7 @@
 					<th class='width-8' {{$border_s}}>Tons</th>
 					<th class='width-8' {{$border_s}}>Rate</th>
 					<th class='width-9' {{$border_s}}>Gross Rate</th>
+					<th class='width-9' {{$border_s}}>Handling Fee</th>
 					<th class='width-6' {{$border_s}}>Rent</th>
 					<th class='width-9' {{$border_s}}>Fuel Charge</th>
 
@@ -47,6 +48,8 @@
 					{? $trucking_i += $transportschedule_o->truckingrate ?}
 					<td {{$border_s}} class='text-right' align='right'>$ {{ number_format($transportschedule_o->gross,2,'.',',') }}</td>
 					{? $gross_i += $transportschedule_o->gross ?}
+					<td {{$border_s}} class='text-right' align='right'>$ {{ number_format($transportschedule_o->handlingfee,2,'.',',') }}</td>
+					{? $handlingfee_i += $transportschedule_o->handlingfee ?}
 					<td {{$border_s}} class='text-right' align='right'>$ {{ number_format($transportschedule_o->trailerrate,2,'.',',') }}</td>
 					{? $trailer_i += $transportschedule_o->trailerrate ?}
 					<td {{$border_s}} class='text-right' align='right'>$ {{ number_format($transportschedule_o->fuelcharge,2,'.',',') }}</td>
@@ -68,6 +71,7 @@
 					<td {{$border_s}} class='text-right' align='right'><strong>{{ number_format($tons_i,4,'.',',') }}</strong></td>
 					<td {{$border_s}} class='text-right' align='right'><strong>$ {{ number_format($trucking_i,2,'.',',') }}</strong></td>
 					<td {{$border_s}} class='text-right' align='right'><strong>$ {{ number_format($gross_i,2,'.',',') }}</strong></td>
+					<td {{$border_s}} class='text-right' align='right'><strong>$ {{ number_format($handlingfee_i,2,'.',',') }}</strong></td>
 					<td {{$border_s}} class='text-right' align='right'><strong>$ {{ number_format($trailer_i,2,'.',',') }}</strong></td>
 					<td {{$border_s}} class='text-right' align='right'><strong>$ {{ number_format($fuelcharge_i,2,'.',',') }}</strong></td>
 					<td {{$border_s}} class='text-right' align='right'><strong>$ {{ number_format($adminfee_i,2,'.',',') }}</strong></td>

@@ -32,7 +32,7 @@ class CreateStacklocationTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('stacklocation');
+		Schema::dropIfExists('stacklocation');
 	}
 
 }

@@ -389,7 +389,7 @@ class DownloadRepository implements DownloadInterface
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
-										        			'child' => View::make('reports.producer-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.producer-content', array('report_o' => $report_o))
+										        			'child' => View::make('reports.producer-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.producer-content', array('report_o' => $report_o, 'excel' => true ))
 									        			)
 								        			);
 										        });
@@ -470,12 +470,12 @@ class DownloadRepository implements DownloadInterface
 										        	$objDrawing->setWorksheet($sheet);
 
 										        	$sheet->setColumnFormat(array('E' => '0.00','F' => '0.0000','G' => '0.00','H' => '0.00'));
-										        	$sheet->setWidth(array('A' =>  24,'B' =>  15,'C' =>  20,'D' =>  10,'E' =>  15,'F' =>  12,'G' =>  10,'H' =>  15));
+										        	$sheet->setWidth(array('A' =>  27,'B' =>  15,'C' =>  20,'D' =>  10,'E' =>  15,'F' =>  12,'G' =>  10,'H' =>  15));
 
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
-										        			'child' => View::make('reports.customer-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.customer-content', array('report_o' => $report_o))
+										        			'child' => View::make('reports.customer-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.customer-content', array('report_o' => $report_o, 'excel' => true ))
 									        			)
 								        			);
 										        });
@@ -515,7 +515,7 @@ class DownloadRepository implements DownloadInterface
 									$excel_o = Excel::create('SOA - '.$report_o->lastname.'-'.$report_o->firstname, function($excel) use($report_o) {
 												$excel->setDescription('Driver Statement : '.$report_o->lastname.'-'.$report_o->firstname)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
 										        $excel->sheet($report_o->lastname.'-'.$report_o->firstname, function($sheet) use($report_o) {
-										        	$sheet->setColumnFormat(array('C' => '0.00','E' => '0.0000','F' => '0.00','H' => '0.00'));
+										        	$sheet->setColumnFormat(array('C' => '0.00','E' => '0.0000','F' => '0.00','H' => '0.00','I' => '0.00'));
 										        	$sheet->loadView(
 										        		'reports.driver-header-excel',
 										        		array(
@@ -532,16 +532,16 @@ class DownloadRepository implements DownloadInterface
 									        		$sheet->setShowGridlines(false);
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
-										        	$sheet->mergeCells('B1:H1');
+										        	$sheet->mergeCells('B1:I1');
 										        	$sheet->cell('B1', function($cell) {
 										        		$cell->setValue('Southwest Farm Services');
 										        		$cell->setFontWeight('bold');
 										        	});
-										        	$sheet->mergeCells('B2:H2');
+										        	$sheet->mergeCells('B2:I2');
 										        	$sheet->setCellValue('B2','11926 W. Southern Ave.');
 										        	$sheet->mergeCells('B3:C3');
 										        	$sheet->setCellValue('B3','Tolleson, AZ 85353');
-										        	$sheet->mergeCells('D3:H3');
+										        	$sheet->mergeCells('D3:I3');
 										        	$sheet->cell('D3', function($cell) {
 										        		$cell->setValue('Phone : (800) 936-4339 / (623) 936-4339 Fax : (623) 936-7360');
 										        		$cell->setAlignment('right');
@@ -553,13 +553,13 @@ class DownloadRepository implements DownloadInterface
 										        	$objDrawing->setCoordinates('A1');
 										        	$objDrawing->setWorksheet($sheet);
 
-										        	$sheet->setColumnFormat(array('C' => '0.00','E' => '0.0000','F' => '0.00','H' => '0.00'));
-										        	$sheet->setWidth(array('A' =>  24,'B' =>  15,'C' =>  20,'D' =>  10,'E' =>  15,'F' =>  12,'G' =>  10,'H' =>  15));
+										        	$sheet->setColumnFormat(array('C' => '0.00','E' => '0.0000','F' => '0.00','H' => '0.00','I' => '0.00'));
+										        	$sheet->setWidth(array('A' =>  27,'B' =>  15,'C' =>  20,'D' =>  10,'E' =>  15,'F' =>  12,'G' =>  10,'H' =>  15,'I' =>  15));
 
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
-										        			'child' => View::make('reports.driver-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.driver-content', array('report_o' => $report_o))
+										        			'child' => View::make('reports.driver-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.driver-content', array('report_o' => $report_o, 'excel' => true ))
 									        			)
 								        			);
 										        });
@@ -599,7 +599,7 @@ class DownloadRepository implements DownloadInterface
 									$excel_o = Excel::create('TS-'.$report_o->trucknumber, function($excel) use($report_o) {
 												$excel->setDescription('Trucking Statement : '.$report_o->trucknumber)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
 										        $excel->sheet($report_o->trucknumber, function($sheet) use($report_o) {
-										        	$sheet->setColumnFormat(array('E' => '0.00','G' => '0.00','H' => '0.0000','I' => '0.00','J' => '0.00','K' => '0.00','L' => '0.00','M' => '0.00','N' => '0.00'));
+										        	$sheet->setColumnFormat(array('E' => '0.00','G' => '0.00','H' => '0.0000','I' => '0.00','J' => '0.00','K' => '0.00','L' => '0.00','M' => '0.00','N' => '0.00','O' => '0.00'));
 										        	$sheet->loadView(
 										        		'reports.truck-header-excel',
 										        		array(
@@ -616,16 +616,16 @@ class DownloadRepository implements DownloadInterface
 										        	$sheet->setShowGridlines(false);
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
-										        	$sheet->mergeCells('B1:N1');
+										        	$sheet->mergeCells('B1:O1');
 										        	$sheet->cell('B1', function($cell) {
 										        		$cell->setValue('Southwest Farm Services');
 										        		$cell->setFontWeight('bold');
 										        	});
-										        	$sheet->mergeCells('B2:N2');
+										        	$sheet->mergeCells('B2:O2');
 										        	$sheet->setCellValue('B2','11926 W. Southern Ave.');
 										        	$sheet->mergeCells('B3:G3');
 										        	$sheet->setCellValue('B3','Tolleson, AZ 85353');
-										        	$sheet->mergeCells('H3:N3');
+										        	$sheet->mergeCells('H3:O3');
 										        	$sheet->cell('H3', function($cell) {
 										        		$cell->setValue('Phone : (800) 936-4339 / (623) 936-4339 Fax : (623) 936-7360');
 										        		$cell->setAlignment('right');
@@ -637,11 +637,11 @@ class DownloadRepository implements DownloadInterface
 										        	$objDrawing->setCoordinates('A1');
 										        	$objDrawing->setWorksheet($sheet);
 
-										        	$sheet->getStyle('L15')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
-										        	$sheet->getStyle('L16')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
-										        	$sheet->getStyle('L17')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
-										        	$sheet->setColumnFormat(array('E' => '0.00','G' => '0.00','H' => '0.0000','I' => '0.00','J' => '0.00','K' => '0.00','L' => '0.00','M' => '0.00','N' => '0.00'));
-										        	$sheet->setWidth(array('A' =>  24,'B' =>  18,'C' =>  20,'D' =>  20,'E' =>  15,'F' =>  10,'G' =>  18,'H' =>  15,'I' =>  15,'J' =>  15,'K' =>  10,'L' =>  15,'M' =>  15,'N' =>  15));
+										        	$sheet->getStyle('M16')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->getStyle('M17')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->getStyle('M18')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->setColumnFormat(array('E' => '0.00','G' => '0.00','H' => '0.0000','I' => '0.00','J' => '0.00','K' => '0.00','L' => '0.00','M' => '0.00','N' => '0.00','O' => '0.00'));
+										        	$sheet->setWidth(array('A' =>  27,'B' =>  18,'C' =>  20,'D' =>  20,'E' =>  15,'F' =>  10,'G' =>  18,'H' =>  15,'I' =>  15,'J' =>  15,'K' =>  15,'L' =>  15,'M' =>  15,'N' =>  15,'O' =>  15));
 
 										        	$sheet->loadView(
 										        		'excel.base',
@@ -725,12 +725,12 @@ class DownloadRepository implements DownloadInterface
 
 										        	$sheet->getStyle('G11')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
 										        	$sheet->setColumnFormat(array('G' => '0.00'));
-										        	$sheet->setWidth(array('A' =>  24,'B' =>  18,'C' =>  20,'D' =>  20,'E' =>  18,'F' =>  18,'G' =>  18));
+										        	$sheet->setWidth(array('A' =>  27,'B' =>  18,'C' =>  20,'D' =>  20,'E' =>  18,'F' =>  20,'G' =>  19));
 
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
-										        			'child' => View::make('reports.operator-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.operator-content', array('report_o' => $report_o))
+										        			'child' => View::make('reports.operator-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.operator-content', array('report_o' => $report_o, 'excel' => true ))
 									        			)
 								        			);
 										        });
@@ -807,14 +807,15 @@ class DownloadRepository implements DownloadInterface
 										        	$objDrawing->setCoordinates('A1');
 										        	$objDrawing->setWorksheet($sheet);
 
-										        	$sheet->getStyle('G11')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->getStyle('L10')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->getStyle('L13')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
 										        	$sheet->setColumnFormat(array('K' => '0.0000','L' => '0.00','L' => '0.00'));
-										        	$sheet->setWidth(array('A' =>  24,'B' =>  18,'C' =>  20,'D' =>  20,'E' =>  18,'F' =>  18,'G' =>  18,'H' =>  20,'I' =>  20,'J' =>  10,'K' =>  15,'L' =>  15,'M' =>  15));
+										        	$sheet->setWidth(array('A' =>  27,'B' =>  18,'C' =>  20,'D' =>  20,'E' =>  18,'F' =>  18,'G' =>  18,'H' =>  20,'I' =>  20,'J' =>  10,'K' =>  15,'L' =>  15,'M' =>  15));
 
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
-										        			'child' => View::make('reports.inventory-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.inventory-content', array('report_o' => $report_o))
+										        			'child' => View::make('reports.inventory-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.inventory-content', array('report_o' => $report_o, 'excel' => true ))
 									        			)
 								        			);
 										        });
@@ -886,14 +887,17 @@ class DownloadRepository implements DownloadInterface
 										        	$objDrawing->setCoordinates('A1');
 										        	$objDrawing->setWorksheet($sheet);
 
-										        	$sheet->getStyle('G11')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->getStyle('H10')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->getStyle('H11')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->getStyle('H12')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->getStyle('H13')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
 										        	$sheet->setColumnFormat(array('C' => '0.00','D' => '0.00','E' => '0.00','F' => '0.00','G' => '0.00','H' => '0.00','I' => '0.00'));
-										        	$sheet->setWidth(array('A' =>  24,'B' =>  18,'C' =>  15,'D' =>  15,'E' =>  15,'F' =>  15,'G' =>  15,'H' =>  15,'I' =>  15));
+										        	$sheet->setWidth(array('A' =>  27,'B' =>  18,'C' =>  15,'D' =>  15,'E' =>  15,'F' =>  15,'G' =>  15,'H' =>  15,'I' =>  15));
 
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
-										        			'child' => View::make('reports.gross-profit-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.gross-profit-content', array('report_o' => $report_o))
+										        			'child' => View::make('reports.gross-profit-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.gross-profit-content', array('report_o' => $report_o, 'excel' => true ))
 									        			)
 								        			);
 										        });
@@ -972,12 +976,12 @@ class DownloadRepository implements DownloadInterface
 
 										        	$sheet->getStyle('G11')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
 										        	$sheet->setColumnFormat(array('F' => '0.00','H' => '0.0000','I' => '0.00'));
-										        	$sheet->setWidth(array('A' =>  24,'B' =>  18,'C' =>  18,'D' =>  25,'E' =>  10,'F' =>  15,'G' =>  10,'H' =>  15,'I' =>  18));
+										        	$sheet->setWidth(array('A' =>  27,'B' =>  18,'C' =>  18,'D' =>  25,'E' =>  10,'F' =>  15,'G' =>  10,'H' =>  15,'I' =>  18));
 
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
-										        			'child' => View::make('reports.commission-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.commission-content', array('report_o' => $report_o))
+										        			'child' => View::make('reports.commission-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.commission-content', array('report_o' => $report_o, 'excel' => true ))
 									        			)
 								        			);
 										        });
@@ -1384,12 +1388,13 @@ class DownloadRepository implements DownloadInterface
                     ->get()
                     ->each(function($trucker) use($_dateBetween) {
                         $trucker->amount = 0.00;
+                        $trucker->handling = 0.00;
                         $trucker->report_date = (object) $_dateBetween;
                         $trucker->order->each(function($order) use($trucker,$_dateBetween) {
                             $order->transportschedule = TransportSchedule::join('truck','truck.id','=','transportschedule.truck_id')
                                 ->with('weightticket.weightticketscale_pickup')
                                 ->with('weightticket.weightticketscale_dropoff')
-                                ->select(array('transportschedule.id','truck.trucknumber as truck','transportschedule.truckingrate','transportschedule.updated_at'))
+                                ->select(array('transportschedule.id','truck.trucknumber as truck','transportschedule.truckingrate','transportschedule.handlingfee','transportschedule.updated_at'))
                                 ->where('transportschedule.order_id','=',$order->id)
                                 ->where('transportschedule.trucker_id','=',$order->trucker_id)
                                 ->where('transportschedule.status_id','=',Config::get('constants.STATUS_CLOSED'))
@@ -1438,6 +1443,7 @@ class DownloadRepository implements DownloadInterface
                                     $transportschedule->pay = $transportschedule->gross * ($trucker->rate / 100);
 
                                     $trucker->amount = floatval($trucker->amount) + floatval($transportschedule->pay);
+                                    $trucker->handling = bcadd($trucker->handling,$transportschedule->handlingfee,2);
                                 })->toArray();
                         });
                     })->shift();
@@ -1462,6 +1468,7 @@ class DownloadRepository implements DownloadInterface
 						->each(function($truck) use($_dateBetween) {
 							$truck->amount = 0.00;
 	                        $truck->hauling = 0.00;
+	                        $truck->handling = 0.00;
 	                        $truck->adminfee = 0.00;
 	                        $truck->loadingfee = 0.00;
 	                        $truck->fuelcharge = 0.00;
@@ -1481,6 +1488,7 @@ class DownloadRepository implements DownloadInterface
 	                                	'transportschedule.originloader_id',
 	                                	'transportschedule.destinationloader_id',
 	                                	'transportschedule.truckingrate',
+	                                	'transportschedule.handlingfee',
 	                                	'transportschedule.trailerrate',
 	                                	'transportschedule.originloaderfee',
 	                                	'transportschedule.destinationloaderfee',
@@ -1543,9 +1551,10 @@ class DownloadRepository implements DownloadInterface
 	                                    }
 
 	                                    $transportschedule->gross = bcmul($transportschedule->tons, $transportschedule->truckingrate,2);
-	                                    $transportschedule->amount = bcsub(bcsub(bcsub(bcadd($transportschedule->gross, $transportschedule->fuelcharge,2),$transportschedule->trailerrate,2),bcadd($transportschedule->originloaderfee,$transportschedule->destinationloaderfee,2),2),$transportschedule->adminfee,2);
+	                                    $transportschedule->amount = bcadd(bcsub(bcsub(bcsub(bcadd($transportschedule->gross, $transportschedule->fuelcharge,2),$transportschedule->trailerrate,2),bcadd($transportschedule->originloaderfee,$transportschedule->destinationloaderfee,2),2),$transportschedule->adminfee,2),$transportschedule->handlingfee,2);
 
 	                                    $truck->hauling = bcadd($truck->hauling,$transportschedule->gross,2);
+	                                    $truck->handling = bcadd($truck->handling,$transportschedule->handlingfee,2);
 	                                    $truck->adminfee = bcadd($truck->adminfee,$transportschedule->adminfee,2);
 	                                    $truck->loadingfee = bcadd($truck->loadingfee,bcadd($transportschedule->originloaderfee,$transportschedule->destinationloaderfee,2),2);
 	                                    $truck->fuelcharge = bcadd($truck->fuelcharge,$transportschedule->fuelcharge,2);
@@ -1734,6 +1743,8 @@ class DownloadRepository implements DownloadInterface
 			                            										->first();
 
             										$transportscheduleproduct->wid = $transportscheduleproduct->transportschedule->weightticket->wid;
+            										$transportscheduleproduct->tsid = $transportscheduleproduct->transportschedule->id;
+            										$transportscheduleproduct->handlingfee = $transportscheduleproduct->transportschedule->handlingfee;
 													$transportscheduleproduct->weightTicketNumber = $transportscheduleproduct->transportschedule->weightticket->weightTicketNumber;
 													$transportscheduleproduct->updated_at = $transportscheduleproduct->transportschedule->weightticket->updated_at;
 													$transportscheduleproduct->netsale = bcmul($weightticketproduct_o->tons, $productorder->unitprice,2);
@@ -1745,6 +1756,8 @@ class DownloadRepository implements DownloadInterface
 
 													$transportscheduleproduct->setVisible(array(
 																							'wid',
+																							'tsid',
+																							'handlingfee',
 																							'weightTicketNumber',
 																							'updated_at',
 																							'netsale',
@@ -1780,7 +1793,7 @@ class DownloadRepository implements DownloadInterface
 					                    $report_a['netsale'] = bcadd($report_a['netsale'],$weightticket['netsale'],2);
 					                    $report_a['haycost'] = bcadd($report_a['haycost'],$weightticket['haycost'],2);
 					                    $report_a['fees'] = bcadd($report_a['fees'],$weightticket['fees'],2);
-					                    $report_a['freight'] = bcadd($report_a['freight'],$weightticket['freight'],2);
+					                    $report_a['freight'] = bcadd(bcadd($report_a['freight'],$weightticket['freight'],2),$weightticket['handlingfee'],2);
 					                    $report_a['commission'] = bcadd($report_a['commission'],$weightticket['commission'],2);
 					                    $report_a['profit'] = bcsub(bcsub(bcsub(bcadd($report_a['profit'],$weightticket['profit'],2),$weightticket['fees'],2),$weightticket['freight'],2),$weightticket['commission'],2);
 					                }
@@ -1796,7 +1809,7 @@ class DownloadRepository implements DownloadInterface
 
 		if(!$report_o) return false;
 
-		$report_a['profit_percentage'] = bcmul(bcdiv($report_a['profit'], $report_a['netsale'],4),100,2);
+		$report_a['profit_percentage'] = ($report_a['netsale'] > 0) ? bcmul(bcdiv($report_a['profit'], $report_a['netsale'],4),100,2) : 0;
 		$report_a['report_date'] = $_dateBetween;
 		$report_a['orders'] = $report_o->toArray();
         return $this->parse($report_a);

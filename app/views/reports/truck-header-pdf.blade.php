@@ -27,6 +27,8 @@
 		<br>
 		Trucking Fee:
 		<br>
+		Handling Fee:
+		<br>
 		Fuel Charge:
 		<br>
 		Less (Admin Fees):
@@ -49,6 +51,8 @@
 		<br>
 		<br>
 		<strong>$ {{ number_format($report_o->hauling, 2, '.', ',') }}</strong>
+		<br>
+		<strong>$ {{ number_format($report_o->handling, 2, '.', ',') }}</strong>
 		<br>
 		<strong>$ {{ number_format($report_o->fuelcharge, 2, '.', ',') }}</strong>
 		<br>

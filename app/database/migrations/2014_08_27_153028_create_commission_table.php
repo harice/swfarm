@@ -38,7 +38,7 @@ class CreateCommissionTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('commission');
+		Schema::dropIfExists('commission');
 	}
 
 }

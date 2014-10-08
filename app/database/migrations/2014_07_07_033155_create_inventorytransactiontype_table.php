@@ -27,7 +27,7 @@ class CreateInventorytransactiontypeTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('inventorytransactiontype');
+		Schema::dropIfExists('inventorytransactiontype');
 	}
 
 }

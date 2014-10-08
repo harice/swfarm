@@ -32,6 +32,7 @@ class CreateOrderTable extends Migration {
                   $table->boolean('verified')->default(false);
                   $table->smallInteger('ordertype');
                   $table->integer('purchaseorder_id')->unsigned()->nullable();
+                  $table->decimal('totalPayment', 12, 2)->nullable();
                   $table->timestamps();
                   $table->softDeletes();
                   
