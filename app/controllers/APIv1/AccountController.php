@@ -157,5 +157,9 @@ class AccountController extends BaseController {
         return $this->account->getContracts($id);
     }
 
+    public function accountSync(){
+    	return $this->account->accountSync(Input::all());
+    }
+
 
 }

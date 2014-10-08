@@ -2,7 +2,7 @@
 
 class Address extends Eloquent {
     protected $fillable = array('account', 'street', 'city', 'state', 'country',  'type', 'longitude', 'latitude');
-
+    protected $touches = array('account');
     /**
 	 * The database table used by the model.
 	 *

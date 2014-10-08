@@ -56,8 +56,9 @@ class AccountRepository implements AccountRepositoryInterface {
     Validator::replacer('contains', function($message, $attribute, $rule, $parameters){ return str_replace(':contains', $parameters[0], $message); });
   }
 
-  public function store($data)
+  public function store($data, $isMobile = false)
   {
+
     $this->validateExtras();
 
     $rules = array(
@@ -69,7 +70,7 @@ class AccountRepository implements AccountRepositoryInterface {
 
     $this->validate($data, $rules);
 
-    DB::transaction(function() use ($data){
+    $accountId = DB::transaction(function() use ($data){
 
       $account = new Account;
       $account->name = $data['name'];
@@ -109,12 +110,19 @@ class AccountRepository implements AccountRepositoryInterface {
         $address->save();
       }
 
-    });
+      return $account->id;
 
-    return Response::json(array( 'error' => false, 'message' => Lang::get('messages.success.created', array('entity' => 'Account'))), 200);
+    });
+    
+    if($isMobile){
+        return array('accountid' => $accountId, 'tpid' => $data['tpid']);
+    } else {
+        return Response::json(array( 'error' => false, 'message' => Lang::get('messages.success.created', array('entity' => 'Account'))), 200);  
+    }
+    
   }
 
-  public function update($id, $data)
+  public function update($id, $data, $isMobile = false)
   {
     $this->validateExtras();
 
@@ -179,13 +187,18 @@ class AccountRepository implements AccountRepositoryInterface {
       }
 
     });
-
-    return Response::json( array( 'error' => false, 'message' => Lang::get('messages.success.updated', array('entity' => 'Account'))), 200 );
+    
+    if($isMobile){
+        return array('accountid' => $id, 'tpid' => $data['tpid'], 'data' => Account::with('address')->find($id)->toArray());  //return data back
+    } else {
+        return Response::json( array( 'error' => false, 'message' => Lang::get('messages.success.updated', array('entity' => 'Account'))), 200 );  
+    }
+    
   }
 
   private function deleteAddresses($account, $addressIdList = null)
   {
-    if(is_null($addressIdList)) {
+    if(count($addressIdList) == 0) { //empty array
       $address = Address::with('account')->whereHas('account', function($query) use ($account) { $query->where('id', '=', $account); })->delete();
     } else {
       $address = Address::with('account')->whereHas('account', function($query) use ($account) { $query->where('id', '=', $account); })
@@ -414,6 +427,76 @@ class AccountRepository implements AccountRepositoryInterface {
   {
     $contracts = Contract::where('account_id', '=', $account_id)->get(array('id', 'contract_number'));
     return Response::json( $contracts->toArray(), 200);
+  }
+
+
+  /***************IPAD API*****************/
+
+  public function accountSync($params){
+    DB::beginTransaction();
+      $result = array();
+      foreach($params as $data){
+          if($data['accountid'] == null){ //account is created in ipad
+              if($this->isAccountExist($data['name'])){
+                $accountDetails = $this->getAccountDetailsUsingName($data['name']);
+                //check if update from ipad will be catered, if the updated date of ipad is the latest, update the web, else, do nothing
+                $dateLastUpdatedIpad = strtotime($data['updated_at']); //update date of ipad
+                $dateLastUpdatedWeb = strtotime($accountDetails['updated_at']); //updated date of web
+                if($dateLastUpdatedIpad > $dateLastUpdatedWeb){
+                    $response = $this->update($accountDetails['id'], $data, true);
+                    array_push($result, $response); //return new record in ipad  
+                } else {
+                    array_push($result, array('accountid' => $accountDetails['id'], 'tpid' => $data['tpid']));
+                }
+            } else { //account doesn't exist on the web and created on ipad first
+                $response = $this->store($data, true);
+                array_push($result, $response);
+            }
+          } else {
+              $accountDetails = $this->getAccountDetailsUsingId($data['accountid']);
+              //check if update from ipad will be catered, if the updated date of ipad is the latest, update the web, else, do nothing
+              $dateLastUpdatedIpad = strtotime($data['updated_at']); //update date of ipad
+              $dateLastUpdatedWeb = strtotime($accountDetails['updated_at']); //updated date of web
+              if($dateLastUpdatedIpad > $dateLastUpdatedWeb){
+                  $response = $this->update($accountDetails['id'], $data, true);
+                  array_push($result, $response); //return new record in ipad  
+              } else { //do nothing
+                  array_push($result, array('accountid' => $data['accountid'], 'tpid' => $data['tpid']));
+
+              }
+          }
+      }
+      DB::commit();
+      return $result;
+      
+
+  }
+
+  public function isAccountExist($name){
+      $result = Account::where('name', 'like', $name)->count();
+      if($result > 0){
+          return true;
+      } else {
+          return false;
+      }
+  }
+
+  public function getAccountDetailsUsingName($name){
+      $result = Account::where('name', 'like', $name)->first(array('id', 'name', 'updated_at'))->toArray();
+      if(count($result) > 0){
+          return $result;
+      } else {
+          return null;
+      }
+  }
+
+  public function getAccountDetailsUsingId($id){
+      $result = Account::where('id', '=', $id)->first(array('id', 'name', 'updated_at'))->toArray();
+      if(count($result) > 0){
+          return $result;
+      } else {
+          return null;
+      }
   }
 
 }
