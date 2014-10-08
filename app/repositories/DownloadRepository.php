@@ -389,7 +389,7 @@ class DownloadRepository implements DownloadInterface
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
-										        			'child' => View::make('reports.producer-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.producer-content', array('report_o' => $report_o))
+										        			'child' => View::make('reports.producer-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.producer-content', array('report_o' => $report_o, 'excel' => true ))
 									        			)
 								        			);
 										        });
@@ -470,12 +470,12 @@ class DownloadRepository implements DownloadInterface
 										        	$objDrawing->setWorksheet($sheet);
 
 										        	$sheet->setColumnFormat(array('E' => '0.00','F' => '0.0000','G' => '0.00','H' => '0.00'));
-										        	$sheet->setWidth(array('A' =>  24,'B' =>  15,'C' =>  20,'D' =>  10,'E' =>  15,'F' =>  12,'G' =>  10,'H' =>  15));
+										        	$sheet->setWidth(array('A' =>  27,'B' =>  15,'C' =>  20,'D' =>  10,'E' =>  15,'F' =>  12,'G' =>  10,'H' =>  15));
 
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
-										        			'child' => View::make('reports.customer-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.customer-content', array('report_o' => $report_o))
+										        			'child' => View::make('reports.customer-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.customer-content', array('report_o' => $report_o, 'excel' => true ))
 									        			)
 								        			);
 										        });
@@ -554,12 +554,12 @@ class DownloadRepository implements DownloadInterface
 										        	$objDrawing->setWorksheet($sheet);
 
 										        	$sheet->setColumnFormat(array('C' => '0.00','E' => '0.0000','F' => '0.00','H' => '0.00'));
-										        	$sheet->setWidth(array('A' =>  24,'B' =>  15,'C' =>  20,'D' =>  10,'E' =>  15,'F' =>  12,'G' =>  10,'H' =>  15));
+										        	$sheet->setWidth(array('A' =>  27,'B' =>  15,'C' =>  20,'D' =>  10,'E' =>  15,'F' =>  12,'G' =>  10,'H' =>  15));
 
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
-										        			'child' => View::make('reports.driver-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.driver-content', array('report_o' => $report_o))
+										        			'child' => View::make('reports.driver-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.driver-content', array('report_o' => $report_o, 'excel' => true ))
 									        			)
 								        			);
 										        });
@@ -641,7 +641,7 @@ class DownloadRepository implements DownloadInterface
 										        	$sheet->getStyle('L16')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
 										        	$sheet->getStyle('L17')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
 										        	$sheet->setColumnFormat(array('E' => '0.00','G' => '0.00','H' => '0.0000','I' => '0.00','J' => '0.00','K' => '0.00','L' => '0.00','M' => '0.00','N' => '0.00'));
-										        	$sheet->setWidth(array('A' =>  24,'B' =>  18,'C' =>  20,'D' =>  20,'E' =>  15,'F' =>  10,'G' =>  18,'H' =>  15,'I' =>  15,'J' =>  15,'K' =>  10,'L' =>  15,'M' =>  15,'N' =>  15));
+										        	$sheet->setWidth(array('A' =>  27,'B' =>  18,'C' =>  20,'D' =>  20,'E' =>  15,'F' =>  10,'G' =>  18,'H' =>  15,'I' =>  15,'J' =>  15,'K' =>  10,'L' =>  15,'M' =>  15,'N' =>  15));
 
 										        	$sheet->loadView(
 										        		'excel.base',
@@ -725,12 +725,12 @@ class DownloadRepository implements DownloadInterface
 
 										        	$sheet->getStyle('G11')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
 										        	$sheet->setColumnFormat(array('G' => '0.00'));
-										        	$sheet->setWidth(array('A' =>  24,'B' =>  18,'C' =>  20,'D' =>  20,'E' =>  18,'F' =>  18,'G' =>  18));
+										        	$sheet->setWidth(array('A' =>  27,'B' =>  18,'C' =>  20,'D' =>  20,'E' =>  18,'F' =>  20,'G' =>  19));
 
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
-										        			'child' => View::make('reports.operator-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.operator-content', array('report_o' => $report_o))
+										        			'child' => View::make('reports.operator-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.operator-content', array('report_o' => $report_o, 'excel' => true ))
 									        			)
 								        			);
 										        });
@@ -807,14 +807,15 @@ class DownloadRepository implements DownloadInterface
 										        	$objDrawing->setCoordinates('A1');
 										        	$objDrawing->setWorksheet($sheet);
 
-										        	$sheet->getStyle('G11')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->getStyle('L10')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->getStyle('L13')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
 										        	$sheet->setColumnFormat(array('K' => '0.0000','L' => '0.00','L' => '0.00'));
-										        	$sheet->setWidth(array('A' =>  24,'B' =>  18,'C' =>  20,'D' =>  20,'E' =>  18,'F' =>  18,'G' =>  18,'H' =>  20,'I' =>  20,'J' =>  10,'K' =>  15,'L' =>  15,'M' =>  15));
+										        	$sheet->setWidth(array('A' =>  27,'B' =>  18,'C' =>  20,'D' =>  20,'E' =>  18,'F' =>  18,'G' =>  18,'H' =>  20,'I' =>  20,'J' =>  10,'K' =>  15,'L' =>  15,'M' =>  15));
 
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
-										        			'child' => View::make('reports.inventory-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.inventory-content', array('report_o' => $report_o))
+										        			'child' => View::make('reports.inventory-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.inventory-content', array('report_o' => $report_o, 'excel' => true ))
 									        			)
 								        			);
 										        });
@@ -886,14 +887,17 @@ class DownloadRepository implements DownloadInterface
 										        	$objDrawing->setCoordinates('A1');
 										        	$objDrawing->setWorksheet($sheet);
 
-										        	$sheet->getStyle('G11')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->getStyle('H10')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->getStyle('H11')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->getStyle('H12')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+										        	$sheet->getStyle('H13')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
 										        	$sheet->setColumnFormat(array('C' => '0.00','D' => '0.00','E' => '0.00','F' => '0.00','G' => '0.00','H' => '0.00','I' => '0.00'));
-										        	$sheet->setWidth(array('A' =>  24,'B' =>  18,'C' =>  15,'D' =>  15,'E' =>  15,'F' =>  15,'G' =>  15,'H' =>  15,'I' =>  15));
+										        	$sheet->setWidth(array('A' =>  27,'B' =>  18,'C' =>  15,'D' =>  15,'E' =>  15,'F' =>  15,'G' =>  15,'H' =>  15,'I' =>  15));
 
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
-										        			'child' => View::make('reports.gross-profit-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.gross-profit-content', array('report_o' => $report_o))
+										        			'child' => View::make('reports.gross-profit-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.gross-profit-content', array('report_o' => $report_o, 'excel' => true ))
 									        			)
 								        			);
 										        });
@@ -972,12 +976,12 @@ class DownloadRepository implements DownloadInterface
 
 										        	$sheet->getStyle('G11')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
 										        	$sheet->setColumnFormat(array('F' => '0.00','H' => '0.0000','I' => '0.00'));
-										        	$sheet->setWidth(array('A' =>  24,'B' =>  18,'C' =>  18,'D' =>  25,'E' =>  10,'F' =>  15,'G' =>  10,'H' =>  15,'I' =>  18));
+										        	$sheet->setWidth(array('A' =>  27,'B' =>  18,'C' =>  18,'D' =>  25,'E' =>  10,'F' =>  15,'G' =>  10,'H' =>  15,'I' =>  18));
 
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
-										        			'child' => View::make('reports.commission-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.commission-content', array('report_o' => $report_o))
+										        			'child' => View::make('reports.commission-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.commission-content', array('report_o' => $report_o, 'excel' => true ))
 									        			)
 								        			);
 										        });

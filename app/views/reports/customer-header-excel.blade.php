@@ -17,8 +17,8 @@
 	<tr>
 		<td colspan='3'>{{ $report_o->businessaddress->street }}</td>
 		<td></td>
-		<td colspan='2'>Total Amount Due:</td>
-		<td colspan='2' align='right'><strong>$ {{ number_format($report_o->amount, 2, '.', ',') }}</strong></td>
+		<td colspan='2' style='background-color:#d7e4c0;'>Total Amount Due:</td>
+		<td colspan='2' align='right' style='background-color:#d7e4c0;'><strong>$ {{ number_format($report_o->amount, 2, '.', ',') }}</strong></td>
 	</tr>
 	<tr>
 		<td colspan='3'>{{ $report_o->businessaddress->city }}, {{ $report_o->businessaddress->state->state_code }} {{ $report_o->businessaddress->zipcode }}</td>

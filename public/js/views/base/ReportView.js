@@ -281,12 +281,73 @@ define([
 
 			return date;
 		},	
+
+		showSendMailModal: function(ev){
+			var thisObj = this;	
+			var type = $(ev.target).attr('data-type');
+			var model = $(ev.target).attr('data-model');
+			var id = $(ev.target).attr('data-id');
+			var title = $(ev.target).attr('data-title');	
+			var startDate = $("#filter-operator-date-start input").val();			
+			var endDate = $("#filter-operator-date-end input").val();			
+
+			this.initSendMailForm(
+					"Send Mail as " +type,
+					'btn_sendmail',
+					'Send',
+					title,
+					model,
+					type,
+					id,
+					startDate,
+					endDate
+				);
+			
+			var validate = $('#sendmail-form').validate({
+				submitHandler: function(form) {
+					var data = $(form).serializeObject();
+					var queue = new QueueModel(data);
+					queue.save(
+						null, 
+						{
+							success: function (model, response, options) {
+								thisObj.displayMessage(response);
+								$('#mdl_sendmail').modal('hide');
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: queue.getAuth(),
+						}
+					);
+				},
+				rules: {
+					recipients: {
+						multiemail: true,
+					},
+				}
+			});
+
+			this.showModalForm('mdl_sendmail');
+
+			return false;
+		},
+
+		sendMail: function() {
+			$('#sendmail-form').submit();
+			return false;
+		},
 		
 		events: {
 			'click #generate': 'onclickgenerate',
 			'change #reporttype': 'filterAction',
 			'click #filter-operator-date-start': 'checkdate',
-			'click #filter-operator-date-end': 'checkdate',			
+			'click #filter-operator-date-end': 'checkdate',	
+			'click .sendmail': 'showSendMailModal',	
+			'click #btn_sendmail':'sendMail',	
 		},		
 
 	})

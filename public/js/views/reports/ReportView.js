@@ -10,7 +10,6 @@ define([
 	'views/reports/GrossProfitView',
 	'views/reports/CommissionView',	
 	'models/reports/ReportModel',	
-	'text!templates/layout/contentTemplate.html',
 	'text!templates/reports/ReportFormTemplate.html',
 	'global',
 	'constant',
@@ -25,7 +24,6 @@ define([
 			GrossProfit,
 			CommissionView,
 			Report,			
-			contentTemplate,
 			reportFormTemplate,
 			Global,
 			Const
