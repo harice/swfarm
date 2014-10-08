@@ -1,3 +1,6 @@
 Account Name: <%= account_name %> <br />
 Location Name: <%= location_name %> <br />
-Total Tons: <%= total_tons %>
+<%
+if (typeof total_tons != "undefined"){ %>
+	Total Tons: <%= total_tons %>
+<% } %>

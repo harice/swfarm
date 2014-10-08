@@ -33,32 +33,29 @@ define([
 			this.changedType = null;
 
 			this.model = new GraphModel();
-
 			this.model.on("change", function() {
-				var label = false;
-				var currency = '';
-				var tickDecimals = 0;
+				var graphIdName = $('.graph-cont[data-id='+ this.get('graphId') +'] .graph-container').attr('id');
 
-				if(label) {
-					currency = '$';
-					tickDecimals = 2;
-				}
+				switch(this.get('graphType')){
+					case Const.GRAPH.TYPE.STACKEDBAR:
+						if($("#start-"+this.get('graphId') + " input").val() !='' && $("#end-"+this.get('graphId') + " input").val() != '')	{
+							var graphData = thisObj.drawGraph(this, graphIdName, this.get('graphId'));											
+							thisObj.graphStackedData(graphIdName, graphData.data, graphData.xData, graphData.currency, graphData.tickDecimals);
+						}
+						break;
+					case Const.GRAPH.TYPE.BAR:
+						if($("#start-"+this.get('graphId') + " input").val() !='' && $("#end-"+this.get('graphId') + " input").val() != '')	{
+							var graphData = thisObj.drawGraph(this, graphIdName, this.get('graphId'));											
+							thisObj.graphData(graphIdName, graphData.data, graphData.xData, graphData.currency, graphData.tickDecimals);
+						}
+						break;
+					case Const.GRAPH.TYPE.MAP:
+						thisObj.drawMap(this, graphIdName, this.get('graphId'));
+						break;
+					case Const.GRAPH.TYPE.LOGISTICS:
 
-				var elementId = $('.graph-cont[data-id='+ this.get('graphId') +'] .graph-container').attr('id');
-
-				if($("#start-"+this.get('graphId') + " input").val() !='' && $("#end-"+this.get('graphId') + " input").val() != '')	{
-					var graphId = this.get('graphId');
-					var graphData = thisObj.formatGraphData(graphId, this.get('data'), this.get('graphType'));
-					switch(this.get('graphType')){
-						case Const.GRAPH.TYPE.STACKEDBAR:							
-							thisObj.graphStackedData(elementId, graphData.data, graphData.xData, currency, tickDecimals);
-							break;
-						case Const.GRAPH.TYPE.BAR:
-							thisObj.graphData(elementId, graphData.data, graphData.xData, currency, tickDecimals);
-							break;
-						default:
-							break;
-					}
+					default:						
+						break;
 				}
 			});
 								

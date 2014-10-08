@@ -51,7 +51,7 @@ define([
 		            numbers: {
 		            	show:true,
 		            	xAlign: function(x,a) { return x; },
-						yAlign: function(y,a) { return y+55; }
+						yAlign: function(y,a) { return y; }
 		            }
 		          },
 		          shadowSize: 2
@@ -281,18 +281,6 @@ define([
 
 		drawGraph: function(graph, graphIdName, graphId){
 			var thisObj = this;
-			var innerTemplateVariables = {
-				'graph_heading': graph.get('graphName'),
-				'graph_id': graphIdName,
-				'gid': graphId,
-				'start_date_id': 'start-'+graphId,
-				'end_date_id': 'end-'+graphId,				
-			};
-			var graphInnerTemplate = _.template(barGraphTemplate, innerTemplateVariables);
-			thisObj.subContainer.find('#graph-cont').append(graphInnerTemplate);
-
-			thisObj.initStartEndCalendarFilter(graphId);
-			
 			var label = false;			
 			var currency = '';
 			var tickDecimals = 0;
@@ -301,6 +289,21 @@ define([
 				currency = '$';
 				tickDecimals = 2;
 			}
+
+			if(thisObj.subContainer.find("#"+ graphIdName).length == 0){
+				var innerTemplateVariables = {
+					'graph_heading': graph.get('graphName'),
+					'graph_id': graphIdName,
+					'gid': graphId,
+					'start_date_id': 'start-'+graphId,
+					'end_date_id': 'end-'+graphId,				
+				};
+				var graphInnerTemplate = _.template(barGraphTemplate, innerTemplateVariables);
+				thisObj.subContainer.find('#graph-cont').append(graphInnerTemplate);
+
+				thisObj.initStartEndCalendarFilter(graphId);							
+			}			
+			
 			var graphData = thisObj.formatGraphData(graphId, graph.get('data'), graph.get('graphType'));
 
 			return { data: graphData.data, xData: graphData.xData, currency: currency, tickDecimals: tickDecimals };
@@ -311,6 +314,11 @@ define([
 			var lat = 33.393532;
 			var lng = -112.315879;
 			var thisObj = this;
+			var mapId = graphIdName + '-map-canvas-getlocation';
+			var producers = graph.get('data');
+			var markers = [];
+			var location = new google.maps.LatLng(lat, lng);
+			var addr = '';
 
 			var innerTemplateVariables = {
 				'graph_heading': graph.get('graphName'),
@@ -322,12 +330,25 @@ define([
 			var graphInnerTemplate = _.template(barGraphTemplate, innerTemplateVariables);
 			thisObj.subContainer.find('#graph-cont').append(graphInnerTemplate);
 
-			thisObj.subContainer.find('#' +graphIdName).append("<div id='map-canvas-getlocation'></div>");
+			thisObj.subContainer.find('#' +graphIdName).append("<div id="+ mapId +"></div>");
+			thisObj.subContainer.find('#' +graphIdName).css("width", "547px" );
+			thisObj.subContainer.find('#' +mapId).css({"width": "100%", "height": "100%"});
 
 			this.googleMaps = new GoogleMapsView();
-			this.googleMaps.initGetDashboardMapLocation(function (data) {
-				console.log("test");
+			this.googleMaps.initGetDashboardMapLocation(mapId, location);
+
+			markers.push({accountName: "SouthWest Farm", address: "11926 West Southern Avenue, Tolleson, Arizona, USA 85353", lat: lat, lng: lng});		
+
+			_.each(graph.get('data'), function (acct) {
+				_.each(acct.address, function(address){
+					if(address.latitude && address.longitude) {					
+						addr = address.street + ', ' + address.city + ', ' + address.address_states[0].state + ', USA';
+						markers.push({accountName:acct.name, address: addr, lat:address.latitude, lng:address.longitude});
+					}
+				});
+				
 			});
+			this.googleMaps.showDashboardSetLocation(markers, location);		
 		},
 	});
 

@@ -2,20 +2,32 @@
     <div class="header">
         <div class="row margin-top-0">
             <div class="col-md-12">
-                <h2>
-                    Trucking Statement
-                    <div class="btn-group pull-right">
-                        <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
-                            Export <span class="caret"></span>
-                        </button>
-                        <ul role="menu" class="dropdown-menu">
-                            <li><a href="<%= export_pdf_url %>" target="_blank">Adobe PDF (*.pdf)</a></li>
-                            <li><a href="<%= export_xlsx_url %>">Excel (*.xlsx)</a></li>
-                            <li><a href="<%= export_xls_url %>">Excel (*.xls)</a></li>
-                            <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
-                        </ul>
-                    </div>
-                </h2>
+                <h2 class="pull-left">
+                    Trucking Statement                    
+                </h2>                
+                <div class="btn-group pull-right">
+                    <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
+                        Email <span class="caret"></span>
+                    </button>                        
+                    <ul role="menu" class="dropdown-menu">
+                        <li><a class="sendmail" href="/" data-type="pdf" data-model="trucking-statement" data-id='<%= truckers.get("id") %>' data-title="Trucking Statement">Adobe PDF (*.pdf)</a></li>
+                        <li><a class="sendmail" href="/" data-type="xlsx" data-model="trucking-statement" data-id='<%= truckers.get("id") %>' data-title="Trucking Statement">Excel (*.xlsx)</a></li>
+                        <li><a class="sendmail" href="/" data-type="xls" data-model="trucking-statement" data-id='<%= truckers.get("id") %>' data-title="Trucking Statement">Excel (*.xls)</a></li>
+                        <li><a class="sendmail" href="/" data-type="csv" data-model="trucking-statement" data-id='<%= truckers.get("id") %>' data-title="Trucking Statement">Excel (*.csv)</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group pull-right">
+                    <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
+                        Export <span class="caret"></span>
+                    </button>
+                    <ul role="menu" class="dropdown-menu">
+                        <li><a href="<%= export_pdf_url %>" target="_blank">Adobe PDF (*.pdf)</a></li>
+                        <li><a href="<%= export_xlsx_url %>">Excel (*.xlsx)</a></li>
+                        <li><a href="<%= export_xls_url %>">Excel (*.xls)</a></li>
+                        <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
+                    </ul>
+                </div>
+                <div class="clearfix"></div>
                 <h5><%= cur_date %></h5>
             </div>
         </div>
@@ -51,6 +63,7 @@
                     var fuelcharge_i = 0;
                     var adminfee_i = 0;
                     var amount_i = 0;
+                    var handling_i = 0;
             %>
                 <h3><%= order.order_number %></h3>
                 <table id="operator-list" class="table table-bordered">
@@ -64,6 +77,7 @@
                             <th><strong>Bales</strong></th>
                             <th><strong>Pounds</strong></th>
                             <th><strong>Tons</strong></th>
+                            <th><strong>Handling Fee</strong></th>
                             <th><strong>Rate</strong></th>
                             <th><strong>Gross Rate</strong></th>
                             <th><strong>Rent</strong></th>   
@@ -94,6 +108,8 @@
                             <% pounds_i += parseFloat(schedule.pounds) %>
                             <td><%= numberFormatTons(schedule.tons) %></td>
                             <% tons_i += parseFloat(schedule.tons) %>
+                            <td><%= numberFormat(schedule.handlingfee) %></td>
+                            <% handling_i += parseFloat(schedule.handlingfee) %>
                             <td>$ <%= numberFormat(schedule.truckingrate) %></td>
                             <% trucking_i += parseFloat(schedule.truckingrate) %>
                             <td>$ <%= numberFormat(schedule.gross) %></td>
@@ -120,6 +136,7 @@
                             <td><%= bales_i %></td>
                             <td><%= numberFormatLbs(pounds_i) %></td>
                             <td><%= numberFormatTons(tons_i) %></td>
+                            <td><%= numberFormat(handling_i) %></td>
                             <td>$ <%= numberFormat(trucking_i) %></td>
                             <td>$ <%= numberFormat(gross_i) %></td>
                             <td>$ <%= numberFormat(trailer_i) %></td>
@@ -147,6 +164,10 @@
                     <tr>
                         <td>Total Hauling Fee</td>
                         <td>$ <%= numberFormat(truckers.get('hauling')) %></td>
+                    </tr>
+                    <tr>
+                        <td>Total Handling Fee</td>
+                        <td>$ <%= numberFormat(truckers.get('handling')) %></td>
                     </tr>
                     <tr>
                         <td>Total Admin Fee</td>

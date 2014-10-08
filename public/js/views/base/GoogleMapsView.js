@@ -115,12 +115,12 @@ define([
 				this.hiddenModalCallback = callback;
 		},
 
-		initGetDashboardMapLocation: function (callback) {
+		initGetDashboardMapLocation: function(mapId, location, callbak){
 			var thisObj = this;
 			this.mapType = this.mapTypes.GETLOCATION;
-						
+
 			if(!thisObj.isInitMap) {
-				thisObj.initMap(thisObj.mapCanvasIdGetLocation, function () {
+				thisObj.initDashboardMap(mapId, location, function () {
 					thisObj.initDropMarker(1);
 				});
 			}
@@ -152,6 +152,23 @@ define([
 			var mapOptions = {
 				center: this.center,
 				zoom: 15,
+				mapTypeId: google.maps.MapTypeId.ROADMAP,
+			};
+			
+			this.map = new google.maps.Map(document.getElementById(mapCanvasId), mapOptions);
+			
+			var getType = {};
+			if(this.isFunction(otherInit))
+				otherInit();
+				
+			this.isInitMap = true;
+		},
+
+		initDashboardMap: function(mapCanvasId, location, otherInit) {	
+			var radius = 402.3361244731408;
+			var mapOptions = {
+				center: location,
+				zoom: 13,
 				mapTypeId: google.maps.MapTypeId.ROADMAP,
 			};
 			
@@ -223,7 +240,7 @@ define([
 		
 		showModalSetLocation: function (markers) {
 			var thisObj = this;
-			
+
 			this.shownModalCallback = function () {
 				thisObj.removeMarkers();
 				
@@ -251,6 +268,41 @@ define([
 			};
 		
 			this.showModal(this.modalIdSetLocation);
+		},
+
+		showDashboardSetLocation: function (markers, centerPoint) {
+			var thisObj = this;
+			var radius = 402.3361244731408 * 1000;
+			var circle = new google.maps.Circle({radius: 10, center: centerPoint}); 
+			this.map.fitBounds(circle.getBounds());
+			circle.setRadius(radius);
+			circle.setCenter(this.map.getCenter());		
+
+			thisObj.removeMarkers();
+				
+			for(var i = 0; i < markers.length; i++) {									
+				var locationMarkerInfoWindowTemplateVariables = {
+					account_name: markers[i].accountName,
+					location_name: markers[i].address,
+				};
+		
+				var infoWindowTemplateVariables = _.template(locationMarkerInfoWindowTemplate, locationMarkerInfoWindowTemplateVariables);
+				
+				var infoWindow = new google.maps.InfoWindow({
+					content: infoWindowTemplateVariables,
+				});
+				
+				var location = new google.maps.LatLng(markers[i].lat, markers[i].lng);
+				
+				var marker = thisObj.addMarker(location);
+
+
+				thisObj.attachInfoWindow(marker, infoWindow);
+			}
+
+			this.map.fitBounds(circle.getBounds());
+			this.map.circleRadius = radius;
+											
 		},
 		
 		showModal: function (id) {
