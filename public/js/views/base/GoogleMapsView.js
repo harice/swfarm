@@ -115,10 +115,10 @@ define([
 				this.hiddenModalCallback = callback;
 		},
 
-		initGetDashboardMapLocation: function (callback) {
+		initGetDashboardMapLocation: function(){
 			var thisObj = this;
 			this.mapType = this.mapTypes.GETLOCATION;
-						
+
 			if(!thisObj.isInitMap) {
 				thisObj.initMap(thisObj.mapCanvasIdGetLocation, function () {
 					thisObj.initDropMarker(1);

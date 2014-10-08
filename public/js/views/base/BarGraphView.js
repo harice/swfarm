@@ -322,12 +322,24 @@ define([
 			var graphInnerTemplate = _.template(barGraphTemplate, innerTemplateVariables);
 			thisObj.subContainer.find('#graph-cont').append(graphInnerTemplate);
 
-			thisObj.subContainer.find('#' +graphIdName).append("<div id='map-canvas-getlocation'></div>");
+			if(graphId ==8) {
+				thisObj.subContainer.find('#' +graphIdName).append("<div id='map-canvas-setlocation'></div>");
 
-			this.googleMaps = new GoogleMapsView();
-			this.googleMaps.initGetDashboardMapLocation(function (data) {
-				console.log("test");
-			});
+				this.googleMaps = new GoogleMapsView();
+				this.googleMaps.initGetDashboardMapLocation(function (data) {
+					if(typeof data.location !== 'undefined') {
+						thisObj.subContainer.find(".latitude").val(data.location.lat());
+						thisObj.subContainer.find(".longitude").val(data.location.lng());
+					}
+					else {
+						thisObj.subContainer.find('.latitude').val('');
+						thisObj.subContainer.find('.longitude').val('');
+					}
+				});
+			}
+
+			
+			
 		},
 	});
 

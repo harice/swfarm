@@ -3,28 +3,28 @@
         <div class="row margin-top-0">
             <div class="col-md-12">
                 <h2 class="pull-left">
-                    Producer Statement
-                    <div class="btn-group">
-                        <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
-                            Export <span class="caret"></span>
-                        </button>
-                        <ul role="menu" class="dropdown-menu">
-                            <li><a href="<%= export_pdf_url %>" target="_blank">Adobe PDF (*.pdf)</a></li>
-                            <li><a href="<%= export_xlsx_url %>">Excel (*.xlsx)</a></li>
-                            <li><a href="<%= export_xls_url %>">Excel (*.xls)</a></li>
-                            <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
-                        </ul>
-                        <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
-                            Email <span class="caret"></span>
-                        </button>                        
-                        <ul role="menu" class="dropdown-menu">
-                            <li><a class="sendmail" href="/" data-type="pdf" data-model="producer-statement" data-id='<%= producers.get("id") %>' data-title="Producer Statement">Adobe PDF (*.pdf)</a></li>
-                            <li><a class="sendmail" href="/" data-type="xlsx" data-model="producer-statement" data-id='<%= producers.get("id") %>' data-title="Producer Statement">Excel (*.xlsx)</a></li>
-                            <li><a class="sendmail" href="/" data-type="xls" data-model="producer-statement" data-id='<%= producers.get("id") %>' data-title="Producer Statement">Excel (*.xls)</a></li>
-                            <li><a class="sendmail" href="/" data-type="csv" data-model="producer-statement" data-id='<%= producers.get("id") %>' data-title="Producer Statement">Excel (*.csv)</a></li>
-                        </ul>
-                    </div>
+                    Producer Statement                    
                 </h2>
+                <div class="btn-group pull-right">
+                    <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
+                        Export <span class="caret"></span>
+                    </button>
+                    <ul role="menu" class="dropdown-menu">
+                        <li><a href="<%= export_pdf_url %>" target="_blank">Adobe PDF (*.pdf)</a></li>
+                        <li><a href="<%= export_xlsx_url %>">Excel (*.xlsx)</a></li>
+                        <li><a href="<%= export_xls_url %>">Excel (*.xls)</a></li>
+                        <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
+                    </ul>
+                    <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
+                        Email <span class="caret"></span>
+                    </button>                        
+                    <ul role="menu" class="dropdown-menu">
+                        <li><a class="sendmail" href="/" data-type="pdf" data-model="producer-statement" data-id='<%= producers.get("id") %>' data-title="Producer Statement">Adobe PDF (*.pdf)</a></li>
+                        <li><a class="sendmail" href="/" data-type="xlsx" data-model="producer-statement" data-id='<%= producers.get("id") %>' data-title="Producer Statement">Excel (*.xlsx)</a></li>
+                        <li><a class="sendmail" href="/" data-type="xls" data-model="producer-statement" data-id='<%= producers.get("id") %>' data-title="Producer Statement">Excel (*.xls)</a></li>
+                        <li><a class="sendmail" href="/" data-type="csv" data-model="producer-statement" data-id='<%= producers.get("id") %>' data-title="Producer Statement">Excel (*.csv)</a></li>
+                    </ul>
+                </div>
                 <div class="clearfix"></div>
                 <h5><%= cur_date %></h5>
             </div>
