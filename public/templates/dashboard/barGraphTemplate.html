@@ -3,6 +3,8 @@
 		<div class="header">
 			<h3><%= graph_heading %></h3>
 		</div>
+		<%
+		if(typeof latitude == "undefined" && typeof longitude == "undefined"){ %>
 		<div class="filter-cont row">
 			<div class="col-md-12">
 				<div class="pull-right">
@@ -31,12 +33,15 @@
 				</div>
 			</div>
 		</div>
+		<%
+		}
+		%>		
 		<div class="content">
 			<%
 			if(typeof latitude != "undefined" && typeof longitude != "undefined")
 			%> 
-				<input type="hidden" name="latitude" value="<%= latitude %>" />
-				<input type="hidden" name="longitude" value="<%= longitude %>" />
+				<input type="hidden" class="latitude" name="latitude" value="<%= latitude %>" />
+				<input type="hidden" class="longitude" name="longitude" value="<%= longitude %>" />
 			<%
 			%>
 			<div id='<%= graph_id  %>' class="graph-container" style="height:250px; position:relative; padding:0">

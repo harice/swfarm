@@ -7,15 +7,6 @@
                 </h2>
                 <div class="btn-group pull-right">
                     <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
-                        Export <span class="caret"></span>
-                    </button>
-                    <ul role="menu" class="dropdown-menu">
-                        <li><a href="<%= export_pdf_url %>" target="_blank">Adobe PDF (*.pdf)</a></li>
-                        <li><a href="<%= export_xlsx_url %>">Excel (*.xlsx)</a></li>
-                        <li><a href="<%= export_xls_url %>">Excel (*.xls)</a></li>
-                        <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
-                    </ul>
-                    <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
                         Email <span class="caret"></span>
                     </button>                        
                     <ul role="menu" class="dropdown-menu">
@@ -24,7 +15,18 @@
                         <li><a class="sendmail" href="/" data-type="xls" data-model="operator-statement" data-id='<%= operators.get("id") %>' data-title="Operator's Pay Statement">Excel (*.xls)</a></li>
                         <li><a class="sendmail" href="/" data-type="csv" data-model="operator-statement" data-id='<%= operators.get("id") %>' data-title="Operator's Pay Statement">Excel (*.csv)</a></li>
                     </ul>
-                </div>              
+                </div>  
+                <div class="btn-group pull-right">
+                    <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
+                        Export <span class="caret"></span>
+                    </button>
+                    <ul role="menu" class="dropdown-menu">
+                        <li><a href="<%= export_pdf_url %>" target="_blank">Adobe PDF (*.pdf)</a></li>
+                        <li><a href="<%= export_xlsx_url %>">Excel (*.xlsx)</a></li>
+                        <li><a href="<%= export_xls_url %>">Excel (*.xls)</a></li>
+                        <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
+                    </ul>
+                </div>            
                 <div class="clearfix"></div>
                 <h5><%= cur_date %></h5>
             </div>

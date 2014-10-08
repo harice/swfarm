@@ -7,15 +7,6 @@
                 </h2>
                 <div class="btn-group pull-right">
                     <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
-                        Export <span class="caret"></span>
-                    </button>
-                    <ul role="menu" class="dropdown-menu">
-                        <li><a href="<%= export_pdf_url %>" target="_blank">Adobe PDF (*.pdf)</a></li>
-                        <li><a href="<%= export_xlsx_url %>">Excel (*.xlsx)</a></li>
-                        <li><a href="<%= export_xls_url %>">Excel (*.xls)</a></li>
-                        <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
-                    </ul>
-                    <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
                         Email <span class="caret"></span>
                     </button>                        
                     <ul role="menu" class="dropdown-menu">
@@ -23,6 +14,17 @@
                         <li><a class="sendmail" href="/" data-type="xlsx" data-model="customer-sales-statement" data-id='<%= customers.get("id") %>' data-title="Customer Sales Report">Excel (*.xlsx)</a></li>
                         <li><a class="sendmail" href="/" data-type="xls" data-model="customer-sales-statement" data-id='<%= customers.get("id") %>' data-title="Customer Sales Report">Excel (*.xls)</a></li>
                         <li><a class="sendmail" href="/" data-type="csv" data-model="customer-sales-statement" data-id='<%= customers.get("id") %>' data-title="Customer Sales Report">Excel (*.csv)</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group pull-right">
+                    <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
+                        Export <span class="caret"></span>
+                    </button>
+                    <ul role="menu" class="dropdown-menu">
+                        <li><a href="<%= export_pdf_url %>" target="_blank">Adobe PDF (*.pdf)</a></li>
+                        <li><a href="<%= export_xlsx_url %>">Excel (*.xlsx)</a></li>
+                        <li><a href="<%= export_xls_url %>">Excel (*.xls)</a></li>
+                        <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
                     </ul>
                 </div>
                 <div class="clearfix"></div>

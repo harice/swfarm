@@ -4,7 +4,18 @@
             <div class="col-md-12">
                 <h2 class="pull-left">
                     Trucking Statement                    
-                </h2>
+                </h2>                
+                <div class="btn-group pull-right">
+                    <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
+                        Email <span class="caret"></span>
+                    </button>                        
+                    <ul role="menu" class="dropdown-menu">
+                        <li><a class="sendmail" href="/" data-type="pdf" data-model="trucking-statement" data-id='<%= truckers.get("id") %>' data-title="Trucking Statement">Adobe PDF (*.pdf)</a></li>
+                        <li><a class="sendmail" href="/" data-type="xlsx" data-model="trucking-statement" data-id='<%= truckers.get("id") %>' data-title="Trucking Statement">Excel (*.xlsx)</a></li>
+                        <li><a class="sendmail" href="/" data-type="xls" data-model="trucking-statement" data-id='<%= truckers.get("id") %>' data-title="Trucking Statement">Excel (*.xls)</a></li>
+                        <li><a class="sendmail" href="/" data-type="csv" data-model="trucking-statement" data-id='<%= truckers.get("id") %>' data-title="Trucking Statement">Excel (*.csv)</a></li>
+                    </ul>
+                </div>
                 <div class="btn-group pull-right">
                     <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
                         Export <span class="caret"></span>
@@ -14,15 +25,6 @@
                         <li><a href="<%= export_xlsx_url %>">Excel (*.xlsx)</a></li>
                         <li><a href="<%= export_xls_url %>">Excel (*.xls)</a></li>
                         <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
-                    </ul>
-                    <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
-                        Email <span class="caret"></span>
-                    </button>                        
-                    <ul role="menu" class="dropdown-menu">
-                        <li><a class="sendmail" href="/" data-type="pdf" data-model="trucking-statement" data-id='<%= truckers.get("id") %>' data-title="Trucking Statement">Adobe PDF (*.pdf)</a></li>
-                        <li><a class="sendmail" href="/" data-type="xlsx" data-model="trucking-statement" data-id='<%= truckers.get("id") %>' data-title="Trucking Statement">Excel (*.xlsx)</a></li>
-                        <li><a class="sendmail" href="/" data-type="xls" data-model="trucking-statement" data-id='<%= truckers.get("id") %>' data-title="Trucking Statement">Excel (*.xls)</a></li>
-                        <li><a class="sendmail" href="/" data-type="csv" data-model="trucking-statement" data-id='<%= truckers.get("id") %>' data-title="Trucking Statement">Excel (*.csv)</a></li>
                     </ul>
                 </div>
                 <div class="clearfix"></div>
