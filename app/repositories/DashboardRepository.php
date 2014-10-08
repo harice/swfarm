@@ -411,7 +411,8 @@ class DashboardRepository implements DashboardRepositoryInterface {
         $accounts = Account::with('address')
                   ->with('address.addressStates')
                   ->with(array('address' => function($query){
-                        $query->addSelect(array('id', 'account', 'street', 'state', 'city', 'country', 'longitude', 'latitude'));
+                        $query->addSelect(array('id', 'account', 'street', 'state', 'city', 'country', 'longitude', 'latitude'))
+                              ->whereIn('type', array(Config::get('constants.ADDRESSTYPE_BUSINESS'), Config::get('constants.ADDRESSTYPE_STACK')));
                   }))
                   ->whereHas('accounttype', function($q) use($accountType) { $q->where('accounttype_id','=', $accountType); } )
                   ->orderBy('name', 'asc')
