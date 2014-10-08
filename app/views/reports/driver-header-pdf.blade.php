@@ -16,12 +16,21 @@
 	<div class='width-40 float-left'>
 		Statement Date:
 		<br>
+		Amount:
+		<br>
+		Handling Fee:
+		<br>
 		Total Amount Due:
 	</div>
 	<div class='width-60 float-right text-right'>
 		{{ date('F d, Y') }}
 		<br>
-		<strong class='padding-right-5'>$ {{ number_format($report_o->amount, 2, '.', ',') }}</strong>
+		<strong>$ {{ number_format($report_o->amount, 2, '.', ',') }}</strong>
+		<br>
+		<strong>$ {{ number_format($report_o->handling, 2, '.', ',') }}</strong>
+		<br>
+		<strong>$ {{ number_format(bcadd($report_o->amount,$report_o->handling,2), 2, '.', ',') }}</strong>
+		<br>
 	</div>
 
 	<span class='clear'></span>
