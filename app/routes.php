@@ -247,5 +247,6 @@ Route::get('/', function(){ return View::make('main'); });
 //     //     $excel->sheet('Second sheet', function($sheet) { $sheet->prependRow(array('asdasdsadadasdasd', 'sadas'));  });
 //     // })->download('xls');
 // });
+Route::get('info', function(){ echo phpinfo(); });
 Route::get('404', function(){ return View::make('errors/404'); });
 Route::get('{dump}', function(){ return Redirect::to('404'); });

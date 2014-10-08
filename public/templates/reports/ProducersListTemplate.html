@@ -14,9 +14,17 @@
                             <li><a href="<%= export_xls_url %>">Excel (*.xls)</a></li>
                             <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
                         </ul>
+                        <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
+                            Email <span class="caret"></span>
+                        </button>                        
+                        <ul role="menu" class="dropdown-menu">
+                            <li><a class="sendmail" href="/" data-type="pdf" data-model="producer-statement" data-id='<%= producers.get("id") %>' data-title="Producer Statement">Adobe PDF (*.pdf)</a></li>
+                            <li><a class="sendmail" href="/" data-type="xlsx" data-model="producer-statement" data-id='<%= producers.get("id") %>' data-title="Producer Statement">Excel (*.xlsx)</a></li>
+                            <li><a class="sendmail" href="/" data-type="xls" data-model="producer-statement" data-id='<%= producers.get("id") %>' data-title="Producer Statement">Excel (*.xls)</a></li>
+                            <li><a class="sendmail" href="/" data-type="csv" data-model="producer-statement" data-id='<%= producers.get("id") %>' data-title="Producer Statement">Excel (*.csv)</a></li>
+                        </ul>
                     </div>
                 </h2>
-                <button class='btn btn-link btn-sm margin-left-0 margin-top-5 sendmail pull-right'><i class='fa fa-envelope-o'></i>email</button>
                 <div class="clearfix"></div>
                 <h5><%= cur_date %></h5>
             </div>
