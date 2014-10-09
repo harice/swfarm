@@ -234,6 +234,11 @@ define([
 	routerRoutes[Const.URL.REPORT] = 'showReportsPage';
 	routerRoutes[Const.URL.REPORT+'/'] = 'showReportsPage';
 	routerRoutes[Const.URL.REPORT+'/:action'] = 'showReportsPage';
+
+	//report
+	routerRoutes[Const.URL.PAYMENT] = 'showPaymentPage';
+	routerRoutes[Const.URL.PAYMENT+'/'] = 'showPaymentPage';
+	routerRoutes[Const.URL.PAYMENT+'/:action'] = 'showPaymentPage';
 	
 	//stacknumber
 	routerRoutes[Const.URL.STACKNUMBER+'/:id'] = 'showStackNumberPage';
@@ -489,6 +494,14 @@ define([
 			this.closeView();
 			var reportController = new ReportController();			
 			this.currView = reportController.setAction();
+			this.currView.render();
+
+		});
+
+		app_router.on('route:showPaymentPage', function () {
+			this.closeView();
+			var paymentController = new PaymentController();			
+			this.currView = paymentController.setAction();
 			this.currView.render();
 
 		});
