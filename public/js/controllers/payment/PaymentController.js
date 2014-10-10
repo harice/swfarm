@@ -13,7 +13,8 @@ define([
 			
 			switch (action) {
 				case Const.CRUD.ADD:
-					return this.add();
+					if(id != null && this.IsInt(id))
+						return this.add(id);
 					break;
 				
 				case Const.CRUD.EDIT:
@@ -28,8 +29,8 @@ define([
 			}
 		};
 		
-		this.add = function () {
-			return new Payment();
+		this.add = function (id) {
+			return new Payment({'orderId': id});
 		};
 		
 		this.edit = function (id) {

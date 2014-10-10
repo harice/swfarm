@@ -6,6 +6,7 @@ define([
 	'jqueryphonenumber',
 	'bootstrapmultiselect',
 	'models/payment/PaymentModel',
+	'collections/payment/PaymentCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/payment/paymentAddTemplate.html',
 	'global',
@@ -17,6 +18,7 @@ define([
 			PhoneNumber,
 			bootstrapMultiSelect,
 			PaymentModel,
+			PaymentCollection,
 			contentTemplate,
 			paymentAddTemplate,
 			Global,
@@ -26,24 +28,60 @@ define([
 	var PaymentAddView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
-		initialize: function() {
+		initialize: function(option) {
 			this.initSubContainer();
 			var thisObj = this;
 			this.paymentId = null;
 			this.h1Title = 'Account';
 			this.h1Small = 'add';
+			this.orderId = option.orderId;
+
+			this.options ={
+				removeComma: ['amount']
+			}
+
+			this.model = new PaymentModel();
+
+			this.collection = new PaymentCollection();
+			this.collection.on('sync', function(){
+				thisObj.displayForm();
+				this.off('sync');
+			});
+			
 		},
 		
-		render: function(){
-			this.displayForm();
+		render: function(){	
+			this.collection.getPaymentByPurchaseOrder();
 			Backbone.View.prototype.refreshTitle('Payments','add');
+		},	
+
+		getCurdate: function() {
+			var today = new Date();
+		    var dd = today.getDate();
+		    var mm = today.getMonth()+1; //January is 0!
+
+		    var yyyy = today.getFullYear();
+		    if(dd<10){
+		        dd='0'+dd
+		    } 
+		    if(mm<10){
+		        mm='0'+mm
+		    } 
+		    var today = yyyy+'-'+mm+'-'+ dd;
+
+		    return today;
 		},
 		
 		displayForm: function () {
 			var thisObj = this;
-			
+
+			if(thisObj.orderId != null)
+				thisObj.model = this.collection.get({id: thisObj.orderId});
+
 			var innerTemplateVariables = {
 				'payment_url': '#/'+Const.URL.PAYMENT,
+				'order_id': this.orderId,
+				'payment': thisObj.model,
 			};
 			
 			if(this.paymentId != null)
@@ -66,6 +104,11 @@ define([
 			
 			this.initValidateForm();
 			$('.form-button-container').show();
+
+			this.initConfirmationWindow('Are you sure you want to cancel this payment?',
+										'confirm-cancel-payment',
+										'Cancel Payment',
+                                        'Cancel Payment');
 		},
 		
 		initValidateForm: function () {
@@ -73,16 +116,13 @@ define([
 			
 			var validate = $('#addPaymentForm').validate({
 				submitHandler: function(form) {						
-					var data = thisObj.formatFormField($(form).serializeObject());
-
-					var accountModel = new AccountModel(data);					
-					accountModel.save(
+					var data = $(form).serializeObject();
+					var paymentModel = new PaymentModel(data);					
+					paymentModel.save(
 						null, 
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);	
-								console.log(data);							
-								//Global.getGlobalVars().app_router.navigate(Const.URL.ACCOUNT, {trigger: true});
 								Backbone.history.history.back();
 							},
 							error: function (model, response, options) {
@@ -91,15 +131,49 @@ define([
 								else
 									thisObj.displayMessage(response);
 							},
-							headers: accountModel.getAuth(),
+							headers: paymentModel.getAuth(),
 						}
 					);
 				},
 				
 			});
 		},
+
+		showCancelPaymentWindow: function (ev) {
+			this.showConfirmationWindow();		
+		},		
+
+		cancelPayment: function () {
+			var thisObj = this;			
+			var data = $("#addPaymentForm").serializeObject();
+					
+			var paymentModel = new PaymentModel(data);
+				
+			paymentModel.setCancelURL();		
+			paymentModel.save(
+				null, 
+				{
+					success: function (model, response, options) {
+						thisObj.displayMessage(response);	
+						thisObj.hideConfirmationWindow('modal-with-form-confirm');
+						Backbone.history.history.back();
+					},
+					error: function (model, response, options) {
+						if(typeof response.responseJSON.error == 'undefined')
+							validate.showErrors(response.responseJSON);
+						else
+							thisObj.displayMessage(response);
+					},
+					headers: paymentModel.getAuth(),
+				}
+			);
+		},
 		
 		events: {
+			'keyup #amount': 'formatMoney',
+			'blur #amount': 'onBlurMoney',
+			'click #cancel-payment': 'showCancelPaymentWindow',
+			'click #confirm-cancel-payment': 'cancelPayment'
 		},		
 	});
 

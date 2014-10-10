@@ -57,15 +57,15 @@ define([
 		
 		displayList: function () {	
 			var data = {
-				payment_url: '#/'+Const.URL.PAYMENT,
-				payment_edit_url: '#/'+Const.URL.PAYMENT+'/'+Const.CRUD.EDIT,
+				po_url: '#/'+Const.URL.PO,								
 				account_url: '#/'+Const.URL.ACCOUNT,
-				payments: this.collection.models,
+				payment_url: '#/'+Const.URL.PAYMENT,
+				pos: this.collection.models,
 				add: Const.CRUD.ADD,
 				collapsible_id: Const.PAYMENT.COLLAPSIBLE.ID,
-				payment_status_pending: Const.STATUSID.PENDING,
-				payment_status_pending_status_open: Const.STATUSID.OPEN,
-				payment_status_pending_status_testing: Const.STATUSID.TESTING,
+				po_status_pending: Const.STATUSID.PENDING,
+				po_status_pending_status_open: Const.STATUSID.OPEN,
+				po_status_pending_status_testing: Const.STATUSID.TESTING,
 				_: _ 
 			};
 			
@@ -98,10 +98,9 @@ define([
 		},	
 
 		generatePaymentListByOrder: function (models, poId) {
-			console.log(models);
-			console.log(poId);
 			var data = {
 				payments: models,
+				payment_url: '#/'+Const.URL.PAYMENT,	
 				_: _ 
 			};
 

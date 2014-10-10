@@ -25,6 +25,10 @@ define([
 			});
 			
 		},
+
+		setCancelURL: function () {
+			this.urlRoot = '/apiv1/payment/cancel/';
+		},
 	});
 
 	return PaymentModel;

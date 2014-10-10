@@ -5,16 +5,32 @@
 				<thead>
 					<tr>
 						<th class="width-250">Transaction No.</th>
-						<th class="width-250">Posting No.</th>
+						<th class="width-250">Posting Date</th>
 						<th class="width-150">Check No.</th>
 						<th class="width-150">Amount Paid</th>
 					</tr>
 				</thead>
 				<tbody>
-					<% if (!_.isEmpty(payments.data)) { %>
-						<% _.each(payments.get('data'), function(payment){ %>
+					<% if (!_.isEmpty(payments)) { %>
+						<% _.each(payments, function(payment){
+						 %>
 						<tr>
-
+							<td>
+								<%
+								if(payment.get('isCancel')){ %>
+									<i class="fa fa-check-circle width-10 "></i>
+								<%
+								}
+								else { %>
+									<i class="fa fa-check-circle width-10 color-success"></i>
+								<%
+								}
+								%>
+								<a href="<%= payment_url %>/<%= payment.get('id') %>"><%= payment.get('transactionnumber') %></a>
+							</td>
+							<td><%= formatDate(payment.get('created_at')) %></td>
+							<td><%= payment.get('checknumber') %></td>
+							<td>$ <%= numberFormat(payment.get('amount')) %></td>
 						</tr>		
 						<%
 						});

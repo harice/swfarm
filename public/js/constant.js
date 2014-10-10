@@ -184,6 +184,7 @@ define(function () {
 			'COLLAPSIBLE': {
 				'ID': 'payment-list-collapsible-',
 			},
+			'CANCEL': 'cancel',
 		},
         'CONTRACT': {
 			'COLLAPSIBLE': {
