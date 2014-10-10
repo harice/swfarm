@@ -29,7 +29,9 @@ class PaymentRepository implements PaymentRepositoryInterface {
    
     public function findById($id)
     {
-        $payment = Payment::with('account')
+        $payment = Payment::with('account')->with(array('order' => function($query){
+                                $query->addSelect(array('id', 'order_number'));
+                            }))
                             ->find($id);
         
         if (!$payment) {
