@@ -232,6 +232,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokeniz
 
     Route::get('payment/purchaseOrderList', 'APIv1\PaymentController@getAllPurchaseOrderList');
     Route::get('payment/paymentListOfOrder', 'APIv1\PaymentController@paymentListOfOrder');
+    Route::put('payment/cancel/{id}', 'APIv1\PaymentController@cancel');
     Route::resource('payment', 'APIv1\PaymentController');
 });
 

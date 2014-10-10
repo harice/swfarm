@@ -89,6 +89,12 @@ class PaymentController extends BaseController {
         return Response::json($response);
 	}
 
+	public function cancel($id)
+	{
+		$response = $this->repo->cancel($id);
+        return Response::json($response);
+	}
+
 	public function getAllPurchaseOrderList(){
 		$response = $this->repo->getAllPurchaseOrderList(Input::all());
         return Response::json($response);

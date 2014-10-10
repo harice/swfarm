@@ -125,6 +125,28 @@ class PaymentRepository implements PaymentRepositoryInterface {
         
         return $response;
     }
+
+    public function cancel($id)
+    {
+        $payment = Payment::find($id);
+
+        if ($payment->isCancel) {
+            $response = array(
+                'error' => true,
+                'message' => 'Payment is already cancelled.'
+            );
+        } else {
+            $payment->isCancel = true;
+            $payment->save();
+
+            $response = array(
+                'error' => false,
+                'message' => 'Payment has been cancelled.'
+            );
+        }
+        
+        return $response;
+    }
     
     public function validate($data, $entity)
     {
@@ -150,7 +172,7 @@ class PaymentRepository implements PaymentRepositoryInterface {
         $ordertype = isset($params['type']) ? $params['type'] : Config::get('constants.ORDERTYPE_PO');
        
         $order = Order::with(array('payment' => function($query){
-                            $query->addSelect(array('id', 'order_id', 'transactionnumber', 'amount'));
+                            $query->addSelect(array('id', 'order_id', 'transactionnumber', 'amount', 'isCancel'));
                         }))
                         ->with('account')->with('status')->where('ordertype', '=', $ordertype) 
                         ->whereIn('status_id', array(Config::get('constants.STATUS_OPEN'), Config::get('constants.STATUS_CLOSED'), Config::get('constants.STATUS_TESTING')));
@@ -166,7 +188,9 @@ class PaymentRepository implements PaymentRepositoryInterface {
         foreach($orderArr['data'] as &$order){
             $order['paidAmount'] = 0;
             foreach($order['payment'] as $payment){
-                $order['paidAmount'] += $payment['amount'];
+                if(!$payment['isCancel']){
+                    $order['paidAmount'] += $payment['amount'];    
+                }
             }
             $order['balanceAmount'] = $order['totalPayment'] - $order['paidAmount'];
             $order['paidAmount'] = number_format($order['paidAmount'], 2);
