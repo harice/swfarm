@@ -1,0 +1,57 @@
+<% if (!_.isEmpty(payments)) { 
+   var progress = 0;  
+  _.each(payments, function(payment){ 
+    progress = (payment.paidAmount / payment.totalPayment) * 100;
+    %>
+    <tr class="collapse-trigger cursor-pointer" data-id="<%= payment.get("id") %>">
+      <td>
+        <i class="fa fa-angle-right width-10 accordion-carret"></i>
+        <a href="<%= payment_url %>/<%= payment.get("id") %>" class="stop-propagation"><%= payment.get('order_number') %></a>
+        <span class="throbber_wrap" style="display: none;"><i class="fa fa-spinner fa-spin throbber_ajax"></i></span>
+      </td>
+      <td><a href="<%= payment_edit_url %>/<%= payment.get("id") %>" class="stop-propagation"><%= payment.get('account').name %></a></td>
+      <td><%= payment.get('status').name %></td>
+      <td>$ <%= numberFormat(payment.get('totalPayment')) %></td>
+      <td>$ <%= numberFormat(payment.get('paidAmount')) %></td>
+      <td>$ <%= numberFormat(payment.get('balanceAmount')) %></td>
+      <td>
+        <div class="progress">
+          <div style="width: <% progress %>%" class="progress-bar progress-bar-<%= payment.get('status').class %>"><% progress %>%</div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="9" style="padding:0;">
+        <div class="order-collapsible-item list-view-collapse collapse" id="<%= collapsible_id %><%= payment.get("id") %>">
+          <div class="container">
+            <div class="order-stack-details">
+              <div class="col-md-12 no-padding">
+                <div class="pull-right">
+                  <% var paymentstatus = payment.get("status").id %>
+                  <a href="<%= payment_url %>/<%= payment.get("id") %>" class="btn btn-trans btn-rad btn-primary btn-sm">
+                    <i class="fa fa-eye width-10"></i> View Order
+                  </a>
+                  <% if (paymentstatus == payment_status_pending || paymentstatus == payment_status_pending_status_open || paymentstatus == payment_status_pending_status_testing) { %>
+                    <a href="<%= payment_edit_url %>/<%= payment.get("id") %>" class="btn btn-trans btn-primary btn-rad btn-sm editable-button">
+                      <i class="fa fa-pencil width-10"></i> Edit Order
+                    </a>  
+                    <% if (paymentstatus != payment_status_pending) { %>
+                      <a href="<%= payment_url %>/<%= add %>" class="btn btn-trans btn-primary btn-rad btn-sm editable-button">
+                        <i class="fa fa-clock-o width-10"></i> Add Payment
+                      </a>
+                    <% } %>
+                  <% } %>
+                </div>
+              </div>
+              <div class="payment-list-by-order padding-top-10"></div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  <% }); %>
+<% } else { %>
+  <tr>
+    <td colspan="4">No results found.</td>
+  </tr>
+<% } %>

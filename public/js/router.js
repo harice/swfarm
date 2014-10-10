@@ -34,6 +34,7 @@ define([
 	'controllers/commission/CommissionController',
 	'controllers/reports/ReportController',
 	'controllers/dashboard/DashboardController',
+	'controllers/payment/PaymentController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
@@ -71,6 +72,7 @@ define([
 			CommissionController,
 			ReportController,
 			DashboardController,
+			PaymentController,
 			Global,
 			Const,
 			Session) {
@@ -239,6 +241,7 @@ define([
 	routerRoutes[Const.URL.PAYMENT] = 'showPaymentPage';
 	routerRoutes[Const.URL.PAYMENT+'/'] = 'showPaymentPage';
 	routerRoutes[Const.URL.PAYMENT+'/:action'] = 'showPaymentPage';
+	routerRoutes[Const.URL.PAYMENT+'/:action/:id'] = 'showPaymentPage';
 	
 	//stacknumber
 	routerRoutes[Const.URL.STACKNUMBER+'/:id'] = 'showStackNumberPage';
@@ -498,10 +501,10 @@ define([
 
 		});
 
-		app_router.on('route:showPaymentPage', function () {
+		app_router.on('route:showPaymentPage', function (action, id) {
 			this.closeView();
 			var paymentController = new PaymentController();			
-			this.currView = paymentController.setAction();
+			this.currView = paymentController.setAction(action, id);
 			this.currView.render();
 
 		});

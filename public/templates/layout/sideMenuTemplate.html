@@ -43,9 +43,13 @@
         <li><a href="#/<%= constant.URL.PRODUCT %>"><i class="fa fa-barcode"></i><span>Products</span></a></li>
         <% } %>
 
+        <% if(_.contains(permission,constant.MENU.PAYMENTS.VIEW) || _.isEqual(su,constant.SU)) { %>
+        <li><a href="#/<%= constant.URL.PAYMENT %>"><i class="fa fa-money"></i><span>Payments</span></a></li>
+        <% } %>
+
         <% if(_.contains(permission,constant.MENU.REPORTS.VIEW) || _.isEqual(su,constant.SU)) { %>
         <li><a href="#/<%= constant.URL.REPORT %>"><i class="fa fa-bar-chart-o"></i><span>Reports</span></a></li>
-        <% } %>
+        <% } %>        
 
         <% 
           if(

@@ -4,9 +4,8 @@ define([
 	'constant',
 ], function(Backbone, Global, Const) {
 
-	var PaymentModel = Backbone.Model.extend({
-		
-		urlRoot: '',
+	var PaymentModel = Backbone.Model.extend({		
+		urlRoot: '/apiv1/payment',
 		defaults: {
         },
 

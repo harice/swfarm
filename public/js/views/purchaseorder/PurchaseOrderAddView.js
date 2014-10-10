@@ -1042,11 +1042,8 @@ define([
 		},
 		
 		generatePDFIcon: function (data) {
-			console.log(data.id);
 			var dl = {id:data.id, type:'doc'};
-			console.log(dl);
 			var fileURL = Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize(dl));			
-			console.log(fileURL);
 
 			var clone = this.options.fileFileClone.clone(true);
 			this.$el.find("#pdf-file").replaceWith(clone);

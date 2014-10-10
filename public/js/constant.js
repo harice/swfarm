@@ -33,6 +33,7 @@ define(function () {
 			'REPORT': 'report',
 			'FILE': '/file',
 			'COMMISSION': 'administration/commission',
+			'PAYMENT': 'payment',
 		},
 		'MENU': {
 			'PURCHASES': {
@@ -129,6 +130,11 @@ define(function () {
 				'EDIT'	:60,
 				'DELETE':61
 			},
+			'PAYMENTS': {
+				'VIEW'	:62,
+				'ADD'	:63,
+				'EDIT'	:64,
+			},
 		},
 		'CRUD': {
 			'ADD': 'add',
@@ -172,6 +178,11 @@ define(function () {
 			},
 			'COLLAPSIBLE': {
 				'ID': 'order-list-collapsible-',
+			},
+		},
+		'PAYMENT': {
+			'COLLAPSIBLE': {
+				'ID': 'payment-list-collapsible-',
 			},
 		},
         'CONTRACT': {

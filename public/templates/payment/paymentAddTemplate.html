@@ -1,0 +1,78 @@
+<div class="row margin-top-0">
+    <div class="col-md-12 no-padding">
+        <div class="block-flat padding-top-0 padding-bottom-0">
+            <div class="content">
+
+                <div class="row margin-top-0">
+                    <div class="col-md-12">
+
+                        <form id="addPaymentForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+                            <% if (typeof paymentId !== "undefined") { %>
+                            <input type="hidden" id="id" name="id" value="<%= paymentId %>" />
+                            <% } %>
+
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label for="transactionnumber" class="col-sm-3 control-label">Transaction No. <i class="color-danger">*</i></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control capitalize input-sm" id="transactionnumber" name="transactionnumber" placeholder="" minlength="2" maxlength="50" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="order_id" class="col-sm-3 control-label">PO No. <i class="color-danger">*</i></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control capitalize input-sm" id="order_id" name="order_id" placeholder="" minlength="2" maxlength="50" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="account_id" class="col-sm-3 control-label">Producer *</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control input-sm" id="account_id" name="account_id" placeholder="" minlength="2" maxlength="100">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="checknumber" class="col-sm-3 control-label">Check No. <i class="color-danger">*</i></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control input-sm" id="checknumber" name="checknumber" placeholder="" minlength="14" maxlength="14" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="amount" class="col-sm-3 control-label">Amount Paid <i class="color-danger">*</i></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control width-150 input-sm" id="amount" name="amount" placeholder="" minlength="14" maxlength="14" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="postingdate" class="col-sm-3 control-label">Posting Date <i class="color-danger">*</i></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control width-150 input-sm" id="postingdate" name="postingdate" placeholder="" minlength="14" maxlength="14" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="notes" class="col-sm-3 control-label">Notes</label>
+                                        <div class="col-sm-9">
+                                            <textarea class="form-control width-400" rows="3" id="notes" name="notes" minlength="2" maxlength="200"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group col-md-5 form-button-container" style="display:none;">
+                                <label for="" class="col-sm-3 control-label"></label>
+                                <div class="col-sm-5">
+                                     <button id="save" type="submit" class="save btn btn-primary btn-sm btn-rad"><i class="fa fa-save"></i> Save</button>
+                                     <a id="go-to-previous-page" class="btn btn-link" href="#">Cancel</a>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+            </div> <!-- /.content -->
+        </div> <!-- /.block-flat -->
+    </div>
+</div>

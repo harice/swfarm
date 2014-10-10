@@ -580,6 +580,8 @@ define([
 			'change #has-fuel-charge': 'changeHasFuelCharge',
 			'keyup .loader': 'formatMoney',
 			'blur .loader': 'onBlurMoney',
+			'keyup .handlingfee': 'formatMoney',
+			'blur .handlingfee': 'onBlurMoney',
 			'keyup .quantity': 'onKeyUpQuantity',
 			'blur .quantity': 'onBlurTon',
 			'click #delete-schedule': 'deleteSchedule',
