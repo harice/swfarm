@@ -13,7 +13,7 @@ class PaymentRepository implements PaymentRepositoryInterface {
     }
 
     public function paymentListOfOrder($orderId){
-        $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+        //$perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
         $sortby   = isset($params['sortby']) ? $params['sortby'] : 'created_at';
         $orderby  = isset($params['orderby']) ? $params['orderby'] : 'desc';
         // $date = isset($params['date']) ? $params['date'] : null; //default date is the present date
@@ -21,8 +21,8 @@ class PaymentRepository implements PaymentRepositoryInterface {
  
         $payment = Payment::with('account')->where('order_id', '=', $orderId);
      
-        $payment = $payment->orderBy($sortby, $orderby);
-        $payment = $payment->paginate($perPage);
+        $payment = $payment->orderBy($sortby, $orderby)->get();
+        //$payment = $payment->paginate($perPage);
 
         return $payment->toArray();
     }
