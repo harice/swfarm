@@ -1,6 +1,12 @@
 <% if (!_.isEmpty(pos)) { 
    var progress = 0;  
-  _.each(pos, function(po){   
+  _.each(pos, function(po){ 
+    if(!_.isEmpty(po.get('totalPayment'))) {
+      progress = po.get('paidAmount') / po.get('totalPayment') * 100;    
+    }
+    else {
+      progress = 0;
+    }
     %>
     <tr class="collapse-trigger cursor-pointer" data-id="<%= po.get("id") %>">
       <td>
@@ -15,7 +21,7 @@
       <td>$ <%= numberFormat(po.get('balanceAmount')) %></td>
       <td>
         <div class="progress">
-          <div style="width: <%= parseInt(po.get('balanceAmount')) %>%" class="progress-bar progress-bar-<%= po.get('status').class %>"><%= parseInt(po.get('balanceAmount')) %>%</div>
+          <div style="width: <%= progress %>%" class="progress-bar progress-bar-<%= po.get('status').class %>"><%= progress %>%</div>
         </div>
       </td>
     </tr>
@@ -30,7 +36,7 @@
                   <% if (postatus == po_status_pending || postatus == po_status_pending_status_open || postatus == po_status_pending_status_testing) { %>
                     <% if (postatus != po_status_pending) { %>
                       <a href="<%= payment_url %>/<%= add %>/<%= po.get("id") %>" class="btn btn-trans btn-primary btn-rad btn-sm editable-button">
-                        <i class="fa fa-clock-o width-10"></i> Add Payment
+                        <i class="fa fa-dollar width-10"></i> Add Payment
                       </a>
                     <% } %>
                   <% } %>
