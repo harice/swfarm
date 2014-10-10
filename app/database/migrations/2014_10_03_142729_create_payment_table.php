@@ -21,6 +21,7 @@ class CreatePaymentTable extends Migration {
 			$table->string('checknumber', 30)->nullable();
 			$table->decimal('amount', 12, 2);
 			$table->text('notes')->nullable();
+			$table->boolean('isCancel')->default(false);
 			$table->timestamps();
 
 			$table->foreign('order_id')->references('id')->on('order');
