@@ -11,7 +11,6 @@ class Payment extends BaseModel {
 
 	public static $rules = array(
         'transactionnumber' => 'required',
-        'postingdate' => 'required',
         'order_id' => 'required',
         'account_id' => 'required',
         'amount' => 'required',
@@ -24,7 +23,6 @@ class Payment extends BaseModel {
      */
     protected $fillable = array(
         'transactionnumber',
-        'postingdate',
         'order_id',
         'account_id',
         'checknumber',
