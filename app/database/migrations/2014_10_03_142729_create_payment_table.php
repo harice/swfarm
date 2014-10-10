@@ -16,7 +16,6 @@ class CreatePaymentTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('transactionnumber', 20)->unique();
-			$table->timestamp('postingdate');
 			$table->integer('order_id')->unsigned();
 			$table->integer('account_id')->unsigned();
 			$table->string('checknumber', 30)->nullable();
