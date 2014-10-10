@@ -51,6 +51,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokeniz
 
     // Route::get('account/{id}/contracts', 'APIv1\AccountController@getContracts');
     Route::post('account/sync', 'APIv1\AccountController@accountSync');
+    Route::get('account/sync', 'APIv1\AccountController@getAllAccounts');
     Route::get('account/getContracts/{id}', 'APIv1\AccountController@getContracts');
 	Route::get('account/getProducerAndWarehouseAccount', 'APIv1\AccountController@getProducerAndWarehouseAccount');
     Route::get('account/trailer', 'APIv1\AccountController@getTrailerAccount');

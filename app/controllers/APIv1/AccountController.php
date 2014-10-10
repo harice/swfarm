@@ -161,5 +161,9 @@ class AccountController extends BaseController {
     	return $this->account->accountSync(Input::all());
     }
 
+    public function getAllAccounts(){
+    	return $this->account->getAllAccounts(Input::all());
+    }
+
 
 }
