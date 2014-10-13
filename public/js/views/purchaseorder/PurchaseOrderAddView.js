@@ -6,6 +6,7 @@ define([
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'jqueryphonenumber',
+	'base64',
 	'views/autocomplete/CustomAutoCompleteView',
 	'collections/account/AccountProducerCollection',
 	'collections/account/AccountCustomerCollection',
@@ -33,6 +34,7 @@ define([
 			Validate,
 			TextFormatter,
 			PhoneNumber,
+			Base64,
 			CustomAutoCompleteView,
 			AccountProducerCollection,
 			AccountCustomerCollection,
@@ -742,6 +744,7 @@ define([
 			'change #pdf-file': 'readFile',
 			'click #remove-pdf-filename': 'resetImageField',
 			'click #undo-remove': 'undoRemove',
+			'click .view-file': 'viewFile',
 			
 			'change .product_id': 'generateStackNumberSuggestions',
 			'change .stacknumber': 'generatePrice',
@@ -950,7 +953,7 @@ define([
 		},
 		
 		attachPDF: function (ev) {
-			var field = $(ev.currentTarget).closest('td').find('.uploadedfile');
+			var field = $(ev.currentTarget).closest('td').find('.uploadedfile');			
 			this.$el.find('#pdf-field').val(field.attr('name'));
 			
 			var clone = this.options.fileFileClone.clone(true);
@@ -965,7 +968,7 @@ define([
 				this.$el.find('#upload-field-cont').hide();
 				this.$el.find('#pdf-icon-cont').show();
 				this.$el.find('#pdf-filename').text(field.attr('data-filename'));
-				this.$el.find('#pdf-filename').attr('data-id', field.val());
+				this.$el.find('#pdf-filename').attr('data-id', field.val());				
 				
 				this.$el.find('#previous-upload').val(field.attr('data-filename'));
 				this.$el.find('#previous-upload').attr('data-id', field.val());
@@ -1003,6 +1006,11 @@ define([
 				reader.readAsDataURL(file);
 			}
 		},
+
+		viewFile: function(){
+			var thisObj = this;
+			thisObj.hideConfirmationWindow('modal-attach-pdf');
+		},
 		
 		uploadFile: function (data) {
 			this.disableCloseButton('modal-attach-pdf');
@@ -1034,6 +1042,9 @@ define([
 		},
 		
 		generatePDFIcon: function (data) {
+			var dl = {id:data.id, type:'doc'};
+			var fileURL = Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize(dl));			
+
 			var clone = this.options.fileFileClone.clone(true);
 			this.$el.find("#pdf-file").replaceWith(clone);
 			this.$el.find('#pdf-filename').text(data.name);
@@ -1044,6 +1055,8 @@ define([
 			
 			this.$el.find('#upload-field-cont').hide();
 			this.$el.find('#pdf-icon-cont').show();
+
+			this.$el.find('.view-file').attr({'href': fileURL});
 		},
 		
 		resetImageField: function () {

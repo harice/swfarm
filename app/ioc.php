@@ -35,5 +35,6 @@ App::bind('InventoryRepositoryInterface', 'InventoryRepository');
 App::bind('ReportRepositoryInterface', 'ReportRepository');
 App::bind('CommissionRepositoryInterface', 'CommissionRepository');
 App::bind('DownloadInterface', 'DownloadRepository');
+App::bind('SyncInterface', 'SyncRepository');
 App::bind('DashboardRepositoryInterface', 'DashboardRepository');
 App::bind('PaymentRepositoryInterface', 'PaymentRepository');

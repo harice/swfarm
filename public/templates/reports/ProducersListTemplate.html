@@ -1,10 +1,7 @@
 <div class="col-md-12"> 
-    <div class="header">
+    <div class="content">
         <div class="row margin-top-0">
-            <div class="col-md-12">
-                <h2 class="pull-left">
-                    Producer Statement                    
-                </h2>                
+            <div class="col-md-12">             
                 <div class="btn-group pull-right">
                     <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
                         Email <span class="caret"></span>
@@ -28,37 +25,48 @@
                     </ul>
                 </div>
                 <div class="clearfix"></div>
-                <h5><%= cur_date %></h5>
+                <h2 class="text-center">
+                    <samp>Producer Statement</samp>                    
+                </h2>   
+                <h6 class="text-danger text-center">
+                    <strong><samp><%= formatDateBy(date_from, 'F d, Y') %></samp></strong> -  <strong><samp><%= formatDateBy(date_to, 'F d, Y') %></samp></strong>
+                </h6> 
             </div>
         </div>
         <div class="row margin-top-0">
-            <div class="col-md-12 text-center">
-                <h5>                                                                   
-                    <strong><%= date_from %></strong> to  <strong><%= date_to %></strong>
-                </h5>
-            </div>
-        </div>
-        <div class="row margin-top-0">
-            <div class="col-md-6">
-                <h3>
-                    Producer Name:
-                    <strong>
-                        <%= producers.get('name') %>
-                    </strong>
+            <div class="col-md-4">
+                <h3 class="margin-bottom-5 margin-top-0">
+                    <samp>
+                        <strong>
+                            <%= producers.get('name') %>
+                        </strong>
+                    </samp>
                 </h3> 
+                <p>
+                    <i><%= producers.get('businessaddress').street %></i><br /> 
+                    <i><%= producers.get('businessaddress').city %>, <%= producers.get('businessaddress').state.state %>, <%= producers.get('businessaddress').zipcode %></i>
+                </p>
+            </div> 
+            <div class="col-md-2 col-md-offset-4 text-right">
+                <p>
+                    Statement Date: <br />
+                    Total Load Count:<br />
+                    Total Amount: <br />                  
+                    Less (Scale Fees): <br />
+                    <label class="label label-default">Total Amount Due: </label>
+                </p>
             </div>
-            <div class="col-md-6 text-right">
-                <h3>
-                    Address:
-                    <strong>
-                        <%= producers.get('businessaddress').street %>, <%= producers.get('businessaddress').city %>, <%= producers.get('businessaddress').state.state %>
-                    </strong>
-                </h3> 
-            </div>         
+            <div class="col-md-2">
+                <p>
+                    <%= formatDateBy(cur_date, 'F d, Y') %><br />
+                    <%= producers.get('total_load') %><br />
+                    $ <%= numberFormat(producers.get('amount')) %><br />
+                    <span class="text-danger">- $ <%= numberFormat(producers.get('scale_fees')) %></span><br />
+                    <strong><label class="label label-success">$ <%= numberFormatTons(producers.get('amount') - producers.get('scale_fees'))  %></label></strong>
+                </p>
+            </div>                 
         </div>
-    </div>
-    <% if (!_.isEmpty(producers.get('storagelocation'))) { %>  
-    <div class="content">        
+        <% if (!_.isEmpty(producers.get('storagelocation'))) { %>          
         <div class="content-inner table-responsive">
             <%                                                               
                 _.each(producers.get('storagelocation'),function(location){  
@@ -69,8 +77,11 @@
                         var total_tons = 0;   
                         if(!_.isEmpty(section.productorder)){           
                             %>
-                            <h6>Location: <strong><%= location.name %> - <%= section.name %></strong></h6>
-                            <table id="operator-list" class="table-bordered table">
+                            <h3><strong><samp><%= location.name %> - <%= section.name %></samp></strong></h3>
+                            <div class="progress width-1000 margin-bottom-0 height-3">
+                                <div style="width: %" class="progress-bar progress-bar-primary"></div>
+                            </div>
+                            <table id="operator-list" class="no-border table margin-bottom-0">
                                 <thead class="no-border">
                                     <tr>
                                         <th><strong>Date</strong></th>
@@ -97,7 +108,7 @@
                                             %>                                           
                                         </td>
                                         <td><%= order.order_number %></td>
-                                        <td><%= order.weightticketnumber %></td>
+                                        <td><code><%= order.weightticketnumber %></code></td>
                                         <td>$ <%= numberFormat(order.unitprice) %></td>
                                         <td><%= order.pounds %></td>                                    
                                         <td><%= order.bales %></td>                                        
@@ -107,18 +118,21 @@
                                     </tr>                                                                          
                                     <% });  %>
                                 </tbody>               
-                                <tfoot>
+                                <tfoot class="no-border-y">
                                     <tr>
                                         <td colspan="4">
                                             Load Count: <%= section.load_count %>
                                         </td>
                                         <td><strong>Total</strong></td>
-                                        <td><%= total_bales %></td>
-                                        <td><%= total_tons %></td>
-                                        <td>$ <%= numberFormat(tot_amount) %></td>
+                                        <td><strong><%= total_bales %></strong></td>
+                                        <td><strong><%= total_tons %></strong></td>
+                                        <td><strong>$ <%= numberFormat(tot_amount) %></strong></td>
                                     </tr>
                                 </tfoot>
                             </table>  
+                            <div class="progress width-1000 margin-bottom-0 height-3">
+                                <div style="width: %" class="progress-bar progress-bar-primary"></div>
+                            </div>
                         <%
                         }
                         });
@@ -128,53 +142,10 @@
                         <p>No transactions found.</p>
                     <%
                     }                                    
-                }); %>   
-            <table class="table-bordered" style="width:30%">
-                <thead class="no-border">
-                    <tr>
-                        <td colspan="2" align="center"><strong>SUMMARY</strong></td>
-                    </tr>
-                </thead>
-                <tbody class="no-border-y">
-                    <tr>
-                        <td>
-                            Total Loads:
-                        </td>
-                        <td>
-                            <strong><%= producers.get('total_load') %></strong> 
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Contract Total Amount: 
-                        </td>
-                        <td>
-                            <strong>$ <%= numberFormat(producers.get('amount')) %></strong>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Less Scale Fees: 
-                        </td>
-                        <td>
-                            <strong>$ <%= numberFormat(producers.get('scale_fees')) %></strong>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Total Amount Due:
-                        </td>
-                        <td>
-                            <strong>$ <%= numberFormat(producers.get('amount') - producers.get('scale_fees')) %></strong>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>                       
+                }); %>                               
         </div>        
-    </div>
-    <% } else { %>
-    <div class="content">
+        <% } else { %>
         <p>No transactions found.</p>
-    </div>
-    <% } %>
+        <% } %>
+    </div>    
 </div>

@@ -1,10 +1,7 @@
 <div class="col-md-12">
-    <div class="header">
+    <div class="content"> 
         <div class="row margin-top-0">
-            <div class="col-md-12">
-                <h2 class="pull-left">
-                    Admin - Operator Pay                    
-                </h2>
+            <div class="col-md-12">               
                 <div class="btn-group pull-right">
                     <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
                         Email <span class="caret"></span>
@@ -28,35 +25,47 @@
                     </ul>
                 </div>            
                 <div class="clearfix"></div>
-                <h5><%= cur_date %></h5>
+                 <h2 class="text-center">
+                    <samp>Admin - Operator Pay</samp>                    
+                </h2>
+                <h6 class="text-danger text-center">
+                    <strong><samp><%= formatDateBy(date_from, 'F d, Y') %></samp></strong> -  <strong><samp><%= formatDateBy(date_to, 'F d, Y') %></samp></strong>
+                </h6> 
             </div>
         </div>
         <div class="row margin-top-0">
-            <div class="col-md-12 text-center">
-                <h5>                                                                   
-                    <strong><%= date_from %></strong> to  <strong><%= date_to %></strong>
-                </h5>
-            </div>
-        </div>
-        <div class="row margin-top-0">
-            <div class="col-md-12">
-                <h3>
-                    Operator:
+            <div class="col-md-4">
+                <h3 class="margin-bottom-5 margin-top-0">
                     <strong>
-                        <%= operators.get('firstname') %> <%= operators.get('lastname') %>
+                        <samp><%= operators.get('lastname') %>, <%= operators.get('firstname') %></samp>
                     </strong>
                 </h3> 
+                <p>
+                    <strong><%= operators.get('account') %></strong><br />
+                    <i>Email: <%= operators.get('email') %></i><br />
+                    <i>Phone: <%= operators.get('phone') %></i><br />
+                </p>
             </div>
+            <div class="col-md-2 col-md-offset-4 text-right">
+                <p>Statement Date: <br />
+                    <label class="label label-default">Total Amount Due: </label>
+                </p>
+            </div>
+            <div class="col-md-2">
+                <p><%= formatDateBy(cur_date, 'F d, Y') %><br />
+                <strong><label class="label label-success">$ <%= operators.get('amount') %></label></strong></p>
+            </div> 
         </div>
-    </div>
-    <% if (!_.isEmpty(operators.get('order'))) { %>         
-    <div class="content">            
+        <% if (!_.isEmpty(operators.get('order'))) { %>            
         <div class="content-inner table-responsive">            
         <%                         
             _.each(operators.get('order'),function(order){     
         %>    
-            <h3><%= order.order_number %></h3>
-            <table id="operator-list" class="table table-bordered">
+            <h3><strong><samp><%= order.order_number %></samp></strong></h3>
+            <div class="progress width-1000 margin-bottom-0 height-3">
+                <div style="width: %" class="progress-bar progress-bar-primary"></div>
+            </div>
+            <table id="operator-list" class="table no-border margin-bottom-0">
                 <thead class="no-border">
                     <tr>
                         <th><strong>Date</strong></th>                                        
@@ -73,7 +82,7 @@
                     %>
                         <tr>  
                             <td><%= formatDate(transport.updated_at) %></td>
-                            <td><%= transport.weightticketnumber %></td>
+                            <td><code><%= transport.weightticketnumber %><code></td>
                             <td><%= transport.originloader.firstname %> <%= transport.originloader.lastname %></td>
                             <td>$ <%= transport.originloaderfee %></td>
                             <td><%= transport.destinationloader.firstname %> <%= transport.destinationloader.lastname %></td>
@@ -81,19 +90,14 @@
                         </tr>  
                     <%});%>                    
                 </tbody>                  
-            </table>          
-        <%}); %> 
-        <table id="operator-list" class="table table-bordered" style="width:30%">
-            <tbody class="no-border-y">
-                <td><strong>Total Amount</strong></td>
-                <td>$ <%= operators.get('amount') %></td>
-            </tbody>
-        </table>                                                               
-        </div>        
-    </div>
-    <% } else { %>
-    <div class="content">
+            </table> 
+            <div class="progress width-1000 margin-bottom-0 height-3">
+                <div style="width: %" class="progress-bar progress-bar-primary"></div>
+            </div>         
+        <%}); %>                                                             
+        </div>  
+        <% } else { %>
         <p>No transactions found.</p>
-    </div>
-    <% } %>
+        <% } %>      
+    </div>    
 </div>

@@ -1,10 +1,7 @@
 <div class="col-md-12">
-    <div class="header">
+    <div class="content">
         <div class="row margin-top-0">
             <div class="col-md-12">
-                <h2 class="pull-left">
-                    Commission Report                    
-                </h2>
                 <div class="btn-group pull-right">
                     <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
                         Email <span class="caret"></span>
@@ -27,44 +24,52 @@
                         <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
                     </ul>
                 </div>
-                <div class="clearfix"></div>
-                <h5><%= cur_date %></h5>
+                <div class="clearfix"></div>        
+                <h2 class="text-center">
+                    <samp>Commission Report</samp>                    
+                </h2>      
+                <h6 class="text-danger text-center">
+                    <strong><samp><%= formatDateBy(date_from, 'F d, Y') %></samp></strong>   -   <strong><samp><%= formatDateBy(date_to, 'F d, Y') %></samp></strong>
+                </h6>                  
             </div>
-        </div>
-        <div class="row margin-top-0">
-            <div class="col-md-12 text-center">
-                <h5>
-                    <strong><%= date_from %></strong> to  <strong><%= date_to %></strong>
-                </h5>
-            </div>
-        </div>
-        <div class="row margin-top-0">
-            <div class="col-md-12">
-                <h3>
-                    User Name:
+        </div>      
+        <div class="row margin-top-10">
+            <div class="col-md-4">
+                <h3 class="margin-bottom-5 margin-top-0">
+                    <samp>User Name:</samp>
                     <strong>
-                        <%= users.get('user').firstname %> <%= users.get('user').lastname %>
+                        <samp><%= users.get('user').firstname %> <%= users.get('user').lastname %></samp>
                     </strong>
                 </h3>
-                <p>Employee No: <%= users.get('user').emp_no %></p>
-                <p>Email: <%= users.get('user').email %></p>
+                <p><i>Employee No:</i>  <code><%= users.get('user').emp_no %></code><br />
+                <i>Email: <%= users.get('user').email %></i></p>
+            </div>
+            <div class="col-md-2 col-md-offset-4 text-right">
+                <p>Statement Date: <br />
+                    <label class="label label-default">Total Amount Due: </label>
+                </p>
+            </div>
+            <div class="col-md-2">
+                <p><%= formatDateBy(cur_date, 'F d, Y') %><br />
+                <strong><label class="label label-success">$ <%= users.get('amount') %></label></strong></p>
             </div>
         </div>
-    </div>    
-    <% if (!_.isEmpty(users.get('commission'))) { %>    
-    <div class="content">
+        <div class="progress width-1000 margin-bottom-0 height-3">
+            <div style="width: %" class="progress-bar progress-bar-primary"></div>
+        </div>
+        <% if (!_.isEmpty(users.get('commission'))) { %> 
         <div class="content-inner table-responsive">
-            <table id="operator-list" class="table-bordered table">
+            <table id="operator-list" class="no-border table margin-bottom-0">
                 <thead class="no-border">
                     <tr>
                         <th><strong>Date</strong></th>
-                        <th><strong>Weight Ticket Number</strong></th>
-                        <th><strong>Cust Name</strong></th>
+                        <th class="width-200"><strong>Weight Ticket Number</strong></th>
+                        <th><strong>Customer Name</strong></th>
                         <th><strong>Unit</strong></th>                
                         <th><strong>Per Unit Rate</strong></th>
                         <th><strong>Bales</strong></th>
                         <th><strong>Tons</strong></th>
-                        <td><strong>Amt Due</strong></th>
+                        <th><strong>Amount Due</strong></th>
                     </tr>
                 </thead>
                 <tbody class="no-border-y">
@@ -76,11 +81,11 @@
                         <tr>      
                             <td>
                                 <%= formatDate(comm.updated_at)%>
-                            </td>  
+                            </td>   
+                            <td><code><%= comm.weightTicketNumber %></code></td>
                             <td>
                                 <%= comm.account %>
-                            </td>  
-                            <td><%= comm.weightTicketNumber %></td>
+                            </td> 
                             <td>TONS</td>  
                             <td>
                                 $ <%= numberFormat(comm.rate) %>
@@ -98,20 +103,22 @@
                         </tr>
                     <%}); %>   
                 </tbody> 
-                <tfoot>
+                <tfoot class="no-border-y">
                     <tr>
-                        <td colspan="5" align="right">TOTAL</td>
+                        <td colspan="5" align="right"><strong>TOTAL</strong></td>
                         <td><strong><%= numberFormatBales(total_bales) %></strong></td>
                         <td><strong><%= numberFormatTons(total_tons) %></strong></td>
                         <td><strong>$ <%= numberFormat(total_commissions) %></strong></td>
                     </tr>
                 </tfoot>
-            </table>               
-        </div>        
-    </div>
-    <% } else { %>
-    <div class="content">
-      <p>No transactions found.</p>
-    </div>
-    <% } %>
+            </table> 
+            <div class="progress width-1000 margin-bottom-0 height-3">
+                <div style="width: %" class="progress-bar progress-bar-primary"></div>
+            </div>                
+        </div> 
+        <% } else { %>        
+          <p>No transactions found.</p>        
+        <% } %>       
+        </div>
+    </div>    
 </div>

@@ -142,7 +142,6 @@ define([
 						{
 							success: function (model, response, options) {
 								thisObj.displayMessage(response);	
-								console.log(data);							
 								//Global.getGlobalVars().app_router.navigate(Const.URL.ACCOUNT, {trigger: true});
 								Backbone.history.history.back();
 							},

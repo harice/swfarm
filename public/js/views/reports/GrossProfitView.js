@@ -65,8 +65,8 @@ define([
 			
 			var innerTemplateVariables= {
 				'cur_date': this.setCurDate(),
-				'date_from': thisObj.parseDate($('#filter-operator-date-start .input-group.date input').val()),
-				'date_to': thisObj.parseDate($('#filter-operator-date-end .input-group.date input').val()),
+				'date_from': this.startDate,
+				'date_to': this.endDate,
 				'profits': this.model,
 				'export_pdf_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'pdf', model:'gross-profit-report', dateStart:this.startDate, dateEnd:this.endDate})),
 				'export_xlsx_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'xlsx', model:'gross-profit-report', dateStart:this.startDate, dateEnd:this.endDate})),

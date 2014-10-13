@@ -479,7 +479,7 @@ define([
 			var a = $(this);
 			//console.log('XXX');
 			//console.log('id: '+a.attr('id'));
-			if((a.attr('href') != '#' && a.attr('href') != '')) {
+			if((a.attr('href') != '#' && a.attr('href') != '') && a.attr('target') != '_blank') {
 				//console.log('href: '+a.attr('href'));
 				//console.log(Backbone.history.fragment);
 				

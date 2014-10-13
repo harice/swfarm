@@ -17,7 +17,7 @@ class DownloadRepository implements DownloadInterface
 				case 'doc':
 					if(!array_key_exists('id', $q)) { $_404 = true; break; }
 
-					$file_o = Document::where('issave', '=', 1)->where('id', '=', $q['id'])->first();
+					$file_o = Document::where('id', '=', $q['id'])->first();
 			        if($file_o){
 		        		header('Pragma: public');
 	        			header('Expires: 0');

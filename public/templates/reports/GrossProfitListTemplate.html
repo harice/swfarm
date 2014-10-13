@@ -1,10 +1,7 @@
 <div class="col-md-12">
-    <div class="header">
+    <div class="content">  
         <div class="row margin-top-0">
             <div class="col-md-12">
-                <h2 class="pull-left">
-                    Gross Profit                    
-                </h2>
                 <div class="btn-group pull-right">
                     <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
                         Email <span class="caret"></span>
@@ -28,19 +25,41 @@
                     </ul>
                 </div>
                 <div class="clearfix"></div>
-                <h5><%= cur_date %></h5>
+                <h2 class="text-center">
+                    <samp>Gross Profit</samp>                    
+                </h2>                 
+                <h6 class="text-danger text-center">
+                    <strong><samp><%= formatDateBy(date_from, 'F d, Y') %></samp></strong> -  <strong><samp><%= formatDateBy(date_to, 'F d, Y') %></samp></strong>
+                </h6>  
             </div>
-        </div>
+        </div>   
         <div class="row margin-top-0">
-            <div class="col-md-12 text-center">
-                <h5>                                                                   
-                    <strong><%= date_from %></strong> to  <strong><%= date_to %></strong>
-                </h5>
+            <div class="col-md-2 col-md-offset-8 text-right">
+                <p>
+                    Statement Date: <br />
+                    Net Sale:<br />
+                    Less (Hay Cost):<br />
+                    Less (Freight): <br />
+                    Less (Loaders Fee): <br />
+                    Less (Commission): <br />
+                    <label class="label label-default">Profit: </label><br />
+                    <label class="label label-default">Percentage: </label>
+                </p>
             </div>
+            <div class="col-md-2">
+                <p>
+                    <%= formatDateBy(cur_date, 'F d, Y') %><br />
+                    $ <%= numberFormat(profits.get('netsale')) %><br />
+                    <span class="text-danger">- $ <%= numberFormat(profits.get('haycost')) %></span><br /> 
+                    <span class="text-danger">- $ <%= numberFormat(profits.get('freight')) %></span><br />
+                    <span class="text-danger">- $ <%= numberFormat(profits.get('fees')) %></span><br />
+                    <span class="text-danger">- $ <%= numberFormat(profits.get('commission')) %></span><br />
+                    <strong><span>$ <%= numberFormat(profits.get('profit')) %></span></strong><br />                  
+                    <strong><span>$ <%= numberFormat(profits.get('profit_percentage'))  %></span></strong>
+                </p>
+            </div>  
         </div>
-    </div>
-    <% if (!_.isEmpty(profits.get('orders'))) { %>        
-    <div class="content">            
+        <% if (!_.isEmpty(profits.get('orders'))) { %>           
         <div class="content-inner table-responsive">
             <%
                 var ctr = 0;
@@ -48,9 +67,12 @@
                 var total_profit_percentage = 0; 
 
                 _.each(profits.get('orders'), function(order){                   
-            %>
-                <h3><%= order.order_number %> - <strong><%= order.account %></strong></h3>
-                <table id="operator-list" class="table table-bordered">
+            %>                
+                <h3><samp><%= order.order_number %> - <strong><%= order.account %></strong></samp></h3>
+                <div class="progress width-1000 margin-bottom-0 height-3">
+                    <div style="width: %" class="progress-bar progress-bar-primary"></div>
+                </div>
+                <table id="operator-list" class="table no-border margin-bottom-0">
                     <thead class="no-border">
                         <tr>
                             <th><strong>Date</strong></th>
@@ -76,7 +98,7 @@
                             %>
                                 <tr> 
                                     <td><%= formatDate(prod.updated_at) %></td>
-                                    <td><%= prod.weightTicketNumber %></td>
+                                    <td><code><%= prod.weightTicketNumber %></code></td>
                                     <td><%= product.product %></td>
                                     <td>$ <%= prod.netsale %></td>
                                     <td>$ <%= prod.haycost %></td>
@@ -100,64 +122,15 @@
                         %>                                
                         <%}); %>                     
                     </tbody>  
-                </table> 
+                </table>  
+                <div class="progress width-1000 margin-bottom-0 height-3">
+                    <div style="width: %" class="progress-bar progress-bar-primary"></div>
+                </div>                
                 <%});
-            %>
-                                            
-            <table class="table-bordered" style="width:30%">
-                <thead class="no-border">
-                    <tr>
-                        <td colspan="2" align="center"><strong>SUMMARY</strong></td>
-                    </tr>
-                </thead>
-                <tbody class="no-border-y">
-                    <tr>
-                        <td>
-                            <strong>Total Netsale:</strong> 
-                        </td>
-                        <td>
-                            $ <%= profits.get('netsale') %>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>Cost of Hay:</strong> 
-                        </td>
-                        <td>
-                            $ <%= profits.get('haycost') %>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>Cost of Freight:</strong> 
-                        </td>
-                        <td>
-                            $ <%= profits.get('freight') %>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>Profit:</strong> 
-                        </td>
-                        <td>
-                            $ <%= numberFormat(total_profit) %>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>Average Percent</strong> 
-                        </td>
-                        <td>
-                            <%= numberFormat(total_profit_percentage/ctr) %> %
-                        </td>
-                    </tr>
-                </tbody>
-            </table>                          
+            %>                         
         </div>        
-    </div>
-    <% } else { %>
-    <div class="content">
+        <% } else { %>
         <p>No inventory found.</p>
-    </div>
-    <% } %>
+        <% } %>
+    </div>    
 </div>

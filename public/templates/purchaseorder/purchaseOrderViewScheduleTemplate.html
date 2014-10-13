@@ -35,6 +35,10 @@
 							<td class="text-right text-danger">$ <%= numberFormat(pu.get("fuelcharge")) %></td>
 						</tr>
 						<tr>
+							<td>Handling Fee:</td>
+							<td class="text-right text-danger">$ <%= numberFormat(pu.get("handlingfee")) %></td>
+						</tr>
+						<tr>
 							<td>Loaders Fee (<span class="text-danger">Origin</span>) :</td>
 							<td class="text-right text-danger">$ <%= numberFormat(pu.get("originloaderfee")) %></td>
 						</tr>
@@ -49,7 +53,7 @@
 						<tr>
 							<td>Trailer Rent :</td>
 							<td class="text-right text-danger">$ <%= numberFormat(pu.get("trailerrate")) %></td>
-						</tr>
+						</tr>						
 					</tbody>
 				</table>
 			</div>

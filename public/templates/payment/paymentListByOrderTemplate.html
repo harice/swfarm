@@ -1,0 +1,46 @@
+<div class="row padding-top-10">
+	<div class="col-md-12">
+		<div class="content-inner table-responsive">
+			<table class="table-condensed table-bordered table-hover">
+				<thead>
+					<tr>
+						<th class="width-250">Transaction No.</th>
+						<th class="width-250">Posting Date</th>
+						<th class="width-150">Check No.</th>
+						<th class="width-150">Amount Paid</th>
+					</tr>
+				</thead>
+				<tbody>
+					<% if (!_.isEmpty(payments)) { %>
+						<% _.each(payments, function(payment){
+						 %>
+						<tr>
+							<td>
+								<%
+								if(payment.get('isCancel')){ %>
+									<i class="fa fa-check-circle width-10 "></i>
+								<%
+								}
+								else { %>
+									<i class="fa fa-check-circle width-10 color-success"></i>
+								<%
+								}
+								%>
+								<a href="<%= payment_url %>/<%= payment.get('id') %>"><%= payment.get('transactionnumber') %></a>
+							</td>
+							<td><%= formatDate(payment.get('created_at')) %></td>
+							<td><%= payment.get('checknumber') %></td>
+							<td>$ <%= numberFormat(payment.get('amount')) %></td>
+						</tr>		
+						<%
+						});
+					 } else { %>
+						<tr>
+							<td colspan="4">No results found.</td>
+						</tr>
+					<% } %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

@@ -1,10 +1,7 @@
-<div class="col-md-12">    
-    <div class="header">
+<div class="col-md-12"> 
+    <div class="content">
         <div class="row margin-top-0">
             <div class="col-md-12">
-                <h2 class="pull-left">
-                    Sales Report                    
-                </h2>
                 <div class="btn-group pull-right">
                     <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
                         Email <span class="caret"></span>
@@ -28,36 +25,47 @@
                     </ul>
                 </div>
                 <div class="clearfix"></div>
-                <h5><%= cur_date %></h5>
+                <h2 class="text-center">
+                    <samp>Sales Report</samp>                    
+                </h2> 
+                <h6 class="text-danger text-center">
+                    <strong><samp><%= formatDateBy(date_from, 'F d, Y') %></samp></strong> -  <strong><samp><%= formatDateBy(date_to, 'F d, Y') %></samp></strong>
+                </h6>     
             </div>
         </div>
         <div class="row margin-top-0">
-            <div class="col-md-12 text-center">
-                <h5>                                                                   
-                    <strong><%= date_from %></strong> to  <strong><%= date_to %></strong>
-                </h5>
-            </div>
-        </div>
-        <div class="row margin-top-0">
-            <div class="col-md-12">
-                <h3>
-                    Customer Name:
+            <div class="col-md-4">
+                <h3 class="margin-bottom-5 margin-top-0">
                     <strong>
-                        <%= customers.get('name') %>
+                        <samp><%= customers.get('name') %></samp>
                     </strong>
                 </h3> 
-            </div>      
+                <p>
+                    <i><%= customers.get('businessaddress').street %></i><br />
+                    <i><%= customers.get('businessaddress').city %>, <%= customers.get('businessaddress').state.state_code %>, <%= customers.get('businessaddress').zipcode %></i>
+                </p>
+            </div> 
+            <div class="col-md-2 col-md-offset-4 text-right">
+                <p>Statement Date: <br />
+                    <label class="label label-default">Total Amount Due: </label>
+                </p>
+            </div>
+            <div class="col-md-2">
+                <p><%= formatDateBy(cur_date, 'F d, Y') %><br />
+                <strong><label class="label label-success">$ <%= customers.get('amount') %></label></strong></p>
+            </div>     
         </div>
-    </div>    
-    <% if (!_.isEmpty(customers.get('order'))) { %>    
-    <div class="content">
+        <% if (!_.isEmpty(customers.get('order'))) { %>    
         <div class="content-inner table-responsive">                
             <%                             
                 _.each(customers.get('order'),function(order){
                     var total_amount = 0;
                 %>
-                    <h3><%= order.order_number %></h3>
-                    <table id="operator-list" class="table-bordered table">
+                    <h3><strong><samp><%= order.order_number %></samp></strong></h3>
+                    <div class="progress width-1000 margin-bottom-0 height-3">
+                        <div class="progress-bar progress-bar-primary" style="width: %"></div>
+                    </div>
+                    <table id="operator-list" class="no-border table margin-bottom-0">
                         <thead class="no-border">
                             <tr>                             
                                 <th><strong>Date</strong></th>
@@ -110,20 +118,21 @@
                         });  
                         %>
                         </tbody> 
-                        <tfoot>
+                        <tfoot class="no-border-y">
                             <tr>
                                 <td colspan="7" align="right"><strong>TOTAL<strong></td>
                                 <td> <strong>$ <%= numberFormat(total_amount) %> </strong></td>
                             </tr>
                         </tfoot>
                     </table>
+                    <div class="progress width-1000 margin-bottom-0 height-3">
+                        <div style="width: %" class="progress-bar progress-bar-primary"></div>
+                    </div>  
                 <%                                                              
                 }); %>    
         </div>        
-    </div>
-    <% } else { %>
-    <div class="content">
-      <p>No transactions found.</p>
-    </div>
-    <% } %>
+        <% } else { %>       
+        <p>No transactions found.</p>
+        <% } %>
+    </div>    
 </div>

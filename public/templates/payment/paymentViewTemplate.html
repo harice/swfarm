@@ -1,0 +1,40 @@
+<div class="row margin-top-0">
+    <div class="col-md-12 no-padding">
+        <div class="block-flat">
+            <div class="content padding-top-0">
+                <div class="row margin-top-0">
+                    <div class="col-md-4">
+                        <h2 class="margin-top-10 margin-bottom-0"><%= payment.get("transactionnumber") %></h2>
+                        <div class="progress width-500 margin-bottom-0 margin-top-10 height-3">
+                            <div class="progress-bar progress-bar-success" style="width: %"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 no-padding">
+                        <dl id="view-trailer" class="dl-horizontal">
+                            <dt>PO No.</dt>
+                            <dd><%= payment.get("order").order_number %></dd>
+                            <dt>Producer</dt>
+                            <dd><%= payment.get('account').name %></dd>
+                            <dt>Check No.</dt>
+                            <dd><%= payment.get("checknumber") %></dd>
+                            <dt>Amount Paid</dt>
+                            <dd>$ <%= payment.get("amount") %></dd>
+                            <dt>Posting Date</dt>
+                            <dd><%= formatDate(payment.get("created_at")) %></dd>
+                            <dt>Notes</dt>
+                            <dd><%= payment.get("notes") %></dd>
+                            <dd>
+                                <div class="clearfix"></div>
+                                <a href="<%= payment_edit_url %>/<%= payment.get('id') %>" class="btn btn-primary btn-sm btn-trans btn-rad"><i class="fa fa-pencil width-10"></i> Edit</a>
+                                <a id="go-to-previous-page" href="#" class="btn btn-warning btn-sm btn-trans btn-rad"><i class="fa fa-ban width-10"></i> Cancel</a>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>                                                 
+            </div>            
+        </div>
+    </div>
+</div>
