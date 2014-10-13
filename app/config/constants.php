@@ -40,6 +40,7 @@ return array(
     'DASHBOARD_MAP_PRODUCER' => 8,
     'DASHBOARD_MAP_CUSTOMER' => 9,
     'DASHBOARD_LOGISTICS_MAP' => 10,
+    'DASHBOARD_LOGISTIC_SUMMARY' => 11,
 
     'GRAPH_TYPE_1' => 1, //bar graph
     'GRAPH_TYPE_2' => 2, //double bar graph
