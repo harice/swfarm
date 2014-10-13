@@ -747,7 +747,7 @@ define([
 			'click .view-file': 'viewFile',
 			
 			'change .product_id': 'generateStackNumberSuggestions',
-			'change .stacknumber': 'generatePrice',
+			'blur .stacknumber': 'generatePrice',
 			'click #save-and-check-in': 'showSaveAndCheckInConfirmationWindow',
 			'click #confirm-save-and-check-in-order': 'saveAndCheckIn',
 			'change .location_id': 'onChangeDestination',
@@ -1220,7 +1220,7 @@ define([
 			var model = this.stackNumberCollection.where({stacknumber: stacknumber});
 
 			if(model[0] != undefined) {
-				var price = model[0].get('unitprice');				
+				var price = model[0].get('unitprice');	
 				$('.unitprice[name="'+s+'"]').val(price).attr("disabled", "disabled");
 			}
 			else {
