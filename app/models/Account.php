@@ -19,6 +19,10 @@ class Account extends Eloquent {
         return $this->belongsToMany('Accounttype')->withTimestamps();
     }
 
+    public function accounttypes(){
+        return $this->belongsToMany('Accounttype');
+    }
+
     public function address(){
     	return $this->hasMany('Address', 'account', 'id');
     }
