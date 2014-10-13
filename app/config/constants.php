@@ -40,11 +40,13 @@ return array(
     'DASHBOARD_MAP_PRODUCER' => 8,
     'DASHBOARD_MAP_CUSTOMER' => 9,
     'DASHBOARD_LOGISTICS_MAP' => 10,
+    'DASHBOARD_LOGISTIC_SUMMARY' => 11,
 
     'GRAPH_TYPE_1' => 1, //bar graph
     'GRAPH_TYPE_2' => 2, //double bar graph
     'GRAPH_TYPE_3' => 3, //map with ballons
     'GRAPH_TYPE_4' => 4, //map with ballons with route
+    'GRAPH_TYPE_5' => 5, //pair bar graph, side to side bars
 
     'NATUREOFSALES_RESERVATION' => 1,
     'NATUREOFSALES_INCOMING' => 2,

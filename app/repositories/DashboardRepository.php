@@ -15,10 +15,12 @@ class DashboardRepository implements DashboardRepositoryInterface {
                     array('graphName' => 'Sales in tons', 'graphId' => Config::get('constants.GRAPH_SALES_IN_TONS'), 'graphType' => Config::get('constants.GRAPH_TYPE_1'), 'data' => $this->salesInTons($params), 'filters' => array('date')),
                     array('graphName' => 'Sales in dollar values', 'graphId' => Config::get('constants.GRAPH_SALES_IN_DOLLAR_VALUES'), 'graphType' => Config::get('constants.GRAPH_TYPE_1'), 'data' => $this->salesInDollarValues($params), 'filters' => array('date')),
                     array('graphName' => 'Reserve Customers', 'graphId' => Config::get('constants.GRAPH_CUSTOMER_ORDER_VS_DELIVERED'), 'graphType' => Config::get('constants.GRAPH_TYPE_2'), 'data' => $this->reservedDeliveredVsBalanceOrderPerCustomerAccount($params), 'filters' => array('date')),
+                    array('graphName' => 'Inventory product on hand', 'graphId' => Config::get('constants.GRAPH_INVENTORY_PRODUCT_ON_HAND'), 'graphType' => Config::get('constants.GRAPH_TYPE_1'), 'data' => $this->inventoryProductOnHand(), 'filters' => array()),
                     array('graphName' => 'Year to date sales', 'graphId' => Config::get('constants.GRAPH_YEAR_TO_DATE_SALES'), 'graphType' => Config::get('constants.GRAPH_TYPE_1'), 'data' => $this->yearToDateSalesPerAccount(), 'filters' => array()),
                     array('graphName' => 'Dashboard Purchases', 'graphId' => Config::get('constants.DASHBOARD_MAP_PRODUCER'), 'graphType' => Config::get('constants.GRAPH_TYPE_3'), 'data' => $this->accountMapCoordinates(Config::get('constants.ACCOUNTTYPE_PRODUCER'))),
                     array('graphName' => 'Dashboard Sales', 'graphId' => Config::get('constants.DASHBOARD_MAP_CUSTOMER'), 'graphType' => Config::get('constants.GRAPH_TYPE_3'), 'data' => $this->accountMapCoordinates(Config::get('constants.ACCOUNTTYPE_CUSTOMER'))),
-                    array('graphName' => 'Dashboard Logistics', 'graphId' => Config::get('constants.DASHBOARD_LOGISTICS_MAP'), 'graphType' => Config::get('constants.GRAPH_TYPE_4'), 'data' => $this->logisticRouteMap($params), 'filters' => array('date'))
+                    array('graphName' => 'Dashboard Logistics', 'graphId' => Config::get('constants.DASHBOARD_LOGISTICS_MAP'), 'graphType' => Config::get('constants.GRAPH_TYPE_4'), 'data' => $this->logisticRouteMap($params), 'filters' => array('date')),
+                    array('graphName' => 'Logistics Summary', 'graphId' => Config::get('constants.DASHBOARD_LOGISTIC_SUMMARY'), 'graphType' => Config::get('constants.GRAPH_TYPE_5'), 'data' => $this->logisticSummary($params), 'filters' => array('date'))
                 );
         } else {
             $graph['graphId'] = $params['graphId'];
@@ -44,7 +46,7 @@ class DashboardRepository implements DashboardRepositoryInterface {
                     $graph['data'] = $this->reservedDeliveredVsBalanceOrderPerCustomerAccount($params);
                     break;
                 case Config::get('constants.GRAPH_INVENTORY_PRODUCT_ON_HAND'):
-                    $graph['data'] = $this->inventoryProductOnHand($params);
+                    $graph['data'] = $this->inventoryProductOnHand();
                     break;
                 case Config::get('constants.GRAPH_YEAR_TO_DATE_SALES'):
                     $graph['data'] = $this->yearToDateSalesPerAccount($params);
@@ -57,6 +59,9 @@ class DashboardRepository implements DashboardRepositoryInterface {
                     break;   
                 case Config::get('constants.DASHBOARD_LOGISTICS_MAP'):    
                     $graph['data'] = $this->logisticRouteMap($params);
+                    break;               
+                case Config::get('constants.DASHBOARD_LOGISTIC_SUMMARY'):    
+                    $graph['data'] = $this->logisticSummary($params);
                     break;               
                 default:
                     # code...
@@ -322,9 +327,9 @@ class DashboardRepository implements DashboardRepositoryInterface {
         return $temp;
     }*/
 
-    public function inventoryProductOnHand($params){
-        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d 00:00:00', strtotime("today"));
-        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d 23:59:59', strtotime("today"));
+    public function inventoryProductOnHand(){
+        // $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d 00:00:00', strtotime("today"));
+        // $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d 23:59:59', strtotime("today"));
 
         $products = Product::with('stack.stacklocation')
                             ->whereHas('stack', function($query){
@@ -440,6 +445,130 @@ class DashboardRepository implements DashboardRepositoryInterface {
                         ->get(array('id', 'order_number'))->toArray();
 
         return $order;
+    }
+
+    public function logisticSummary($params){
+        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d 00:00:00', strtotime("today"));
+        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d 23:59:59', strtotime("today"));
+
+        /*$result = Product::with('productorder.transportscheduleproduct.transportschedule')
+                         ->with(array('productorder.transportscheduleproduct.transportschedule' => function($query) use ($dateFrom, $dateTo){
+                                $query->whereBetween('date', array($dateFrom, $dateTo));
+                         }))
+                         ->with(array('productorder.transportscheduleproduct' => function($query){
+                                $query->addSelect(array('id', 'transportschedule_id', 'productorder_id', 'quantity'))
+                                      ->has('transportschedule', '>=', DB::raw(1));
+                         }))
+                         ->with(array('productorder' => function($query){
+                                $query->addSelect(array('id', 'order_id', 'product_id'))
+                                      ->has('transportscheduleproduct', '>=', DB::raw(1))
+                                      ->whereHas('transportscheduleproduct', function($query){
+                                            $query->has('transportschedule');
+                                      });
+                         }))
+                         ->whereHas('productorder', function($query){
+                                $query->has('transportscheduleproduct');
+                                      // ->whereHas('transportscheduleproduct', function($query){
+                                      //       $query->has('transportschedule');
+                                      // });
+                         })
+                         ->get(array('id', 'name'))->toArray();
+        */
+        //for order with schedule
+        $order1 = DB::table('products')
+                        ->join('productorder', 'products.id', '=', 'productorder.product_id')
+                        ->join('transportscheduleproduct', 'productorder.id', '=', 'transportscheduleproduct.productorder_id')
+                        ->join('transportschedule', 'transportscheduleproduct.transportschedule_id', '=', 'transportschedule.id')
+                        ->leftJoin('weightticket', function($query){
+                            $query->on('transportschedule.id', '=', 'weightticket.transportSchedule_id')
+                                  ->where('weightticket.status_id', '=', Config::get('constants.STATUS_CLOSED'));
+                        })
+                        ->leftJoin('weightticketscale as ws1', 'weightticket.pickup_id', '=', 'ws1.id')
+                        ->leftJoin('weightticketscale as ws2', 'weightticket.dropoff_id', '=', 'ws2.id')
+                        // ->leftJoin('weightticketproducts as wsp1', 'ws1.id', '=', 'wsp1.weightTicketScale_id')
+                        // ->leftJoin('weightticketproducts as wsp2', 'ws2.id', '=', 'wsp2.weightTicketScale_id')
+                        // ->leftJoin('weightticketproducts', 'weightticketproducts.transportScheduleProduct_id', '=', 'transportscheduleproduct.id')
+                        // ->leftJoin('weightticketscale', 'weightticketscale.id', '=', 'weightticketproducts.weightTicketScale_id')
+                        ->join('order', 'order.id', '=', 'productorder.order_id')
+                        ->whereBetween('transportschedule.date', array($dateFrom, $dateTo))
+                        ->whereIn('order.status_id', array(Config::get('constants.STATUS_OPEN'), Config::get('constants.STATUS_CLOSED')))
+                        // ->where('orderType', '=', Config::get('constants.ORDERTYPE_SO'))
+                        ->select('products.id as productId', 'products.name')
+                        ->addSelect('transportschedule.id as transportscheduleId', 'transportschedule.date')
+                        ->addSelect('transportscheduleproduct.id as transportscheduleproductId', 'transportscheduleproduct.quantity')
+                        ->addSelect('order.id as orderId', 'order.order_number', 'order.orderType', 'order.created_at')
+                        ->addSelect('productorder.id as productorder_id', 'productorder.tons as productorderTons')
+                        ->addSelect('weightticket.id as weightticketId', 'weightticket.pickup_id', 'weightticket.dropoff_id');
+                        // ->addSelect('wsp1.id as weightticketproductsId', 'wsp1.pounds as pickupPounds')
+                        // ->addSelect('wsp2.id as weightticketproductsId', 'wsp2.pounds as dropoffPounds')
+                        // ->addSelect('weightticketproducts.id as weightticketproductsId', 'weightticketproducts.pounds as pickupPounds')
+                        // ->addSelect('weightticketscale.id as weightticketscaleId', 'wsp2.pounds as dropoffPounds')
+                        // ->get();
+
+                        // $queries = DB::getQueryLog();
+                        // $last_query = end($queries);
+                        // var_dump($last_query);
+                        
+        //for order without schedule producer/dropship - PO only
+        $orders = DB::table('products')
+                        ->join('productorder', 'products.id', '=', 'productorder.product_id')
+                        ->leftjoin('transportscheduleproduct', 'productorder.id', '=', 'transportscheduleproduct.productorder_id')
+                        ->leftjoin('transportschedule', 'transportscheduleproduct.transportschedule_id', '=', 'transportschedule.id')
+                        ->leftJoin('weightticket', function($query){
+                            $query->on('transportschedule.id', '=', 'weightticket.transportSchedule_id');
+                        })
+                        ->leftJoin('weightticketscale as ws1', 'weightticket.pickup_id', '=', 'ws1.id')
+                        ->leftJoin('weightticketscale as ws2', 'weightticket.dropoff_id', '=', 'ws2.id')
+                        ->join('order', 'order.id', '=', 'productorder.order_id')
+                        ->whereBetween('order.created_at', array($dateFrom, $dateTo))
+                        ->whereIn('order.status_id', array(Config::get('constants.STATUS_OPEN'), Config::get('constants.STATUS_CLOSED')))
+                        ->where('orderType', '=', Config::get('constants.ORDERTYPE_PO'))
+                        ->select('products.id as productId', 'products.name')
+                        ->addSelect('transportschedule.id as transportscheduleId', 'transportschedule.date')
+                        ->addSelect('transportscheduleproduct.id as transportscheduleproductId', 'transportscheduleproduct.quantity')
+                        ->addSelect('order.id as orderId', 'order.order_number', 'order.orderType', 'order.created_at')
+                        ->addSelect('productorder.id as productorder_id', 'productorder.tons as productorderTons')
+                        ->addSelect('weightticket.id as weightticketId', 'weightticket.pickup_id', 'weightticket.dropoff_id')
+                        ->union($order1)->get();
+
+        $response = array();
+        foreach($orders as $item){
+            if(!array_key_exists($item->name, $response)){
+                $response[$item->name] = array('productName' => $item->name,'incoming' => 0.0, 'outgoing' => 0.0);
+            }
+            if($item->orderType == Config::get('constants.ORDERTYPE_PO')){
+                if($item->transportscheduleId == null){ //no schedule, the order is either dropship or producer
+                    $response[$item->name]['incoming'] += $item->productorderTons;    
+                } else if($item->pickup_id == null && $item->dropoff_id == null){
+                    $response[$item->name]['incoming'] += $item->quantity;    
+                } else if($item->dropoff_id != null){
+                    $response[$item->name]['incoming'] += $this->getPoundsOfWeightTicketProduct($item->dropoff_id, $item->transportscheduleproductId) * 0.0005; //in tons
+                } else {
+                    $response[$item->name]['incoming'] += $this->getPoundsOfWeightTicketProduct($item->pickup_id, $item->transportscheduleproductId) * 0.0005; //in tons
+                }
+                
+            } else if($item->orderType == Config::get('constants.ORDERTYPE_SO')){
+                if($item->pickup_id == null && $item->dropoff_id == null){
+                    $response[$item->name]['outgoing'] += $item->quantity;    
+                } else if($item->pickup_id != null){
+                    $response[$item->name]['outgoing'] += $this->getPoundsOfWeightTicketProduct($item->pickup_id, $item->transportscheduleproductId) * 0.0005; //in tons
+                } else {
+                    $response[$item->name]['outgoing'] += $this->getPoundsOfWeightTicketProduct($item->dropoff_id, $item->transportscheduleproductId) * 0.0005; //in tons
+                }
+            }
+        }
+        //formating to 4 decimal places
+        foreach($response as &$item){
+            $item['incoming'] = number_format($item['incoming'], 4);
+            $item['outgoing'] = number_format($item['outgoing'], 4);
+        }
+
+        return $response;
+    }
+
+    private function getPoundsOfWeightTicketProduct($scaleId, $transportscheduleId){
+        $result = WeightTicketProducts::where('weightTicketScale_id', '=', $scaleId)->where('transportScheduleProduct_id', '=', $transportscheduleId)->first(array('pounds'));
+        return $result->pounds;
     }
     
 }

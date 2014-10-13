@@ -157,7 +157,7 @@ class InventoryLibrary {
                     if($stacklocationFrom->tons < $product['tons']){
                         return array(
                             'error' => true,
-                            'message' => "Weight tons is not enough on this stack (".$stack->stacknumber.") to be issued.");
+                            'message' => "Weight tons on stack location is not enough (".$stack->stacknumber.") to be issued.");
                     } else {
                         $stacklocationFrom->tons = $stacklocationFrom->tons - $product['tons'];
                         $stacklocationFrom->save();
