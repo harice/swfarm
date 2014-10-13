@@ -259,29 +259,6 @@ define([
 			$('.form-button-container').removeClass("hidden");			
 		},	
 
-		parseDate: function(d){
-			var date = Date.parse(d);
-
-            if (isNaN(date)==false)
-            {
-                var date = new Date(d), 
-                fragments = [                                
-                    date.getMonth() + 1,
-                    date.getDate(),
-                    date.getFullYear()
-                ]; 
-                date = fragments.join('/');
-
-            }     
-            else {
-                date = (d).split(' ')[0];
-                var t = date.split('-');
-                date = t[0]+'/'+t[1]+'/'+t[2];
-            }
-
-			return date;
-		},	
-
 		showSendMailModal: function(ev){
 			var thisObj = this;	
 			var type = $(ev.target).attr('data-type');

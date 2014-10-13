@@ -154,7 +154,7 @@ define([
 				null, 
 				{
 					success: function (model, response, options) {
-						thisObj.displayMessage(response);	
+						thisObj.displayMessage(response);
 						thisObj.hideConfirmationWindow('modal-with-form-confirm');
 						Backbone.history.history.back();
 					},

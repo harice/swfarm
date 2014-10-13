@@ -1,10 +1,7 @@
-<div class="col-md-12">    
-    <div class="header">
+<div class="col-md-12">                
+    <div class="content">  
         <div class="row margin-top-0">
-            <div class="col-md-12">
-                <h2 class="pull-left">
-                    Trucking Statement                    
-                </h2>                
+            <div class="col-md-12">              
                 <div class="btn-group pull-right">
                     <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
                         Email <span class="caret"></span>
@@ -28,28 +25,62 @@
                     </ul>
                 </div>
                 <div class="clearfix"></div>
-                <h5><%= cur_date %></h5>
+                <h2 class="text-center">
+                    <samp>Trucking Statement</samp>                    
+                </h2>  
+                <h6 class="text-danger text-center">
+                    <strong><samp><%= formatDateBy(date_from, 'F d, Y') %></samp></strong> -  <strong><samp><%= formatDateBy(date_to, 'F d, Y') %></samp></strong>
+                </h6> 
             </div>
         </div>
         <div class="row margin-top-0">
-            <div class="col-md-12 text-center">
-                <h5>                                                                   
-                    <strong><%= date_from %></strong> to  <strong><%= date_to %></strong>
-                </h5>
+            <div class="col-md-4">
+                <h3 class="margin-bottom-5 margin-top-0">
+                    <samp>
+                        Truck No:
+                        <strong>
+                            <%= truckers.get('trucknumber') %>
+                        </strong>
+                    </samp>
+                </h3>
+                <p>
+                    <strong><%= truckers.get('account').name %></strong><br />
+                    <i><%= truckers.get('account').businessaddress.street %></i><br />
+                    <i><%= truckers.get('account').businessaddress.city %>, <%= truckers.get('account').businessaddress.state.state_code %> <%= truckers.get('account').businessaddress.zipcode %></i>
+                </p>
+            </div> 
+            <div class="col-md-2 col-md-offset-4 text-right">
+                <p>
+                    Statement Date: <br />
+                    Total Bales:<br />
+                    Total Pounds: <br />                  
+                    Total Tons: <br />
+                    Trucking Fee: <br />
+                    Handling Fee: <br />
+                    Fuel Charge: <br />
+                    Less (Admin Fees): <br />
+                    Less (Trailer Rent): <br />
+                    Less (Loading Fees): <br />
+                    <label class="label label-default">Total Amount Due: </label>
+                </p>
             </div>
-        </div>
-        <div class="row margin-top-0">
-            <div class="col-md-12">
-                <h3>
-                    Truck Number
-                    <strong>
-                        <%= truckers.get('trucknumber') %>
-                    </strong>
-            </div>            
-        </div>
-    </div>    
-    <% if (!_.isEmpty(truckers.get('order'))) { %>      
-    <div class="content">        
+            <div class="col-md-2">
+                <p>
+                    <%= formatDateBy(cur_date, 'F d, Y') %><br />
+                    <%= truckers.get('bales') %><br />                 
+                    <%= truckers.get('pounds') %><br />  
+                    <%= truckers.get('tons') %><br />  
+                    $ <%= truckers.get('hauling') %><br />  
+                    $ <%= truckers.get('handling') %><br />  
+                    $ <%= truckers.get('fuelcharge') %><br />  
+                    <span class="text-danger">- $ <%= numberFormat(truckers.get('adminfee')) %></span><br />
+                    <span class="text-danger">- $ <%= numberFormat(truckers.get('trailerrent')) %></span><br />
+                    <span class="text-danger">- $ <%= numberFormat(truckers.get('loadingfee')) %></span><br />
+                    <strong><label class="label label-success">$ <%= numberFormat(truckers.get('amount'))  %></label></strong>
+                </p>
+            </div>  
+        </div>                  
+        <% if (!_.isEmpty(truckers.get('order'))) { %>   
         <div class="content-inner table-responsive">
             <%
                 _.each(truckers.get('order'), function(order){                      
@@ -65,8 +96,11 @@
                     var amount_i = 0;
                     var handling_i = 0;
             %>
-                <h3><%= order.order_number %></h3>
-                <table id="operator-list" class="table table-bordered">
+                <h3><strong><samp><%= order.order_number %></samp></strong></h3>
+                <div class="progress width-1000 margin-bottom-0 height-3">
+                    <div style="width: %" class="progress-bar progress-bar-primary"></div>
+                </div>
+                <table id="operator-list" class="table no-border margin-bottom-0">
                     <thead class="no-border">
                         <tr>         
                             <th><strong>Date</strong></th>
@@ -93,7 +127,7 @@
                     %>
                         <tr>
                             <td><%= formatDate(schedule.updated_at) %></td>
-                            <td><%= schedule.weightticketnumber %></td>
+                            <td><code><%= schedule.weightticketnumber %></code></td>
                             <td><%= schedule.originloader.lastname %>, <%= schedule.originloader.firstname %></td>
                             <td><%= schedule.destinationloader.lastname %>, <%= schedule.destinationloader.firstname %></td>
                             <% fee = schedule.originloaderfee + schedule.destinationloaderfee %>
@@ -108,7 +142,7 @@
                             <% pounds_i += parseFloat(schedule.pounds) %>
                             <td><%= numberFormatTons(schedule.tons) %></td>
                             <% tons_i += parseFloat(schedule.tons) %>
-                            <td><%= numberFormat(schedule.handlingfee) %></td>
+                            <td>$ <%= numberFormat(schedule.handlingfee) %></td>
                             <% handling_i += parseFloat(schedule.handlingfee) %>
                             <td>$ <%= numberFormat(schedule.truckingrate) %></td>
                             <% trucking_i += parseFloat(schedule.truckingrate) %>
@@ -127,7 +161,7 @@
                         })
                     %>               
                     </tbody>  
-                    <tfoot>
+                    <tfoot class="no-border-y">
                         <tr>
                             <td colspan="4" align="right">
                                 <strong>Total</strong>
@@ -145,61 +179,16 @@
                             <td>$ <%= numberFormat(amount_i) %></td>
                         </tr>
                     </tfoot>              
-                </table>  
+                </table> 
+                <div class="progress width-1000 margin-bottom-0 height-3">
+                    <div style="width: %" class="progress-bar progress-bar-primary"></div>
+                </div> 
             <%
                 })
             %>  
-
-            <table class="table table-bordered" style="width:30%">               
-                <tbody class="no-border-y">
-                    <tr>
-                        <td colspan="2" align="center">
-                            <strong>Total</strong>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Total Loading Fee</td>
-                        <td>$ <%= numberFormat(truckers.get('loadingfee')) %></td>
-                    </tr>
-                    <tr>
-                        <td>Total Hauling Fee</td>
-                        <td>$ <%= numberFormat(truckers.get('hauling')) %></td>
-                    </tr>
-                    <tr>
-                        <td>Total Handling Fee</td>
-                        <td>$ <%= numberFormat(truckers.get('handling')) %></td>
-                    </tr>
-                    <tr>
-                        <td>Total Admin Fee</td>
-                        <td>$ <%= numberFormat(truckers.get('adminfee')) %></td>
-                    </tr>
-                    <tr>
-                        <td>Total Fuel Charge</td>
-                        <td>$ <%= numberFormat(truckers.get('fuelcharge')) %></td>
-                    </tr>
-                    <tr>
-                        <td>Total Rent</td>
-                        <td>$ <%= numberFormat(truckers.get('trailerrent')) %></td>
-                    </tr>
-                    <tr>
-                        <td>Total Bales</td>
-                        <td><%= numberFormatBales(truckers.get('bales')) %></td>
-                    </tr>
-                    <tr>
-                        <td>Total Pounds</td>
-                        <td><%= numberFormatLbs(truckers.get('pounds')) %></td>
-                    </tr>
-                    <tr>
-                        <td>Total Tons</td>
-                        <td><%= numberFormatTons(truckers.get('tons')) %></td>
-                    </tr>                   
-                </tbody>
-            </table>
         </div>
-    </div>
-    <% } else { %>
-    <div class="content">
+        <% } else { %>
         <p>No transactions found.</p>
-    </div>
-    <% } %>
+        <% } %>
+    </div>   
 </div>

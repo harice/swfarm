@@ -1,10 +1,8 @@
-<div class="col-md-12">    
-    <div class="header">
+<div class="col-md-12">  
+    <% var total_amount = parseFloat(drivers.get('amount') + drivers.get('handling')) %>
+    <div class="content">  
         <div class="row margin-top-0">
             <div class="col-md-12">
-                <h2 class="pull-left">
-                    Driver Pay                    
-                </h2>
                 <div class="btn-group pull-right">
                     <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
                         Email <span class="caret"></span>
@@ -28,36 +26,55 @@
                     </ul>
                 </div>
                 <div class="clearfix"></div>
-                <h5><%= cur_date %></h5>
+                <h2 class="text-center">
+                    <samp>Driver Pay</samp>                    
+                </h2> 
+                <h6 class="text-danger text-center">
+                    <strong><samp><%= formatDateBy(date_from, 'F d, Y') %></samp></strong> -  <strong><samp><%= formatDateBy(date_to, 'F d, Y') %></samp></strong>
+                </h6>  
             </div>
         </div>
         <div class="row margin-top-0">
-            <div class="col-md-12 text-center">
-                <h5>                                                                   
-                    <strong><%= date_from %></strong> to  <strong><%= date_to %></strong>
-                </h5>
-            </div>
-        </div>
-        <div class="row margin-top-0">
-            <div class="col-md-12">
-                <h3>
-                    Driver:
+            <div class="col-md-4">
+                <h3 class="margin-bottom-5 margin-top-0">
                     <strong>
-                        <%= drivers.get('firstname') %> <%= drivers.get('lastname') %>
+                        <samp><%= drivers.get('lastname') %>, <%= drivers.get('firstname') %></samp>
                     </strong>
                 </h3> 
+                <p>
+                    <strong><i><%= drivers.get('account') %></i></strong><br />
+                    <i>Email: </i><%= drivers.get('email') %><br />
+                    <i>Phone: </i><%= drivers.get('phone') %>
+                </p>
             </div>
+            <div class="col-md-2 col-md-offset-4 text-right">
+                <p>
+                    Statement Date: <br />
+                    Amount:<br />
+                    Handling Fee: <br />
+                    <label class="label label-default">Total Amount Due: </label>
+                </p>
+            </div>
+            <div class="col-md-2">
+                <p>
+                    <%= formatDateBy(cur_date, 'F d, Y') %><br />
+                    $ <%= numberFormat(drivers.get('amount')) %><br />
+                    $ <%= numberFormat(drivers.get('handling')) %><br />                   
+                    <strong><label class="label label-success">$ <%= numberFormat(total_amount)  %></label></strong>
+                </p>
+            </div>  
         </div>
-    </div>
-    <% if (!_.isEmpty(drivers.get('order'))) { %>         
-    <div class="content">    
+        <% if (!_.isEmpty(drivers.get('order'))) { %>    
         <div class="content-inner table-responsive">
             <%
             _.each(drivers.get('order'), function(order){
                 var total_pay = 0;
             %>
-                <h3><%= order.order_number %></h3>
-                <table id="operator-list" class="table table-bordered">
+                <h3><strong><samp><%= order.order_number %></samp></strong></h3>
+                <div class="progress width-1000 margin-bottom-0 height-3">
+                    <div class="progress-bar progress-bar-primary" style="width: %"></div>
+                </div>
+                <table id="operator-list" class="table no-border margin-bottom-0">
                     <thead class="no-border">
                         <tr>                             
                             <th><strong>Date</strong></th>
@@ -71,19 +88,19 @@
                             <th><strong>Driver Pay</strong></th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="no-border-y">
                         <%
                             _.each(order.transportschedule,function(schedule){                                
                         %>
                             <tr>
-                                <td><%= schedule.updated_at %></td>
+                                <td><%= formatDate(schedule.updated_at) %></td>
                                 <td><%= schedule.truck %></td>
-                                <td>$ <%= schedule.truckingrate %></td>                                
+                                <td>$ <%= numberFormat(schedule.truckingrate) %></td>                                
                                 <td><%= schedule.bales %></td>
                                 <td><%= schedule.tons %></td>
-                                <td><%= schedule.gross %></td>
+                                <td>$ <%= numberFormat(schedule.gross) %></td>
                                 <td>$ <%= numberFormat(drivers.get('rate')) %></td>
-                                <td>$ <%= schedule.handlingfee %></td>
+                                <td>$ <%= numberFormat(schedule.handlingfee) %></td>
                                 <% total_pay += parseFloat(schedule.pay) %>
                                 <td>$ <%= numberFormat(schedule.pay) %></td>
                             </tr>
@@ -91,7 +108,7 @@
                             });
                         %>
                     </tbody>
-                    <tfoot>
+                    <tfoot class="no-border-y">
                         <td colspan="7" align="right"><strong>Total</strong></td>
                         <td>
                             $ <%= numberFormat(drivers.get('handling')) %>
@@ -100,13 +117,14 @@
                             $ <%= numberFormat(total_pay) %>
                         </td>
                     </tfoot>
-                </table>        
+                </table>  
+                <div class="progress width-1000 margin-bottom-0 height-3">
+                    <div style="width: %" class="progress-bar progress-bar-primary"></div>
+                </div>        
             <%});%>                
         </div>    
-    </div>
-    <% } else { %>
-    <div class="content">
-      <p>No transactions found.</p>
-    </div>
-    <% } %>
+        <% } else { %>
+        <p>No transactions found.</p>
+        <% } %>
+    </div>    
 </div>
