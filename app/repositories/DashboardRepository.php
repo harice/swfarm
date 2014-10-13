@@ -340,14 +340,14 @@ class DashboardRepository implements DashboardRepositoryInterface {
         $response = array();
         $index = 0;
         foreach($products as $product){
-            $response[$index]['name'] = $product['name'];
-            $response[$index]['tons'] = 0;
+            $response[$index]['label'] = $product['name'];
+            $response[$index]['value'] = 0;
             foreach($product['stack'] as $stack){
                 foreach($stack['stacklocation'] as $stacklocation){
-                    $response[$index]['tons'] += $stacklocation['tons'];
+                    $response[$index]['value'] += $stacklocation['tons'];
                 }
             }
-            $response[$index]['tons'] = number_format($response[$index]['tons'], 2);
+            $response[$index]['value'] = number_format($response[$index]['value'], 2);
             $index++;
         }
 
