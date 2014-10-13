@@ -18,7 +18,7 @@ class SyncRepository implements SyncInterface {
 					$accounttypes_a = array();
 					$accounts->accounttypes->each(function($accounttypes) use($accounttypes_a){
 						global $accounttypes_a;
-						$accounttypes_a[] = intval($accounttypes->id);
+						$accounttypes_a[] = $accounttypes->id;
 					});
 					unset($accounts->accounttypes);
 					$accounts->accounttypes = $accounttypes_a;
