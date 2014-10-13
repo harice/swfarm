@@ -46,21 +46,27 @@ class DashboardRepository implements DashboardRepositoryInterface {
                     $graph['data'] = $this->reservedDeliveredVsBalanceOrderPerCustomerAccount($params);
                     break;
                 case Config::get('constants.GRAPH_INVENTORY_PRODUCT_ON_HAND'):
+                    $graph['graphType'] = Config::get('constants.GRAPH_TYPE_1');
                     $graph['data'] = $this->inventoryProductOnHand();
                     break;
                 case Config::get('constants.GRAPH_YEAR_TO_DATE_SALES'):
+                    $graph['graphType'] = Config::get('constants.GRAPH_TYPE_1');
                     $graph['data'] = $this->yearToDateSalesPerAccount($params);
                     break;  
-                case Config::get('constants.DASHBOARD_MAP_PRODUCER'):    
+                case Config::get('constants.DASHBOARD_MAP_PRODUCER'): 
+                    $graph['graphType'] = Config::get('constants.GRAPH_TYPE_3');   
                     $graph['data'] = $this->accountMapCoordinates(Config::get('constants.ACCOUNTTYPE_PRODUCER'));
                     break;            
                 case Config::get('constants.DASHBOARD_MAP_CUSTOMER'):    
+                    $graph['graphType'] = Config::get('constants.GRAPH_TYPE_3');
                     $graph['data'] = $this->accountMapCoordinates(Config::get('constants.ACCOUNTTYPE_CUSTOMER'));
                     break;   
-                case Config::get('constants.DASHBOARD_LOGISTICS_MAP'):    
+                case Config::get('constants.DASHBOARD_LOGISTICS_MAP'):
+                    $graph['graphType'] = Config::get('constants.GRAPH_TYPE_4');    
                     $graph['data'] = $this->logisticRouteMap($params);
                     break;               
-                case Config::get('constants.DASHBOARD_LOGISTIC_SUMMARY'):    
+                case Config::get('constants.DASHBOARD_LOGISTIC_SUMMARY'):
+                    $graph['graphType'] = Config::get('constants.GRAPH_TYPE_5');    
                     $graph['data'] = $this->logisticSummary($params);
                     break;               
                 default:
