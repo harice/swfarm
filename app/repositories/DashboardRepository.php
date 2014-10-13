@@ -19,7 +19,8 @@ class DashboardRepository implements DashboardRepositoryInterface {
                     array('graphName' => 'Year to date sales', 'graphId' => Config::get('constants.GRAPH_YEAR_TO_DATE_SALES'), 'graphType' => Config::get('constants.GRAPH_TYPE_1'), 'data' => $this->yearToDateSalesPerAccount(), 'filters' => array()),
                     array('graphName' => 'Dashboard Purchases', 'graphId' => Config::get('constants.DASHBOARD_MAP_PRODUCER'), 'graphType' => Config::get('constants.GRAPH_TYPE_3'), 'data' => $this->accountMapCoordinates(Config::get('constants.ACCOUNTTYPE_PRODUCER'))),
                     array('graphName' => 'Dashboard Sales', 'graphId' => Config::get('constants.DASHBOARD_MAP_CUSTOMER'), 'graphType' => Config::get('constants.GRAPH_TYPE_3'), 'data' => $this->accountMapCoordinates(Config::get('constants.ACCOUNTTYPE_CUSTOMER'))),
-                    array('graphName' => 'Dashboard Logistics', 'graphId' => Config::get('constants.DASHBOARD_LOGISTICS_MAP'), 'graphType' => Config::get('constants.GRAPH_TYPE_4'), 'data' => $this->logisticRouteMap($params), 'filters' => array('date'))
+                    array('graphName' => 'Dashboard Logistics', 'graphId' => Config::get('constants.DASHBOARD_LOGISTICS_MAP'), 'graphType' => Config::get('constants.GRAPH_TYPE_4'), 'data' => $this->logisticRouteMap($params), 'filters' => array('date')),
+                    array('graphName' => 'Logistics Summary', 'graphId' => Config::get('constants.DASHBOARD_LOGISTIC_SUMMARY'), 'graphType' => Config::get('constants.GRAPH_TYPE_5'), 'data' => $this->logisticSummary($params), 'filters' => array('date'))
                 );
         } else {
             $graph['graphId'] = $params['graphId'];
