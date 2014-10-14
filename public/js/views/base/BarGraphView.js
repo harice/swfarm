@@ -178,7 +178,7 @@ define([
                     clickable: true,
                     tickColor: "rgba(0,0,0,0.15)",
                     borderWidth: 0,
-                    color: "green"
+                    color: ""
                 }, 
                 legend : {
 					show: true,
@@ -345,13 +345,13 @@ define([
 						label: 'incoming',
 						data: [],
 						bars: {fillColor: "#407EC9"}, 
-						color: "#336600"
+						color: ["#407EC9"]
 					});
 					d.push({
 						label: 'outgoing',
 						data: [],
 						bars: {fillColor: "#E41B17"}, 
-						color: "#C23D3A"
+						color: "#E41B17"
 					});
 
 					for(var x = 0; x < keys.length; x++) {
