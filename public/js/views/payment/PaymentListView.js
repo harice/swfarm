@@ -22,8 +22,7 @@ define([
 
 			this.collection = new PaymentCollection();
 			this.collection.on('sync', function() {
-				if(thisObj.subContainerExist()){
-					thisObj.displayPayment();
+				if(thisObj.subContainerExist()){					
 					thisObj.displayList();
 				}
 			});
@@ -34,7 +33,8 @@ define([
 		},
 		
 		render: function(){
-			this.collection.getPaymentByPurchaseOrder();
+			this.displayPayment();
+			this.renderList(this.collection.listView.currentPage);
 			Backbone.View.prototype.refreshTitle('Transactions','list');
 		},
 		
@@ -79,7 +79,7 @@ define([
 		
 		events: {
 			'click .stop-propagation': 'linkStopPropagation',
-			'click #order-accordion tr.collapse-trigger': 'toggleAccordion',
+			'click #payment-accordion tr.collapse-trigger': 'toggleAccordion',
 		},	
 
 		toggleAccordion: function (ev) {

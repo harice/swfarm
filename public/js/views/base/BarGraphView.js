@@ -29,7 +29,11 @@ define([
 	var BarGraphView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 
-		graphData: function (id, data, xData, label, decimals){		
+		graphData: function (id, data, xData, label, decimals){
+			var barColor = "#3E7BC4";
+
+			if(label != '')		
+				barColor = "#990000";
 
 			var graph = $.plot($("#"+id), data, {
 		        series: {
@@ -42,7 +46,7 @@ define([
 		            hoverable: true,
 		            fillColor: {
 		              colors: [{
-		                opacity: 0.5
+		                opacity: 0.7
 		              }, {
 		                opacity: 1
 		              }
@@ -52,7 +56,8 @@ define([
 		            	show:true,
 		            	xAlign: function(x,a) { return x; },
 						yAlign: function(y,a) { return y; }
-		            }
+		            },
+		            yPositionAdjustLabel: data.yPositionAdjustLabel
 		          },
 		          shadowSize: 2
 		        },
@@ -68,7 +73,7 @@ define([
 		           borderWidth: 0,
 		           color: "green"
 		        },
-		        colors: ["#3E7BC4", "#FFFFFF", "#52e136"],
+		        colors: [barColor, "#FFFFFF", "#52e136"],
 		        xaxis: {
 		          ticks: xData,
 		          tickDecimals: 0,
@@ -156,6 +161,71 @@ define([
 			
 		},
 
+		graphMultiSeriesGraph: function(id, data, xData, label, decimals) {	
+			var options = {
+                xaxis: {                 
+                    ticks: xData,
+                    tickLength: 0,
+                    tickDecimals: 0,
+                }, 
+                yaxis: {
+                    ticks: 5,
+                }, 
+                grid: {
+                    labelMargin: 10,
+                    axisMargin: 500,
+                    hoverable: true,
+                    clickable: true,
+                    tickColor: "rgba(0,0,0,0.15)",
+                    borderWidth: 0,
+                    color: "green"
+                }, 
+                legend : {
+					show: true,
+					noColumns: 2,
+					backgroundOpacity:0,
+					position: "ne",
+					margin: -60,
+					labelBoxBorderColor: "transparent",					
+                }, 
+                series: {                  
+                    stackpercent : false,
+                    bars: {
+                        show: true,
+                        lineWidth: 0,
+                        barWidth: 0.35,
+                        order:1,                     
+                        numbers: {
+		            		show:true,
+		            		xAlign: function(x,a) { return x + .15; },
+							yAlign: function(y,a) { return y; },
+							showDataValue: true
+		            	}
+                    },
+                    yPositionAdjustLabel: data[0].yPositionAdjustLabel
+                }
+            };
+
+            $.plot($("#"+id), data[0].data, options);
+
+            $("#"+id)
+				.find('.legend table')
+				.css({
+					"width": "auto",
+					"right": "0",
+					"top": -100 + "px"				
+				})
+				.find('tr')
+				.css("background", "#f8f8f8")
+				.find('td')
+				.css({
+					"border": 0,
+					"padding": "2px"
+				});
+
+			this.plotHover(id);
+		},
+
 		showTooltip: function(x, y, contents) {
 	      $("<div id='tooltip'>" + contents + "</div>").css({
 	        position: "absolute",
@@ -173,6 +243,9 @@ define([
 	    }, 
 
 	    plotHover: function(id, currency, decimals) {
+	    	if(currency == undefined)
+	    		currency ='';
+
 	    	var thisObj = this;
 	    	var previousPoint = null;
 	    	$("#"+id).bind("plothover", function (event, pos, item) {
@@ -263,9 +336,37 @@ define([
 					graphData.push({ data:d, yPositionAdjustLabel: -10 });
 					
 					break;
+
+				case Const.GRAPH.TYPE.SUMMARY:
+					var d = [];					
+					var keys = Object.keys(data);
+
+					d.push({
+						label: 'incoming',
+						data: [],
+						bars: {fillColor: "#407EC9"}, 
+						color: "#336600"
+					});
+					d.push({
+						label: 'outgoing',
+						data: [],
+						bars: {fillColor: "#E41B17"}, 
+						color: "#C23D3A"
+					});
+
+					for(var x = 0; x < keys.length; x++) {
+						graphXData.push([x, keys[x]]);
+
+						d[0].data.push([x, data[keys[x]].incoming]);										
+						d[1].data.push([x + .4, data[keys[x]].outgoing]);
+					}
+				
+					graphData.push({ data:d, yPositionAdjustLabel: -10 });
+
+					break;
 				default:
 					var d = [];
-					for(var i = 0; i < data.length; i++) {						
+					for(var i = 0; i < data.length; i++) {									
 						d.push([i, data[i].value]);
 						graphXData.push([i, data[i].label]); 
 					}
@@ -279,13 +380,14 @@ define([
 		},
 
 
+
+
 		drawGraph: function(graph, graphIdName, graphId){
 			var thisObj = this;
-			var label = false;			
 			var currency = '';
 			var tickDecimals = 0;
 
-			if(label) {
+			if(graphId == 2 || graphId == 4) {
 				currency = '$';
 				tickDecimals = 2;
 			}
@@ -302,8 +404,8 @@ define([
 				thisObj.subContainer.find('#graph-cont').append(graphInnerTemplate);
 
 				thisObj.initStartEndCalendarFilter(graphId);							
-			}			
-			
+			}	
+
 			var graphData = thisObj.formatGraphData(graphId, graph.get('data'), graph.get('graphType'));
 
 			return { data: graphData.data, xData: graphData.xData, currency: currency, tickDecimals: tickDecimals };
@@ -313,12 +415,16 @@ define([
 		drawMap: function (graph, graphIdName, graphId) {
 			var lat = 33.393532;
 			var lng = -112.315879;
-			var thisObj = this;
-			var mapId = graphIdName + '-map-canvas-getlocation';
-			var producers = graph.get('data');
-			var markers = [];
+			var thisObj = this;			
+			var producers = graph.get('data');			
 			var location = new google.maps.LatLng(lat, lng);
 			var addr = '';
+			var mapId = graphIdName + '-map-canvas-getlocation';
+
+			this.googleMaps = new GoogleMapsView();			
+
+			if(graphId == 10)
+				mapId = this.googleMaps.mapCanvasIdGetDD;
 
 			var innerTemplateVariables = {
 				'graph_heading': graph.get('graphName'),
@@ -331,13 +437,21 @@ define([
 			thisObj.subContainer.find('#graph-cont').append(graphInnerTemplate);
 
 			thisObj.subContainer.find('#' +graphIdName).append("<div id="+ mapId +"></div>");
-			thisObj.subContainer.find('#' +graphIdName).css("width", "547px" );
-			thisObj.subContainer.find('#' +mapId).css({"width": "100%", "height": "100%"});
+			thisObj.subContainer.find('#' +graphIdName).css({"width": "547px", "height": "300px"});
+			thisObj.subContainer.find('#' +mapId).css({"width": "100%", "height": "100%"});			
 
-			this.googleMaps = new GoogleMapsView();
 			this.googleMaps.initGetDashboardMapLocation(mapId, location);
+						
+			if(graphId == 10)
+				this.populateLogisticsMarkers(this.googleMaps, graph);
+			else 
+				this.populateMarkers(this.googleMaps, graph, location);	
 
-			markers.push({accountName: "SouthWest Farm", address: "11926 West Southern Avenue, Tolleson, Arizona, USA 85353", lat: lat, lng: lng});		
+		},
+
+		populateMarkers: function(googleMaps, graph, location) {
+			var markers = [];
+			markers.push({accountName: "SouthWest Farm", address: "11926 West Southern Avenue, Tolleson, Arizona, USA 85353", lat: location.k, lng: location.B});		
 
 			_.each(graph.get('data'), function (acct) {
 				_.each(acct.address, function(address){
@@ -348,7 +462,25 @@ define([
 				});
 				
 			});
-			this.googleMaps.showDashboardSetLocation(markers, location);		
+
+			googleMaps.showDashboardSetLocation(markers, location);
+
+		},
+
+		populateLogisticsMarkers: function(googleMaps, graph) {	
+			var markers = [];
+			googleMaps.initMapDirectionService();
+
+			_.each(graph.get('data'), function (transportsched) {
+				_.each(transportsched.transportschedule, function(schedule){
+					_.each(schedule.transportmap, function(transport){
+						markers.push({latitudeFrom:transport.latitudeFrom, longitudeFrom:transport.longitudeFrom, latitudeTo:transport.latitudeTo, longitudeTo:transport.longitudeTo, distance: transport.distance, isLoadedDistance: transport.isLoadedDistance });
+					});
+				});
+				
+			});
+
+			googleMaps.showGetDestinationRoute(markers);					
 		},
 	});
 

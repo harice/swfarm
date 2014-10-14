@@ -2,7 +2,9 @@
    var progress = 0;  
   _.each(pos, function(po){ 
     if(!_.isEmpty(po.get('totalPayment'))) {
-      progress = po.get('paidAmount') / po.get('totalPayment') * 100;    
+      var x = parseFloat(po.get('totalPayment'));
+      var y = parseFloat(numberFormat(po.get('paidAmount')).replace(/,/g,''));;
+      progress = y / x * 100;
     }
     else {
       progress = 0;
@@ -21,13 +23,13 @@
       <td>$ <%= numberFormat(po.get('balanceAmount')) %></td>
       <td>
         <div class="progress">
-          <div style="width: <%= progress %>%" class="progress-bar progress-bar-<%= po.get('status').class %>"><%= progress %>%</div>
+          <div style="width: <%= parseInt(progress) %>%" class="progress-bar progress-bar-<%= po.get('status').class %>"><%= parseInt(progress) %> %</div>
         </div>
       </td>
     </tr>
     <tr>=
       <td colspan="9" style="padding:0;">
-        <div class="order-collapsible-item list-view-collapse collapse" id="<%= collapsible_id %><%= po.get("id") %>">
+        <div class="payment-collapsible-item list-view-collapse collapse" id="<%= collapsible_id %><%= po.get("id") %>">
           <div class="container">
             <div class="order-stack-details">
               <div class="col-md-12 no-padding">

@@ -36,10 +36,6 @@ define([
 			this.h1Small = 'add';
 			this.orderId = option.orderId;
 
-			this.options ={
-				removeComma: ['amount']
-			}
-
 			this.model = new PaymentModel();
 
 			this.collection = new PaymentCollection();
@@ -51,7 +47,7 @@ define([
 		},
 		
 		render: function(){	
-			this.collection.getPaymentByPurchaseOrder();
+			this.collection.getModels();
 			Backbone.View.prototype.refreshTitle('Payments','add');
 		},	
 
@@ -117,6 +113,9 @@ define([
 			var validate = $('#addPaymentForm').validate({
 				submitHandler: function(form) {						
 					var data = $(form).serializeObject();
+
+					data['amount'] = thisObj.removeCommaFromNumber(data['amount']);
+
 					var paymentModel = new PaymentModel(data);					
 					paymentModel.save(
 						null, 
@@ -146,6 +145,8 @@ define([
 		cancelPayment: function () {
 			var thisObj = this;			
 			var data = $("#addPaymentForm").serializeObject();
+
+			data['amount'] = thisObj.removeCommaFromNumber(data['amount']);
 					
 			var paymentModel = new PaymentModel(data);
 				

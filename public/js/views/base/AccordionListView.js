@@ -5,16 +5,17 @@ define([
 ], function(Backbone, ListView, Const){
 
 	var AccordionListView = ListView.extend({
-		collapseSelected: function () {
+		collapseSelected: function () {			
 			var id = this.collection.getCollapseId();
-			if(id)
+			if(id){
 				this.$el.find('.collapse-trigger[data-id="'+id+'"]').trigger('click');
+			}
 		},
 		
 		toggleAccordionAndRequestACollection: function (triggerElement, collapsibleIdPre, AccordionCollection, successCallBack, errorCallBack) {
 			var thisObj = this;
 			var id = $(triggerElement).attr('data-id');
-			var collapsibleId = collapsibleIdPre+id;
+			var collapsibleId = collapsibleIdPre+id;			
 			
 			if(!$('#'+collapsibleId).hasClass('in')) {
 				var thisId = id;
@@ -24,7 +25,7 @@ define([
 				var accordionCollection = new AccordionCollection(id);
 				accordionCollection.on('sync', function() {
 					thisObj.collection.setCollapseId(id);
-					$(triggerElement).find('.throbber_wrap').hide();
+					$(triggerElement).find('.throbber_wrap').hide();					
 					// console.log(thisId+' == '+thisObj.collection.getCollapseLatestId());
 					if(thisId == thisObj.collection.getCollapseLatestId() && thisObj.subContainerExist()) {
 						if(thisObj.isFunction(successCallBack))

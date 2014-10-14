@@ -220,6 +220,29 @@ define([
 			
 			this.showModal(this.modalIdGetDD);
 		},
+
+		showGetDestinationRoute: function (distanceMarkers) {
+			var thisObj = this;
+
+			thisObj.loadedDistances = [];
+				
+			if(distanceMarkers.length > 0) {
+				thisObj.clearMap();
+				
+				for(var i = 0; i < distanceMarkers.length; i++) {
+					var locationFrom = new google.maps.LatLng(distanceMarkers[i].latitudeFrom, distanceMarkers[i].longitudeFrom);
+					thisObj.addMarker(locationFrom, thisObj.googleMapsDestinationMarkerLimit);
+					thisObj.loadedDistances.push(distanceMarkers[i].isLoadedDistance);
+					
+					if(i == distanceMarkers.length - 1) {
+						var locationTo = new google.maps.LatLng(distanceMarkers[i].latitudeTo, distanceMarkers[i].longitudeTo);
+						thisObj.addMarker(locationTo, thisObj.googleMapsDestinationMarkerLimit);
+					}
+				}
+				
+				thisObj.calcRoute();
+			}
+		},
 		
 		showModalGetLocation: function (marker) {
 			var thisObj = this;	
@@ -269,7 +292,7 @@ define([
 		
 			this.showModal(this.modalIdSetLocation);
 		},
-
+		
 		showDashboardSetLocation: function (markers, centerPoint) {
 			var thisObj = this;
 			var radius = 402.3361244731408 * 1000;

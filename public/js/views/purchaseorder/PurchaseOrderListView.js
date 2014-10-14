@@ -117,8 +117,8 @@ define([
 			this.setListOptions();
 		},
 		
-		displayList: function () {
-			
+		displayList: function () {	
+			console.log(this.collection.listView);		
 			var data = {
 				po_url: '#/'+Const.URL.PO,
 				po_edit_url: '#/'+Const.URL.PO+'/'+Const.CRUD.EDIT,
@@ -138,6 +138,7 @@ define([
 			
 			var innerListTemplate = _.template(purchaseOrderInnerListTemplate, data);
 			this.subContainer.find("#po-list tbody").html(innerListTemplate);
+
 			this.collapseSelected();
 			this.generatePagination();
 		},
@@ -338,7 +339,7 @@ define([
 		
 		toggleAccordion: function (ev) {
 			var thisObj = this;
-			
+
 			this.toggleAccordionAndRequestACollection(ev.currentTarget,
 				Const.PO.COLLAPSIBLE.ID,
 				OrderWeightDetailsByStackCollection,

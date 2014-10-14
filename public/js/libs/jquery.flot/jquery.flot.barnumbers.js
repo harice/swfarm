@@ -63,19 +63,19 @@
                     'y': shiftY(points[i+1])
                 };
 
-                if(series.stack != null){                  
+                if(series.stack != null){  
                     point[axes[hs]] = (points[barNumber] - series.data[i/3][hs] / 2);
                     text = series.data[i/3][hs];
 
                 } else {                                    
-                    if(series.bars.numbers.showDataValue) {                       
+                    if(series.bars.numbers.showDataValue) {    
 						var counter = (i > 0)? i - ps : i;                    
 						text = series.data[i/3][hs];                       
 					}
 					else
 						text = points[barNumber];
                 }
-                var c = plot.p2c(point);
+                var c = plot.p2c(point);        
 				
 				if(typeof series.yPositionAdjustLabel !== 'undefined')
 					c.top = c.top + series.yPositionAdjustLabel;
