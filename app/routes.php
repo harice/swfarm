@@ -21,12 +21,14 @@ Route::group(array('prefix' => 'apiv1'), function()
 
 });
 
+Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
+{
+    Route::resource('sync','APIv1\SyncController', array('only' => array('show')));
+});
+
 /* API ROUTES */
 Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokenizer'), function()
 {
-    // Sync
-    Route::resource('sync','APIv1\SyncController', array('only' => array('show')));
-
     //Queue
     Route::resource('queue','APIv1\ProcessorController', array('only' => array('store')));
 

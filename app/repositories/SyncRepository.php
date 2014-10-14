@@ -8,21 +8,27 @@ class SyncRepository implements SyncInterface {
 				$return = AddressStates::all();
 				break;
 
-			case 'account_types':
+			case 'accounttypes':
 				$return = Accounttype::all();
 				break;
 
 			case 'accounts':
-				$return = Account::with('accounttypes')->with('address')->get()->each(function($accounts){
-					global $accounttypes_a;
-					$accounttypes_a = array();
-					$accounts->accounttypes->each(function($accounttypes) use($accounttypes_a){
-						global $accounttypes_a;
-						$accounttypes_a[] = intval($accounttypes->id);
+				$return = Account::with('accounttypes')->get()->each(function($account_o){
+					// global $accounttypes_a;
+					// $accounttypes_a = array();
+					$account_o->accounttypes->each(function($accounttypes_o) {
+						// global $accounttypes_a;
+						// $accounttypes_a[] = $accounttypes_o->id;
+						$accounttypes_o->account_id = $accounttypes_o->pivot->account_id;
+						unset($accounttypes_o->pivot);
 					});
-					unset($accounts->accounttypes);
-					$accounts->accounttypes = $accounttypes_a;
+					// unset($account_o->accounttypes);
+					// $account_o->accounttypes = $accounttypes_a;
 				})->toArray();
+				break;
+
+			case 'address':
+				$return = Address::all();
 				break;
 		}
 
