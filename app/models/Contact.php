@@ -27,6 +27,6 @@ class Contact extends Eloquent {
 
     public function order()
     {
-        return $this->hasMany('Transportschedule','trucker_id','id')->join('order','order.id','=','transportschedule.order_id')->groupBy('transportschedule.order_id');
+        return $this->hasMany('TransportSchedule','trucker_id','id')->join('order','order.id','=','transportschedule.order_id')->groupBy('transportschedule.order_id');
     }
 }
