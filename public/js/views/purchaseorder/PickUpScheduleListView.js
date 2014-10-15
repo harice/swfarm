@@ -137,7 +137,7 @@ define([
 		},
 		
 		isEditable: function () {
-			if(this.model.get('status').id != Const.STATUSID.PENDING)
+			if(this.model.get('status').id != Const.STATUSID.PENDING && this.model.get('status').id != Const.STATUSID.CLOSED)				
 				return true;
 			else
 				return false;

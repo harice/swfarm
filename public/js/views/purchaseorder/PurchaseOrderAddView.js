@@ -262,9 +262,7 @@ define([
 						
 			this.postDisplayForm();
 
-			if(!this.isBid){
-				this.otherInitializations();				
-			}			
+			this.otherInitializations();				
 
 			this.toggleSOFields(thisObj.subContainer.find('input[name=location_id]:checked').val());
 		},

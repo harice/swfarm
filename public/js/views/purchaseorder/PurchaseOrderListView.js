@@ -118,7 +118,6 @@ define([
 		},
 		
 		displayList: function () {	
-			console.log(this.collection.listView);		
 			var data = {
 				po_url: '#/'+Const.URL.PO,
 				po_edit_url: '#/'+Const.URL.PO+'/'+Const.CRUD.EDIT,

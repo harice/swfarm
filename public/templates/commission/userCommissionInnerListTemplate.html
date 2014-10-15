@@ -3,6 +3,7 @@
 		<% var commission = weight_ticket.get("commission"); %>
 		<tr>
 			<td><%= weight_ticket.get("weightTicketNumber") %></td>
+			<td><%= weight_ticket.get("schedule").orderdetails.order_number %></td>
 			<td>
 				<% if (commission) { %>
 					<%= _.findWhere(commission_types, {id:weight_ticket.get("commission").type}).name  %>
