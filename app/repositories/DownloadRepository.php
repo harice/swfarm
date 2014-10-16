@@ -1321,7 +1321,7 @@ class DownloadRepository implements DownloadInterface
                             ->select(array('productordersummary.id','products.name as product','unitprice'))
                             ->get()
                             ->each(function($productordersummary){
-                            	$productordersummary->productorder->each(function($productorder){
+                            	$productordersummary->productorder->each(function($productorder){ 
                             		$productorder->transportscheduleproduct->each(function($transportscheduleproduct) use($productorder) {
                             			$weightticketproduct_o = WeightTicketProducts::join('transportscheduleproduct','transportscheduleproduct.id','=','weightticketproducts.transportscheduleproduct_id')
                             										->where('weightticketproducts.transportscheduleproduct_id','=',$transportscheduleproduct->id)

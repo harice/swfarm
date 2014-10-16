@@ -33,25 +33,23 @@
                 </h6>                  
             </div>
         </div>      
-        <div class="row margin-top-10">
+        <div class="row margin-top-20 margin-bottom-10">
             <div class="col-md-4">
-                <h3 class="margin-bottom-5 margin-top-0">
-                    <samp>User Name:</samp>
+                <h3 class="margin-bottom-5 margin-top-0">            
                     <strong>
                         <samp><%= users.get('user').firstname %> <%= users.get('user').lastname %></samp>
                     </strong>
                 </h3>
-                <p><i>Employee No:</i>  <code><%= users.get('user').emp_no %></code><br />
-                <i>Email: <%= users.get('user').email %></i></p>
+                <p><i><samp>Employee No:</samp></i>  <code><%= users.get('user').emp_no %></code><br />
+                <i><samp>Email: <%= users.get('user').email %></samp></i></p>
             </div>
             <div class="col-md-2 col-md-offset-4 text-right">
-                <p>Statement Date: <br />
-                    <label class="label label-default">Total Amount Due: </label>
-                </p>
+               <h3 class="margin-top-0"><samp>Statement Date:</samp></h3>
+               <h3 class="margin-top-10"><label class="label label-default"><samp>Total Amount Due:</samp></label></h3>
             </div>
-            <div class="col-md-2">
-                <p><%= formatDateBy(cur_date, 'F d, Y') %><br />
-                <strong><label class="label label-success">$ <%= users.get('amount') %></label></strong></p>
+            <div class="col-md-2 text-right">
+                <h3 class="margin-top-0"><strong><samp><%= formatDateBy(cur_date, 'F d, Y') %></samp></strong></h3>
+                <h3 class="margin-top-10"><label class="label label-success"><samp>$ <%= users.get('amount') %></samp></label></h3>
             </div>
         </div>
         <div class="progress width-1000 margin-bottom-0 height-3">

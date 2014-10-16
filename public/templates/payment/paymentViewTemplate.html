@@ -28,7 +28,9 @@
                             <dd><%= payment.get("notes") %></dd>
                             <dd>
                                 <div class="clearfix"></div>
-                                <a href="<%= payment_edit_url %>/<%= payment.get('id') %>" class="btn btn-primary btn-sm btn-trans btn-rad"><i class="fa fa-pencil width-10"></i> Edit</a>
+                                <% if(!payment.get('isCancel')) { %>
+                                    <a href="<%= payment_edit_url %>/<%= payment.get('id') %>" class="btn btn-primary btn-sm btn-trans btn-rad"><i class="fa fa-pencil width-10"></i> Edit</a>
+                                <% } %>                                
                                 <a id="go-to-previous-page" href="#" class="btn btn-warning btn-sm btn-trans btn-rad"><i class="fa fa-ban width-10"></i> Cancel</a>
                             </dd>
                         </dl>

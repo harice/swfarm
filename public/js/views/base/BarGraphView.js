@@ -169,7 +169,7 @@ define([
                     tickDecimals: 0,
                 }, 
                 yaxis: {
-                    ticks: 5,
+                    
                 }, 
                 grid: {
                     labelMargin: 10,
@@ -355,10 +355,10 @@ define([
 					});
 
 					for(var x = 0; x < keys.length; x++) {
-						graphXData.push([x, keys[x]]);
+						graphXData.push([x+.4, keys[x]]);
 
-						d[0].data.push([x, data[keys[x]].incoming]);										
-						d[1].data.push([x + .4, data[keys[x]].outgoing]);
+						d[0].data.push([x, (data[keys[x]].incoming).replace(/,/g,'')]);										
+						d[1].data.push([x + .4, (data[keys[x]].outgoing).replace(/,/g,'')]);
 					}
 				
 					graphData.push({ data:d, yPositionAdjustLabel: -10 });

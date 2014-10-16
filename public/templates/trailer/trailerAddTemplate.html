@@ -9,7 +9,13 @@
                                 <input type="hidden" name="id" value="<%= trailer_id %>" />
                             <% } %>
                             <fieldset>
-                                <legend><h3>Details</h3></legend>
+                                <legend><h3>Details</h3></legend>                                
+                                <div class="form-group">
+                                    <label for="number" class="col-sm-3 control-label">Trailer No. <i class="color-danger">*</i></label>
+                                    <div class="col-sm-5">
+                                        <input type="text" class="form-control input-sm capitalize" id="number" name="number" minlength="1" maxlength="20" required>
+                                    </div>
+                                </div>
                                 <div class="form-group">
                                     <label for="account_id" class="col-sm-3 control-label">Trailer Account <i class="color-danger">*</i></label>
                                     <div class="col-sm-5">
@@ -18,12 +24,6 @@
                                                 <option value="">Select a trailer account</option>
                                             </select>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="number" class="col-sm-3 control-label">Trailer No. <i class="color-danger">*</i></label>
-                                    <div class="col-sm-5">
-                                        <input type="text" class="form-control input-sm capitalize" id="number" name="number" minlength="1" maxlength="20" required>
                                     </div>
                                 </div>
                             </fieldset>

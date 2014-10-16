@@ -33,7 +33,7 @@
                 </h6> 
             </div>
         </div>
-        <div class="row margin-top-0">
+        <div class="row margin-top-20 margin-bottom-10">
             <div class="col-md-4">
                 <h3 class="margin-bottom-5 margin-top-0">
                     <samp>
@@ -43,27 +43,23 @@
                     </samp>
                 </h3> 
                 <p>
-                    <i><%= producers.get('businessaddress').street %></i><br /> 
-                    <i><%= producers.get('businessaddress').city %>, <%= producers.get('businessaddress').state.state %>, <%= producers.get('businessaddress').zipcode %></i>
+                    <i><samp><%= producers.get('businessaddress').street %></samp></i><br /> 
+                    <i><samp><%= producers.get('businessaddress').city %>, <%= producers.get('businessaddress').state.state %>, <%= producers.get('businessaddress').zipcode %></samp></i>
                 </p>
             </div> 
             <div class="col-md-2 col-md-offset-4 text-right">
-                <p>
-                    Statement Date: <br />
-                    Total Load Count:<br />
-                    Total Amount: <br />                  
-                    Less (Scale Fees): <br />
-                    <label class="label label-default">Total Amount Due: </label>
-                </p>
+                <h3 class="margin-top-0 margin-bottom-5"><samp>Statement Date:</samp></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><samp>Total Load Count:</samp></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><samp>Total Amount:</samp></h3>                 
+                <h3 class="margin-top-5"><samp>Less (Scale Fees):</samp></h3>
+                <h3 class="margin-top-5"><strong><label class="label label-success"><samp>Total Amount Due:</samp></label></strong></h3>
             </div>
-            <div class="col-md-2">
-                <p>
-                    <%= formatDateBy(cur_date, 'F d, Y') %><br />
-                    <%= producers.get('total_load') %><br />
-                    $ <%= numberFormat(producers.get('amount')) %><br />
-                    <span class="text-danger">- $ <%= numberFormat(producers.get('scale_fees')) %></span><br />
-                    <strong><label class="label label-success">$ <%= numberFormatTons(producers.get('amount') - producers.get('scale_fees'))  %></label></strong>
-                </p>
+            <div class="col-md-2 text-right">
+                <h3 class="margin-top-0 margin-bottom-5"><samp><%= formatDateBy(cur_date, 'F d, Y') %></samp></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><samp><%= producers.get('total_load') %></samp></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><samp>$ <%= numberFormat(producers.get('amount')) %></samp></h3>
+                <h3 class="margin-top-5"><span class="text-danger"><samp>- $ <%= numberFormat(producers.get('scale_fees')) %></samp></span></h3>
+                <h3 class="margin-top-5"><strong><label class="label label-success"><samp>$ <%= numberFormatTons(producers.get('amount') - producers.get('scale_fees'))  %></samp></label></strong></h3>
             </div>                 
         </div>
         <% if (!_.isEmpty(producers.get('storagelocation'))) { %>          
@@ -77,7 +73,7 @@
                         var total_tons = 0;   
                         if(!_.isEmpty(section.productorder)){           
                             %>
-                            <h3><strong><samp><%= location.name %> - <%= section.name %></samp></strong></h3>
+                            <h3 class="margin-top-20"><strong><samp><%= location.name %> - <%= section.name %></samp></strong></h3>
                             <div class="progress width-1000 margin-bottom-0 height-3">
                                 <div style="width: %" class="progress-bar progress-bar-primary"></div>
                             </div>
