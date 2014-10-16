@@ -55,7 +55,8 @@ define([
 		            numbers: {
 		            	show:true,
 		            	xAlign: function(x,a) { return x; },
-						yAlign: function(y,a) { return y; }
+						yAlign: function(y,a) { return y; },
+						label: label
 		            },
 		            yPositionAdjustLabel: data.yPositionAdjustLabel
 		          },
@@ -111,6 +112,7 @@ define([
 		                    xAlign: function(x) { return x; },
 							yAlign: function(y) { return y+2; },
 							showDataValue: true,
+							label: label
 		                },
 		            }
 		        },
@@ -199,7 +201,8 @@ define([
 		            		show:true,
 		            		xAlign: function(x,a) { return x + .15; },
 							yAlign: function(y,a) { return y; },
-							showDataValue: true
+							showDataValue: true,
+							label: label
 		            	}
                     },
                     yPositionAdjustLabel: data[0].yPositionAdjustLabel
@@ -323,7 +326,7 @@ define([
 					var d = [];
 					for(var i = 0; i < data.length; i++) {	
 						
-						if(id == 7) {
+						if(id == Const.GRAPH.ID.YEARTODATESALES) {
 							graphXData.push([i, data[i].account]); 
 							d.push([i, data[i].totalSales]); 
 						}
@@ -387,7 +390,7 @@ define([
 			var currency = '';
 			var tickDecimals = 0;
 
-			if(graphId == 2 || graphId == 4) {
+			if(graphId == Const.GRAPH.ID.PURCHASEINDOLLARS || graphId == Const.GRAPH.ID.SALESINDOLLARS || graphId == Const.GRAPH.ID.YEARTODATESALES) {
 				currency = '$';
 				tickDecimals = 2;
 			}
@@ -423,7 +426,7 @@ define([
 
 			this.googleMaps = new GoogleMapsView();			
 
-			if(graphId == 10)
+			if(graphId == Const.GRAPH.ID.DASHBOARDLOGISTICS)
 				mapId = this.googleMaps.mapCanvasIdGetDD;
 
 			var innerTemplateVariables = {
@@ -442,7 +445,7 @@ define([
 
 			this.googleMaps.initGetDashboardMapLocation(mapId, location);
 						
-			if(graphId == 10)
+			if(graphId == Const.GRAPH.ID.DASHBOARDLOGISTICS)
 				this.populateLogisticsMarkers(this.googleMaps, graph);
 			else 
 				this.populateMarkers(this.googleMaps, graph, location);	

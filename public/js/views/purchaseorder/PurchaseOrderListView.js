@@ -126,6 +126,7 @@ define([
 				pos: this.collection.models,
 				schedule_url: '#/'+Const.URL.PICKUPSCHEDULE,
 				add: Const.CRUD.ADD,
+				swfarm_location: Const.PO.DESTINATION.SWFARMS,
 				collapsible_id: Const.PO.COLLAPSIBLE.ID,
 				po_status_pending: Const.STATUSID.PENDING,
 				po_status_open: Const.STATUSID.OPEN,

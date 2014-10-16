@@ -81,7 +81,7 @@
 					c.top = c.top + series.yPositionAdjustLabel;
 					
 			   
-				ctx.fillText(text.toString(10), c.left + offset.left, c.top + offset.top)
+				ctx.fillText(series.bars.numbers.label + text.toString(10), c.left + offset.left, c.top + offset.top)
             }
         }
     }

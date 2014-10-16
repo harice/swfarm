@@ -84,9 +84,11 @@
             <a id="edit-po" class="btn btn-primary btn-trans btn-rad btn-sm editable-button" href="<%= po_edit_url %>">
               <i class="fa fa-pencil width-10"></i> Edit PO
             </a>
+            <% if(typeof swfarm_located != "undefined") { %>
             <a id="close-order" class="btn btn-warning btn-trans btn-rad btn-sm editable-button" href="#">
               <i class="fa fa-times width-10"></i> Close PO
             </a>
+            <% } %>
             <a href="#" class="btn btn-warning btn-trans btn-rad btn-sm cancel-po editable-button">
               <i class="fa fa-ban width-10"></i> Cancel PO
             </a>
