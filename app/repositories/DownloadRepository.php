@@ -1896,4 +1896,10 @@ class DownloadRepository implements DownloadInterface
 		}
 		return $this->parse($result);
 	}
+
+
+	public function getStackListByProduct($productId){
+        $stackList = Stack::where('product_id', '=', $productId)->orderBy('stacknumber', 'ASC')->get(array('id', 'stacknumber', 'product_id'))->toArray();
+        return $stackList;
+    }
 }
