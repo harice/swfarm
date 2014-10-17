@@ -73,7 +73,7 @@
 	    	// Divide your 0-255 values by 255 to get a decimal approximation.
 	    	$c_green = array( 25 / 255, 182 / 255, 152 / 255);
 	    	$c_black = array( 0, 0, 0 );
-	    	$font = Font_Metrics::get_font("courier", "normal");
+	    	$font = Font_Metrics::get_font("helvetica", "normal");
 	    	$font_size = 7;
 
 	    	$w = $pdf->get_width();
@@ -85,14 +85,14 @@
 
 			$t_phone = html_entity_decode("Phone : (800) 936-4339 / (623) 936-4339 &nbsp; Fax : (623) 936-7360");
 			$width = Font_Metrics::get_text_width($t_phone, $font, '10px');
-			$pdf->page_text($w - $width + 97, 35, $t_phone, $font, $font_size, $c_black);
+			$pdf->page_text($w - $width + 71, 35, $t_phone, $font, $font_size, $c_black);
 
-			$n_font = Font_Metrics::get_font("courier", "italic");
+			$n_font = Font_Metrics::get_font("helvetica", "italic");
 			$pdf->page_text(15, $h - 35, "*This document is system generated.", $n_font, $font_size, $c_black);
 			$pdf->page_text(15, $h - 15, "Page {PAGE_NUM} of {PAGE_COUNT}", $font, $font_size, $c_black);
 			$text = html_entity_decode('&copy; '.Date('Y') . ' Southwest Farm Services', ENT_QUOTES, 'UTF-8');
 			$width = Font_Metrics::get_text_width($text, $font, '10px');
-			$pdf->page_text($w - $width + 39, $h - 15, $text, $font, $font_size, $c_black);
+			$pdf->page_text($w - $width + 30, $h - 15, $text, $font, $font_size, $c_black);
 
 			$pdf->page_script('
 				$c_green = array( 25 / 255, 182 / 255, 152 / 255);

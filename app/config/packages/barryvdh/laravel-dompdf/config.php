@@ -13,7 +13,7 @@ return array(
         "DOMPDF_PDF_BACKEND" => "CPDF",
         "DOMPDF_DEFAULT_MEDIA_TYPE" => "screen",
         "DOMPDF_DEFAULT_PAPER_SIZE" => "a4",
-        "DOMPDF_DEFAULT_FONT" => "courier",
+        "DOMPDF_DEFAULT_FONT" => "helvetica",
         "DOMPDF_DPI" => 96,
         "DOMPDF_ENABLE_PHP" => true,
         "DOMPDF_ENABLE_JAVASCRIPT" => true,
