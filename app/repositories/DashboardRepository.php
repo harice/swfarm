@@ -284,6 +284,14 @@ class DashboardRepository implements DashboardRepositoryInterface {
             $data[$index]['totalTonsOrdered'] = number_format($data[$index]['totalTonsOrdered'], 2);
             $index++;
         }
+        //sort array based on tonsDelivered Value, desc
+        usort($data, function($a, $b) {
+             if( $a['totalTonsDelivered'] == $b['totalTonsDelivered'] )
+                return 0;
+            return ( $a['totalTonsDelivered'] < $b['totalTonsDelivered'] ) ? 1 : -1;
+        });
+
+        $data = array_slice($data, 0, 10); //limit only to 10 result
         
         return $data;
     }
@@ -414,6 +422,16 @@ class DashboardRepository implements DashboardRepositoryInterface {
             }
             $cnt++;
         }
+
+        //sort array based on totalSales Value, desc
+        usort($result, function($a, $b) {
+            if( $a['totalSales'] == $b['totalSales'] )
+                return 0;
+            return ( $a['totalSales'] < $b['totalSales'] ) ? 1 : -1;
+        });
+
+        $result = array_slice($result, 0, 10); //limit only to 10 result
+
         return $result;
 
     }
