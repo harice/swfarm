@@ -62,7 +62,7 @@ class AccountRepository implements AccountRepositoryInterface {
     $this->validateExtras();
 
     $rules = array(
-      'name' => 'required|unique:account',
+      'name' => 'required|unique:account,deleted_at,NULL',
       'phone' => 'required|between:14,14',
       'accounttype' => 'required|contains:1',
       'address' => 'required|array|contains:1'
@@ -127,7 +127,7 @@ class AccountRepository implements AccountRepositoryInterface {
     $this->validateExtras();
 
     $rules = array(
-      'name' => 'required|unique:account,name,'.$id,
+      'name' => 'required|unique:account,name,'.$id.',id,deleted_at,NULL',
       'phone' => 'required|between:14,14',
       'accounttype' => 'required|contains:1',
       'address' => 'required|array|contains:1'
@@ -431,7 +431,7 @@ class AccountRepository implements AccountRepositoryInterface {
 
 
   /***************IPAD API*****************/
-
+  
   public function accountSync($params){
     DB::beginTransaction();
       $result = array();
@@ -462,14 +462,11 @@ class AccountRepository implements AccountRepositoryInterface {
                   array_push($result, $response); //return new record in ipad  
               } else { //do nothing
                   array_push($result, array('accountid' => $data['accountid'], 'tpid' => $data['tpid']));
-
               }
           }
       }
       DB::commit();
       return $result;
-      
-
   }
 
   public function isAccountExist($name){
