@@ -1084,6 +1084,12 @@ class DownloadRepository implements DownloadInterface
 				$report_o = $this->generateTruckingStatement($q);
 				if(!$report_o) { $_notfound = true; break; }
 				break;
+			case Config::get('constants.REPORT_INVENTORY_MULTIPLE_STACK'):
+				if(!$this->filterParams($q,array('stackIds'))) { $_error = true; break; }
+
+				$report_o = $this->generateInventoryReportMultipleStack($q);
+				if(!$report_o) { $_notfound = true; break; }
+				break;
 		}
 
 		if($_error) return App::abort(501,'Not implemented');
@@ -1881,4 +1887,19 @@ class DownloadRepository implements DownloadInterface
 
 		return true;
 	}
+
+	public function generateInventoryReportMultipleStack($_params){
+		$result = array('report_date' => $this->generateBetweenDates($_params));
+		foreach($_params['stackIds'] as $stack){
+			$data = array('filterId' => $stack, 'dateStart' => $_params['dateStart'], 'dateEnd' => $_params['dateEnd']);
+			array_push($result, $this->generateInventoryReport($data));
+		}
+		return $this->parse($result);
+	}
+
+
+	public function getStackListByProduct($productId){
+        $stackList = Stack::where('product_id', '=', $productId)->orderBy('stacknumber', 'ASC')->get(array('id', 'stacknumber', 'product_id'))->toArray();
+        return $stackList;
+    }
 }

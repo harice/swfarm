@@ -55,8 +55,6 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokeniz
     Route::resource('product', 'APIv1\ProductController');
 
     // Route::get('account/{id}/contracts', 'APIv1\AccountController@getContracts');
-    Route::post('account/sync', 'APIv1\AccountController@accountSync');
-    Route::get('account/sync', 'APIv1\AccountController@getAllAccounts');
     Route::get('account/getContracts/{id}', 'APIv1\AccountController@getContracts');
 	Route::get('account/getProducerAndWarehouseAccount', 'APIv1\AccountController@getProducerAndWarehouseAccount');
     Route::get('account/trailer', 'APIv1\AccountController@getTrailerAccount');
@@ -225,6 +223,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokeniz
     Route::get('report/producer-statement/{id}', 'APIv1\ReportController@generateProducerStatement');
     Route::get('report/inventoryPerLocation', 'APIv1\ReportController@inventoryReportPerLocation');
 
+    Route::resource('reports/getStackListByProduct', 'APIv1\ReportsController@getStackListByProduct');
     Route::resource('reports', 'APIv1\ReportsController',array('only' => array('show')));
 
     //Dashboard
@@ -239,6 +238,11 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokeniz
     Route::get('payment/paymentListOfOrder', 'APIv1\PaymentController@paymentListOfOrder');
     Route::put('payment/cancel/{id}', 'APIv1\PaymentController@cancel');
     Route::resource('payment', 'APIv1\PaymentController');
+
+
+    //iPad Syncing API
+    Route::post('sync/account', 'APIv1\SyncController@accountSync');
+    Route::get('sync/account', 'APIv1\SyncController@getAllAccounts');
 });
 
 Route::group(array('before' => 'auth.session'),function(){
