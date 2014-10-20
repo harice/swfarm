@@ -57,9 +57,43 @@ define([
 			
 			var innerListTemplate = _.template( roleInnerListTemplate, data );
 			this.subContainer.find("#role-list tbody").html(innerListTemplate);
+
+			this.initConfirmationWindow('Are you sure you want to delete this role?',
+										'confirm-delete-role',
+										'Delete');
 			
 			this.generatePagination();
 		},
+
+		preShowConfirmationWindow: function (ev) {
+			this.showConfirmationWindow();
+
+			this.$el.find('#confirm-delete-role').attr('data-id', $(ev.currentTarget).attr('data-id'));
+
+			return false;
+		},
+		
+		deleteRole: function (ev){
+			var thisObj = this;            
+            var roleModel = new RoleModel({id:$(ev.currentTarget).attr('data-id')});
+			
+            roleModel.destroy({
+                success: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                    thisObj.renderList(1);
+                },
+                error: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                },
+                wait: true,
+                headers: roleModel.getAuth(),
+            });
+		},
+
+		events: {
+            'click .delete-role': 'preShowConfirmationWindow',
+			'click #confirm-delete-role': 'deleteRole',
+		},	
 	});
 
   return RoleListView;

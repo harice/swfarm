@@ -220,8 +220,6 @@ define([
 		},
 
 		showMap: function (ev) {
-
-			console.log("test");
 			var thisObj = this;
 			var latitude = '';
 			var longitude = '';

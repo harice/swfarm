@@ -30,23 +30,23 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),
 
 		graphData: function (id, data, xData, label, decimals){
+			var thisObj = this;
 			var barColor = "#3E7BC4";
-
+			
 			if(label != '')		
 				barColor = "#990000";
 
 			var graph = $.plot($("#"+id), data, {
-		        series: {
+		        series: {		          
 		          bars: {
 		            show: true,
 		            barWidth: 0.6,
 		            align: "center",
-		            lineWidth: 0,
 		            fill: true,
 		            hoverable: true,
 		            fillColor: {
 		              colors: [{
-		                opacity: 0.7
+		                opacity: 0.8
 		              }, {
 		                opacity: 1
 		              }
@@ -61,7 +61,7 @@ define([
 		            yPositionAdjustLabel: data.yPositionAdjustLabel
 		          },
 		          shadowSize: 2
-		        },
+		        },		      
 		        legend:{
 		          show: false
 		        },
@@ -76,14 +76,12 @@ define([
 		        },
 		        colors: [barColor, "#FFFFFF", "#52e136"],
 		        xaxis: {
-		          ticks: xData,
-		          tickDecimals: 0,
-		          tickLength: 0
+		          ticks: xData		          
 		        },
 		        yaxis: {
 		          ticks: 5,
 		          tickFormatter: function (v,axis) {
-		          	return label + v.toFixed(decimals);
+		          	return label + thisObj.addCommaToNumber(v);
 		          }
 		        }
 		    });
@@ -91,7 +89,7 @@ define([
 		    this.plotHover(id, label, decimals);
 		},
 
-		graphStackedData: function(id, data, xData, label, decimals) {	
+		graphStackedData: function(id, data, xData, label, decimals) {
 			var options = {
 		        series: {
 		            stackpercent : true,    // enable stackpercent
@@ -163,7 +161,8 @@ define([
 			
 		},
 
-		graphMultiSeriesGraph: function(id, data, xData, label, decimals) {	
+		graphMultiSeriesGraph: function(id, data, xData, label, decimals) {
+			var thisObj = this;	
 			var options = {
                 xaxis: {                 
                     ticks: xData,
@@ -171,7 +170,9 @@ define([
                     tickDecimals: 0,
                 }, 
                 yaxis: {
-                    
+                    tickFormatter: function (v,axis) {
+			          	return label + thisObj.addCommaToNumber(v);
+			          }
                 }, 
                 grid: {
                     labelMargin: 10,
@@ -200,7 +201,7 @@ define([
                         numbers: {
 		            		show:true,
 		            		xAlign: function(x,a) { return x + .15; },
-							yAlign: function(y,a) { return y; },
+		            		yAlign: function(y,a) { return y; },
 							showDataValue: true,
 							label: label
 		            	}
@@ -336,7 +337,7 @@ define([
 						}						
 					}
 					
-					graphData.push({ data:d, yPositionAdjustLabel: -10 });
+					graphData.push({ data:d, yPositionAdjustLabel: -15 });
 					
 					break;
 
@@ -364,7 +365,7 @@ define([
 						d[1].data.push([x + .4, (data[keys[x]].outgoing).replace(/,/g,'')]);
 					}
 				
-					graphData.push({ data:d, yPositionAdjustLabel: -10 });
+					graphData.push({ data:d, yPositionAdjustLabel: -15 });
 
 					break;
 				default:
@@ -374,7 +375,7 @@ define([
 						graphXData.push([i, data[i].label]); 
 					}
 					
-					graphData.push({ data:d, yPositionAdjustLabel: -10 });
+					graphData.push({ data:d, yPositionAdjustLabel: -15 });
 
 					break;
 			}
@@ -397,7 +398,7 @@ define([
 
 			if(thisObj.subContainer.find("#"+ graphIdName).length == 0){
 				var innerTemplateVariables = {
-					'graph_heading': graph.get('graphName'),
+					'graph_heading': this.setGraphTitle(graphId),
 					'graph_id': graphIdName,
 					'gid': graphId,
 					'start_date_id': 'start-'+graphId,
@@ -430,7 +431,7 @@ define([
 				mapId = this.googleMaps.mapCanvasIdGetDD;
 
 			var innerTemplateVariables = {
-				'graph_heading': graph.get('graphName'),
+				'graph_heading': this.setGraphTitle(graphId),
 				'graph_id': graphIdName,
 				'gid': graphId,
 				'latitude': lat,
@@ -450,6 +451,48 @@ define([
 			else 
 				this.populateMarkers(this.googleMaps, graph, location);	
 
+		},
+
+		setGraphTitle: function(graphId){
+			var title;
+
+			switch(graphId){
+				case Const.GRAPH.ID.PURCHASEINTONS:
+					title = 'Purchases in Tons';
+					break;
+				case Const.GRAPH.ID.PURCHASEINDOLLARS:
+					title = 'Purchases in $';
+					break;
+				case Const.GRAPH.ID.SALESINTONS:
+					title = 'Sales in Tons';
+					break;
+				case Const.GRAPH.ID.SALESINDOLLARS:
+					title = 'Sales in $';
+					break;
+				case Const.GRAPH.ID.RESERVECUSTOMERS:
+					title = 'Reserve Customers';
+					break;
+				case Const.GRAPH.ID.INVENTORY:
+					title = 'Inventory on Hand';
+					break;
+				case Const.GRAPH.ID.YEARTODATESALES:
+					title = 'Year to Year Sales in $';
+					break;
+				case Const.GRAPH.ID.DASHBOARDPURCHASES:
+					title = 'Dashboard Purchases';
+					break;
+				case Const.GRAPH.ID.DASHBOARDSALES:
+					title = 'Dashboard Sales';
+					break;
+				case Const.GRAPH.ID.DASHBOARDLOGISTICS:
+					title = 'Dashboard Logistics';
+					break;
+				case Const.GRAPH.ID.LOGISTICSSUMMARY:
+					title = 'Logistics Summary';
+					break;
+			}
+
+			return title;
 		},
 
 		populateMarkers: function(googleMaps, graph, location) {

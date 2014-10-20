@@ -65,25 +65,68 @@
 
                 if(series.stack != null){  
                     point[axes[hs]] = (points[barNumber] - series.data[i/3][hs] / 2);
-                    text = series.data[i/3][hs];
+                    text = addCommaToNumber(series.data[i/3][hs]);
 
                 } else {                                    
                     if(series.bars.numbers.showDataValue) {    
 						var counter = (i > 0)? i - ps : i;                    
-						text = series.data[i/3][hs];                       
+						text = addCommaToNumber(series.data[i/3][hs]);                              
 					}
-					else
-						text = points[barNumber];
+					else{
+						text = addCommaToNumber(points[barNumber]);
+                    }
                 }
                 var c = plot.p2c(point);        
 				
 				if(typeof series.yPositionAdjustLabel !== 'undefined')
-					c.top = c.top + series.yPositionAdjustLabel;
-					
+					c.top = c.top + series.yPositionAdjustLabel;                  
 			   
 				ctx.fillText(series.bars.numbers.label + text.toString(10), c.left + offset.left, c.top + offset.top)
             }
         }
+    }
+
+    function addCommaToNumber(number, dLimit) {
+        if(typeof number !== 'string')
+            number = number.toString();
+
+        var negative = false;
+        if(number.charAt(0) == '-') {
+            negative = true;
+            number = number.substr(1, number.length - 1);
+        }
+
+        var formatted = '';
+        var splitNumber = number.split('.');
+
+        for(var i = 0; i < splitNumber.length; i++)
+            splitNumber[i] = splitNumber[i].replace(/[^0-9]/g,'');
+
+        if(splitNumber.length > 1) {
+            if(dLimit != null && splitNumber[1].length > dLimit)
+                splitNumber[1] = splitNumber[1].substr(0, dLimit);
+        }
+
+        var temp = '';
+        var ctr = 0;
+        for(var i = splitNumber[0].length - 1; i >= 0; i--) {
+            if(ctr == 3) {
+                ctr = 1;
+                temp = ','+temp;
+            }
+            else
+                ctr++;
+
+            temp = splitNumber[0].charAt(i) + temp;
+        }
+        splitNumber[0] = temp;
+
+        formatted = (splitNumber.length > 1)? splitNumber[0]+'.'+splitNumber[1]: splitNumber[0];
+
+        if(negative)
+            formatted = '-'+formatted
+
+        return formatted;
     }
     
     function init(plot) {

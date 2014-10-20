@@ -18,9 +18,9 @@
       </td>
       <td><a href="<%= account_url %>/<%= po.get("account").id %>" class="stop-propagation"><%= po.get('account').name %></a></td>
       <td class="td-status"><label class="label label-<%= po.get('status').class %>"><%= po.get('status').name %></label></td>
-      <td>$ <%= numberFormat(po.get('totalPayment')) %></td>
-      <td>$ <%= numberFormat(po.get('paidAmount')) %></td>
-      <td>$ <%= numberFormat(po.get('balanceAmount')) %></td>
+      <td align="right">$ <%= numberFormat(po.get('totalPayment')) %></td>
+      <td align="right">$ <%= numberFormat(po.get('paidAmount')) %></td>
+      <td align="right">$ <%= numberFormat(po.get('balanceAmount')) %></td>
       <td>
         <div class="progress">
           <div style="width: <%= parseInt(progress) %>%" class="progress-bar progress-bar-<%= po.get('status').class %>"><%= parseInt(progress) %> %</div>
