@@ -1889,10 +1889,11 @@ class DownloadRepository implements DownloadInterface
 	}
 
 	public function generateInventoryReportMultipleStack($_params){
-		$result = array('report_date' => $this->generateBetweenDates($_params));
+		$result = array('report_date' => $this->generateBetweenDates($_params), 'data' => array());
+		// $temp = array();
 		foreach($_params['stackIds'] as $stack){
 			$data = array('filterId' => $stack, 'dateStart' => $_params['dateStart'], 'dateEnd' => $_params['dateEnd']);
-			array_push($result, $this->generateInventoryReport($data));
+			array_push($result['data'], $this->generateInventoryReport($data));
 		}
 		return $this->parse($result);
 	}
