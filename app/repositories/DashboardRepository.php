@@ -80,8 +80,8 @@ class DashboardRepository implements DashboardRepositoryInterface {
     }
     
     public function purchaseInTons($params){
-        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d H:i:s');
-        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d H:i:s', strtotime("-1 day"));
+        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d H:i:s', strtotime("-1 day"));
+        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d H:i:s');
         
         $products = Product::with(array('productordertons'=> function($query) use ($dateFrom, $dateTo){
                                 $query->whereHas('order', function($query) use ($dateFrom, $dateTo){
@@ -115,8 +115,8 @@ class DashboardRepository implements DashboardRepositoryInterface {
     }
 
     public function purchaseInDollarValues($params){
-        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d H:i:s');
-        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d H:i:s', strtotime("-1 day"));
+        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d H:i:s', strtotime("-1 day"));
+        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" :  date('Y-m-d H:i:s');
 
          $products = Product::with(array('productordertons'=> function($query) use ($dateFrom, $dateTo){
                                 $query->whereHas('order', function($query) use ($dateFrom, $dateTo){
@@ -152,8 +152,8 @@ class DashboardRepository implements DashboardRepositoryInterface {
     }
 
     public function salesInTons($params){
-        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d H:i:s');
-        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d H:i:s', strtotime("-1 day"));
+        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d H:i:s', strtotime("-1 day"));
+        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d H:i:s');
 
         $products = Product::with(array('productordertons'=> function($query) use ($dateFrom, $dateTo){
                                 $query->whereHas('order', function($query) use ($dateFrom, $dateTo){
@@ -187,8 +187,8 @@ class DashboardRepository implements DashboardRepositoryInterface {
     }
 
     public function salesInDollarValues($params){
-        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d H:i:s');
-        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d H:i:s', strtotime("-1 day"));
+        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d H:i:s', strtotime("-1 day"));
+        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d H:i:s');
 
          $products = Product::with(array('productordertons'=> function($query) use ($dateFrom, $dateTo){
                                 $query->whereHas('order', function($query) use ($dateFrom, $dateTo){
@@ -224,8 +224,8 @@ class DashboardRepository implements DashboardRepositoryInterface {
     }
 
     public function reservedDeliveredVsBalanceOrderPerCustomerAccount($params){
-        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d H:i:s');
-        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d H:i:s', strtotime("-1 day"));
+        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d H:i:s', strtotime("-1 day"));
+        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d H:i:s');
 
         $result = Account::with(array(
                             'order.productorder' => function($query){
