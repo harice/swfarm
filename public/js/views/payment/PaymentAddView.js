@@ -99,12 +99,7 @@ define([
 			this.maskInputs();
 			
 			this.initValidateForm();
-			$('.form-button-container').show();
-
-			this.initConfirmationWindow('Are you sure you want to cancel this payment?',
-										'confirm-cancel-payment',
-										'Cancel Payment',
-                                        'Cancel Payment');
+			$('.form-button-container').show();			
 		},
 		
 		initValidateForm: function () {
@@ -136,45 +131,11 @@ define([
 				},
 				
 			});
-		},
-
-		showCancelPaymentWindow: function (ev) {
-			this.showConfirmationWindow();		
 		},		
-
-		cancelPayment: function () {
-			var thisObj = this;			
-			var data = $("#addPaymentForm").serializeObject();
-
-			data['amount'] = thisObj.removeCommaFromNumber(data['amount']);
-					
-			var paymentModel = new PaymentModel(data);
-				
-			paymentModel.setCancelURL();		
-			paymentModel.save(
-				null, 
-				{
-					success: function (model, response, options) {
-						thisObj.displayMessage(response);
-						thisObj.hideConfirmationWindow('modal-with-form-confirm');
-						Backbone.history.history.back();
-					},
-					error: function (model, response, options) {
-						if(typeof response.responseJSON.error == 'undefined')
-							validate.showErrors(response.responseJSON);
-						else
-							thisObj.displayMessage(response);
-					},
-					headers: paymentModel.getAuth(),
-				}
-			);
-		},
 		
 		events: {
 			'keyup #amount': 'formatMoney',
-			'blur #amount': 'onBlurMoney',
-			'click #cancel-payment': 'showCancelPaymentWindow',
-			'click #confirm-cancel-payment': 'cancelPayment'
+			'blur #amount': 'onBlurMoney',			
 		},		
 	});
 

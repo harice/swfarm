@@ -4,6 +4,7 @@ define([
 	'views/base/GoogleMapsView',
 	'models/dashboard/GraphModel',
 	'collections/dashboard/GraphCollection',
+	'collections/dashboard/WeatherCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/dashboard/dashboardTemplate.html',
 	'global',
@@ -14,6 +15,7 @@ define([
 	GoogleMapsView,
 	GraphModel,
 	GraphCollection,
+	WeatherCollection,
 	contentTemplate,
 	dashboardTemplate,
 	Global,
@@ -77,12 +79,26 @@ define([
 				
 			});
 
+			this.weatherCollection = new WeatherCollection();			
 
 		},
 		render: function(){	
+			this.getWeatherForecast();
 			this.graphCollection.getModels();			
 			Backbone.View.prototype.refreshTitle('Dashboard','View');
 		},	
+
+		getWeatherForecast: function() {
+			this.weatherCollection.fetch({
+				success: function(collection, response, options){
+					console.log(response);
+				},
+				error: function(collection, response, options){
+
+				},
+				headers: this.weatherCollection.getAuth()
+			});
+		},
 
 		displayAdminDashboard: function() {
 			var thisObj = this;	

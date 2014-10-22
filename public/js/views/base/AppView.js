@@ -307,7 +307,7 @@ define([
 			this.setCaretToPos(element, caretPosOriginal + (formatted.length - numberLengthOriginal));
 		},
 
-		addCommaToNumber: function (number, dLimit) {
+		addCommaToNumber: function (number, dLimit) {		
 			if(typeof number !== 'string')
 				number = number.toString();
 
@@ -350,12 +350,13 @@ define([
 			return formatted;
 		},
 
-		removeCommaFromNumber: function (number) {			
-		    if(typeof number !== 'string')
-				number = number.toString();			
-
-
+		removeCommaFromNumber: function (number) {	
+		    if(typeof number !== 'string'){		    	
+				number = number.toString();
+			}			
+			
 			return parseFloat(number.replace(/,/g,''));
+
 		},
 
 		getFloatValueFromField: function (element) {

@@ -271,7 +271,7 @@ define([
 			var thisObj = this;
 			
 			var validate = $('#poForm').validate({
-				submitHandler: function(form) {
+				submitHandler: function(form) {					
 					var data = thisObj.formatFormField($(form).serializeObject());
 					
 					if(thisObj.isBid)
@@ -637,7 +637,7 @@ define([
 			}
 		},
 		
-		formatFormField: function (data) {
+		formatFormField: function (data) {			
 			var formData = {products:[]};
 			var productFieldClass = this.options.productFieldClass;
 			
@@ -650,8 +650,9 @@ define([
 						if(this.options.removeComma.indexOf(key) < 0)
 							formData[key] = value;
 						
-						else 
+						else {
 							formData[key] = this.removeCommaFromNumber(value);						
+						}
 					}
 					else {
 						if(arrayKey[0] == productFieldClass[0]) {
@@ -664,13 +665,13 @@ define([
 									if(!(productFieldClass[i] == 'id' && fieldValue == '')) {
 										if(this.options.removeComma.indexOf(productFieldClass[i]) < 0)
 											arrayProductFields[productFieldClass[i]] = fieldValue;
-										else {											
-											arrayProductFields[productFieldClass[i]] = this.removeCommaFromNumber(fieldValue);											
+										else {
+											arrayProductFields[productFieldClass[i]] = this.removeCommaFromNumber(fieldValue);
 										}					
 									}
 								}
 							}
-							
+
 							arrayProductFields['stacks'] = this.getProductStackFields(data, index, {
 								'product_id': arrayProductFields.product_id,
 								//'unitprice': arrayProductFields.unitprice,
@@ -685,7 +686,7 @@ define([
 			return formData;
 		},
 		
-		getProductStackFields: function (data, productIndex, otherData) {
+		getProductStackFields: function (data, productIndex, otherData) {	
 			var stacks = [];
 			var productFieldClass = this.options.productSubFieldClass;
 
@@ -693,6 +694,7 @@ define([
 				if(typeof data[key] !== 'function'){
 					var value = data[key];
 					var arrayKey = key.split(this.options.productFieldSeparator);
+
 
 					if(arrayKey.length > 2 && arrayKey[0] == productFieldClass[0] && arrayKey[1] == productIndex) {
 						var index = arrayKey[2];
@@ -705,7 +707,7 @@ define([
 									if(this.options.removeComma.indexOf(productFieldClass[i]) < 0){
 										arrayProductFields[productFieldClass[i]] = fieldValue;
 									}
-									else{
+									else{										
 										arrayProductFields[productFieldClass[i]] = this.removeCommaFromNumber(fieldValue);
 									}
 								}
@@ -1219,10 +1221,10 @@ define([
 
 			if(model[0] != undefined) {
 				var price = model[0].get('unitprice');	
-				$('.unitprice[name="'+s+'"]').val(price).attr("disabled", "disabled");
+				$('.unitprice[name="'+s+'"]').val(price).attr("readonly", "readonly");
 			}
 			else {
-				$('.unitprice[name="'+s+'"]').val('').removeAttr("disabled");
+				$('.unitprice[name="'+s+'"]').val('').removeAttr("readonly");
 			}
 		},
 		

@@ -71,10 +71,7 @@
                             <div class="form-group col-md-5 form-button-container" style="display:none;">
                                 <label for="" class="col-sm-3 control-label"></label>
                                 <div class="col-sm-9">
-                                     <button id="save" type="submit" class="save btn btn-primary btn-sm btn-rad"><i class="fa fa-save"></i> Save</button>
-                                     <% if (typeof payment_id !== "undefined" && payment.get('isCancel') != 1) { %>
-                                     <button id="cancel-payment" data-id="<%= payment.get("id") %>" type="button" class="btn btn-danger btn-sm btn-rad"><i class="fa fa-times width-10"></i> Cancel Payment</button>
-                                     <% } %>
+                                     <button id="save" type="submit" class="save btn btn-primary btn-sm btn-rad"><i class="fa fa-save"></i> Save</button>                                     
                                      <a id="go-to-previous-page" class="btn btn-link" href="#">Cancel</a>
                                 </div>
                             </div>
