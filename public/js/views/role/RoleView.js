@@ -50,8 +50,12 @@ define([
 		
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
-            'click #delete-role': 'showConfirmationWindow',
+            'click #delete-role': 'showDeleteWindow',
 			'click #confirm-delete-role': 'deleteRole',
+		},	
+
+		showDeleteWindow: function () {
+			this.showConfirmationWindow();
 		},
 		
 		deleteRole: function (){

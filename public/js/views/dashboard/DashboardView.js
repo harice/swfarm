@@ -43,16 +43,20 @@ define([
 							thisObj.graphStackedData(graphIdName, graphData.data, graphData.xData, graphData.currency, graphData.tickDecimals);
 						}
 						break;
+
 					case Const.GRAPH.TYPE.BAR:
 						if($("#start-"+this.get('graphId') + " input").val() !='' && $("#end-"+this.get('graphId') + " input").val() != '')	{
 							var graphData = thisObj.drawGraph(this, graphIdName, this.get('graphId'));											
 							thisObj.graphData(graphIdName, graphData.data, graphData.xData, graphData.currency, graphData.tickDecimals);
 						}
+						break;				
+
+					case Const.GRAPH.TYPE.SUMMARY:
+						if($("#start-"+this.get('graphId') + " input").val() !='' && $("#end-"+this.get('graphId') + " input").val() != '')	{
+							var graphData = thisObj.drawGraph(this, graphIdName, this.get('graphId'));
+							thisObj.graphMultiSeriesGraph(graphIdName, graphData.data, graphData.xData, graphData.currency, graphData.tickDecimals);
+						}						
 						break;
-					case Const.GRAPH.TYPE.MAP:
-						thisObj.drawMap(this, graphIdName, this.get('graphId'));
-						break;
-					case Const.GRAPH.TYPE.LOGISTICS:
 
 					default:						
 						break;
@@ -102,7 +106,11 @@ define([
 						thisObj.drawMap(graph, graphIdName, graphId);
 						break;
 					case Const.GRAPH.TYPE.LOGISTICS:
-
+						thisObj.drawMap(graph, graphIdName, graphId);
+						break;
+					case Const.GRAPH.TYPE.SUMMARY:
+						var graphData = thisObj.drawGraph(graph, graphIdName, graphId);
+						break;
 					default:						
 						break;
 				}

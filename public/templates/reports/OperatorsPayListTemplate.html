@@ -33,7 +33,7 @@
                 </h6> 
             </div>
         </div>
-        <div class="row margin-top-0">
+        <div class="row margin-top-20 margin-bottom-10">
             <div class="col-md-4">
                 <h3 class="margin-bottom-5 margin-top-0">
                     <strong>
@@ -41,19 +41,18 @@
                     </strong>
                 </h3> 
                 <p>
-                    <strong><%= operators.get('account') %></strong><br />
-                    <i>Email: <%= operators.get('email') %></i><br />
-                    <i>Phone: <%= operators.get('phone') %></i><br />
+                    <strong><samp><%= operators.get('account') %></samp></strong><br />
+                    <i><samp>Email: <%= operators.get('email') %></samp></i><br />
+                    <i><samp>Phone: <%= operators.get('phone') %></samp></i><br />
                 </p>
             </div>
             <div class="col-md-2 col-md-offset-4 text-right">
-                <p>Statement Date: <br />
-                    <label class="label label-default">Total Amount Due: </label>
-                </p>
+                <h3 class="margin-top-0"><samp>Statement Date:</samp></h3>
+                <h3 class="margin-top-10"><label class="label label-default">Total Amount Due:</samp></label></h3>
             </div>
-            <div class="col-md-2">
-                <p><%= formatDateBy(cur_date, 'F d, Y') %><br />
-                <strong><label class="label label-success">$ <%= operators.get('amount') %></label></strong></p>
+            <div class="col-md-2 text-right">
+                <h3 class="margin-top-0"><strong><samp><%= formatDateBy(cur_date, 'F d, Y') %></samp></strong></h3>
+                <h3 class="margin-top-10"><label class="label label-success"><samp>$ <%= operators.get('amount') %></samp></label></h3>
             </div> 
         </div>
         <% if (!_.isEmpty(operators.get('order'))) { %>            
@@ -61,7 +60,7 @@
         <%                         
             _.each(operators.get('order'),function(order){     
         %>    
-            <h3><strong><samp><%= order.order_number %></samp></strong></h3>
+            <h3 class="margin-top-20"><strong><samp><%= order.order_number %></samp></strong></h3>
             <div class="progress width-1000 margin-bottom-0 height-3">
                 <div style="width: %" class="progress-bar progress-bar-primary"></div>
             </div>

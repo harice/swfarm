@@ -117,8 +117,7 @@ define([
 			this.setListOptions();
 		},
 		
-		displayList: function () {
-			
+		displayList: function () {	
 			var data = {
 				po_url: '#/'+Const.URL.PO,
 				po_edit_url: '#/'+Const.URL.PO+'/'+Const.CRUD.EDIT,
@@ -127,6 +126,7 @@ define([
 				pos: this.collection.models,
 				schedule_url: '#/'+Const.URL.PICKUPSCHEDULE,
 				add: Const.CRUD.ADD,
+				swfarm_location: Const.PO.DESTINATION.SWFARMS,
 				collapsible_id: Const.PO.COLLAPSIBLE.ID,
 				po_status_pending: Const.STATUSID.PENDING,
 				po_status_open: Const.STATUSID.OPEN,
@@ -138,6 +138,7 @@ define([
 			
 			var innerListTemplate = _.template(purchaseOrderInnerListTemplate, data);
 			this.subContainer.find("#po-list tbody").html(innerListTemplate);
+
 			this.collapseSelected();
 			this.generatePagination();
 		},
@@ -338,7 +339,7 @@ define([
 		
 		toggleAccordion: function (ev) {
 			var thisObj = this;
-			
+
 			this.toggleAccordionAndRequestACollection(ev.currentTarget,
 				Const.PO.COLLAPSIBLE.ID,
 				OrderWeightDetailsByStackCollection,

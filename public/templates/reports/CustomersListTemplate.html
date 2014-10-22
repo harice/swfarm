@@ -33,7 +33,7 @@
                 </h6>     
             </div>
         </div>
-        <div class="row margin-top-0">
+        <div class="row margin-top-20 margin-bottom-10">
             <div class="col-md-4">
                 <h3 class="margin-bottom-5 margin-top-0">
                     <strong>
@@ -41,18 +41,17 @@
                     </strong>
                 </h3> 
                 <p>
-                    <i><%= customers.get('businessaddress').street %></i><br />
-                    <i><%= customers.get('businessaddress').city %>, <%= customers.get('businessaddress').state.state_code %>, <%= customers.get('businessaddress').zipcode %></i>
+                    <i><samp><%= customers.get('businessaddress').street %></samp></i><br />
+                    <i><samp><%= customers.get('businessaddress').city %>, <%= customers.get('businessaddress').state.state_code %>, <%= customers.get('businessaddress').zipcode %></samp></i>
                 </p>
             </div> 
             <div class="col-md-2 col-md-offset-4 text-right">
-                <p>Statement Date: <br />
-                    <label class="label label-default">Total Amount Due: </label>
-                </p>
+                <h3 class="margin-top-0"><samp>Statement Date:</samp></h3>
+                <h3 class="margin-top-10"><label class="label label-default"><samp>Total Amount Due:</samp></label></h3>
             </div>
-            <div class="col-md-2">
-                <p><%= formatDateBy(cur_date, 'F d, Y') %><br />
-                <strong><label class="label label-success">$ <%= customers.get('amount') %></label></strong></p>
+            <div class="col-md-2 text-right">
+                <h3 class="margin-top-0"><strong><samp><%= formatDateBy(cur_date, 'F d, Y') %></samp></strong></h3>
+                <h3 class="margin-top-10"><label class="label label-success"><samp>$ <%= customers.get('amount') %></samp></label></h3>
             </div>     
         </div>
         <% if (!_.isEmpty(customers.get('order'))) { %>    
@@ -61,7 +60,7 @@
                 _.each(customers.get('order'),function(order){
                     var total_amount = 0;
                 %>
-                    <h3><strong><samp><%= order.order_number %></samp></strong></h3>
+                    <h3 class="margin-top-20"><strong><samp><%= order.order_number %></samp></strong></h3>
                     <div class="progress width-1000 margin-bottom-0 height-3">
                         <div class="progress-bar progress-bar-primary" style="width: %"></div>
                     </div>

@@ -33,7 +33,7 @@
                 </h6>  
             </div>
         </div>
-        <div class="row margin-top-0">
+        <div class="row margin-top-20 margin-bottom-10">
             <div class="col-md-4">
                 <h3 class="margin-bottom-5 margin-top-0">
                     <samp><%= locations.get('product').name %> - 
@@ -44,26 +44,22 @@
                 </h3> 
             </div>
             <div class="col-md-2 col-md-offset-4 text-right">
-                <p>
-                    Statement Date: <br />
-                    Bales In:<br />
-                    Bales Out: <br />
-                    <label class="label label-default">On Hand: </label><br />
-                    Tons In: <br />
-                    Tons Out: <br />
-                    <label class="label label-default">On Hand: </label>
-                </p>
+                <h3 class="margin-top-0 margin-bottom-5"><samp>Statement Date:</samp></h3>
+                <h3 class="margin-top-5 margin-bottom-5"><samp>Bales In:</samp></h3>
+                <h3 class="margin-top-5"><samp>Bales Out:</samp></h3>
+                <h3 class="margin-top-5"><label class="label label-default"><samp>On Hand:</samp></label></h3>
+                <h3 class="margin-top-5 margin-bottom-5"><samp>Tons In:</samp></h3>
+                <h3 class="margin-top-5 margin-bottom-5"><samp>Tons Out:</samp></h3>
+                <h3 class="margin-top-5"><label class="label label-default"><samp>On Hand:</samp></label></h3>
             </div>
-            <div class="col-md-2">
-                <p>
-                    <%= formatDateBy(cur_date, 'F d, Y') %><br />
-                    <%= locations.get('bales_in') %><br />
-                    <span class="text-danger">- <%= locations.get('bales_out') %></span><br />                   
-                    <strong><label class="label label-success"><%= locations.get('bales_in') - locations.get('bales_out')  %></label></strong><br />
-                    <%= locations.get('tons_in') %><br />
-                    <span class="text-danger">- <%= locations.get('tons_out') %></span><br />        
-                    <strong><label class="label label-success"><%= numberFormatTons(locations.get('tons_in') - locations.get('tons_out'))  %></label></strong>
-                </p>
+            <div class="col-md-2 text-right">
+                <h3 class="margin-top-0 margin-bottom-5"><samp><%= formatDateBy(cur_date, 'F d, Y') %></samp></h3>
+                <h3 class="margin-top-5 margin-bottom-5"><samp><%= locations.get('bales_in') %></samp></h3>
+                <h3 class="margin-top-5"><span class="text-danger"><samp>- <%= locations.get('bales_out') %></samp></span></h3>           
+                <h3 class="margin-top-5"><strong><label class="label label-success"><samp><%= locations.get('bales_in') - locations.get('bales_out')  %></samp></label></strong></h3>
+                <h3 class="margin-top-5 margin-bottom-5"><samp><%= locations.get('tons_in') %></samp></h3>
+                <h3 class="margin-top-5 margin-bottom-5"><span class="text-danger"><samp>- <%= locations.get('tons_out') %></samp></span></h3>   
+                <h3 class="margin-top-5"><strong><label class="label label-success"><samp><%= numberFormatTons(locations.get('tons_in') - locations.get('tons_out'))  %></samp></label></strong></h3>
             </div>  
         </div>        
         <% if (!_.isEmpty(locations.get('inventory'))) { %>   

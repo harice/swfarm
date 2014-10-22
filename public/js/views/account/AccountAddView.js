@@ -54,8 +54,10 @@ define([
 			
 			this.accountExtrasModel = new AccountExtrasModel();
 			this.accountExtrasModel.on("change", function() {
-				if(thisObj.subContainerExist())
+				if(thisObj.subContainerExist()){
 					thisObj.displayForm();
+					thisObj.maskInputs();
+				}
 				this.off("change");
 			});
 		},
@@ -218,8 +220,6 @@ define([
 		},
 
 		showMap: function (ev) {
-
-			console.log("test");
 			var thisObj = this;
 			var latitude = '';
 			var longitude = '';

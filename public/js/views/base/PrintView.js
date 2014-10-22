@@ -225,6 +225,7 @@ define([
         maskInputs: function () {
             $(".phone-number").mask('(000) 000-0000');
             $(".mobile-number").mask('(000) 000-0000');
+            $(".zipcode").mask('00000');
             
             /*$(".mask-unitprice").mask('##0.00', {reverse: true});
             $(".mask-tons").mask("#,##0.00##", {reverse: true});

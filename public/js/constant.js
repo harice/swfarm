@@ -256,8 +256,22 @@ define(function () {
 				'BAR': 1,
 				'STACKEDBAR': 2,
 				'MAP': 3,
-				'LOGISTICS': 4
+				'LOGISTICS': 4,
+				'SUMMARY': 5,
 			},
+			'ID':{
+				'PURCHASEINTONS': 1,
+				'PURCHASEINDOLLARS': 2,
+				'SALESINTONS': 3,
+				'SALESINDOLLARS': 4,
+				'RESERVECUSTOMERS': 5,
+				'INVENTORY': 6,
+				'YEARTODATESALES': 7,
+				'DASHBOARDPURCHASES': 8,
+				'DASHBOARDSALES': 9,
+				'DASHBOARDLOGISTICS': 10,
+				'LOGISTICSSUMMARY': 11
+			}
 		},
 	};
 	

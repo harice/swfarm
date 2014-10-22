@@ -24,6 +24,10 @@ class ReportsController extends BaseController {
 		return $this->repo->report(Input::all(),$id);
 	}
 
+	public function getStackListByProduct(){
+		return $this->repo->getStackListByProduct(Input::get('productId'));	
+	}
+
 	public function missingMethod($parameters = array())
 	{
 	    return App::abort(501,'Not implemented');

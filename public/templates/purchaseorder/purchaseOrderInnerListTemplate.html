@@ -1,5 +1,10 @@
 <% if (!_.isEmpty(pos)) { %>
-	<% _.each(pos, function(po){ %>
+	var loc;
+	<% _.each(pos, function(po){ 
+		if (!_.isNull(po.get("location"))) {
+            loc = po.get("location");
+        } 
+	%>
 	<tr class="collapse-trigger cursor-pointer" data-id="<%= po.get("id") %>">
 		<td>
 			<i class="fa fa-angle-right width-10 accordion-carret"></i>
@@ -8,9 +13,7 @@
 		</td>
 		<td><a href="<%= account_url %>/<%= po.get("account").id %>" class="stop-propagation"><%= po.get("account").name %></a></td>
 		<td>
-            <% if (!_.isNull(po.get("location"))) { %>
-                <%= po.get("location").location %>
-            <% } %>
+            <%= loc.location %>
         </td>
         <td class="td-status">
 			<label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label>
@@ -40,7 +43,9 @@
 					<div class="order-stack-details">
 						<div class="col-md-12 no-padding">
 							<div class="pull-right">
-								<% var postatus = po.get("status").id %>
+								<%
+									var postatus = po.get("status").id;
+								%>
 								<a href="<%= po_url %>/<%= po.get("id") %>" class="btn btn-trans btn-rad btn-primary btn-sm">
 									<i class="fa fa-eye width-10"></i> View <% if (postatus != po_status_pending) { %>PO<% } else { %>Bid<% } %>
 								</a>
@@ -48,19 +53,17 @@
 									<a href="<%= po_edit_url %>/<%= po.get("id") %>" class="btn btn-trans btn-primary btn-rad btn-sm editable-button">
 										<i class="fa fa-pencil width-10"></i> Edit <% if (postatus != po_status_pending) { %>PO<% } else { %>Bid<% } %>
 									</a>
-									<% if (postatus != po_status_pending) { %>
+									<a href="#" data-id="<%= po.get("id") %>" class="btn btn-trans btn-rad btn-warning btn-sm cancel-po editable-button">
+										<i class="fa fa-ban width-10"></i> Cancel <% if (postatus != po_status_pending) { %>PO<% } else { %>Bid<% } %>
+									</a>	
+									<% if (postatus != po_status_pending && loc.id == swfarm_location) { %>
 										<a href="#" class="btn btn-warning btn-trans btn-rad btn-sm close-po editable-button" data-id="<%= po.get("id") %>">
 											<i class="fa fa-times width-10"></i> Close PO
 										</a>
-									<% } %>
-									<a href="#" data-id="<%= po.get("id") %>" class="btn btn-trans btn-rad btn-warning btn-sm cancel-po editable-button">
-										<i class="fa fa-ban width-10"></i> Cancel <% if (postatus != po_status_pending) { %>PO<% } else { %>Bid<% } %>
-									</a>
-									<% if (postatus != po_status_pending) { %>
 										<a href="<%= schedule_url %>/<%= po.get("id") %>/<%= add %>" class="btn btn-trans btn-primary btn-rad btn-sm editable-button">
 											<i class="fa fa-clock-o width-10"></i> Add Schedule
 										</a>
-									<% } %>
+									<% } %>																
 								<% } %>
 							</div>
 						</div>

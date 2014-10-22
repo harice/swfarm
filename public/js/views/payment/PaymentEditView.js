@@ -53,6 +53,7 @@ define([
 			var thisObj = this;
 			$('#id').val(this.model.get('id'));
 			$('#transactionnumber').val(this.model.get('transactionnumber'));
+			$('#postingdate').val(this.model.get('created_at'));
 			$('#order_id').val(this.model.get('order_id'));	
 			$('#po_number').val(this.model.get('order').order_number);	
 			$('#account_name').val(this.model.get('account').name);		

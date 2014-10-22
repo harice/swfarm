@@ -34,7 +34,7 @@
                 </h6>  
             </div>
         </div>
-        <div class="row margin-top-0">
+        <div class="row margin-top-20 margin-bottom-10">
             <div class="col-md-4">
                 <h3 class="margin-bottom-5 margin-top-0">
                     <strong>
@@ -42,26 +42,22 @@
                     </strong>
                 </h3> 
                 <p>
-                    <strong><i><%= drivers.get('account') %></i></strong><br />
-                    <i>Email: </i><%= drivers.get('email') %><br />
-                    <i>Phone: </i><%= drivers.get('phone') %>
+                    <strong><i><samp><%= drivers.get('account') %></samp></i></strong><br />
+                    <i><samp>Email: </samp></i><samp><%= drivers.get('email') %></samp><br />
+                    <i><samp>Phone: </samp></i><samp><%= drivers.get('phone') %></samp>
                 </p>
             </div>
             <div class="col-md-2 col-md-offset-4 text-right">
-                <p>
-                    Statement Date: <br />
-                    Amount:<br />
-                    Handling Fee: <br />
-                    <label class="label label-default">Total Amount Due: </label>
-                </p>
+                <h3 class="margin-top-0 margin-bottom-5"><samp>Statement Date:</samp></h3>
+                <h3 class="margin-top-5 margin-bottom-5"><samp>Amount:</samp></h3>
+                <h3 class="margin-top-5"><samp>Handling Fee:</samp></h3>
+                <h3 class="margin-top-5"><label class="label label-default"><samp>Total Amount Due:</samp></label></h3>
             </div>
-            <div class="col-md-2">
-                <p>
-                    <%= formatDateBy(cur_date, 'F d, Y') %><br />
-                    $ <%= numberFormat(drivers.get('amount')) %><br />
-                    $ <%= numberFormat(drivers.get('handling')) %><br />                   
-                    <strong><label class="label label-success">$ <%= numberFormat(total_amount)  %></label></strong>
-                </p>
+            <div class="col-md-2 text-right">
+                <h3 class="margin-top-0 margin-bottom-5"><strong><samp><%= formatDateBy(cur_date, 'F d, Y') %></samp></strong></h3>
+                <h3 class="margin-top-5 margin-bottom-5"><samp>$ <%= numberFormat(drivers.get('amount')) %></samp></h3>
+                <h3 class="margin-top-5"><samp>$ <%= numberFormat(drivers.get('handling')) %></samp></h3>                
+                <h3 class="margin-top-5"><strong><label class="label label-success"><samp>$ <%= numberFormat(total_amount)  %></samp></label></strong></h3>
             </div>  
         </div>
         <% if (!_.isEmpty(drivers.get('order'))) { %>    
@@ -70,7 +66,7 @@
             _.each(drivers.get('order'), function(order){
                 var total_pay = 0;
             %>
-                <h3><strong><samp><%= order.order_number %></samp></strong></h3>
+                <h3 class="margin-top-20"><strong><samp><%= order.order_number %></samp></strong></h3>
                 <div class="progress width-1000 margin-bottom-0 height-3">
                     <div class="progress-bar progress-bar-primary" style="width: %"></div>
                 </div>

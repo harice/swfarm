@@ -134,9 +134,16 @@ define([
 				var subProductTBODY = thisObj.subContainer.find('#product-list > tbody > .product-stack:last tbody');
 				
 				_.each(product.productorder, function (productSub) {
+					var location;					
+
+					if(productSub.sectionfrom != null)
+						location = productSub.sectionfrom.storagelocation.name+' - '+productSub.sectionfrom.name;
+					else 
+						location = '';
+
 					var variablesSub = {
 						stacknumber: productSub.stacknumber,
-						location_from: productSub.sectionfrom.storagelocation.name+' - '+productSub.sectionfrom.name,
+						location_from: location,
 						description: productSub.description,
 						tons: productSub.tons,
 						bales: productSub.bales,

@@ -2,6 +2,7 @@
 	<% _.each(wts, function(wt){ %>
 		<tr id="<%= weight_ticket_by_user_id %><%= wt.get("schedule").order_id %>-<%= wt.get("id") %>">
 			<td><a href="<%= wt_url %>/<%= wt.get("schedule").order_id %>/<%= wt.get("schedule").id %>"><%= wt.get("weightTicketNumber") %></a></td>
+			<td><%= wt.get("schedule").orderdetails.order_number %></td>
 			<td><%= numberFormatTons(wt.get("netTons")) %></td>
 			<td>
 				<a class="edit-commission" href="#" data-id="<%= wt.get("id") %>" data-user-id="<%= user_id %>" data-tons="<%= wt.get("netTons") %>" data-order-id="<%= wt.get("schedule").order_id %>">
@@ -15,6 +16,6 @@
 	<% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="3">No results found.</td>
+		<td colspan="4">No results found.</td>
 	</tr>
 <% } %>

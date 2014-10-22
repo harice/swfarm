@@ -309,7 +309,7 @@ define([
 			'keyup .gross': 'onKeyUpGross',
 			'blur .gross': 'onBlurTon',
 			'keyup .tare': 'onKeyUpTare',
-			'blur .tare': 'onBlurTon',
+			'blur .tare': 'onBlurTare',
 			'keyup .product-bales': 'onKeyUpProductBales',
 			'keyup .product-pounds': 'onKeyUpPounds',
 			'blur .product-pounds': 'onBlurPound',
@@ -365,6 +365,17 @@ define([
 			var net = gross - tare;
 			
 			this.$el.find('.net').text(this.addCommaToNumber(net.toFixed(4), 4));
+		},
+
+		onBlurTare: function (ev) {
+			this.onBlurTon(ev);
+
+			if($(ev.target).val() > this.$el.find('.gross').val())
+				if($(ev.target).next().length == 0)
+					$("<span class='error-msg-cont'><label class='error'>Tare should be lower than Gross</label></span>").insertAfter($(ev.target));							
+			else 
+				if($(ev.target).next().length > 0)
+					$(ev.target).next().remove();				
 		},
 		
 		onKeyUpProductBales: function (ev) {

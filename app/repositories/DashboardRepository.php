@@ -46,21 +46,27 @@ class DashboardRepository implements DashboardRepositoryInterface {
                     $graph['data'] = $this->reservedDeliveredVsBalanceOrderPerCustomerAccount($params);
                     break;
                 case Config::get('constants.GRAPH_INVENTORY_PRODUCT_ON_HAND'):
+                    $graph['graphType'] = Config::get('constants.GRAPH_TYPE_1');
                     $graph['data'] = $this->inventoryProductOnHand();
                     break;
                 case Config::get('constants.GRAPH_YEAR_TO_DATE_SALES'):
+                    $graph['graphType'] = Config::get('constants.GRAPH_TYPE_1');
                     $graph['data'] = $this->yearToDateSalesPerAccount($params);
                     break;  
-                case Config::get('constants.DASHBOARD_MAP_PRODUCER'):    
+                case Config::get('constants.DASHBOARD_MAP_PRODUCER'): 
+                    $graph['graphType'] = Config::get('constants.GRAPH_TYPE_3');   
                     $graph['data'] = $this->accountMapCoordinates(Config::get('constants.ACCOUNTTYPE_PRODUCER'));
                     break;            
                 case Config::get('constants.DASHBOARD_MAP_CUSTOMER'):    
+                    $graph['graphType'] = Config::get('constants.GRAPH_TYPE_3');
                     $graph['data'] = $this->accountMapCoordinates(Config::get('constants.ACCOUNTTYPE_CUSTOMER'));
                     break;   
-                case Config::get('constants.DASHBOARD_LOGISTICS_MAP'):    
+                case Config::get('constants.DASHBOARD_LOGISTICS_MAP'):
+                    $graph['graphType'] = Config::get('constants.GRAPH_TYPE_4');    
                     $graph['data'] = $this->logisticRouteMap($params);
                     break;               
-                case Config::get('constants.DASHBOARD_LOGISTIC_SUMMARY'):    
+                case Config::get('constants.DASHBOARD_LOGISTIC_SUMMARY'):
+                    $graph['graphType'] = Config::get('constants.GRAPH_TYPE_5');    
                     $graph['data'] = $this->logisticSummary($params);
                     break;               
                 default:
@@ -74,9 +80,9 @@ class DashboardRepository implements DashboardRepositoryInterface {
     }
     
     public function purchaseInTons($params){
-        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d 00:00:00', strtotime("yesterday"));
-        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d 23:59:59', strtotime("yesterday"));
-
+        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d H:i:s');
+        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d H:i:s', strtotime("-1 day"));
+        
         $products = Product::with(array('productordertons'=> function($query) use ($dateFrom, $dateTo){
                                 $query->whereHas('order', function($query) use ($dateFrom, $dateTo){
                                     $query->whereBetween('created_at', array($dateFrom, $dateTo))
@@ -109,8 +115,8 @@ class DashboardRepository implements DashboardRepositoryInterface {
     }
 
     public function purchaseInDollarValues($params){
-        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d 00:00:00', strtotime("yesterday"));
-        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d 23:59:59', strtotime("yesterday"));
+        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d H:i:s');
+        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d H:i:s', strtotime("-1 day"));
 
          $products = Product::with(array('productordertons'=> function($query) use ($dateFrom, $dateTo){
                                 $query->whereHas('order', function($query) use ($dateFrom, $dateTo){
@@ -146,8 +152,8 @@ class DashboardRepository implements DashboardRepositoryInterface {
     }
 
     public function salesInTons($params){
-        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d 00:00:00', strtotime("yesterday"));
-        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d 23:59:59', strtotime("yesterday"));
+        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d H:i:s');
+        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d H:i:s', strtotime("-1 day"));
 
         $products = Product::with(array('productordertons'=> function($query) use ($dateFrom, $dateTo){
                                 $query->whereHas('order', function($query) use ($dateFrom, $dateTo){
@@ -181,8 +187,8 @@ class DashboardRepository implements DashboardRepositoryInterface {
     }
 
     public function salesInDollarValues($params){
-        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d 00:00:00', strtotime("yesterday"));
-        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d 23:59:59', strtotime("yesterday"));
+        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d H:i:s');
+        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d H:i:s', strtotime("-1 day"));
 
          $products = Product::with(array('productordertons'=> function($query) use ($dateFrom, $dateTo){
                                 $query->whereHas('order', function($query) use ($dateFrom, $dateTo){
@@ -218,8 +224,8 @@ class DashboardRepository implements DashboardRepositoryInterface {
     }
 
     public function reservedDeliveredVsBalanceOrderPerCustomerAccount($params){
-        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d 00:00:00', strtotime("yesterday"));
-        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d 23:59:59', strtotime("yesterday"));
+        $dateFrom = isset($params['dateFrom']) ? $params['dateFrom']." 00:00:00" : date('Y-m-d H:i:s');
+        $dateTo = isset($params['dateTo']) ? $params['dateTo']." 23:59:59" : date('Y-m-d H:i:s', strtotime("-1 day"));
 
         $result = Account::with(array(
                             'order.productorder' => function($query){
@@ -278,6 +284,14 @@ class DashboardRepository implements DashboardRepositoryInterface {
             $data[$index]['totalTonsOrdered'] = number_format($data[$index]['totalTonsOrdered'], 2);
             $index++;
         }
+        //sort array based on tonsDelivered Value, desc
+        usort($data, function($a, $b) {
+             if( $a['totalTonsDelivered'] == $b['totalTonsDelivered'] )
+                return 0;
+            return ( $a['totalTonsDelivered'] < $b['totalTonsDelivered'] ) ? 1 : -1;
+        });
+
+        $data = array_slice($data, 0, 10); //limit only to 10 result
         
         return $data;
     }
@@ -340,14 +354,14 @@ class DashboardRepository implements DashboardRepositoryInterface {
         $response = array();
         $index = 0;
         foreach($products as $product){
-            $response[$index]['name'] = $product['name'];
-            $response[$index]['tons'] = 0;
+            $response[$index]['label'] = $product['name'];
+            $response[$index]['value'] = 0;
             foreach($product['stack'] as $stack){
                 foreach($stack['stacklocation'] as $stacklocation){
-                    $response[$index]['tons'] += $stacklocation['tons'];
+                    $response[$index]['value'] += $stacklocation['tons'];
                 }
             }
-            $response[$index]['tons'] = number_format($response[$index]['tons'], 2);
+            $response[$index]['value'] = number_format($response[$index]['value'], 2);
             $index++;
         }
 
@@ -408,6 +422,16 @@ class DashboardRepository implements DashboardRepositoryInterface {
             }
             $cnt++;
         }
+
+        //sort array based on totalSales Value, desc
+        usort($result, function($a, $b) {
+            if( $a['totalSales'] == $b['totalSales'] )
+                return 0;
+            return ( $a['totalSales'] < $b['totalSales'] ) ? 1 : -1;
+        });
+
+        $result = array_slice($result, 0, 10); //limit only to 10 result
+
         return $result;
 
     }

@@ -33,7 +33,7 @@
                 </h6> 
             </div>
         </div>
-        <div class="row margin-top-0">
+        <div class="row margin-top-20 margin-bottom-10">
             <div class="col-md-4">
                 <h3 class="margin-bottom-5 margin-top-0">
                     <samp>
@@ -44,40 +44,37 @@
                     </samp>
                 </h3>
                 <p>
-                    <strong><%= truckers.get('account').name %></strong><br />
-                    <i><%= truckers.get('account').businessaddress.street %></i><br />
-                    <i><%= truckers.get('account').businessaddress.city %>, <%= truckers.get('account').businessaddress.state.state_code %> <%= truckers.get('account').businessaddress.zipcode %></i>
+                    <strong><samp><%= truckers.get('account').name %></samp></strong><br />
+                    <i><samp><%= truckers.get('account').businessaddress.street %></samp></i><br />
+                    <i><samp><%= truckers.get('account').businessaddress.city %>, <%= truckers.get('account').businessaddress.state.state_code %> <%= truckers.get('account').businessaddress.zipcode %></samp></i>
                 </p>
             </div> 
-            <div class="col-md-2 col-md-offset-4 text-right">
-                <p>
-                    Statement Date: <br />
-                    Total Bales:<br />
-                    Total Pounds: <br />                  
-                    Total Tons: <br />
-                    Trucking Fee: <br />
-                    Handling Fee: <br />
-                    Fuel Charge: <br />
-                    Less (Admin Fees): <br />
-                    Less (Trailer Rent): <br />
-                    Less (Loading Fees): <br />
-                    <label class="label label-default">Total Amount Due: </label>
+            <div class="col-md-3 col-md-offset-3 text-right">
+                <h3 class="margin-top-0 margin-bottom-5"><samp>Statement Date:</samp></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><samp>Total Bales:</samp></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><samp>Total Pounds:</samp></h3>                
+                <h3 class="margin-top-0 margin-bottom-5"><samp>Total Tons:</samp></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><samp>Trucking Fee:</samp></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><samp>Handling Fee:</samp></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><samp>Fuel Charge:</samp></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><samp>Less (Admin Fees):</samp></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><samp>Less (Trailer Rent):</samp></h3>
+                <h3 class="margin-top-5"><samp>Less (Loading Fees):</samp></h3>
+                <h3 class="margin-top-5"><label class="label label-default"><samp>Total Amount Due:</samp></label></h3>
                 </p>
             </div>
-            <div class="col-md-2">
-                <p>
-                    <%= formatDateBy(cur_date, 'F d, Y') %><br />
-                    <%= truckers.get('bales') %><br />                 
-                    <%= truckers.get('pounds') %><br />  
-                    <%= truckers.get('tons') %><br />  
-                    $ <%= truckers.get('hauling') %><br />  
-                    $ <%= truckers.get('handling') %><br />  
-                    $ <%= truckers.get('fuelcharge') %><br />  
-                    <span class="text-danger">- $ <%= numberFormat(truckers.get('adminfee')) %></span><br />
-                    <span class="text-danger">- $ <%= numberFormat(truckers.get('trailerrent')) %></span><br />
-                    <span class="text-danger">- $ <%= numberFormat(truckers.get('loadingfee')) %></span><br />
-                    <strong><label class="label label-success">$ <%= numberFormat(truckers.get('amount'))  %></label></strong>
-                </p>
+            <div class="col-md-2 text-right">
+                <h3 class="margin-top-0 margin-bottom-5"><strong><samp><%= formatDateBy(cur_date, 'F d, Y') %></samp></strong></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><strong><samp><%= truckers.get('bales') %></samp></strong></h3>              
+                <h3 class="margin-top-0 margin-bottom-5"><strong><samp><%= truckers.get('pounds') %></samp></strong></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><strong><samp><%= truckers.get('tons') %></samp></strong></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><strong><samp>$ <%= truckers.get('hauling') %></samp></strong></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><strong><samp>$ <%= truckers.get('handling') %></samp></strong></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><strong><samp>$ <%= truckers.get('fuelcharge') %></samp></strong></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><strong><span class="text-danger"><samp>- $ <%= numberFormat(truckers.get('adminfee')) %></samp></span></strong></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><strong><span class="text-danger"><samp>- $ <%= numberFormat(truckers.get('trailerrent')) %></samp></span></strong></h3>
+                <h3 class="margin-top-5"><strong><span class="text-danger"><samp>- $ <%= numberFormat(truckers.get('loadingfee')) %></samp></span></strong></h3>
+                <h3 class="margin-top-5"><strong><label class="label label-success"><samp>$ <%= numberFormat(truckers.get('amount'))  %></samp></label></strong></h3>
             </div>  
         </div>                  
         <% if (!_.isEmpty(truckers.get('order'))) { %>   
@@ -96,7 +93,7 @@
                     var amount_i = 0;
                     var handling_i = 0;
             %>
-                <h3><strong><samp><%= order.order_number %></samp></strong></h3>
+                <h3 class="margin-top-20"><strong><samp><%= order.order_number %></samp></strong></h3>
                 <div class="progress width-1000 margin-bottom-0 height-3">
                     <div style="width: %" class="progress-bar progress-bar-primary"></div>
                 </div>

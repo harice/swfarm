@@ -176,6 +176,8 @@ define([
 						innerTemplateVariables['so_link_label'] = 'Add So';
 					}
 				}
+				else if(this.model.get('location').id == Const.PO.DESTINATION.SWFARMS)
+					innerTemplateVariables['swfarm_located'] = true;
 			}
 			
 			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
