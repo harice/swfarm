@@ -123,4 +123,13 @@ class Order extends BaseModel {
         return $this->hasMany('Payment', 'order_id', 'id');
     }
 
+    /**
+     * Make dates compatible with Carbon
+     * 
+     * @return array
+     */
+    public function getDates()
+    {
+        return array('created_at', 'updated_at');
+    }
 }
