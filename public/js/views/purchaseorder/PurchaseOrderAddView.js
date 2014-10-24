@@ -262,9 +262,11 @@ define([
 						
 			this.postDisplayForm();
 
-			this.otherInitializations();				
+			this.otherInitializations();	
 
-			this.toggleSOFields(thisObj.subContainer.find('input[name=location_id]:checked').val());
+			//Changes to hide Customer/Customer Contract fields
+			if(!this.isBid && this.model.get('location').id == Const.PO.DESTINATION.DROPSHIP)
+				this.toggleSOFields(thisObj.subContainer.find('input[name=location_id]:checked').val());
 		},
 		
 		initValidateForm: function () {
@@ -1099,6 +1101,7 @@ define([
 										'Convert To Purchase Order');
 			
 			this.$el.find('#bid-destination .radio-inline:first-child input[type="radio"]').attr('checked', true);
+			//this.toggleSOFields(this.$el.find("#bid-destination .radio-inline input[type='radio']:checked").val());
 			//$('#modal-with-form-confirm .i-circle.warning').remove();
 			//$('#modal-with-form-confirm h4').remove();
 			

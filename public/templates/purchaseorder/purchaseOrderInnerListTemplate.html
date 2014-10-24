@@ -1,9 +1,5 @@
 <% if (!_.isEmpty(pos)) { %>
-	var loc;
-	<% _.each(pos, function(po){ 
-		if (!_.isNull(po.get("location"))) {
-            loc = po.get("location");
-        } 
+	<% _.each(pos, function(po){ 		
 	%>
 	<tr class="collapse-trigger cursor-pointer" data-id="<%= po.get("id") %>">
 		<td>
@@ -13,7 +9,11 @@
 		</td>
 		<td><a href="<%= account_url %>/<%= po.get("account").id %>" class="stop-propagation"><%= po.get("account").name %></a></td>
 		<td>
-            <%= loc.location %>
+			<%
+			if(!_.isNull(po.get("location"))) {
+				print(po.get("location").location);
+			} 
+	        %>
         </td>
         <td class="td-status">
 			<label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label>
@@ -56,7 +56,7 @@
 									<a href="#" data-id="<%= po.get("id") %>" class="btn btn-trans btn-rad btn-warning btn-sm cancel-po editable-button">
 										<i class="fa fa-ban width-10"></i> Cancel <% if (postatus != po_status_pending) { %>PO<% } else { %>Bid<% } %>
 									</a>	
-									<% if (postatus != po_status_pending && loc.id == swfarm_location) { %>
+									<% if (postatus != po_status_pending && !_.isNull(po.get("location")) && po.get("location").id == swfarm_location) { %>
 										<a href="#" class="btn btn-warning btn-trans btn-rad btn-sm close-po editable-button" data-id="<%= po.get("id") %>">
 											<i class="fa fa-times width-10"></i> Close PO
 										</a>

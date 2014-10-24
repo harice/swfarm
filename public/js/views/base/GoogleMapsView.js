@@ -6,7 +6,7 @@ define([
 	'text!templates/layout/googleMapsDistanceLegTemplate.html',
 	'text!templates/layout/locationMarkerInfoWindowTemplate.html',
 	'constant',
-	'async!http://maps.googleapis.com/maps/api/js?key=AIzaSyAyTqNUdaMOVp8vYoyheHK4_Hk6ZkUb9Ow'
+	'async!http://maps.googleapis.com/maps/api/js?key=AIzaSyAyTqNUdaMOVp8vYoyheHK4_Hk6ZkUb9Ow&libraries=places'
 ], function(Backbone,
 			AppView,
 			googleMapsModalTemplate,
@@ -25,6 +25,8 @@ define([
 		
 		modalIdSetLocation: 'google-maps-modal-setlocation',
 		mapCanvasIdSetLocation: 'map-canvas-setlocation',
+
+		inputIdSetSearch: 'search-map',
 		
 		el: '.modal-alert-cont',
 		milesInKM: 0.000621371,
@@ -64,6 +66,7 @@ define([
 				modal_title: 'Maps',
 				modal_id: this.modalIdGetDD,
 				modal_map_canvas_id: this.mapCanvasIdGetDD,
+				input_map_search_id: this.inputIdSetSearch,
 			};
 			
 			var googleMapsTemplate = _.template(googleMapsModalTemplate, googleMapsModalTemplateVariables);
@@ -78,8 +81,8 @@ define([
 				}
 				
 				thisObj.shownModalCallback();
-			});
-			
+			});			
+						
 			var getType = {};
 			if(this.isFunction(callback))
 				this.hiddenModalCallback = callback;
@@ -157,11 +160,46 @@ define([
 			
 			this.map = new google.maps.Map(document.getElementById(mapCanvasId), mapOptions);
 			
+			var searchBox = document.getElementById(this.inputIdSetSearch);
+			if($(searchBox).length > 0)				
+				this.initMapSearch();
+
 			var getType = {};
 			if(this.isFunction(otherInit))
 				otherInit();
 				
-			this.isInitMap = true;
+			this.isInitMap = true;			
+		},
+
+		initMapSearch: function(){
+			var thisObj = this;
+			var input = document.getElementById(this.inputIdSetSearch);
+			this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+			
+			var autocomplete = new google.maps.places.Autocomplete(input);
+  			autocomplete.bindTo('bounds', this.map);
+			
+			google.maps.event.addListener(autocomplete, 'place_changed', function() {			
+			    var place = autocomplete.getPlace();
+			    if (!place.geometry) {
+			      return;
+			    }
+
+			    // If the place has a geometry, then present it on a map.
+			    if (place.geometry.viewport) {
+			      thisObj.map.fitBounds(place.geometry.viewport);
+			      thisObj.map.setCenter(place.geometry.location);			      					
+				  thisObj.addMarker(place.geometry.location);				  
+			      thisObj.map.setZoom(9); 
+			    }
+			    else {
+			      thisObj.map.setCenter(place.geometry.location);
+			      thisObj.addMarker(place.geometry.location);	
+			      thisObj.map.setZoom(9); 
+			    }			    
+			   
+			});		
+			
 		},
 
 		initDashboardMap: function(mapCanvasId, location, otherInit) {	
@@ -389,6 +427,16 @@ define([
 			'click .center-map': 'centerMap',
 			'click .googlemaps-ok': 'useData',
 			'change .loaded-distance': 'setLoadedDistance',
+			'keypress #search-map': 'searchMap'
+		},
+
+		searchMap: function(ev){
+			var pacContainerInitialized = false;
+
+			if (!pacContainerInitialized) {
+	            $('.pac-container').css('z-index', '9999');
+	            pacContainerInitialized = true;
+	        }
 		},
 		
 		setLoadedDistance: function (ev) {

@@ -1,0 +1,34 @@
+<%	
+	if(!_.isEmpty(channel)){
+	var date = channel.condition.date;
+	var day = date.split(",");	
+%>
+	<div class="col-md-2 col-sm-4">
+		<div class="fd-tile header tile-green">
+		  <div class="header">
+		  <div class="ico"><i class="fa fa-calendar"></i></div>
+		  <div class=" title">NOW</div>
+		  </div>
+		  <div class="content"><p><%= day[0] %></p><h1><%= channel.condition.temp %>°</h1></div>
+		  <div class="icon"><img src="images/meteocons/<%= matchCondition(channel.condition.code) %>.png" /></div>
+		</div>
+	</div>	
+<%		
+		_.each(channel.forecast, function(forecast){
+			var temp = (parseInt(forecast.high) + parseInt(forecast.low)) / 2;			
+		%>
+			<div class="col-md-2 col-sm-4">
+				<div class="fd-tile header tile-prusia">
+				  <div class="header">
+				  <div class="ico"><i class="fa fa-calendar"></i></div>
+				  <div class=" title"><%= forecast.date %></div>
+				  </div>
+				  <div class="content"><p><%= forecast.day %></p><h1><%= parseInt(temp) %>°</h1></div>
+				  <div class="icon"><img src="images/meteocons/<%= matchCondition(forecast.code) %>.png" /></div>
+				</div>
+			</div>
+		<%
+		
+		});
+	}
+%>
