@@ -256,10 +256,10 @@ define([
 			return false;
 		},
 
-        maskInputs: function () {
+        maskInputs: function () {        	        	
             $(".phone-number").mask('(000) 000-0000');
-            $(".mobile-number").mask('(000) 000-0000');
-            $(".zipcode").mask('00000-0000');
+            $(".mobile-number").mask('(000) 000-0000');            
+            
             /*$(".mask-unitprice").mask('##0.00', {reverse: true});
             $(".mask-tons").mask("#,##0.00##", {reverse: true});
             $(".mask-bales").mask('###,##0', {reverse: true});
@@ -270,8 +270,11 @@ define([
             $(".mask-distance").mask('##0.00', {reverse: true});*/
             $(".mask-fee").mask('##0.00', {reverse: true});
             $(".mask-rate").mask('#0.00', {reverse: true});
-            $(".mask-admin-fee").mask('#,##0.00', {reverse: true});
-        },
+            $(".mask-admin-fee").mask('#,##0.00', {reverse: true});           
+
+            $('.zipcode').mask('00000-0000');
+          	 
+        },       
 
 		formatMoney: function (ev) {
 			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 2);

@@ -161,7 +161,7 @@ define([
 				rules: {
 					website: {
 						complete_url:true,
-					},
+					},	
 				},
 				
 				messages: {

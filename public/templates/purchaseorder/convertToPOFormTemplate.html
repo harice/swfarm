@@ -6,16 +6,16 @@
 				<label for="location_id" class="col-sm-2 control-label">Destination</label>
 				<div id="bid-destination" class="col-sm-10"><%= destination %></div>
 			</div>
-			<div class="form-group so-field">
-				<label for="account_customer" class="col-sm-2 control-label">Customer<i class="color-danger">*</i></label>
+			<div class="form-group so-field" style="display:none;">
+				<label for="account_customer" class="col-sm-2 control-label">Customer</label>
 				<div class="col-sm-10">
 					<input type="text" maxlength="50" name="account_customer" id="account_customer" class="form-control capitalize input-sm" autocomplete="off">
 					<input type="hidden" class="form-control" id="account_id_customer" name="account_id_customer" value="">
 				</div>
 			</div>
-			<div class="form-group so-field">
-				<label for="contract_id" class="col-sm-2 control-label">Customer Contact<i class="color-danger">*</i></label>
-				<div class="col-sm-10">
+			<div class="form-group so-field" style="display:none;">
+				<label for="contract_id" class="col-sm-4 control-label" style="text-align:left">Customer Contact</label>
+				<div class="col-sm-8">
 					<select required="" name="contract_id" class="form-control contract_id width-160 input-sm" id="contract_id">
 	                    <option value="">Select contract</option>
 	                </select>

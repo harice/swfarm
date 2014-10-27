@@ -51,7 +51,6 @@ define([
 				product_stacknumber: this.collection.getOtherData('productname')+' '+this.collection.getOtherData('stacknumber'),
 				total_on_hand: this.addCommaToNumber(parseFloat(this.collection.getOtherData('onHandTons')).toFixed(4)),
 			};
-			console.log(this.collection.getOtherData('productname'));
 			var innerTemplate = _.template(stackNumberListTemplate, innerTemplateVar);
 			
 			var variables = {
@@ -64,6 +63,8 @@ define([
 		displayList: function () {
 			
 			var data = {
+				po_url: '#/'+Const.URL.PO,
+				weight_info_url: '/#/'+Const.URL.POWEIGHTINFO,
 				stacknumbers: this.collection.models,
 				_: _ 
 			};

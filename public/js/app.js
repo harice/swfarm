@@ -628,7 +628,7 @@ define([
 		         }
 		         return valid;
 		     }, $.validator.messages.email
-		);
+		);		
 		
 		$('#cl-wrapper').on('click', 'a', function () {
 			var a = $(this);

@@ -335,8 +335,8 @@ define([
 			'click .cancel-bid': 'preShowConfirmationWindow',
 			'click #confirm-cancel-po': 'cancelPO',
 			'click #confirm-cancel-bid': 'cancelPO',
-			'change #reason': 'onChangeReason',
-		},
+			'change #reason': 'onChangeReason',			
+		},		
 
 		preShowConfirmationWindow: function (ev) {
 			this.$el.find('#cancellationReasonForm #cancelled-order-id').val(this.poId);

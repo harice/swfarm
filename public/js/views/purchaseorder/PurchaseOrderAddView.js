@@ -85,6 +85,7 @@ define([
 			this.bidTransportdateStart = null;
 			this.bidTransportdateEnd = null;
 			this.bidLocationId = null;
+			this.bidContractId = null;
 			
 			this.currentProducerId = null;
 			this.currentCustomerId = null;
@@ -265,8 +266,9 @@ define([
 			this.otherInitializations();	
 
 			//Changes to hide Customer/Customer Contract fields
-			if(!this.isBid && this.model.get('location').id == Const.PO.DESTINATION.DROPSHIP)
+			if(!this.isBid && typeof this.model != "undefined" && this.model.get('location').id == Const.PO.DESTINATION.DROPSHIP){
 				this.toggleSOFields(thisObj.subContainer.find('input[name=location_id]:checked').val());
+			}
 		},
 		
 		initValidateForm: function () {
@@ -284,6 +286,7 @@ define([
 						data['transportdatestart'] = thisObj.bidTransportdateStart;
 						data['transportdateend'] = thisObj.bidTransportdateEnd;
 						data['location_id'] = thisObj.bidLocationId;
+						data['contract_id'] = thisObj.bidContractId;
 					}
 					else if(thisObj.isSaveAndCheckIn)
 						data['checkinorder'] = true;
@@ -291,10 +294,7 @@ define([
 					if(typeof data['transportdatestart'] != 'undefined')
 						data['transportdatestart'] = thisObj.convertDateFormat(data['transportdatestart'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
 					if(typeof data['transportdateend'] != 'undefined')
-						data['transportdateend'] = thisObj.convertDateFormat(data['transportdateend'], thisObj.dateFormat, 'yyyy-mm-dd', '-');
-					
-					//console.log(data);
-
+						data['transportdateend'] = thisObj.convertDateFormat(data['transportdateend'], thisObj.dateFormat, 'yyyy-mm-dd', '-');					
 
 					var purchaseOrderModel = new PurchaseOrderModel(data);
 					
@@ -1101,7 +1101,8 @@ define([
 										'Convert To Purchase Order');
 			
 			this.$el.find('#bid-destination .radio-inline:first-child input[type="radio"]').attr('checked', true);
-			//this.toggleSOFields(this.$el.find("#bid-destination .radio-inline input[type='radio']:checked").val());
+			this.$el.find('#poForm .so-field').remove();
+			this.toggleSOFields(this.$el.find("#bid-destination .radio-inline input[type='radio']:checked").val());
 			//$('#modal-with-form-confirm .i-circle.warning').remove();
 			//$('#modal-with-form-confirm h4').remove();
 			
@@ -1110,11 +1111,11 @@ define([
 			var validate = $('#convertToPOForm').validate({
 				submitHandler: function(form) {
 					var data = $(form).serializeObject();
-					//console.log(data);
 					
 					thisObj.bidTransportdateStart = data.transportdatestart;
 					thisObj.bidTransportdateEnd = data.transportdateend;
 					thisObj.bidLocationId = data.location_id;
+					thisObj.bidContractId = data.contract_id;
 					
 					thisObj.isConvertToPO = true;
 					thisObj.subContainer.find('#poForm').submit();

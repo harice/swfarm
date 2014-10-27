@@ -79,6 +79,7 @@ define([
             var contracts = this.collection.models;
 
 			var data = {
+				account_url: '#/'+Const.URL.ACCOUNT,
                 contract_url: '#/'+Const.URL.CONTRACT,
 				contract_edit_url: '#/'+Const.URL.CONTRACT+'/'+Const.CRUD.EDIT,
 				contracts: this.collection.models,

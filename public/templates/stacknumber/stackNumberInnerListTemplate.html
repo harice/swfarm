@@ -2,9 +2,9 @@
 	<% _.each(stacknumbers, function(stacknumber){ %>
 	<tr>
 		<td><%= formatDate(stacknumber.get("transactionDate")) %></td>
-		<td><% if (stacknumber.get("weightticketnumber")) { %><%= stacknumber.get("weightticketnumber") %><% } %></td>
+		<td><% if (stacknumber.get("weightticketnumber")) { %><a href="<%= weight_info_url %>/<%= stacknumber.get("ordernumber_id")%>/<%= stacknumber.get("transportschedule_id") %>"><%= stacknumber.get("weightticketnumber") %></a><% } %></td>
 		<td><%= stacknumber.get("transactionType") %></td>
-		<td><% if (stacknumber.get("ordernumber")) { %><%= stacknumber.get("ordernumber") %><% } %></td>
+		<td><% if (stacknumber.get("ordernumber")) { %><a href="<%= po_url %>/<%= stacknumber.get("ordernumber_id") %>"><%= stacknumber.get("ordernumber") %></a><% } %></td>
 		<td><%= stacknumber.get("totalDelivered") %></td>
 	</tr>
 	<% }); %>
