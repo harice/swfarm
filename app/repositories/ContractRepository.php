@@ -27,6 +27,7 @@ class ContractRepository implements ContractRepositoryInterface {
                     'contract.contract_date_end',
                     'contract.status_id',
                     'contract.created_at',
+                    'account.id as account_id',
                     'account.name as account_name'
                 )
                 ->with('salesorders', 'schedules', 'products', 'productorders', 'account', 'account.address', 'status');

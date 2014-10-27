@@ -434,8 +434,10 @@ class InventoryRepository implements InventoryRepositoryInterface {
                 $result['data'][$index]['transactionDate'] = $product['inventory']['created_at'];
                 $result['data'][$index]['transactionType'] = $product['inventory']['inventorytransactiontype']['type'];
                 $result['productname'] = $product['stack']['product_name']['name'];
+                $result['data'][$index]['ordernumber_id'] = $product['inventory']['ordernumber']['id'];
                 $result['data'][$index]['ordernumber'] = $product['inventory']['ordernumber']['order_number'];
                 $result['data'][$index]['weightticketnumber'] = $product['inventory']['weightticketnumber']['weightTicketNumber'];
+                $result['data'][$index]['weightticket_id'] = $product['inventory']['weightticketnumber']['id'];
                 if($product['inventory']['transactiontype_id'] == 3){
                      $result['data'][$index]['totalDelivered'] = "0"; //as is because its transfer
                  } else if($product['inventory']['transactiontype_id'] == 4 || $product['inventory']['transactiontype_id'] == 1){ //issue and SO
