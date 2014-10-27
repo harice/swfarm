@@ -437,7 +437,7 @@ class InventoryRepository implements InventoryRepositoryInterface {
                 $result['data'][$index]['ordernumber_id'] = $product['inventory']['ordernumber']['id'];
                 $result['data'][$index]['ordernumber'] = $product['inventory']['ordernumber']['order_number'];
                 $result['data'][$index]['weightticketnumber'] = $product['inventory']['weightticketnumber']['weightTicketNumber'];
-                $result['data'][$index]['weightticket_id'] = $product['inventory']['weightticketnumber']['id'];
+                $result['data'][$index]['transportschedule_id'] = $product['inventory']['weightticketnumber']['transportSchedule_id'];
                 if($product['inventory']['transactiontype_id'] == 3){
                      $result['data'][$index]['totalDelivered'] = "0"; //as is because its transfer
                  } else if($product['inventory']['transactiontype_id'] == 4 || $product['inventory']['transactiontype_id'] == 1){ //issue and SO

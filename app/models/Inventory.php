@@ -57,7 +57,7 @@ class Inventory extends Eloquent {
     }
 
     public function weightticketnumber(){
-        return $this->hasOne('WeightTicket', 'id', 'weightticket_id')->select(array('id', 'weightTicketNumber'));
+        return $this->hasOne('WeightTicket', 'id', 'weightticket_id')->select(array('id', 'weightTicketNumber', 'transportSchedule_id'));
     }
 
     // public function delete(){
