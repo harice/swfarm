@@ -290,7 +290,7 @@ define([
 					thisObj.subContainer.find('#distance-loaded').val('');
 					thisObj.subContainer.find('#fuelcharge').val('');
 				}
-			});
+			});			
 			
 			this.initValidateForm();
 			
@@ -871,6 +871,7 @@ define([
 		
 		showMap: function () {
 			this.googleMaps.showModalGetDestinationDistance(this.distanceMarkers);
+			this.googleMaps.initMapSearch();
 			return false;
 		},
 		

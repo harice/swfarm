@@ -9,6 +9,7 @@ define([
 	'views/base/AppView',
 	'views/base/GoogleMapsView',
 	'text!templates/dashboard/barGraphTemplate.html',
+	'text!templates/dashboard/weatherTemplate.html',
 	'global',
 	'constant',
 ], function(
@@ -22,6 +23,7 @@ define([
 	AppView, 
 	GoogleMapsView,
 	barGraphTemplate,
+	weatherTemplate,
 	Global,
 	Const
 ){
@@ -527,6 +529,37 @@ define([
 			});
 
 			googleMaps.showGetDestinationRoute(markers);					
+		},
+
+		getForecast: function(city, region, country){
+			var thisObj = this;
+			var model = this.weatherCollection.models[0];
+			var channels = model.get('query').results.channel.item;		
+
+			if(typeof channels == "undefined")
+				channels = model.get('query').results.channel[0].item;		
+			
+			var cityAddress = '';
+			var regionAddress = '';
+
+			if(city != null)
+				cityAddress = city + ' ';
+
+			if(region != null)
+				regionAddress = region + ' ';
+
+			var address = cityAddress + regionAddress + country;		
+
+			thisObj.subContainer.find('#weather-cont').append("<div class='col-md-12'><h2>" + address + "</h2></div>");
+
+			var variables = {
+				'channel': channels
+			};
+
+			_.extend(variables,Backbone.View.prototype.helpers);
+			var weatherInnerTemplate = _.template(weatherTemplate, variables);
+			thisObj.subContainer.find('#weather-cont').append(weatherInnerTemplate);
+
 		},
 	});
 

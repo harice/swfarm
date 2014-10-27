@@ -41,6 +41,7 @@ define([
 			timelineDate		: function(string) { return Backbone.View.prototype.timelineDate(string); },
 			timelineStamp		: function(string) { return Backbone.View.prototype.timelineStamp(string); },
 			serialize 			: function(string) { return Backbone.View.prototype.serialize(string); },
+			matchCondition      : function(number) { return Backbone.View.prototype.matchConditionWithFilename(number); } 
 		}
 
 		Backbone.View.prototype.serialize = function serialize(mixed_value) {
@@ -411,6 +412,160 @@ define([
 		
 		Backbone.Model.prototype.getAuth = function () {
 			return {'Authorization': 'Basic '+SessionModel.get('token')};
+		};
+
+		Backbone.View.prototype.matchConditionWithFilename = function (code) {
+			var code = parseInt(code);
+			var filename = '';
+
+			switch(code){
+				case 0:
+					filename = 'meteo_22';
+					break;
+				case 1:
+					filename = 'meteo_05';
+					break;
+				case 2:
+					filename = 'meteo_22';
+					break;					
+				case 3:
+					filename = 'meteo_03';
+					break;
+				case 4:
+					filename = 'meteo_02';
+					break;
+				case 5:
+					filename = 'meteo_06';
+					break;
+				case 6:
+					filename = 'meteo_11';
+					break;
+				case 7:
+					filename = 'meteo_05';
+					break;
+				case 8:
+					filename = 'meteo_05';
+					break;
+				case 9:
+					filename = 'meteo_12';
+					break;
+				case 10:
+					filename = 'meteo_05';
+					break;
+				case 11:
+					filename = 'meteo_12';
+					break;
+				case 12:
+					filename = 'meteo_12';
+					break;
+				case 13:
+					filename = 'meteo_06';
+					break;
+				case 14:
+					filename = 'meteo_05';
+					break;
+				case 15:
+					filename = 'meteo_06';
+					break;
+				case 16:
+					filename = 'meteo_05';
+					break;
+				case 17:
+					filename = 'meteo_05';
+					break;
+				case 18:
+					filename = 'meteo_06';
+					break;
+				case 19:
+					filename = 'meteo_22';
+					break;	
+				case 20:
+					filename = 'meteo_22';
+					break;	
+				case 21:
+					filename = 'meteo_17';
+					break;	
+				case 22:
+					filename = 'meteo_22';
+					break;	
+				case 23:
+					filename = 'meteo_22';
+					break;	
+				case 24:
+					filename = 'meteo_22';
+					break;	
+				case 25:
+					filename = 'meteo_06';
+					break;	
+				case 26:
+					filename = 'meteo_15';
+					break;	
+				case 27:
+					filename = 'meteo_19';
+					break;	
+				case 28:
+					filename = 'meteo_04';
+					break;	
+				case 29:
+					filename = 'meteo_23';
+					break;	
+				case 30:
+					filename = 'meteo_27';
+					break;	
+				case 31:
+					filename = 'meteo_25';
+					break;	
+				case 32:
+					filename = 'meteo_26';
+					break;	
+				case 33:
+					filename = 'meteo_01';
+					break;	
+				case 34:
+					filename = 'meteo_18';
+					break;	
+				case 35:
+					filename = 'meteo_05';
+					break;	
+				case 36:
+					filename = 'meteo_26';
+					break;	
+				case 37:
+					filename = 'meteo_02';
+					break;	
+				case 38:
+					filename = 'meteo_14';
+					break;
+				case 39:
+					filename = 'meteo_14';
+					break;
+				case 40:
+					filename = 'meteo_11';
+					break;
+				case 41:
+					filename = 'meteo_06';
+					break;
+				case 42:
+					filename = 'meteo_08';
+					break;
+				case 43:
+					filename = 'meteo_06';
+					break;	
+				case 44:
+					filename = 'meteo_15';
+					break;	
+				case 45:
+					filename = 'meteo_13';
+					break;	
+				case 46:
+					filename = 'meteo_05';
+					break;	
+				case 47:
+					filename = 'meteo_07';
+					break;						
+			}
+
+			return filename;
 		};
 		
 		$.fn.serializeObject = function() {
