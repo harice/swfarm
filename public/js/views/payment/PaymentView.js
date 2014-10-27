@@ -52,10 +52,40 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
+
+			this.initConfirmationWindow('Are you sure you want to delete this payment?',
+										'confirm-delete-payment',
+										'Delete Payment',
+										'Delete Payment',
+                                        'Delete Payment');
+		},
+
+		showDeletePaymentWindow: function (ev) {
+			this.showConfirmationWindow();		
+		},		
+
+		deletePayment: function () {
+			var thisObj = this;
+			
+            this.model.destroy({
+                success: function (model, response, options) {
+                    thisObj.hideConfirmationWindow('modal-confirm', function (){ 
+                    	Backbone.history.history.back(); 
+                    });
+					thisObj.displayMessage(response);
+                },
+                error: function (model, response, options) {
+                    thisObj.displayMessage(response);
+                },
+                wait: true,
+                headers: thisObj.model.getAuth(),
+            });
 		},	
 
 		events: {
-			'click #go-to-previous-page': 'goToPreviousPage',			
+			'click #go-to-previous-page': 'goToPreviousPage',		
+			'click #delete-payment': 'showDeletePaymentWindow',
+			'click #confirm-delete-payment': 'deletePayment'	
 		}
 	});
 

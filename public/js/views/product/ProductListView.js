@@ -71,7 +71,7 @@ define([
 			'change .checkall' : 'checkAll',
 			'click .delete-product': 'preShowConfirmationWindow',
 			'click #confirm-delete-product': 'deleteProduct',
-		},
+		},		
         
         checkAll: function () {
 			if($('.checkall').is(':checked')) {

@@ -85,6 +85,7 @@ define([
 			this.subContainer.find("#sl-list tbody").html(innerListTemplate);
 			this.collapseSelected();
 			this.generatePagination();
+			
 		},
 		
 		setListOptions: function () {

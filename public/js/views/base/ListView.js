@@ -82,6 +82,13 @@ define([
 			'click .search-local' : 'searchLocal',
 			'submit #searchLocal' : 'onSubmitSearchLocal',
             'change #perpage' : 'setNumPerPage',
+            'keyup #search-keyword': 'searchList'
+		},
+
+		searchList: function(ev){
+			ev.stopPropagation();
+			
+			this.searchLocal();
 		},
 		
 		gotoFirstPage: function () {

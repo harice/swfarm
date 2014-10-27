@@ -30,7 +30,8 @@
                                 <div class="clearfix"></div>
                                 <% if(!payment.get('isCancel')) { %>
                                     <a href="<%= payment_edit_url %>/<%= payment.get('id') %>" class="btn btn-primary btn-sm btn-trans btn-rad"><i class="fa fa-pencil width-10"></i> Edit</a>
-                                <% } %>                                
+                                <% } %> 
+                                <button id="delete-payment" data-id="<%= payment.get("id") %>" type="button" class="btn btn-danger btn-sm btn-rad"><i class="fa fa-times width-10"></i> Delete Payment</button>                               
                                 <a id="go-to-previous-page" href="#" class="btn btn-warning btn-sm btn-trans btn-rad"><i class="fa fa-ban width-10"></i> Cancel</a>
                             </dd>
                         </dl>

@@ -43,7 +43,7 @@ define([
         },
 
         fetchInventory: function(stackNumbers, startDate, endDate) {
-
+        	console.log(stackNumbers);
         	var stackids = '';
         	this.setDefaultURL();
         	this.urlRoot = this.urlRoot + '9?';
@@ -51,6 +51,8 @@ define([
         	for(var i = 1; i < stackNumbers.length; i++){
         		stackids += 'stackIds[]=' + stackNumbers[i] + '&';
         	};
+
+        	console.log(stackids);
 
         	this.urlRoot = this.urlRoot + stackids + '&dateStart=' + startDate + '&dateEnd=' + endDate;        	
         	this.runFetch(); 
