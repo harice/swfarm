@@ -271,10 +271,9 @@ define([
             $(".mask-fee").mask('##0.00', {reverse: true});
             $(".mask-rate").mask('#0.00', {reverse: true});
             $(".mask-admin-fee").mask('#,##0.00', {reverse: true});           
-
-            $('.zipcode').mask('00000-0000');
-          	 
-        },       
+            
+			$('zipcode').mask('00000-0000');          	 
+        },         
 
 		formatMoney: function (ev) {
 			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 2);

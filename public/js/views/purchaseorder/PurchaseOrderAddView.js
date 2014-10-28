@@ -108,7 +108,7 @@ define([
 				productSubFieldSeparator: '.',
 				removeComma: ['unitprice', 'tons', 'bales'],
 				fileFileClone: null,
-			};
+			};			
 			
 			this.destinationCollection = new DestinationCollection();
 			this.destinationCollection.on('sync', function() {	
@@ -347,7 +347,8 @@ define([
 							headers: purchaseOrderModel.getAuth(),
 						}
 					);
-				},
+				},				
+
 				invalidHandler: function (event, validator) {
 					if(thisObj.isConvertToPO) {
 						thisObj.isConvertToPO = false;
@@ -620,6 +621,8 @@ define([
 				
 				if(productFieldClassRequired[i] == 'rfv')
 					rules = {require_rfv: true};
+				else if(productFieldClassRequired[i] == 'tons')
+					rules = {non_zero: true, required: true};				
 				else
 					rules = {required: true};
 				
@@ -631,10 +634,17 @@ define([
 
 		addValidationToProductSub: function (clone) {
 			var thisObj = this;
-			var productSubFieldClassRequired = this.options.productSubFieldClassRequired;
+			var productSubFieldClassRequired = this.options.productSubFieldClassRequired;			
 			for(var i=0; i < productSubFieldClassRequired.length; i++) {
+				var rules = {};
+
+				if(productSubFieldClassRequired[i] == 'tons' || productSubFieldClassRequired[i] == 'bales' || productSubFieldClassRequired[i] == 'unitprice')
+					rules = {non_zero: true, required: true};				
+				else
+					rules = {required: true};
+
 				clone.find('.'+productSubFieldClassRequired[i]).each(function() {
-					$(this).rules('add', {required: true});
+					$(this).rules('add', rules);
 				});
 			}
 		},

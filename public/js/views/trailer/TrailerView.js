@@ -1,31 +1,35 @@
 define([
 	'backbone',
-	'views/base/AppView',
+	'views/base/ListView',
+	'collections/trailer/TrailerCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/trailer/trailerViewTemplate.html',
 	'models/trailer/TrailerModel',
 	'constant'
-], function(Backbone, AppView, contentTemplate, trailerViewTemplate, TrailerModel, Const){
+], function(Backbone, ListView, TrailerCollection, contentTemplate, trailerViewTemplate, TrailerModel, Const){
 
-	var TrailerView = AppView.extend({
+	var TrailerView = ListView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 
 		initialize: function(option) {
 			this.initSubContainer();
             this.trailerId = option.id;
+            this.currentPage = null;
 			var thisObj = this;
 
 			this.model = new TrailerModel({id:option.id});
 			this.model.on("change", function() {
-				if(thisObj.subContainerExist())
-					thisObj.displayTrailer();
+				if(thisObj.subContainerExist()){
+					thisObj.displayTrailer();					
+				}
 				this.off("change");
 			});
+			
 		},
 
 		render: function(){
 			this.model.runFetch();
-			Backbone.View.prototype.refreshTitle('Trailer','view');
+			Backbone.View.prototype.refreshTitle('Trailer','view');			
 		},
 
 		displayTrailer: function () {

@@ -45,7 +45,6 @@ define([
 			this.model.on('change', function() {
 				if(thisObj.subContainerExist()) {
 					thisObj.displayTrucker();
-					console.log(thisObj.collection.listView.currentPage);
 					thisObj.renderList(thisObj.collection.listView.currentPage);
 				}
 				this.off('change');

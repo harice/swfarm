@@ -628,6 +628,15 @@ define([
 		         }
 		         return valid;
 		     }, $.validator.messages.email
+		);
+
+		$.validator.addMethod(
+			"non_zero",
+			function(value, element){
+				var val = value.replace(/,/g, '');
+				return (val > 0) ? true : false;
+			},
+			$.validator.format("Please input a number greater than zero.")
 		);		
 		
 		$('#cl-wrapper').on('click', 'a', function () {

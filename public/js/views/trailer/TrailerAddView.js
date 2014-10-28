@@ -2,6 +2,7 @@ define([
 	'backbone',
 	'bootstrapdatepicker',
 	'views/base/AppView',
+	'views/base/ListView',
 	'jqueryvalidate',
 	'jquerytextformatter',
 	'models/trailer/TrailerModel',
@@ -13,6 +14,7 @@ define([
 ], function(Backbone,
 			DatePicker,
 			AppView,
+			ListView,
 			Validate,
 			TextFormatter,
 			TrailerModel,
@@ -125,8 +127,8 @@ define([
 
             this.model.destroy({
                 success: function (model, response, options) {
-                    thisObj.displayMessage(response);
-					Backbone.history.history.back();
+                    thisObj.displayMessage(response); 
+					Global.getGlobalVars().app_router.navigate(Const.URL.TRAILER, {trigger: true});
                 },
                 error: function (model, response, options) {
                     thisObj.displayMessage(response);

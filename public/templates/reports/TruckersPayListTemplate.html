@@ -65,12 +65,12 @@
             </div>
             <div class="col-md-2 text-right">
                 <h3 class="margin-top-0 margin-bottom-5"><strong><samp><%= formatDateBy(cur_date, 'F d, Y') %></samp></strong></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><strong><samp><%= truckers.get('bales') %></samp></strong></h3>              
-                <h3 class="margin-top-0 margin-bottom-5"><strong><samp><%= truckers.get('pounds') %></samp></strong></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><strong><samp><%= truckers.get('tons') %></samp></strong></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><strong><samp>$ <%= truckers.get('hauling') %></samp></strong></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><strong><samp>$ <%= truckers.get('handling') %></samp></strong></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><strong><samp>$ <%= truckers.get('fuelcharge') %></samp></strong></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><strong><samp><%= numberFormatBales(truckers.get('bales')) %></samp></strong></h3>              
+                <h3 class="margin-top-0 margin-bottom-5"><strong><samp><%= numberFormatLbs(truckers.get('pounds')) %></samp></strong></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><strong><samp><%= numberFormatTons(truckers.get('tons')) %></samp></strong></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><strong><samp>$ <%= numberFormat(truckers.get('hauling')) %></samp></strong></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><strong><samp>$ <%= numberFormat(truckers.get('handling')) %></samp></strong></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><strong><samp>$ <%= numberFormat(truckers.get('fuelcharge')) %></samp></strong></h3>
                 <h3 class="margin-top-0 margin-bottom-5"><strong><span class="text-danger"><samp>- $ <%= numberFormat(truckers.get('adminfee')) %></samp></span></strong></h3>
                 <h3 class="margin-top-0 margin-bottom-5"><strong><span class="text-danger"><samp>- $ <%= numberFormat(truckers.get('trailerrent')) %></samp></span></strong></h3>
                 <h3 class="margin-top-5"><strong><span class="text-danger"><samp>- $ <%= numberFormat(truckers.get('loadingfee')) %></samp></span></strong></h3>

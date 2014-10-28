@@ -174,6 +174,7 @@ define([
 						null, 
 						{
 							success: function (model, response, options) {
+								console.log("Success");
 								thisObj.displayMessage(response);
 								Backbone.history.history.back();
 							},

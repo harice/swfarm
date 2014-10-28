@@ -128,7 +128,7 @@ define([
             this.model.destroy({
                 success: function (model, response, options) {
                     thisObj.displayMessage(response);
-					Backbone.history.history.back();
+					Global.getGlobalVars().app_router.navigate(Const.URL.SCALE, {trigger: true});
                 },
                 error: function (model, response, options) {
                     thisObj.displayMessage(response);

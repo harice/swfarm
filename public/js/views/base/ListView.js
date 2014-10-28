@@ -180,7 +180,8 @@ define([
 		setNumPerPage: function (ev) {
 			this.collection.setNumPerPage($(ev.target).val());
 			this.renderList(1);
-		}
+		},
+		
 	});
 
   return ListView;
