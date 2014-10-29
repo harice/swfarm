@@ -3,13 +3,16 @@
 namespace APIv1;
 
 use BaseController;
+use Input;
 use SyncInterface;
+use AccountRepositoryInterface;
 
 class SyncController extends BaseController {
 
-	public function __construct(SyncInterface $sync)
+	public function __construct(SyncInterface $sync, AccountRepositoryInterface $account)
 	{
 		$this->sync = $sync;
+		$this->account = $account;
 	}
 
 	/**
@@ -20,7 +23,25 @@ class SyncController extends BaseController {
 	 */
 	public function show($type)
 	{
-		return $this->sync->syncing($type);
+		switch ($type) {
+			case 'account':
+				return $this->account->getAllAccounts(Input::all());
+				break;
+			
+			default:
+				return $this->sync->syncing($type);
+				break;
+		}
+	}
+
+
+	public function store()
+	{
+		switch ($type) {
+			case 'account':
+				$this->account->accountSync(Input::all());
+				break;
+		}
 	}
 
 
