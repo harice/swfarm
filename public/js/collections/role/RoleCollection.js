@@ -2,16 +2,28 @@ define([
 	'backbone',
 	'collections/base/ListViewCollection',
 	'models/role/RoleModel',
-], function(Backbone, ListViewCollection, RoleModel){
+	'constant'
+], function(Backbone, ListViewCollection, RoleModel, Const){
 	var RoleCollection = ListViewCollection.extend({
 		url: '/apiv1/roles',
 		model: RoleModel,
-		options: {
+		listView: {
+			numPerPage: Const.MAXITEMPERPAGE,
 			currentPage: 1,
 			maxItem: 0,
+			search: '',
+			currentSort: 'name',
+			sort: {
+				name: true,
+			},
+			filters: {},
+			filter: '',
+			date: '',
+			lookUpIds: {},			
+			searchURLForFilter: true,
+			otherData:{},
 		},
 		initialize: function(){
-			this.runInit();
 			this.setDefaultURL('/apiv1/roles');
 		},
 		

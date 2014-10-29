@@ -31,7 +31,7 @@ define([
 		
 		render: function(){
 			this.displayRole();
-			this.renderList(1);
+			this.renderList(this.collection.listView.currentPage);
 			Backbone.View.prototype.refreshTitle('Roles','list');
 		},
 		
@@ -80,7 +80,7 @@ define([
             roleModel.destroy({
                 success: function (model, response, options) {
                     thisObj.displayMessage(response);
-                    thisObj.renderList(1);
+                    thisObj.renderList(thisObj.collection.listView.currentPage);
                 },
                 error: function (model, response, options) {
                     thisObj.displayMessage(response);
