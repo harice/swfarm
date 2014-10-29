@@ -23,7 +23,7 @@ Route::group(array('prefix' => 'apiv1'), function()
 
 Route::group(array('prefix' => 'apiv1', 'before' => 'basic'), function()
 {
-    Route::resource('sync','APIv1\SyncController', array('only' => array('show')));
+    Route::resource('sync','APIv1\SyncController', array('only' => array('show','store')));
 });
 
 /* API ROUTES */
@@ -239,10 +239,6 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokeniz
     Route::put('payment/cancel/{id}', 'APIv1\PaymentController@cancel');
     Route::resource('payment', 'APIv1\PaymentController');
 
-
-    //iPad Syncing API
-    Route::post('sync/account', 'APIv1\SyncController@accountSync');
-    Route::get('sync/account', 'APIv1\SyncController@getAllAccounts');
 });
 
 Route::group(array('before' => 'auth.session'),function(){

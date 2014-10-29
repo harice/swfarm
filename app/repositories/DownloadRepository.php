@@ -86,6 +86,34 @@ class DownloadRepository implements DownloadInterface
 							}
 							break;
 
+						case 'weight-ticket':
+							if(!$this->filterParams($q,array('filterId'))) { 
+								if($mail) return false;
+								else $_404 = true;
+								break; 
+							}
+
+							$weight_o = $this->generateWeightTicket($q['filterId']);
+							// return Response::json($weight_o);
+							if($weight_o) {
+								$pdf = PDF::loadView('pdf.base', array('child' => View::make('pdf.weightticket',array('weight_o'=>$weight_o))));
+								if($mail) {
+									$_pathtoFile = storage_path('queue/'.$weight_o->weightTicketNumber.'.pdf');
+									$_data['pathtofile'] = $_pathtoFile;
+									$_data['display_name'] = $weight_o->weightTicketNumber;
+									$_data['mime'] = 'application/pdf';
+									$_data['subject'] = 'Weight Ticket : '. $weight_o->weightTicketNumber;
+									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
+
+									$pdf->save($_pathtoFile);
+									return $this->processMail($q,$_data);
+								} else return $pdf->stream($weight_o->weightTicketNumber.'.pdf');
+							} else {
+								if($mail) return false;
+								else $_404 = true;
+							}
+							break;
+
 						case 'producer-statement':
 							if(!$this->filterParams($q,array('filterId'))) { 
 								if($mail) return false;
@@ -106,7 +134,7 @@ class DownloadRepository implements DownloadInterface
 
 									$pdf->save($_pathtoFile);
 									return $this->processMail($q,$_data);
-								} else return $pdf->stream('SOA-'.$report_o->name.'.pdf');
+								} else return $pdf->stream('SOA-'.$report_o->name.'.pdf');     
 							} else { 
 								if($mail) return false;
 								else $_404 = true;
@@ -2089,6 +2117,16 @@ class DownloadRepository implements DownloadInterface
 		$report_a['commission'] = $report_o->toArray();
 		$report_a['amount'] = $amount_i;
         return $this->parse($report_a);
+	}
+
+	private function generateWeightTicket($id) {
+		return WeightTicket::with('transportschedule.order')
+				->with('weightticketscale_pickup.scale.account')
+				->with('weightticketscale_pickup.weightticketproducts')
+				->with('weightticketscale_dropoff.scale.account')
+				->with('weightticketscale_dropoff.weightticketproducts')
+				->where('id','=',$id)
+				->first();
 	}
 
 	private function generateBetweenDates($_params = array()) {
