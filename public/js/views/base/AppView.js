@@ -240,7 +240,6 @@ define([
 		},
 
 		goToPreviousPage: function () {
-            console.log('go to previous page');
 			var fragment = Backbone.history.fragment;
 			var arrayFragment = fragment.split('/');
 

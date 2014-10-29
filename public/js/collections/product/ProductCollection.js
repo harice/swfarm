@@ -2,22 +2,30 @@ define([
 	'backbone',
 	'collections/base/ListViewCollection',
 	'models/product/ProductModel',
-], function(Backbone, ListViewCollection, ProductModel){
+	'constant'
+], function(Backbone, ListViewCollection, ProductModel, Const){
 	var ProductCollection = ListViewCollection.extend({
 		url: '/apiv1/product',
 		model: ProductModel,
+		listView: {
+			numPerPage: Const.MAXITEMPERPAGE,
+			currentPage: 1,
+			maxItem: 0,
+			search: '',
+			currentSort: 'name',
+			sort: {
+				name: true,
+			},
+			filters: {},
+			filter: '',
+			date: '',
+			lookUpIds: {},			
+			searchURLForFilter: true,
+			otherData:{},
+		},
 
 		initialize: function(){
-			this.runInit();
-			this.setDefaultURL('/apiv1/product');
-			this.setSortOptions(
-				{
-					currentSort: 'name',
-					sort: {
-						name: true,
-					},
-				}
-			);
+			this.setDefaultURL('/apiv1/product');			
 		},
 
 		getAllModel: function () {

@@ -1,13 +1,14 @@
 define([
 	'backbone',
+	'views/base/AppView',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/product/productViewTemplate.html',
 	'models/product/ProductModel',
 	'global',
 	'constant',
-], function(Backbone, contentTemplate, productViewTemplate, ProductModel, Global, Const){
+], function(Backbone, AppView, contentTemplate, productViewTemplate, ProductModel, Global, Const){
 
-	var ProductView = Backbone.View.extend({
+	var ProductView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 		
 		initialize: function(option) {

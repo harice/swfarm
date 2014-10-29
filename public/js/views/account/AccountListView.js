@@ -24,7 +24,7 @@ define([
 			this.model.on('change', function() {
 				if(thisObj.subContainerExist()) {
 					thisObj.displayAccount();
-					thisObj.renderList(1);
+					thisObj.renderList(thisObj.collection.listView.currentPage);
 				}
 				this.off('change');
 			});
@@ -42,6 +42,7 @@ define([
 		
 		render: function(){
 			this.model.runFetch();
+			this.renderList(this.collection.listView.currentPage);
 			Backbone.View.prototype.refreshTitle('Accounts','list');
 		},
 		
@@ -61,6 +62,8 @@ define([
 										'confirm-delete-account',
 										'Delete',
 										'Delete Account');
+
+			this.setListOptions();
 		},
 		
 		displayList: function () {
@@ -75,6 +78,17 @@ define([
 			this.subContainer.find("#account-list tbody").html(innerListTemplate);
 			
 			this.generatePagination();
+		},
+
+		setListOptions: function () {
+			var options = this.collection.listView;
+			//console.log(options);
+			
+			if(options.search != '')
+				this.$el.find('#search-keyword').val(options.search);
+
+			if(options.filters.type != '')
+				this.$el.find('[name="accounttypeFilter"][value="'+options.filters.type+'"]').attr('checked', true);
 		},
 		
 		events: {
@@ -123,7 +137,7 @@ define([
             accountModel.destroy({
                 success: function (model, response, options) {
                     thisObj.displayMessage(response);
-                    thisObj.renderList(1);
+                    thisObj.renderList(thisObj.collection.listView.currentPage);
                 },
                 error: function (model, response, options) {
                     thisObj.displayMessage(response);

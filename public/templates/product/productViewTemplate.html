@@ -1,23 +1,37 @@
-<div class="row">
-    <div class="col-md-12">
+<div class="row margin-top-0">
+    <div class="col-md-12 no-padding">
         <div class="block-flat">
-
-            <dl class="dl-horizontal">
-                <dt>Description</dt>
-                <dd>
-                    <% if (product.get("description") != "") { %>
-                    <%= product.get("description") %>
-                    <% } else { %>
-                    &nbsp;
-                    <% } %>
-                </dd>
-                <dt></dt>
-                <dd>
-                    <div class="clearfix"></div>
-                    <a href="<%= product_edit_url %>/<%= product.get("id") %>" class="btn btn-primary">Edit</a>
-                    <button data-toggle="modal" data-target="#mod-success" type="button" class="btn btn-link">Delete</button>
-                </dd>
-            </dl>
+            <div class="content padding-top-0">
+                <div class="row margin-top-0">
+                    <div class="col-md-12">
+                        <h2 class="margin-top-10 margin-bottom-0"><%= product.get("name") %></h2>
+                        <div class="progress width-500 margin-bottom-0 margin-top-10 height-3">
+                            <div style="width: %" class="progress-bar progress-bar-success"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <dl class="dl-horizontal">
+                            <dt>Description</dt>
+                            <dd>
+                                <% if (product.get("description") != "") { %>
+                                <%= product.get("description") %>
+                                <% } else { %>
+                                &nbsp;
+                                <% } %>
+                            </dd>
+                            <dt></dt>
+                            <dd>
+                                <div class="clearfix"></div>
+                                <a href="<%= product_edit_url %>/<%= product.get("id") %>" class="btn btn-primary btn-trans btn-rad btn-sm"><i class="fa fa-pencil width-10"></i>Edit</a>
+                                <button data-toggle="modal" data-target="#mod-success" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i>Delete</button>
+                                <a class="btn btn-warning btn-trans btn-rad btn-sm" href="#" id="go-to-previous-page"><i class="fa fa-ban width-10"></i> Cancel</a>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
 
             <!-- Modal -->
             <div class="modal fade" id="mod-success" tabindex="-1" role="dialog">

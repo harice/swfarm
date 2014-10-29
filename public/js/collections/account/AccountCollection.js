@@ -2,23 +2,32 @@ define([
 	'backbone',
 	'collections/base/ListViewCollection',
 	'models/account/AccountModel',
-], function(Backbone, ListViewCollection, AccountModel){
+	'constant'
+], function(Backbone, ListViewCollection, AccountModel, Const){
 	var AccountCollection = ListViewCollection.extend({
 		url: '/apiv1/account',
 		model: AccountModel,
-		
+		listView: {
+			numPerPage: Const.MAXITEMPERPAGE,
+			currentPage: 1,
+			maxItem: 0,
+			search: '',
+			currentSort: 'name',
+			sort: {
+				name: true,
+				accounttype:true,
+			},
+			filters: {
+				type: ''
+			},
+			filter: '',
+			date: '',
+			lookUpIds: {},			
+			searchURLForFilter: true,
+			otherData:{},
+		},
 		initialize: function(){
-			this.runInit();
-			this.setDefaultURL('/apiv1/account');
-			this.setSortOptions(
-				{
-					currentSort: 'name',
-					sort: {
-						name: true,
-						accounttype:true,
-					},
-				}
-			);
+			this.setDefaultURL('/apiv1/account');			
 		},
 		
 		getTruckerAccountsByAccountType: function (id) {

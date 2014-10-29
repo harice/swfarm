@@ -138,7 +138,6 @@ define([
 		},
 		
 		gotoPage: function (ev) {
-            
 			var page = $(ev.target).attr('data-pagenum');
 			if(this.collection.getCurrentPage() != page) {
 				this.collection.setCurrentPage(page);
@@ -162,7 +161,7 @@ define([
 			
 			return false;
 		},
-		
+
 		searchLocal: function () {
 			var keyword = $('#search-keyword').val();
 			

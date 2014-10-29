@@ -1,7 +1,7 @@
 <% if (!_.isEmpty(products)) { %>
   <% _.each(products, function(product){ %>
     <tr>
-      <td valign="top"><%= product.get("name") %></td>
+      <td valign="top"><a href="<%= product_url %>/<%= product.get('id') %>"><%= product.get("name") %></a></td>
       <td><p style="word-wrap: break-word; max-width: 520px;"><%= product.get("description") %></p></td>
       <td valign="top">
         <a href="<%= product_edit_url %>/<%= product.get("id") %>" class="text-primary">

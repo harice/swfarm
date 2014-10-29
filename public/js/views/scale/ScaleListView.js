@@ -42,7 +42,7 @@ define([
 		
 		render: function(){
 			this.displayScale();
-			this.renderList(1);
+			this.renderList(this.collection.listView.currentPage);
 			Backbone.View.prototype.refreshTitle('Scale','list');
 		},
 		
@@ -64,6 +64,8 @@ define([
 										'confirm-delete-scale',
 										'Delete',
 										'Delete Scale');
+
+			this.setListOptions();
 		},
 		
 		displayList: function () {
@@ -78,6 +80,15 @@ define([
 			this.subContainer.find("#scale-list tbody").html(innerListTemplate);
 			
 			this.generatePagination();
+		},
+
+		setListOptions: function () {
+			var options = this.collection.listView;
+			//console.log(options);
+			
+			if(options.search != '')
+				this.$el.find('#search-keyword').val(options.search);
+			
 		},
 		
 		events: {
@@ -109,7 +120,7 @@ define([
             scaleModel.destroy({
                 success: function (model, response, options) {
                     thisObj.displayMessage(response);
-                    thisObj.renderList(1);
+                    thisObj.renderList(thisObj.collection.listView.currentPage);
                 },
                 error: function (model, response, options) {
                     thisObj.displayMessage(response);

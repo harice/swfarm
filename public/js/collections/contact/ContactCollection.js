@@ -2,23 +2,31 @@ define([
 	'backbone',
 	'collections/base/ListViewCollection',
 	'models/contact/ContactModel',
-], function(Backbone, ListViewCollection, ContactModel){
+	'constant'
+], function(Backbone, ListViewCollection, ContactModel, Const){
 	var ContactCollection = ListViewCollection.extend({
         url: '/apiv1/contact',
 		model: ContactModel,
+		listView: {
+			numPerPage: Const.MAXITEMPERPAGE,
+			currentPage: 1,
+			maxItem: 0,
+			search: '',
+			currentSort: 'lastname',
+			sort: {
+				lastname: true,
+						account: true,
+			},
+			filters: {},
+			filter: '',
+			date: '',
+			lookUpIds: {},			
+			searchURLForFilter: true,
+			otherData:{},
+		},
 		
 		initialize: function(){
-			this.runInit();
-			this.setDefaultURL('/apiv1/contact');
-			this.setSortOptions(
-				{
-					currentSort: 'lastname',
-					sort: {
-						lastname: true,
-						account: true,
-					},
-				}
-			);
+			this.setDefaultURL('/apiv1/contact');			
 		},
 		
 		getContactsByAccountId: function (id) {
