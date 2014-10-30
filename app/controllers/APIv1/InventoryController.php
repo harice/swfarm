@@ -39,7 +39,15 @@ class InventoryController extends BaseController {
 	public function store()
 	{
 		$response = $this->repo->store( Input::all() );
-        return Response::json($response);
+	    if(is_array($response)){
+	        if(isset($response['error']) && $response['error'] == true){
+	            return Response::json($response, 500);
+	        } else {
+	            return Response::json($response);
+	        }
+	    } else {
+	    	return Response::json($response);
+	    }
 	}
 
 	/**
