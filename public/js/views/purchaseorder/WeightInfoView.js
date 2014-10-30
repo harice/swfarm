@@ -8,6 +8,7 @@ define([
 	'models/purchaseorder/PurchaseOrderModel',
 	'models/purchaseorder/POScheduleModel',
 	'models/purchaseorder/POWeightInfoModel',
+	'models/queue/QueueModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/purchaseorder/weightInfoViewTemplate.html',
@@ -22,6 +23,7 @@ define([
 			PurchaseOrderModel,
 			POScheduleModel,
 			POWeightInfoModel,
+			QueueModel,
 			contentTemplate,
 			purchaseOrderTabbingTemplate,
 			weightInfoViewTemplate,
@@ -128,45 +130,54 @@ define([
 		},
                 
         showMailForm: function() {
-            this.initModalForm('',
-                'confirm-mail-weight-ticket',
-                'Send',
-                'Send Email',
-                false);
-            this.showModalForm();
-            
-            return false;
-        },
-                
-        mailWeightTicket: function(ev) {
-            
-            var thisObj = this;
-            var formData = {
-                weightticket: $('#mail-weight-ticket-form input[name=weightticket]').prop('checked'),
-                loadingticket: $('#mail-weight-ticket-form input[name=loadingticket]').prop('checked'),
-                recipients: $('#mail-weight-ticket-form input[name=recipient]').val()
-            };
-			
-			var weightInfoModel = new POWeightInfoModel({id:this.schedId});
-			weightInfoModel.setEmailURL();
-			weightInfoModel.save(
-				formData,
-				{
-					success: function (model, response, options) {
-						thisObj.displayMessage(response);
-					},
-					error: function (model, response, options) {
-						if(typeof response.responseJSON.error === 'undefined')
-							alert(response.responseJSON);
-						else
-							thisObj.displayMessage(response);
-					},
-					headers: weightInfoModel.getAuth()
-				}
+        	var thisObj = this;	
+            this.initSendMailForm(
+				"Send Mail as PDF",
+				'confirm-mail-weight-ticket',
+				'Send',
+				'Send Email',
+				'weight-ticket',
+				'pdf',
+				thisObj.model.id
 			);
-                
+
+			var validate = $('#sendmail-form').validate({
+				submitHandler: function(form) {
+					var data = $(form).serializeObject();
+					var queue = new QueueModel(data);
+					queue.save(
+						null, 
+						{
+							success: function (model, response, options) {
+								thisObj.displayMessage(response);
+								$('#mdl_sendmail').modal('hide');
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: queue.getAuth(),
+						}
+					);
+				},
+				rules: {
+					recipients: {
+						multiemail: true,
+					},
+				}
+			});
+
+			this.showModalForm('mdl_sendmail');
+            
             return false;
         },
+
+        mailWeightTicket: function() {
+			$('#sendmail-form').submit();
+			return false;
+		},                     
 		
 		showCloseWeightTicketConfirmationWindow: function (ev) {
 			this.initConfirmationWindow('Are you sure you want to close this weight ticket?',

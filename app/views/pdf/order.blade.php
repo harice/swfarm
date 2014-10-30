@@ -96,7 +96,7 @@
 					<tbody>
 					{? $t_price = 0 ?}
 					{? $t_tons = 0 ?}
-					{? $t_bales = 0 ?}
+					{? $t_bales = 0 ?}					
 					@if (sizeof($order->productsummary) > 0)
 						@foreach ($order->productsummary as $products)
 							@if (intval($order->ordertype) === 1)

@@ -110,7 +110,8 @@ define([
 			
 			this.model = new PurchaseOrderModel({id:this.poId});
 			this.model.on('change', function() {
-				if(parseInt(this.get('isfrombid')) == 1 && this.get('status').name.toLowerCase() == 'pending') {
+				//if(parseInt(this.get('isfrombid')) == 1 && this.get('status').name.toLowerCase() == 'pending') {
+				if(parseInt(this.get('isfrombid')) == 1) {
 					thisObj.isBid = true;
 					thisObj.h1Title = 'Bid';
 					Backbone.View.prototype.refreshTitle(thisObj.h1Title,'view');
