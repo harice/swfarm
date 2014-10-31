@@ -172,8 +172,9 @@ define([
 		},
 
 		initMapSearch: function(){
-			var thisObj = this;
-			var input = document.getElementById(this.inputIdSetSearch);
+			var thisObj = this;						
+
+			var input = document.getElementById(this.inputIdSetSearch);		
 			this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 			
 			var autocomplete = new google.maps.places.Autocomplete(input);
@@ -221,8 +222,9 @@ define([
 		
 		initDropMarker: function (limit) {
 			var thisObj = this;
+			var options = {limit: limit};
 			google.maps.event.addListener(this.map, 'click', function(event) {
-				thisObj.addMarker(event.latLng, limit);
+				thisObj.addMarker(event.latLng, options);
 			});
 		},
 		
@@ -243,12 +245,14 @@ define([
 					
 					for(var i = 0; i < distanceMarkers.length; i++) {
 						var locationFrom = new google.maps.LatLng(distanceMarkers[i].latitudeFrom, distanceMarkers[i].longitudeFrom);
-						thisObj.addMarker(locationFrom, thisObj.googleMapsDestinationMarkerLimit);
+						var options = {limit: thisObj.googleMapsDestinationMarkerLimit}
+						thisObj.addMarker(locationFrom, options);
 						thisObj.loadedDistances.push(distanceMarkers[i].isLoadedDistance);
 						
 						if(i == distanceMarkers.length - 1) {
 							var locationTo = new google.maps.LatLng(distanceMarkers[i].latitudeTo, distanceMarkers[i].longitudeTo);
-							thisObj.addMarker(locationTo, thisObj.googleMapsDestinationMarkerLimit);
+							var options = {limit: thisObj.googleMapsDestinationMarkerLimit}
+							thisObj.addMarker(locationTo, options);
 						}
 					}
 					
@@ -269,12 +273,14 @@ define([
 				
 				for(var i = 0; i < distanceMarkers.length; i++) {
 					var locationFrom = new google.maps.LatLng(distanceMarkers[i].latitudeFrom, distanceMarkers[i].longitudeFrom);
-					thisObj.addMarker(locationFrom, thisObj.googleMapsDestinationMarkerLimit);
+					var options = { limit: thisObj.googleMapsDestinationMarkerLimit }
+					thisObj.addMarker(locationFrom, options);
 					thisObj.loadedDistances.push(distanceMarkers[i].isLoadedDistance);
 					
 					if(i == distanceMarkers.length - 1) {
 						var locationTo = new google.maps.LatLng(distanceMarkers[i].latitudeTo, distanceMarkers[i].longitudeTo);
-						thisObj.addMarker(locationTo, thisObj.googleMapsDestinationMarkerLimit);
+						var options = { limit: thisObj.googleMapsDestinationMarkerLimit };
+						thisObj.addMarker(locationTo, options);
 					}
 				}
 				
@@ -282,15 +288,15 @@ define([
 			}
 		},
 		
-		showModalGetLocation: function (marker) {
+		showModalGetLocation: function (marker) {			
 			var thisObj = this;	
-
+			var options = {draggableMarker: marker.draggableMarker};
 			this.shownModalCallback = function () {
 				thisObj.removeMarkers();
 				
 				if(marker.lat != '' && marker.lng != '') {
-					var location = new google.maps.LatLng(marker.lat, marker.lng);
-					thisObj.addMarker(location);
+					var location = new google.maps.LatLng(marker.lat, marker.lng);					
+					thisObj.addMarker(location, options);					
 				}
 				
 				thisObj.centerMap();
@@ -299,7 +305,7 @@ define([
 			this.showModal(this.modalIdGetLocation);
 		},
 		
-		showModalSetLocation: function (markers) {
+		showModalSetLocation: function (markers, options) {
 			var thisObj = this;
 
 			this.shownModalCallback = function () {
@@ -321,7 +327,13 @@ define([
 					
 					var location = new google.maps.LatLng(markers[i].lat, markers[i].lng);
 					
-					var marker = thisObj.addMarker(location);
+					if(typeof options != "undefined" && typeof options.draggableMarker != "undefined"){
+						options.draggableMarker = false;
+						var marker = thisObj.addMarker(location, options);
+					}						
+					else
+						var marker = thisObj.addMarker(location);
+						
 					thisObj.attachInfoWindow(marker, infoWindow);
 				}
 				
@@ -370,18 +382,22 @@ define([
 			$('#'+id).modal('show');
 		},
 		
-		addMarker: function (location, limit) {
-			
-			var marker = null;
-			
-			if(limit == 1) {
+		addMarker: function (location, options) {
+			var draggable = true;
+			var marker = null;	
+
+			if(typeof options != "undefined" && typeof options.draggableMarker != "undefined")
+				draggable = options.draggableMarker;		
+
+									
+			if(typeof options != "undefined" && options.limit == 1) {					
 				if(typeof this.markers[0] !== 'undefined' && this.markers[0] != null)
 					this.markers[0].setMap(null)
 				
 				marker = new google.maps.Marker({
 					position: location, 
 					map: this.map,
-					draggable:true,
+					draggable: draggable,
 					animation: google.maps.Animation.DROP,
 					icon:icon,
 				});
@@ -391,25 +407,25 @@ define([
 				else
 					this.markers.push(marker);
 			}
-			else if((limit != null && this.markers.length < limit) || limit == null){
+			else {
 				var icon;
-				
-				if(this.markers.length < this.markerIconAlphabets.length && limit != null)
-					icon = this.markerIconAlphabetPre + this.markerIconAlphabets[this.markers.length] + this.markerIconAlphabetPost;
+
+				if(typeof options != "undefined" && options.limit != null && this.markers.length < options.limit)
+					icon = this.markerIconAlphabetPre + this.markerIconAlphabets[this.markers.length] + this.markerIconAlphabetPost;									
 				else
 					icon = this.markerIconDefault;
 				
 				marker = new google.maps.Marker({
 					position: location, 
 					map: this.map,
-					draggable:true,
+					draggable: draggable,
 					animation: google.maps.Animation.DROP,
 					icon:icon,
 				});
 				
 				this.markers.push(marker);
 			}
-			
+				
 			//console.log('lat: '+this.markers[this.markers.length-1].getPosition().lat());
 			
 			return marker;
@@ -467,6 +483,8 @@ define([
 
 						if($("#addAccountForm").length > 0)
 							this.updateAddress(returnData);
+						else if($("#locationForm").length > 0)
+							this.updateSectionCoordinates(returnData);
 					}																			
 
 					break;
@@ -539,6 +557,18 @@ define([
 		      });
 		    }
 		   				
+		},
+
+		updateSectionCoordinates: function(data){
+			var index = $('#google-maps-modal-getlocation').attr('data-id');	
+
+			var lat = data.location.k;
+			var lng = data.location.B;
+			var latField = '.latitude[name="latitude.'+ index +'"]';
+			var lngField = '.longitude[name="longitude.'+ index +'"]';
+		
+			$(latField).val(lat);
+		    $(lngField).val(lng);			
 		},
 		
 		calcRoute: function () { //console.log('calcRoute');

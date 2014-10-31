@@ -1,12 +1,13 @@
 define([
-	'backbone',
+	'backbone',	
 	'views/base/AppView',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/account/accountViewTemplate.html',
+	'text!templates/account/tabsAccountTypesTemplate.html',
 	'models/account/AccountModel',
 	'global',
 	'constant',
-], function(Backbone, AppView, contentTemplate, accountViewTemplate, AccountModel, Global, Const){
+], function(Backbone, AppView, contentTemplate, accountViewTemplate, tabsAccountTypesTemplate, AccountModel, Global, Const){
 
 	var AccountView = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
@@ -48,13 +49,13 @@ define([
 										'confirm-delete-account',
 										'Delete',
                                         'Delete Account');
-		},
+		},	
 
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #delete-account': 'showDeleteConfirmationWindow',
 			'click #confirm-delete-account': 'deleteAccount',
-		},
+		},		
 
 		showDeleteConfirmationWindow: function () {
 			this.showConfirmationWindow();

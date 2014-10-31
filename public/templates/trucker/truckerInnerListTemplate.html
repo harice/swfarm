@@ -5,9 +5,13 @@
 		<td><%= trucker.get("account_name") %></td>
 
 		<td>
-        <% _.each(trucker.get("account").accounttype, function(type) { %>
-            <span class="label label-default margin-right-3"><%= type.name %></span>
-        <% }) %>
+        <% _.each(trucker.get("account").accounttype, function(type) {
+        	if(type.id == truckertypes.HAULER || type.id == truckertypes.OPERATOR || type.id == truckertypes.SWFTRUCKER){
+        	%>
+            	<span class="label label-default margin-right-3"><%= type.name %></span>
+        	<% }
+
+    	}) %>
         </td>
 
 		<td>$ <%= numberFormat(trucker.get("fee")) %></td>

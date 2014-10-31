@@ -1,0 +1,9 @@
+<ul class="nav nav-tabs inner-tabs-menu">
+	<% _.each(tabs, function(tab){ %>
+	<li <% if (typeof tab.active != "undefined") { %>class="active"<% } %>>
+		<a class="account-tab" href="<%= tab.url %>" data-num="<%= tab.data_num %>" data-toggle="tab">
+			<%= tab.label %>
+		</a>
+	</li>
+	<% }); %>
+</ul>

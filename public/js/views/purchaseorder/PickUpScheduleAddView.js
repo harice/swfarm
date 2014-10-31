@@ -871,7 +871,6 @@ define([
 		
 		showMap: function () {
 			this.googleMaps.showModalGetDestinationDistance(this.distanceMarkers);
-			this.googleMaps.initMapSearch();
 			return false;
 		},
 		

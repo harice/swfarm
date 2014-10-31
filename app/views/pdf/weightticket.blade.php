@@ -1,9 +1,9 @@
 <h1 class='margin-top-30 margin-bottom-30'>Weight Ticket</h1>
 <h2><span class='text-danger'>No.:</span> {{ $weight_o->weightTicketNumber }}</h2>
-Created: <span class="text-danger">{{ $weight_o->created_at }}</span><br />
+Created: <span class="text-danger">{{ strtoupper(date('d M Y h:i A',strtotime($weight_o->created_at))) }}</span><br />
 Status: <span class="text-danger">{{ $weight_o->status->name }}</span><br />
 Order No: <span class="text-danger">{{ $weight_o->transportschedule->order->order_number }}</span><br />
-Scheduled Date: <span class="text-danger">{{ strtoupper(date('d M Y',strtotime($weight_o->transportschedule->date))) }}</span><br /><br />
+Scheduled Date: <span class="text-danger">{{ strtoupper(date('d M Y h:i A',strtotime($weight_o->transportschedule->date))) }}</span><br /><br />
 
 @if (sizeof($weight_o->weightticketscale_pickup) > 0)
 <h3 class="margin-top-30">Pickup Ticket</h3>

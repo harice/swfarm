@@ -8,6 +8,7 @@ define([
 	'models/salesorder/SalesOrderModel',
 	'models/salesorder/SOScheduleModel',
 	'models/salesorder/SOWeightInfoModel',
+	'models/queue/QueueModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/purchaseorder/purchaseOrderTabbingTemplate.html',
 	'text!templates/salesorder/weightInfoViewTemplate.html',
@@ -24,6 +25,7 @@ define([
 			SalesOrderModel,
 			SOScheduleModel,
 			SOWeightInfoModel,
+			QueueModel,
 			contentTemplate,
 			purchaseOrderTabbingTemplate,
 			weightInfoViewTemplate,
@@ -83,7 +85,9 @@ define([
 				dropoff_weight_info_edit_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.EDIT+'/'+Const.WEIGHTINFO.DROPOFF,
 				dropoff_weight_info_add_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.ADD+'/'+Const.WEIGHTINFO.DROPOFF,
 				previous_so_sched_url: '#/'+Const.URL.DELIVERYSCHEDULE+'/'+this.soId,
-                weight_info_print_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.PRINT,
+                //weight_info_print_url: '#/'+Const.URL.SOWEIGHTINFO+'/'+thisObj.soId+'/'+thisObj.schedId+'/'+Const.CRUD.PRINT,
+
+                weight_info_print_url: Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:thisObj.model.id, type:'pdf', model:'weight-ticket'})),
                 so: this.salesOrderModel,
                 schedule: this.soScheduleModel,
                 wi: this.model,
@@ -141,44 +145,53 @@ define([
         },
                 
         showMailForm: function() {
-            this.initModalForm('',
-                'confirm-mail-weight-ticket',
-                'Send',
-                'Send Email',
-                false);
-            this.showModalForm();
+            var thisObj = this;	
+            this.initSendMailForm(
+				"Send Mail as PDF",
+				'confirm-mail-weight-ticket',
+				'Send',
+				'Send Email',
+				'weight-ticket',
+				'pdf',
+				thisObj.model.id
+			);
+
+			var validate = $('#sendmail-form').validate({
+				submitHandler: function(form) {
+					var data = $(form).serializeObject();
+					var queue = new QueueModel(data);
+					queue.save(
+						null, 
+						{
+							success: function (model, response, options) {
+								thisObj.displayMessage(response);
+								$('#mdl_sendmail').modal('hide');
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: queue.getAuth(),
+						}
+					);
+				},
+				rules: {
+					recipients: {
+						multiemail: true,
+					},
+				}
+			});
+
+			this.showModalForm('mdl_sendmail');
             
             return false;
         },
                 
         mailWeightTicket: function(ev) {
-            
-            var thisObj = this;
-            var formData = {
-                weightticket: $('#mail-weight-ticket-form input[name=weightticket]').prop('checked'),
-                loadingticket: $('#mail-weight-ticket-form input[name=loadingticket]').prop('checked'),
-                recipients: $('#mail-weight-ticket-form input[name=recipient]').val()
-            };
-			
-			var weightInfoModel = new SOWeightInfoModel({id:this.schedId});
-			weightInfoModel.setEmailURL();
-			weightInfoModel.save(
-				formData,
-				{
-					success: function (model, response, options) {
-						thisObj.displayMessage(response);
-					},
-					error: function (model, response, options) {
-						if(typeof response.responseJSON.error === 'undefined')
-							alert(response.responseJSON);
-						else
-							thisObj.displayMessage(response);
-					},
-					headers: weightInfoModel.getAuth()
-				}
-			);
-                
-            return false;
+            $('#sendmail-form').submit();
+			return false;
         },
 		
 		showCloseWeightTicketConfirmationWindow: function (ev) {

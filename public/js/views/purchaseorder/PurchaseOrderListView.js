@@ -353,10 +353,15 @@ define([
 		},
 		
 		generateOrderWeightDetailsByStack: function (models, poId) {
+			var purchaseOrderModel = this.collection.get({id: poId});			
+			var locationId = purchaseOrderModel.get('location_id');
+
 			var data = {
 				stacks: models,
 				schedule_url: '/#/'+Const.URL.PICKUPSCHEDULE+'/'+poId,
 				weight_info_url: '/#/'+Const.URL.POWEIGHTINFO+'/'+poId,
+				poDestination: Const.PO.DESTINATION,
+				location: locationId,
 				_: _ 
 			};
 

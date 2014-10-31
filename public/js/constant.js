@@ -156,6 +156,11 @@ define(function () {
 				'PRODUCER': 'Stack Address',
 				'CUSTOMER': 'Delivery Address',
 			},
+			'TRUCKERS': {
+				'HAULER': 2,
+				'OPERATOR': 4,	           
+	            'SWFTRUCKER': 9,
+			}
 		},
 		'PO': {
 			'PICKUPSCHEDULE': {

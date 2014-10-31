@@ -317,8 +317,8 @@ define([
 
 					for(var i = 0; i < data.length; i++) {						
 						graphXData.push([i, data[i].name]); 
-						d[0].data.push([i, data[i].totalTonsDelivered]);										
-						d[1].data.push([i, data[i].totalTonsOrdered]);										
+						d[0].data.push([i, (data[i].totalTonsDelivered).replace(/,/g,'')]);										
+						d[1].data.push([i, (data[i].totalTonsOrdered).replace(/,/g,'')]);										
 					}					
 							
 					graphData = d;
@@ -332,6 +332,10 @@ define([
 						if(id == Const.GRAPH.ID.YEARTODATESALES) {
 							graphXData.push([i, data[i].account]); 
 							d.push([i, data[i].totalSales]); 
+						}
+						else if(id == Const.GRAPH.ID.INVENTORY) {
+							graphXData.push([i, data[i].label]); 
+							d.push([i, (data[i].value).replace(/,/g,'')]); 
 						}
 						else {							
 							graphXData.push([i, data[i].label]); 
@@ -373,7 +377,7 @@ define([
 				default:
 					var d = [];
 					for(var i = 0; i < data.length; i++) {									
-						d.push([i, data[i].value]);
+						d.push([i, (data[i].value).replace(/,/g,'')]);
 						graphXData.push([i, data[i].label]); 
 					}
 					

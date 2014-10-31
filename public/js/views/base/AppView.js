@@ -398,21 +398,43 @@ define([
             }
         },
 
-		generatePOTabs: function (poId, selectedIndex) {
-			if(selectedIndex == null || typeof selectedIndex == 'undefined')
-				selectedIndex = 1;
+		generatePOTabs: function (poId, selectedIndex) {			
+			var thisObj = this;	
 
-			var thisObj = this;
+			if(selectedIndex == null || typeof selectedIndex == 'undefined')
+				selectedIndex = 1;			
+
+			// if(locId == Const.PO.DESTINATION.SWFARMS){
+			// 	var tabs = [
+			// 		{'url':'/#/'+Const.URL.PO+'/'+poId, 'label':'PO Details', 'icon':'fa-file-text-o'},
+			// 		{'url':'/#/'+Const.URL.PICKUPSCHEDULE+'/'+poId, 'label':'Schedules', 'icon':'fa-clock-o'},
+			// 		{'url':'/#/'+Const.URL.POWEIGHTINFO+'/'+poId, 'label':'Weight Tickets', 'icon':'fa-ticket'},
+			// 	];
+
+			// 	for(var i = 0; i < tabs.length; i++) {					
+			// 		if((i+1) == selectedIndex)
+			// 			tabs[i]['active'] = true;
+			// 	}
+			// }
+			// else {
+			// 	var tabs = [
+			// 		{'url':'/#/'+Const.URL.PO+'/'+poId, 'label':'PO Details', 'icon':'fa-file-text-o'},					
+			// 	];
+
+			// 	tabs[0]['active'] = true;
+			// }
+
 			var tabs = [
 				{'url':'/#/'+Const.URL.PO+'/'+poId, 'label':'PO Details', 'icon':'fa-file-text-o'},
 				{'url':'/#/'+Const.URL.PICKUPSCHEDULE+'/'+poId, 'label':'Schedules', 'icon':'fa-clock-o'},
 				{'url':'/#/'+Const.URL.POWEIGHTINFO+'/'+poId, 'label':'Weight Tickets', 'icon':'fa-ticket'},
 			];
 
-			for(var i = 0; i < tabs.length; i++) {
+			for(var i = 0; i < tabs.length; i++) {					
 				if((i+1) == selectedIndex)
 					tabs[i]['active'] = true;
 			}
+
 			//console.log(tabs);
 			return this.generateTabs(tabs, '#/'+Const.URL.PO, 'Back To PO List');
 		},

@@ -148,14 +148,15 @@ define([
 			var element = $(ev.currentTarget);
 			var id = element.attr('data-id');	
 			var lat = '';
-			var lng = '';	
-			
+			var lng = '';				
+
 			var model = new StackLocationModel({id:id});
 			model.fetch({
 				success: function(model,response,options){
 					if(model.get('latitude') && model.get('longitude')) {
 						var markers = [{accountName:model.get('account_name'),name:model.get('name'),totalTons: model.get('totalTons'),lat:model.get('latitude'),lng:model.get('longitude')}];
-						thisObj.googleMaps.showModalSetLocation(markers);
+						var draggable = {draggableMarker: false};
+						thisObj.googleMaps.showModalSetLocation(markers, draggable);
 					}
 					else
 						thisObj.displayGritter('Map location not set for this stack location. Edit this stack location and add a map location.');	
@@ -170,6 +171,7 @@ define([
 		showMapAll: function (ev) {
 			var markers = [];
 			var i = 0;
+			var options = {draggableMarker: false};
 			
 			_.each(this.collection.models, function (model) {
 				if(model.get('latitude') && model.get('longitude')) {					
@@ -177,7 +179,7 @@ define([
 				}
 			});
 			
-			this.googleMaps.showModalSetLocation(markers);
+			this.googleMaps.showModalSetLocation(markers, options);
 		},
 		
 		destroySubViews: function () {

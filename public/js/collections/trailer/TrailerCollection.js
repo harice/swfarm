@@ -27,7 +27,7 @@ define([
         
 		initialize: function(option){
 			this.setDefaultURL('/apiv1/trailer');			
-		}
+		},		
 	});
 
 	return TrailerCollection;

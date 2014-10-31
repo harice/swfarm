@@ -42,8 +42,8 @@ define([
 			this.options = {
 				sectionFieldClone: null,
 				sectionFieldCounter: 0,
-				sectionFieldClass: ['name', 'description', 'id'],
-				sectionFieldClassRequired: ['name'],
+				sectionFieldClass: ['name', 'description', 'latitude', 'longitude', 'id', 'map'],
+				sectionFieldClassRequired: ['name', 'latitude', 'longitude'],
 				sectionFieldExempt: [],
 				sectionFieldSeparator: '.',
 				removeComma: [],
@@ -91,9 +91,12 @@ define([
 
 			this.googleMaps = new GoogleMapsView();
 			this.googleMaps.initGetMapLocation(function (data) {
+				var index = $('#' + thisObj.googleMaps.modalIdGetLocation).attr('data-id');
 				if(typeof data.location !== 'undefined') {
-					thisObj.subContainer.find('#latitude').val(data.location.lat());
-					thisObj.subContainer.find('#longitude').val(data.location.lng());
+					if(typeof index == "undefined"){
+						thisObj.subContainer.find('#latitude').val(data.location.lat());
+						thisObj.subContainer.find('#longitude').val(data.location.lng());
+					}
 				}
 				else {
 					thisObj.subContainer.find('#latitude').val('');
@@ -151,9 +154,9 @@ define([
 
 				this.$el.find('#section-list tbody').append(sectionTemplate);
 				var sectionItem = this.$el.find('#section-list tbody').find('.section-item:first-child');
-				this.options.sectionFieldClone = sectionItem.clone();
+				this.options.sectionFieldClone = sectionItem.clone();				
 				this.addIndexToSectionFields(sectionItem);
-				clone = sectionItem;
+				clone = sectionItem;			
 			}
 			else {
 				var clone = this.options.sectionFieldClone.clone();
@@ -163,14 +166,25 @@ define([
 
 			this.addValidationToSection();
 			return clone;
-		},
+		},		
 
 		addIndexToSectionFields: function (sectionItem) {
 			var sectionFieldClass = this.options.sectionFieldClass;
 			for(var i=0; i < sectionFieldClass.length; i++) {
 				var field = sectionItem.find('.'+sectionFieldClass[i]);
-				var name = field.attr('name');
-				field.attr('name', name + this.options.sectionFieldSeparator + this.options.sectionFieldCounter);
+				if(sectionFieldClass[i] == 'map'){
+					field.attr('data-id', this.options.sectionFieldCounter);
+				}
+				else{ 	
+					var name = field.attr('name');	
+					var fieldname = name + this.options.sectionFieldSeparator + this.options.sectionFieldCounter;
+					field.attr('name', fieldname);	
+
+					if(sectionFieldClass[i] == 'latitude' || sectionFieldClass[i] == 'longitude'){						
+						var value = $('#'+sectionFieldClass[i]).val();							
+						field.val(value);
+					}									
+				}
 			}
 
 			this.options.sectionFieldCounter++;
@@ -203,7 +217,8 @@ define([
 			'click #confirm-delete-sl': 'deleteStockLocation',
 			'change #account_id': 'generateAddress',
 			'click #map': 'showMap',
-			'change #address': 'setCoordinates'
+			'change #address': 'setCoordinates',
+			'click .map': 'showSectionMap'
 		},
 
 		generateAddress: function (){
@@ -318,8 +333,9 @@ define([
 		},
 
 
-		showMap: function () {
+		showMap: function (ev) {			
 			var thisObj = this;
+			this.$el.find($("#"+this.googleMaps.modalIdGetLocation).removeAttr('data-id'));
 			var addressVal = this.subContainer.find("#address").val();
 			var address = this.subContainer.find("#address option:selected").text();			
 
@@ -336,8 +352,8 @@ define([
 			   if (geocoder) {
 			      geocoder.geocode({ 'address': address }, function (results, status) {
 			         if (status == google.maps.GeocoderStatus.OK) {
-			         	$("#map").next('.error-msg-cont').fadeOut();			         	
-			            thisObj.googleMaps.showModalGetLocation({lat: results[0].geometry.location.k, lng: results[0].geometry.location.B});			            
+			         	$("#map").next('.error-msg-cont').fadeOut();
+			            thisObj.googleMaps.showModalGetLocation({lat: results[0].geometry.location.k, lng: results[0].geometry.location.B, draggableMarker: false});			            
 			         }
 			         else {
 			         	$("#map").next('.error-msg-cont').fadeOut();
@@ -347,6 +363,15 @@ define([
 			   }
 			}
 
+		},
+
+		showSectionMap: function(ev){
+			var index = $(ev.target).attr('data-id');
+			var lat = $('.latitude[name="latitude.'+ index +'"]').val();
+			var lng = $('.longitude[name="longitude.'+ index +'"]').val();
+
+			this.$el.find($("#"+this.googleMaps.modalIdGetLocation).attr('data-id', index));
+			this.googleMaps.showModalGetLocation({lat: lat, lng: lng, draggableMarker: true});			            
 		},
 
 		setCoordinates: function () {
@@ -363,7 +388,8 @@ define([
 		         	$("#map").next('.error-msg-cont').fadeOut();
 		         	$("#latitude").val(results[0].geometry.location.k);
 		            $("#longitude").val(results[0].geometry.location.B);
-
+		            $(".latitude").val(results[0].geometry.location.k);
+		            $(".longitude").val(results[0].geometry.location.B);
 		         }
 		         else {
 		         	$("#map").next('.error-msg-cont').fadeOut();
