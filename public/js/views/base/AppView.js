@@ -398,42 +398,31 @@ define([
             }
         },
 
-		generatePOTabs: function (poId, selectedIndex) {			
+		generatePOTabs: function (poId, selectedIndex, locId) {			
 			var thisObj = this;	
 
 			if(selectedIndex == null || typeof selectedIndex == 'undefined')
 				selectedIndex = 1;			
 
-			// if(locId == Const.PO.DESTINATION.SWFARMS){
-			// 	var tabs = [
-			// 		{'url':'/#/'+Const.URL.PO+'/'+poId, 'label':'PO Details', 'icon':'fa-file-text-o'},
-			// 		{'url':'/#/'+Const.URL.PICKUPSCHEDULE+'/'+poId, 'label':'Schedules', 'icon':'fa-clock-o'},
-			// 		{'url':'/#/'+Const.URL.POWEIGHTINFO+'/'+poId, 'label':'Weight Tickets', 'icon':'fa-ticket'},
-			// 	];
+			if(locId == Const.PO.DESTINATION.SWFARMS){
+				var tabs = [
+					{'url':'/#/'+Const.URL.PO+'/'+poId, 'label':'PO Details', 'icon':'fa-file-text-o'},
+					{'url':'/#/'+Const.URL.PICKUPSCHEDULE+'/'+poId, 'label':'Schedules', 'icon':'fa-clock-o'},
+					{'url':'/#/'+Const.URL.POWEIGHTINFO+'/'+poId, 'label':'Weight Tickets', 'icon':'fa-ticket'},
+				];
 
-			// 	for(var i = 0; i < tabs.length; i++) {					
-			// 		if((i+1) == selectedIndex)
-			// 			tabs[i]['active'] = true;
-			// 	}
-			// }
-			// else {
-			// 	var tabs = [
-			// 		{'url':'/#/'+Const.URL.PO+'/'+poId, 'label':'PO Details', 'icon':'fa-file-text-o'},					
-			// 	];
-
-			// 	tabs[0]['active'] = true;
-			// }
-
-			var tabs = [
-				{'url':'/#/'+Const.URL.PO+'/'+poId, 'label':'PO Details', 'icon':'fa-file-text-o'},
-				{'url':'/#/'+Const.URL.PICKUPSCHEDULE+'/'+poId, 'label':'Schedules', 'icon':'fa-clock-o'},
-				{'url':'/#/'+Const.URL.POWEIGHTINFO+'/'+poId, 'label':'Weight Tickets', 'icon':'fa-ticket'},
-			];
-
-			for(var i = 0; i < tabs.length; i++) {					
-				if((i+1) == selectedIndex)
-					tabs[i]['active'] = true;
+				for(var i = 0; i < tabs.length; i++) {					
+					if((i+1) == selectedIndex)
+						tabs[i]['active'] = true;
+				}
 			}
+			else {
+				var tabs = [
+					{'url':'/#/'+Const.URL.PO+'/'+poId, 'label':'PO Details', 'icon':'fa-file-text-o'},					
+				];
+
+				tabs[0]['active'] = true;
+			}			
 
 			//console.log(tabs);
 			return this.generateTabs(tabs, '#/'+Const.URL.PO, 'Back To PO List');

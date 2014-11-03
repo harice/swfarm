@@ -64,9 +64,7 @@ define([
 			this.isBid = false;
 			this.h1Title = 'Purchase Order';
 			this.h1Small = 'view';
-			
-			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generatePOTabs(this.poId, 1)}));
-			
+								
 			this.productAutoCompletePool = [];
 			this.options = {
 				productFieldClone: null,
@@ -142,6 +140,8 @@ define([
 		},		
 		
 		displayForm: function () {
+			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generatePOTabs(this.poId, 1, this.model.get('location_id'))}));
+
 			var thisObj = this;
 			
 			var innerTemplateVariables = {

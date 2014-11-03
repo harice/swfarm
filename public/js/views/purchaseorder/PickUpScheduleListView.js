@@ -29,9 +29,7 @@ define([
 			this.initSubContainer();
 			
 			this.poId = option.id;
-			var thisObj = this;
-			
-			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generatePOTabs(this.poId, 2)}));
+			var thisObj = this;				
 			
 			this.collection = new POScheduleCollection({id:option.id});
 			this.collection.on('sync', function() {
@@ -57,7 +55,9 @@ define([
 			Backbone.View.prototype.refreshTitle('Pickup Schedule','list');
 		},
 		
-		displaySchedule: function () {
+		displaySchedule: function () {			
+			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generatePOTabs(this.poId, 2, this.model.get('location_id'))}));
+
 			var innerTemplateVar = {
 				po_schedule_add_url : '#/'+Const.URL.PICKUPSCHEDULE+'/'+this.poId+'/'+Const.CRUD.ADD,
 				po_list_url: '#/'+Const.URL.PO,

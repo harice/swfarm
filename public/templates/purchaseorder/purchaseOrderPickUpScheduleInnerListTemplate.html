@@ -32,9 +32,9 @@
 			<%= schedule.get("destinationloader").lastname %>, <%= schedule.get("destinationloader").firstname %> <%= schedule.get("destinationloader").suffix %>
 			</a>
 		</td>
-		<td>
+		<td>			
 			<a href="<%= po_weight_info_url %>/<%= schedule.get("id") %>" title="weight info">
-			 	<span class="fa-stack">
+			 	<span class="fa-stack <% if(!_.isEmpty(schedule.get('weightticket'))){ %> text-success <% } %>">
 					<i class="fa fa-square fa-stack-2x"></i>
 					<i class="fa fa-ticket fa-stack-1x fa-inverse"></i>
 				</span>

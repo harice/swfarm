@@ -58,6 +58,8 @@ define([
 		},
 		
 		displaySchedule: function () {
+			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generatePOTabs(this.poId, 3, this.model.get('location_id'))}));
+
 			var innerTemplateVar = {};
 			
 			var innerTemplate = _.template(weightInfoListTemplate, innerTemplateVar);

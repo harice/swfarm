@@ -41,9 +41,7 @@ define([
 			this.poId = option.poId;
 			this.schedId = option.schedId;
 			this.h1Title = 'Weight Info';
-			this.h1Small = 'view';
-			
-			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generatePOTabs(this.poId, 3)}));
+			this.h1Small = 'view';				
 			
 			this.purchaseOrderModel = new PurchaseOrderModel({id:this.poId});
 			this.purchaseOrderModel.on('change', function() {
@@ -73,6 +71,8 @@ define([
 		},
 		
 		displayForm: function () {
+			this.subContainer.html(_.template(purchaseOrderTabbingTemplate, {'tabs':this.generatePOTabs(this.poId, 3, this.purchaseOrderModel.get('location_id'))}));
+
 			var thisObj = this;			
 			
 			var innerTemplateVariables = {

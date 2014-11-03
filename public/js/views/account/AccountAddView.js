@@ -46,7 +46,7 @@ define([
 				addressFieldClone: null,
 				addressFieldCounter: 0,
 				addressFieldClass: ['type', 'street', 'state', 'city', 'zipcode', 'country', 'id', 'latitude', 'longitude'],
-				addressFieldClassRequired: ['street', 'state', 'city', 'zipcode'],
+				addressFieldClassRequired: ['street', 'state', 'city', 'zipcode', 'latitude', 'longitude'],
 				addressFieldSeparator: '.',
 				addressTypeUniqueForCustomer: null,
 				addressTypeUniqueForProducer: null,
