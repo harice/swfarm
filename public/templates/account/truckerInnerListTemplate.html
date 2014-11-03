@@ -1,0 +1,13 @@
+<% if (!_.isEmpty(truckers)) { %>
+	<% _.each(truckers, function(trucker){ %>
+	<tr>
+        <td><a href="<%= trucker_url %>/<%= trucker.get('id') %>"><%= trucker.get("trucknumber") %></a></td>
+		<td><%= accountName %></td>
+		<td>$ <%= numberFormat(trucker.get("fee")) %></td>		
+	</tr>
+	<% }); %>
+<% } else { %>
+	<tr>
+		<td colspan="5">No result found.</td>
+	</tr>
+<% } %>

@@ -1,0 +1,12 @@
+<% if (!_.isEmpty(trailers)) { %>
+	<% _.each(trailers, function(trailer){ %>
+	<tr>
+		<td><a href="<%= trailer_url %>/<%= trailer.get('id') %>"><%= trailer.get("number") %></a></td>
+        <td><%= accountName %></td>		
+	</tr>
+	<% }); %>
+<% } else { %>
+	<tr>
+		<td colspan="2">No result found.</td>
+	</tr>
+<% } %>

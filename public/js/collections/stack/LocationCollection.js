@@ -1,11 +1,32 @@
 define([
 	'backbone',
-	'collections/base/AppCollection',
+	'collections/base/ListViewCollection',
 	'models/stack/StackLocationModel',
-], function(Backbone, AppCollection, StackLocationModel){
-	var LocationCollection = AppCollection.extend({
+	'constant',
+], function(Backbone, ListViewCollection, StackLocationModel, Const){
+	var LocationCollection = ListViewCollection.extend({
 		url: '/apiv1/storagelocation/locationlist',
 		model: StackLocationModel,
+		listView: {
+			numPerPage: Const.MAXITEMPERPAGE,
+			currentPage: 1,
+			maxItem: 0,
+			search: '',
+			currentSort: 'account_name',
+			sort: {
+				name: true,
+                account_name: true
+			},
+			filters: {},
+			filter: '',
+			date: '',
+			lookUpIds: {},
+			collapseId: null,
+			collapseLatestId: null,
+			searchURLForFilter: true,
+			otherData:{},
+		},
+
 		initialize: function() {
 			this.setDefaultURL(this.url);
 		},

@@ -160,6 +160,12 @@ define(function () {
 				'HAULER': 2,
 				'OPERATOR': 4,	           
 	            'SWFTRUCKER': 9,
+			},
+			'ADMIN': {
+				'WAREHOUSE': 10,
+				'TRAILER': 7,
+				'TRUCKER': 9,
+				'SCALE': 6
 			}
 		},
 		'PO': {
