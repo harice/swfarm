@@ -1201,6 +1201,7 @@ class DownloadRepository implements DownloadInterface
 	                                        'order.order_number',
 	                                        'order.location_id',
 	                                        'order.updated_at as orderUpdateAt',
+	                                        'order.totalPayment as payment',
 	                                        'weightticketnumber',
 	                                        'productorder.id as productorderId',
 	                                        'productorder.unitprice',
@@ -1218,11 +1219,12 @@ class DownloadRepository implements DownloadInterface
         $report_a['report_date'] = $_dateBetween;
         $report_a['scale_fees'] = 0.00;
         $report_a['amount'] = 0.00;
+        $report_a['payment'] = 0.00;
 
         if(sizeof($report_a['storagelocation']) == 0) return $this->parse($report_a);
 
-        $weightticket_a = array();
-	    $scale_i = $amount_i = 0.00;
+        $weightticket_a = $order_a = array();
+	    $scale_i = $amount_i = $payment_i = 0.00;
 	    foreach ($report_a['storagelocation'] as $skey => $storagelocation_a) {
 	        if(sizeof($storagelocation_a['section']) == 0) break;
 	        $prev_key = 0;
@@ -1377,6 +1379,8 @@ class DownloadRepository implements DownloadInterface
 		               
 	            	}
 
+	            	$order_a[$product_a['orderId']] = $product_a['payment'];
+
 	            	if(intval($prev_key) == 0)
 	                	$prev_key = $next_key;
 	                else {
@@ -1385,6 +1389,12 @@ class DownloadRepository implements DownloadInterface
 	                }
 	            }
 	        }
+	    }
+
+	    if(sizeof($order_a) > 0 ) {
+	    	foreach ($order_a as $key => $value) {
+	    		$report_a['payment'] = bcadd($report_a['payment'], $value,2);
+	    	}
 	    }
 
 	    $report_a['scale_fees'] = $scale_i;
