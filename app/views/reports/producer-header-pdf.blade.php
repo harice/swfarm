@@ -18,9 +18,14 @@
 		<br>
 		Total Load Count:
 		<br><br>
-		Total Amount:
+		Amount:
 		<br>
 		Less (Scale Fees):
+		<br>
+		<hr>
+		Amount Due:
+		<br>
+		Less (Payment):
 		<br>
 		<hr>
 		Total Amount Due:
@@ -36,6 +41,11 @@
 		<br>
 		<hr>
 		<strong class='padding-right-5'>$ {{ number_format(($report_o->amount - $report_o->scale_fees), 2, '.', ',') }}</strong>
+		<br>
+		<span class='text-danger'>- $ {{ number_format($report_o->payment, 2, '.', ',') }}</span>
+		<br>
+		<hr>
+		<strong class='padding-right-5'>$ {{ number_format(($report_o->amount - $report_o->scale_fees - $report_o->payment), 2, '.', ',') }} </strong>
 	</div>
 
 	<span class='clear'></span>

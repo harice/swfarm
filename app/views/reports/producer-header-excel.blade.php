@@ -23,7 +23,7 @@
 	<tr>
 		<td colspan='3'>{{ $report_o->businessaddress->city }}, {{ $report_o->businessaddress->state->state_code }} {{ $report_o->businessaddress->zipcode }}</td>
 		<td></td>
-		<td colspan='2'>Total Amount:</td>
+		<td colspan='2'>Amount:</td>
 		<td colspan='3' align='right'><strong>$ {{ number_format($report_o->amount, 2, '.', ',') }}</strong></td>
 	</tr>
 	<tr>
@@ -35,8 +35,20 @@
 	<tr>
 		<td colspan='3'></td>
 		<td></td>
-		<td colspan='2' style='background-color:#d7e4c0;'>Total Amount Due:</td>
+		<td colspan='2' style='background-color:#d7e4c0;'>Amount Due:</td>
 		<td colspan='3' align='right' style='background-color:#d7e4c0;'><strong>$ {{ number_format(($report_o->amount - $report_o->scale_fees), 2, '.', ',') }}</strong></td>
+	</tr>
+	<tr>
+		<td colspan='3'></td>
+		<td></td>
+		<td colspan='2'>Less (Payment):</td>
+		<td colspan='3' align='right'><strong style='font-color:red;'>- $ {{ number_format($report_o->payment, 2, '.', ',') }}</strong></td>
+	</tr>
+	<tr>
+		<td colspan='3'></td>
+		<td></td>
+		<td colspan='2' style='background-color:#d7e4c0;'>Total Amount Due:</td>
+		<td colspan='3' align='right' style='background-color:#d7e4c0;'><strong>$ {{ number_format(($report_o->amount - $report_o->scale_fees - $report_o->payment), 2, '.', ',') }}</strong></td>
 	</tr>
 </table>
 

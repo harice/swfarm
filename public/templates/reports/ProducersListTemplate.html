@@ -50,16 +50,21 @@
             <div class="col-md-2 col-md-offset-4 text-right">
                 <h3 class="margin-top-0 margin-bottom-5"><samp>Statement Date:</samp></h3>
                 <h3 class="margin-top-0 margin-bottom-5"><samp>Total Load Count:</samp></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><samp>Total Amount:</samp></h3>                 
-                <h3 class="margin-top-5"><samp>Less (Scale Fees):</samp></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><samp>Amount:</samp></h3>                 
+                <h3 class="margin-top-0 margin-bottom-5"><samp>Less (Scale Fees):</samp></h3>
+                <h3 class="margin-top-10 margin-bottom-5"><strong><label class="label label-success"><samp>Amount Due:</samp></label></strong></h3>
+                <h3 class="margin-top-5"><samp>Less (Payment):</samp></h3>
                 <h3 class="margin-top-5"><strong><label class="label label-success"><samp>Total Amount Due:</samp></label></strong></h3>
             </div>
             <div class="col-md-2 text-right">
                 <h3 class="margin-top-0 margin-bottom-5"><samp><%= formatDateBy(cur_date, 'F d, Y') %></samp></h3>
                 <h3 class="margin-top-0 margin-bottom-5"><samp><%= producers.get('total_load') %></samp></h3>
                 <h3 class="margin-top-0 margin-bottom-5"><samp>$ <%= numberFormat(producers.get('amount')) %></samp></h3>
-                <h3 class="margin-top-5"><span class="text-danger"><samp>- $ <%= numberFormat(producers.get('scale_fees')) %></samp></span></h3>
-                <h3 class="margin-top-5"><strong><label class="label label-success"><samp>$ <%= numberFormatTons(producers.get('amount') - producers.get('scale_fees'))  %></samp></label></strong></h3>
+                <h3 class="margin-top-0 margin-bottom-5"><span class="text-danger"><samp>- $ <%= numberFormat(producers.get('scale_fees')) %></samp></span></h3>
+                <% var amount_due = producers.get('amount') - producers.get('scale_fees') %>
+                <h3 class="margin-top-10 margin-bottom-5"><strong><label class="label label-success"><samp>$ <%= numberFormat(amount_due)  %></samp></label></strong></h3>
+                <h3 class="margin-top-5"><span class="text-danger"><samp>- $ <%= numberFormat(producers.get('payment')) %></samp></span></h3>                
+                <h3 class="margin-top-5"><strong><label class="label label-success"><samp>$ <%= numberFormat(amount_due - producers.get('payment'))  %></samp></label></strong></h3>
             </div>                 
         </div>
         <% if (!_.isEmpty(producers.get('storagelocation'))) { %>          

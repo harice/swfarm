@@ -627,10 +627,16 @@ define([
 						thisObj.directionDistance = directionDistance;
 						$('#distance-list tbody').html(legDisplay);
 						$('#direction-map').text(directionDistance.toFixed(2));
-					}
-					else
-						console.log('error direction service');
-						
+					}					
+					else if (status == google.maps.DirectionsStatus.MAX_WAYPOINTS_EXCEEDED) {
+						if($("#google-maps-modal-getdd").length > 0)
+							$("<span class='error-msg-cont padding-top-5'><label class='error'>Waypoints exceeded limit!</label></span>").insertAfter($(".modal-body .table-responsive"));
+						else if($("#dashboard_logistics").length > 0)
+							$('.graph-cont[data-id="10"]').find('.header').prepend("<span class='error-msg-cont pull-right padding-top-5'><label class='error'>Waypoints exceeded limit!</label></span>");
+					}	
+					else 
+						console.log("Direction Service: Error!");							
+					
 					thisObj.loadedDistances = [];
 				});
 			}
