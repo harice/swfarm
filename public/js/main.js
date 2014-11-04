@@ -12,7 +12,7 @@ require.config({
 		jqueryphonenumber: 'libs/jquery/jquery.phonenumber',
 		bootstrap: 'libs/bootstrap/bootstrap.min',
 		bootstrapdatepicker: 'libs/bootstrap/bootstrap-datepicker',
-		jqueryflot: 'libs/jquery.flot/jquery.flot.min',
+		jqueryflot: 'libs/jquery.flot/jquery.flot',
 		jqueryflotresize: 'libs/jquery.flot/jquery.flot.resize.min',
 		jqueryflotlabels: 'libs/jquery.flot/jquery.flot.labels',
 		jqueryflotstackpercent: 'libs/jquery.flot/jquery.flot.stackpercent',

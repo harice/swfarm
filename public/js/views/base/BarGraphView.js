@@ -90,31 +90,31 @@ define([
 		    this.plotHover(id, label, decimals);
 		},
 
-		graphStackedData: function(id, data, xData, label, decimals) {		
+		graphStackedData: function(id, data, xData, label, decimals) {	
 			var options = {
 		        series: {
 		            stackpercent: true,
 		            bars: {
+		            	numbers :{
+		                    show: true,
+		                    xAlign: function(x) { return x; },
+							yAlign: function(y) { return y - 1; },	
+							font: '7pt Arial',	
+							fontColor: '#ffffff',															
+							showDataValue: true,
+							label: label
+		                },
 		                show: true,
 		                barWidth: 0.6,
 		                lineWidth: 1,
 		                hoverable:false,
 		                fillColor: {
 		                    colors:[
-		                    	{opacity: .5 },
-		                    	{opacity: .6 }
+		                    	{opacity: .8 },
+		                    	{opacity: .8 }
 		                    ]
 		                },
-		                align: "center",
-		                numbers :{
-		                    show: true,
-		                    xAlign: function(x) { return x; },
-							yAlign: function(y) { return y - 1; },	
-							font: '7pt Arial',	
-							fontColor: '#000000',															
-							showDataValue: true,
-							label: label
-		                },
+		                align: "center",		                
 		            }
 		        },
 		        legend : {
@@ -202,12 +202,13 @@ define([
                         order:1,                     
                         numbers: {
 		            		show:true,
-		            		xAlign: function(x,a) { return x + .15; },
+		            		xAlign: function(x,a) { return x + .20; },
 		            		yAlign: function(y,a) { return y; },
 							showDataValue: true,
 							label: label
 		            	}
                     },
+                    yPositionAdjustLabel: data[0].yPositionAdjustLabel
                 }
             };
 
@@ -320,7 +321,7 @@ define([
 						graphXData.push([i, data[i].name]); 
 						del = parseFloat(data[i].totalTonsDelivered);
 						d[0].data.push([i, del]);	
-						bal = parseFloat(data[i].totalTonsOrdered - data[i].totalTonsDelivered);									
+						bal = parseFloat(data[i].totalTonsOrdered - data[i].totalTonsDelivered);
 						d[1].data.push([i, bal]);										
 					}					
 							
@@ -374,7 +375,7 @@ define([
 						d[1].data.push([x + .4, (data[keys[x]].outgoing).replace(/,/g,'')]);
 					}
 				
-					graphData.push({ data:d, yPositionAdjustLabel: -15 });
+					graphData.push({ data:d, yPositionAdjustLabel: -10 });
 
 					break;
 				default:
