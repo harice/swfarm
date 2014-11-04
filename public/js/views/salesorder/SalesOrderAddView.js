@@ -1005,7 +1005,7 @@ define([
 		
 		usePOData: function () {
 			var thisObj = this;
-			var contract = this.POProductsModel.get('contractnumber');
+			var contract = this.POProductsModel.get('contractnumber');			
 			var address = [];
 			address.push({
 				street:contract.accountname.businessaddress.street,

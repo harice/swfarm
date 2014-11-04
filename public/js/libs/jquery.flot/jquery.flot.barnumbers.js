@@ -44,7 +44,11 @@
             var ctx = plot.getCanvas().getContext('2d');
             var offset = plot.getPlotOffset();
             ctx.textBaseline = "top";
-            ctx.textAlign = "center";
+            ctx.textAlign = "center"; 
+            ctx.fillStyle = 'black';  
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 1;
+            ctx.font = series.bars.numbers.font;       
             alignOffset = series.bars.align === "left" ? series.bars.barWidth / 2 : 0;
             xAlign = series.bars.numbers.xAlign;
             yAlign = series.bars.numbers.yAlign;

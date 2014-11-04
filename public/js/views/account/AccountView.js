@@ -61,7 +61,7 @@ define([
 					thisObj.displayAccount();					
 				}
 				this.off("change");
-			});
+			});			
 		},
 
 		render: function(){
@@ -139,7 +139,7 @@ define([
 			var accountTypes = this.model.get('accounttype');	
 
 			//Populate Contacts Tab Pane
-			this.getContacts();		
+			this.getContacts(this.model.get('id'));		
 
 			_.each(accountTypes, function(type){
 				var name = (type.name).replace(/\s+/g, '_').toLowerCase();
@@ -189,7 +189,7 @@ define([
 				var id = this.getCollapseId();
 				if(id){
 					this.$el.find('.collapse-trigger[data-id="'+id+'"]').trigger('click');
-				}
+				}				
 
 				this.off('sync');
 			});	
@@ -276,13 +276,13 @@ define([
 				thisObj.subContainer.find("#scale-list tbody").html(innerListTemplate);
 
 				this.off('sync');
-			});							
-		},	
+			});	
+		},						
 
-		getContacts: function(){
+		getContacts: function(id){
 			var thisObj = this;
 			var contactCollection = new ContactCollection();
-			contactCollection.getContactsByAccountId(this.model.get('id'));
+			contactCollection.getContactsByAccountId(id);			
 
 			var variables = {
 				type_name: name
@@ -298,14 +298,71 @@ define([
 					account_url: '#/'+Const.URL.ACCOUNT,
 					contacts: this.models,
 					_: _ 
-				};				
+				};					
 				
 				var innerListTemplate = _.template(contactInnerListTemplate, data);							
 				thisObj.subContainer.find("#contact-list tbody").html(innerListTemplate);
 
+				thisObj.generatePagination(this, this.length);
 				this.off('sync');
 			});				
 		},	
+
+		generatePagination: function (collection, maxItem) {	
+			if(maxItem == null)
+				var maxItem = collection.getMaxItem();
+			else
+				collection.setMaxItem(maxItem);
+
+			if(maxItemPerPage == null)
+				var maxItemPerPage = collection.getNumPerPage();
+			
+			$('.page-number').remove();
+			
+			var lastPage = Math.ceil(maxItem / maxItemPerPage);
+			
+			$('#perpage').val(collection.listView.numPerPage);			
+			
+			if(maxItem > 15)
+				$('.display-items').show();
+			
+			if(lastPage > 1) {
+				$('.pagination').show();
+				//$('.display-items').show();
+				
+				for(var i=1; i <= lastPage; i++) {
+					var active = '';
+					var activeValue = '';
+					
+					if(i == collection.getCurrentPage()) {
+						active = ' class="active"';
+						activeValue = ' <span class="sr-only">(current)</span>';
+					}
+
+					if(collection.getCurrentPage() == lastPage) {
+						$('.pagination .next-page').addClass('disabled');
+						$('.pagination .last-page').addClass('disabled');
+					} else {
+						$('.pagination .next-page').removeClass('disabled');
+						$('.pagination .last-page').removeClass('disabled');
+					}
+
+					if(collection.getCurrentPage() == 1) {
+						$('.pagination .prev-page').addClass('disabled');
+						$('.pagination .first-page').addClass('disabled');
+					} else {
+						$('.pagination .prev-page').removeClass('disabled');
+						$('.pagination .first-page').removeClass('disabled');
+					}
+						
+					$('.pagination .next-page').parent().before('<li'+active+'><a class="page-number" href="#" data-pagenum="'+i+'">'+i+activeValue+'</a></li>');
+				}
+			}
+			else {
+				$('.pagination').hide();
+				// $('.display-items').hide();
+			}
+		},		
 
 		showDeleteConfirmationWindow: function () {
 			this.showConfirmationWindow();

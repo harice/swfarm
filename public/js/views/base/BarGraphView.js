@@ -4,8 +4,8 @@ define([
 	'jqueryflot',
 	'jqueryflotresize',
 	'jqueryflotlabels',
-	'jqueryflotbarnumbers',
 	'jqueryflotstackpercent',
+	'jqueryflotbarnumbers',	
 	'views/base/AppView',
 	'views/base/GoogleMapsView',
 	'text!templates/dashboard/barGraphTemplate.html',
@@ -17,9 +17,9 @@ define([
 	DatePicker,
 	Flot,
 	FlotResize,
-	FlotLabels,
-	FlotBarNumbers,
+	FlotLabels,	
 	FlotStackPercent,
+	FlotBarNumbers,
 	AppView, 
 	GoogleMapsView,
 	barGraphTemplate,
@@ -60,7 +60,6 @@ define([
 						yAlign: function(y,a) { return y; },
 						label: label
 		            },
-		            yPositionAdjustLabel: data.yPositionAdjustLabel
 		          },
 		          shadowSize: 2
 		        },		      
@@ -91,26 +90,28 @@ define([
 		    this.plotHover(id, label, decimals);
 		},
 
-		graphStackedData: function(id, data, xData, label, decimals) {
+		graphStackedData: function(id, data, xData, label, decimals) {		
 			var options = {
 		        series: {
-		            stackpercent : true,    // enable stackpercent
+		            stackpercent: true,
 		            bars: {
 		                show: true,
 		                barWidth: 0.6,
-		                lineWidth: 0,
-		                hoverable:true,
+		                lineWidth: 1,
+		                hoverable:false,
 		                fillColor: {
 		                    colors:[
-		                    	{opacity: 0.5 },
-		                    	{opacity: 1 }
+		                    	{opacity: .5 },
+		                    	{opacity: .6 }
 		                    ]
 		                },
 		                align: "center",
 		                numbers :{
 		                    show: true,
 		                    xAlign: function(x) { return x; },
-							yAlign: function(y) { return y+2; },
+							yAlign: function(y) { return y - 1; },	
+							font: '7pt Arial',	
+							fontColor: '#000000',															
 							showDataValue: true,
 							label: label
 		                },
@@ -159,7 +160,6 @@ define([
 					"padding": "2px"
 				});
 
-			this.plotHoverStack(id);			
 			
 		},
 
@@ -208,7 +208,6 @@ define([
 							label: label
 		            	}
                     },
-                    yPositionAdjustLabel: data[0].yPositionAdjustLabel
                 }
             };
 
@@ -302,6 +301,8 @@ define([
 		formatGraphData: function (id, data, type) { 
 			var graphData = [];
 			var graphXData = [];
+			var del = 0;
+			var bal = 0;
 
 			switch(type){
 				case Const.GRAPH.TYPE.STACKEDBAR:			
@@ -317,8 +318,10 @@ define([
 
 					for(var i = 0; i < data.length; i++) {						
 						graphXData.push([i, data[i].name]); 
-						d[0].data.push([i, (data[i].totalTonsDelivered).replace(/,/g,'')]);										
-						d[1].data.push([i, (data[i].totalTonsOrdered).replace(/,/g,'')]);										
+						del = parseFloat(data[i].totalTonsDelivered);
+						d[0].data.push([i, del]);	
+						bal = parseFloat(data[i].totalTonsOrdered - data[i].totalTonsDelivered);									
+						d[1].data.push([i, bal]);										
 					}					
 							
 					graphData = d;

@@ -86,7 +86,7 @@ define([
 			this.bidTransportdateEnd = null;
 			this.bidLocationId = null;
 			this.bidContractId = null;
-			
+
 			this.currentProducerId = null;
 			this.currentCustomerId = null;
 			this.producerAccountContactId = null;
@@ -282,6 +282,7 @@ define([
 						data['isfrombid'] = '1';
 					
 					if(thisObj.isConvertToPO) {
+						data['isfrombid'] = '0';
 						data['createPO'] = '1';
 						data['transportdatestart'] = thisObj.bidTransportdateStart;
 						data['transportdateend'] = thisObj.bidTransportdateEnd;
@@ -1126,7 +1127,7 @@ define([
 					thisObj.bidTransportdateEnd = data.transportdateend;
 					thisObj.bidLocationId = data.location_id;
 					thisObj.bidContractId = data.contract_id;
-					
+
 					thisObj.isConvertToPO = true;
 					thisObj.subContainer.find('#poForm').submit();
 				},

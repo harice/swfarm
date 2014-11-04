@@ -38,8 +38,7 @@ define([
 			this.sync('read', this, {
 				success: function (data, textStatus, jqXHR) {
 					
-					if(textStatus == 'success') {
-						
+					if(textStatus == 'success') {						
 						if(data.data != null)
 							var items = data.data;
 						else
