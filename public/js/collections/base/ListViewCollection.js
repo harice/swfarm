@@ -29,7 +29,7 @@ define([
 			if($('.list-view-collapse.collapse.in').length > 0)
 				this.setCollapseId(null);
 			this.setPaginationURL(page);
-			this.getModels();
+			this.getModels();			
 		},
 		
 		getModels: function(option) {

@@ -43,6 +43,7 @@ define([
 		          bars: {
 		            show: true,
 		            barWidth: 0.6,
+		            lineWidth: 0,
 		            align: "center",
 		            fill: true,
 		            hoverable: true,
@@ -99,14 +100,14 @@ define([
 		                    show: true,
 		                    xAlign: function(x) { return x; },
 							yAlign: function(y) { return y - 1; },	
-							font: '7pt Arial',	
+							font: '7pt Helvetica',	
 							fontColor: '#ffffff',															
 							showDataValue: true,
 							label: label
 		                },
 		                show: true,
 		                barWidth: 0.6,
-		                lineWidth: 1,
+		                lineWidth: 0,
 		                hoverable:false,
 		                fillColor: {
 		                    colors:[
@@ -149,11 +150,11 @@ define([
 				.find('.legend table')
 				.css({
 					"width": "auto",
-					"right": "0",
-					"top": -100 + "px"				
+					"left": "0",
+					"top": -38 + "px"				
 				})
 				.find('tr')
-				.css("background", "#f8f8f8")
+				.css("background", "#e0e0e0")
 				.find('td')
 				.css({
 					"border": 0,
@@ -218,11 +219,11 @@ define([
 				.find('.legend table')
 				.css({
 					"width": "auto",
-					"right": "0",
-					"top": -100 + "px"				
+					"left": "0",
+					"top": -38 + "px"				
 				})
 				.find('tr')
-				.css("background", "#f8f8f8")
+				.css("background", "#e0e0e0")
 				.find('td')
 				.css({
 					"border": 0,
@@ -451,7 +452,7 @@ define([
 			thisObj.subContainer.find('#graph-cont').append(graphInnerTemplate);
 
 			thisObj.subContainer.find('#' +graphIdName).append("<div id="+ mapId +"></div>");
-			thisObj.subContainer.find('#' +graphIdName).css({"width": "547px", "height": "300px"});
+			thisObj.subContainer.find('#' +graphIdName).css({"width": "547px", "height": "300px", "margin": "5px 0 0 0"});
 			thisObj.subContainer.find('#' +mapId).css({"width": "100%", "height": "100%"});			
 
 			this.googleMaps.initGetDashboardMapLocation(mapId, location);

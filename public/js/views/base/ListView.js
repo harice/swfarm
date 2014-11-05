@@ -20,9 +20,10 @@ define([
 			this.delegateEvents()
 		},
 		
-		generatePagination: function (maxItem, maxItemPerPage) {
+		generatePagination: function (maxItem, maxItemPerPage) {				
 			if(maxItem == null)
 				var maxItem = this.collection.getMaxItem();
+
 			if(maxItemPerPage == null)
 				var maxItemPerPage = this.collection.getNumPerPage();
 			
@@ -139,9 +140,10 @@ define([
 		
 		gotoPage: function (ev) {
 			var page = $(ev.target).attr('data-pagenum');
-			if(this.collection.getCurrentPage() != page) {
+
+			if(this.collection.getCurrentPage() != page) {				
 				this.collection.setCurrentPage(page);
-				this.collection.getModelsPerPage(page);
+				this.collection.getModelsPerPage(page);						
 			}
 			
 			return false;

@@ -1,54 +1,34 @@
 define([
 	'backbone',	
-	'views/base/AccordionListView',
+	'views/base/ListView',
+	'views/account/contactsAccountView',
+	'views/account/warehouseAccountView',
+	'views/account/truckersAccountView',
+	'views/account/trailersAccountView',
+	'views/account/scaleAccountView',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/account/accountViewTemplate.html',
-	'text!templates/account/tabsAccountTypesTemplate.html',
-	'text!templates/account/scaleListTemplate.html',
-	'text!templates/account/scaleInnerListTemplate.html',
-	'text!templates/account/trailerListTemplate.html',
-	'text!templates/account/trailerInnerListTemplate.html',
-	'text!templates/account/truckerListTemplate.html',
-	'text!templates/account/truckerInnerListTemplate.html',
-	'text!templates/account/locationListTemplate.html',
-	'text!templates/account/locationInnerListTemplate.html',
-	'text!templates/account/contactListTemplate.html',
-	'text!templates/account/contactInnerListTemplate.html',
-	'models/account/AccountModel',
-	'collections/scale/ScaleCollection',
-	'collections/account/TrailerCollection',
-	'collections/trucker/TruckerCollection',
-	'collections/stack/LocationCollection',
-	'collections/contact/ContactCollection',
+	'text!templates/account/tabsAccountTypesTemplate.html',	
+	'models/account/AccountModel',	
 	'global',
 	'constant',
 ], function(
 	Backbone, 
-	AccordionListView, 
+	ListView, 
+	contactsAccountView,
+	warehouseAccountView,
+	truckersAccountView,
+	trailersAccountView,
+	scaleAccountView,
 	contentTemplate, 
 	accountViewTemplate, 
-	tabsAccountTypesTemplate, 
-	scaleListTemplate, 
-	scaleInnerListTemplate, 
-	trailerListTemplate,
-	trailerInnerListTemplate,
-	truckerListTemplate,
-	truckerInnerListTemplate,
-	locationListTemplate,
-	locationInnerListTemplate,
-	contactListTemplate,
-	contactInnerListTemplate,
-	AccountModel, 
-	ScaleCollection, 
-	TrailerCollection, 
-	TruckerCollection,
-	LocationCollection,
-	ContactCollection,
+	tabsAccountTypesTemplate, 	
+	AccountModel, 	
 	Global, 
 	Const
 ){
 
-	var AccountView = AccordionListView.extend({
+	var AccountView = ListView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 
 		initialize: function(option) {
@@ -90,32 +70,29 @@ define([
 										'confirm-delete-account',
 										'Delete',
                                         'Delete Account');
-			this.generateAccountTabPanes();
+
+			//Show contacts tab on first Load
+			this.getContacts(this.model.get('id'), this.model.get('name'));
 		},	
 
 		events: {
 			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #delete-account': 'showDeleteConfirmationWindow',
 			'click #confirm-delete-account': 'deleteAccount',
-			'click .account-tab': 'stopRedirect',
-		},	
-
-		stopRedirect: function(ev){
-			ev.preventDefault();			
-		},
+			'click .account-tab': 'generateAccountTabPanes',
+		},			
 
 		generateAccountTypesTabs: function(){
 			var selectedIndex = 1;
-			var url = '/#/' + Const.URL.ACCOUNT + '/' + this.model.get('id')+'#';	
 			var tabs = [];
 
 			//Push contacts tab first
-			tabs.push({'url': url + 'contacts', 'label': 'Contacts'});
+			tabs.push({'name': 'contacts', 'label': 'Contacts'});
 
 			_.each(this.model.get('accounttype'), function(type){
-				var name = (type.name).replace(/\s+/g, '_').toLowerCase();
+				var name = (type.name).replace(/\s+/g, '').toLowerCase();
 				if(type.id == Const.ACCOUNT.ADMIN.SCALE || type.id == Const.ACCOUNT.ADMIN.WAREHOUSE || type.id == Const.ACCOUNT.ADMIN.TRAILER || type.id == Const.ACCOUNT.ADMIN.TRUCKER)
-					tabs.push({'url': url + name, 'label': type.name});
+					tabs.push({'name': name, 'label': type.name});
 			});			
 
 			//First account type is active on first load
@@ -134,235 +111,70 @@ define([
 			return _.template(tabsAccountTypesTemplate, variables);
 		},
 
-		generateAccountTabPanes: function(){
+		generateAccountTabPanes: function(ev){
+			ev.preventDefault();
+
 			var thisObj = this;
-			var accountTypes = this.model.get('accounttype');	
+			var type = $(ev.target).attr('data-name'); 
+			var id = this.model.get('id');
+			var name = this.model.get('name');
 
-			//Populate Contacts Tab Pane
-			this.getContacts(this.model.get('id'));		
-
-			_.each(accountTypes, function(type){
-				var name = (type.name).replace(/\s+/g, '_').toLowerCase();
-				switch(type.id){
-					case 6:
-						thisObj.getScaleProviders(name);
-						break;
-					case 7:
-						thisObj.getTrailers(name);
-						break;
-					case 9:
-						thisObj.getTruckers(name);
-						break;
-					case 10:
-						thisObj.getStackLocation(name);
-						break;
-				}
-			});
+			switch(type){				
+				case 'scaleprovider':
+					thisObj.getScaleProviders(id, name);
+					break;
+				case 'southwestfarmstrucker':					
+					thisObj.getTruckers(id, name);
+					break;
+				case 'trailer':
+					thisObj.getTrailers(id, name);
+					break;
+				case 'warehouse':
+					thisObj.getStackLocation(id, name);
+					break;
+				default:
+					thisObj.getContacts(id, name);	
+					break;
+			}
 
 			this.subContainer.find(".tab-pane:first-child").addClass("in active");
 		},
 
-		getStackLocation: function(name){
-			var thisObj = this;
-			var locationCollection = new LocationCollection();
-			locationCollection.getLocationByAccount(this.model.get('id'));
-
-			var variables = {
-				type_name: name
-			};
-			var listTemplate = _.template(locationListTemplate, variables);
-			$('#account-tabpanes').append(listTemplate);
-
-			locationCollection.on('sync', function(){
-				var data = {
-					accountName: thisObj.model.get('name'),
-	                sl_url: '#/'+Const.URL.STACKLOCATION,
-					sl_edit_url: '#/'+Const.URL.STACKLOCATION+'/'+Const.CRUD.EDIT,
-					sls: this.models,
-					collapsible_id: Const.STACKLOCATION.COLLAPSIBLE.ID,
-					_: _ 
-				};	
-				
-				var innerListTemplate = _.template(locationInnerListTemplate, data);							
-				thisObj.subContainer.find("#sl-list tbody").html(innerListTemplate);
-				
-				var id = this.getCollapseId();
-				if(id){
-					this.$el.find('.collapse-trigger[data-id="'+id+'"]').trigger('click');
-				}				
-
-				this.off('sync');
-			});	
+		getStackLocation: function(id, name){
+			this.closeView();
+			this.currView = new warehouseAccountView({id: id, name: name});
+			this.currView.setElement($("#account-tabpanes")).render();		
 		},
 
-		getTruckers: function(name){
-			var thisObj = this;
-			var truckerCollection = new TruckerCollection();
-			truckerCollection.getTruckerNumbersByAccount(this.model.get('id'));
-
-			var variables = {
-				type_name: name
-			};
-			var listTemplate = _.template(truckerListTemplate, variables);
-			$('#account-tabpanes').append(listTemplate);
-
-			truckerCollection.on('sync', function(){
-				var data = {
-					accountName: thisObj.model.get('name'),
-	                trucker_url: '#/'+Const.URL.TRUCKER,
-					trucker_edit_url: '#/'+Const.URL.TRUCKER+'/'+Const.CRUD.EDIT,
-					truckers: this.models,
-					truckertypes: Const.ACCOUNT.TRUCKERS,
-					_: _ 
-				};	
-
-				_.extend(data,Backbone.View.prototype.helpers);			
-				
-				var innerListTemplate = _.template(truckerInnerListTemplate, data);							
-				thisObj.subContainer.find("#trucker-list tbody").html(innerListTemplate);
-
-				this.off('sync');
-			});		
+		getTruckers: function(id, name){
+			this.closeView();
+			this.currView = new truckersAccountView({id: id, name: name});
+			this.currView.setElement($("#account-tabpanes")).render();		
 		},	
 
-		getTrailers: function(name){
-			var thisObj = this;
-			var trailerCollection = new TrailerCollection();
-			trailerCollection.getTrailerByAccountId(this.model.get('id'));
-
-			var variables = {
-				type_name: name
-			};
-			var listTemplate = _.template(trailerListTemplate, variables);
-			$('#account-tabpanes').append(listTemplate);
-
-			trailerCollection.on('sync', function(){
-				var data = {
-					accountName: thisObj.model.get('name'),
-	                trailer_url: '#/'+Const.URL.TRAILER,
-					trailer_edit_url: '#/'+Const.URL.TRAILER+'/'+Const.CRUD.EDIT,
-					trailers: this.models,
-					_: _ 
-				};				
-				
-				var innerListTemplate = _.template(trailerInnerListTemplate, data);							
-				thisObj.subContainer.find("#trailer-list tbody").html(innerListTemplate);
-
-				this.off('sync');
-			});		
+		getTrailers: function(id, name){
+			this.closeView();
+			this.currView = new trailersAccountView({id: id, name: name});
+			this.currView.setElement($("#account-tabpanes")).render();		
 		},		
 
-		getScaleProviders: function(name){
-			var thisObj = this;
-			var scaleCollection = new ScaleCollection();
-			scaleCollection.getScalesByAccount(this.model.get('id'));
-
-			var variables = {
-				type_name: name
-			};
-			var listTemplate = _.template(scaleListTemplate, variables);
-			$('#account-tabpanes').append(listTemplate);
-
-			scaleCollection.on('sync', function(){
-				var data = {
-					accountName: thisObj.model.get('name'),
-	                scale_url: '#/'+Const.URL.SCALE,
-					scale_edit_url: '#/'+Const.URL.SCALE+'/'+Const.CRUD.EDIT,
-					scales: this.models,
-					_: _ 
-				};				
-				
-				var innerListTemplate = _.template(scaleInnerListTemplate, data);							
-				thisObj.subContainer.find("#scale-list tbody").html(innerListTemplate);
-
-				this.off('sync');
-			});	
+		getScaleProviders: function(id, name){
+			this.closeView();
+			this.currView = new scaleAccountView({id: id, name: name});
+			this.currView.setElement($("#account-tabpanes")).render();	
 		},						
 
-		getContacts: function(id){
-			var thisObj = this;
-			var contactCollection = new ContactCollection();
-			contactCollection.getContactsByAccountId(id);			
+		getContacts: function(id, name){
+			this.closeView();
+			this.currView = new contactsAccountView({id: id, name: name});
+			this.currView.setElement($("#account-tabpanes")).render();				
+		},
 
-			var variables = {
-				type_name: name
-			};
-			var listTemplate = _.template(contactListTemplate, variables);
-			$('#account-tabpanes').append(listTemplate);
-
-			contactCollection.on('sync', function(){
-				var data = {
-					accountName: thisObj.model.get('name'),
-	                contact_url: '#/'+Const.URL.CONTACT,
-					contact_edit_url: '#/'+Const.URL.CONTACT+'/'+Const.CRUD.EDIT,
-					account_url: '#/'+Const.URL.ACCOUNT,
-					contacts: this.models,
-					_: _ 
-				};					
-				
-				var innerListTemplate = _.template(contactInnerListTemplate, data);							
-				thisObj.subContainer.find("#contact-list tbody").html(innerListTemplate);
-
-				thisObj.generatePagination(this, this.length);
-				this.off('sync');
-			});				
-		},	
-
-		generatePagination: function (collection, maxItem) {	
-			if(maxItem == null)
-				var maxItem = collection.getMaxItem();
-			else
-				collection.setMaxItem(maxItem);
-
-			if(maxItemPerPage == null)
-				var maxItemPerPage = collection.getNumPerPage();
-			
-			$('.page-number').remove();
-			
-			var lastPage = Math.ceil(maxItem / maxItemPerPage);
-			
-			$('#perpage').val(collection.listView.numPerPage);			
-			
-			if(maxItem > 15)
-				$('.display-items').show();
-			
-			if(lastPage > 1) {
-				$('.pagination').show();
-				//$('.display-items').show();
-				
-				for(var i=1; i <= lastPage; i++) {
-					var active = '';
-					var activeValue = '';
-					
-					if(i == collection.getCurrentPage()) {
-						active = ' class="active"';
-						activeValue = ' <span class="sr-only">(current)</span>';
-					}
-
-					if(collection.getCurrentPage() == lastPage) {
-						$('.pagination .next-page').addClass('disabled');
-						$('.pagination .last-page').addClass('disabled');
-					} else {
-						$('.pagination .next-page').removeClass('disabled');
-						$('.pagination .last-page').removeClass('disabled');
-					}
-
-					if(collection.getCurrentPage() == 1) {
-						$('.pagination .prev-page').addClass('disabled');
-						$('.pagination .first-page').addClass('disabled');
-					} else {
-						$('.pagination .prev-page').removeClass('disabled');
-						$('.pagination .first-page').removeClass('disabled');
-					}
-						
-					$('.pagination .next-page').parent().before('<li'+active+'><a class="page-number" href="#" data-pagenum="'+i+'">'+i+activeValue+'</a></li>');
-				}
+		closeView: function () {
+			if(this.currView) {
+				this.currView.close();
 			}
-			else {
-				$('.pagination').hide();
-				// $('.display-items').hide();
-			}
-		},		
+		},			
 
 		showDeleteConfirmationWindow: function () {
 			this.showConfirmationWindow();
