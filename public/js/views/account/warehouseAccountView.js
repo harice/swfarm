@@ -1,7 +1,7 @@
 define([
 	'backbone',
 	'views/base/ListView',
-	'collections/stack/LocationCollection',	
+	'collections/stack/StackLocationCollection',	
 	'text!templates/account/locationListTemplate.html',
 	'text!templates/account/locationInnerListTemplate.html',	
 	'global',
@@ -34,7 +34,8 @@ define([
 		
 		render: function(){
 			this.setUpContent();
-			this.collection.getLocationByAccount(this.accountId);			
+			this.collection.setSearch(this.accountName);
+			this.collection.getModelsPerPage(1);
 		},	
 
 		displayList: function(){			
@@ -64,7 +65,7 @@ define([
 			};
 
 			var listTemplate = _.template(locationListTemplate, variables);
-			$('#account-tabpanes').append(listTemplate);
+			$('#account-tabpanes').html(listTemplate);
 		},		
 
 	});

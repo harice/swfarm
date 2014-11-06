@@ -1,8 +1,13 @@
 <% if (!_.isEmpty(sls)) { print(sls) %>
 	<% _.each(sls, function(sl){ %>
-	<tr class="collapse-trigger cursor-pointer" data-id="<%= sl.get("id") %>">
+	<tr class="collapse-trigger cursor-pointer" data-id="<%= sl.get("id") %>">		
         <td>			
-			<%= accountName %>			
+			<%
+				if(!_.isEmpty(sl.get("address")))
+				{ %>
+				<%= sl.get('address').street %>, <%= sl.get('address').city %>, <%= sl.get('address').state.state_code %> <%= sl.get('address').zipcode %> USA
+				<% }
+			%>
 		</td>		
 		<td><%= sl.get("name") %></td>
 		<td><%= sl.get("description") %></td>

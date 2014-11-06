@@ -33,7 +33,7 @@ define([
 		},
 		
 		getModels: function(option) {
-			var thisObj = this;
+			var thisObj = this;			
 			
 			this.sync('read', this, {
 				success: function (data, textStatus, jqXHR) {
@@ -51,7 +51,7 @@ define([
 						});
 						
 						if(data.total != null)
-							thisObj.setMaxItem(data.total);
+							thisObj.setMaxItem(data.total);						
 						
 						for(var key in data) {
 							if(typeof data[key] !== 'function' && key != 'total' && key != 'data'){
@@ -175,7 +175,7 @@ define([
 				return null;
 		},
 		
-		setPaginationURL: function (page) {
+		setPaginationURL: function (page) {			
 			var searchURL = '';
 			var orderBy = (this.listView.sort[this.listView.currentSort])? 'asc' : 'desc';
 			var params = {

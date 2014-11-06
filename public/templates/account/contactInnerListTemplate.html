@@ -2,11 +2,13 @@
   <% _.each(contacts, function(contact){ %>
     <tr>
       <td><a href="<%= contact_url %>/<%= contact.get("id") %>"><%= contact.get("lastname") %>, <%= contact.get("firstname") %></a></td>
-      <td><%= accountName %></a></td>          
+      <td><%= contact.get('position') %></a></td>          
+      <td><%= contact.get('email') %></a></td>          
+      <td><%= contact.get('phone') %></a></td>          
     </tr>
   <% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="6">No results found.</td>
+		<td colspan="4">No results found.</td>
 	</tr>
 <% } %>

@@ -123,9 +123,7 @@ define([
 			this.mapType = this.mapTypes.GETLOCATION;
 
 			if(!thisObj.isInitMap) {
-				thisObj.initDashboardMap(mapId, location, function () {
-					thisObj.initDropMarker(1);
-				});
+				thisObj.initDashboardMap(mapId, location);
 			}
 		},
 		
@@ -263,7 +261,7 @@ define([
 			this.showModal(this.modalIdGetDD);
 		},
 
-		showGetDestinationRoute: function (distanceMarkers) {
+		showGetDestinationRoute: function (distanceMarkers, options) {
 			var thisObj = this;
 
 			thisObj.loadedDistances = [];
@@ -273,13 +271,13 @@ define([
 				
 				for(var i = 0; i < distanceMarkers.length; i++) {
 					var locationFrom = new google.maps.LatLng(distanceMarkers[i].latitudeFrom, distanceMarkers[i].longitudeFrom);
-					var options = { limit: thisObj.googleMapsDestinationMarkerLimit }
+					var options = { limit: thisObj.googleMapsDestinationMarkerLimit, draggableMarker: options.draggableMarker }
 					thisObj.addMarker(locationFrom, options);
 					thisObj.loadedDistances.push(distanceMarkers[i].isLoadedDistance);
 					
 					if(i == distanceMarkers.length - 1) {
 						var locationTo = new google.maps.LatLng(distanceMarkers[i].latitudeTo, distanceMarkers[i].longitudeTo);
-						var options = { limit: thisObj.googleMapsDestinationMarkerLimit };
+						var options = { limit: thisObj.googleMapsDestinationMarkerLimit, draggableMarker: options.draggableMarker };
 						thisObj.addMarker(locationTo, options);
 					}
 				}
@@ -343,7 +341,7 @@ define([
 			this.showModal(this.modalIdSetLocation);
 		},
 		
-		showDashboardSetLocation: function (markers, centerPoint) {
+		showDashboardSetLocation: function (markers, centerPoint, options) {
 			var thisObj = this;
 			var radius = 402.3361244731408 * 1000;
 			var circle = new google.maps.Circle({radius: 10, center: centerPoint}); 
@@ -367,7 +365,7 @@ define([
 				
 				var location = new google.maps.LatLng(markers[i].lat, markers[i].lng);
 				
-				var marker = thisObj.addMarker(location);
+				var marker = thisObj.addMarker(location, options);
 
 
 				thisObj.attachInfoWindow(marker, infoWindow);
@@ -632,10 +630,10 @@ define([
 						if($("#google-maps-modal-getdd").length > 0)
 							$("<span class='error-msg-cont padding-top-5'><label class='error'>Waypoints exceeded limit!</label></span>").insertAfter($(".modal-body .table-responsive"));
 						else if($("#dashboard_logistics").length > 0)
-							$('.graph-cont[data-id="10"]').find('.header').prepend("<span class='error-msg-cont pull-right padding-top-5'><label class='error'>Waypoints exceeded limit!</label></span>");
+							$('.graph-cont[data-id="10"]').find('.md-dark.prusia').prepend("<span class='error-msg-cont pull-right padding-top-10 margin-right-10'><label style='color:#ffffff'>Waypoints exceeded limit!</label></span>");
 					}	
 					else 
-						console.log("Direction Service: Error!");							
+						console.log(status);							
 					
 					thisObj.loadedDistances = [];
 				});

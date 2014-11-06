@@ -58,7 +58,7 @@ define([
 			};
 
 			var listTemplate = _.template(trailerListTemplate, variables);
-			$('#account-tabpanes').append(listTemplate);
+			$('#account-tabpanes').html(listTemplate);
 		},		
 
 	});

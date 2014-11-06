@@ -8,6 +8,7 @@ define([
 	'views/account/scaleAccountView',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/account/accountViewTemplate.html',
+	'text!templates/account/profileViewTemplate.html',
 	'text!templates/account/tabsAccountTypesTemplate.html',	
 	'models/account/AccountModel',	
 	'global',
@@ -22,6 +23,7 @@ define([
 	scaleAccountView,
 	contentTemplate, 
 	accountViewTemplate, 
+	profileViewTemplate,
 	tabsAccountTypesTemplate, 	
 	AccountModel, 	
 	Global, 
@@ -50,19 +52,16 @@ define([
 		},
 
 		displayAccount: function () {
-			//console.log(this.model);
-			var innerTemplateVariables = {
-				account:this.model,
-				account_url:'#/'+Const.URL.ACCOUNT,
-				account_edit_url:'#/'+Const.URL.ACCOUNT+'/'+Const.CRUD.EDIT,
+			var data = {
 				account_types: this.generateAccountTypesTabs()
-			}
-			var innerTemplate = _.template(accountViewTemplate, innerTemplateVariables);
+			};
+			var innerTemplate = _.template(accountViewTemplate, data);
 
 			var variables = {
 				h1_title: this.model.get('name'),
 				sub_content_template: innerTemplate,
 			};
+			
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
 
@@ -71,8 +70,8 @@ define([
 										'Delete',
                                         'Delete Account');
 
-			//Show contacts tab on first Load
-			this.getContacts(this.model.get('id'), this.model.get('name'));
+			//Show profile tab on first Load
+			this.getProfile();
 		},	
 
 		events: {
@@ -86,7 +85,8 @@ define([
 			var selectedIndex = 1;
 			var tabs = [];
 
-			//Push contacts tab first
+			//Push profiles & contacts tab first
+			tabs.push({'name': 'profile', 'label': 'Profile'});
 			tabs.push({'name': 'contacts', 'label': 'Contacts'});
 
 			_.each(this.model.get('accounttype'), function(type){
@@ -119,7 +119,10 @@ define([
 			var id = this.model.get('id');
 			var name = this.model.get('name');
 
-			switch(type){				
+			switch(type){
+				case 'profile':
+					thisObj.getProfile();
+					break;				
 				case 'scaleprovider':
 					thisObj.getScaleProviders(id, name);
 					break;
@@ -138,6 +141,17 @@ define([
 			}
 
 			this.subContainer.find(".tab-pane:first-child").addClass("in active");
+		},
+
+		getProfile: function(){
+			var innerTemplateVariables = {
+				account:this.model,
+				account_url:'#/'+Const.URL.ACCOUNT,
+				account_edit_url:'#/'+Const.URL.ACCOUNT+'/'+Const.CRUD.EDIT,				
+			}
+			var innerTemplate = _.template(profileViewTemplate, innerTemplateVariables);
+			
+			this.$el.find("#account-tabpanes").html(innerTemplate);
 		},
 
 		getStackLocation: function(id, name){

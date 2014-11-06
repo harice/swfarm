@@ -34,7 +34,8 @@ define([
 		
 		render: function(){
 			this.setUpContent();
-			this.collection.getScalesByAccount(this.accountId);			
+			this.collection.setSearch(this.accountName);
+			this.collection.getModelsPerPage(1);		
 		},	
 
 		displayList: function(){			
@@ -58,7 +59,7 @@ define([
 			};
 
 			var listTemplate = _.template(scaleListTemplate, variables);
-			$('#account-tabpanes').append(listTemplate);
+			$('#account-tabpanes').html(listTemplate);
 		},		
 
 	});

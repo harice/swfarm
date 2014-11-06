@@ -20,8 +20,9 @@ define([
 			
 			this.collection = new ContactCollection();
 			this.collection.on('sync', function() {
-				if(thisObj.subContainerExist())
+				if(thisObj.subContainerExist()){
 					thisObj.displayList();
+				}					
 			});
 			
 			this.collection.on('error', function(collection, response, options) {

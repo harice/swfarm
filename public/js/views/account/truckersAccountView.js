@@ -34,7 +34,8 @@ define([
 		
 		render: function(){
 			this.setUpContent();
-			this.collection.getTruckerNumbersByAccount(this.accountId);			
+			this.collection.setSearch(this.accountName);
+			this.collection.getModelsPerPage(1);
 		},	
 
 		displayList: function(){			
@@ -60,7 +61,7 @@ define([
 			};
 
 			var listTemplate = _.template(truckerListTemplate, variables);
-			$('#account-tabpanes').append(listTemplate);
+			$('#account-tabpanes').html(listTemplate);
 		},		
 
 	});

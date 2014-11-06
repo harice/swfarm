@@ -2,7 +2,6 @@ define([
 	'backbone',
 	'views/base/ListView',
 	'models/contact/ContactModel',
-	'models/account/AccountModel',
 	'collections/contact/ContactCollection',
 	'text!templates/account/contactListTemplate.html',
 	'text!templates/account/contactInnerListTemplate.html',
@@ -12,7 +11,6 @@ define([
 	Backbone,
 	ListView,			
 	Contact,
-	Account,
 	ContactCollection,
 	contactListTemplate,
 	contactInnerListTemplate,
@@ -33,15 +31,16 @@ define([
 				thisObj.displayList();
 				this.off('sync');
 			});			
-
+		
 		},
 		
 		render: function(){
 			this.setUpContent();
-			this.collection.getContactsByAccountId(this.accountId);			
+			this.collection.setSearch(this.accountName);
+			this.collection.getModelsPerPage(1);
 		},	
 
-		displayList: function(){			
+		displayList: function(){					
 			var data = {
 				accountName: this.accountName,
                 contact_url: '#/'+Const.URL.CONTACT,
@@ -54,7 +53,7 @@ define([
 			var innerListTemplate = _.template(contactInnerListTemplate, data);							
 			this.$el.find("#contact-list tbody").html(innerListTemplate);
 
-			this.generatePagination(this.collection.length, Const.MAXITEMPERPAGE);
+			this.generatePagination();
 		},
 
 		setUpContent: function(){
@@ -63,7 +62,7 @@ define([
 			};
 
 			var listTemplate = _.template(contactListTemplate, variables);
-			this.$el.append(listTemplate);
+			this.$el.html(listTemplate);
 		},		
 
 	});
