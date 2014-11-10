@@ -35,7 +35,7 @@ define([
 		render: function(){
 			this.setUpContent();
 			this.collection.setSearch(this.accountName);
-			this.collection.getModelsPerPage(1);		
+			this.renderList(this.collection.listView.currentPage);	
 		},	
 
 		displayList: function(){			
@@ -50,7 +50,7 @@ define([
 			var innerListTemplate = _.template(scaleInnerListTemplate, data);							
 			this.$el.find("#scale-list tbody").html(innerListTemplate);			
 
-			this.generatePagination(this.collection.length, Const.MAXITEMPERPAGE);
+			this.generatePagination();
 		},
 
 		setUpContent: function(){
@@ -59,7 +59,7 @@ define([
 			};
 
 			var listTemplate = _.template(scaleListTemplate, variables);
-			$('#account-tabpanes').html(listTemplate);
+			this.$el.html(listTemplate);
 		},		
 
 	});

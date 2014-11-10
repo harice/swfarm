@@ -53,6 +53,7 @@ define([
 
 		displayAccount: function () {
 			var data = {
+				accountName: this.model.get('name'),
 				account_types: this.generateAccountTypesTabs()
 			};
 			var innerTemplate = _.template(accountViewTemplate, data);

@@ -50,14 +50,14 @@
                     <table id="contract-list" class="table-condensed table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th class="sortable sort-contract-number cursor-pointer"><i class="fa fa-sort"></i> Contract No.</th>
-                                <th>Customer</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <th>Total Expected</th>
-                                <th>Total Delivered</th>
-                                <th>Status</th>
-                                <th>Progress</th>
+                                <th class="sortable sort-contract-number cursor-pointer width-200"><i class="fa fa-sort"></i> Contract No.</th>
+                                <th class="width-200">Customer</th>
+                                <th class="width-100">Start Date</th>
+                                <th class="width-100">End Date</th>
+                                <th class="width-150">Total Expected</th>
+                                <th class="width-150">Total Delivered</th>
+                                <th class="width-100">Status</th>
+                                <th class="width-150">Progress</th>
                             </tr>
                         </thead>
                         <tbody id="contract-accordion" class="accordion-list-cont">
@@ -68,13 +68,11 @@
                     </table>
 
                     <div class="clearfix">
-                        <div class="styled-select pull-left margin-top-10 margin-bottom-0 margin-left-0 margin-right-0 display-items" style="display:none;">
-                            <select class="form-control width-100" id="perpage" name="perpage">
-                                <option value="15">15 rows</option>
-                                <option value="25">25 rows</option>
-                                <option value="50">50 rows</option>
-                            </select>
-                        </div>
+                        <select class="form-control width-100 pull-left margin-top-10 margin-bottom-0 margin-left-0 margin-right-0 input-sm display-items" id="perpage" name="perpage" style="display:none;">
+                            <option value="15">15 rows</option>
+                            <option value="25">25 rows</option>
+                            <option value="50">50 rows</option>
+                        </select>
                         <ul class="pagination pagination-sm pull-right margin-top-10 margin-bottom-0 margin-left-0 margin-right-0" style="display:none;">
                             <li><a class="first-page btn" href="#"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
                             <li><a class="prev-page btn" href="#"><span class="glyphicon glyphicon-step-backward"></span></a></li>

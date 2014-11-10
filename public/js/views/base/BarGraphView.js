@@ -471,13 +471,13 @@ define([
 					title = 'Purchases in Tons';
 					break;
 				case Const.GRAPH.ID.PURCHASEINDOLLARS:
-					title = 'Purchases in $';
+					title = 'Purchases in Dollar(s)';
 					break;
 				case Const.GRAPH.ID.SALESINTONS:
 					title = 'Sales in Tons';
 					break;
 				case Const.GRAPH.ID.SALESINDOLLARS:
-					title = 'Sales in $';
+					title = 'Sales in Dollar(s)';
 					break;
 				case Const.GRAPH.ID.RESERVECUSTOMERS:
 					title = 'Reserve Customers';
@@ -486,7 +486,7 @@ define([
 					title = 'Inventory on Hand';
 					break;
 				case Const.GRAPH.ID.YEARTODATESALES:
-					title = 'Year to Year Sales in $';
+					title = 'Year to Year Sales in Dollar(s)';
 					break;
 				case Const.GRAPH.ID.DASHBOARDPURCHASES:
 					title = 'Dashboard Purchases';
@@ -560,7 +560,7 @@ define([
 
 			var address = cityAddress + regionAddress + country;		
 
-			thisObj.subContainer.find('#weather-cont').append("<div class='col-md-12'><h2><i class='fa fa-map-marker'></i> " + address + "</h2></div>");
+			thisObj.subContainer.find('#weather-cont h2').append("<i class='fa fa-map-marker'></i> " + address + "</h2></div>");
 
 			var variables = {
 				'channel': channels
@@ -568,7 +568,7 @@ define([
 
 			_.extend(variables,Backbone.View.prototype.helpers);
 			var weatherInnerTemplate = _.template(weatherTemplate, variables);
-			thisObj.subContainer.find('#weather-cont').append(weatherInnerTemplate);
+			thisObj.subContainer.find('#weather-forecast').append(weatherInnerTemplate);
 
 		},
 	});

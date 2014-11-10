@@ -3,7 +3,7 @@
 	<td><%= location_from %></td>
 	<td><%= description %></td>
 	<% if (typeof is_bid === "undefined") { %>
-	<td class="text-center"><i class="fa <% if(ishold==1) { %>fa-check-square-o color-success<% } else {%> fa-square-o <%} %>"></i></td>
+	<td class="text-center"><% if(ishold==1) { %><i class="fa fa-check-square-o color-success"></i><% } %></td>
 	<td class="text-right"><%= rfv %></td>
 	<td>
 		<% if (typeof file_path !== "undefined") { %>

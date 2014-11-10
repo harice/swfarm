@@ -3,7 +3,14 @@
 	%>
 	<tr class="collapse-trigger cursor-pointer" data-id="<%= po.get("id") %>">
 		<td>
-			<i class="fa fa-angle-right width-10 accordion-carret"></i>
+			<%
+			if(_.isNull(po.get("location")) || (!_.isNull(po.get("location")) && po.get('location').id == swfarm_location)) { %>
+				<i class="fa fa-angle-right width-10 accordion-carret"></i>&nbsp;
+			<% }
+			else { %>
+				<span class="margin-left-10">&nbsp;</span>
+			<% }
+			%>			
 			<a class="stop-propagation" href="<%= po_url %>/<%= po.get("id") %>"><%= po.get("order_number") %></a>
 			<span class="throbber_wrap" style="display: none;"><i class="fa fa-spinner fa-spin throbber_ajax"></i></span>
 		</td>

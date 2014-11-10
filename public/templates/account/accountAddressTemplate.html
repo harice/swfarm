@@ -3,6 +3,10 @@
 		<h3 class="pull-left margin-top-0 margin-bottom-10">Address</h3>
 		<button id="add-address-field" type="button" class="pull-right btn btn-default btn-primary btn-xs btn-rad"><span class="glyphicon glyphicon-plus"></span></button>
 		<button type="button" class="pull-right btn btn-default btn-primary btn-xs remove-address-fields btn-rad"><span class="glyphicon glyphicon-minus"></span></button>
+		<div class="clearfix"></div>
+		<div class="progress width-1000 margin-top-0 margin-bottom-0 height-3">
+	        <div style="width: %" class="progress-bar progress-bar-success"></div>
+	    </div>
 	</legend>
 	<input type="hidden" class="id" name="id" value="" />
 	<input type="hidden" class="latitude" name="latitude" value="" />
@@ -10,13 +14,11 @@
 	<div class="form-group">
 		<label for="type" class="col-sm-2 control-label">Address Type</label>
 		<div class="col-sm-5">
-            <div class="styled-select">
-                <select class="form-control type" name="type">
-                    <% _.each(address_types, function(address_type){ %>
-                    <option value="<%= address_type.id %>"><%= address_type.name %></option>
-                    <% }); %>
-                </select>
-            </div>
+            <select class="form-control type width-304" name="type">
+                <% _.each(address_types, function(address_type){ %>
+                <option value="<%= address_type.id %>"><%= address_type.name %></option>
+                <% }); %>
+            </select>
 		</div>
 	</div>
 	<div class="form-group">
@@ -34,14 +36,12 @@
 	<div class="form-group">
 		<label for="state" class="col-sm-2 control-label">State <i class="color-danger">*</i></label>
 		<div class="col-sm-5">
-            <div class="styled-select">
-                <select class="form-control state" name="state">
-                    <option value="">Select a state</option>
-                    <% _.each(address_states, function(state){ %>
-                    <option value="<%= state.id %>"><%= state.state %></option>
-                    <% }); %>
-                </select>
-            </div>
+            <select class="form-control state width-304" name="state">
+                <option value="">Select a state</option>
+                <% _.each(address_states, function(state){ %>
+                <option value="<%= state.id %>"><%= state.state %></option>
+                <% }); %>
+            </select>
 		</div>
 	</div>
 	<div class="form-group">

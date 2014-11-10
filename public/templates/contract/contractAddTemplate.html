@@ -1,5 +1,5 @@
 <div class="row margin-top-0">
-    <div class="col-md-12">
+    <div class="col-md-12 no-padding">
         <div class="block-flat">
             <div class="content padding-top-0">
 
@@ -8,7 +8,12 @@
                     <input type="hidden" name="id" value="<%= contract_id %>" />
                     <% } %>
                     <fieldset>
-                        <legend><h3>Details</h3></legend>
+                        <legend>
+                            <h3>Details</h3>
+                            <div class="progress width-1000 margin-top-0 margin-bottom-0 height-3">
+                                <div class="progress-bar progress-bar-success" style="width: %"></div>
+                            </div>
+                        </legend>                        
                         <div class="row margin-top-0">
                             <div class="col-md-6">
                                 <% if (typeof contract_id !== "undefined") { %>
@@ -86,9 +91,13 @@
                         </div>
                     </fieldset>
                     <fieldset class="margin-top-10">
-                        <legend>
+                        <legend class="padding-top-10">
                             <h3 class="pull-left margin-top-0 margin-bottom-0">Products</h3>
                             <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-info btn-rad btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
+                            <div class="clearfix"></div>
+                            <div class="progress width-1000 margin-top-0 margin-bottom-0 height-3">
+                                <div class="progress-bar progress-bar-success" style="width: %"></div>
+                            </div>
                         </legend>
                         <div class="table-responsive">
                             <table id="product-list" class="table table-bordered table-hover">
@@ -107,7 +116,7 @@
                     <div class="form-group form-button-container">
                         <div class="col-md-12">
                             <div class="pull-right">
-                                <button id="save" type="submit" class="save btn btn-primary btn-rad btn-sm"><i class="fa fa-save"></i>Save</button>
+                                <button id="save" type="submit" class="save btn btn-primary btn-rad btn-sm"><i class="fa fa-save"></i> Save</button>
                                 <a id="go-to-previous-page" class="btn btn-link" href="#">Cancel</a>
                             </div>
                         </div>

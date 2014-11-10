@@ -2,7 +2,7 @@
 	<% _.each(truckers, function(trucker){ %>
 	<tr>
         <td><a href="<%= trucker_url %>/<%= trucker.get('id') %>"><%= trucker.get("trucknumber") %></a></td>
-		<td><%= trucker.get("account_name") %></td>
+		<td><a href="<%= account_url %>/<%= trucker.get("account_id") %>"><%= trucker.get("account_name") %></a></td>
 
 		<td>
         <% _.each(trucker.get("account").accounttype, function(type) {
@@ -15,7 +15,7 @@
         </td>
 
 		<td>$ <%= numberFormat(trucker.get("fee")) %></td>
-		<td>
+		<td align="center">
 			<a href="<%= trucker_edit_url %>/<%= trucker.get("id") %>" class="text-primary" title="edit">
 			  <span class="fa-stack">
 	            <i class="fa fa-square fa-stack-2x"></i>

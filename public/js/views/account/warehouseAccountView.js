@@ -35,7 +35,7 @@ define([
 		render: function(){
 			this.setUpContent();
 			this.collection.setSearch(this.accountName);
-			this.collection.getModelsPerPage(1);
+			this.renderList(this.collection.listView.currentPage);	
 		},	
 
 		displayList: function(){			
@@ -49,14 +49,9 @@ define([
 			};	
 			
 			var innerListTemplate = _.template(locationInnerListTemplate, data);							
-			this.$el.find("#sl-list tbody").html(innerListTemplate);
+			this.$el.find("#sl-list tbody").html(innerListTemplate);			
 
-			// var id = this.getCollapseId();
-			// if(id){
-			// 	this.$el.find('.collapse-trigger[data-id="'+id+'"]').trigger('click');
-			// }	
-
-			this.generatePagination(this.collection.length, Const.MAXITEMPERPAGE);
+			this.generatePagination();
 		},
 
 		setUpContent: function(){
@@ -65,7 +60,7 @@ define([
 			};
 
 			var listTemplate = _.template(locationListTemplate, variables);
-			$('#account-tabpanes').html(listTemplate);
+			this.$el.html(listTemplate);
 		},		
 
 	});

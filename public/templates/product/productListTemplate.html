@@ -24,22 +24,20 @@
                     <table id="product-list" class="table-condensed table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th id="t-product-name" class="sortable sort-name width-150"><i class="fa fa-sort"></i> Product</th>
+                                <th id="t-product-name" class="sortable sort-name width-300"><i class="fa fa-sort"></i> Product</th>
                                 <th>Description</th>
-                                <th class="width-110">Action</th>
+                                <th class="width-70">Action</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
 
                     <div class="clearfix">
-                        <div class="styled-select pull-left margin-top-10 margin-bottom-0 margin-left-0 margin-right-0 display-items" style="display:none;">
-                            <select class="form-control width-100" id="perpage" name="perpage">
-                                <option value="15">15 rows</option>
-                                <option value="25">25 rows</option>
-                                <option value="50">50 rows</option>
-                            </select>
-                        </div>
+                        <select class="form-control width-100 pull-left margin-top-10 margin-bottom-0 margin-left-0 margin-right-0 input-sm display-items" id="perpage" name="perpage" style="display:none;">
+                            <option value="15">15 rows</option>
+                            <option value="25">25 rows</option>
+                            <option value="50">50 rows</option>
+                        </select>
                         <ul class="pagination pagination-sm pull-right margin-top-10 margin-bottom-0 margin-left-0 margin-right-0" style="display:none;">
                             <li><a class="first-page btn" href="#"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
                             <li><a class="prev-page btn" href="#"><span class="glyphicon glyphicon-step-backward"></span></a></li>

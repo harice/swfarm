@@ -49,7 +49,7 @@ define([
 			var innerListTemplate = _.template(trailerInnerListTemplate, data);							
 			this.$el.find("#trailer-list tbody").html(innerListTemplate);			
 
-			this.generatePagination(this.collection.length, Const.MAXITEMPERPAGE);
+			this.generatePagination();
 		},
 
 		setUpContent: function(){
@@ -58,7 +58,7 @@ define([
 			};
 
 			var listTemplate = _.template(trailerListTemplate, variables);
-			$('#account-tabpanes').html(listTemplate);
+			this.$el.html(listTemplate);
 		},		
 
 	});

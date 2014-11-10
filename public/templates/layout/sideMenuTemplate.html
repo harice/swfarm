@@ -63,9 +63,9 @@
         <li class="parent"><a href="#"><i class="fa fa-cogs"></i><span>Administration</span></a>
           <ul class="sub-menu">
 
-            <% if(_.contains(permission,constant.MENU.ADMIN.VIEW) || _.isEqual(su,constant.SU)) { %>
+            <!--<% if(_.contains(permission,constant.MENU.ADMIN.VIEW) || _.isEqual(su,constant.SU)) { %>
             <li><a href="#/<%= constant.URL.ADMIN %>">Dashboard</a></li>
-            <% } %>
+            <% } %>-->
 
             <% if(_.contains(permission,constant.MENU.USERS.VIEW) || _.isEqual(su,constant.SU)) { %>
             <li><a href="#/<%= constant.URL.USER %>">Users</a></li>

@@ -81,13 +81,13 @@
                   <thead>
                     <tr>
                       <th class="width-150">PO No.</th>
-                      <th>Producer</th>
+                      <th class="width-200">Producer</th>
                       <th class="width-110">Destination</th>
                       <th class="width-110">Status</th>
                       <th class="sortable sort-date-of-po cursor-pointer width-110"><i class="fa fa-sort"></i> Purchased Date</span></th>
                       <th class="width-110">Pickup Start</th>
                       <th class="width-110">Pickup End</th>
-                      <th class="width-90">Progress</th>
+                      <th class="width-150">Progress</th>
                       <th class="width-130">Total Amount</th>
                     </tr>
                   </thead>
@@ -95,13 +95,11 @@
                 </table>
                   
                   <div class="clearfix">
-                      <div class="styled-select pull-left margin-top-10 margin-bottom-0 margin-left-0 margin-right-0 display-items" style="display:none;">
-                          <select class="form-control width-100" id="perpage" name="perpage">
-                              <option value="15">15 rows</option>
-                              <option value="25">25 rows</option>
-                              <option value="50">50 rows</option>
-                          </select>
-                      </div>
+                      <select class="form-control width-100 pull-left margin-top-10 margin-bottom-0 margin-left-0 margin-right-0 input-sm display-items" id="perpage" name="perpage" style="display:none;">
+                          <option value="15">15 rows</option>
+                          <option value="25">25 rows</option>
+                          <option value="50">50 rows</option>
+                      </select>
 
                       <ul class="pagination pagination-sm pull-right margin-top-10 margin-bottom-0 margin-left-0 margin-right-0" style="display:none;">
                           <li><a class="first-page btn" href="#"><span class="glyphicon glyphicon-fast-backward"></span></a></li>

@@ -55,11 +55,11 @@ define([
 						
 						for(var key in data) {
 							if(typeof data[key] !== 'function' && key != 'total' && key != 'data'){
-								thisObj.setOtherData(key, data[key]);
+								thisObj.setOtherData(key, data[key]);								
 							}
-						}
+						}						
 						
-						thisObj.trigger('sync', data, textStatus, jqXHR, option);
+						thisObj.trigger('sync', data, textStatus, jqXHR, option);						
 					}				
 				},
 				error:  function (jqXHR, textStatus, errorThrown) {

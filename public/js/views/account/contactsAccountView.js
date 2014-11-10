@@ -26,18 +26,18 @@ define([
 			this.accountId = options.id;
 			this.accountName = options.name;
 
-			this.collection = new ContactCollection();				
-			this.collection.on('sync', function (){
+			this.collection = new ContactCollection();					
+			this.collection.on('sync', function (){	
 				thisObj.displayList();
-				this.off('sync');
-			});			
+				//this.off('sync');
+			});					
 		
 		},
 		
 		render: function(){
 			this.setUpContent();
-			this.collection.setSearch(this.accountName);
-			this.collection.getModelsPerPage(1);
+			this.collection.setSearch(this.accountName);				
+			this.renderList(this.collection.listView.currentPage);
 		},	
 
 		displayList: function(){					
@@ -54,6 +54,7 @@ define([
 			this.$el.find("#contact-list tbody").html(innerListTemplate);
 
 			this.generatePagination();
+
 		},
 
 		setUpContent: function(){

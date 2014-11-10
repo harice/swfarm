@@ -43,16 +43,21 @@ define([
         },
 
         fetchInventory: function(stackNumbers, startDate, endDate) {
-        	console.log(stackNumbers);
+        	var startIndex = 0;
+
+        	if(stackNumbers.length > 1)
+        		startIndex = 1;
+
         	var stackids = '';
         	this.setDefaultURL();
         	this.urlRoot = this.urlRoot + '9?';
 
-        	for(var i = 1; i < stackNumbers.length; i++){
-        		stackids += 'stackIds[]=' + stackNumbers[i] + '&';
-        	};
+        	for(var i = startIndex; i < stackNumbers.length; i++){
+        		stackids += 'stackIds[]=' + stackNumbers[i];
 
-        	console.log(stackids);
+        		if(i < stackNumbers.length-1)
+        			stackids += '&';
+        	};
 
         	this.urlRoot = this.urlRoot + stackids + '&dateStart=' + startDate + '&dateEnd=' + endDate;        	
         	this.runFetch(); 
