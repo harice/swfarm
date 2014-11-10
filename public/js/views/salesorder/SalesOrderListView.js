@@ -350,11 +350,13 @@ define([
 			return false;
 		},
 		
-		generateOrderWeightDetailsByStack: function (models, soId) {
+		generateOrderWeightDetailsByStack: function (models, soId) {			
+
 			var data = {
 				stacks: models,
 				schedule_url: '/#/'+Const.URL.DELIVERYSCHEDULE+'/'+soId,
 				weight_info_url: '/#/'+Const.URL.SOWEIGHTINFO+'/'+soId,
+				location: '',				
 				_: _ 
 			};
 			
