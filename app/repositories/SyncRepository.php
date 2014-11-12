@@ -30,7 +30,7 @@ class SyncRepository implements SyncInterface {
 					});
 				}
 
-				$result = $accounts->get()->toArray();
+				$result = $accounts->get();
 				break;
 
 			case 'accounttype':
@@ -63,6 +63,10 @@ class SyncRepository implements SyncInterface {
 
 			case 'user':
 				$result = User::all();
+				break;
+
+			case 'order':
+				$result = Order::all();
 				break;
 		}
 
