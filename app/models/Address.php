@@ -30,7 +30,8 @@ class Address extends Eloquent {
 
     public function storagelocation()
     {
-        return $this->belongsTo('StorageLocation', 'address_id', 'id');
+        // return $this->belongsTo('StorageLocation', 'address_id', 'id');
+        return $this->hasMany('StorageLocation', 'address_id', 'id');
     }
 
 }
