@@ -503,7 +503,7 @@ class AccountRepository implements AccountRepositoryInterface {
     $sortby = isset($params['sortby']) ? $params['sortby'] : 'name';
     $orderby = isset($params['orderby']) ? $params['orderby'] : 'ASC';
 
-    $accounts = Account::with('accounttype')->with('address')->orderBy($sortby,$orderby);
+    $accounts = Account::with('accounttype')->with('address')->with('storagelocation.section')->orderBy($sortby,$orderby);
 
     if(isset($params['filter'])) {
       $filter = $params['filter'];

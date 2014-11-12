@@ -23,15 +23,7 @@ class SyncController extends BaseController {
 	 */
 	public function show($type)
 	{
-		switch ($type) {
-			case 'account':
-				return $this->account->getAllAccounts(Input::all());
-				break;
-			
-			default:
-				return $this->sync->syncing($type);
-				break;
-		}
+		return $this->sync->syncing($type,Input::all());
 	}
 
 

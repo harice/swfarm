@@ -1,5 +1,5 @@
 <?php
 
 interface SyncInterface {
-    public function syncing($type);
+    public function syncing($type,$params);
 }
