@@ -68,6 +68,26 @@ class SyncRepository implements SyncInterface {
 			case 'order':
 				$result = Order::all();
 				break;
+
+			case 'orderaddress':
+				$result = OrderAddress::all();
+				break;
+
+			case 'productsummary':
+				$result = ProductOrderSummary::all();
+				break;
+
+			case 'productorder':
+				$result = ProductOrder::all();
+				break;
+
+			case 'stack':
+				$result = Stack::all();
+				break;
+
+			case 'stacklocation':
+				$result = StackLocation::all();
+				break;
 		}
 
 		return Response::json($result);
