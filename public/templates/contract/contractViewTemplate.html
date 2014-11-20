@@ -1,11 +1,8 @@
 <div class="row margin-top-0">
-    <div class="col-md-12 no-padding">
-        <div class="block-flat">
-            <div id="view-contract" class="content padding-top-10">
-                <h2 class="contract-number margin-bottom-0"><%= contract.get("contract_number") %></h2>
-                <div class="progress width-150 margin-bottom-0 height-3">
-                  <div class="progress-bar progress-bar-success" style="width: %"></div>
-                </div>
+    <div class="col-md-12 no-padding">       
+        <div class="block-flat padding-top-5 padding-bottom-0">
+            <h2 class="content-header"><span><%= contract.get("contract_number") %></span></h2>
+            <div id="view-contract" class="content padding-top-10">               
                 <div class="row margin-top-0 margin-bottom-10">
                     <div class="col-md-4">
                         Customer: <span class="text-danger"><%= contract.get("account").name %></span><br>                                              
@@ -24,59 +21,61 @@
                 <div class="sales-order-details-by-product">
 
                     <% _.each(contract.get("contract_orders"), function (product) { %>
-                    <div class="row margin-top-0 padding-top-10">
-                        <div class="col-md-12">Product: <strong><%= product["product_name"] %></strong></div>
-                    </div>
-                    <div class="row margin-top-0 margin-bottom-10">
-                        <div class="col-md-12">
-                            <div class="content-inner table-responsive">
-                                <table class="table-condensed table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th class="width-150">SO No.</th>
-                                            <th class="width-150">PO No.</th>
-                                            <th>Stack No.</th>
-                                            <th class="width-250">Expected</th>
-                                            <th class="width-250">Delivered</th>
-                                            <th class="width-200">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    <% if (!_.isEmpty(product["salesorders"])) { %>
-                                        <% _.each(product["salesorders"], function (order) { %>
-                                        <tr class="product-item">
-                                            <td>
-                                                <a href="<%= sales_order_url %>/<%= order['id'] %>" title="view SO"><%= order["order_number"] %></a>
-                                            </td>
-                                            <td>
-                                                <% if(order['purchaseorder']  != null) { %>
-                                                    <a href="<%= purchase_order_url %>/<%= order['purchaseorder']['id'] %>" title="view PO"><%= order['purchaseorder']["order_number"] %></a>
-                                                <% } %>
-                                            </td>
-                                            <td><%= order["stacknumber"] %></td>
-                                            <td><%= numberFormatTons(order["tons"]) %></td>
-                                            <td><%= numberFormatTons(order["delivered_tons"]) %></td>
-                                            <td><label class="label label-<%= order.status['class'] %>"><%= order.status["name"] %></label></td>
-                                        </tr>
-                                        <% }); %>
-                                    <% } else { %>
-                                        <tr>
-                                            <td colspan="6">No Sales Order found.</td>
-                                        </tr>
-                                    <% } %>
-                                    </tbody>
-                                </table>
-                                <table class="table-condensed table-bordered table-hover margin-top-5">
-                                    <tbody>
-                                        <td class="width-500">&nbsp;</td>
-                                        <td class="width-250">Expected: <strong><%= numberFormatTons(product["total_tons"]) %></strong></td>
-                                        <td class="width-250">Delivered: <strong><%= numberFormatTons(product["delivered_tons"]) %></strong></td>
-                                        <td class="width-200">Remaining: <strong><%= numberFormatTons(product["remaining_tons"]) %></strong></td>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>                        
-                    </div>
+                    <fieldset>
+                        <legend class="margin-bottom-0">
+                            <h5><span><%= product["product_name"] %></span></h5>
+                        </legend>                       
+                        <div class="row margin-top-0 margin-bottom-10">
+                            <div class="col-md-12">
+                                <div class="content-inner table-responsive">
+                                    <table class="table-condensed table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th class="width-150">SO No.</th>
+                                                <th class="width-150">PO No.</th>
+                                                <th>Stack No.</th>
+                                                <th class="width-250">Expected</th>
+                                                <th class="width-250">Delivered</th>
+                                                <th class="width-200">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        <% if (!_.isEmpty(product["salesorders"])) { %>
+                                            <% _.each(product["salesorders"], function (order) { %>
+                                            <tr class="product-item">
+                                                <td>
+                                                    <a href="<%= sales_order_url %>/<%= order['id'] %>" title="view SO"><%= order["order_number"] %></a>
+                                                </td>
+                                                <td>
+                                                    <% if(order['purchaseorder']  != null) { %>
+                                                        <a href="<%= purchase_order_url %>/<%= order['purchaseorder']['id'] %>" title="view PO"><%= order['purchaseorder']["order_number"] %></a>
+                                                    <% } %>
+                                                </td>
+                                                <td><%= order["stacknumber"] %></td>
+                                                <td><%= numberFormatTons(order["tons"]) %></td>
+                                                <td><%= numberFormatTons(order["delivered_tons"]) %></td>
+                                                <td><label class="label label-<%= order.status['class'] %>"><%= order.status["name"] %></label></td>
+                                            </tr>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="6">No Sales Order found.</td>
+                                            </tr>
+                                        <% } %>
+                                        </tbody>
+                                    </table>
+                                    <table class="table-condensed table-bordered table-hover margin-top-5">
+                                        <tbody>
+                                            <td class="width-500">&nbsp;</td>
+                                            <td class="width-250">Expected: <strong><%= numberFormatTons(product["total_tons"]) %></strong></td>
+                                            <td class="width-250">Delivered: <strong><%= numberFormatTons(product["delivered_tons"]) %></strong></td>
+                                            <td class="width-200">Remaining: <strong><%= numberFormatTons(product["remaining_tons"]) %></strong></td>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>                        
+                        </div>
+                    </fieldset>
                     <% }); %>
 
                 </div> <!-- /.sales-order-details-by-product -->

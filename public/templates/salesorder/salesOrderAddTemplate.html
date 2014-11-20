@@ -9,8 +9,8 @@
                             <input type="hidden" name="id" value="<%= so_id %>" />
                             <% } %>
                             <fieldset>
-                                <legend><h3>Details</h3></legend>
-                                <div class="row">
+                                <legend><h3 class="margin-top-10 margin-bottom-0">DETAILS</h3></legend>
+                                <div class="row margin-top-0">
                                     <div class="col-md-6">
                                         <% if (typeof so_id !== "undefined") { %>
                                         <div class="form-group">
@@ -41,12 +41,10 @@
         								<div class="form-group">
         									<label for="contact_id" class="col-sm-3 control-label">Customer Contact <i class="color-danger">*</i></label>
         									<div class="col-sm-7">
-        										<div class="styled-select">
-        											<select class="form-control display-inline" id="contact_id" name="contact_id" required>
-        												<option value="">Select a customer contact</option>
-        											</select>
-        											<span class="throbber_wrap" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
-        										</div>
+        										<select class="form-control display-inline input-sm" id="contact_id" name="contact_id" required>
+                                                    <option value="">Select a customer contact</option>
+                                                </select>
+                                                <span class="throbber_wrap margin-left-20" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
         									</div>
         								</div>
                                         <div class="form-group">
@@ -83,24 +81,24 @@
                                             </div>
                                         </div>
                                         <% } %>
-                                        <div class="form-group"><label class="col-sm-12">Delivery Period:</label></div>
+                                        <div class="form-group"><label class="col-sm-3 control-label">Delivery Period:</label></div>
                                         <div class="form-group">
-                                            <label for="transportdatestart" class="col-sm-3 control-label">Start</label>
-                                            <div class="col-sm-4">
+                                            <label for="transportdatestart" class="col-sm-3 control-label">Start<i class='color-danger'>*</i></label>
+                                            <div class="col-sm-3">
                                                 <div id="start-date" class="calendar-cont">
                                                     <div class="input-group date datetime margin-bottom-0">
-                                                        <input id="transportdatestart" class="form-control form-date" name="transportdatestart" size="16" type="text" value="" required/>
-                                                        <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                                        <input id="transportdatestart" class="form-control form-date input-sm" name="transportdatestart" size="16" type="text" value="" required/>
+                                                        <span class="input-group-addon input-sm btn-primary"><span class="glyphicon glyphicon-th"></span></span>
                                                     </div>
                                                 </div>
                                                 <div class="error-msg-cont"></div>
                                             </div>
-                                            <label for="transportdateend" class="col-sm-1 control-label">End</label>
-                                            <div class="col-sm-4">
+                                            <label for="transportdateend" class="col-sm-1 control-label">End<i class='color-danger'>*</i></label>
+                                            <div class="col-sm-3">
                                                 <div id="end-date" class="calendar-cont">
                                                     <div class="input-group date datetime margin-bottom-0">
-                                                        <input id="transportdateend" class="form-control form-date" name="transportdateend" size="16" type="text" value="" required/>
-                                                        <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                                                        <input id="transportdateend" class="form-control form-date input-sm" name="transportdateend" size="16" type="text" value="" required/>
+                                                        <span class="input-group-addon input-sm btn-primary"><span class="glyphicon glyphicon-th"></span></span>
                                                     </div>
                                                 </div>
                                                 <div class="error-msg-cont"></div>
@@ -110,23 +108,19 @@
         								<div class="form-group">
                                             <label for="contract_id_dummy" class="col-sm-3 control-label">Contract</label>
                                             <div class="col-sm-7">
-        										<div class="styled-select">
-                                                    <select id="contract_id_dummy" class="form-control contract_id_dummy width-160" disabled>
-                                                        <option value="">Select a contract</option>
-                                                    </select>
-        											<input type="hidden" id="contract_id" class="contract_id" name="contract_id" value="" />
-                                                </div>
+        										<select id="contract_id_dummy" class="form-control contract_id_dummy width-160 input-sm" disabled>
+                                                    <option value="">Select a contract</option>
+                                                </select>
+                                                <input type="hidden" id="contract_id" class="contract_id" name="contract_id" value="" />
                                             </div>
                                         </div>
         								<% } else { %>
                                         <div class="form-group">
                                             <label for="contract_id" class="col-sm-3 control-label">Contract</label>
                                             <div class="col-sm-7">
-        										<div class="styled-select">
-                                                    <select id="contract_id" class="form-control contract_id width-160" name="contract_id" disabled>
-                                                        <option value="">Select a contract</option>
-                                                    </select>
-                                                </div>
+        										<select id="contract_id" class="form-control contract_id width-160 input-sm" name="contract_id" disabled>
+                                                    <option value="">Select a contract</option>
+                                                </select>
                                             </div>
                                         </div>
         								<% } %>
@@ -141,24 +135,24 @@
                                 </div>
                             </fieldset>
                             <fieldset class="margin-top-10">
-                                <legend>
-                                    <h3 class="pull-left margin-top-0 margin-bottom-0">Products</h3>
-                                    <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-rad btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
+                                <legend class="margin-bottom-5">
+                                    <h3 class="pull-left margin-bottom-0">PRODUCTS</h3>
+                                    <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-rad btn-info btn-xs margin-top-20"><span class="glyphicon glyphicon-plus"></span></button>
                                 </legend>
-                                <div class="table-responsive">
-                                    <table id="product-list" class="table table-bordered">
+                                <div class="content-inner table-responsive">
+                                    <table id="product-list" class="table table-bordered table-condensed">
                                         <thead>
                                             <tr>
-                                                <th>Product</th>
+                                                <th class="width-200">Product</th>
                                                 <th class="width-130">Unit Price</th>
-                                                <th>Est Tons</th>
+                                                <th>Tons</th>
                                                 <th class="width-170">Total Price</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
         								<tfoot>
         									<tr>
-        										<td class="text-right" colspan="2">Total</td>
+        										<td class="text-right" colspan="2"><label class="margin-top-5"><strong>Total</strong></label></td>
         										<td><input id="total-tons" class="form-control input-sm text-right" type="text" value="0.0000" readonly></td>
         										<td>
         											<div class="input-group margin-0">
@@ -188,7 +182,7 @@
         									<% } %>
         								<% } %>
                                         <button id="save" type="submit" class="save btn btn-primary btn-rad btn-sm"><i class="fa fa-save"></i> Save</button>
-                                        <a id="go-to-previous-page" class="btn btn-link" href="#">Cancel</a>
+                                        <a id="go-to-previous-page" class="btn btn-default btn-sm btn-rad" href="#">Cancel</a>
                                     </div>
                                 </div>
                             </div>

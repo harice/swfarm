@@ -1,33 +1,38 @@
 <div class="row margin-top-0">
     <div class="col-md-12 no-padding">
-        <div class="block-flat">
+        <div class="block-flat padding-top-0 padding-bottom-0">
             <div class="content padding-top-0">
 
-                <div class="row">
-                  <div class="col-md-9">
+                <div class="row margin-top-0">
+                  <div class="col-md-12">
                     <form id="addProductForm" class="form-horizontal" product="form" method="post">
                       <% if (typeof product_id !== "undefined") { %>
                         <input type="hidden" id="id" name="id" value="<%= product_id %>" />
                       <% } %>
-                      <div class="form-group">
-                        <label for="name" class="col-sm-3 control-label">Product <i class="color-danger">*</i></label>
-                        <div class="col-sm-7">
-                          <input type="text" class="form-control input-sm capitalize" id="name" name="name" placeholder="" minlength="2" maxlength="50" required>
+                      <fieldset>
+                        <legend>
+                          <h3>DETAILS</h3>
+                        </legend>
+                        <div class="form-group">
+                          <label for="name" class="col-sm-2 control-label">Product <i class="color-danger">*</i></label>
+                          <div class="col-sm-7">
+                            <input type="text" class="form-control input-sm capitalize" id="name" name="name" placeholder="" minlength="2" maxlength="50" required>
+                          </div>
                         </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="description" class="col-sm-3 control-label">Description</label>
-                        <div class="col-sm-9">
-                          <textarea class="form-control" rows="3" id="description" name="description" maxlength="200"></textarea>
+                        <div class="form-group">
+                          <label for="description" class="col-sm-2 control-label">Description</label>
+                          <div class="col-sm-7">
+                            <textarea class="form-control" rows="3" id="description" name="description" maxlength="200"></textarea>
+                          </div>
                         </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="" class="col-sm-3 control-label"></label>
-                        <div class="col-sm-5">
-                           <button id="save" type="submit" class="save btn btn-primary btn-rad btn-sm"><i class="fa fa-save"></i> Save</button>
-                           <a id="go-to-previous-page" class="btn btn-link" href="#">Cancel</a>
+                        <div class="form-group margin-top-10">
+                          <label for="" class="col-sm-2 control-label"></label>
+                          <div class="col-sm-5">
+                             <button id="save" type="submit" class="save btn btn-primary btn-rad btn-sm margin-left-0"><i class="fa fa-save"></i> Save</button>
+                             <a id="go-to-previous-page" class="btn btn-default btn-sm btn-rad" href="#">Cancel</a>
+                          </div>
                         </div>
-                      </div>
+                      <fieldset>
                     </form>
                   </div>
                 </div>

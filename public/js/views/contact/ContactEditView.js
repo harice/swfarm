@@ -49,6 +49,7 @@ define([
 					thisObj.displayForm();
 					thisObj.supplyContactData();
 					thisObj.maskInputs();
+					thisObj.focusOnFirstField();					
 				}
 				this.off("change");
 			});

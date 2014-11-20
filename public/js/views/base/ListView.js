@@ -38,6 +38,7 @@ define([
 			
 			if(lastPage > 1) {
 				$('.pagination').show();
+				$('.footer-pagination').show();
 				//$('.display-items').show();
 				
 				for(var i=1; i <= lastPage; i++) {
@@ -70,6 +71,7 @@ define([
 			}
 			else {
 				$('.pagination').hide();
+				$('.footer-pagination').hide();
 				// $('.display-items').hide();
 			}
 		},

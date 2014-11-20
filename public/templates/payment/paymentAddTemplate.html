@@ -1,7 +1,7 @@
 <div class="row margin-top-0">
     <div class="col-md-12 no-padding">
         <div class="block-flat padding-top-0 padding-bottom-0">
-            <div class="content">
+            <div class="content padding-top-0">
 
                 <div class="row margin-top-0">
                     <div class="col-md-12">
@@ -14,67 +14,74 @@
                             <input type="hidden" id="order_id" name="order_id" value="<%= order_id %>" />                            
                             <input type="hidden" id="account_id" name="account_id" value="<%= payment.get('account').id %>" />
 
-                            <div class="row">
-                                <div class="col-md-5">
-                                    <% if(typeof payment_id != "undefined") { %>
-                                    <div class="form-group">
-                                        <label for="postingdate" class="col-sm-3 control-label">Posting date <i class="color-danger">*</i></label>
-                                        <div class="col-sm-9">
-                                            <input type="text" class="form-control capitalize input-sm" id="postingdate" name="postingdate" placeholder="" minlength="2" maxlength="50" required readonly>
+                            <fieldset>
+                                <legend><h3 class="margin-bottom-0">DETAILS</h3></legend>   
+                                <div class="row margin-top-0">
+                                    <div class="col-md-6">
+                                        <% if(typeof payment_id != "undefined") { %>
+                                        <div class="form-group">
+                                            <label for="postingdate" class="col-sm-3 control-label">Posting date <i class="color-danger">*</i></label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control capitalize input-sm" id="postingdate" name="postingdate" placeholder="" minlength="2" maxlength="50" required readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="transactionnumber" class="col-sm-3 control-label">Transaction No. <i class="color-danger">*</i></label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control capitalize input-sm" id="transactionnumber" name="transactionnumber" placeholder="" minlength="2" maxlength="50" required readonly>
+                                            </div>
+                                        </div>
+                                        <% } %>
+                                        <div class="form-group">
+                                            <label for="order_id" class="col-sm-3 control-label">PO No. <i class="color-danger">*</i></label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control capitalize input-sm" id="po_number" value="<%= payment.get('order_number') %>" name="po_number" placeholder="" minlength="2" maxlength="50" required readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="account_id" class="col-sm-3 control-label">Producer <i class="color-danger">*</i></label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control input-sm" id="account_name" name="account_name" value="<%= payment.get('account').name %>" placeholder="" minlength="2" maxlength="100" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="checknumber" class="col-sm-3 control-label">Check No. <i class="color-danger">*</i></label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control input-sm" id="checknumber" name="checknumber" placeholder="" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="amount" class="col-sm-3 control-label">Amount Paid <i class="color-danger">*</i></label>
+                                            <div class="col-sm-5">                                            
+                                                <div class="input-group input-group-sm margin-0">
+                                                    <span class="input-group-addon">$</span>
+                                                    <input type="text" class="form-control width-150 input-sm" id="amount" name="amount" placeholder="0.00" required>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="transactionnumber" class="col-sm-3 control-label">Transaction No. <i class="color-danger">*</i></label>
-                                        <div class="col-sm-9">
-                                            <input type="text" class="form-control capitalize input-sm" id="transactionnumber" name="transactionnumber" placeholder="" minlength="2" maxlength="50" required readonly>
-                                        </div>
-                                    </div>
-                                    <% } %>
-                                    <div class="form-group">
-                                        <label for="order_id" class="col-sm-3 control-label">PO No. <i class="color-danger">*</i></label>
-                                        <div class="col-sm-9">
-                                            <input type="text" class="form-control capitalize input-sm" id="po_number" value="<%= payment.get('order_number') %>" name="po_number" placeholder="" minlength="2" maxlength="50" required readonly>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="account_id" class="col-sm-3 control-label">Producer <i class="color-danger">*</i></label>
-                                        <div class="col-sm-9">
-                                            <input type="text" class="form-control input-sm" id="account_name" name="account_name" value="<%= payment.get('account').name %>" placeholder="" minlength="2" maxlength="100" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="checknumber" class="col-sm-3 control-label">Check No. <i class="color-danger">*</i></label>
-                                        <div class="col-sm-9">
-                                            <input type="text" class="form-control input-sm" id="checknumber" name="checknumber" placeholder="" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="amount" class="col-sm-3 control-label">Amount Paid <i class="color-danger">*</i></label>
-                                        <div class="col-sm-5">                                            
-                                            <div class="input-group input-group-sm margin-0">
-                                                <span class="input-group-addon">$</span>
-                                                <input type="text" class="form-control width-150 input-sm" id="amount" name="amount" placeholder="0.00" required>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="notes" class="col-sm-2 control-label">Notes</label>
+                                            <div class="col-sm-9">
+                                                <textarea class="form-control width-400" rows="3" id="notes" name="notes" minlength="2" maxlength="200"></textarea>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="notes" class="col-sm-3 control-label">Notes</label>
-                                        <div class="col-sm-9">
-                                            <textarea class="form-control width-400" rows="3" id="notes" name="notes" minlength="2" maxlength="200"></textarea>
+                                
+                                <div class="row margin-top-10">
+                                    <div class="col-md-6">
+                                        <div class="form-group form-button-container margin-top-0" style="display:none;">
+                                            <label for="" class="col-sm-3 control-label"></label>
+                                            <div class="col-sm-9">
+                                                 <button id="save" type="submit" class="save btn btn-primary btn-sm btn-rad margin-left-0"><i class="fa fa-save"></i> Save</button>                                     
+                                                 <a id="go-to-previous-page" class="btn btn-default btn-sm btn-rad" href="#">Cancel</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <div class="form-group col-md-5 form-button-container" style="display:none;">
-                                <label for="" class="col-sm-3 control-label"></label>
-                                <div class="col-sm-9">
-                                     <button id="save" type="submit" class="save btn btn-primary btn-sm btn-rad"><i class="fa fa-save"></i> Save</button>                                     
-                                     <a id="go-to-previous-page" class="btn btn-link" href="#">Cancel</a>
-                                </div>
-                            </div>
+                            </fieldset>
                         </form>
 
                     </div>

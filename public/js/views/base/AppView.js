@@ -40,7 +40,7 @@ define([
 		},
 
 		focusOnFirstField: function () {
-			this.$el.find('form:first *:input[type!=hidden]:first').focus();
+			this.$el.find('form:first *:input[type!=hidden]:first').focus();			
 		},
 
 		toFixedValue: function (field, decimal) {
@@ -268,7 +268,7 @@ define([
 			$(".mask-fee").mask('#,##0.99', {reverse: true, maxlength: false});
             $(".mask-distance").mask('##0.00', {reverse: true});*/
             $(".mask-fee").mask('##0.00', {reverse: true});
-            $(".mask-rate").mask('#0.00', {reverse: true});
+            $(".mask-rate").mask('##0.00', {reverse: true});
             $(".mask-admin-fee").mask('#,##0.00', {reverse: true});           
             
 			$('zipcode').mask('00000-0000');          	 

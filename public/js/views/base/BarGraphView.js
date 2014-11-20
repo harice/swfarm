@@ -449,8 +449,7 @@ define([
 			thisObj.subContainer.find('#graph-cont').append(graphInnerTemplate);
 
 			thisObj.subContainer.find('#' +graphIdName).append("<div id="+ mapId +"></div>");
-			thisObj.subContainer.find('#' +graphIdName).css({"width": "547px", "height": "300px", "margin": "5px 0 0 0"});
-			thisObj.subContainer.find('#' +mapId).css({"width": "100%", "height": "100%"});			
+			thisObj.subContainer.find('#' +mapId).addClass('mapholder');	
 
 			this.googleMaps.initGetDashboardMapLocation(mapId, location);
 						

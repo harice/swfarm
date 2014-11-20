@@ -72,10 +72,7 @@ define([
 			
 			if(this.checkFields()){	
 				this.model = new Report();						
-				this.model.fetchStatement(this.reportId, this.filterId, this.startDate, this.endDate);
-
-				$("#report-form").collapse("toggle");
-				$(".collapse-form").addClass("collapsed");
+				this.model.fetchStatement(this.reportId, this.filterId, this.startDate, this.endDate);			
 			}
 
 			this.model.on('sync', function (){				

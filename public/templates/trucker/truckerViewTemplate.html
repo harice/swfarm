@@ -1,9 +1,8 @@
 <div class="row margin-top-0">
-    <div class="col-md-12 no-padding">
+    <div class="col-md-12 no-padding">        
         <div class="block-flat">
-            <dl id="view-trucker" class="dl-horizontal">
-                <dt>Truck Number</dt>
-                <dd><%= trucker.get("trucknumber") %></dd>
+            <h2 class="content-header"><span><%= trucker.get("trucknumber") %></span></h2>       
+            <dl id="view-trucker" class="dl-horizontal padding-top-10">              
                 <dt>Account Name</dt>
                 <dd><%= trucker.get("account").name %></dd>
                 <dt>Trucker Type</dt>

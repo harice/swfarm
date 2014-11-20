@@ -1,11 +1,10 @@
 <div class="row margin-top-0">
     <div class="col-md-12 no-padding">
         <div class="block-flat">
+            <h2 class="content-header"><span><%= scale.get("name") %></span></h2>  
             <dl id="view-scale" class="dl-horizontal">
                 <dt>Scale Account</dt>
                 <dd><%= scale.get("account").name %></dd>
-                <dt>Scale Name</dt>
-                <dd><%= scale.get("name") %></dd>
                 <dt>Scale Fee</dt>
                 <dd>$ <%= numberFormat(scale.get("rate")) %></dd>
                 <dd>

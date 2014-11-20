@@ -1,6 +1,9 @@
 <div class="content padding-top-0">
 	<% if(!wi.get("weightTicketNumber")) { %>
 	<h2 class="ponumber margin-bottom-0"><%= formatDateAMPM(schedule.get("date")) %></h2>
+	<div class="progress width-150 margin-bottom-0 height-3">
+  		<div class="progress-bar progress-bar-success" style="width: %"></div>
+  	</div>
 	Status: <label class="label label-<%= schedule.get("status").class %>"><%= schedule.get("status").name %></label><br>
 	PO No.: <span class="text-danger"><%= po.get("order_number") %></span><br>
 
@@ -41,6 +44,9 @@
 
 	<% } else { %>
 		<h2 class="ponumber margin-bottom-0"><%= wi.get("weightTicketNumber") %></h2>
+		<div class="progress width-150 margin-bottom-0 height-3">
+	  		<div class="progress-bar progress-bar-success" style="width: %"></div>
+	  	</div>
 		Created: <span class="text-danger"><%= formatDateAMPM(wi.get("created_at")) %></span><br>
 		Status: <label class="label label-<%= wi.get("status").class %>" id="weight-status"><%= wi.get("status").name %></label><br>
 		PO No.: <span class="text-danger"><%= po.get("order_number") %></span><br>
@@ -80,12 +86,18 @@
 								<i class="fa fa-pencil width-10"></i> Edit Ticket
 							</a>
 						</h2>
+						<div class="progress width-150 margin-bottom-0 height-3">
+					  		<div class="progress-bar progress-bar-success" style="width: %"></div>
+					  	</div>
 						<% } else { %>
 						<a class="btn btn-primary btn-sm btn-trans btn-rad editable-button margin-left-0" href="<%= pickup_weight_info_add_url %>">
 							+ Add Ticket
 						</a>
 						<% } } else { if (typeof has_pickup_info !== "undefined") { %>
 							<h2 class='margin-bottom-0'><%= wi.get("loadingTicketNumber") %></h2>
+							<div class="progress width-150 margin-bottom-0 height-3">
+						  		<div class="progress-bar progress-bar-success" style="width: %"></div>
+						  	</div>
 						<% } } %>
 
 						<% if (typeof has_pickup_info !== "undefined") { %>
@@ -150,7 +162,7 @@
 								</div>
 							</div>
 							<div class='col-md-9'>
-								<div class='table-responsive'>
+								<div class='content-inner table-responsive'>
 									<table class="table-condensed table-bordered table-hover">
 									<thead>
 										<tr>
@@ -212,12 +224,18 @@
 								<i class="fa fa-pencil width-10"></i> Edit Ticket
 							</a>
 						</h2>
+						<div class="progress width-150 margin-bottom-0 height-3">
+					  		<div class="progress-bar progress-bar-success" style="width: %"></div>
+					  	</div>
 						<% } else { %> 
 						<a class="btn btn-primary btn-sm btn-trans btn-rad editable-button margin-left-0" href="<%= dropoff_weight_info_add_url %>">
 							+ Add Ticket
 						</a>
 						<% } } else { if (typeof has_dropoff_info !== "undefined") { %>
 							<h2 class='margin-bottom-0'><%= wi.get("unloadingTicketNumber") %></h2>
+							<div class="progress width-150 margin-bottom-0 height-3">
+						  		<div class="progress-bar progress-bar-success" style="width: %"></div>
+						  	</div>
 						<% } } %>
 
 						<% if (typeof has_dropoff_info !== "undefined") { %>
@@ -282,7 +300,7 @@
 								</div>
 							</div>
 							<div class='col-md-9'>
-								<div class='table-responsive'>
+								<div class='content-inner table-responsive'>
 									<table class="table-condensed table-bordered table-hover">
 									<thead>
 										<tr>

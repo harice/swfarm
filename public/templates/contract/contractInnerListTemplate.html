@@ -23,13 +23,15 @@
 			<div class="contract-collapsible-item list-view-collapse collapse" id="<%= collapsible_id %><%= contract.get("id") %>">
 				<div style="width:100%; padding:8px;">
 					<div style="width:100%; padding:8px; background-color:#fff;">
-						<div class="col-md-12 no-padding">
-							<div class="pull-right">
-								<a href="<%= contract_url %>/<%= contract.get("id") %>" class="btn btn-primary btn-sm"><i class="fa fa-eye width-10"></i> View Contract</a>
-                                <% if(contract.get("status_id") == 1) { %>
-								<a href="#" class="btn btn-danger btn-sm close-contract editable-button editable-button" data-id="<%= contract.get('id') %>"><i class="fa fa-times width-10"></i> Close Contract</a>
-                                <a href="<%= contract_edit_url %>/<%= contract.get("id") %>" class="btn btn-primary btn-sm editable-button"><i class="fa fa-pencil width-10"></i> Edit Contract</a>
-                                <% } %>
+						<div class="row margin-top-0">
+							<div class="col-md-12 no-padding">
+								<div class="pull-right">
+									<a href="<%= contract_url %>/<%= contract.get("id") %>" class="btn btn-primary btn-sm btn-rad btn-trans"><i class="fa fa-eye width-10"></i> View Contract</a>
+	                                <% if(contract.get("status_id") == 1) { %>
+									<a href="#" class="btn btn-danger btn-sm close-contract editable-button editable-button btn-rad btn-trans" data-id="<%= contract.get('id') %>"><i class="fa fa-times width-10"></i> Close Contract</a>
+	                                <a href="<%= contract_edit_url %>/<%= contract.get("id") %>" class="btn btn-primary btn-sm editable-button btn-rad btn-trans"><i class="fa fa-pencil width-10"></i> Edit Contract</a>
+	                                <% } %>
+								</div>
 							</div>
 						</div>
 						<div class="sales-order-details-by-product"></div>

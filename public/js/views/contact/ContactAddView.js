@@ -76,6 +76,7 @@ define([
 
             this.initValidateForm();
 			this.initAccountAutocomplete();
+			this.focusOnFirstField();
 		},
 
 		initValidateForm: function () {
@@ -104,6 +105,19 @@ define([
                     );
 				},
 
+				errorPlacement: function(error, element) {
+					if(element.hasClass('rate')) {
+						element.closest('.input-group').next('.error-msg-cont').html(error);
+					}					
+				},
+
+				rules: {
+					email: {
+						required: true,
+						email: true
+					},					
+				},
+
                 messages: {
 					phone: {
                         minlength: 'Please enter a valid phone number.',
@@ -114,6 +128,12 @@ define([
                         minlength: 'Please enter a valid mobile number.',
 						maxlength: 'Please enter a valid mobile number.',
 					},
+
+					email: {
+						pattern: 'Please enter a valid email.',
+					},
+
+					
 				}
 			});
 		},
@@ -167,7 +187,12 @@ define([
 
 		events: {
             'click #go-to-previous-page': 'goToPreviousPage',
-            'change #account': 'toggleRate'
+            'change #account': 'toggleRate',
+            'blur .rate': 'onBlurRate',
+		},
+
+		onBlurRate: function(ev) {
+			this.toFixedValue($(ev.target), 2);
 		},
 
         toggleRate: function (ev)

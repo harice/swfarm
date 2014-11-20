@@ -1,8 +1,9 @@
 <% if (!_.isEmpty(products)) { %>
 	<% _.each(products, function(product){ %>
-		<div class="row margin-top-0 padding-top-10">
-			<div class="col-md-12">Product: <%= product.get("product_name") %></div>
-		</div>
+	<fieldset>
+		<legend class="margin-bottom-0">
+			<h5 class="margin-top-0"><span><%= product.get("product_name") %></span></h5>
+		</legend>		
 		<div class="row margin-top-0">
 			<div class="col-md-9">
 				<div class="content-inner table-responsive">
@@ -65,5 +66,6 @@
 				</div>
 			</div>
 		</div>
+	</fieldset>
 	<% }); %>
 <% } %>

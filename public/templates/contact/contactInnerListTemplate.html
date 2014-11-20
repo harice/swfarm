@@ -1,12 +1,12 @@
 <% if (!_.isEmpty(contacts)) { %>
   <% _.each(contacts, function(contact){ %>
     <tr>
-      <td><a href="<%= contact_url %>/<%= contact.get("id") %>"><%= contact.get("lastname") %>, <%= contact.get("firstname") %></a></td>
+      <td><a href="<%= contact_url %>/<%= contact.get("id") %>"><%= contact.get("lastname") %>, <%= contact.get("firstname") %> <%= contact.get("suffix") %></a></td>
       <td><a href="<%= account_url %>/<%= contact.get("account").id %>"><%= contact.get("account").name %></a></td>
       <td>
         <%
           _.each(contact.get('account').accounttype, function(type){ %>
-          <label class="label label-default"><%= type.name %></label>
+          <span class="label label-default"><%= type.name %></span>
           <% });
         %>
       </td>

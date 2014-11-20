@@ -1,13 +1,10 @@
 <div class="row margin-top-0">
     <div class="col-md-12 no-padding">
-        <div class="block-flat">
-          <h2 class="margin-top-10 margin-bottom-0"><%= role.get('name') %></h2>
-          <div class="progress width-300 margin-bottom-20 margin-top-10 height-3">
-              <div style="width: %" class="progress-bar progress-bar-success"></div>
-          </div>
-          <dl class="dl-horizontal">
+        <div class="block-flat">  
+          <h2 class="content-header"><span><%= role.get('name') %></span></h2>       
+          <dl class="dl-horizontal padding-top-10 margin-bottom-10">
             <dt>Description</dt>
-            <dd class="width-300">
+            <dd>
               <% if (role.get("description") != "") { %>
                 <%= role.get("description") %>
               <% } else { %>

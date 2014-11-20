@@ -43,35 +43,39 @@
       </address>
     </div>
   </div>
-  <div class="row margin-top-10 padding-top-10">
+  <div class="row margin-top-20 padding-top-10">
     <div class="col-md-12">
-      <h3 class="margin-top-0">Products</h3>
-      <div class="content-inner table-responsive">
-        <table id="product-list" class="table-condensed table-bordered table-hover">
-          <thead>
-            <tr>
-              <th class="width-200">Product</th>
-              <th>Est Tons</th>
-              <th class="width-150">
-                <% if (typeof is_bid === "undefined") { %>
-                  Total Price
-                <% } else { %>
-                  Bid Total Price
-                <% } %>
-              </th>
+      <fieldset>
+        <legend class="margin-bottom-5">
+          <h3 class="margin-top-0">PRODUCTS</h3>
+        </legend>
+        <div class="content-inner table-responsive">
+          <table id="product-list" class="table-condensed table-bordered table-hover">
+            <thead>
+              <tr>
+                <th class="width-200">Product</th>
+                <th>Est Tons</th>
+                <th class="width-150">
+                  <% if (typeof is_bid === "undefined") { %>
+                    Total Price
+                  <% } else { %>
+                    Bid Total Price
+                  <% } %>
+                </th>
 
-            </tr>
-          </thead>
-          <tbody></tbody>
-    		  <tfoot>
-    		    <tr>
-      			  <td class="text-right">Total</td>
-      			  <td class="text-right"><strong id="total-tons">0.0000</strong></td>
-      			  <td class="text-right"><strong id="total-price">$ 0.00</strong></td>
-      			</tr>
-    		  </tfoot>
-        </table>
-      </div>
+              </tr>
+            </thead>
+            <tbody></tbody>
+      		  <tfoot>
+      		    <tr>
+        			  <td class="text-right">Total</td>
+        			  <td class="text-right"><strong id="total-tons">0.0000</strong></td>
+        			  <td class="text-right"><strong id="total-price">$ 0.00</strong></td>
+        			</tr>
+      		  </tfoot>
+          </table>
+        </div>
+      </fieldset>
     </div>
   </div>
   <div class="row">
