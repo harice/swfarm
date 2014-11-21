@@ -6,8 +6,8 @@
 				<div class="row margin-top-0">
 					<div class="col-md-12">
 						<form id="locationForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-							<% if (typeof sl_id !== "undefined") { %>
-							<input type="hidden" name="id" value="<%= sl_id %>" />
+							<% if (typeof dl_id !== "undefined") { %>
+							<input type="hidden" name="id" value="<%= dl_id %>" />
 							<% } %>
 							<fieldset class="margin-bottom-10">
 								<legend><h3 class="margin-bottom-0">LOCATION DETAILS</h3></legend>                  
@@ -67,8 +67,8 @@
 								<div class="col-md-12">
 									<div class="pull-right">
 										<button id="save" type="submit" class="save btn btn-primary btn-sm btn-rad"><i class="fa fa-save"></i>  Save</button>
-										<% if (typeof sl_id !== "undefined") { %>
-											<button id="delete-sl" type="button" class="btn btn-danger btn-sm btn-rad"><i class="fa fa-times width-10"></i> Delete</button>
+										<% if (typeof dl_id !== "undefined") { %>
+											<button id="delete-dl" type="button" class="btn btn-danger btn-sm btn-rad"><i class="fa fa-times width-10"></i> Delete</button>
 										<% } %>
 										<a id="go-to-previous-page" class="btn btn-warning btn-sm btn-rad" href="#"><i class="fa fa-ban width-10"></i> Cancel</a>
 									</div>

@@ -1,38 +1,38 @@
 define([
 	'backbone',
 	'bootstrapdatepicker',
-	'views/stack/StackLocationAddView',
+	'views/delivery/DeliveryLocationAddView',
 	'jqueryvalidate',
 	'jquerytextformatter',
-	'models/stack/StackLocationModel',
+	'models/delivery/DeliveryLocationModel',
 	'collections/account/AccountCollection',
 	'collections/address/AddressCollection',
 	'text!templates/layout/contentTemplate.html',
-	'text!templates/stack/stackLocationAddTemplate.html',
+	'text!templates/delivery/deliveryLocationAddTemplate.html',
 	'global',
 	'constant'
 ], function(Backbone,
 			DatePicker,
-			StackLocationAddView,
+			DeliveryLocationAddView,
 			Validate,
 			TextFormatter,
-			StackLocationModel,
+			DeliveryLocationModel,
 			AccountCollection,
 			AddressCollection,
 			contentTemplate,
-			stackLocationAddTemplate,
+			deliveryLocationAddTemplate,
 			Global,
 			Const
 ){
 
-	var StackLocationEditView = StackLocationAddView.extend({
+	var DeliveryLocationEditView = DeliveryLocationAddView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
 
 		initialize: function(option) {
 			this.initSubContainer();
 			var thisObj = this;
 			this.slId = option.id;
-			this.h1Title = 'Stack Location';
+			this.h1Title = 'Delivery Location';
 			this.h1Small = 'add';
 
 			this.options = {
@@ -49,7 +49,7 @@ define([
 			this.producerAndWarehouseAccount.on('sync', function() {
 				if(thisObj.subContainerExist()) {
 					thisObj.displayForm();
-					thisObj.supplyStackLocationData();
+					thisObj.supplyDeliveryLocationData();
 				}
 				this.off('sync');
 			});
@@ -57,7 +57,7 @@ define([
 				this.off('error');
 			});
 
-			this.model = new StackLocationModel({id:this.slId});
+			this.model = new DeliveryLocationModel({id:this.slId});
 			this.model.on('change', function() {
 				thisObj.producerAndWarehouseAccount.getProducerAndWarehouseAccount();
 				this.off('change');
@@ -73,10 +73,10 @@ define([
 
 		render: function(){
 			this.model.runFetch();
-			Backbone.View.prototype.refreshTitle('Stack Location','edit');
+			Backbone.View.prototype.refreshTitle('Delivery Location','edit');
 		},
 
-		supplyStackLocationData: function () {
+		supplyDeliveryLocationData: function () {
 			var thisObj = this;
 			var section = this.model.get('section');
 
@@ -115,14 +115,14 @@ define([
 
 
 		initDeleteConfirmation: function () {
-			this.initConfirmationWindow('Are you sure you want to delete this Stack Location?',
+			this.initConfirmationWindow('Are you sure you want to delete this Delivery Location?',
 										'confirm-delete-sl',
 										'Delete',
-                                        'Delete Stack Location');
+                                        'Delete Delivery Location');
 		},
 
 	});
 
-	return StackLocationEditView;
+	return DeliveryLocationEditView;
 
 });

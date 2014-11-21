@@ -24,6 +24,7 @@ define([
 	'controllers/salesorder/SODeliveryScheduleController',
 	'controllers/salesorder/SOWeightInfoController',
 	'controllers/stack/StackLocationController',
+	'controllers/delivery/DeliveryLocationController',
 	'controllers/trailer/TrailerController',
 	'controllers/settings/SettingsController',
 	'controllers/scale/ScaleController',
@@ -62,6 +63,7 @@ define([
 			SODeliveryScheduleController,
 			SOWeightInfoController,
 			StackLocationController,
+			DeliveryLocationController,
 			TrailerController,
 			SettingsController,
 			ScaleController,
@@ -198,6 +200,13 @@ define([
 	routerRoutes[Const.URL.STACKLOCATION+'/'] = 'showStackPage';
 	routerRoutes[Const.URL.STACKLOCATION+'/:action'] = 'showStackPage';
 	routerRoutes[Const.URL.STACKLOCATION+'/:action/:id'] = 'showStackPage';
+
+	//delivery location
+	routerRoutes[Const.URL.DELIVERYLOCATION] = 'showDeliveryPage';
+	routerRoutes[Const.URL.DELIVERYLOCATION+'/'] = 'showDeliveryPage';
+	routerRoutes[Const.URL.DELIVERYLOCATION+'/:action'] = 'showDeliveryPage';
+	routerRoutes[Const.URL.DELIVERYLOCATION+'/:action/:id'] = 'showDeliveryPage';
+	
 	
 	//trailer
 	routerRoutes[Const.URL.TRAILER] = 'showTrailerPage';
@@ -441,6 +450,13 @@ define([
 			this.closeView();
 			var stackLocationController = new StackLocationController();
 			this.currView = stackLocationController.setAction(action, id);
+			this.currView.render();
+		});
+
+		app_router.on('route:showDeliveryPage', function (action, id) {
+			this.closeView();
+			var deliveryLocationController = new DeliveryLocationController();
+			this.currView = deliveryLocationController.setAction(action, id);
 			this.currView.render();
 		});
 		

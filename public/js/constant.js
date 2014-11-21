@@ -34,6 +34,7 @@ define(function () {
 			'FILE': '/file',
 			'COMMISSION': 'administration/commission',
 			'PAYMENT': 'payment',
+			'DELIVERYLOCATION': 'administration/delivery',
 		},
 		'MENU': {
 			'PURCHASES': {
@@ -135,6 +136,12 @@ define(function () {
 				'ADD'	:63,
 				'EDIT'	:64,
 			},
+			'DELIVERYLOCATION': {
+				'VIEW'	:65,
+				'ADD'	:66,
+				'EDIT'	:67,
+				'DELETE':68
+			},
 		},
 		'CRUD': {
 			'ADD': 'add',
@@ -205,6 +212,11 @@ define(function () {
 		'STACKLOCATION': {
 			'COLLAPSIBLE': {
 				'ID': 'stacklocation-list-collapsible-',
+			},
+		},
+		'DELIVERYLOCATION': {
+			'COLLAPSIBLE': {
+				'ID': 'deliverylocation-list-collapsible-',
 			},
 		},
 		'COMMISSION': {

@@ -186,9 +186,20 @@ define([
         },
 
 		events: {
-            'click #go-to-previous-page': 'goToPreviousPage',
+            'click #go-to-previous-page': 'onCancel',
             'change #account': 'toggleRate',
             'blur .rate': 'onBlurRate',
+		},
+
+		onCancel: function(){
+			this.goToPreviousPage();			
+
+			$('#modal-confirm-navigate-away').on('shown.bs.modal', function(){
+				$('.btn.close-window').focus();				
+			});
+
+			return false;
+
 		},
 
 		onBlurRate: function(ev) {

@@ -1,7 +1,7 @@
 <div class="content padding-top-0">
 	<% if(!wi.get("weightTicketNumber")) { %>
 	<h2 class="ponumber margin-bottom-0"><%= formatDateAMPM(schedule.get("date")) %></h2>
-	<div class="progress width-150 margin-bottom-0 height-3">
+	<div class="progress width-150 margin-bottom-5 height-3">
   		<div class="progress-bar progress-bar-success" style="width: %"></div>
   	</div>
 	Status: <label class="label label-<%= schedule.get("status").class %>"><%= schedule.get("status").name %></label><br>

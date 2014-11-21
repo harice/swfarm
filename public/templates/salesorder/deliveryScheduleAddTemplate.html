@@ -12,264 +12,278 @@
 
 					<div class="row margin-top-0">
 						<div class="col-md-6">
-							<h3 class="margin-top-10 margin-bottom-0">Schedule</h3>
-							<div class="form-group">
-								<label for="scheduledate" class="col-sm-4 control-label">Date</label>
-								<div class="col-sm-8">
-									<div id="so-sched-start-date" class="calendar-cont">
-										<div class="input-group input-group-sm date margin-0 width-150">
-											<input type="text" class="form-control" name="scheduledate" value="" required>
-											<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+							<fieldset>
+								<legend>
+									<h4>Schedule</h4>
+								</legend>
+								<div class="form-group">
+									<label for="scheduledate" class="col-sm-4 control-label">Date</label>
+									<div class="col-sm-8">
+										<div id="so-sched-start-date" class="calendar-cont">
+											<div class="input-group input-group-sm date margin-0 width-150">
+												<input type="text" class="form-control" name="scheduledate" value="" required>
+												<span class="input-group-addon btn-primary"><i class="glyphicon glyphicon-th"></i></span>
+											</div>
 										</div>
+										<div class="error-msg-cont"></div>
+									</div>				
+								</div>
+
+								<div class="form-group">
+									<label for="" class="col-sm-4 control-label">Time</label>
+									<div class="col-sm-8">
+		                                <select class="form-control hours width-80 pull-left margin-right-5 input-sm" id="scheduletimeHour" name="scheduletimeHour"></select>
+		                                <select class="form-control minutes width-80 pull-left margin-right-5 input-sm" id="scheduletimeMin" name="scheduletimeMin"></select>
+		                                <select class="form-control ampm width-80 pull-left input-sm" id="scheduletimeAmPm" name="scheduletimeAmPm">
+		                                    <option value="AM">AM</option>
+		                                    <option value="PM">PM</option>
+		                                </select>
 									</div>
-									<div class="error-msg-cont"></div>
-								</div>				
-							</div>
-
-							<div class="form-group">
-								<label for="" class="col-sm-4 control-label">Time</label>
-								<div class="col-sm-8">
-	                                <select class="form-control hours width-80 pull-left margin-right-5" id="scheduletimeHour" name="scheduletimeHour"></select>
-	                                <select class="form-control minutes width-80 pull-left margin-right-5" id="scheduletimeMin" name="scheduletimeMin"></select>
-	                                <select class="form-control ampm width-80 pull-left" id="scheduletimeAmPm" name="scheduletimeAmPm">
-	                                    <option value="AM">AM</option>
-	                                    <option value="PM">PM</option>
-	                                </select>
 								</div>
-							</div>
-
-							<h3 class="margin-top-20 margin-bottom-0">Origin</h3>
-
-							<div class="form-group">
-								<label for="originloader" class="col-sm-4 control-label">Loader</label>
-								<div class="col-sm-8">
-									<select class="form-control width-200" id="originloader" name="originloader" required>
-	                                    <option value="">Select a loader</option>
-										<%= originloader_account_list %>
-	                                </select>
+							</fieldset>	
+							<fieldset>
+								<legend>
+									<h4>Origin</h4>
+								</legend>
+								<div class="form-group">
+									<label for="originloader" class="col-sm-4 control-label">Loader</label>
+									<div class="col-sm-8">
+										<select class="form-control width-200 input-sm" id="originloader" name="originloader" required>
+		                                    <option value="">Select a loader</option>
+											<%= originloader_account_list %>
+		                                </select>
+									</div>
 								</div>
-							</div>
 
-							<div class="form-group">
-								<label for="originloader_id" class="col-sm-4 control-label">Loader Contact</label>
-								<div class="col-sm-8">
-									<select class="form-control width-200" id="originloader_id" name="originloader_id" required>
-										<option value="">Select a loader contact</option>
-									</select>
-	                                <span class="field-throbber throbber_wrap margin-left-20" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
+								<div class="form-group">
+									<label for="originloader_id" class="col-sm-4 control-label">Loader Contact</label>
+									<div class="col-sm-8">
+										<select class="form-control width-200 input-sm" id="originloader_id" name="originloader_id" required>
+											<option value="">Select a loader contact</option>
+										</select>
+		                                <span class="field-throbber throbber_wrap margin-left-20" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
+									</div>
 								</div>
-							</div>
 
-							<div class="form-group">
-								<label for="originloaderfee" class="col-sm-4 control-label">Loader's Fee</label>
-								<div class="col-sm-8">
-									<div class="input-group input-group-sm margin-0 width-100">
-										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right loader monetary-value" id="originloaderfee" name="originloaderfee" placeholder="0.00" required>
-									</div>	
-									<div class="error-msg-cont"></div>
+								<div class="form-group">
+									<label for="originloaderfee" class="col-sm-4 control-label">Loader's Fee</label>
+									<div class="col-sm-8">
+										<div class="input-group input-group-sm margin-0 width-100">
+											<span class="input-group-addon">$</span>
+											<input type="text" class="form-control text-right loader monetary-value" id="originloaderfee" name="originloaderfee" placeholder="0.00" required>
+										</div>	
+										<div class="error-msg-cont"></div>
+									</div>
 								</div>
-							</div>
-
-							<h3 class="margin-top-20 margin-bottom-0">Destination</h3>
-
-							<div class="form-group">
-								<label for="destinationloader" class="col-sm-4 control-label">Loader</label>
-								<div class="col-sm-8">
-									<select class="form-control width-200" id="destinationloader" name="destinationloader" required>
-										<option value="">Select a loader</option>
-	                                    <%= destinationloader_account_list %>
-	                                </select>
+							</fieldset>
+							<fieldset>
+								<legend>
+									<h4>Destination</h4>
+								</legend>
+								<div class="form-group">
+									<label for="destinationloader" class="col-sm-4 control-label">Loader</label>
+									<div class="col-sm-8">
+										<select class="form-control width-200 input-sm" id="destinationloader" name="destinationloader" required>
+											<option value="">Select a loader</option>
+		                                    <%= destinationloader_account_list %>
+		                                </select>
+									</div>
 								</div>
-							</div>
 
-							<div class="form-group">
-								<label for="destinationloader_id" class="col-sm-4 control-label">Loader Contact</label>
-								<div class="col-sm-8">
-									<select class="form-control width-200" id="destinationloader_id" name="destinationloader_id" required>
-										<option value="">Select a loader contact</option>
-									</select>
-	                                <span class="field-throbber throbber_wrap margin-left-20" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
+								<div class="form-group">
+									<label for="destinationloader_id" class="col-sm-4 control-label">Loader Contact</label>
+									<div class="col-sm-8">
+										<select class="form-control width-200 input-sm" id="destinationloader_id" name="destinationloader_id" required>
+											<option value="">Select a loader contact</option>
+										</select>
+		                                <span class="field-throbber throbber_wrap margin-left-20" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
+									</div>
 								</div>
-							</div>
 
-							<div class="form-group">
-								<label for="destinationloaderfee" class="col-sm-4 control-label">Loader's Fee</label>
-								<div class="col-sm-8">
-									<div class="input-group input-group-sm margin-0 width-100">
-										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right loader monetary-value" id="destinationloaderfee" name="destinationloaderfee" placeholder="0.00" required>
-									</div>	
-									<div class="error-msg-cont"></div>
+								<div class="form-group">
+									<label for="destinationloaderfee" class="col-sm-4 control-label">Loader's Fee</label>
+									<div class="col-sm-8">
+										<div class="input-group input-group-sm margin-0 width-100">
+											<span class="input-group-addon">$</span>
+											<input type="text" class="form-control text-right loader monetary-value" id="destinationloaderfee" name="destinationloaderfee" placeholder="0.00" required>
+										</div>	
+										<div class="error-msg-cont"></div>
+									</div>
 								</div>
-							</div>
+							</fieldset>
 						</div>
 
 						<div class="col-md-6">
-							<h3 class="margin-top-10 margin-bottom-0">Trucker</h3>
+							<fieldset>
+								<legend>
+									<h4>Trucker</h4>
+								</legend>
 
-							<div class="form-group">
-								<label for="truckerAccountType_id" class="col-sm-4 control-label">Trucker Type</label>
-								<div class="col-sm-8">
-									<select class="form-control width-200" id="truckerAccountType_id" name="truckerAccountType_id" required>
-										<option value="">Select a trucker type</option>
-										<%= trucker_account_type_list %>
-									</select>
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label for="truckerAccount_id" class="col-sm-4 control-label">Trucker</label>
-								<div class="col-sm-8">
-									<select class="form-control width-200" id="truckerAccount_id" name="truckerAccount_id" required>
-										<option value="">Select a trucker</option>
-	                                </select>
-	                                <span class="field-throbber throbber_wrap margin-left-20" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
-								</div>
-							</div>
-							
-							<div class="form-group">
-								<label for="truck_id" class="col-sm-4 control-label">Trucker Number</label>
-								<div class="col-sm-8">
-									<select class="form-control width-200" id="truck_id" name="truck_id" required>
-										<option value="">Select a trucker number</option>
-									</select>
-	                                <span class="field-throbber throbber_wrap margin-left-20" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label for="trucker_id" class="col-sm-4 control-label">Trucker Contact</label>
-								<div class="col-sm-8">
-									<select class="form-control width-200" id="trucker_id" name="trucker_id" required>
-										<option value="">Select a trucker contact</option>
-									</select>
-	                                <span class="field-throbber throbber_wrap margin-left-20" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label for="trailer" class="col-sm-4 control-label">Trailer</label>
-								<div class="col-sm-8">
-									<select class="form-control width-200" id="trailer" required>
-										<option value="">Select a trailer</option>
-	                                    <%= trailer_account_list %>
-	                                </select>
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label for="trailer_id" class="col-sm-4 control-label">Trailer Number</label>
-								<div class="col-sm-8">
-									<select class="form-control width-200" id="trailer_id" name="trailer_id" required>
-										<option value="">Select a trailer number</option>
-									</select>
-	                                <span class="field-throbber throbber_wrap margin-left-20" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label for="distance" class="col-sm-4 control-label">Distance</label>
-								<div class="col-sm-8">
-									<input type="text" class="form-control text-right width-100 input-sm" id="distance" name="distance" style="display:inline-block" readonly required> <span id="map" style="display:inline-block;cursor:pointer;margin-left:10px;" class="glyphicon glyphicon-map-marker"></span>
-								</div>
-							</div>
-							
-							<div class="form-group">
-								<label for="distance-loaded" class="col-sm-4 control-label">Loaded Distance</label>
-								<div class="col-sm-8">
-									<input type="text" class="form-control text-right width-100 input-sm" id="distance-loaded" style="display:inline-block" readonly>
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label for="fuelcharge" class="col-sm-4 control-label">Fuel Charges</label>
-								<div class="col-sm-2">
-									<div class="input-group input-group-sm margin-0 width-100">
-										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right monetary-value" id="fuelcharge" name="fuelcharge" placeholder="0.00" readonly>
-									</div>	
-									<div class="error-msg-cont"></div>
-								</div>
-								<div class="col-sm-6">
-									<div class="checkbox" style="margin-left:10px;">
-										<label><input id="has-fuel-charge" class="has-fuel-charge" type="checkbox"> Compute</label>
+								<div class="form-group">
+									<label for="truckerAccountType_id" class="col-sm-4 control-label">Trucker Type</label>
+									<div class="col-sm-8">
+										<select class="form-control width-200 input-sm" id="truckerAccountType_id" name="truckerAccountType_id" required>
+											<option value="">Select a trucker type</option>
+											<%= trucker_account_type_list %>
+										</select>
 									</div>
 								</div>
-							</div>
 
-							<div class="form-group">
-								<label for="handlingfee" class="col-sm-4 control-label">Handling Fee</label>
-								<div class="col-sm-8">
-									<div class="input-group input-group-sm margin-0 width-100">
-										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right monetary-value handlingfee" id="handlingfee" name="handlingfee" placeholder="0.00">
+								<div class="form-group">
+									<label for="truckerAccount_id" class="col-sm-4 control-label">Trucker</label>
+									<div class="col-sm-8">
+										<select class="form-control width-200 input-sm" id="truckerAccount_id" name="truckerAccount_id" required>
+											<option value="">Select a trucker</option>
+		                                </select>
+		                                <span class="field-throbber throbber_wrap margin-left-20" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
 									</div>
 								</div>
-							</div>
-
-							<div class="form-group">
-								<label for="truckingrate" class="col-sm-4 control-label">Trucking/Hauling Rate</label>
-								<div class="col-sm-8">
-									<div class="input-group input-group-sm margin-0 width-100">
-										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right monetary-value" id="truckingrate" name="truckingrate" placeholder="0.00" value="0.00" required readonly>
+								
+								<div class="form-group">
+									<label for="truck_id" class="col-sm-4 control-label">Trucker Number</label>
+									<div class="col-sm-8">
+										<select class="form-control width-200 input-sm" id="truck_id" name="truck_id" required>
+											<option value="">Select a trucker number</option>
+										</select>
+		                                <span class="field-throbber throbber_wrap margin-left-20" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
 									</div>
 								</div>
-							</div>
 
-							<div class="form-group">
-								<label for="trailerrate" class="col-sm-4 control-label">Trailer Rent</label>
-								<div class="col-sm-8">
-									<div class="input-group input-group-sm margin-0 width-100">
-										<span class="input-group-addon">$</span>
-										<input type="text" class="form-control text-right monetary-value" id="trailerrate" name="trailerrate" placeholder="0.00" value="0.00" readonly>
+								<div class="form-group">
+									<label for="trucker_id" class="col-sm-4 control-label">Trucker Contact</label>
+									<div class="col-sm-8">
+										<select class="form-control width-200 input-sm" id="trucker_id" name="trucker_id" required>
+											<option value="">Select a trucker contact</option>
+										</select>
+		                                <span class="field-throbber throbber_wrap margin-left-20" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
 									</div>
 								</div>
-							</div>
+
+								<div class="form-group">
+									<label for="trailer" class="col-sm-4 control-label">Trailer</label>
+									<div class="col-sm-8">
+										<select class="form-control width-200 input-sm" id="trailer" required>
+											<option value="">Select a trailer</option>
+		                                    <%= trailer_account_list %>
+		                                </select>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="trailer_id" class="col-sm-4 control-label">Trailer Number</label>
+									<div class="col-sm-8">
+										<select class="form-control width-200 input-sm" id="trailer_id" name="trailer_id" required>
+											<option value="">Select a trailer number</option>
+										</select>
+		                                <span class="field-throbber throbber_wrap margin-left-20" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="distance" class="col-sm-4 control-label">Distance</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control text-right width-100 input-sm" id="distance" name="distance" style="display:inline-block" readonly required> <span id="map" style="display:inline-block;cursor:pointer;margin-left:10px;" class="glyphicon glyphicon-map-marker"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label for="distance-loaded" class="col-sm-4 control-label">Loaded Distance</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control text-right width-100 input-sm" id="distance-loaded" style="display:inline-block" readonly>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="fuelcharge" class="col-sm-4 control-label">Fuel Charges</label>
+									<div class="col-sm-2">
+										<div class="input-group input-group-sm margin-0 width-100">
+											<span class="input-group-addon">$</span>
+											<input type="text" class="form-control text-right monetary-value" id="fuelcharge" name="fuelcharge" placeholder="0.00" readonly>
+										</div>	
+										<div class="error-msg-cont"></div>
+									</div>
+									<div class="col-sm-6">
+										<div class="checkbox" style="margin-left:10px;">
+											<label><input id="has-fuel-charge" class="has-fuel-charge" type="checkbox"> Compute</label>
+										</div>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="handlingfee" class="col-sm-4 control-label">Handling Fee</label>
+									<div class="col-sm-8">
+										<div class="input-group input-group-sm margin-0 width-100">
+											<span class="input-group-addon">$</span>
+											<input type="text" class="form-control text-right monetary-value handlingfee" id="handlingfee" name="handlingfee" placeholder="0.00">
+										</div>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="truckingrate" class="col-sm-4 control-label">Trucking/Hauling Rate</label>
+									<div class="col-sm-8">
+										<div class="input-group input-group-sm margin-0 width-100">
+											<span class="input-group-addon">$</span>
+											<input type="text" class="form-control text-right monetary-value" id="truckingrate" name="truckingrate" placeholder="0.00" value="0.00" required readonly>
+										</div>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="trailerrate" class="col-sm-4 control-label">Trailer Rent</label>
+									<div class="col-sm-8">
+										<div class="input-group input-group-sm margin-0 width-100">
+											<span class="input-group-addon">$</span>
+											<input type="text" class="form-control text-right monetary-value" id="trailerrate" name="trailerrate" placeholder="0.00" value="0.00" readonly>
+										</div>
+									</div>
+								</div>
+							</fieldset>
 						</div>
 					</div>
 
 					<div class="col-md-12">
-						<h4>
-							Products
-							<button title="Add Product" id="add-product" type="button" class="pull-right btn btn-rad btn-primary btn-xs">
-	                            <span class="glyphicon glyphicon-plus"></span>
-	                        </button>							
-						</h4>
-
-						<div class="table-responsive">
-							<table id="product-list" class="table table-bordered">
-								<thead>
-									<tr>
-										<th class="width-200">Stack No. <i class="color-danger width-10">*</i></th>
-										<th>Product</th>
-										<th>Location To</th>
-										<th class="width-150">Quantity</th>
-										<th class="width-40"></th>
-									</tr>
-								</thead>
-								<tfoot>
-									<tr>
-										<td class="text-right" colspan="3">Total</td>
-										<td>
-											<div class="input-group input-group-sm margin-0">
-												<input id="total-quantity" type="text" class="form-control text-right" placeholder="0.0000" readonly>
-												<span class="input-group-addon">Tons</span>
-											</div>
-										</td>
-										<td></td>
-									</tr>
-								</tfoot>
-								<tbody></tbody>
-							</table>
-						</div>
-
+						<fieldset>
+							<legend class="margin-bottom-5">
+								<h3 class="margin-bottom-0">
+									PRODUCTS									
+								</h3>
+								<button type="button" class="pull-right btn btn-rad btn-primary btn-xs margin-top-20" id="add-product" title="Add Product">
+									<span class="glyphicon glyphicon-plus"></span>											
+								</button>
+							</legend>	
+							<div class="content-inner table-responsive">
+								<table id="product-list" class="table table-condensed table-bordered">
+									<thead>
+										<tr>
+											<th class="width-200">Stack No. <i class="color-danger width-10">*</i></th>
+											<th>Product</th>
+											<th>Location To</th>
+											<th class="width-150">Quantity</th>
+											<th class="width-40"></th>
+										</tr>
+									</thead>
+									<tfoot>
+										<tr>
+											<td class="text-right" colspan="3">Total</td>
+											<td>
+												<div class="input-group input-group-sm margin-0">
+													<input id="total-quantity" type="text" class="form-control text-right" placeholder="0.0000" readonly>
+													<span class="input-group-addon">Tons</span>
+												</div>
+											</td>
+											<td></td>
+										</tr>
+									</tfoot>
+									<tbody></tbody>
+								</table>
+							</div>
+						</fieldset>
 						<div class="form-group form-button-container">
 							<div class="pull-right">
 								<button id="save" type="submit" class="save btn btn-primary btn-sm btn-rad"><i class="fa fa-save"></i> Save</button>
 								<a id="delete-schedule" class="btn btn-danger btn-sm btn-rad" href="#" style="display:none;">Delete</a>
-								<a id="go-to-previous-page" class="btn btn-link" href="#">Cancel</a>
+								<a id="go-to-previous-page" class="btn btn-warning btn-sm btn-rad" href="#"><i class="fa fa-ban width-10"></i> Cancel</a>
 							</div>
 						</div>
 					</div>

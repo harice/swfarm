@@ -31,7 +31,7 @@ define([
 			this.collection.on('sync', function() {
 				//console.log('collection.on.sync')
 				if(thisObj.subContainerExist())
-					thisObj.displayRoles();
+					thisObj.displayRoles();					
 				this.off('sync');
 			});
 			
@@ -69,6 +69,7 @@ define([
 			// this.$el.find('.phone-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
 			// this.$el.find('.mobile-number').phoneNumber({'divider':'-', 'dividerPos': new Array(3,7)});
             this.maskInputs();
+            this.focusOnFirstField();
 			this.fileFileClone = $("#profile-pic").clone(true);
 			
 			var validate = $('#addUserForm').validate({
