@@ -14,7 +14,7 @@ class SyncRepository implements SyncInterface {
 				$sortby = isset($params['sortby']) ? $params['sortby'] : 'name';
 				$orderby = isset($params['orderby']) ? $params['orderby'] : 'ASC';
 
-				$accounts = Account::with('accounttype')->with('address.storagelocation.section')->with('contact')->orderBy($sortby,$orderby);
+				$accounts = Account::with('accounttype')->with('address.storagelocation.section')->orderBy($sortby,$orderby);
 
 				if(isset($params['filter'])) {
 					$filter = $params['filter'];
@@ -31,6 +31,22 @@ class SyncRepository implements SyncInterface {
 				}
 
 				$result = $accounts->get();
+				break;
+
+			case 'contact':
+				$result = Contact::all();
+				break;
+
+			case 'address':
+				$result = Address::all();
+				break;
+
+			case 'storagelocation':
+				$result = StorageLocation::all();
+				break;
+
+			case 'section':
+				$result = Section::all();
 				break;
 
 			case 'accounttype':
