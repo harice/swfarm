@@ -1,29 +1,16 @@
-<div class="row margin-top-0 form-group">
-    <div class="col-sm-2 control-label">
-        <label for="filtername"><%= filter_name %> <i class="color-danger">*</i></label>
+<div class="row margin-top-0">
+    <div class="col-sm-5 text-center">
+        <select class="form-control input-sm" id="filtername" tabindex='2' name="filtername">
+            <%= filters %>
+        </select>
+        <div class="error-msg-cont"></div>
+        <label  class="margin-top-5 margin-bottom-0" for="filtername"><%= filter_name %> <i class="color-danger">*</i></label>
     </div>
-    <div class="col-sm-3">
-        <div class="row margin-top-0">        
-            <div class="col-sm-12">
-                <select class="form-control input-sm" id="filtername" tabindex='2' name="id">
-                    <%= filters %>
-                </select>
-                <div class="error-msg-cont"></div>
-            </div>
-        </div>
-    </div>  
-    <div class="col-sm-3 additional-filter hidden">
-        
-    </div>     
+    <div class="col-sm-5 text-center additional-filter hidden">
+       
+    </div>   
+    <div class="col-sm-2 text-right">
+      <button id="generate" type="button" class="generate btn btn-primary btn-rad btn-sm hidden margin-left-0"> Generate</button>
+    </div> 
 </div>
-
-<div class="row margin-top-0 form-group form-button-container hidden">
-    <div class="col-sm-3 col-sm-offset-2">
-        <div class="row margin-top-0">
-            <div class="col-sm-12">
-                 <button id="generate" type="button" class="generate btn btn-primary btn-rad btn-sm"> Generate</button>
-            </div>
-        </div>
-    </div>
-</div> 
    

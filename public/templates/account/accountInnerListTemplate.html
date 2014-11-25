@@ -2,13 +2,17 @@
   <% _.each(accounts, function(account){ %>
     <tr>
       <td><a href="<%= account_url %>/<%= account.get("id") %>"><%= account.get("name") %></a></td>
-      <td>
-        <% _.each(account.get("accounttype"),function(type){
-          print('<span class="label label-default margin-right-3">' + type.name + '</span>');
-        }); %>
+      <td>          
+        <% 
+          _.each(account.get("accounttype"),function(type){        
+          %>
+          <span class="label label-default margin-right-3"><%= type.name %></span>          
+        <% 
+        }); 
+        %>
       </td>
       <td><%= account.get("phone") %></td>
-      <td>
+      <td align="center">
         <a href="<%= account_edit_url %>/<%= account.get("id") %>">
           <span class="fa-stack">
             <i class="fa fa-square fa-stack-2x"></i>

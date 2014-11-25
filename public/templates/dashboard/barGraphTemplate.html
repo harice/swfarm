@@ -1,13 +1,16 @@
 <div data-id="<% if (typeof gid !== "undefined") { %><%= gid %><% } %>" class="col-sm-6 col-md-6 graph-cont">
-	<div class="block-flat">
-		<div class="header">
-			<h3><%= graph_heading %></h3>
+	<div class="block">
+		<div class="md-dark prusia">
+			<h3 class="modal-header margin-bottom-0 margin-top-0"><%= graph_heading %></h3>
+			<div class="progress width-500 margin-bottom-0 margin-top-0 height-3">
+                <div class="progress-bar progress-bar-success" style="width: %"></div>
+            </div>
 		</div>
 		<%
 		if(typeof latitude == "undefined" && typeof longitude == "undefined"){ %>
-		<div class="filter-cont row">
+		<div class="filter-cont modal-body margin-top-5 clearfix">
 			<div class="col-md-12">
-				<div class="pull-right">
+				<div class="pull-right margin-right-10">
 					<% if (typeof start_date_id !== "undefined") { %>
 					<span class="display-inline-block valign-middle margin-right-5">Start</span>
 					<div id="<%= start_date_id %>" class="search-filter-field calendar-cont width-120 display-inline-block valign-middle">
@@ -36,7 +39,7 @@
 		<%
 		}
 		%>		
-		<div class="content">
+		<div class="content padding-top-0 <% if(typeof latitude != "undefined" && typeof longitude != "undefined") { %>map-cont<% }%>">
 			<%
 			if(typeof latitude != "undefined" && typeof longitude != "undefined")
 			%> 

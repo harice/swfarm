@@ -1,19 +1,13 @@
-<div class="row margin-top-0">
-    <div class="col-sm-5 control-label">
-        <label for="filtername">Stack No. <i class="color-danger">*</i></label>
-    </div>
-    <div class="col-sm-7">
-        <%
-            if(!_.isEmpty(filters)){ %>
-                <select class="form-control" id="stacknumbers" multiple='multiple' tabindex='2'>
-                    <% _.each(filters, function(filter){ %>
-                        <option value="<%= filter.get('id') %>"><%= filter.get('stacknumber') %></option>
-                    <% }); %>
-                </select>        
-            <% }
-            else {
-            %>
-                <p>Empty</p>
-            <% } %>        
-    </div>    
-</div>
+<%
+if(!_.isEmpty(filters)){ %>
+    <select class="form-control" id="stacknumbers" multiple='multiple' tabindex='2'>
+        <% _.each(filters, function(filter){ %>
+            <option value="<%= filter.get('id') %>"><%= filter.get('stacknumber') %></option>
+        <% }); %>
+    </select>        
+<% }
+else {
+%>
+    <p>Empty</p>
+<% } %>     
+<label class="margin-top-5 margin-bottom-0" for="filtername">Stack No. <i class="color-danger">*</i></label>

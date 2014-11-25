@@ -77,6 +77,7 @@ define([
                 sl_url: '#/'+Const.URL.STACKLOCATION,
 				sl_edit_url: '#/'+Const.URL.STACKLOCATION+'/'+Const.CRUD.EDIT,
 				sls: this.collection.models,
+				account_url: '#/'+Const.URL.ACCOUNT,
 				collapsible_id: Const.STACKLOCATION.COLLAPSIBLE.ID,
 				_: _ 
 			};
@@ -103,6 +104,7 @@ define([
 			'click #confirm-delete-sl': 'deleteStockLocation',
 			'click .show-map': 'showMap',
 			'click #show-map-all': 'showMapAll',
+			'click .stop-propagation': 'linkStopPropagation',
 		},
                 
         sortName: function () {

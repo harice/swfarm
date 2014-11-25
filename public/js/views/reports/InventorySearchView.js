@@ -70,7 +70,9 @@ define([
 			var innerTemplate = _.template(filterFormTemplate, innerTemplateVariables);
 						
 			this.$el.html(innerTemplate);			
-			this.focusOnFirstField();							
+			this.focusOnFirstField();	
+
+			$('#generate').removeClass("hidden");								
 		},
 
 		showFilter: function(ev) {
@@ -122,9 +124,7 @@ define([
 				
 			if(this.checkFields()){		
 				this.model = new Report();							
-				this.model.fetchInventory(stacknumbers, this.startDate, this.endDate);
-				$("#report-form").collapse("toggle");
-				$(".collapse-form").addClass("collapsed");
+				this.model.fetchInventory(stacknumbers, this.startDate, this.endDate);				
 			}
 
 			this.model.on('sync', function (){				

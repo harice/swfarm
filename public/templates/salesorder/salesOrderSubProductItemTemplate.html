@@ -5,12 +5,10 @@
 		<input class="form-control stacknumber_dummy" type="text" readonly>
 		<input type="hidden" class="stacknumber" name="stacknumber" value="" />
 		<% } else { %>
-		<div class="styled-select">
-			<select class="form-control stacknumber width-200 display-inline" name="stacknumber" required>
-				<option value="">Select a stack number</option>
-			</select>
-			<span class="throbber_wrap" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
-		</div>
+		<select class="form-control input-sm stacknumber width-200 display-inline" name="stacknumber" required>
+			<option value="">Select a stack number</option>
+		</select>
+		<span class="throbber_wrap margin-left-20" style="display: none;"><i class="fa fa-refresh fa-spin throbber_ajax"></i></span>
 		<% } %>
 	</td>
 	<td>
@@ -18,17 +16,15 @@
 		<input class="form-control section_id_dummy" type="text" readonly>
 		<input type="hidden" class="section_id" name="section_id" value="" />
 		<% } else { %>
-		<div class="styled-select">
-			<select class="form-control section_id width-200" name="section_id" required>
-				<option value="">Select a stack location</option>
-			</select>
-		</div>
+		<select class="form-control input-sm section_id width-200" name="section_id" required>
+			<option value="">Select a stack location</option>
+		</select>
 		<% } %>
 	</td>
 	<td><input class="form-control input-sm description" name="description" maxlength="80"></td>
 	<td><input class="form-control input-sm text-right tons" name="tons" type="text" maxlength="12"<% if (typeof readonly_products !== "undefined") { %> readonly<% } %> required></td>
 	<td><input class="form-control input-sm text-right bales" name="bales" type="text"<% if (typeof readonly_products !== "undefined") { %> readonly<% } %> required></td>
-	<td>
-		<button title="Remove Product Stack" type="button" class="pull-right btn btn-danger btn-rad btn-xs remove-product-stack"><span class="glyphicon glyphicon-remove"></span></button>
+	<td align="center">
+		<button title="Remove Product Stack" type="button" class="margin-left-0 btn btn-danger btn-rad btn-xs remove-product-stack"><span class="glyphicon glyphicon-remove"></span></button>
 	</td>
 </tr>

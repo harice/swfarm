@@ -256,7 +256,7 @@ define([
 			this.$el.html(innerTemplate);			
 			this.focusOnFirstField();			
 												
-			$('.form-button-container').removeClass("hidden");			
+			$('#generate').removeClass("hidden");			
 		},	
 
 		showSendMailModal: function(ev){

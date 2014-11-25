@@ -115,7 +115,7 @@ define([
 
 
 		initDeleteConfirmation: function () {
-			this.initConfirmationWindow('Are you sure you want to delete this Stock Location?',
+			this.initConfirmationWindow('Are you sure you want to delete this Stack Location?',
 										'confirm-delete-sl',
 										'Delete',
                                         'Delete Stack Location');

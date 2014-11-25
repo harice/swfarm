@@ -1,6 +1,9 @@
 <div class="content padding-top-10">
   <% if(_.isNull(schedule.get("weightticket"))) { %>
   <h2 class="ponumber margin-bottom-0"><%= formatDateAMPM(schedule.get("date")) %></h2>
+  <div class="progress width-200 margin-bottom-5 height-3">
+    <div class="progress-bar progress-bar-success" style="width: %"></div>
+  </div>
   Status: <label class="label label-<%= schedule.get("status").class %>"><%= schedule.get("status").name %></label><br>
   PO No.: <span class='text-danger'><%= po.get("order_number") %></span>
   <% } else { %>
@@ -32,6 +35,9 @@
               } 
             %>
           </h2>
+          <div class="progress width-150 margin-bottom-5 height-3">
+            <div class="progress-bar progress-bar-success" style="width: %"></div>
+          </div>
           <% } %>
 
           <form id="poWeightInfoFrom" role="form" method="post" enctype="multipart/form-data">
@@ -86,42 +92,46 @@
 				<div class='form-group'>
                   <label class='margin-bottom-0'>Upload PDF</label>
                   <div style="display:inline-block; margin-left:10px;">
-					<input id="uploadedfile" type="hidden" class="uploadedfile" name="uploadedfile" value="" data-filename="" />
-					<a id="attach-pdf" class="attach-pdf no-attachment" data-id="" href="#"><i class="fa fa-book"></i></a>
-				  </div>
+          					<input id="uploadedfile" type="hidden" class="uploadedfile" name="uploadedfile" value="" data-filename="" />
+          					<a id="attach-pdf" class="attach-pdf no-attachment" data-id="" href="#"><i class="fa fa-book"></i></a>
+        				  </div>
                 </div>
               </div>
             </div>
             <div class='col-md-9'>
-              <h3>Products</h3>
-              <div class="table-responsive">
-                <table id="product-list" class="table-condensed table-hover table-bordered">
-                  <thead>
-                    <tr>
-                      <th style="width:20%;">Product</th>
-                      <th style="width:20%;">Stack No.</th>
-                      <th style="width:20%;">Bales</th>
-                      <th style="width:20%;">Lbs.</th>
-                      <th style="width:20%;">Net Tons</th>
-                    </tr>
-                  </thead>
-                  <tfoot>
-                    <tr>
-                      <td colspan="2" class='text-right'>Total</td>
-                      <td><span class="total-bales">0</span></td>
-                      <td><span class="total-pounds">0.00</span></td>
-                      <td><span class="total-net-tons">0.0000</span></td>
-                    </tr>
-                  </tfoot>
-                  <tbody></tbody>
-                </table>
-              </div>
+              <fieldset>
+                <legend class="margin-bottom-5">
+                  <h3>Products</h3>
+                </legend>
+                <div class="content-inner table-responsive">
+                  <table id="product-list" class="table-condensed table-hover table-bordered">
+                    <thead>
+                      <tr>
+                        <th style="width:20%;">Product</th>
+                        <th style="width:20%;">Stack No.</th>
+                        <th style="width:20%;">Bales</th>
+                        <th style="width:20%;">Lbs.</th>
+                        <th style="width:20%;">Net Tons</th>
+                      </tr>
+                    </thead>
+                    <tfoot>
+                      <tr>
+                        <td colspan="2" class='text-right'>Total</td>
+                        <td><span class="total-bales">0</span></td>
+                        <td><span class="total-pounds">0.00</span></td>
+                        <td><span class="total-net-tons">0.0000</span></td>
+                      </tr>
+                    </tfoot>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </fieldset>
             </div>
           </div>
           <div class="row">
             <div class="col-md-12">
               <div class="pull-right">
-                <button id="save" type="submit" class="save btn btn-primary btn-sm btn-trans btn-rad"><i class="fa fa-save"></i> Save</button>
+                <button id="save" type="submit" class="save btn btn-primary btn-sm btn-rad"><i class="fa fa-save"></i> Save</button>
                 <a id="go-to-previous-page" class="btn btn-default btn-sm btn-trans btn-rad" href="#"><i class='fa fa-history width-10'></i> Back</a>
               </div>
             </div>

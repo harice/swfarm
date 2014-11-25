@@ -61,6 +61,7 @@ define([
 					thisObj.displayForm();
 					thisObj.supplyAccountData();
 					thisObj.maskInputs();
+					thisObj.focusOnFirstField();
 				}
 				this.off("change");
 			});

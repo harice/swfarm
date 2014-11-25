@@ -3,7 +3,7 @@
 	<tr class="collapse-trigger cursor-pointer" data-id="<%= sl.get("id") %>">
         <td>
 			<i class="fa fa-angle-right width-10 accordion-carret"></i>
-			<%= sl.get("account_name") %>
+			<a href="<%= account_url %>/<%= sl.get("account_id") %>" class="stop-propagation"><%= sl.get("account_name") %></a>
 			<span class="throbber_wrap" style="display: none;"><i class="fa fa-spinner fa-spin throbber_ajax"></i></span>
 		</td>
 		<td>

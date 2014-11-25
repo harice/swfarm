@@ -1,6 +1,5 @@
 <% 
-  if (location != poDestination.PRODUCER && location != poDestination.DROPSHIP && !_.isEmpty(stacks)) { %>
-	<% _.each(stacks, function(stack){ %>
+	_.each(stacks, function(stack){ %>
 		<div class="row margin-top-0 padding-top-10">
 			<div class="col-md-12">
 				<div class="width-300 pull-left">Stack No.: <code><%= stack.get("stackNumber") %></code></div>
@@ -76,4 +75,3 @@
 			</div>
 		</div>
 	<% }); %>
-<% } %>

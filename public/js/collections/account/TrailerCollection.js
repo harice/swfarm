@@ -1,11 +1,31 @@
 define([
 	'backbone',
-	'collections/base/AppCollection',
+	'collections/base/ListViewCollection',
 	'models/account/TrailerModel',
-], function(Backbone, AppCollection, TrailerModel){
-	var TrailerCollection = AppCollection.extend({
+	'constant'
+], function(Backbone, ListViewCollection, TrailerModel, Const){
+	var TrailerCollection = ListViewCollection.extend({
 		url: '/apiv1/transportschedule/trailer',
 		model: TrailerModel,
+		listView: {
+			numPerPage: Const.MAXITEMPERPAGE,
+			currentPage: 1,
+			maxItem: 0,
+			search: '',
+			currentSort: 'lastname',
+			sort: {
+				lastname: true,
+						account: true,
+			},
+			filters: {},
+			filter: '',
+			date: '',
+			lookUpIds: {},			
+			searchURLForFilter: true,
+			otherData:{},
+		},
+
+
 		initialize: function(){
 			this.setDefaultURL(this.url);
 		},

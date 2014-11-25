@@ -41,7 +41,16 @@ define([
 			  timeout: 10000,
 			  maximumAge: 6000
 			};
-			this.woeId = null;
+			this.woeId = null;			
+
+			this.clockModel = new Backbone.Model({ time: new Date() });
+			this.clockModel.on('change', function(){
+				thisObj.updateTime();
+			});
+
+			setInterval(function(){
+				thisObj.clockModel.set('time', new Date());
+			}, 1000);
 
 			this.model = new GraphModel();
 			this.model.on("change", function() {
@@ -94,12 +103,16 @@ define([
 				this.off('sync');
 			});
 			
-
-			
 		},
 		render: function(){	
 			this.graphCollection.getModels();			
 			Backbone.View.prototype.refreshTitle('Dashboard','View');
+		},
+
+		updateTime: function(){
+
+			this.$el.find("#curtime").text(Backbone.View.prototype.formatDate('h:i A', this.clockModel.get('time')));
+			
 		},
 
 		getWoeId: function(city, region, country){		

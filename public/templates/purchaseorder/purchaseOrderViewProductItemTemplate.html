@@ -1,5 +1,5 @@
 <tr class="product-item">
-	<td><%= productname %></td>
+	<td><strong><%= productname %></strong></td>
 	<td class="text-right"><%= tons %></td>
 	<td class="text-right totalprice"></td>
 </tr>
@@ -10,7 +10,7 @@
 				<div class="table-responsive">
 					<table class="table-condensed table-bordered table-hover product-stack-table">
 						<thead>
-							<th class='width-150'>Stack No.</th>
+							<th class='width-170'>Stack No.</th>
 							<th class='width-150'>Location From</th>
 							<th class='width-150'>Description</th>
 							<% if (typeof is_bid === "undefined") { %>
@@ -27,7 +27,7 @@
 							Bid Unit Price
 							<% } %>
 							</th>
-							<th class='width-130'>
+							<th class='width-125'>
 							<% if (typeof is_bid === "undefined") { %>
 							Total Stack Price
 							<% } else { %>

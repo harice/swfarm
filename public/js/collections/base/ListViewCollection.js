@@ -29,11 +29,11 @@ define([
 			if($('.list-view-collapse.collapse.in').length > 0)
 				this.setCollapseId(null);
 			this.setPaginationURL(page);
-			this.getModels();
+			this.getModels();			
 		},
 		
 		getModels: function(option) {
-			var thisObj = this;
+			var thisObj = this;			
 			
 			this.sync('read', this, {
 				success: function (data, textStatus, jqXHR) {
@@ -51,15 +51,15 @@ define([
 						});
 						
 						if(data.total != null)
-							thisObj.setMaxItem(data.total);
+							thisObj.setMaxItem(data.total);						
 						
 						for(var key in data) {
 							if(typeof data[key] !== 'function' && key != 'total' && key != 'data'){
-								thisObj.setOtherData(key, data[key]);
+								thisObj.setOtherData(key, data[key]);								
 							}
-						}
+						}						
 						
-						thisObj.trigger('sync', data, textStatus, jqXHR, option);
+						thisObj.trigger('sync', data, textStatus, jqXHR, option);						
 					}				
 				},
 				error:  function (jqXHR, textStatus, errorThrown) {
@@ -175,7 +175,7 @@ define([
 				return null;
 		},
 		
-		setPaginationURL: function (page) {
+		setPaginationURL: function (page) {			
 			var searchURL = '';
 			var orderBy = (this.listView.sort[this.listView.currentSort])? 'asc' : 'desc';
 			var params = {

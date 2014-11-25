@@ -1,0 +1,108 @@
+<div class="row">
+    <div class="col-md-12">
+      <fieldset class="margin-bottom-10">
+        <legend class="margin-bottom-10">
+          <h3>ABOUT</h3>
+        </legend>
+        <table class="no-border no-strip information">
+            <tbody class="no-border-x no-border-y">                
+                <tr>
+                    <td class="width-100"></td>
+                    <td>
+                        <table class="no-border no-strip">
+                            <tbody class="no-border-x no-border-y">
+                              <tr>
+                                <td style="width:20%;"><strong>Type</strong></td>
+                                <td>
+                                    <% _.each(account.get("accounttype"), function (t){ %>
+                                        <span class="label label-default margin-right-3"><%= t.name %></span>
+                                    <% }); %>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="width:20%;"><strong>Description</strong></td>
+                                <td><%= account.get("description") %></td>
+                              </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+      </fieldset>
+      <fieldset>
+        <legend class="margin-bottom-10">
+         <h3 class="margin-top-10">CONTACT</h3>
+        </legend>
+        <table class="no-border no-strip information">
+            <tbody class="no-border-x no-border-y">                   
+                <tr>
+                    <td class="width-100">&nbsp;</td>
+                    <td>
+                        <table class="no-border no-strip">
+                            <tbody class="no-border-x no-border-y">
+                              <tr>
+                                <td style="width:3%;"><i class="fa fa-globe"></i></td>
+                                <td><%= account.get("website") %></td>
+                              </tr>
+                              <tr>
+                                <td style="width:3%;"><i class="fa fa-phone"></i></td>
+                                <td><%= account.get("phone") %></td>
+                              </tr>
+                              <% _.each(account.get("address"), function (a){ %>
+                              <tr>
+                                <td colspan="2">
+                                  <fieldset class="address-fields-group">
+                                    <legend>
+                                      <h3><%= a.address_type[0].name %></h3>
+                                    </legend>
+                                    <table class="margin-top-10">
+                                      <tbody>
+                                        <tr>
+                                          <td class="width-10"><i class="fa fa-car"></i></td>
+                                          <td><%= a.street %></td>
+                                        </tr>
+                                        <tr>
+                                          <td class="width-10"><i class="fa fa-building"></i></td>
+                                          <td><%= a.city %> <%= a.address_states[0].state_code %></td>
+                                        </tr>
+                                        <tr>
+                                          <td class="width-10"><i class="fa fa-map-marker"></i></td>
+                                          <td><%= a.zipcode %> USA</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>  
+                                  </fieldset>
+                                </td>
+                              </tr>                              
+                              <% }); %>
+                            </tbody>                                    
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+          </table>
+        </fieldset>
+          <table>
+            <tbody class="no-border-x no-border-y">
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                        <table class="no-border no-strip">
+                            <tbody class="no-border-x no-border-y">
+                              <tr>                               
+                                <td>                                                
+                                    <div class="clearfix"></div>
+                                    <a href="<%= account_edit_url %>/<%= account.get("id") %>" class="btn btn-primary btn-trans btn-rad btn-sm margin-left-10"><i class="fa fa-pencil width-10"></i> Edit</a>
+                                    <button id="delete-account" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
+                                    <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a> 
+                                </td>
+                              </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div> 

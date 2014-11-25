@@ -20,9 +20,10 @@ define([
 			
 			this.collection = new ContactCollection();
 			this.collection.on('sync', function() {
-				if(thisObj.subContainerExist())
+				if(thisObj.subContainerExist()){					
 					thisObj.displayList();
-			});
+				}					
+			});			
 			
 			this.collection.on('error', function(collection, response, options) {
 				this.off('error');
@@ -52,7 +53,7 @@ define([
 										'Delete Contact');
 
 			this.setListOptions();
-		},
+		},		
 		
 		displayList: function () {
 			var data = {
@@ -125,6 +126,7 @@ define([
                 headers: contactModel.getAuth(),
             });
 		},
+
 	});
 
   return ContactListView;

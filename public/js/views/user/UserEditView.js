@@ -30,8 +30,10 @@ define([
 			
 			this.model = new UserModel({id:option.id});
 			this.model.on("change", function() {
-				if(thisObj.subContainerExist())
+				if(thisObj.subContainerExist()){
 					thisObj.displayUser();
+					thisObj.focusOnFirstField();
+				}
 				this.off("change");
 			});
 			

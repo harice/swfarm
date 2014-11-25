@@ -1,53 +1,68 @@
 <div class="row margin-top-0">
-    <div class="col-md-12">
+    <div class="col-md-12 no-padding">
         <div class="block-flat">
+            <h2 class="content-header"><span><%= user.get("firstname") %> <%= user.get("lastname") %></span></h2>
             <div class="content padding-top-0">
                 <div class="row margin-top-0">
                     <!-- div class="col-md-3 user-pic-cont">
                         <img class="user-pic" src="<% if (user.get("profileimg") != "" && user.get("profileimg") != null) { %><%= user.get("profileimg")+"?qwert="+(new Date().getTime()) %><% } else { %><%= user_pic_default %><% } %>" />
                     </div -->
-                    <div class="col-md-9">
-                        <dl class="dl-horizontal">
-                            <dt>Email</dt><dd><%= user.get("email") %></dd>
-                            <dt>Position</dt>
-                            <dd>
-                                <% if (user.get("position") != "") { %>
-                                <%= user.get("position") %>
-                                <% } else { %>
-                                &nbsp;
-                                <% } %>
-                            </dd>
-                            <dt>Phone</dt>
-                            <dd>
-                                <% if (user.get("phone") != "") { %>
-                                <%= user.get("phone") %>
-                                <% } else { %>
-                                &nbsp;
-                                <% } %>
-                            </dd>
-                            <dt>Mobile</dt>
-                            <dd>
-                                <% if (user.get("mobile") != "") { %>
-                                <%= user.get("mobile") %>
-                                <% } else { %>
-                                &nbsp;
-                                <% } %>
-                            </dd>
-                            <dt>Roles</dt>
-                            <dd>
-                                <% _.each(user.get("roles"), function(role){ %>
-                                <%= role.name %><br />
-                                <% }); %>
-                            </dd>
-                            <dt></dt>
-                            <dd>
-                                <div class="clearfix"></div>
-                                <br />
-                                <a href="<%= user_edit_url %>/<%= user.get("id") %>" class="btn btn-primary btn-trans btn-rad btn-sm"><i class="fa fa-pencil width-10"></i> Edit</a>
-                                <button data-toggle="modal" data-target="#mod-success" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
-                                <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a>
-                            </dd>
-                        </dl>
+                    <div class="col-md-12">
+                        <fieldset>
+                            <legend>
+                                <h3>PERSONAL INFORMATION</h3>
+                            </legend>
+                            <dl class="dl-horizontal padding-top-5 margin-bottom-0">
+                                <dt>Position</dt>
+                                <dd>
+                                    <% if (user.get("position") != null) { %>
+                                    <%= user.get("position") %>
+                                    <% } else { %>
+                                    &nbsp;
+                                    <% } %>
+                                </dd>    
+                                <dt><i class="fa fa-envelope"></i></dt><dd><%= user.get("email") %></dd>                                
+                                <dt><i class="fa fa-phone"></i></dt>
+                                <dd>
+                                    <% if (user.get("phone") != null) { %>
+                                    <%= user.get("phone") %>
+                                    <% } else { %>
+                                    &nbsp;
+                                    <% } %>
+                                </dd>
+                                <dt><i class="fa fa-mobile-phone"></i></dt>
+                                <dd>
+                                    <% if (user.get("mobile") != null) { %>
+                                    <%= user.get("mobile") %>
+                                    <% } else { %>
+                                    &nbsp;
+                                    <% } %>
+                                </dd>                                                         
+                            </dl>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>
+                                <h3>USER SETTINGS</h3>
+                            </legend>
+                            <dl class="dl-horizontal padding-top-5 margin-bottom-0">                                
+                                <dt>Roles</dt>
+                                <dd>
+                                    <% _.each(user.get("roles"), function(role){ %>
+                                    <%= role.name %><br />
+                                    <% }); %>
+                                </dd>
+                                <dt></dt>
+                                <dd>
+                                    <div class="clearfix"></div>
+                                    <br />
+                                    <a href="<%= user_edit_url %>/<%= user.get("id") %>" class="btn btn-primary btn-trans btn-rad btn-sm"><i class="fa fa-pencil width-10"></i> Edit</a>
+                                    <button data-toggle="modal" data-target="#mod-success" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
+                                    <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a>
+                                </dd>
+                            </dl>
+                        </fieldset>
+                        
                     </div>
 
                     <!-- Modal -->

@@ -38,6 +38,7 @@ define([
             if (event.keyCode == 38) return this.move(-1);
             if (event.keyCode == 40) return this.move(+1);
             if (event.keyCode == 13) return this.onEnter();
+            if (event.keyCode == 9) return this.onTab();
             if (event.keyCode == 27) return this.hide();
         },
 
@@ -96,6 +97,13 @@ define([
 
         onEnter: function () {
             this.$el.children(".active").click();
+            return false;
+        },
+
+        onTab: function(){
+            this.$el.children(".active").click();
+            this.input.unbind('keydown');
+
             return false;
         },
 

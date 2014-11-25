@@ -50,8 +50,6 @@ define([
 			if(this.checkDate()) {
 				this.model = new Report();	
 				this.model.fetchGrossProfit(this.reportId, this.startDate, this.endDate);
-				$("#report-form").collapse("toggle");
-				$(".collapse-form").addClass("collapsed");
 			}
 
 			this.model.on('sync', function (){				

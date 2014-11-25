@@ -38,6 +38,7 @@ define([
 			this.url = '/apiv1/contact?accountType='+ id + '&paginated=false';
 			this.getModels();
 		},
+		
 	});
 
 	return ContactCollection;

@@ -39,16 +39,16 @@ define([
 				barColor = "#990000";
 
 			var graph = $.plot($("#"+id), data, {
-		        series: {		          
+		        series: {			                   
 		          bars: {
 		            show: true,
-		            barWidth: 0.6,
+		            barWidth: 0.6,		           
 		            align: "center",
 		            fill: true,
 		            hoverable: true,
 		            fillColor: {
 		              colors: [{
-		                opacity: 0.8
+		                opacity: 1
 		              }, {
 		                opacity: 1
 		              }
@@ -58,13 +58,19 @@ define([
 		            	show:true,
 		            	xAlign: function(x,a) { return x; },
 						yAlign: function(y,a) { return y; },
+						fontColor: '#000000',
 						label: label
-		            },
-		          },
-		          shadowSize: 2
-		        },		      
+		            },		            
+		            yPositionAdjustLabel: data[0].yPositionAdjustLabel		            
+		          },		          
+		          shadowSize: 5
+		        },		        	     
 		        legend:{
 		          show: false
+		        },
+		        lines: {
+		        	show:false, 
+		        	zero: true
 		        },
 		        grid: {
 		           labelMargin: 10,
@@ -72,8 +78,8 @@ define([
 		           hoverable: true,
 		           clickable: true,
 		           tickColor: "rgba(0,0,0,0.15)",
-		           borderWidth: 0,
-		           color: "green"
+		           borderWidth: 1,		           
+		           color: "#d9d9d9"
 		        },
 		        colors: [barColor, "#FFFFFF", "#52e136"],
 		        xaxis: {
@@ -98,20 +104,20 @@ define([
 		            	numbers :{
 		                    show: true,
 		                    xAlign: function(x) { return x; },
-							yAlign: function(y) { return y - 1; },	
-							font: '7pt Arial',	
+							yAlign: function(y) { return y - 1.7; },	
+							font: '7pt Helvetica',	
 							fontColor: '#ffffff',															
 							showDataValue: true,
 							label: label
 		                },
 		                show: true,
 		                barWidth: 0.6,
-		                lineWidth: 1,
+		                lineWidth: 0,
 		                hoverable:false,
 		                fillColor: {
 		                    colors:[
-		                    	{opacity: .8 },
-		                    	{opacity: .8 }
+		                    	{opacity: 1 },
+		                    	{opacity: 1 }
 		                    ]
 		                },
 		                align: "center",		                
@@ -149,11 +155,11 @@ define([
 				.find('.legend table')
 				.css({
 					"width": "auto",
-					"right": "0",
-					"top": -100 + "px"				
+					"left": "0",
+					"top": -38 + "px"				
 				})
 				.find('tr')
-				.css("background", "#f8f8f8")
+				.css("background", "#e0e0e0")
 				.find('td')
 				.css({
 					"border": 0,
@@ -163,7 +169,7 @@ define([
 			
 		},
 
-		graphMultiSeriesGraph: function(id, data, xData, label, decimals) {
+		graphMultiSeriesGraph: function(id, data, xData, label, decimals) {			
 			var thisObj = this;	
 			var options = {
                 xaxis: {                 
@@ -199,11 +205,12 @@ define([
                         show: true,
                         lineWidth: 0,
                         barWidth: 0.35,
-                        order:1,                     
+                        order:5,                     
                         numbers: {
 		            		show:true,
 		            		xAlign: function(x,a) { return x + .20; },
 		            		yAlign: function(y,a) { return y; },
+		            		fontColor: '#000000',
 							showDataValue: true,
 							label: label
 		            	}
@@ -218,18 +225,18 @@ define([
 				.find('.legend table')
 				.css({
 					"width": "auto",
-					"right": "0",
-					"top": -100 + "px"				
+					"left": "0",
+					"top": -38 + "px"				
 				})
 				.find('tr')
-				.css("background", "#f8f8f8")
+				.css("background", "#e0e0e0")
 				.find('td')
 				.css({
 					"border": 0,
 					"padding": "2px"
 				});
 
-			this.plotHover(id);
+			//this.plotHover(id, label, decimals);
 		},
 
 		showTooltip: function(x, y, contents) {
@@ -262,10 +269,20 @@ define([
 	          if (previousPoint != item.dataIndex) {
 	            previousPoint = item.dataIndex;
 	            $("#tooltip").remove();
-	            var x = item.datapoint[0],
-	            y = item.datapoint[1];
-	            thisObj.showTooltip(item.pageX, item.pageY,
-	            item.series.xaxis.ticks[x].label + " = " + currency + y.toFixed(decimals));
+	            var x = item.datapoint[0], y = item.datapoint[1];
+
+	            if(item.series.xaxis.ticks[x] != undefined){
+	            	thisObj.showTooltip(item.pageX, item.pageY, item.series.xaxis.ticks[x].label + " = " + currency + y.toFixed(decimals));	
+	            }
+	            else {		            	         
+	            	x -= .4;	     
+	            	if(item.series.xaxis.ticks[x] != undefined)    							
+						thisObj.showTooltip(item.pageX, item.pageY, item.series.xaxis.ticks[x].label + " = " + currency + y.toFixed(decimals));		
+	            	else {	
+	            		x = (item.datapoint[0] - 0.4).toFixed(0);  	            		
+	            		thisObj.showTooltip(item.pageX, item.pageY, item.series.xaxis.ticks[x].label + " = " + currency + y.toFixed(decimals));		
+	            	}	            	          	
+	            }
 	          }
 	        } else {
 	          $("#tooltip").remove();
@@ -274,31 +291,7 @@ define([
 	      }); 
 	      
 	    },
-
-	    plotHoverStack: function(id) {
-
-	    	var thisObj = this;
-	    	var previousPoint = null;
-	    	$("#"+id).bind("plothover", function (event, pos, item) {
-      
-	        var str = "(" + pos.x.toFixed(2) + ", " + pos.y.toFixed(2) + ")";
-
-	        if (item) {
-	          if (previousPoint != item.dataIndex) {
-	            previousPoint = item.dataIndex;
-	            $("#tooltip").remove();
-	            var x = item.datapoint[0];
-	            thisObj.showTooltip(item.pageX, item.pageY,
-	            item.series.data.ticks[1][x].label);
-	          }
-	        } else {
-	          $("#tooltip").remove();
-	          previousPoint = null;
-	        }
-	      }); 
-	      
-	    },
-		
+	    
 		formatGraphData: function (id, data, type) { 
 			var graphData = [];
 			var graphXData = [];
@@ -335,11 +328,15 @@ define([
 						
 						if(id == Const.GRAPH.ID.YEARTODATESALES) {
 							graphXData.push([i, data[i].account]); 
-							d.push([i, data[i].totalSales]); 
+							d.push([i, (data[i].totalSales).toFixed(2)]); 
 						}
 						else if(id == Const.GRAPH.ID.INVENTORY) {
 							graphXData.push([i, data[i].label]); 
 							d.push([i, (data[i].value).replace(/,/g,'')]); 
+						}
+						else if(id == Const.GRAPH.ID.PURCHASEINTONS || id == Const.GRAPH.ID.SALESINTONS) {
+							graphXData.push([i, data[i].label]); 
+							d.push([i, (data[i].value).toFixed(0)]); 
 						}
 						else {							
 							graphXData.push([i, data[i].label]); 
@@ -369,10 +366,11 @@ define([
 					});
 
 					for(var x = 0; x < keys.length; x++) {
-						graphXData.push([x+.4, keys[x]]);
-
-						d[0].data.push([x, (data[keys[x]].incoming).replace(/,/g,'')]);										
-						d[1].data.push([x + .4, (data[keys[x]].outgoing).replace(/,/g,'')]);
+						graphXData.push([x, keys[x]]);
+						var inc = parseFloat(data[keys[x]].incoming.replace(/,/g,''));
+						var out = parseFloat(data[keys[x]].outgoing.replace(/,/g,''));
+						d[0].data.push([x, inc.toFixed(0)]);										
+						d[1].data.push([x + .4, out.toFixed(0)]);
 					}
 				
 					graphData.push({ data:d, yPositionAdjustLabel: -10 });
@@ -451,15 +449,16 @@ define([
 			thisObj.subContainer.find('#graph-cont').append(graphInnerTemplate);
 
 			thisObj.subContainer.find('#' +graphIdName).append("<div id="+ mapId +"></div>");
-			thisObj.subContainer.find('#' +graphIdName).css({"width": "547px", "height": "300px"});
-			thisObj.subContainer.find('#' +mapId).css({"width": "100%", "height": "100%"});			
+			thisObj.subContainer.find('#' +mapId).addClass('mapholder');	
 
 			this.googleMaps.initGetDashboardMapLocation(mapId, location);
 						
 			if(graphId == Const.GRAPH.ID.DASHBOARDLOGISTICS)
 				this.populateLogisticsMarkers(this.googleMaps, graph);
 			else 
-				this.populateMarkers(this.googleMaps, graph, location);	
+				this.populateMarkers(this.googleMaps, graph, location);			
+
+			//console.log(this.googleMaps);			
 
 		},
 
@@ -471,13 +470,13 @@ define([
 					title = 'Purchases in Tons';
 					break;
 				case Const.GRAPH.ID.PURCHASEINDOLLARS:
-					title = 'Purchases in $';
+					title = 'Purchases in Dollar(s)';
 					break;
 				case Const.GRAPH.ID.SALESINTONS:
 					title = 'Sales in Tons';
 					break;
 				case Const.GRAPH.ID.SALESINDOLLARS:
-					title = 'Sales in $';
+					title = 'Sales in Dollar(s)';
 					break;
 				case Const.GRAPH.ID.RESERVECUSTOMERS:
 					title = 'Reserve Customers';
@@ -486,7 +485,7 @@ define([
 					title = 'Inventory on Hand';
 					break;
 				case Const.GRAPH.ID.YEARTODATESALES:
-					title = 'Year to Year Sales in $';
+					title = 'Year to Year Sales in Dollar(s)';
 					break;
 				case Const.GRAPH.ID.DASHBOARDPURCHASES:
 					title = 'Dashboard Purchases';
@@ -507,6 +506,7 @@ define([
 
 		populateMarkers: function(googleMaps, graph, location) {
 			var markers = [];
+			var options = { draggableMarker: false };
 			markers.push({accountName: "SouthWest Farm", address: "11926 West Southern Avenue, Tolleson, Arizona, USA 85353", lat: location.k, lng: location.B});		
 
 			_.each(graph.get('data'), function (acct) {
@@ -519,12 +519,13 @@ define([
 				
 			});
 
-			googleMaps.showDashboardSetLocation(markers, location);
+			googleMaps.showDashboardSetLocation(markers, location, options);
 
 		},
 
 		populateLogisticsMarkers: function(googleMaps, graph) {	
 			var markers = [];
+			var options = { draggableMarker: false };
 			googleMaps.initMapDirectionService();
 
 			_.each(graph.get('data'), function (transportsched) {
@@ -536,7 +537,7 @@ define([
 				
 			});
 
-			googleMaps.showGetDestinationRoute(markers);					
+			googleMaps.showGetDestinationRoute(markers, options);					
 		},
 
 		getForecast: function(city, region, country){
@@ -558,7 +559,7 @@ define([
 
 			var address = cityAddress + regionAddress + country;		
 
-			thisObj.subContainer.find('#weather-cont').append("<div class='col-md-12'><h2>" + address + "</h2></div>");
+			thisObj.subContainer.find('#weather-cont h2').append("<i class='fa fa-map-marker'></i> " + address + "</h2></div>");
 
 			var variables = {
 				'channel': channels
@@ -566,7 +567,7 @@ define([
 
 			_.extend(variables,Backbone.View.prototype.helpers);
 			var weatherInnerTemplate = _.template(weatherTemplate, variables);
-			thisObj.subContainer.find('#weather-cont').append(weatherInnerTemplate);
+			thisObj.subContainer.find('#weather-forecast').append(weatherInnerTemplate);
 
 		},
 	});

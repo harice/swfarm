@@ -2,12 +2,11 @@
 	<% _.each(scales, function(scale){ %>
 	<tr>
 		<td><a href="<%= scale_url %>/<%= scale.get('id') %>"><%= scale.get("name") %></a></td>
-        <td><%= accountName %></td>
-		<td class="text-right width-100">$ <%= scale.get("rate") %></td>		
+		<td class="width-100">$ <%= scale.get("rate") %></td>		
 	</tr>
 	<% }); %>
 <% } else { %>
 	<tr>
-		<td colspan="3">No result found.</td>
+		<td colspan="2">No result found.</td>
 	</tr>
 <% } %>

@@ -1,15 +1,20 @@
 <% if (!_.isEmpty(sls)) { print(sls) %>
 	<% _.each(sls, function(sl){ %>
-	<tr class="collapse-trigger cursor-pointer" data-id="<%= sl.get("id") %>">
+	<tr class="collapse-trigger cursor-pointer" data-id="<%= sl.get("id") %>">		
         <td>			
-			<%= accountName %>			
+			<%
+				if(!_.isEmpty(sl.get("address")))
+				{ %>
+				<%= sl.get('address').street %>, <%= sl.get('address').city %>, <%= sl.get('address').state.state_code %> <%= sl.get('address').zipcode %> USA
+				<% }
+			%>
 		</td>		
 		<td><%= sl.get("name") %></td>
 		<td><%= sl.get("description") %></td>
 	</tr>
 	<tr>
 		<td colspan="9" style="padding:0;">
-			<div class="location-collapsible-item list-view-collapse" id="<%= collapsible_id %><%= sl.get("id") %>">
+			<div class="location-collapsible-item list-view-collapse">
 				<div class="container">
 					<div class="order-stack-details">						
 						<div class="location-section-list">

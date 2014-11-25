@@ -2,46 +2,42 @@
 	<td>
 		<input type="hidden" class="id" name="id" value="" />
         <% if (typeof verified !== "undefined" || typeof readonly_products !== "undefined") { %>
-		<div class="styled-select">
-            <select class="form-control product_id_dummy width-160" disabled required><%= product_list %></select>
-        </div>
+		<select class="form-control input-sm product_id_dummy width-160" disabled required><%= product_list %></select>
 		<input type="hidden" class="product_id" name="product_id" value="" />
 		<% } else { %>
-		<div class="styled-select">
-            <select class="form-control product_id width-160" name="product_id" required><%= product_list %></select>
-        </div>
+		<select class="form-control input-sm product_id width-160" name="product_id" required><%= product_list %></select>
 		<% } %>
 	</td>
 	<td>
-		<div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right price unitprice" type="text" name="unitprice" placeholder="0.00" value="" required></div>
+		<div class="input-group margin-0"><span class="input-group-addon input-sm">$</span><input class="form-control text-right price unitprice input-sm" type="text" name="unitprice" placeholder="0.00" value="" required></div>
 		<div class="error-msg-cont"></div>
 	</td>
-	<td><input class="form-control text-right tons" type="text" name="tons" maxlength="12" required></td>
-	<td><div class="input-group margin-0"><span class="input-group-addon">$</span><input class="form-control text-right unit-price" type="text" value="0.00" readonly></div></td>
-	<td>
-		<button title="Remove Product" type="button" class="pull-right btn btn-danger btn-rad btn-xs remove-product"><span class="glyphicon glyphicon-remove"></span></button>
+	<td><input class="form-control text-right tons input-sm" type="text" name="tons" maxlength="12" required></td>
+	<td><div class="input-group margin-0"><span class="input-group-addon input-sm">$</span><input class="form-control text-right unit-price input-sm" type="text" value="0.00" readonly></div></td>
+	<td align="center">
+		<button title="Remove Product" type="button" class="margin-left-0 btn btn-danger btn-rad btn-xs remove-product"><span class="glyphicon glyphicon-remove"></span></button>
 	</td>
 </tr>
 
 <tr class="product-stack">
 	<td></td>
-	<td colspan="3">
-		<div class="row margin-top-0 padding-top-10">
+	<td colspan="3" class="stack-details">
+		<div class="row margin-top-0 padding-top-0">
 			<div class="col-md-12">
-				<legend>
-					Stacknumber
+				<legend class="margin-bottom-5">
+					<h3 class="margin-top-0">Stacknumber</h3>
 					<button title="Add Product Stack" type="button" class="pull-right btn btn-info btn-rad btn-xs add-product-stack"><span class="glyphicon glyphicon-plus"></span></button>
 				</legend>
-				<div class="table-responsive">
-					<table class="table table-bordered product-stack-table">
+				<div class="content-inner table-responsive">
+					<table class="table table-bordered table-condensed product-stack-table">
 						<thead>
 							<tr>
 								<th class="width-200">Stack No.</th>
 								<th class="width-200">Location From</th>
 								<th class="width-250">Description</th>
-								<th class="width-120">Est. Tons</th>
+								<th class="width-120">Tons</th>
 								<th class="width-80">Bales</th>
-								<th></th>
+								<th class="width-40"></th>
 							</tr>
 						</thead>
 						<tbody data-id=""></tbody>

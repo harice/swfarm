@@ -1,4 +1,4 @@
-<div class="content padding-top-0">
+<div class="content padding-top-10">
   <h2 class="ponumber margin-bottom-0">
     <%= po.get("order_number") %>
     <div class='pull-right'>
@@ -13,7 +13,7 @@
     <div class="col-md-6">
       <% if (typeof is_bid === "undefined") { %>
         Purchased Date: <span class="text-danger"><%= formatDateAMPM(po.get("created_at")) %></span><br>
-        Pickup Start: <span class="text-danger"><%= formatDate(po.get("transportdatestart")) %></span>
+        Pickup Start: <span class="text-danger"><%= formatDate(po.get("transportdatestart")) %></span><br>
         Pickup End: <span class="text-danger"><%= formatDate(po.get("transportdateend")) %></span><br>
         Destination: <span class="text-danger"><%= po.get("location").location %></span><br>
       <% } else { %>
@@ -30,11 +30,9 @@
       <% } %>
     </div>
     <div class="col-md-6">
-      Producer:
-      <address>
-        <p class="margin-top-5 margin-bottom-0">
-          <strong><%= po.get("contact").firstname %> <%= po.get("contact").lastname %> <%= po.get("contact").suffix %></strong>
-        </p>
+      <span class="pull-left">Producer:</span>
+      <address class="margin-left-10 pull-left">
+        <p class="margin-bottom-0"><strong><%= po.get("contact").firstname %> <%= po.get("contact").lastname %> <%= po.get("contact").suffix %></strong></p>
         <%= po.get("account").name %>
         <br>
         <%= po.get("orderaddress").street %>
@@ -45,35 +43,39 @@
       </address>
     </div>
   </div>
-  <div class="row margin-top-10">
+  <div class="row margin-top-20 padding-top-10">
     <div class="col-md-12">
-      <h3 class="margin-top-0">Products</h3>
-      <div class="content-inner table-responsive">
-        <table id="product-list" class="table-condensed table-bordered table-hover">
-          <thead>
-            <tr>
-              <th class="width-200">Product</th>
-              <th>Est Tons</th>
-              <th class="width-150">
-                <% if (typeof is_bid === "undefined") { %>
-                  Total Price
-                <% } else { %>
-                  Bid Total Price
-                <% } %>
-              </th>
+      <fieldset>
+        <legend class="margin-bottom-5">
+          <h3 class="margin-top-0">PRODUCTS</h3>
+        </legend>
+        <div class="content-inner table-responsive">
+          <table id="product-list" class="table-condensed table-bordered table-hover">
+            <thead>
+              <tr>
+                <th class="width-200">Product</th>
+                <th>Est Tons</th>
+                <th class="width-150">
+                  <% if (typeof is_bid === "undefined") { %>
+                    Total Price
+                  <% } else { %>
+                    Bid Total Price
+                  <% } %>
+                </th>
 
-            </tr>
-          </thead>
-          <tbody></tbody>
-    		  <tfoot>
-    		    <tr>
-      			  <td class="text-right">Total</td>
-      			  <td class="text-right"><strong id="total-tons">0.0000</strong></td>
-      			  <td class="text-right"><strong id="total-price">$ 0.00</strong></td>
-      			</tr>
-    		  </tfoot>
-        </table>
-      </div>
+              </tr>
+            </thead>
+            <tbody></tbody>
+      		  <tfoot>
+      		    <tr>
+        			  <td class="text-right">Total</td>
+        			  <td class="text-right"><strong id="total-tons">0.0000</strong></td>
+        			  <td class="text-right"><strong id="total-price">$ 0.00</strong></td>
+        			</tr>
+      		  </tfoot>
+          </table>
+        </div>
+      </fieldset>
     </div>
   </div>
   <div class="row">

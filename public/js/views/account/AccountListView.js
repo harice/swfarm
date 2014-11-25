@@ -23,6 +23,7 @@ define([
 			this.model = new AccountExtrasModel();
 			this.model.on('change', function() {
 				if(thisObj.subContainerExist()) {
+					thisObj.resetSearchFilters();
 					thisObj.displayAccount();
 					thisObj.renderList(thisObj.collection.listView.currentPage);
 				}
@@ -61,9 +62,7 @@ define([
 			this.initConfirmationWindow('Are you sure you want to delete this account?',
 										'confirm-delete-account',
 										'Delete',
-										'Delete Account');
-
-			this.setListOptions();
+										'Delete Account');			
 		},
 		
 		displayList: function () {
@@ -80,17 +79,16 @@ define([
 			this.generatePagination();
 		},
 
-		setListOptions: function () {
-			var options = this.collection.listView;
-			//console.log(options);
-			
-			if(options.search != '')
-				this.$el.find('#search-keyword').val(options.search);
+		resetSearchFilters: function(){
+			var options = this.collection.listView;			
 
-			if(options.filters.type != '')
-				this.$el.find('[name="accounttypeFilter"][value="'+options.filters.type+'"]').attr('checked', true);
+			if(options.search != '')
+				this.collection.setSearch('');
+			
+			if(options.filter != ' ')
+				this.collection.setFilter('filter', '')			
 		},
-		
+	
 		events: {
 			'click .sort-name' : 'sortName',
 			'click .sort-type' : 'sortType',

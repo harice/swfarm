@@ -1,15 +1,11 @@
 <tr class="product-item">
 	<td style="width: 150px;">
 		<input type="hidden" class="id" name="id" value="" />
-        <div class="styled-select">
-            <select class="form-control productorder_id width-180" name="productorder_id" required><%= product_list %></select>
-        </div>
+        <select class="form-control productorder_id width-180 input-sm" name="productorder_id" required><%= product_list %></select>
 	</td>
     <td><span class="product"></span></td>
 	<td>
-		<div class="styled-select">
-			<select class="form-control sectionto_id width-160" name="sectionto_id" required><%= locationto_list %></select>
-		</div>
+		<select class="form-control sectionto_id width-160 input-sm" name="sectionto_id" required><%= locationto_list %></select>
 	</td>
 	<td>
 		<div class="input-group input-group-sm margin-0">
@@ -18,10 +14,9 @@
 		</div>	
 		<div class="error-msg-cont"></div>
 	</td>
-	<td>
-		<span title="Remove Product" class="remove-product pull-right fa-stack text-danger font-size-12 cursor-pointer">
-			<i class="fa fa-square fa-stack-2x"></i>
-			<i class="fa fa-times fa-stack-1x fa-inverse"></i>
-		</span>
+	<td align="center">
+		<button type="button" title="Remove Product" class="remove-product btn-rad btn btn-danger btn-xs">
+			<span class="glyphicon glyphicon-remove"></span>
+		</button>
 	</td>
 </tr>

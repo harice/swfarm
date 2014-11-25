@@ -12,66 +12,69 @@
 			<input class="form-control text-right product-item-field unit-price" type="text" value="0.00" readonly>
 		</div>
 	</td>
-	<td class="width-40">
-		<button title="Remove Product" type="button" class="pull-right btn btn-danger btn-rad btn-xs remove-product">
+	<td class="width-40" align="center">
+		<button title="Remove Product" type="button" class="btn btn-danger btn-rad btn-xs remove-product margin-left-0">
 			<span class="glyphicon glyphicon-remove"></span>
 		</button>
 	</td>
 </tr>
 <tr class="product-stack">
 	<td colspan="4">
-		<div class="row margin-top-0 padding-top-10">
+		<div class="row margin-top-0 padding-top-0">
 			<div class="col-md-12">
-				<h3 class='margin-top-0 margin-bottom-0'>
-					Stack No.
-					<button title="Add Product Stack" type="button" class="pull-right btn btn-primary btn-rad btn-xs add-product-stack">
-						<span class="glyphicon glyphicon-plus"></span>
-					</button>
-				</h3>
-				<hr class='margin-top-10 margin-bottom-10' />
+				<fieldset>
+					<legend class="margin-bottom-5 margin-top-10">
+						<h3 class='margin-top-0 margin-bottom-0'>
+							Stack No.						
+						</h3>
+						<button title="Add Product Stack" type="button" class="pull-right btn btn-primary btn-rad btn-xs add-product-stack">
+							<span class="glyphicon glyphicon-plus"></span>
+						</button>
+					</legend>
 
-				<div class="table-responsive">
-					<table class="table-condensed table-bordered product-stack-table">
-						<thead>
-							<tr>
-								<th>Stack No.<i class='color-danger width-10'>*</i></th>
-								<th>Location From<i class='color-danger width-10'>*</i></th>
-								<th>Description</th>
-								<th>
+					<div class="table-responsive">
+						<table class="table-condensed table-bordered product-stack-table">
+							<thead>
+								<tr>
+									<th class="width-200">Stack No.<i class='color-danger width-10'>*</i></th>
+									<th class="width-200">Location From<i class='color-danger width-10'>*</i></th>
+									<th class="width-300">Description</th>
+									<th class="width-110">
+										<% if (typeof is_bid === "undefined") { %>
+											Unit Price
+										<% } else { %>
+											Bid Unit Price
+										<% } %>
+										<i class='color-danger width-10'>*</i>
+									</th>
+									<th class="width-100">Bales<i class='color-danger width-10'>*</i></th>
+									<th class="width-130">Tons<i class='color-danger width-10'>*</i></th>
+									<th class="width-200"><% if (typeof is_bid === "undefined") { %>Total Price<% } else { %>Bid Total Price<% } %></th>
 									<% if (typeof is_bid === "undefined") { %>
-										Unit Price
-									<% } else { %>
-										Bid Unit Price
+									<th class="width-50">Testing</th>
+									<th class="width-70">RFV</th>
+									<th class="width-40">PDF</th>
 									<% } %>
-									<i class='color-danger width-10'>*</i>
-								</th>
-								<th>Est Bales<i class='color-danger width-10'>*</i></th>
-								<th>Est Tons<i class='color-danger width-10'>*</i></th>
-								<th><% if (typeof is_bid === "undefined") { %>Total Price<% } else { %>Bid Total Price<% } %></th>
-								<% if (typeof is_bid === "undefined") { %>
-								<th>Testing</th>
-								<th class="width-60">RFV</th>
-								<th>PDF</th>
-								<% } %>
-								<th></th>
-							</tr>
-						</thead>
-						<tfoot>
-							<tr>
-								<td class="text-right" colspan="5">Total</td>
-								<td><input class="form-control text-right total-tons input-sm" type="text" value="0.0000" readonly></td>
-								<td>
-									<div class="input-group input-group-sm margin-0">
-										<span class="input-group-addon">$</span>
-										<input class="form-control text-right total-price" type="text" value="0.00" readonly>
-									</div>
-								</td>
-								<td <% if (typeof is_bid === "undefined") { %>colspan="4"<% } %>>&nbsp;</td>
-							</tr>
-						</tfoot>
-						<tbody data-id=""></tbody>
-					</table>
-				</div>
+									<th class="width-40"></th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<td class="text-right" colspan="5">Total</td>
+									<td><input class="form-control text-right total-tons input-sm" type="text" value="0.0000" readonly></td>
+									<td>
+										<div class="input-group input-group-sm margin-0">
+											<span class="input-group-addon">$</span>
+											<input class="form-control text-right total-price" type="text" value="0.00" readonly>
+										</div>
+									</td>
+									<td <% if (typeof is_bid === "undefined") { %>colspan="4"<% } %>>&nbsp;</td>
+								</tr>
+							</tfoot>
+							<tbody data-id=""></tbody>
+						</table>
+					</div>
+				</fieldset>
 			</div>
 		</div>
 	</td>

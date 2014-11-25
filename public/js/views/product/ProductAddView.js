@@ -47,6 +47,7 @@ define([
 			this.$el.find('.capitalize').textFormatter({type:'capitalize'});
 			
 			this.initValidateForm();
+			this.focusOnFirstField();
 		},
 		
 		initValidateForm: function () {

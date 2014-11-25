@@ -2178,7 +2178,7 @@ Licensed under the MIT license.
 	            var offset = plot.getPlotOffset();
 	            ctx.textBaseline = "top";
 	            ctx.textAlign = "center"; 
-	            ctx.fillStyle = 'black';             
+	            ctx.fillStyle = series.bars.numbers.fontColor;             
 	            ctx.font = series.bars.numbers.font;       
 	            alignOffset = series.bars.align === "left" ? series.bars.barWidth / 2 : 0;
 	            xAlign = series.bars.numbers.xAlign;

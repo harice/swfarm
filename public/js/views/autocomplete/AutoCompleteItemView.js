@@ -11,7 +11,7 @@ define([
         },
 
         events: {
-            "click": "select"
+            "click": "select",           
         },
 
         render: function () {
@@ -25,8 +25,8 @@ define([
         select: function () {
             this.options.parent.hide().select(this.model);
             return false;
-        }
-
+        },
+       
     });
 	
 	return AutoCompleteItemView;

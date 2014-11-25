@@ -90,6 +90,7 @@ define([
 				trucker_edit_url: '#/'+Const.URL.TRUCKER+'/'+Const.CRUD.EDIT,
 				truckers: this.collection.models,
 				truckertypes: Const.ACCOUNT.TRUCKERS,
+				account_url: '#/'+Const.URL.ACCOUNT,
 				_: _
 			};
 
