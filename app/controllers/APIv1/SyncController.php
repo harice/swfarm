@@ -33,6 +33,10 @@ class SyncController extends BaseController {
 			case 'account':
 				$this->account->accountSync(Input::all());
 				break;
+
+			case 'order':
+				return $this->sync->addOrder(Input::all());
+				break;
 		}
 	}
 
