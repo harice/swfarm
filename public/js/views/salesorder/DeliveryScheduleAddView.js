@@ -192,6 +192,7 @@ define([
 		
 		render: function(){
 			this.orderScheduleVariablesModel.runFetch();
+			Backbone.View.prototype.refreshTitle('Delivery Schedule','add');
 		},
 		
 		displayForm: function () {

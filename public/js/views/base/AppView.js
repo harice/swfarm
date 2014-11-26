@@ -226,6 +226,10 @@ define([
 				runCallback = true;
 			});
 
+			$('#modal-confirm-navigate-away').on('shown.bs.modal', function(){
+				$('#confirm-navigate').focus();										
+			});
+
 			$('#modal-confirm-navigate-away').on('hidden.bs.modal', function (e) {
 				$('.close-navigate-away-window').off('click');
 				$('#confirm-navigate').off('click');
@@ -253,7 +257,7 @@ define([
 				Backbone.history.history.back();
 
 			return false;
-		},
+		},		
 
         maskInputs: function () {        	        	
             $(".phone-number").mask('(000) 000-0000');

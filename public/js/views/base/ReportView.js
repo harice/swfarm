@@ -69,7 +69,7 @@ define([
 		},
 
 		getReportTypes: function (){			
-			var types = '<option disabled selected>Select type of Report to generate</option>';
+			var types = '<option disabled selected>Select type of Report</option>';
 			_.each(this.reportTypes, function (type) {
 				types += '<option value="'+type.id+'">'+type.name +'</option>';
 			});

@@ -154,9 +154,10 @@ define([
 			$("#"+id)
 				.find('.legend table')
 				.css({
-					"width": "auto",
+					"width": "30%",
 					"left": "0",
-					"top": -38 + "px"				
+					"top": -37 + "px",
+					"right": "auto"				
 				})
 				.find('tr')
 				.css("background", "#e0e0e0")
@@ -546,20 +547,7 @@ define([
 			var channels = model.get('query').results.channel.item;		
 
 			if(typeof channels == "undefined")
-				channels = model.get('query').results.channel[0].item;		
-			
-			var cityAddress = '';
-			var regionAddress = '';
-
-			if(city != null)
-				cityAddress = city + ' ';
-
-			if(region != null)
-				regionAddress = region + ' ';
-
-			var address = cityAddress + regionAddress + country;		
-
-			thisObj.subContainer.find('#weather-cont h2').append("<i class='fa fa-map-marker'></i> " + address + "</h2></div>");
+				channels = model.get('query').results.channel[0].item;					
 
 			var variables = {
 				'channel': channels
@@ -568,6 +556,20 @@ define([
 			_.extend(variables,Backbone.View.prototype.helpers);
 			var weatherInnerTemplate = _.template(weatherTemplate, variables);
 			thisObj.subContainer.find('#weather-forecast').append(weatherInnerTemplate);
+			
+			var address = '';
+
+			if(city != null)
+				addresss = city;
+			else {
+				if(region != null)
+					addresss = region;
+				else {
+					address = country;
+				}
+			}			
+
+			$('#weather-cont').prepend("<div class='placeholder'><h2 class='margin-bottom-0'><i class='fa fa-map-marker'></i> " + address + "</h2></div>");
 
 		},
 	});

@@ -107,6 +107,7 @@ define([
 			this.initCalendar();
 			this.addProduct();
 			this.otherInitializations();
+			this.focusOnFirstField();
 		},
 
 		initValidateForm: function () {
@@ -130,10 +131,11 @@ define([
 								Backbone.history.history.back();
 							},
 							error: function (model, response, options) {
-//								if(typeof response.responseJCONTRACTN.error === 'undefined')
-//									validate.showErrors(response.responseJCONTRACTN);
-//								else
-									thisObj.displayMessage(response);
+								if(response.responseText == "Data missing"){
+									console.log(response);
+								}
+								else
+									thisObj.displayMessage(response);									
 							},
 							headers: contractModel.getAuth()
 						}
@@ -318,7 +320,7 @@ define([
 			'keyup .tons': 'onKeyUpTons',
 			'blur .tons': 'onBlurTon',
 			'keyup .bales': 'formatNumber',
-		},
+		},		
 
 		removeProduct: function (ev) {
 			$(ev.target).closest('tr').remove();

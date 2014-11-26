@@ -1,10 +1,12 @@
 <div class="col-md-12"> 
-    <div class="content">
+    <div class="content padding-top-0">
         <div class="row margin-top-0">
             <div class="col-md-12">
                 <div class="btn-group pull-right">
-                    <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
-                        Email <span class="caret"></span>
+                    <button data-toggle="dropdown" class="btn btn-link btn-sm btn-rad dropdown-toggle" type="button">
+                        <i class="fa fa-envelope-o"></i>
+                        <span class="margin-right-5">Email</span>
+                        <span class="caret"></span>
                     </button>                        
                     <ul role="menu" class="dropdown-menu">
                         <li><a class="sendmail" href="/" data-type="pdf" data-model="customer-sales-statement" data-id='<%= customers.get("id") %>' data-title="Customer Sales Report">Adobe PDF (*.pdf)</a></li>
@@ -14,8 +16,10 @@
                     </ul>
                 </div>
                 <div class="btn-group pull-right">
-                    <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
-                        Export <span class="caret"></span>
+                    <button data-toggle="dropdown" class="btn btn-link btn-sm btn-rad dropdown-toggle" type="button">
+                        <i class="fa fa-print"></i>
+                        <span class="margin-right-5">Export</span>
+                        <span class="caret"></span>
                     </button>
                     <ul role="menu" class="dropdown-menu">
                         <li><a href="<%= export_pdf_url %>" target="_blank">Adobe PDF (*.pdf)</a></li>
@@ -51,11 +55,11 @@
             </div>
             <div class="col-md-2 text-right">
                 <h3 class="margin-top-0"><strong><samp><%= formatDateBy(cur_date, 'F d, Y') %></samp></strong></h3>
-                <h3 class="margin-top-10"><label class="label label-success"><samp>$ <%= customers.get('amount') %></samp></label></h3>
+                <h3 class="margin-top-10"><label class="label label-success"><samp>$ <%= numberFormat(customers.get('amount')) %></samp></label></h3>
             </div>     
         </div>
         <% if (!_.isEmpty(customers.get('order'))) { %>    
-        <div class="content-inner table-responsive">                
+        <div class="table-responsive">                
             <%                             
                 _.each(customers.get('order'),function(order){
                     var total_amount = 0;
@@ -131,7 +135,7 @@
                 }); %>    
         </div>        
         <% } else { %>       
-        <p>No transactions found.</p>
+        <p class="text-danger">No transaction found.</p>
         <% } %>
     </div>    
 </div>

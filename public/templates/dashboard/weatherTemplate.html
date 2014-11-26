@@ -4,13 +4,13 @@
 	var day = date.split(",");	
 %>
 	<div class="col-md-2 col-sm-4 weather-box">
-		<div class="fd-tile header tile-green margin-bottom-0">
-		  <div class="header">
-		  <div class="ico"><i class="fa fa-clock-o"></i></div>
-		  <div class="title margin-top-5">NOW <span id="curtime"></span></div>
+		<div class="fd-tile header margin-bottom-0">
+		  <div class="header">		  	  
+			  <div class="ico"><i class="fa fa-clock-o"></i></div>
+			  <div class="title margin-top-5">NOW <span id="curtime"></span></div>
 		  </div>
 		  <div class="content"><p><%= day[0] %></p><h1><%= channel.condition.temp %>°</h1></div>
-		  <div class="icon"><img title="<%= channel.condition.text %>" src="images/meteocons/<%= matchCondition(channel.condition.code) %>.png" /></div>
+		  <div class="icon"><img title="<%= channel.condition.text %>" src="images/weather_ico/<%= matchCondition(channel.condition.code) %>.png" /></div>
 		</div>
 	</div>	
 <%		
@@ -18,13 +18,13 @@
 			var temp = (parseInt(forecast.high) + parseInt(forecast.low)) / 2;			
 		%>
 			<div class="col-md-2 col-sm-4 weather-box">
-				<div class="fd-tile header tile-blue margin-bottom-0">
+				<div class="fd-tile header margin-bottom-0">
 				  <div class="header">
 				  <div class="ico"><i class="fa fa-calendar"></i></div>
 				  <div class="title margin-top-5"><%= forecast.date %></div>
 				  </div>
 				  <div class="content"><p><%= forecast.day %></p><h1><%= parseInt(temp) %>°</h1></div>
-				  <div class="icon"><img title="<%= channel.condition.text %>" src="images/meteocons/<%= matchCondition(forecast.code) %>.png" /></div>
+				  <div class="icon"><img title="<%= forecast.text %>" src="images/weather_ico/<%= matchCondition(forecast.code) %>.png" /></div>
 				</div>
 			</div>
 		<%

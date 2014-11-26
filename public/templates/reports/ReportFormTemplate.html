@@ -3,12 +3,12 @@
         <div class="padding-bottom-0 margin-bottom-10">
             <div class="padding-top-0 form-horizontal group-border-dashed">                
                 <div id="report-accordion">
-                    <div class="block-flat margin-bottom-0">                       
+                    <div class="block-flat padding-top-10 margin-bottom-0">                       
                         <div class="panel-collapse collapse in" id="report-form"> 
-                            <div class="padding-top-0 padding-left-0 padding-right-0">  
+                            <div class="content padding-top-0 padding-left-0 padding-right-0">  
                                 <form id="generateReportForm" role="form" method="post" enctype="multipart/form-data">                                 
-                                    <div class="row margin-top-0 form-group"> 
-                                        <div class="col-sm-3 text-center">
+                                    <div class="row margin-top-0"> 
+                                        <div class="col-sm-3">
                                             <% if (!_.isEmpty(reports)) { %>
                                                 <select id="reporttype" name="reporttype" class="form-control input-sm reporttype">
                                                     <%= reports %>
@@ -16,9 +16,9 @@
                                             <% } else { %>
                                                 <p>No report types returned.</p>
                                             <% } %>
-                                            <label class="margin-top-5 margin-bottom-0">Report Type:</label>
+                                            <label class="margin-top-0 margin-bottom-0">Report Type:</label>
                                         </div>
-                                        <div class="col-sm-2 text-center">
+                                        <div class="col-sm-2">
                                             <div id="filter-operator-date-start" class="calendar-cont">
                                                 <div class="input-group input-group-sm date datetime margin-bottom-0">
                                                     <input type="text" id="transportdatestart" class="form-control form-date" name="transportdatestart" size="16" value="">
@@ -27,9 +27,9 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <label for="name" class="margin-top-5 margin-bottom-0">Date From <i class="color-danger">*</i></label>
+                                            <label for="name" class="margin-top-0 margin-bottom-0">Date From <i class="color-danger">*</i></label>
                                         </div>
-                                        <div class="col-sm-2 text-center">
+                                        <div class="col-sm-2">
                                             <div id="filter-operator-date-end" class="calendar-cont">
                                                 <div class="input-group input-group-sm date datetime margin-bottom-0">
                                                     <input type="text" id="transportdateend" class="form-control form-date" name="transportdateend" size="16" value="">
@@ -38,7 +38,7 @@
                                                     </div>
                                                 </div>                                                
                                             </div> 
-                                            <label for="name" class="margin-top-5 margin-bottom-0">Date To <i class="color-danger">*</i></label>
+                                            <label for="name" class="margin-top-0 margin-bottom-0">Date To <i class="color-danger">*</i></label>
                                         </div>
                                         <div class="col-sm-5">
                                             <div id="report-filter">
@@ -56,9 +56,7 @@
         </div> <!-- /.block-flat -->  
 
         <div class="block-flat padding-bottom-0 reportlist hidden">
-            <div class="content padding-top-0">
-                <div id="report-list" class="row margin-top-0 form-group">
-                </div>
+            <div id="report-list" class="row margin-top-0 form-group">
             </div>
         </div>                
     </div>

@@ -67,6 +67,7 @@ define([
 				if(thisObj.subContainerExist()) {
 					thisObj.displayForm();
 					thisObj.supplyContractData();
+					$('#account').focus();
 				}
 				this.off('sync');
 			});

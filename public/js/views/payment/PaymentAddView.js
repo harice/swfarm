@@ -135,7 +135,8 @@ define([
 		
 		events: {
 			'keyup #amount': 'formatMoney',
-			'blur #amount': 'onBlurMoney',			
+			'blur #amount': 'onBlurMoney',
+			'click #go-to-previous-page': 'goToPreviousPage',		
 		},		
 	});
 

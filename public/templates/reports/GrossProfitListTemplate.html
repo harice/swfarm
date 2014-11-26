@@ -1,11 +1,13 @@
 <div class="col-md-12">
-    <div class="content">  
+    <div class="content padding-top-0">  
         <div class="row margin-top-0">
             <div class="col-md-12">
                 <div class="btn-group pull-right">
-                    <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
-                        Email <span class="caret"></span>
-                    </button>                        
+                    <button data-toggle="dropdown" class="btn btn-link btn-sm btn-rad dropdown-toggle" type="button">
+                        <i class="fa fa-envelope-o"></i>
+                        <span class="margin-right-5">Email</span>
+                        <span class="caret"></span>
+                    </button>                       
                     <ul role="menu" class="dropdown-menu">
                         <li><a class="sendmail" href="/" data-type="pdf" data-model="gross-profit-report" data-id='<%= profits.get("id") %>' data-title="Gross Profit Report">Adobe PDF (*.pdf)</a></li>
                         <li><a class="sendmail" href="/" data-type="xlsx" data-model="gross-profit-report" data-id='<%= profits.get("id") %>' data-title="Gross Profit Report">Excel (*.xlsx)</a></li>
@@ -14,8 +16,10 @@
                     </ul>
                 </div>
                 <div class="btn-group pull-right">
-                    <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
-                        Export <span class="caret"></span>
+                    <button data-toggle="dropdown" class="btn btn-link btn-sm btn-rad dropdown-toggle" type="button">
+                        <i class="fa fa-print"></i>
+                        <span class="margin-right-5">Export</span>
+                        <span class="caret"></span>
                     </button>
                     <ul role="menu" class="dropdown-menu">
                         <li><a href="<%= export_pdf_url %>" target="_blank">Adobe PDF (*.pdf)</a></li>
@@ -56,7 +60,7 @@
             </div>  
         </div>
         <% if (!_.isEmpty(profits.get('orders'))) { %>           
-        <div class="content-inner table-responsive">
+        <div class="table-responsive">
             <%
                 var ctr = 0;
                 var total_profit = 0;
@@ -126,7 +130,7 @@
             %>                         
         </div>        
         <% } else { %>
-        <p>No inventory found.</p>
+        <p class="text-danger">No inventory found.</p>
         <% } %>
     </div>    
 </div>

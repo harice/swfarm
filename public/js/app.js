@@ -28,20 +28,21 @@ define([
 		var overrideNavigateAwayFromForm = false;
 
 		Backbone.View.prototype.helpers = {
-			formatDate 			: function(string) { return Backbone.View.prototype.formatDate('m-d-Y',Backbone.View.prototype.strToTime(string)); },
-			formatDateBy 		: function(string,format) { return Backbone.View.prototype.formatDate(format,Backbone.View.prototype.strToTime(string)); },
-			formatDateAMPM 		: function(string) { return Backbone.View.prototype.formatDate('m-d-Y h:i A',Backbone.View.prototype.strToTime(string)); },
-			numberFormat 		: function(number) { return Backbone.View.prototype.numberFormat(number,2,'.',','); },
-			numberFormatLbs 	: function(number) { return Backbone.View.prototype.numberFormat(number,2,'.',','); },
-			numberFormatTons 	: function(number) { return Backbone.View.prototype.numberFormat(number,4,'.',','); },
-			numberFormatBales 	: function(number) { return Backbone.View.prototype.numberFormat(number,0,'.',','); },
-			convertLbsToTons 	: function(number) { return Backbone.View.prototype.numberFormat((number * Const.LB2TON),4,'.',','); },
-			ucfirst				: function(string) { return Backbone.View.prototype.ucfirst(string); },
-			strtolower			: function(string) { return Backbone.View.prototype.strtolower(string); },
-			timelineDate		: function(string) { return Backbone.View.prototype.timelineDate(string); },
-			timelineStamp		: function(string) { return Backbone.View.prototype.timelineStamp(string); },
-			serialize 			: function(string) { return Backbone.View.prototype.serialize(string); },
-			matchCondition      : function(number) { return Backbone.View.prototype.matchConditionWithFilename(number); } 
+			formatDate 				: function(string) { return Backbone.View.prototype.formatDate('m-d-Y',Backbone.View.prototype.strToTime(string)); },
+			formatDateBy 			: function(string,format) { return Backbone.View.prototype.formatDate(format,Backbone.View.prototype.strToTime(string)); },
+			formatDateAMPM 			: function(string) { return Backbone.View.prototype.formatDate('m-d-Y h:i A',Backbone.View.prototype.strToTime(string)); },
+			numberFormat 			: function(number) { return Backbone.View.prototype.numberFormat(number,2,'.',','); },
+			numberFormatLbs 		: function(number) { return Backbone.View.prototype.numberFormat(number,2,'.',','); },
+			numberFormatTons 		: function(number) { return Backbone.View.prototype.numberFormat(number,4,'.',','); },
+			numberFormatBales 		: function(number) { return Backbone.View.prototype.numberFormat(number,0,'.',','); },
+			convertLbsToTons 		: function(number) { return Backbone.View.prototype.numberFormat((number * Const.LB2TON),4,'.',','); },
+			ucfirst					: function(string) { return Backbone.View.prototype.ucfirst(string); },
+			strtolower				: function(string) { return Backbone.View.prototype.strtolower(string); },
+			timelineDate			: function(string) { return Backbone.View.prototype.timelineDate(string); },
+			timelineStamp			: function(string) { return Backbone.View.prototype.timelineStamp(string); },
+			serialize 				: function(string) { return Backbone.View.prototype.serialize(string); },
+			matchCondition      	: function(number) { return Backbone.View.prototype.matchConditionWithFilename(number); }, 
+			removeLocationSeparator : function(string) { return Backbone.View.prototype.removeLocationSeparator(string); }
 		}
 
 		Backbone.View.prototype.serialize = function serialize(mixed_value) {
@@ -414,155 +415,169 @@ define([
 			return {'Authorization': 'Basic '+SessionModel.get('token')};
 		};
 
+		Backbone.View.prototype.removeLocationSeparator = function (locations) {
+			var newLocations = locations.split(' | ');			
+			var locationList = '';
+			for(i = 0; i < newLocations.length; i++){				
+				locationList += "<label class='label label-default margin-right-5'>"+ newLocations[i] +"</label> ";
+			}
+
+			return locationList;
+		};
+
 		Backbone.View.prototype.matchConditionWithFilename = function (code) {
 			var code = parseInt(code);
 			var filename = '';
 
 			switch(code){
 				case 0:
-					filename = 'meteo_22';
+					filename = 'weather-ico024';
 					break;
 				case 1:
-					filename = 'meteo_05';
+					filename = 'weather-ico023';
 					break;
 				case 2:
-					filename = 'meteo_22';
+					filename = 'weather-ico024';
 					break;					
 				case 3:
-					filename = 'meteo_03';
+					filename = 'weather-ico023';
 					break;
 				case 4:
-					filename = 'meteo_02';
+					filename = 'weather-ico023';
 					break;
 				case 5:
-					filename = 'meteo_06';
+					filename = 'weather-ico018';
 					break;
 				case 6:
-					filename = 'meteo_11';
+					filename = 'weather-ico018';
 					break;
 				case 7:
-					filename = 'meteo_05';
+					filename = 'weather-ico014';
 					break;
 				case 8:
-					filename = 'meteo_05';
+					filename = 'weather-ico021';
 					break;
 				case 9:
-					filename = 'meteo_12';
+					filename = 'weather-ico003';
 					break;
 				case 10:
-					filename = 'meteo_05';
+					filename = 'weather-ico021';
 					break;
 				case 11:
-					filename = 'meteo_12';
+					filename = 'weather-ico012';
 					break;
 				case 12:
-					filename = 'meteo_12';
+					filename = 'weather-ico012';
 					break;
 				case 13:
-					filename = 'meteo_06';
+					filename = 'weather-ico007';
 					break;
 				case 14:
-					filename = 'meteo_05';
+					filename = 'weather-ico003';
 					break;
 				case 15:
-					filename = 'meteo_06';
+					filename = 'weather-ico007';
 					break;
 				case 16:
-					filename = 'meteo_05';
+					filename = 'weather-ico014';
 					break;
 				case 17:
-					filename = 'meteo_05';
+					filename = 'weather-ico016';
 					break;
 				case 18:
-					filename = 'meteo_06';
+					filename = 'weather-ico016';
 					break;
 				case 19:
-					filename = 'meteo_22';
+					filename = 'weather-ico026';
 					break;	
 				case 20:
-					filename = 'meteo_22';
+					filename = 'weather-ico026';
 					break;	
 				case 21:
-					filename = 'meteo_17';
+					filename = 'weather-ico026';
 					break;	
 				case 22:
-					filename = 'meteo_22';
+					filename = 'weather-ico026';
 					break;	
 				case 23:
-					filename = 'meteo_22';
+					filename = 'weather-ico026';
 					break;	
 				case 24:
-					filename = 'meteo_22';
+					filename = 'weather-ico025';
 					break;	
 				case 25:
-					filename = 'meteo_06';
+					filename = 'weather-ico020';
 					break;	
 				case 26:
-					filename = 'meteo_15';
+					filename = 'weather-ico006';
 					break;	
 				case 27:
-					filename = 'meteo_19';
+					filename = 'weather-ico005';
 					break;	
 				case 28:
-					filename = 'meteo_04';
+					filename = 'weather-ico001';
 					break;	
 				case 29:
-					filename = 'meteo_23';
+					filename = 'weather-ico009';
 					break;	
 				case 30:
-					filename = 'meteo_27';
+					filename = 'weather-ico017';
 					break;	
 				case 31:
-					filename = 'meteo_25';
+					filename = 'weather-ico013';
 					break;	
 				case 32:
-					filename = 'meteo_26';
+					filename = 'weather-ico002';
 					break;	
 				case 33:
-					filename = 'meteo_01';
+					filename = 'weather-ico009';
 					break;	
 				case 34:
-					filename = 'meteo_18';
+					filename = 'weather-ico017';
 					break;	
 				case 35:
-					filename = 'meteo_05';
+					filename = 'weather-ico018';
 					break;	
 				case 36:
-					filename = 'meteo_26';
+					filename = 'weather-ico002';
 					break;	
 				case 37:
-					filename = 'meteo_02';
+					filename = 'weather-ico023';
 					break;	
 				case 38:
-					filename = 'meteo_14';
+					filename = 'weather-ico023';
 					break;
 				case 39:
-					filename = 'meteo_14';
+					filename = 'weather-ico023';
 					break;
 				case 40:
-					filename = 'meteo_11';
+					filename = 'weather-ico003';
 					break;
 				case 41:
-					filename = 'meteo_06';
+					filename = 'weather-ico014';
 					break;
 				case 42:
-					filename = 'meteo_08';
+					filename = 'weather-ico020';
 					break;
 				case 43:
-					filename = 'meteo_06';
+					filename = 'weather-ico014';
 					break;	
 				case 44:
-					filename = 'meteo_15';
+					filename = 'weather-ico026';
 					break;	
 				case 45:
-					filename = 'meteo_13';
+					filename = 'weather-ico023';
 					break;	
 				case 46:
-					filename = 'meteo_05';
+					filename = 'weather-ico020';
 					break;	
 				case 47:
-					filename = 'meteo_07';
-					break;						
+					filename = 'weather-ico023';
+					break;	
+				default:
+					filename = 'weather-ico026';
+					break;
+
 			}
 
 			return filename;

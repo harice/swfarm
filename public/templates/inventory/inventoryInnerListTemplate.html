@@ -3,18 +3,18 @@
 	<tr>
 		<td><%= i.get("productname") %></td>
 		<td><a href="<%= stacknumber_url %>/<%= i.get("stacknumber") %>"><%= i.get("stacknumber") %></a></td>
-		<td><%= i.get('unitprice') %></td>
+		<td class="text-right"><%= i.get('unitprice') %></td>
 		<td><%= i.get('producer') %></td>
 		<td><%= i.get('cityState') %></td>
-		<td><%= i.get("stacklocation") %></td>
+		<td><%= removeLocationSeparator(i.get("stacklocation")) %></td>
 		<td class="text-right"><%= numberFormatTons(i.get("onHandTons")) %></td>
-		<td><% if (i.get("committed")) { %><%= i.get("committed") %><% } %></td>
-		<td><% if (i.get("ordered")) { %><%= i.get("ordered") %><% } %></td>
-		<td><% if (i.get("available")) { %><%= i.get("available") %><% } %></td>
+		<td class="text-right"><% if (i.get("committed")) { %><%= i.get("committed") %><% } %></td>
+		<td class="text-right"><% if (i.get("ordered")) { if(i.get("ordered") < 0) { %><span class="text-danger"><%= i.get("ordered") %></span> <% } else { %><%= i.get("ordered") %><% } } %></td>
+		<td class="text-right"><% if (i.get("available")) { if(i.get("available") < 0){ %><span class="text-danger"><%= i.get("available") %></span><% } else { %><%= i.get("available") %><% } } %></td>
 	</tr>
 	<% }); %>
 <% } else { %>
-	<tr>
-		<td colspan="7">No result found.</td>
+	<tr> 
+		<td colspan="10"><span class="text-danger">No result found.</span></td>
 	</tr>
 <% } %>

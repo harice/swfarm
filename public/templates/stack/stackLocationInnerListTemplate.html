@@ -22,47 +22,50 @@
 			<div class="location-collapsible-item list-view-collapse collapse" id="<%= collapsible_id %><%= sl.get("id") %>">
 				<div class="container">
 					<div class="order-stack-details">
-						<div class="col-md-12 no-padding">
-							<div class="pull-right">
-								<input type="hidden" class="latitude" name="latitude" value="<%= sl.get("latitude") %>" />
-								<input type="hidden" class="longitude" name="longitude" value="<%= sl.get("longitude") %>" />
-								<span style="cursor:pointer;margin-right:10px;" class="glyphicon glyphicon-map-marker show-map" data-id="<%= sl.get("id") %>"></span>
-								<a href="<%= sl_edit_url %>/<%= sl.get("id") %>" class="btn btn-primary btn-sm editable-button"><i class="fa fa-pencil width-10"></i> Edit Location</a>
+						<div class="row margin-top-0">
+							<div class="col-md-12">
+								<div class="pull-right">
+									<input type="hidden" class="latitude" name="latitude" value="<%= sl.get("latitude") %>" />
+									<input type="hidden" class="longitude" name="longitude" value="<%= sl.get("longitude") %>" />
+									<span style="cursor:pointer;margin-right:10px;" class="glyphicon glyphicon-map-marker show-map" data-id="<%= sl.get("id") %>"></span>
+									<a href="<%= sl_edit_url %>/<%= sl.get("id") %>" class="btn btn-primary btn-sm editable-button"><i class="fa fa-pencil width-10"></i> Edit Location</a>
+								</div>
 							</div>
 						</div>
 						<div class="location-section-list">
-							<div class="row margin-top-0 padding-top-10">
-								<div class="col-md-12">Sections:</div>
-							</div>
-							<div class="row margin-top-0">
-								<div class="col-md-12">
-									<div class="content-inner table-responsive">
-										<table class="table-condensed table-bordered table-hover">
-											<thead>
-												<tr>
-													<th>Section Name</th>
-													<th>Description</th>
-												</tr>
-											</thead>
-											<tbody>
-												<% if (!_.isEmpty(sl.get("section"))) { %>
-													<% _.each(sl.get("section"), function(s){ %>
+							<fieldset>
+								<legend class="margin-bottom-5">
+									<h3 class="margin-top-0">SECTIONS</h3>
+								</legend>
+								<div class="row margin-top-0">
+									<div class="col-md-12">
+										<div class="content-inner table-responsive">
+											<table class="table-condensed table-bordered table-hover">
+												<thead>
 													<tr>
-														<td><%= s.name %></td>
-														<td><%= s.addres %></td>
-														<td><%= s.description %></td>
+														<th>Section Name</th>
+														<th>Description</th>
 													</tr>
-													<% }); %>
-												<% } else { %>
-													<tr>
-														<td colspan="2">No results found.</td>
-													</tr>
-												<% } %>
-											</tbody>
-										</table>
+												</thead>
+												<tbody>
+													<% if (!_.isEmpty(sl.get("section"))) { %>
+														<% _.each(sl.get("section"), function(s){ %>
+														<tr>
+															<td><%= s.name %></td>														
+															<td><%= s.description %></td>
+														</tr>
+														<% }); %>
+													<% } else { %>
+														<tr>
+															<td colspan="2">No results found.</td>
+														</tr>
+													<% } %>
+												</tbody>
+											</table>
+										</div>
 									</div>
 								</div>
-							</div>
+							</fieldset>												
 						</div>
 					</div>
 				</div>

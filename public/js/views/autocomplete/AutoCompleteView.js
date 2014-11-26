@@ -101,8 +101,9 @@ define([
         },
 
         onTab: function(){
-            this.$el.children(".active").click();
-            this.input.unbind('keydown');
+            this.$el.children(".active").click();         
+
+            this.input.blur();
 
             return false;
         },

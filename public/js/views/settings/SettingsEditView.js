@@ -32,6 +32,7 @@ define([
 					thisObj.displayForm();
 					thisObj.supplySettingsData();
 					thisObj.maskInputs();
+					thisObj.focusOnFirstField();
 				}
 
 				this.off('change');
