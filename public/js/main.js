@@ -12,6 +12,7 @@ require.config({
 		jqueryphonenumber: 'libs/jquery/jquery.phonenumber',
 		bootstrap: 'libs/bootstrap/bootstrap.min',
 		bootstrapdatepicker: 'libs/bootstrap/bootstrap-datepicker',
+		bootstrapvalidator: 'libs/bootstrap/bootstrap-validator',
 		jqueryflot: 'libs/jquery.flot/jquery.flot',
 		jqueryflotresize: 'libs/jquery.flot/jquery.flot.resize.min',
 		jqueryflotlabels: 'libs/jquery.flot/jquery.flot.labels',
@@ -72,10 +73,15 @@ require.config({
 			exports: 'FlotBarNumbers'
 		},
 
-		'bootstrapdatepicker': {
+		'bootstrapvalidator': {
 			deps: ['jquery', 'bootstrap'],
-			exports: 'DatePicker',
+			exports: 'DateValidator',
 		},
+
+		'bootstrapdatepicker': {
+			deps: ['jquery', 'bootstrap', 'bootstrapvalidator'],
+			exports: 'DatePicker',
+		},		
 
 		'bootstrapmultiselect': {
 			deps: ['jquery', 'bootstrap'],

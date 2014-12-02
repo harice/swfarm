@@ -33,13 +33,12 @@ define([
 		el: $("#"+Const.CONTAINER.MAIN),	
 
 		initialize: function (){			
-			this.initSubContainer();
-			var thisObj = this;
-			this.startDate = null;
-			this.endDate = null;
+			this.initSubContainer();			
 			this.reportId = null;
-			this.displayFilter();			
+			this.displayFilter();	
+		
 		},
+
 		render: function(){									
 			Backbone.View.prototype.refreshTitle('Report','Generate');
 		},										

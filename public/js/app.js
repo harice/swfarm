@@ -419,7 +419,7 @@ define([
 			var newLocations = locations.split(' | ');			
 			var locationList = '';
 			for(i = 0; i < newLocations.length; i++){				
-				locationList += "<label class='label label-default margin-right-5'>"+ newLocations[i] +"</label> ";
+				locationList += "<code class='margin-right-5'>"+ newLocations[i] +"</code> ";
 			}
 
 			return locationList;

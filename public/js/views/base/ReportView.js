@@ -5,6 +5,7 @@ define([
 	'jquerytextformatter',
 	'views/base/AppView',
 	'models/queue/QueueModel',
+	'models/reports/ReportModel',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/reports/ReportFormTemplate.html',
 	'text!templates/reports/FilterFormTemplate.html',
@@ -16,6 +17,7 @@ define([
 	TextFormatter,
 	AppView, 
 	QueueModel,
+	Report,
 	contentTemplate, 
 	reportFormTemplate, 
 	filterFormTemplate,
@@ -58,8 +60,14 @@ define([
 				id: 8
 			}, 			 											
 		],
-		startDate: null,
-		endDate: null,
+		startDate: '',
+		endDate: '',
+
+		otherInits: function () {
+			var thisObj = this;
+
+			this.filterId = null;										
+		},	
 
 		setCurDate: function (){
 			var date = new Date();			
@@ -67,6 +75,36 @@ define([
 			
 			return date;
 		},
+
+		setStartDate: function(date){
+			this.startDate = date;
+		},
+
+		setEndDate: function(date){
+			this.endDate = date;
+		},
+
+		setFilterId: function(ev) {
+			this.filterId = $(ev.target).val();
+		},
+
+		getStartDate: function(){
+			return this.startDate;
+
+			console.log(this.startDate());
+		},
+
+		getEndDate: function(){
+			return this.endDate;
+		},
+
+		getTitle: function(){
+			return this.title;
+		},
+
+		getDataModel: function() {
+			return this.dataModel;
+		},	
 
 		getReportTypes: function (){			
 			var types = '<option disabled selected>Select type of Report</option>';
@@ -94,13 +132,62 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
 
-			this.initCalendars();
+			this.initValidateForm();
+			this.initCalendars();			
 							
 		},	
 
+		initValidateForm: function () {
+			var thisObj = this;			
+
+			$('#generateReportForm')										
+				.bootstrapValidator({					
+					live: 'enabled',			
+					group: '.calendar-cont',
+					submitButtons: '',																		
+			        fields: {			        		        
+			            transportdatestart: {
+			            	container: '.start-error-msg-cont',
+			                validators: {									         	                 
+			                    date: {
+			                        format: 'MM-DD-YYYY',
+			                        message: 'The date is not valid.'
+			                    }
+			                }
+			            },
+			            transportdateend: {
+			            	container: '.end-error-msg-cont',
+			                validators: {			                	               
+			                    date: {
+			                        format: 'MM-DD-YYYY',
+			                        message: 'The date is not valid.'
+			                    }
+			                }
+			            }
+			        },			        
+				})	
+				.on('error.validator.bv', function(e, data) {
+					 data.element
+		                .data('bv.messages')
+		                // Hide all the messages
+		                .find('.help-block[data-bv-for="' + data.field + '"]').hide()
+		                // Show only message associated with current validator
+		                .filter('[data-bv-validator="' + data.validator + '"]').show();
+				})			
+				.on('error.field.bv', function(e, data) {		           
+		            data.bv.disableSubmitButtons(false);
+		        })		        
+		        .on('success.field.bv', function(e, data) {		           
+		            data.bv.disableSubmitButtons(false);		          
+		        })		       
+		        .on('success.form.bv', function(e, data){
+		        	 e.preventDefault();
+		        });
+		},		
+
 		filterAction: function () {
 			var thisObj = this;
-
+			
 			var type = this.$el.find("#reporttype").val();
 			
 			switch(type) {
@@ -136,77 +223,7 @@ define([
 			if(this.currView) {
 				this.currView.close();
 			}
-		},
-
-		checkDate: function() {
-			var thisObj = this;
-			
-			var stat = true;
-			var error = "<label class='error'>This field is required</label>";
-			var startDate = $('#filter-operator-date-start .input-group.date input');
-			var endDate = $('#filter-operator-date-end .input-group.date input');
-
-			var startStat = true;
-			var endStat = true;
-
-			if(startDate.val() != '') {
-				startStat = true;
-				if(startDate.hasClass('error'))
-					startDate.removeClass('error');
-
-				startDate.parents('#filter-operator-date-start').find('.error-msg-cont').html('');
-
-				if(startDate.val() != '' && typeof startDate.val() != 'undefined')
-					thisObj.startDate = thisObj.convertDateFormat(startDate.val(), thisObj.dateFormat, 'yyyy-mm-dd', '-');				
-			}
-			else {			
-				startStat = false;	
-				startDate.addClass("error");
-				startDate.parents('#filter-operator-date-start').find('.error-msg-cont').html(error);
-			}
-
-			if(endDate.val() != ''){
-				endStat = true;
-				if(endDate.hasClass('error'))
-					endDate.removeClass('error');
-				endDate.parents('#filter-operator-date-end').find('.error-msg-cont').html('');
-
-				if(endDate.val() != '' && typeof endDate.val() != 'undefined')
-					thisObj.endDate = thisObj.convertDateFormat(endDate.val(), thisObj.dateFormat, 'yyyy-mm-dd', '-');				
-			}
-			else {
-				endStat = false;
-				endDate.addClass("error");
-				endDate.parents('#filter-operator-date-end').find('.error-msg-cont').html(error);
-			}	
-
-			(startStat && endStat) ? stat = true : stat= false;
-
-			return stat;
-
-		},
-
-		checkFields: function() {
-			var thisObj = this;
-			var stat = true;
-			var error = "<label class='error'>This field is required</label>";
-			var reportFilter = $('#filtername');
-			
-			var filterStat = true;			
-
-			if(reportFilter.val()==null) {
-				filterStat = false;
-				reportFilter.siblings('.error-msg-cont').html(error);
-			}
-			else {
-				filterStat = true;
-				reportFilter.siblings('.error-msg-cont').html('');
-			}
-
-			(this.checkDate() && filterStat) ? stat = true : stat= false;
-
-			return stat;
-		},
+		},		
  
  		initCalendars: function () {
 			var thisObj = this;					
@@ -216,13 +233,12 @@ define([
 				autoclose: true,
 				clearBtn: true,
 				todayHighlight: true,
-				format: this.dateFormat,
+				format: 'mm-dd-yyyy',
+				forceParse:false,
 			}).on('changeDate', function (ev) {
 				var selectedDate = $('#filter-operator-date-start .input-group.date input').val();
 				thisObj.$el.find('#filter-operator-date-end .input-group.date').datepicker('setStartDate', selectedDate);
-				var date = '';
-				if(selectedDate != '' && typeof selectedDate != 'undefined')
-					date = thisObj.convertDateFormat(selectedDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
+				$("#generateReportForm").bootstrapValidator('revalidateField', 'transportdatestart');
 								
 			});
 			
@@ -231,14 +247,12 @@ define([
 				autoclose: true,
 				clearBtn: true,
 				todayHighlight: true,
-				format: this.dateFormat,
+				format: 'mm-dd-yyyy',
+				forceParse:false,
 			}).on('changeDate', function (ev) {
 				var selectedDate = $('#filter-operator-date-end .input-group.date input').val();
 				thisObj.$el.find('#filter-operator-date-start .input-group.date').datepicker('setEndDate', selectedDate);
-				var date = '';
-				if(selectedDate != '' && typeof selectedDate != 'undefined')
-					date = thisObj.convertDateFormat(selectedDate, thisObj.dateFormat, 'yyyy-mm-dd', '-');
-							
+				$("#generateReportForm").bootstrapValidator('revalidateField', 'transportdateend');
 			});
 			
 		},
@@ -262,11 +276,11 @@ define([
 		showSendMailModal: function(ev){
 			var thisObj = this;	
 			var type = $(ev.target).attr('data-type');
-			var model = $(ev.target).attr('data-model');
-			var id = $(ev.target).attr('data-id');
-			var title = $(ev.target).attr('data-title');	
-			var startDate = $("#filter-operator-date-start input").val();			
-			var endDate = $("#filter-operator-date-end input").val();			
+			var model = thisObj.currView.getDataModel();
+			var title = thisObj.currView.getTitle();	
+			var id = this.filterId;			
+			var startDate = this.startDate;			
+			var endDate = this.endDate;	
 
 			this.initSendMailForm(
 					"Send Mail as " +type,
@@ -306,7 +320,7 @@ define([
 						multiemail: true,
 					},
 				}
-			});
+			});			
 
 			this.showModalForm('mdl_sendmail');
 
@@ -316,15 +330,54 @@ define([
 		sendMail: function() {
 			$('#sendmail-form').submit();
 			return false;
+		},	
+
+		formatField: function(data){
+			var newData = [];
+
+			newData['reporttype'] = data['reporttype'];
+
+			if(typeof data['filtername']!= "undefined")
+				newData['filtername'] = data['filtername'];
+
+			if(typeof data['stacknumbers']!= "undefined")
+				newData['stacknumbers'] = data['stacknumbers'];
+
+			newData['transportdatestart'] = this.convertDateFormat(data['transportdatestart'], this.dateFormat, 'yyyy-mm-dd', '-');
+			newData['transportdateend'] = this.convertDateFormat(data['transportdateend'], this.dateFormat, 'yyyy-mm-dd', '-');
+
+			this.setStartDate(newData['transportdatestart']);							
+			this.setEndDate(newData['transportdateend']);	
+
+			return newData;
 		},
+
+		processData: function(models, template) {
+			var thisObj = this;					
+
+			var innerTemplateVariables= {
+				'cur_date': this.setCurDate(),				
+				'models': models,
+				'export_pdf_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'pdf', model:this.dataModel, dateStart:this.startDate, dateEnd:this.endDate})),
+				'export_xlsx_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'xlsx', model:this.dataModel, dateStart:this.startDate, dateEnd:this.endDate})),
+				'export_xls_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'xls', model:this.dataModel, dateStart:this.startDate, dateEnd:this.endDate})),
+				'export_csv_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'csv', model:this.dataModel, dateStart:this.startDate, dateEnd:this.endDate}))
+			}
+
+			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
+			var compiledTemplate = _.template(template, innerTemplateVariables);
+
+			$(".reportlist").removeClass("hidden");
+			$("#report-list").removeClass("hidden");
+			$("#report-list").html(compiledTemplate);
+		},			
 		
-		events: {
-			'click #generate': 'onclickgenerate',
-			'change #reporttype': 'filterAction',
-			'click #filter-operator-date-start': 'checkdate',
-			'click #filter-operator-date-end': 'checkdate',	
+		events: {	
+			'click #generate': 'onclickgenerate',		
+			'change #reporttype': 'filterAction',			
 			'click .sendmail': 'showSendMailModal',	
 			'click #btn_sendmail':'sendMail',	
+			'change #filtername': 'setFilterId',
 		},		
 
 	})

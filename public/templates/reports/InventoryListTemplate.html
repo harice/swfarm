@@ -1,58 +1,59 @@
-<div class="col-md-12">
-    <div class="content padding-top-0">   
-        <div class="row margin-top-0">
-            <div class="col-md-12">                
-                <div class="btn-group pull-right">
-                    <button data-toggle="dropdown" class="btn btn-link btn-sm btn-rad dropdown-toggle" type="button">
-                        <i class="fa fa-envelope-o"></i>
-                        <span class="margin-right-5">Email</span>
-                        <span class="caret"></span>
-                    </button>                       
-                    <ul role="menu" class="dropdown-menu">
-                        <li><a class="sendmail" href="/" data-type="pdf" data-model="inventory-report" data-id='<%= locations.get("id") %>' data-title="Inventory Report">Adobe PDF (*.pdf)</a></li>
-                        <li><a class="sendmail" href="/" data-type="xlsx" data-model="inventory-report" data-id='<%= locations.get("id") %>' data-title="Inventory Report">Excel (*.xlsx)</a></li>
-                        <li><a class="sendmail" href="/" data-type="xls" data-model="inventory-report" data-id='<%= locations.get("id") %>' data-title="Inventory Report">Excel (*.xls)</a></li>
-                        <li><a class="sendmail" href="/" data-type="csv" data-model="inventory-report" data-id='<%= locations.get("id") %>' data-title="Inventory Report">Excel (*.csv)</a></li>
-                    </ul>
-                </div>
-                <div class="btn-group pull-right">
-                    <button data-toggle="dropdown" class="btn btn-link btn-sm btn-rad dropdown-toggle" type="button">
-                        <i class="fa fa-print"></i>
-                        <span class="margin-right-5">Export</span>
-                        <span class="caret"></span>
-                    </button>
-                    <ul role="menu" class="dropdown-menu">
-                        <li><a href="<%= export_pdf_url %>" target="_blank">Adobe PDF (*.pdf)</a></li>
-                        <li><a href="<%= export_xlsx_url %>">Excel (*.xlsx)</a></li>
-                        <li><a href="<%= export_xls_url %>">Excel (*.xls)</a></li>
-                        <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
-                    </ul>
-                </div>
-                <div class="clearfix"></div>
-                <h2 class="text-center">
-                    <samp>Inventory Report</samp>                    
-                </h2>   
-                <h6 class="text-danger text-center">
-                    <strong><samp><%= formatDateBy(date_from, 'F d, Y') %></samp></strong> -  <strong><samp><%= formatDateBy(date_to, 'F d, Y') %></samp></strong>
-                </h6>  
+<div class="content padding-top-0">   
+    <div class="row margin-top-0">
+        <div class="col-md-12">                
+            <div class="btn-group pull-right">
+                <button data-toggle="dropdown" class="btn btn-link btn-sm btn-rad dropdown-toggle" type="button">
+                    <i class="fa fa-envelope-o"></i>
+                    <span class="margin-right-5">Email</span>
+                    <span class="caret"></span>
+                </button>                       
+                <ul role="menu" class="dropdown-menu">
+                    <li><a class="sendmail" href="/" data-type="pdf" data-model="inventory-report" data-id='<%= models.get("id") %>' data-title="Inventory Report">Adobe PDF (*.pdf)</a></li>
+                    <li><a class="sendmail" href="/" data-type="xlsx" data-model="inventory-report" data-id='<%= models.get("id") %>' data-title="Inventory Report">Excel (*.xlsx)</a></li>
+                    <li><a class="sendmail" href="/" data-type="xls" data-model="inventory-report" data-id='<%= models.get("id") %>' data-title="Inventory Report">Excel (*.xls)</a></li>
+                    <li><a class="sendmail" href="/" data-type="csv" data-model="inventory-report" data-id='<%= models.get("id") %>' data-title="Inventory Report">Excel (*.csv)</a></li>
+                </ul>
             </div>
+            <div class="btn-group pull-right">
+                <button data-toggle="dropdown" class="btn btn-link btn-sm btn-rad dropdown-toggle" type="button">
+                    <i class="fa fa-print"></i>
+                    <span class="margin-right-5">Export</span>
+                    <span class="caret"></span>
+                </button>
+                <ul role="menu" class="dropdown-menu">
+                    <li><a href="<%= export_pdf_url %>" target="_blank">Adobe PDF (*.pdf)</a></li>
+                    <li><a href="<%= export_xlsx_url %>">Excel (*.xlsx)</a></li>
+                    <li><a href="<%= export_xls_url %>">Excel (*.xls)</a></li>
+                    <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
+                </ul>
+            </div>
+            <div class="clearfix"></div>
+            <h2 class="text-center">
+                <samp>Inventory Report</samp>                    
+            </h2>   
+            <h6 class="text-danger text-center">
+                <strong><samp><%= formatDateBy(models.get('report_date').start, 'F d, Y') %></samp></strong> -  <strong><samp><%= formatDateBy(models.get('report_date').end, 'F d, Y') %></samp></strong>
+            </h6>  
         </div>
-        <div class="row margin-top-20 margin-bottom-10">
-            <div class="col-md-2 col-md-offset-8 text-right">
-                <h3 class="margin-top-0 margin-bottom-5"><samp>Statement Date:</samp></h3>                
-            </div>
-            <div class="col-md-2 text-right">
-                <h3 class="margin-top-0 margin-bottom-5"><samp><%= formatDateBy(cur_date, 'F d, Y') %></samp></h3>
-            </div>  
-        </div>        
-        <% if (!_.isEmpty(locations.get('data'))) { %>   
-        <div class="table-responsive">
-            <% _.each(locations.get('data'), function(location){ 
-                %>
-                <h3 class="margin-top-20"><strong><samp><%= location.stacknumber %> - <%= location.product.name %></samp></strong></h3>
-                <div class="progress width-1000 margin-bottom-0 height-3">
-                    <div style="width: %" class="progress-bar progress-bar-primary"></div>
-                </div>
+    </div>
+    <div class="row margin-top-20 margin-bottom-0">
+        <div class="col-md-2 col-md-offset-8 text-right">
+            <h5 class="margin-top-0 margin-bottom-5"><samp>Statement Date:</samp></h5>                
+        </div>
+        <div class="col-md-2 text-right">
+            <h5 class="margin-top-0 margin-bottom-5"><samp><%= formatDateBy(cur_date, 'F d, Y') %></samp></h5>
+        </div>  
+    </div>   
+    <div class="progress width-1000 margin-bottom-20 height-1">
+        <div style="width: %" class="progress-bar progress-bar-primary"></div>
+    </div>     
+    <% if (!_.isEmpty(models.get('data'))) { %>   
+    <div class="table-responsive">
+        <%        
+            _.each(models.get('data'), function(location){
+            if(location){            
+            %>
+                <h3 class="margin-top-0"><strong><samp><%= location.stacknumber %> - <%= location.product.name %></samp></strong></h3>               
                 <table id="operator-list" class="table no-border margin-bottom-0">
                     <thead class="no-border">
                         <tr>
@@ -79,7 +80,7 @@
                             <tr<% if(inventory.transaction_type == "Sales Order") { %> class="text-danger"<%} %>>                        
                             <td><%= inventory.order_number %></td>   
                             <td><%= formatDate(inventory.updated_at) %></td>
-                            <td><code><%= inventory.weightticketnumber %></code></td>
+                            <td><% if(!_.isEmpty(inventory.weightticketnumber)) { %><code><%= inventory.weightticketnumber %></code> <% } %></td>
                             <td><%= inventory.account %></td>
                             <td><%= inventory.contract_number %></td>  
                             <% total_bales += inventory.bales %>                          
@@ -107,13 +108,13 @@
                     %>
                     </tbody>                
                 </table>
-                <div class="progress width-1000 margin-bottom-0 height-3">
+                <div class="progress width-1000 margin-bottom-20 height-1">
                     <div style="width: %" class="progress-bar progress-bar-primary"></div>
                 </div> 
                 <% if(!_.isEmpty(location.inventory)){  %>
 
                 <div class="row">
-                    <div class="col-md-8 text-center">
+                    <div class="col-md-8">
                         <h3 class="margin-bottom-5 margin-top-0">
                             <strong>
                                 <samp>Total Summary</samp>
@@ -121,7 +122,7 @@
                         </h3> 
                     </div>
                 </div>
-                <div class="row">
+                <div class="row margin-top-0">
                     <div class="col-md-2">                        
                         <p><samp>Bales In:</samp> <strong><samp><%= location.bales_in %></samp></strong></p>
                     </div>
@@ -135,11 +136,13 @@
                         <p><samp>Tons Out:</samp> <strong><span class="text-danger"><samp>- <%= location.tons_out %></samp></span></strong></p>
                     </div>
                 </div>
+                <div class="progress width-1000 margin-bottom-20 height-3">
+                    <div class="progress-bar progress-bar-primary" style="width: %"></div>
+                </div>
                 <% } %>
-            <% }) %>                                                                
-        </div>        
-        <% } else { %>
-        <p class="text-danger">No inventory found.</p>
-        <% } %>
-    </div>    
-</div>
+        <% }}) %>                                                                
+    </div>        
+    <% } else { %>
+    <p class="text-danger">No inventory found.</p>
+    <% } %>
+</div>    

@@ -1,6 +1,6 @@
 <%
 if(!_.isEmpty(filters)){ %>
-    <select class="form-control" id="stacknumbers" multiple='multiple' tabindex='2'>
+    <select class="form-control" id="stacknumbers" name="stacknumbers" multiple='multiple' tabindex='2'>
         <% _.each(filters, function(filter){ %>
             <option value="<%= filter.get('id') %>"><%= filter.get('stacknumber') %></option>
         <% }); %>

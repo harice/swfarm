@@ -33,10 +33,10 @@ define([
 
 		graphData: function (id, data, xData, label, decimals){
 			var thisObj = this;
-			var barColor = "#3E7BC4";
+			var barColor = "#5BCCF4";
 			
 			if(label != '')		
-				barColor = "#990000";
+				barColor = "#FD5759";
 
 			var graph = $.plot($("#"+id), data, {
 		        series: {			                   
@@ -48,12 +48,13 @@ define([
 		            hoverable: true,
 		            fillColor: {
 		              colors: [{
-		                opacity: 1
+		                opacity: .8
 		              }, {
-		                opacity: 1
+		                opacity: .8
 		              }
 		              ]
 		            },
+		            borderWidth:2,
 		            numbers: {
 		            	show:true,
 		            	xAlign: function(x,a) { return x; },
@@ -76,17 +77,18 @@ define([
 		           labelMargin: 10,
 		           axisMargin: 500,
 		           hoverable: true,
-		           clickable: true,
-		           tickColor: "rgba(0,0,0,0.15)",
+		           clickable: true,		           
 		           borderWidth: 1,		           
 		           color: "#d9d9d9"
 		        },
 		        colors: [barColor, "#FFFFFF", "#52e136"],
 		        xaxis: {
-		          ticks: xData		          
+		          ticks: xData,
+		          tickLength: 0,		          
 		        },
 		        yaxis: {
 		          ticks: 5,
+		          tickColor: "rgba(0,0,0,0.15)",
 		          tickFormatter: function (v,axis) {
 		          	return label + thisObj.addCommaToNumber(v);
 		          }
@@ -112,16 +114,18 @@ define([
 		                },
 		                show: true,
 		                barWidth: 0.6,
-		                lineWidth: 0,
+		                lineWidth: 2,
 		                hoverable:false,
+		                borderWidth:2,
 		                fillColor: {
 		                    colors:[
-		                    	{opacity: 1 },
-		                    	{opacity: 1 }
+		                    	{opacity: .8 },
+		                    	{opacity: .8 }
 		                    ]
 		                },
 		                align: "center",		                
-		            }
+		            },
+		            shadowSize: 5
 		        },
 		        legend : {
 					show: true,
@@ -131,9 +135,10 @@ define([
 					margin: -60,
 					labelBoxBorderColor: "transparent",					
 		        },
-		        colors: ["#3569A8", "#D7423D", "#52e136"],
+		        colors: ["#5BCCF4", "#FD5759", "#52e136"],
 				grid: {
-					borderWidth: 0
+					borderWidth: 1,
+					color: "#d9d9d9"
 				},
 		        xaxis: {
 		        	ticks: xData,
@@ -142,6 +147,7 @@ define([
 		        },
 		        yaxis: {
 		        	max:100,
+		        	tickColor: "rgba(0,0,0,0.15)",
 		        	tickFormatter: function (v, axis){
 		        		return v + '%';
 		        	}
@@ -164,7 +170,8 @@ define([
 				.find('td')
 				.css({
 					"border": 0,
-					"padding": "2px"
+					"padding": "2px",
+					"color": "#666666"
 				});
 
 			
@@ -175,10 +182,12 @@ define([
 			var options = {
                 xaxis: {                 
                     ticks: xData,
-                    tickLength: 0,
+                    tickSize : 1,
+                    tickLength: 1,
                     tickDecimals: 0,
                 }, 
                 yaxis: {
+                	tickColor: "rgba(0,0,0,0.15)",
                     tickFormatter: function (v,axis) {
 			          	return label + thisObj.addCommaToNumber(v);
 			          }
@@ -188,9 +197,8 @@ define([
                     axisMargin: 500,
                     hoverable: true,
                     clickable: true,
-                    tickColor: "rgba(0,0,0,0.15)",
-                    borderWidth: 0,
-                    color: ""
+                    borderWidth: 1,
+                    color: "#d9d9d9"
                 }, 
                 legend : {
 					show: true,
@@ -204,9 +212,10 @@ define([
                     stackpercent : false,
                     bars: {
                         show: true,
-                        lineWidth: 0,
+                        lineWidth: 2,
                         barWidth: 0.35,
-                        order:5,                     
+                        order:5, 
+                        borderWidth:2,                    
                         numbers: {
 		            		show:true,
 		            		xAlign: function(x,a) { return x + .20; },
@@ -214,8 +223,16 @@ define([
 		            		fontColor: '#000000',
 							showDataValue: true,
 							label: label
-		            	}
+		            	},
+		            	fill: true,
+		            	fillColor: {
+		                    colors:[
+		                    	{opacity: .8 },
+		                    	{opacity: .8 }
+		                    ]
+		                },
                     },
+                    shadowSize:5,
                     yPositionAdjustLabel: data[0].yPositionAdjustLabel
                 }
             };
@@ -234,7 +251,8 @@ define([
 				.find('td')
 				.css({
 					"border": 0,
-					"padding": "2px"
+					"padding": "2px",
+					"color": "#666666"
 				});
 
 			//this.plotHover(id, label, decimals);
@@ -356,14 +374,14 @@ define([
 					d.push({
 						label: 'incoming',
 						data: [],
-						bars: {fillColor: "#407EC9"}, 
-						color: ["#407EC9"]
+						bars: {fillColor: "#5BCCF4"}, 
+						color: ["#5BCCF4"]
 					});
 					d.push({
 						label: 'outgoing',
 						data: [],
-						bars: {fillColor: "#E41B17"}, 
-						color: "#E41B17"
+						bars: {fillColor: "#FE5656"}, 
+						color: "#FE5656"
 					});
 
 					for(var x = 0; x < keys.length; x++) {
@@ -374,7 +392,7 @@ define([
 						d[1].data.push([x + .4, out.toFixed(0)]);
 					}
 				
-					graphData.push({ data:d, yPositionAdjustLabel: -10 });
+					graphData.push({ data:d, yPositionAdjustLabel: -15 });
 
 					break;
 				default:

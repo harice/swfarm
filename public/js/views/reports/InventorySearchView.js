@@ -26,18 +26,19 @@ define([
 
 	var InventorySearchView = ReportView.extend({	
 
-		initialize: function() {
+		initialize: function() {	
+			this.events = _.extend({}, ReportView.prototype.events, this.events);
+
 			var thisObj = this;			
 			this.filtername = "Product";
-			this.reportId = $("#reporttype").val();
-			this.model = new Report();
-			this.model.on('change', function (){				
-				thisObj.processData();;
-				this.off("change");
-			});			
+			this.title = "Inventory Report";
+			this.dataModel = "inventory-report";				
 
 			this.collection = new ProductCollection();
 			this.productCollection = new StackListByProductCollection();
+
+			if(typeof this.otherInits != "undefined")		
+				this.otherInits();	
 		},
 		
 		render: function(){
@@ -72,7 +73,7 @@ define([
 			this.$el.html(innerTemplate);			
 			this.focusOnFirstField();	
 
-			$('#generate').removeClass("hidden");								
+			$('#generate').removeClass("hidden");											
 		},
 
 		showFilter: function(ev) {
@@ -104,9 +105,10 @@ define([
 		            }
 				});	
 				this.off('sync');
-			});
-			
+			});		
+
 			$('.form-button-container, .additional-filter').removeClass("hidden");																	
+
 		},
 		
 		getFilterName: function (){
@@ -115,55 +117,23 @@ define([
 				products += '<option value="'+model.id+'">'+model.name+'</option>';
 			});
 			return products;
-		},
-		
-		onclickgenerate: function() {
-			var thisObj = this;			
-			var stacknumbers = $("#stacknumbers").val();
-			this.filterId = $("#filtername").val();
-				
-			if(this.checkFields()){		
-				this.model = new Report();							
-				this.model.fetchInventory(stacknumbers, this.startDate, this.endDate);				
-			}
-
-			this.model.on('sync', function (){				
-				thisObj.processData();				
-				this.off("sync");
-			});	
-		},
-
-		processData: function() {
-			var thisObj = this;
-			
-			var innerTemplateVariables= {
-				'cur_date': this.setCurDate(),
-				'date_from': this.startDate,
-				'date_to': this.endDate,
-				'locations': this.model,
-				'export_pdf_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'pdf', model:'inventory-report', dateStart:this.startDate, dateEnd:this.endDate})),
-				'export_xlsx_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'xlsx', model:'inventory-report', dateStart:this.startDate, dateEnd:this.endDate})),
-				'export_xls_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'xls', model:'inventory-report', dateStart:this.startDate, dateEnd:this.endDate})),
-				'export_csv_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'csv', model:'inventory-report', dateStart:this.startDate, dateEnd:this.endDate}))
-			}
-
-			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);
-			var compiledTemplate = _.template(inventoryListTemplate, innerTemplateVariables);
-			
-			$(".reportlist").removeClass("hidden");
-			$("#report-list").removeClass("hidden");
-			$("#report-list").html(compiledTemplate);
-		},
-
-		events: {
-			'click #generate': 'onclickgenerate',
-			'change #reporttype': 'filterAction',
-			'click #filter-operator-date-start': 'checkdate',
-			'click #filter-operator-date-end': 'checkdate',	
-			'click .sendmail': 'showSendMailModal',	
-			'click #btn_sendmail':'sendMail',	
-			'change #filtername': 'showFilter'
 		},		
+
+		onclickgenerate: function() {
+			var thisObj = this;				
+			var data = this.formatField($("#generateReportForm").serializeObject());
+			
+			this.model = new Report();		
+			this.model.fetchInventory(data['stacknumbers'], data['transportdatestart'], data['transportdateend']);													
+			this.model.on('change', function() {
+				thisObj.processData(thisObj.model, inventoryListTemplate);
+				this.off("change");
+			});				
+		},	
+
+		events: {				
+			'change #filtername': 'showFilter',
+		},
 
 		
 	});

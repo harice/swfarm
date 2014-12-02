@@ -484,7 +484,7 @@
 			var args = $.isArray(arguments[0]) ? arguments[0] : arguments;
 			this.update.apply(this, args);
 			this._trigger('changeDate');
-			this.setValue();
+			this.setValue();			
 		},
 
 		setUTCDates: function(){
@@ -1571,13 +1571,9 @@
 						_date = new Date(date);
 						setters_map[s](_date, parsed[s]);
 						if (!isNaN(_date))
-							date = _date;								
+							date = _date;													
 					}
-					else {
-						var date = new Date();
-						date = UTCDate(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
-						date.setUTCDate(1);
-					}										
+														
 				}
 			}
 			return date;

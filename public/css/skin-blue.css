@@ -38,7 +38,7 @@ h6,
   font-weight: 300;
 }
 a {
-  color: #54ade9;
+  color: #00a8e3;
   text-decoration: none;
   outline: 0 none;
 }
@@ -750,6 +750,7 @@ label {
   border-radius: 1px;
   -webkit-border-radius: 1px;
   box-shadow: none;
+  background: #fbfbfb;
 }
 .input-group .btn {
   margin: 0 !important;

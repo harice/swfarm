@@ -30,7 +30,7 @@
                                         	<a href="<%= purchase_order_url %>/<%= salesorder.purchaseorder.id %>" title="view"><%= salesorder.purchaseorder.order_number %></a>
                                         <% } %>
                                     </td>
-									<td><%= salesorder.stacknumber %></td>
+									<td><% if(!_.isEmpty(salesorder.stacknumber)){ %><code><%= salesorder.stacknumber %></code> <% } %></td>
 									<td><%= numberFormatTons(salesorder.tons) %></td>
 									<td><%= numberFormatTons(salesorder.delivered_tons) %></td>
                                     <td><label class="label label-<%= salesorder.status.class %>"><%= salesorder.status.name %></label></td>

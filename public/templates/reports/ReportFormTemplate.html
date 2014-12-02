@@ -3,49 +3,53 @@
         <div class="padding-bottom-0 margin-bottom-10">
             <div class="padding-top-0 form-horizontal group-border-dashed">                
                 <div id="report-accordion">
-                    <div class="block-flat padding-top-10 margin-bottom-0">                       
+                    <div class="padding-top-0 margin-bottom-0">                       
                         <div class="panel-collapse collapse in" id="report-form"> 
                             <div class="content padding-top-0 padding-left-0 padding-right-0">  
-                                <form id="generateReportForm" role="form" method="post" enctype="multipart/form-data">                                 
-                                    <div class="row margin-top-0"> 
-                                        <div class="col-sm-3">
-                                            <% if (!_.isEmpty(reports)) { %>
-                                                <select id="reporttype" name="reporttype" class="form-control input-sm reporttype">
-                                                    <%= reports %>
-                                                </select>
-                                            <% } else { %>
-                                                <p>No report types returned.</p>
-                                            <% } %>
-                                            <label class="margin-top-0 margin-bottom-0">Report Type:</label>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <div id="filter-operator-date-start" class="calendar-cont">
-                                                <div class="input-group input-group-sm date datetime margin-bottom-0">
-                                                    <input type="text" id="transportdatestart" class="form-control form-date" name="transportdatestart" size="16" value="">
-                                                    <div class="input-group-addon input-group-btn input-sm btn-primary">
-                                                        <span class="glyphicon glyphicon-th"></span>
+                                <form id="generateReportForm" role="form" method="post" enctype="multipart/form-data">   
+                                    <fieldset class="report-fields-group">                                                              
+                                        <div class="row margin-top-10"> 
+                                            <div class="col-sm-3">
+                                                <% if (!_.isEmpty(reports)) { %>
+                                                    <select id="reporttype" name="reporttype" class="form-control input-sm reporttype">
+                                                        <%= reports %>
+                                                    </select>
+                                                <% } else { %>
+                                                    <p>No report types returned.</p>
+                                                <% } %>
+                                                <label class="margin-top-0 margin-bottom-0">Report Type</label>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <div id="filter-operator-date-start" class="calendar-cont">
+                                                    <div class="input-group input-group-sm date datetime margin-bottom-0">
+                                                        <input type="text" id="transportdatestart" class="form-control form-date" name="transportdatestart" size="16" value="">
+                                                        <div class="input-group-addon input-group-btn input-sm btn-primary">
+                                                            <span class="glyphicon glyphicon-th"></span>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                                <label for="name" class="margin-top-0 margin-bottom-0">Date From</label>
+                                                <div class="start-error-msg-cont"></div>
                                             </div>
-                                            <label for="name" class="margin-top-0 margin-bottom-0">Date From <i class="color-danger">*</i></label>
+                                            <div class="col-sm-2">
+                                                <div id="filter-operator-date-end" class="calendar-cont">
+                                                    <div class="input-group input-group-sm date datetime margin-bottom-0">
+                                                        <input type="text" id="transportdateend" class="form-control form-date" name="transportdateend" size="16" value="">
+                                                        <div class="input-group-addon input-group-btn input-sm btn-primary">
+                                                            <span class="glyphicon glyphicon-th"></span>
+                                                        </div>
+                                                    </div>                                                
+                                                </div> 
+                                                <label for="name" class="margin-top-0 margin-bottom-0">Date To</label>
+                                                <div class="end-error-msg-cont"></div>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <div id="report-filter">
+                            
+                                                </div>   
+                                            </div>                                    
                                         </div>
-                                        <div class="col-sm-2">
-                                            <div id="filter-operator-date-end" class="calendar-cont">
-                                                <div class="input-group input-group-sm date datetime margin-bottom-0">
-                                                    <input type="text" id="transportdateend" class="form-control form-date" name="transportdateend" size="16" value="">
-                                                    <div class="input-group-addon input-group-btn input-sm btn-primary">
-                                                        <span class="glyphicon glyphicon-th"></span>
-                                                    </div>
-                                                </div>                                                
-                                            </div> 
-                                            <label for="name" class="margin-top-0 margin-bottom-0">Date To <i class="color-danger">*</i></label>
-                                        </div>
-                                        <div class="col-sm-5">
-                                            <div id="report-filter">
-                        
-                                            </div>   
-                                        </div>                                    
-                                    </div>
+                                    </fieldset>
                                 </form>
                             </div>   
                         </div>
@@ -56,7 +60,7 @@
         </div> <!-- /.block-flat -->  
 
         <div class="block-flat padding-bottom-0 reportlist hidden">
-            <div id="report-list" class="row margin-top-0 form-group">
+            <div id="report-list">
             </div>
         </div>                
     </div>
