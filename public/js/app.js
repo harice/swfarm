@@ -503,7 +503,7 @@ define([
 					filename = 'weather-ico026';
 					break;	
 				case 24:
-					filename = 'weather-ico025';
+					filename = 'weather-ico025_01';
 					break;	
 				case 25:
 					filename = 'weather-ico020';
