@@ -13,7 +13,6 @@ define([
 
 			this.fetch({
 				success: function(model, response, options) {
-                    console.log(response);
 					if(typeof response.error !== 'undefined') {
 						Global.getGlobalVars().app_router.navigate(Const.URL.TRAILER, {trigger: true});
 					}

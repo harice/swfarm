@@ -1,6 +1,6 @@
 <div class="row margin-top-0">
     <div class="col-md-12 no-padding">
-        <div class="block-flat">
+        <div class="block-flat padding-top-0 padding-bottom-0">
             <div class="content padding-top-0">
               
 				<form id="SOScheduleForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
@@ -12,9 +12,9 @@
 
 					<div class="row margin-top-0">
 						<div class="col-md-6">
-							<fieldset>
+							<fieldset class="margin-bottom-10">
 								<legend>
-									<h4>Schedule</h4>
+									<h3 class="margin-top-10">SCHEDULE</h3>
 								</legend>
 								<div class="form-group">
 									<label for="scheduledate" class="col-sm-4 control-label">Date</label>
@@ -32,18 +32,18 @@
 								<div class="form-group">
 									<label for="" class="col-sm-4 control-label">Time</label>
 									<div class="col-sm-8">
-		                                <select class="form-control hours width-80 pull-left margin-right-5 input-sm" id="scheduletimeHour" name="scheduletimeHour"></select>
-		                                <select class="form-control minutes width-80 pull-left margin-right-5 input-sm" id="scheduletimeMin" name="scheduletimeMin"></select>
-		                                <select class="form-control ampm width-80 pull-left input-sm" id="scheduletimeAmPm" name="scheduletimeAmPm">
+		                                <select class="form-control hours width-63 pull-left margin-right-5 input-sm" id="scheduletimeHour" name="scheduletimeHour"></select>
+		                                <select class="form-control minutes width-63 pull-left margin-right-5 input-sm" id="scheduletimeMin" name="scheduletimeMin"></select>
+		                                <select class="form-control ampm width-63 pull-left input-sm" id="scheduletimeAmPm" name="scheduletimeAmPm">
 		                                    <option value="AM">AM</option>
 		                                    <option value="PM">PM</option>
 		                                </select>
 									</div>
 								</div>
 							</fieldset>	
-							<fieldset>
+							<fieldset class="margin-bottom-10">
 								<legend>
-									<h4>Origin</h4>
+									<h3 class="margin-top-10">ORIGIN</h3>
 								</legend>
 								<div class="form-group">
 									<label for="originloader" class="col-sm-4 control-label">Loader</label>
@@ -76,9 +76,9 @@
 									</div>
 								</div>
 							</fieldset>
-							<fieldset>
+							<fieldset class="margin-bottom-10">
 								<legend>
-									<h4>Destination</h4>
+									<h3 class="margin-top-10">DESTINATION</h3>
 								</legend>
 								<div class="form-group">
 									<label for="destinationloader" class="col-sm-4 control-label">Loader</label>
@@ -116,7 +116,7 @@
 						<div class="col-md-6">
 							<fieldset>
 								<legend>
-									<h4>Trucker</h4>
+									<h3 class="margin-top-10">TRUCKER</h3>
 								</legend>
 
 								<div class="form-group">
@@ -140,7 +140,7 @@
 								</div>
 								
 								<div class="form-group">
-									<label for="truck_id" class="col-sm-4 control-label">Trucker Number</label>
+									<label for="truck_id" class="col-sm-4 control-label">Trucker No.</label>
 									<div class="col-sm-8">
 										<select class="form-control width-200 input-sm" id="truck_id" name="truck_id" required>
 											<option value="">Select a trucker number</option>
@@ -170,7 +170,7 @@
 								</div>
 
 								<div class="form-group">
-									<label for="trailer_id" class="col-sm-4 control-label">Trailer Number</label>
+									<label for="trailer_id" class="col-sm-4 control-label">Trailer No.</label>
 									<div class="col-sm-8">
 										<select class="form-control width-200 input-sm" id="trailer_id" name="trailer_id" required>
 											<option value="">Select a trailer number</option>
@@ -242,7 +242,7 @@
 						</div>
 					</div>
 
-					<div class="col-md-12">
+					<div class="col-md-12 no-padding">
 						<fieldset>
 							<legend class="margin-bottom-5">
 								<h3 class="margin-bottom-0">
@@ -253,13 +253,13 @@
 								</button>
 							</legend>	
 							<div class="content-inner table-responsive">
-								<table id="product-list" class="table table-condensed table-bordered">
+								<table id="product-list" class="table-condensed table-bordered">
 									<thead>
 										<tr>
 											<th class="width-200">Stack No. <i class="color-danger width-10">*</i></th>
-											<th>Product</th>
-											<th>Location To</th>
-											<th class="width-150">Quantity</th>
+											<th class="width-200">Product</th>
+											<th>Location</th>
+											<th class="width-200">Quantity</th>
 											<th class="width-40"></th>
 										</tr>
 									</thead>
@@ -279,7 +279,7 @@
 								</table>
 							</div>
 						</fieldset>
-						<div class="form-group form-button-container">
+						<div class="form-button-container margin-top-10">
 							<div class="pull-right">
 								<button id="save" type="submit" class="save btn btn-primary btn-sm btn-rad"><i class="fa fa-save"></i> Save</button>
 								<a id="delete-schedule" class="btn btn-danger btn-sm btn-rad" href="#" style="display:none;">Delete</a>

@@ -448,13 +448,13 @@ define([
 			this.producerAutoCompleteView.render();
 		},
 		
-		initCustomerAutocomplete: function () {
+		initCustomerAutocomplete: function (input, hidden, contractId) {
 			var thisObj = this;
 			
 			var accountCustomerCollection = new AccountCustomerCollection();
 			this.customerAutoCompleteView = new CustomAutoCompleteView({
-                input: $('#account_customer'),
-				hidden: $('#account_id_customer'),
+                input: $(input),
+				hidden: $(hidden),
                 collection: accountCustomerCollection,
             });
 			
@@ -468,7 +468,7 @@ define([
 			
 			this.customerAutoCompleteView.typeInEmptyCallback = function () { console.log('typeInEmptyCallback');
 				thisObj.currentProducerId = null;
-				thisObj.resetSelect(thisObj.subContainer.find('#contract_id'), true);
+				thisObj.resetSelect(thisObj.subContainer.find(contractId), true);
 			},
 			
 			this.customerAutoCompleteView.render();
@@ -765,6 +765,7 @@ define([
 			'click #confirm-save-and-check-in-order': 'saveAndCheckIn',
 			'change .location_id': 'onChangeDestination',
 			'change #contract_id': 'onChangeContract',
+			'change #ds_contract_id': 'onChangeContract',
 			
 		},		
 		
@@ -1112,7 +1113,7 @@ define([
 										'Convert To Purchase Order');
 			
 			this.$el.find('#bid-destination .radio-inline:first-child input[type="radio"]').attr('checked', true);
-			this.$el.find('#poForm .so-field').remove();
+			//this.$el.find('#poForm .so-field').remove();
 			this.toggleSOFields(this.$el.find("#bid-destination .radio-inline input[type='radio']:checked").val());
 			//$('#modal-with-form-confirm .i-circle.warning').remove();
 			//$('#modal-with-form-confirm h4').remove();
@@ -1316,19 +1317,34 @@ define([
 		},
 		
 		toggleSOFields: function (destinationId) {
+			var field = '.so-field';
+			var inp = '#account_customer';
+			var hide = '#account_id_customer';
+			var contractId = '#contract_id';
+
+			if(this.isBid){
+				field = '.ds-field';
+				inp = '#ds_account_customer';
+				hide = '#ds_account_id_customer';
+				contractId = "#ds_contract_id";
+			}
+
+
 			if(destinationId == Const.PO.DESTINATION.DROPSHIP) {
-				this.subContainer.find('.so-field').attr('disabled', false);
-				this.subContainer.find('.so-field').show();
+				this.subContainer.find(field).attr('disabled', false);
+				this.subContainer.find(field).show();
 				if(!this.isInitCustomerAutoCompleteView)
-					this.initCustomerAutocomplete();
+					this.initCustomerAutocomplete(inp, hide, contractId);
 
 			}
 			else {
-				this.subContainer.find('.so-field').attr('disabled', true);
-				this.subContainer.find('.so-field').hide();
+				this.subContainer.find(field).attr('disabled', true);
+				this.subContainer.find(field).hide();
 				if(this.isInitCustomerAutoCompleteView) {
-					$('#account_customer').val('');
-					$('#account_id_customer').val('');
+					if(!this.model.get('location_id') == Const.PO.DESTINATION.DROPSHIP){
+						$(inp).val('');
+						$(hide).val('');
+					}
 					this.customerAutoCompleteView.typeInEmptyCallback();
 				}
 			}
@@ -1336,7 +1352,11 @@ define([
 		
 		generateContract: function () {
 			var contractList = _.template(contractTemplate, {'contracts': this.contractByAccountCollection.models});
-			var contractElement = this.subContainer.find('#contract_id')
+			if(this.isBid)
+				var contractElement = this.subContainer.find('#ds_contract_id');	
+			else
+				var contractElement = this.subContainer.find('#contract_id');	
+
 			var currentValue = contractElement.val();
 			this.resetSelect(contractElement);
 			contractElement.append(contractList);

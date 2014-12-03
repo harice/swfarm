@@ -1,6 +1,6 @@
 <tr class="product-stack-item">
-	<td><code><%= stacknumber %></code></td>
-	<td><%= location_from %></td>
+	<td><% if(!_.isEmpty(stacknumber)) { %><code><%= stacknumber %></code><% } %></td>
+	<td><% if(!_.isEmpty(location_from)) { %><code class="margin-right-5"><%= location_from %></code><% } %></td>
 	<td><%= description %></td>
 	<% if (typeof is_bid === "undefined") { %>
 	<td class="text-center"><% if(ishold==1) { %><i class="fa fa-check-square-o color-success"></i><% } %></td>

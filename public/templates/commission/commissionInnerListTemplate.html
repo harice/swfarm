@@ -12,28 +12,29 @@
 			<div class="commission-collapsible-item list-view-collapse collapse" id="<%= collapsible_id %><%= user.get("id") %>">
 				<div class="container">
 					<div class="order-stack-details">
-						<div class="col-md-12 no-padding"></div>
 						<div class="weight-ticket-by-user">
-							<div class="row margin-top-0 padding-top-10">
-								<div class="col-md-12">Closed SO Weight Tickets:</div>
-							</div>
-							<div class="row margin-top-0">
-								<div class="col-md-12">
-									<div class="content-inner table-responsive">
-										<table class="table-condensed table-bordered table-hover">
-											<thead>
-												<tr>													
-													<th>Order No.</th>
-													<th>Weight Ticket No.</th>
-													<th>Net Tons</th>
-													<th>Action</th>
-												</tr>
-											</thead>
-											<tbody></tbody>
-										</table>
+							<fieldset>
+								<legend class="margin-bottom-5">
+									<h3 class="margin-top-0">Closed SO Weight Tickets</h3>
+								</legend>
+								<div class="row margin-top-0">
+									<div class="col-md-12">
+										<div class="content-inner table-responsive">
+											<table class="table-condensed table-bordered table-hover">
+												<thead>
+													<tr>													
+														<th>Order No.</th>
+														<th>Weight Ticket No.</th>
+														<th>Net Tons</th>
+														<th class="width-50">Action</th>
+													</tr>
+												</thead>
+												<tbody></tbody>
+											</table>
+										</div>
 									</div>
 								</div>
-							</div>
+							</fieldset>
 						</div>
 					</div>
 				</div>

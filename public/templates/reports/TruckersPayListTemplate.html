@@ -1,191 +1,192 @@
-<div class="col-md-12">                
-    <div class="content">  
-        <div class="row margin-top-0">
-            <div class="col-md-12">              
-                <div class="btn-group pull-right">
-                    <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
-                        Email <span class="caret"></span>
-                    </button>                        
-                    <ul role="menu" class="dropdown-menu">
-                        <li><a class="sendmail" href="/" data-type="pdf" data-model="trucking-statement" data-id='<%= truckers.get("id") %>' data-title="Trucking Statement">Adobe PDF (*.pdf)</a></li>
-                        <li><a class="sendmail" href="/" data-type="xlsx" data-model="trucking-statement" data-id='<%= truckers.get("id") %>' data-title="Trucking Statement">Excel (*.xlsx)</a></li>
-                        <li><a class="sendmail" href="/" data-type="xls" data-model="trucking-statement" data-id='<%= truckers.get("id") %>' data-title="Trucking Statement">Excel (*.xls)</a></li>
-                        <li><a class="sendmail" href="/" data-type="csv" data-model="trucking-statement" data-id='<%= truckers.get("id") %>' data-title="Trucking Statement">Excel (*.csv)</a></li>
-                    </ul>
-                </div>
-                <div class="btn-group pull-right">
-                    <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
-                        Export <span class="caret"></span>
-                    </button>
-                    <ul role="menu" class="dropdown-menu">
-                        <li><a href="<%= export_pdf_url %>" target="_blank">Adobe PDF (*.pdf)</a></li>
-                        <li><a href="<%= export_xlsx_url %>">Excel (*.xlsx)</a></li>
-                        <li><a href="<%= export_xls_url %>">Excel (*.xls)</a></li>
-                        <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
-                    </ul>
-                </div>
-                <div class="clearfix"></div>
-                <h2 class="text-center">
-                    <samp>Trucking Statement</samp>                    
-                </h2>  
-                <h6 class="text-danger text-center">
-                    <strong><samp><%= formatDateBy(date_from, 'F d, Y') %></samp></strong> -  <strong><samp><%= formatDateBy(date_to, 'F d, Y') %></samp></strong>
-                </h6> 
+<div class="content padding-top-0">  
+    <div class="row margin-top-0">
+        <div class="col-md-12">              
+            <div class="btn-group pull-right">
+                <button data-toggle="dropdown" class="btn btn-link btn-sm btn-rad dropdown-toggle" type="button">
+                    <i class="fa fa-envelope-o"></i>
+                    <span class="margin-right-5">Email</span>
+                    <span class="caret"></span>
+                </button>                       
+                <ul role="menu" class="dropdown-menu">
+                    <li><a class="sendmail" href="/" data-type="pdf" data-model="trucking-statement" data-id='<%= models.get("id") %>' data-title="Trucking Statement">Adobe PDF (*.pdf)</a></li>
+                    <li><a class="sendmail" href="/" data-type="xlsx" data-model="trucking-statement" data-id='<%= models.get("id") %>' data-title="Trucking Statement">Excel (*.xlsx)</a></li>
+                    <li><a class="sendmail" href="/" data-type="xls" data-model="trucking-statement" data-id='<%= models.get("id") %>' data-title="Trucking Statement">Excel (*.xls)</a></li>
+                    <li><a class="sendmail" href="/" data-type="csv" data-model="trucking-statement" data-id='<%= models.get("id") %>' data-title="Trucking Statement">Excel (*.csv)</a></li>
+                </ul>
             </div>
+            <div class="btn-group pull-right">
+                <button data-toggle="dropdown" class="btn btn-link btn-sm btn-rad dropdown-toggle" type="button">
+                    <i class="fa fa-print"></i>
+                    <span class="margin-right-5">Export</span>
+                    <span class="caret"></span>
+                </button>
+                <ul role="menu" class="dropdown-menu">
+                    <li><a href="<%= export_pdf_url %>" target="_blank">Adobe PDF (*.pdf)</a></li>
+                    <li><a href="<%= export_xlsx_url %>">Excel (*.xlsx)</a></li>
+                    <li><a href="<%= export_xls_url %>">Excel (*.xls)</a></li>
+                    <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
+                </ul>
+            </div>
+            <div class="clearfix"></div>
+            <h2 class="text-center">
+                <samp>Trucking Statement</samp>                    
+            </h2>  
+            <h6 class="text-danger text-center">
+                <strong><samp><%= formatDateBy(models.get('report_date').start, 'F d, Y') %></samp></strong> -  <strong><samp><%= formatDateBy(models.get('report_date').end, 'F d, Y') %></samp></strong>
+            </h6> 
         </div>
-        <div class="row margin-top-20 margin-bottom-10">
-            <div class="col-md-4">
-                <h3 class="margin-bottom-5 margin-top-0">
-                    <samp>
-                        Truck No:
-                        <strong>
-                            <%= truckers.get('trucknumber') %>
-                        </strong>
-                    </samp>
-                </h3>
-                <p>
-                    <strong><samp><%= truckers.get('account').name %></samp></strong><br />
-                    <i><samp><%= truckers.get('account').businessaddress.street %></samp></i><br />
-                    <i><samp><%= truckers.get('account').businessaddress.city %>, <%= truckers.get('account').businessaddress.state.state_code %> <%= truckers.get('account').businessaddress.zipcode %></samp></i>
-                </p>
+    </div>
+    <div class="row margin-top-20 margin-bottom-0">
+        <div class="col-md-4">
+            <h3 class="margin-bottom-5 margin-top-0">
+                <samp>
+                    Truck No:
+                    <strong>
+                        <code><%= models.get('trucknumber') %></code>
+                    </strong>
+                </samp>
+            </h3>
+            <p>
+                <strong><samp><%= models.get('account').name %></samp></strong><br />
+                <i><samp><%= models.get('account').businessaddress.street %></samp></i><br />
+                <i><samp><%= models.get('account').businessaddress.city %>, <%= models.get('account').businessaddress.state.state_code %> <%= models.get('account').businessaddress.zipcode %></samp></i>
+            </p>
+        </div> 
+        <div class="col-md-3 col-md-offset-3 text-right">
+            <h5 class="margin-top-0 margin-bottom-5"><samp>Statement Date:</samp></h5>
+            <h5 class="margin-top-0 margin-bottom-5"><samp>Total Bales:</samp></h5>
+            <h5 class="margin-top-0 margin-bottom-5"><samp>Total Pounds:</samp></h5>                
+            <h5 class="margin-top-0 margin-bottom-5"><samp>Total Tons:</samp></h5>
+            <h5 class="margin-top-0 margin-bottom-5"><samp>Trucking Fee:</samp></h5>
+            <h5 class="margin-top-0 margin-bottom-5"><samp>Handling Fee:</samp></h5>
+            <h5 class="margin-top-0 margin-bottom-5"><samp>Fuel Charge:</samp></h5>
+            <h5 class="margin-top-0 margin-bottom-5"><samp>Less (Admin Fees):</samp></h5>
+            <h5 class="margin-top-0 margin-bottom-5"><samp>Less (Trailer Rent):</samp></h5>
+            <h5 class="margin-top-5"><samp>Less (Loading Fees):</samp></h5>
+            <h5 class="margin-top-5"><label class="label label-default"><samp>Total Amount Due:</samp></label></h5>
+        </div>
+        <div class="col-md-2 text-right">
+            <h5 class="margin-top-0 margin-bottom-5"><strong><samp><%= formatDateBy(cur_date, 'F d, Y') %></samp></strong></h5>
+            <h5 class="margin-top-0 margin-bottom-5"><strong><samp><%= numberFormatBales(models.get('bales')) %></samp></strong></h5>              
+            <h5 class="margin-top-0 margin-bottom-5"><strong><samp><%= numberFormatLbs(models.get('pounds')) %></samp></strong></h5>
+            <h5 class="margin-top-0 margin-bottom-5"><strong><samp><%= numberFormatTons(models.get('tons')) %></samp></strong></h5>
+            <h5 class="margin-top-0 margin-bottom-5"><strong><samp>$ <%= numberFormat(models.get('hauling')) %></samp></strong></h5>
+            <h5 class="margin-top-0 margin-bottom-5"><strong><samp>$ <%= numberFormat(models.get('handling')) %></samp></strong></h5>
+            <h5 class="margin-top-0 margin-bottom-5"><strong><samp>$ <%= numberFormat(models.get('fuelcharge')) %></samp></strong></h5>
+            <h5 class="margin-top-0 margin-bottom-5"><strong><span class="text-danger"><samp>- $ <%= numberFormat(models.get('adminfee')) %></samp></span></strong></h5>
+            <h5 class="margin-top-0 margin-bottom-5"><strong><span class="text-danger"><samp>- $ <%= numberFormat(models.get('trailerrent')) %></samp></span></strong></h5>
+            <h5 class="margin-top-5"><strong><span class="text-danger"><samp>- $ <%= numberFormat(models.get('loadingfee')) %></samp></span></strong></h5>
+            <h5 class="margin-top-5"><strong><label class="label label-success"><samp>$ <%= numberFormat(models.get('amount'))  %></samp></label></strong></h5>
+        </div>  
+    </div> 
+    <div class="progress width-1000 margin-bottom-20 height-1">
+        <div style="width: %" class="progress-bar progress-bar-primary"></div>
+    </div>                 
+    <% if (!_.isEmpty(models.get('order'))) { %>   
+    <div class="table-responsive">
+        <%
+            _.each(models.get('order'), function(order){                      
+                var gross_i = 0;
+                var trailer_i = 0;
+                var trucking_i = 0;
+                var tons_i = 0;
+                var bales_i = 0;
+                var pounds_i = 0;
+                var loader_i = 0;
+                var fuelcharge_i = 0;
+                var adminfee_i = 0;
+                var amount_i = 0;
+                var handling_i = 0;
+        %>
+            <h3 class="margin-top-0"><strong><samp><%= order.order_number %></samp></strong></h3>               
+            <table id="operator-list" class="table no-border margin-bottom-0">
+                <thead class="no-border">
+                    <tr>         
+                        <th><strong>Date</strong></th>
+                        <th><strong>Weight Ticket No.</strong></th>                        
+                        <th class="width-100"><strong>Origin Loader</strong></th>
+                        <th class="width-100"><strong>Destination Loader</strong></th>
+                        <th><strong>Loaders Fee</strong></th>                            
+                        <th><strong>Bales</strong></th>
+                        <th><strong>Pounds</strong></th>
+                        <th><strong>Tons</strong></th>
+                        <th><strong>Handling Fee</strong></th>
+                        <th><strong>Rate</strong></th>
+                        <th><strong>Gross Rate</strong></th>
+                        <th><strong>Rent</strong></th>   
+                        <th><strong>Fuel Charge</strong></th>   
+                        <th><strong>Admin Fee</strong></th>
+                        <th><strong>Amount</strong></th>                                              
+                    </tr>
+                </thead>
+                <tbody class="no-border-y">               
+                <%
+                    var fee = 0;
+                    _.each(order.transportschedule, function(schedule){
+                %>
+                    <tr>
+                        <td><%= formatDate(schedule.updated_at) %></td>
+                        <td><code><%= schedule.weightticketnumber %></code></td>
+                        <td><%= schedule.originloader.lastname %>, <%= schedule.originloader.firstname %></td>
+                        <td><%= schedule.destinationloader.lastname %>, <%= schedule.destinationloader.firstname %></td>
+                        <% fee = schedule.originloaderfee + schedule.destinationloaderfee %>
+                        <td>$ <%= numberFormat(fee) %></td>
+                        <% 
+                            
+                            loader_i += parseFloat(fee);
+                        %>
+                        <td><%= schedule.bales %></td>
+                        <% bales_i += schedule.bales %>
+                        <td><%= numberFormatLbs(schedule.pounds) %></td>
+                        <% pounds_i += parseFloat(schedule.pounds) %>
+                        <td><%= numberFormatTons(schedule.tons) %></td>
+                        <% tons_i += parseFloat(schedule.tons) %>
+                        <td>$ <%= numberFormat(schedule.handlingfee) %></td>
+                        <% handling_i += parseFloat(schedule.handlingfee) %>
+                        <td>$ <%= numberFormat(schedule.truckingrate) %></td>
+                        <% trucking_i += parseFloat(schedule.truckingrate) %>
+                        <td>$ <%= numberFormat(schedule.gross) %></td>
+                        <% gross_i += parseFloat(schedule.gross) %>
+                        <td>$ <%= numberFormat(schedule.trailerrate) %></td>
+                        <% trailer_i += parseFloat(schedule.trailerrate) %>
+                        <td>$ <%= numberFormat(schedule.fuelcharge) %></td>
+                        <% fuelcharge_i += parseFloat(schedule.fuelcharge) %>
+                        <td>$ <%= numberFormat(schedule.adminfee) %></td>
+                        <% adminfee_i += parseFloat(schedule.adminfee) %>
+                        <td>$ <%= numberFormat(schedule.amount) %></td>
+                        <% amount_i += parseFloat(schedule.amount) %>
+                    </tr>
+                <%
+                    })
+                %>               
+                </tbody>  
+                <tfoot class="no-border-y">
+                    <tr>
+                        <td colspan="4" align="right">
+                            <strong>Total</strong>
+                        </td>
+                        <td>$ <%= numberFormat(loader_i) %></td>
+                        <td><%= bales_i %></td>
+                        <td><%= numberFormatLbs(pounds_i) %></td>
+                        <td><%= numberFormatTons(tons_i) %></td>
+                        <td><%= numberFormat(handling_i) %></td>
+                        <td>$ <%= numberFormat(trucking_i) %></td>
+                        <td>$ <%= numberFormat(gross_i) %></td>
+                        <td>$ <%= numberFormat(trailer_i) %></td>
+                        <td>$ <%= numberFormat(fuelcharge_i) %></td>
+                        <td>$ <%= numberFormat(adminfee_i) %></td>
+                        <td>$ <%= numberFormat(amount_i) %></td>
+                    </tr>
+                </tfoot>              
+            </table> 
+            <div class="progress width-1000 margin-bottom-20 height-1">
+                <div style="width: %" class="progress-bar progress-bar-primary"></div>
             </div> 
-            <div class="col-md-3 col-md-offset-3 text-right">
-                <h3 class="margin-top-0 margin-bottom-5"><samp>Statement Date:</samp></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><samp>Total Bales:</samp></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><samp>Total Pounds:</samp></h3>                
-                <h3 class="margin-top-0 margin-bottom-5"><samp>Total Tons:</samp></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><samp>Trucking Fee:</samp></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><samp>Handling Fee:</samp></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><samp>Fuel Charge:</samp></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><samp>Less (Admin Fees):</samp></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><samp>Less (Trailer Rent):</samp></h3>
-                <h3 class="margin-top-5"><samp>Less (Loading Fees):</samp></h3>
-                <h3 class="margin-top-5"><label class="label label-default"><samp>Total Amount Due:</samp></label></h3>
-                </p>
-            </div>
-            <div class="col-md-2 text-right">
-                <h3 class="margin-top-0 margin-bottom-5"><strong><samp><%= formatDateBy(cur_date, 'F d, Y') %></samp></strong></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><strong><samp><%= numberFormatBales(truckers.get('bales')) %></samp></strong></h3>              
-                <h3 class="margin-top-0 margin-bottom-5"><strong><samp><%= numberFormatLbs(truckers.get('pounds')) %></samp></strong></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><strong><samp><%= numberFormatTons(truckers.get('tons')) %></samp></strong></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><strong><samp>$ <%= numberFormat(truckers.get('hauling')) %></samp></strong></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><strong><samp>$ <%= numberFormat(truckers.get('handling')) %></samp></strong></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><strong><samp>$ <%= numberFormat(truckers.get('fuelcharge')) %></samp></strong></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><strong><span class="text-danger"><samp>- $ <%= numberFormat(truckers.get('adminfee')) %></samp></span></strong></h3>
-                <h3 class="margin-top-0 margin-bottom-5"><strong><span class="text-danger"><samp>- $ <%= numberFormat(truckers.get('trailerrent')) %></samp></span></strong></h3>
-                <h3 class="margin-top-5"><strong><span class="text-danger"><samp>- $ <%= numberFormat(truckers.get('loadingfee')) %></samp></span></strong></h3>
-                <h3 class="margin-top-5"><strong><label class="label label-success"><samp>$ <%= numberFormat(truckers.get('amount'))  %></samp></label></strong></h3>
-            </div>  
-        </div>                  
-        <% if (!_.isEmpty(truckers.get('order'))) { %>   
-        <div class="content-inner table-responsive">
-            <%
-                _.each(truckers.get('order'), function(order){                      
-                    var gross_i = 0;
-                    var trailer_i = 0;
-                    var trucking_i = 0;
-                    var tons_i = 0;
-                    var bales_i = 0;
-                    var pounds_i = 0;
-                    var loader_i = 0;
-                    var fuelcharge_i = 0;
-                    var adminfee_i = 0;
-                    var amount_i = 0;
-                    var handling_i = 0;
-            %>
-                <h3 class="margin-top-20"><strong><samp><%= order.order_number %></samp></strong></h3>
-                <div class="progress width-1000 margin-bottom-0 height-3">
-                    <div style="width: %" class="progress-bar progress-bar-primary"></div>
-                </div>
-                <table id="operator-list" class="table no-border margin-bottom-0">
-                    <thead class="no-border">
-                        <tr>         
-                            <th><strong>Date</strong></th>
-                            <th><strong>Weight Ticket No.</strong></th>                        
-                            <th class="width-100"><strong>Origin Loader</strong></th>
-                            <th class="width-100"><strong>Destination Loader</strong></th>
-                            <th><strong>Loaders Fee</strong></th>                            
-                            <th><strong>Bales</strong></th>
-                            <th><strong>Pounds</strong></th>
-                            <th><strong>Tons</strong></th>
-                            <th><strong>Handling Fee</strong></th>
-                            <th><strong>Rate</strong></th>
-                            <th><strong>Gross Rate</strong></th>
-                            <th><strong>Rent</strong></th>   
-                            <th><strong>Fuel Charge</strong></th>   
-                            <th><strong>Admin Fee</strong></th>
-                            <th><strong>Amount</strong></th>                                              
-                        </tr>
-                    </thead>
-                    <tbody class="no-border-y">               
-                    <%
-                        var fee = 0;
-                        _.each(order.transportschedule, function(schedule){
-                    %>
-                        <tr>
-                            <td><%= formatDate(schedule.updated_at) %></td>
-                            <td><code><%= schedule.weightticketnumber %></code></td>
-                            <td><%= schedule.originloader.lastname %>, <%= schedule.originloader.firstname %></td>
-                            <td><%= schedule.destinationloader.lastname %>, <%= schedule.destinationloader.firstname %></td>
-                            <% fee = schedule.originloaderfee + schedule.destinationloaderfee %>
-                            <td>$ <%= numberFormat(fee) %></td>
-                            <% 
-                                
-                                loader_i += parseFloat(fee);
-                            %>
-                            <td><%= schedule.bales %></td>
-                            <% bales_i += schedule.bales %>
-                            <td><%= numberFormatLbs(schedule.pounds) %></td>
-                            <% pounds_i += parseFloat(schedule.pounds) %>
-                            <td><%= numberFormatTons(schedule.tons) %></td>
-                            <% tons_i += parseFloat(schedule.tons) %>
-                            <td>$ <%= numberFormat(schedule.handlingfee) %></td>
-                            <% handling_i += parseFloat(schedule.handlingfee) %>
-                            <td>$ <%= numberFormat(schedule.truckingrate) %></td>
-                            <% trucking_i += parseFloat(schedule.truckingrate) %>
-                            <td>$ <%= numberFormat(schedule.gross) %></td>
-                            <% gross_i += parseFloat(schedule.gross) %>
-                            <td>$ <%= numberFormat(schedule.trailerrate) %></td>
-                            <% trailer_i += parseFloat(schedule.trailerrate) %>
-                            <td>$ <%= numberFormat(schedule.fuelcharge) %></td>
-                            <% fuelcharge_i += parseFloat(schedule.fuelcharge) %>
-                            <td>$ <%= numberFormat(schedule.adminfee) %></td>
-                            <% adminfee_i += parseFloat(schedule.adminfee) %>
-                            <td>$ <%= numberFormat(schedule.amount) %></td>
-                            <% amount_i += parseFloat(schedule.amount) %>
-                        </tr>
-                    <%
-                        })
-                    %>               
-                    </tbody>  
-                    <tfoot class="no-border-y">
-                        <tr>
-                            <td colspan="4" align="right">
-                                <strong>Total</strong>
-                            </td>
-                            <td>$ <%= numberFormat(loader_i) %></td>
-                            <td><%= bales_i %></td>
-                            <td><%= numberFormatLbs(pounds_i) %></td>
-                            <td><%= numberFormatTons(tons_i) %></td>
-                            <td><%= numberFormat(handling_i) %></td>
-                            <td>$ <%= numberFormat(trucking_i) %></td>
-                            <td>$ <%= numberFormat(gross_i) %></td>
-                            <td>$ <%= numberFormat(trailer_i) %></td>
-                            <td>$ <%= numberFormat(fuelcharge_i) %></td>
-                            <td>$ <%= numberFormat(adminfee_i) %></td>
-                            <td>$ <%= numberFormat(amount_i) %></td>
-                        </tr>
-                    </tfoot>              
-                </table> 
-                <div class="progress width-1000 margin-bottom-0 height-3">
-                    <div style="width: %" class="progress-bar progress-bar-primary"></div>
-                </div> 
-            <%
-                })
-            %>  
-        </div>
-        <% } else { %>
-        <p>No transactions found.</p>
-        <% } %>
-    </div>   
-</div>
+        <%
+            })
+        %>  
+    </div>
+    <% } else { %>
+    <p class="text-danger">No transaction found.</p>
+    <% } %>
+</div> 

@@ -1,6 +1,6 @@
 <tr class="product-item">
 	<td><%= name %></td>
-	<td><%= stack_number %></td>
+	<td><% if(!_.isEmpty(stack_number)) { %><code><%= stack_number %><code> <% } %></td>
 	<td><%= bales %></td>
 	<td><%= pounds %></td>
 	<td><%= net %></td>

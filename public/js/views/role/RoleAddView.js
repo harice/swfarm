@@ -59,6 +59,8 @@ define([
 					);
 				}
 			});
+
+			this.focusOnFirstField();
 		},
 		
 		events: {

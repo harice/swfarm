@@ -7,23 +7,36 @@
 	PO No.: <span class="text-danger"><%= po.get("order_number") %></span>
 	<div class="row margin-top-0">
     	<div class="col-md-4">
-			<h3>Loader (<span class="text-danger">Origin</span>)</h3>
-			Loader: <span class="text-danger"><%= pu.get("originloader").accountidandname.name %></span><br>
-	        Loader Contact: <span class="text-danger"><%= pu.get("originloader").lastname %>, <%= pu.get("originloader").firstname %> <%= pu.get("originloader").suffix %></span><br>
-
-			<h3>Loader (<span class="text-danger">Destination</span>)</h3>
-			Loader: <span class="text-danger"><%= pu.get("destinationloader").accountidandname.name %></span><br>
-	        Loader Contact: <span class="text-danger"><%= pu.get("destinationloader").lastname %>, <%= pu.get("destinationloader").firstname %> <%= pu.get("destinationloader").suffix %></span>
-
+    		<fieldset>
+    			<legend class="margin-bottom-5">
+					<h3>Loader (<span class="text-danger">Origin</span>)</h3>
+				</legend>
+				Loader: <span class="text-danger"><%= pu.get("originloader").accountidandname.name %></span><br>
+		        Loader Contact: <span class="text-danger"><%= pu.get("originloader").lastname %>, <%= pu.get("originloader").firstname %> <%= pu.get("originloader").suffix %></span><br>
+	        </fieldset>
+	        <fieldset>
+	        	<legend class="margin-bottom-5">
+					<h3>Loader (<span class="text-danger">Destination</span>)</h3>
+				</legend>
+				Loader: <span class="text-danger"><%= pu.get("destinationloader").accountidandname.name %></span><br>
+		        Loader Contact: <span class="text-danger"><%= pu.get("destinationloader").lastname %>, <%= pu.get("destinationloader").firstname %> <%= pu.get("destinationloader").suffix %></span>
+	    	</fieldset>
 		</div>
 		<div class="col-md-4">
-			<h3>Trucker</h3>
-			Trucker: <span class="text-danger"><%= pu.get("trucker").accountidandname.name %></span><br>
-	        Trucker Contact: <span class="text-danger"><%= pu.get("trucker").lastname %>, <%= pu.get("trucker").firstname %> <%= pu.get("trucker").suffix %></span><br>
-
-	        <h3>Trailer</h3>
-			Trailer: <span class="text-danger"><%= pu.get("trailer").account.name %></span><br>
-			Trailer Number: <span class="text-danger"><%= pu.get("trailer").number %></span>
+			<fieldset>
+				<legend class="margin-bottom-5">
+					<h3>Trucker</h3>
+				</legend>
+				Trucker: <span class="text-danger"><%= pu.get("trucker").accountidandname.name %></span><br>
+		        Trucker Contact: <span class="text-danger"><%= pu.get("trucker").lastname %>, <%= pu.get("trucker").firstname %> <%= pu.get("trucker").suffix %></span><br>
+		    </fieldset>
+		    <fieldset>
+		    	<legend class="margin-bottom-5">
+		        	<h3>Trailer</h3>
+		        </legend>
+				Trailer: <span class="text-danger"><%= pu.get("trailer").account.name %></span><br>
+				Trailer Number: <span class="text-danger"><%= pu.get("trailer").number %></span>
+			</fieldset>
 		</div>
 		<div class="col-md-4">
 			<div class="table-responsive margin-top-10">
@@ -66,7 +79,7 @@
     	<div class="col-md-12">
     		<fieldset>
 				<legend class="margin-bottom-5">
-					<h3 class="margin-top-0">Products</h3>
+					<h3 class="margin-top-0">PRODUCTS</h3>
 				</legend>
 				<div class="content-inner table-responsive">
 					<table id="product-list" class="table-condensed table-hover table-bordered">

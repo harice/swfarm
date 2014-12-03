@@ -1,6 +1,6 @@
 <div class="row margin-top-0">
     <div class="col-md-12 no-padding">
-        <div class="block-flat">
+        <div class="block-flat padding-top-0 padding-bottom-0">
             <div class="content padding-top-0">
                 <form id="poForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
                 <% if (typeof po_id !== "undefined") { %><input type="hidden" name="id" value="<%= po_id %>" /> <% } %>
@@ -68,25 +68,25 @@
                                 <div class="form-group">
                                     <label for="street" class="col-sm-3 control-label">Street</label>
                                     <div class="col-sm-7">
-                                        <input id="street" type="text" class="form-control street input-sm" placeholder="" maxlength="250" readonly>
+                                        <input id="street" type="text" class="form-control street input-sm" placeholder="" maxlength="250" tabindex="-1" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="city" class="col-sm-3 control-label">City</label>
                                     <div class="col-sm-7">
-                                        <input id="city" type="text" class="form-control city input-sm" placeholder="" maxlength="250" readonly>
+                                        <input id="city" type="text" class="form-control city input-sm" placeholder="" maxlength="250" tabindex="-1" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="state" class="col-sm-3 control-label">State</label>
                                     <div class="col-sm-7">
-                                        <input id="state" type="text" class="form-control state input-sm" placeholder="" maxlength="250" readonly>
+                                        <input id="state" type="text" class="form-control state input-sm" placeholder="" maxlength="250" tabindex="-1" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="zipcode" class="col-sm-3 control-label">Zip Code</label>
                                     <div class="col-sm-3">
-                                        <input id="zipcode" type="text" class="form-control zipcode input-sm" placeholder="" minlength="5" maxlength="10" readonly>
+                                        <input id="zipcode" type="text" class="form-control zipcode input-sm" placeholder="" minlength="5" maxlength="10" tabindex="-1" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -146,13 +146,14 @@
                                 <thead>
                                     <tr>
                                         <th>Product<i class='color-danger'>*</i></th>
-                                        <th class='width-150'>Tons<i class='color-danger'>*</i></th>
-                                        <th class='width-170'>
+                                        <th class='width-115'>Tons<i class='color-danger'>*</i></th>
+                                        <th class='width-175'>
                                             <% if (typeof is_bid === "undefined") { %>Total Price<% } else { %>Bid Total Price<% } %>
                                         </th>
                                         <th>&nbsp;</th>
                                     </tr>
                                 </thead>
+                                <tbody></tbody>
         						<tfoot>
         							<tr>
         								<td class="text-right" colspan="1">Total</td>
@@ -160,8 +161,7 @@
         								<td id="total-price" class='text-right'>$ 0.00</td>
                                         <td>&nbsp;</td>
         							</tr>
-        						</tfoot>
-                                <tbody></tbody>
+        						</tfoot>                                
                             </table>
                         </div>
                     </fieldset>

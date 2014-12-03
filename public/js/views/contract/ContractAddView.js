@@ -107,6 +107,7 @@ define([
 			this.initCalendar();
 			this.addProduct();
 			this.otherInitializations();
+			this.focusOnFirstField();
 		},
 
 		initValidateForm: function () {
@@ -130,18 +131,19 @@ define([
 								Backbone.history.history.back();
 							},
 							error: function (model, response, options) {
-//								if(typeof response.responseJCONTRACTN.error === 'undefined')
-//									validate.showErrors(response.responseJCONTRACTN);
-//								else
-									thisObj.displayMessage(response);
+								if(response.responseText == "Data missing"){
+									console.log(response);
+								}
+								else
+									thisObj.displayMessage(response);									
 							},
 							headers: contractModel.getAuth()
 						}
 					);
 				},
 				errorPlacement: function(error, element) {
-					if(element.hasClass('form-date')) {
-						element.closest('.calendar-cont').siblings('.error-msg-cont').html(error);
+					if(element.hasClass('form-date') || element.is('#account')) {
+						
 					}
 					else if(element.hasClass('price')) {
 						element.closest('.input-group').siblings('.error-msg-cont').html(error);
@@ -151,6 +153,65 @@ define([
 					}
 				}
 			});
+
+			$("#contractForm")										
+				.bootstrapValidator({	
+					live: 'enabled',			
+					group: '.calendar-cont',
+					submitButtons: '',																		
+			        fields: {
+			        	account: {
+			        		validators: {
+				        		notEmpty: {
+				        			message: 'This field is required.'
+				        		}
+				        	}
+			        	},			        	
+			            contract_date_start: {
+			                validators: {	
+								notEmpty: {
+									message: 'This field is required.'
+								},		                	                  
+			                    date: {
+			                        format: 'MM-DD-YYYY',
+			                        message: 'The date is not valid.'
+			                    }
+			                }
+			            },
+			            contract_date_end: {
+			                validators: {
+			                	notEmpty: {
+									message: 'This field is required.'
+								},                    
+			                    date: {
+			                        format: 'MM-DD-YYYY',
+			                        message: 'The date is not valid.'
+			                    }
+			                }
+			            }
+			        },			        
+				})	
+				.on('error.validator.bv', function(e, data) {
+					 data.element
+		                .data('bv.messages')
+		                // Hide all the messages
+		                .find('.help-block[data-bv-for="' + data.field + '"]').hide()
+		                // Show only message associated with current validator
+		                .filter('[data-bv-validator="' + data.validator + '"]').show();
+				})			
+				.on('error.field.bv', function(e, data) {		           
+		            data.bv.disableSubmitButtons(false);
+		        })		        
+		        .on('success.field.bv', function(e, data) {		           
+		            data.bv.disableSubmitButtons(false);
+
+		            if(data.element.hasClass('error'))
+		            	data.element.removeClass('error');
+		        })
+		        .on('success.form.bv', function(e, data){
+		        	 e.preventDefault();
+		        });
+
 		},
 
 		initCustomerAutocomplete: function () {
@@ -198,10 +259,12 @@ define([
 				autoclose: true,
 				clearBtn: true,
 				todayHighlight: true,
-				format: this.dateFormat
+				format: 'mm-dd-yyyy',
+				forceParse:false,
 			}).on('changeDate', function (ev) {
 				var selectedDate = $('#start-date .input-group.date input').val();
 				thisObj.$el.find('#end-date .input-group.date').datepicker('setStartDate', selectedDate);
+				$("#contractForm").bootstrapValidator('revalidateField', 'contract_date_start');
 			});
 
 			this.$el.find('#end-date .input-group.date').datepicker({
@@ -209,10 +272,12 @@ define([
 				autoclose: true,
 				clearBtn: true,
 				todayHighlight: true,
-				format: this.dateFormat
+				format: 'mm-dd-yyyy',
+				forceParse:false,
 			}).on('changeDate', function (ev) {
 				var selectedDate = $('#end-date .input-group.date input').val();
 				thisObj.$el.find('#start-date .input-group.date').datepicker('setEndDate', selectedDate);
+				$("#contractForm").bootstrapValidator('revalidateField', 'contract_date_end');
 			});
 		},
 
@@ -318,7 +383,7 @@ define([
 			'keyup .tons': 'onKeyUpTons',
 			'blur .tons': 'onBlurTon',
 			'keyup .bales': 'formatNumber',
-		},
+		},		
 
 		removeProduct: function (ev) {
 			$(ev.target).closest('tr').remove();

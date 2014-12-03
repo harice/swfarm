@@ -1,137 +1,139 @@
-<div class="col-md-12"> 
-    <div class="content">
-        <div class="row margin-top-0">
-            <div class="col-md-12">
-                <div class="btn-group pull-right">
-                    <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
-                        Email <span class="caret"></span>
-                    </button>                        
-                    <ul role="menu" class="dropdown-menu">
-                        <li><a class="sendmail" href="/" data-type="pdf" data-model="customer-sales-statement" data-id='<%= customers.get("id") %>' data-title="Customer Sales Report">Adobe PDF (*.pdf)</a></li>
-                        <li><a class="sendmail" href="/" data-type="xlsx" data-model="customer-sales-statement" data-id='<%= customers.get("id") %>' data-title="Customer Sales Report">Excel (*.xlsx)</a></li>
-                        <li><a class="sendmail" href="/" data-type="xls" data-model="customer-sales-statement" data-id='<%= customers.get("id") %>' data-title="Customer Sales Report">Excel (*.xls)</a></li>
-                        <li><a class="sendmail" href="/" data-type="csv" data-model="customer-sales-statement" data-id='<%= customers.get("id") %>' data-title="Customer Sales Report">Excel (*.csv)</a></li>
-                    </ul>
-                </div>
-                <div class="btn-group pull-right">
-                    <button data-toggle="dropdown" class="btn btn-success btn-sm btn-rad dropdown-toggle" type="button">
-                        Export <span class="caret"></span>
-                    </button>
-                    <ul role="menu" class="dropdown-menu">
-                        <li><a href="<%= export_pdf_url %>" target="_blank">Adobe PDF (*.pdf)</a></li>
-                        <li><a href="<%= export_xlsx_url %>">Excel (*.xlsx)</a></li>
-                        <li><a href="<%= export_xls_url %>">Excel (*.xls)</a></li>
-                        <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
-                    </ul>
-                </div>
-                <div class="clearfix"></div>
-                <h2 class="text-center">
-                    <samp>Sales Report</samp>                    
-                </h2> 
-                <h6 class="text-danger text-center">
-                    <strong><samp><%= formatDateBy(date_from, 'F d, Y') %></samp></strong> -  <strong><samp><%= formatDateBy(date_to, 'F d, Y') %></samp></strong>
-                </h6>     
+<div class="content padding-top-0">
+    <div class="row margin-top-0">
+        <div class="col-md-12">
+            <div class="btn-group pull-right">
+                <button data-toggle="dropdown" class="btn btn-link btn-sm btn-rad dropdown-toggle" type="button">
+                    <i class="fa fa-envelope-o"></i>
+                    <span class="margin-right-5">Email</span>
+                    <span class="caret"></span>
+                </button>                        
+                <ul role="menu" class="dropdown-menu">
+                    <li><a class="sendmail" href="/" data-type="pdf">Adobe PDF (*.pdf)</a></li>
+                    <li><a class="sendmail" href="/" data-type="xlsx">Excel (*.xlsx)</a></li>
+                    <li><a class="sendmail" href="/" data-type="xls">Excel (*.xls)</a></li>
+                    <li><a class="sendmail" href="/" data-type="csv">Excel (*.csv)</a></li>
+                </ul>
             </div>
-        </div>
-        <div class="row margin-top-20 margin-bottom-10">
-            <div class="col-md-4">
-                <h3 class="margin-bottom-5 margin-top-0">
-                    <strong>
-                        <samp><%= customers.get('name') %></samp>
-                    </strong>
-                </h3> 
-                <p>
-                    <i><samp><%= customers.get('businessaddress').street %></samp></i><br />
-                    <i><samp><%= customers.get('businessaddress').city %>, <%= customers.get('businessaddress').state.state_code %>, <%= customers.get('businessaddress').zipcode %></samp></i>
-                </p>
-            </div> 
-            <div class="col-md-2 col-md-offset-4 text-right">
-                <h3 class="margin-top-0"><samp>Statement Date:</samp></h3>
-                <h3 class="margin-top-10"><label class="label label-default"><samp>Total Amount Due:</samp></label></h3>
+            <div class="btn-group pull-right">
+                <button data-toggle="dropdown" class="btn btn-link btn-sm btn-rad dropdown-toggle" type="button">
+                    <i class="fa fa-print"></i>
+                    <span class="margin-right-5">Export</span>
+                    <span class="caret"></span>
+                </button>
+                <ul role="menu" class="dropdown-menu">
+                    <li><a href="<%= export_pdf_url %>" target="_blank">Adobe PDF (*.pdf)</a></li>
+                    <li><a href="<%= export_xlsx_url %>">Excel (*.xlsx)</a></li>
+                    <li><a href="<%= export_xls_url %>">Excel (*.xls)</a></li>
+                    <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
+                </ul>
             </div>
-            <div class="col-md-2 text-right">
-                <h3 class="margin-top-0"><strong><samp><%= formatDateBy(cur_date, 'F d, Y') %></samp></strong></h3>
-                <h3 class="margin-top-10"><label class="label label-success"><samp>$ <%= customers.get('amount') %></samp></label></h3>
-            </div>     
+            <div class="clearfix"></div>
+            <h2 class="text-center">
+                <samp>Sales Report</samp>                    
+            </h2> 
+            <h6 class="text-danger text-center">
+                <strong><samp><%= formatDateBy(models.get('report_date').start, 'F d, Y') %></samp></strong> -  <strong><samp><%= formatDateBy(models.get('report_date').end, 'F d, Y') %></samp></strong>
+            </h6>     
         </div>
-        <% if (!_.isEmpty(customers.get('order'))) { %>    
-        <div class="content-inner table-responsive">                
-            <%                             
-                _.each(customers.get('order'),function(order){
-                    var total_amount = 0;
-                %>
-                    <h3 class="margin-top-20"><strong><samp><%= order.order_number %></samp></strong></h3>
-                    <div class="progress width-1000 margin-bottom-0 height-3">
-                        <div class="progress-bar progress-bar-primary" style="width: %"></div>
-                    </div>
-                    <table id="operator-list" class="no-border table margin-bottom-0">
-                        <thead class="no-border">
-                            <tr>                             
-                                <th><strong>Date</strong></th>
-                                <th><strong>Product</strong></th>
-                                <th><strong>Weight Ticket No.</strong></th>                                                     
-                                <th><strong>Bales</strong></th>
-                                <th><strong>Pounds</strong></th>                
-                                <th><strong>Tons</strong></th>
-                                <th><strong>Price</strong></th>
-                                <th><strong>Amount</strong></th>
-                            </tr>
-                        </thead>
-                        <tbody class="no-border-y"> 
-                        <%
+    </div>
+    <div class="row margin-top-20 margin-bottom-0">
+        <div class="col-md-4">
+            <h3 class="margin-bottom-5 margin-top-0">
+                <strong>
+                    <samp><%= models.get('name') %></samp>
+                </strong>
+            </h3> 
+            <p>
+                <i><samp><%= models.get('businessaddress').street %></samp></i><br />
+                <i><samp><%= models.get('businessaddress').city %>, <%= models.get('businessaddress').state.state_code %>, <%= models.get('businessaddress').zipcode %></samp></i>
+            </p>
+        </div> 
+        <div class="col-md-2 col-md-offset-4 text-right">
+            <h5 class="margin-top-0"><samp>Statement Date:</samp></h5>
+            <h5 class="margin-top-10"><label class="label label-default"><samp>Total Amount Due:</samp></label></h5>
+        </div>
+        <div class="col-md-2 text-right">
+            <h5 class="margin-top-0"><strong><samp><%= formatDateBy(cur_date, 'F d, Y') %></samp></strong></h5>
+            <h5 class="margin-top-10"><label class="label label-success"><samp>$ <%= numberFormat(models.get('amount')) %></samp></label></h5>
+        </div>     
+    </div>
+    <div class="progress width-1000 margin-bottom-20 height-1">
+        <div style="width: %" class="progress-bar progress-bar-primary"></div>
+    </div>
+    <% if (!_.isEmpty(models.get('order'))) { %>    
+    <div class="table-responsive">                
+        <%                             
+            _.each(models.get('order'),function(order){
+                var total_amount = 0;
+            %>
+                <h3 class="margin-top-0"><strong><samp><%= order.order_number %></samp></strong></h3>                    
+                <table id="operator-list" class="no-border table margin-bottom-0">
+                    <thead class="no-border">
+                        <tr>                             
+                            <th><strong>Date</strong></th>
+                            <th><strong>Product</strong></th>
+                            <th><strong>Weight Ticket No.</strong></th>                                                     
+                            <th><strong>Bales</strong></th>
+                            <th><strong>Pounds</strong></th>                
+                            <th><strong>Tons</strong></th>
+                            <th><strong>Price</strong></th>
+                            <th><strong>Amount</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody class="no-border-y"> 
+                    <%
 
-                        _.each(order.productsummary, function(product){
-                            if(!_.isEmpty(product.productorder)){
-                                var amount = 0;
-                                _.each(product.productorder, function(order){
-                                    amount = order.tons * product.unitprice;                                   
-                                    %>
-                                    <tr>  
-                                        <td>
-                                            <%= 
-                                                formatDate(order.updated_at)
-                                            %>
-                                        </td> 
-                                        <td><%= product.product %></td> 
-                                        <td><%= order.weightTicketNumber %></td>                                                                                                              
-                                        <td>
-                                            <%= order.bales %>
-                                        </td>                                         
-                                        <td>
-                                            <%= order.pounds %>
-                                        </td>  
-                                        <td>
-                                            <%= order.tons %>
-                                        </td>  
-                                        <td>
-                                            $ <%= numberFormat(product.unitprice) %>
-                                        </td>  
-                                        <td>
-                                            <% total_amount += amount %>
-                                            $ <%= numberFormat(amount) %>
-                                        </td>                                                 
-                                    </tr>
-                                    <%
-                                });
-                            }
-                        });  
-                        %>
-                        </tbody> 
-                        <tfoot class="no-border-y">
-                            <tr>
-                                <td colspan="7" align="right"><strong>TOTAL<strong></td>
-                                <td> <strong>$ <%= numberFormat(total_amount) %> </strong></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                    <div class="progress width-1000 margin-bottom-0 height-3">
-                        <div style="width: %" class="progress-bar progress-bar-primary"></div>
-                    </div>  
-                <%                                                              
-                }); %>    
-        </div>        
-        <% } else { %>       
-        <p>No transactions found.</p>
-        <% } %>
-    </div>    
-</div>
+                    _.each(order.productsummary, function(product){
+                        if(!_.isEmpty(product.productorder)){
+                            var amount = 0;
+                            _.each(product.productorder, function(order){
+                                amount = order.tons * product.unitprice;                                   
+                                %>
+                                <tr>  
+                                    <td>
+                                        <%= 
+                                            formatDate(order.updated_at)
+                                        %>
+                                    </td> 
+                                    <td><%= product.product %></td> 
+                                    <td><%= order.weightTicketNumber %></td>                                                                                                              
+                                    <td>
+                                        <%= order.bales %>
+                                    </td>                                         
+                                    <td>
+                                        <%= order.pounds %>
+                                    </td>  
+                                    <td>
+                                        <%= order.tons %>
+                                    </td>  
+                                    <td>
+                                        $ <%= numberFormat(product.unitprice) %>
+                                    </td>  
+                                    <td>
+                                        <% total_amount += amount %>
+                                        $ <%= numberFormat(amount) %>
+                                    </td>                                                 
+                                </tr>
+                                <%
+                            });
+                        }
+                    });  
+                    %>
+                    </tbody> 
+                    <tfoot class="no-border-y">
+                        <tr>
+                            <td colspan="7" align="right"><strong>TOTAL<strong></td>
+                            <td> <strong>$ <%= numberFormat(total_amount) %> </strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div class="progress width-1000 margin-bottom-20 height-1">
+                    <div style="width: %" class="progress-bar progress-bar-primary"></div>
+                </div>  
+            <%                                                              
+            }); %>    
+    </div>        
+    <% } else { %>       
+    <p class="text-danger">No transaction found.</p>
+    <% } %>
+</div> 

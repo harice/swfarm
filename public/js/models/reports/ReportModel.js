@@ -9,7 +9,7 @@ define([
 		urlRoot: '/apiv1/reports/',
 		defaults: {
 
-        },
+        },        
 
 		runFetch: function () {
 			var thisObj = this;            
@@ -27,7 +27,7 @@ define([
 			});
 			
 		},
-
+		
 		setDefaultURL: function() {
 			this.urlRoot = '/apiv1/reports/';			
 		},
@@ -64,7 +64,7 @@ define([
         },
 
         fetchGrossProfit: function (reportId, startDate, endDate) {
-            this.urlRoot = this.urlRoot + reportId + '?dateStart=' +startDate+'&dateEnd='+endDate;
+            this.urlRoot = this.urlRoot + reportId + '&dateStart=' +startDate+'&dateEnd='+endDate;
             this.runFetch();
         },
        

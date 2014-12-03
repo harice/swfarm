@@ -59,11 +59,11 @@
 					return;
 				if (!$.isArray(new_array))
 					new_array = [new_array];
-				this.clear();
+				this.clear();				
 				this.push.apply(this, new_array);
 			},
 			clear: function(){
-				this.splice(0);
+				this.splice(0);				
 			},
 			copy: function(){
 				var a = new DateArray();
@@ -484,7 +484,7 @@
 			var args = $.isArray(arguments[0]) ? arguments[0] : arguments;
 			this.update.apply(this, args);
 			this._trigger('changeDate');
-			this.setValue();
+			this.setValue();			
 		},
 
 		setUTCDates: function(){
@@ -717,8 +717,12 @@
 				date.getUTCDate() === today.getDate()){
 				cls.push('today');
 			}
-			if (this.dates.contains(date) !== -1)
+			if (this.dates.contains(date) !== -1){
 				cls.push('active');
+
+				//Disable clickability of active day
+				cls.push('disabled');
+			}
 			if (date.valueOf() < this.o.startDate || date.valueOf() > this.o.endDate ||
 				$.inArray(date.getUTCDay(), this.o.daysOfWeekDisabled) !== -1){
 				cls.push('disabled');
@@ -934,7 +938,7 @@
 
 								this.showMode(-2);
 								var which = this.o.todayBtn === 'linked' ? null : 'view';
-								this._setDate(date, which);
+								this._setDate(date, which);								
 								break;
 							case 'clear':
 								var element;
@@ -1002,7 +1006,7 @@
 								}
 							}
 							this._setDate(UTCDate(year, month, day));
-						}
+						}						
 						break;
 				}
 			}
@@ -1028,7 +1032,7 @@
 					this.dates.remove(0);
 		},
 
-		_setDate: function(date, which){
+		_setDate: function(date, which){			
 			if (!which || which === 'date')
 				this._toggle_multidate(date && new Date(date));
 			if (!which || which  === 'view')
@@ -1037,19 +1041,21 @@
 			this.fill();
 			this.setValue();
 			this._trigger('changeDate');
+
 			var element;
 			if (this.isInput){
-				element = this.element;
+				element = this.element;								
 			}
 			else if (this.component){
-				element = this.element.find('input');
+				element = this.element.find('input');				
 			}
 			if (element){
 				element.change();
 			}
 			if (this.o.autoclose && (!which || which === 'date')){
 				this.hide();
-			}
+			}	
+
 		},
 
 		moveMonth: function(date, dir){
@@ -1110,8 +1116,8 @@
 			return date >= this.o.startDate && date <= this.o.endDate;
 		},
 
-		keydown: function(e){
-			if (this.picker.is(':not(:visible)')){
+		keydown: function(e){			
+			if (this.picker.is(':not(:visible)')){				
 				if (e.keyCode === 27) // allow escape to hide and re-show picker
 					this.show();
 				return;
@@ -1227,6 +1233,7 @@
 					element.change();
 				}
 			}
+
 		},
 
 		showMode: function(dir){
@@ -1276,7 +1283,7 @@
 		dateUpdated: function(e){
 			// `this.updating` is a workaround for preventing infinite recursion
 			// between `changeDate` triggering and `setUTCDate` calling.  Until
-			// there is a better mechanism.
+			// there is a better mechanism.			
 			if (this.updating)
 				return;
 			this.updating = true;
@@ -1463,7 +1470,7 @@
 			}
 			return {separators: separators, parts: parts};
 		},
-		parseDate: function(date, format, language){
+		parseDate: function(date, format, language){			
 			if (!date)
 				return undefined;
 			if (date instanceof Date)
@@ -1564,8 +1571,9 @@
 						_date = new Date(date);
 						setters_map[s](_date, parsed[s]);
 						if (!isNaN(_date))
-							date = _date;
+							date = _date;													
 					}
+														
 				}
 			}
 			return date;

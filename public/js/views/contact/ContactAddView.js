@@ -186,21 +186,10 @@ define([
         },
 
 		events: {
-            'click #go-to-previous-page': 'onCancel',
+            'click #go-to-previous-page': 'goToPreviousPage',
             'change #account': 'toggleRate',
             'blur .rate': 'onBlurRate',
-		},
-
-		onCancel: function(){
-			this.goToPreviousPage();			
-
-			$('#modal-confirm-navigate-away').on('shown.bs.modal', function(){
-				$('.btn.close-window').focus();				
-			});
-
-			return false;
-
-		},
+		},		
 
 		onBlurRate: function(ev) {
 			this.toFixedValue($(ev.target), 2);

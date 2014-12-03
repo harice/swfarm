@@ -490,7 +490,7 @@
                 this.hide();
             } else {
                 this.show();
-            }
+            }            
         },
 
         show: function (e) {
