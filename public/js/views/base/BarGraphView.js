@@ -587,7 +587,7 @@ define([
 				}
 			}			
 
-			$('#weather-cont').prepend("<div class='placeholder'><h2 class='margin-bottom-0'><i class='fa fa-map-marker'></i> " + address + "</h2></div>");
+			$('.placeholder').html("<h2 class='margin-bottom-0'><i class='fa fa-map-marker'></i> " + address + "</h2>");
 
 		},
 	});

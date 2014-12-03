@@ -10,7 +10,10 @@
 			  <div class="title margin-top-5">NOW <span id="curtime"></span></div>
 		  </div>
 		  <div class="content"><p><%= day[0] %></p><h1><%= channel.condition.temp %>°</h1></div>
-		  <div class="icon"><img title="<%= channel.condition.text %>" src="images/weather_ico/<%= matchCondition(channel.condition.code) %>.png" /></div>
+		  <div class="icon">
+		  	<p><%= channel.condition.text %></p>
+		  	<img title="<%= channel.condition.text %>" src="images/weather_ico/<%= matchCondition(channel.condition.code) %>.png" />
+		  </div>
 		</div>
 	</div>	
 <%		
