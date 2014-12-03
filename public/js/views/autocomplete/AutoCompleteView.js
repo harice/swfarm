@@ -24,7 +24,7 @@ define([
             // disable the native auto complete functionality
             this.input.attr("autocomplete", "off");
 
-            this.$el.width(this.input.outerWidth());
+            this.$el.width(this.input.outerWidth());            
 
             this.input
                 .keyup(_.bind(this.keyup, this))

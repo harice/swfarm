@@ -187,7 +187,7 @@
 										%>
 											<tr>
 												<td><%= product.transportscheduleproduct.productorder.product.name %></td>
-												<td><%= product.transportscheduleproduct.productorder.stacknumber %></td>
+												<td><% if(!_.isEmpty(product.transportscheduleproduct.productorder.stacknumber)) { %><code><%= product.transportscheduleproduct.productorder.stacknumber %></code><% } %></td>
 												<td class="text-right"><%= numberFormatBales(bales) %></td>
 												<td class="text-right"><%= numberFormatLbs(pounds) %></td>
 												<td class="text-right"><%= numberFormatTons(net) %></td>
@@ -325,7 +325,7 @@
 										%>
 											<tr>
 												<td><%= product.transportscheduleproduct.productorder.product.name %></td>
-												<td><%= product.transportscheduleproduct.productorder.stacknumber %></td>
+												<td><% if(!_.isEmpty(product.transportscheduleproduct.productorder.stacknumber)) { %><code><%= product.transportscheduleproduct.productorder.stacknumber %></code><% } %></td>
 												<td class="text-right"><%= numberFormatBales(bales) %></td>
 												<td class="text-right"><%= numberFormatLbs(pounds) %></td>
 												<td class="text-right"><%= numberFormatTons(net) %></td>
