@@ -96,10 +96,10 @@ define([
 			//console.log(options);
 			
 			if(options.search != '')
-				this.$el.find('#search-keyword').val(options.search);
+				this.collection.setSearch('');
 				
 			if(options.filters.productId != '')
-				this.$el.find('[name="product_id"][value="'+options.filters.productId+'"]').attr('checked', true);
+				this.collection.setFilter('productId', ''); 
 		},
 		
 		events: {

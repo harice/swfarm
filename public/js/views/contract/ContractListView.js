@@ -99,13 +99,13 @@ define([
 			var options = this.collection.listView;
 
 			if(options.search != '')
-				this.$el.find('#search-keyword').val(options.search);
+				this.collection.setSearch('');
 
-            if(options.filters.contract_date_start != '')
-				this.$el.find('#filter-contract-date-start .input-group.date').datepicker('update', this.convertDateFormat(options.filters.contract_date_start, 'yyyy-mm-dd', this.dateFormat, '-'));
+			if(options.filters.contract_date_start != '')
+				this.collection.setFilter('contract_date_start', '');
 
 			if(options.filters.contract_date_end != '')
-				this.$el.find('#filter-contract-date-end .input-group.date').datepicker('update', this.convertDateFormat(options.filters.contract_date_end, 'yyyy-mm-dd', this.dateFormat, '-'));
+				this.collection.setFilter('contract_date_end', '');           
 		},
 
         initCalendars: function () {

@@ -106,10 +106,10 @@ define([
 			//console.log(options);
 			
 			if(options.search != '')
-				this.$el.find('#search-keyword').val(options.search);
+				this.collection.setSearch('');
 
 			if(options.filters.type != '')
-				this.$el.find('[name="accounttypeFilter"][value="'+options.filters.type+'"]').attr('checked', true);
+				this.collection.setFilter('filter','');
 			
 		},
 

@@ -119,9 +119,8 @@ define([
 			return products;
 		},		
 
-		onclickgenerate: function() {
+		onclickgenerate: function(data) {
 			var thisObj = this;				
-			var data = this.formatField($("#generateReportForm").serializeObject());
 			
 			this.model = new Report();		
 			this.model.fetchInventory(data['stacknumbers'], data['transportdatestart'], data['transportdateend']);													

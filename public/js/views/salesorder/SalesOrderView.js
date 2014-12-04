@@ -11,6 +11,7 @@ define([
 	'collections/salesorder/OriginCollection',
 	'collections/salesorder/NatureOfSaleCollection',
 	'collections/product/ProductCollection',
+	'collections/salesorder/CancellingReasonCollection',
 	'models/salesorder/SalesOrderModel',
 	'models/queue/QueueModel',
 	'text!templates/layout/contentTemplate.html',
@@ -20,6 +21,7 @@ define([
 	'text!templates/salesorder/salesOrderViewSubProductItemTemplate.html',
 	'text!templates/salesorder/salesOrderOriginTemplate.html',
 	'text!templates/salesorder/salesOrderNatureOfSaleTemplate.html',
+	'text!templates/salesorder/reasonForCancellationOptionTemplate.html',
 	'global',
 	'constant',
 ], function(Backbone,
@@ -34,6 +36,7 @@ define([
 			OriginCollection,
 			NatureOfSaleCollection,
 			ProductCollection,
+			CancellingReasonCollection,
 			SalesOrderModel,
 			QueueModel,
 			contentTemplate,
@@ -43,6 +46,7 @@ define([
 			productSubItemTemplate,
 			salesOrderOriginTemplate,
 			salesOrderNatureOfSaleTemplate,
+			reasonForCancellationOptionTemplate,
 			Global,
 			Const
 ){
@@ -157,6 +161,56 @@ define([
 			this.subContainer.find('#total-bales').html(Backbone.View.prototype.helpers.numberFormatBales(totalBales));
 			this.subContainer.find('#total-price').html('$ '+Backbone.View.prototype.helpers.numberFormat(totalTotalPrice));
 		},
+
+		initCancelWindow: function (){
+			var thisObj = this;
+			var options = '';
+
+			_.each(this.cancellingReasonCollection.models, function (model) {
+				options += '<option value="'+model.get('id')+'">'+model.get('reason')+'</option>';
+			});
+			var form = _.template(reasonForCancellationOptionTemplate, {'reasons': options});			
+
+			this.initConfirmationWindowWithForm('Are you sure you want to cancel this SO?',
+										'confirm-cancel-so',
+										'Yes',
+										form,
+										'Cancel Sales Order');
+										
+			var validate = $('#cancellationReasonForm').validate({
+				submitHandler: function(form) {
+					
+					var data = $(form).serializeObject();
+					
+					var salesOrderModel = new SalesOrderModel(data);
+						
+					salesOrderModel.setCancelURL();		
+					salesOrderModel.save(
+						null, 
+						{
+							success: function (model, response, options) {								
+								thisObj.hideConfirmationWindow('modal-with-form-confirm', function(){
+									thisObj.displayMessage(response);																
+									Backbone.history.history.back();
+								});
+							},
+							error: function (model, response, options) {
+								if(typeof response.responseJSON.error == 'undefined')
+									validate.showErrors(response.responseJSON);
+								else
+									thisObj.displayMessage(response);
+							},
+							headers: salesOrderModel.getAuth(),
+						}
+					);
+				},
+				rules: {
+					others: {
+						require_reason_others: true,
+					},
+				},
+			});
+		},
 		
 		events:{
 			'click #go-to-previous-page': 'goToPreviousPage',
@@ -164,6 +218,34 @@ define([
 			'click #confirm-close-order': 'closeOrder',
 			'click .sendmail':'showSendMailModal',
 			'click #btn_sendmail':'sendMail',
+			'click .cancel-so': 'preShowConfirmationWindow',
+			'click #confirm-cancel-so': 'cancelSO',
+			'change #reason': 'onChangeReason',	
+		},
+
+		preShowConfirmationWindow: function (ev) {
+			this.$el.find('#cancellationReasonForm #cancelled-order-id').val(this.poId);
+			
+			this.showConfirmationWindow('modal-with-form-confirm');
+			$('#modal-with-form-confirm').on('shown.bs.modal', function (e) {
+				$("#reason").focus();
+			});
+
+			return false;
+		},
+
+		cancelSO: function (ev) {
+			$('#cancellationReasonForm').submit();
+			return false;
+		},
+
+		onChangeReason: function (ev) {
+			var field = $(ev.target);
+			
+			if(field.val() == Const.CANCELLATIONREASON.OTHERS)
+				$('#cancellation-others-text').show();
+			else
+				$('#cancellation-others-text').hide();
 		},
 
 		showSendMailModal: function(){

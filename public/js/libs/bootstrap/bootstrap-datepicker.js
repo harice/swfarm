@@ -718,10 +718,7 @@
 				cls.push('today');
 			}
 			if (this.dates.contains(date) !== -1){
-				cls.push('active');
-
-				//Disable clickability of active day
-				cls.push('disabled');
+				cls.push('active');			
 			}
 			if (date.valueOf() < this.o.startDate || date.valueOf() > this.o.endDate ||
 				$.inArray(date.getUTCDay(), this.o.daysOfWeekDisabled) !== -1){

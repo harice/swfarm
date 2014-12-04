@@ -77,6 +77,7 @@ define([
 			this.soStatusCollection.on('sync', function() {
 				if(thisObj.subContainerExist()) {
 					thisObj.displaySO();
+					thisObj.resetSearchFilters();	
 					thisObj.renderList(thisObj.collection.listView.currentPage);
 				}
 				this.off('sync');
@@ -124,7 +125,7 @@ define([
 			
 			this.initCalendars();
 			this.initCancelWindow();
-			this.setListOptions();
+			//this.setListOptions();
 		},
 		
 		displayList: function () {
@@ -149,28 +150,31 @@ define([
 			this.collapseSelected();
 			this.generatePagination();
 		},
-		
-		setListOptions: function () {
-			var options = this.collection.listView;
-			//console.log(options);
-			
+
+		resetSearchFilters: function(){
+			var options = this.collection.listView;				
+
 			if(options.search != '')
-				this.$el.find('#search-keyword').val(options.search);
+				this.collection.setSearch('');
 			
+			if(options.filter != ' ')
+				this.collection.setFilter('filter', '');	
+
 			if(options.filters.status != '')
-				this.$el.find('[name="statusFilter"][value="'+options.filters.status+'"]').attr('checked', true);
-				
+				this.collection.setFilter('status', '');
+
 			if(options.filters.location != '')
-				this.$el.find('[name="location_id"][value="'+options.filters.location+'"]').attr('checked', true);
-				
+				this.collection.setFilter('location', '');
+
 			if(options.date != '')
-				this.$el.find('#filter-date-of-sale .input-group.date').datepicker('update', this.convertDateFormat(options.date, 'yyyy-mm-dd', this.dateFormat, '-'));
+				this.collection.setDate('');
 			
 			if(options.filters.transportstart != '')
-				this.$el.find('#filter-delivery-start .input-group.date').datepicker('update', this.convertDateFormat(options.filters.transportstart, 'yyyy-mm-dd', this.dateFormat, '-'));
-				
+				this.collection.setFilter('transportstart', '');
+
 			if(options.filters.transportend != '')
-				this.$el.find('#filter-delivery-end .input-group.date').datepicker('update', this.convertDateFormat(options.filters.transportend, 'yyyy-mm-dd', this.dateFormat, '-'));
+				this.collection.setFilter('transportend', '');
+
 		},
 		
 		initCalendars: function () {
@@ -327,6 +331,10 @@ define([
 			this.$el.find('#cancellationReasonForm #cancelled-order-id').val($(ev.currentTarget).attr('data-id'));
 			
 			this.showConfirmationWindow('modal-with-form-confirm');
+			$('#modal-with-form-confirm').on('shown.bs.modal', function (e) {
+				$("#reason").focus();
+			});
+			
 			return false;
 		},
 		

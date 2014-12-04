@@ -107,6 +107,8 @@ define([
 			this.$el.find('#status').val(this.model.get('status').name);
             if (this.model.get('location') !== null) {                	
                 this.$el.find('[name="location_id"][value="'+this.model.get('location').id+'"]').attr('checked', true);
+                if(this.model.get('location_id') == Const.PO.DESTINATION.SWFARMS)
+                	$("#save-and-check-in").hide();
             }
 			this.producerAutoCompleteView.autoCompleteResult = [{name:account.name, id:account.id, address:address}];
 			this.$el.find('#account').val(account.name);
@@ -221,7 +223,8 @@ define([
 		},
 		
 		otherInitializations: function () {
-			this.initConvertToPOWindow();
+			if(this.model.get('isfrombid'))
+				this.initConvertToPOWindow();	
 		},
 	});
 

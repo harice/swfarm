@@ -138,14 +138,42 @@ define([
 		},	
 
 		initValidateForm: function () {
-			var thisObj = this;			
+			var thisObj = this;	
+
+			var validate = $('#generateReportForm').validate({
+				submitHandler: function(form) {
+					var data = thisObj.formatField($('#generateReportForm').serializeObject());
+
+					thisObj.currView.onclickgenerate(data);
+					
+				},
+				errorPlacement: function(error, element) {
+					element.siblings('.error-msg-cont').html(error);
+				},
+
+				rules: {
+					filtername: {
+						required:true
+					}
+				},
+				messages: {
+					filtername: {
+						required: 'This field is required.'
+					}
+				}
+			});			
 
 			$('#generateReportForm')										
 				.bootstrapValidator({					
 					live: 'enabled',			
 					group: '.calendar-cont',
 					submitButtons: '',																		
-			        fields: {			        		        
+			        fields: {
+			        	filtername: {
+			        		validators: {
+			        			notEmpty: 'This field is required.'
+			        		}
+			        	},			        		        		       
 			            transportdatestart: {
 			            	container: '.start-error-msg-cont',
 			                validators: {									         	                 
@@ -176,6 +204,7 @@ define([
 				})			
 				.on('error.field.bv', function(e, data) {		           
 		            data.bv.disableSubmitButtons(false);
+		            console.log("Test");
 		        })		        
 		        .on('success.field.bv', function(e, data) {		           
 		            data.bv.disableSubmitButtons(false);		          
@@ -343,21 +372,31 @@ define([
 			if(typeof data['stacknumbers']!= "undefined")
 				newData['stacknumbers'] = data['stacknumbers'];
 
-			newData['transportdatestart'] = this.convertDateFormat(data['transportdatestart'], this.dateFormat, 'yyyy-mm-dd', '-');
-			newData['transportdateend'] = this.convertDateFormat(data['transportdateend'], this.dateFormat, 'yyyy-mm-dd', '-');
+			if(data['transportdatestart'] != '')					
+				newData['transportdatestart'] = this.convertDateFormat(data['transportdatestart'], this.dateFormat, 'yyyy-mm-dd', '-');
+			else 
+				newData['transportdatestart'] = '';
 
-			this.setStartDate(newData['transportdatestart']);							
-			this.setEndDate(newData['transportdateend']);	
+			this.setStartDate(newData['transportdatestart']);
+
+			if(data['transportdateend'] != '')
+				newData['transportdateend'] = this.convertDateFormat(data['transportdateend'], this.dateFormat, 'yyyy-mm-dd', '-');				
+			else
+				newData['transportdateend'] = '';										
+
+			this.setEndDate(newData['transportdateend']);
 
 			return newData;
 		},
 
 		processData: function(models, template) {
-			var thisObj = this;					
+			var thisObj = this;		
 
 			var innerTemplateVariables= {
 				'cur_date': this.setCurDate(),				
 				'models': models,
+				'date_from': this.startDate,
+				'date_end': this.endDate,
 				'export_pdf_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'pdf', model:this.dataModel, dateStart:this.startDate, dateEnd:this.endDate})),
 				'export_xlsx_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'xlsx', model:this.dataModel, dateStart:this.startDate, dateEnd:this.endDate})),
 				'export_xls_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'xls', model:this.dataModel, dateStart:this.startDate, dateEnd:this.endDate})),
@@ -372,8 +411,7 @@ define([
 			$("#report-list").html(compiledTemplate);
 		},			
 		
-		events: {	
-			'click #generate': 'onclickgenerate',		
+		events: {
 			'change #reporttype': 'filterAction',			
 			'click .sendmail': 'showSendMailModal',	
 			'click #btn_sendmail':'sendMail',	

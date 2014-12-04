@@ -65,9 +65,8 @@ define([
 			return producers;
 		},					
 
-		onclickgenerate: function() {
+		onclickgenerate: function(data) {
 			var thisObj = this;	
-			var data = this.formatField($("#generateReportForm").serializeObject());
 			
 			this.model = new Report();		
 			this.model.fetchStatement(data['reporttype'], data['filtername'], data['transportdatestart'], data['transportdateend']);										

@@ -31,9 +31,9 @@
             <h2 class="text-center">
                 <samp>Trucking Statement</samp>                    
             </h2>  
-            <h6 class="text-danger text-center">
-                <strong><samp><%= formatDateBy(models.get('report_date').start, 'F d, Y') %></samp></strong> -  <strong><samp><%= formatDateBy(models.get('report_date').end, 'F d, Y') %></samp></strong>
-            </h6> 
+            <h6 class="text-danger text-center">               
+                <strong><samp><% if(date_from != '') { %><%= formatDateBy(date_from, 'F d, Y') %> -  <% } %></samp></strong><strong><samp><% if(date_end != '') { %><%= formatDateBy(date_end, 'F d, Y') %> <% } %></samp></strong>
+            </h6>  
         </div>
     </div>
     <div class="row margin-top-20 margin-bottom-0">

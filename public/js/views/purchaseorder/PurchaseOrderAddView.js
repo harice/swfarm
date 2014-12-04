@@ -1102,7 +1102,7 @@ define([
 			return false;
 		},
 		
-		initConvertToPOWindow: function () {
+		initConvertToPOWindow: function () {			
 			var thisObj = this;
 			var form = _.template(convertToPOFormTemplate, {'destination': this.getDestination()});
 			
@@ -1313,10 +1313,15 @@ define([
 		
 		onChangeDestination: function (ev) {
 			var value = parseInt($(ev.currentTarget).val());
+
+			if(value == Const.PO.DESTINATION.SWFARMS && $("#save-and-check-in").is(":visible"))
+				$("#save-and-check-in").hide();
+
 			this.toggleSOFields(value);			
 		},
 		
 		toggleSOFields: function (destinationId) {
+
 			var field = '.so-field';
 			var inp = '#account_customer';
 			var hide = '#account_id_customer';

@@ -41,9 +41,8 @@ define([
 			$('.form-button-container').removeClass("hidden");	
 		},		
 
-		onclickgenerate: function() {
+		onclickgenerate: function(data) {
 			var thisObj = this;	
-			var data = this.formatField($("#generateReportForm").serializeObject());
 			
 			this.model = new Report();	
 			this.model.fetchGrossProfit(data['reporttype'], data['transportdatestart'], data['transportdateend']);

@@ -343,6 +343,10 @@ define([
 			this.$el.find('#cancellationReasonForm #cancelled-order-id').val(this.poId);
 			
 			this.showConfirmationWindow('modal-with-form-confirm');
+			$('#modal-with-form-confirm').on('shown.bs.modal', function (e) {
+				$("#reason").focus();
+			});
+
 			return false;
 		},
 		

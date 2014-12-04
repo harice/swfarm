@@ -66,19 +66,17 @@ define([
 			return customers;
 		},
 
-		onclickgenerate: function() {
-			var thisObj = this;				
-
-			var data = this.formatField($("#generateReportForm").serializeObject());
-			
+		onclickgenerate: function(data) {
+			var thisObj = this;	
+				
 			this.model = new Report();		
 			this.model.fetchStatement(data['reporttype'], data['filtername'], data['transportdatestart'], data['transportdateend']);										
 			this.model.on('change', function() {
 				thisObj.processData(thisObj.model, commissionListTemplate);
 				this.off("change");
 			});	
-		},									
-					
+		},	
+		
 		
 	});
 

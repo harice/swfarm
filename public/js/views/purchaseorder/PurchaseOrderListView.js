@@ -46,8 +46,9 @@ define([
 			
 			this.collection = new PurchaseOrderCollection();
 			this.collection.on('sync', function() {
-				if(thisObj.subContainerExist())
-					thisObj.displayList();
+				if(thisObj.subContainerExist()){
+					thisObj.displayList();					
+				}
 			});
 			this.collection.on('error', function(collection, response, options) {
 				this.off('error');
@@ -66,7 +67,8 @@ define([
 			this.poStatusCollection = new POStatusCollection();
 			this.poStatusCollection.on('sync', function() {	
 				if(thisObj.subContainerExist()) {					
-					thisObj.displayPO();										
+					thisObj.displayPO();	
+					thisObj.resetSearchFilters();									
 					thisObj.renderList(thisObj.collection.listView.currentPage);
 				}
 				
@@ -114,7 +116,7 @@ define([
 			
 			this.initCalendars();
 			this.updateCancelWindow();
-			this.setListOptions();
+			//this.setListOptions();
 		},
 		
 		displayList: function () {	
@@ -142,28 +144,28 @@ define([
 			this.collapseSelected();
 			this.generatePagination();
 		},
-		
-		setListOptions: function () {
-			var options = this.collection.listView;
-			//console.log(options);
-			
+				
+		resetSearchFilters: function(){
+			var options = this.collection.listView;				
+
 			if(options.search != '')
-				this.$el.find('#search-keyword').val(options.search);
-			
+				this.collection.setSearch('');
+						
 			if(options.filters.status != '')
-				this.$el.find('[name="statusFilter"][value="'+options.filters.status+'"]').attr('checked', true);
-				
+				this.collection.setFilter('status', '');
+
 			if(options.filters.location != '')
-				this.$el.find('[name="location_id"][value="'+options.filters.location+'"]').attr('checked', true);
-				
+				this.collection.setFilter('location', '');
+
 			if(options.date != '')
-				this.$el.find('#filter-date-of-purchase .input-group.date').datepicker('update', this.convertDateFormat(options.date, 'yyyy-mm-dd', this.dateFormat, '-'));
+				this.collection.setDate('');
 			
 			if(options.filters.transportstart != '')
-				this.$el.find('#filter-pickup-start .input-group.date').datepicker('update', this.convertDateFormat(options.filters.transportstart, 'yyyy-mm-dd', this.dateFormat, '-'));
-				
+				this.collection.setFilter('transportstart', '');
+
 			if(options.filters.transportend != '')
-				this.$el.find('#filter-pickup-end .input-group.date').datepicker('update', this.convertDateFormat(options.filters.transportend, 'yyyy-mm-dd', this.dateFormat, '-'));
+				this.collection.setFilter('transportend', '');
+
 		},
 		
 		initCalendars: function () {
