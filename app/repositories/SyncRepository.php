@@ -1,6 +1,10 @@
 <?php
 
 class SyncRepository implements SyncInterface {
+	public function addOrder($params) {
+		//
+	}
+	
 	public function syncing($type, $params) {
 		$result = '';
 		switch($type) {
@@ -9,28 +13,7 @@ class SyncRepository implements SyncInterface {
 				break;
 
 			case 'account':
-				$params = array_filter($params);
-
-				$sortby = isset($params['sortby']) ? $params['sortby'] : 'name';
-				$orderby = isset($params['orderby']) ? $params['orderby'] : 'ASC';
-
-				$accounts = Account::with('accounttype')->with('address.storagelocation.section')->orderBy($sortby,$orderby);
-
-				if(isset($params['filter'])) {
-					$filter = $params['filter'];
-					$accounts->whereHas('accounttype', function($q) use($filter) { $q->where('accounttype_id','=', $filter); } );
-				}
-
-				if(isset($params['search'])) {
-					$search = $params['search'];
-					$accounts->where(function($q) use($search) {
-					$q->orWhere('name','like','%'.$search.'%')
-						->orWhere('website','like','%'.$search.'%')
-						->orWhere('description','like','%'.$search.'%');
-					});
-				}
-
-				$result = $accounts->get();
+				$result = Account::with('accounttype')->get();
 				break;
 
 			case 'contact':
