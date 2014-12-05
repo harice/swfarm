@@ -56,7 +56,7 @@ define([
 			this.model = new Report();	
 			this.model.fetchStatement(data['reporttype'], data['filtername'], data['transportdatestart'], data['transportdateend']);													
 			this.model.on('change', function() {
-				thisObj.processData(thisObj.model, driverListTemplate);
+				thisObj.processData(thisObj.model, driverListTemplate, data['transportdatestart'], data['transportdateend']);
 				this.off("change");
 			});	
 		},

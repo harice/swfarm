@@ -125,7 +125,7 @@ define([
 			this.model = new Report();		
 			this.model.fetchInventory(data['stacknumbers'], data['transportdatestart'], data['transportdateend']);													
 			this.model.on('change', function() {
-				thisObj.processData(thisObj.model, inventoryListTemplate);
+				thisObj.processData(thisObj.model, inventoryListTemplate, data['transportdatestart'], data['transportdateend']);
 				this.off("change");
 			});				
 		},	

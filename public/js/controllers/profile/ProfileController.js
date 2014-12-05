@@ -19,8 +19,8 @@ define([
 			}
 		};
 		
-		this.edit = function () {
-			return new ProfileEditView();
+		this.edit = function (id) {
+			return new ProfileEditView({'id':id});
 		};
 		
 		this.view = function () {

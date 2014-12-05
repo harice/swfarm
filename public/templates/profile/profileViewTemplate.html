@@ -1,46 +1,103 @@
-<div class="row">
-	<div class="col-sm-12">
-	    <div class="block-flat profile-info">
-	      <div class="row">
+<div class="row margin-top-0">
+	<div class="col-md-12 no-padding">
+		<div class="padding-top-5 padding-bottom-10 margin-bottom-10">
+		  <div class="md-dark prusia">
+		    <h2 class="entity-header margin-top-0 margin-bottom-0 padding-bottom-10"><%= user.get("lastname") %>, <%= user.get("firstname") %> <%= user.get("suffix") %></h2>
+		  </div>		       
+		</div>
+	    <div class="block-flat profile-info">	    
+	      <div class="content padding-top-0">
 	        <!-- div class="col-sm-2">
 	          <div class="avatar">
 	          	<img class="profile-avatar" src="<% if (user.get("profileimg") != "" && user.get("profileimg") != null) { %><%= user.get("profileimg")+"?qwert="+(new Date().getTime()) %><% } else { %><%= user_pic_default %><% } %>" />
 	          </div>
 	        </div -->
-	        <div class="col-sm-12">
-				<div class="personal">
-		            <h1 class="name"><%= user.get("lastname") %>, <%= user.get("firstname") %> <%= user.get("suffix") %></h1>
-		            <p class="description">
-		            	<% _.each(user.get("roles"), function(role){ %>
-							<span class="label label-default"><%= role.name %></span>
-						<% }); %>
-		            </p>
-
-		            <ul class="list-unstyled">
-
-						<li><i class="fa fa-sign-in"></i> <%= user.get("username") %></li>
-		        	
-			        	<% if (user.get("position") != "" | user.get("emp_no") != "") { %>
-							<li><i class="fa fa-user"></i> <%= user.get("position") %> <%= user.get("emp_no") %></li>
-						<% } %>
-							
-						<li><i class="fa fa-envelope"></i> <%= user.get("email") %></li>
-
-			        	<% if (user.get("phone") != "") { %>
-							<li><i class="fa fa-phone"></i> <%= user.get("phone") %></li>
-						<% } %>
-
-						<% if (user.get("mobile") != "") { %>
-							<li><i class="fa fa-mobile-phone"></i> <%= user.get("mobile") %></li>
-						<% }%>
-
-					</ul>
-
-		            <a href="<%=profile_edit_url%>" class="btn btn-primary btn-flat btn-rad margin-top-10" data-modal="reply-ticket">
-		            	<i class="fa fa-pencil-square-o"></i> Edit Profile
-		            </a>
-				</div>
-	        </div>
+	        <fieldset>	
+	        	<legend>
+	        		<h3>DETAILS</h3>
+	        	</legend>
+	        	<div class="row margin-top-0">
+	        		<div class="col-md-12">
+	        			<table class="no-border no-strip">
+                              <tbody class="no-border-x no-border-y">
+                              		<% if(!_.isEmpty(user.get('roles'))) { %>
+                              		<tr>
+                              			<td class="width-100" align="right">
+                              				<strong>Roles</strong>
+                              			</td>
+                              			<td>
+                              				<% _.each(user.get("roles"), function(role){ %>
+												<span class="label label-default margin-right-3"><%= role.name %></span>
+											<% }); %>
+                              			</td>
+                              		</tr>
+	        						<% } %>	 
+	        						<% if(!_.isEmpty(user.get('username'))) { %>
+	        						<tr>
+	        							<td class="width-100" align="right">
+	        								<i class="fa fa-sign-in"></i>
+	        							</td>
+	        							<td>
+	        								<%= user.get("username") %>
+	        							</td>
+	        						</tr>
+	        						<% } %> 
+	        						<% if(!_.isEmpty(user.get('position')) || !_.isEmpty(user.get('emp_no'))) { %>
+	        						<tr>
+	        							<td class="width-100" align="right">
+	        								<i class="fa fa-user"></i>
+	        							</td>
+	        							<td>
+	        								<%= user.get("position") %> <%= user.get("emp_no") %>
+	        							</td>
+	        						</tr>
+	        						<% } %> 
+	        						<% if(!_.isEmpty(user.get('email'))) { %>
+	        						<tr>
+	        							<td class="width-100" align="right">
+	        								<i class="fa fa-envelope"></i>
+	        							</td>
+	        							<td>
+	        								<%= user.get("email") %>
+	        							</td>
+	        						</tr>
+	        						<% } %> 
+	        						<% if(!_.isEmpty(user.get('phone'))) { %>
+	        						<tr>
+	        							<td class="width-100" align="right">
+	        								<i class="fa fa-phone"></i>
+	        							</td>
+	        							<td>
+	        								<%= user.get("phone") %>
+	        							</td>
+	        						</tr>
+	        						<% } %> 
+	        						<% if(!_.isEmpty(user.get('mobile'))) { %>
+	        						<tr>
+	        							<td class="width-100" align="right">
+	        								<i class="fa fa-mobile-phone"></i>
+	        							</td>
+	        							<td>
+	        								<%= user.get("mobile") %>
+	        							</td>
+	        						</tr>
+	        						<% } %> 
+                              </tbody>
+                              <tfoot class="no-border-x no-border-y">
+                              	<tr>
+                              		<td class="width-100">&nbsp;</td>
+                              		<td>
+                              			<a href="<%=profile_edit_url%>/<%= user.get("id") %>" class="btn btn-trans btn-primary btn-flat btn-rad btn-sm" data-modal="reply-ticket">
+							            	<i class="fa fa-pencil-square-o"></i> Edit Profile
+							            </a>
+							            <a class="btn btn-warning btn-trans btn-rad btn-sm" href="#" id="go-to-previous-page"><i class="fa fa-ban width-10"></i> Cancel</a>
+                              		</td>
+                              	</tr>
+                              </tfoot>
+                        </table>
+	        		</div>
+	        	</div>	        	
+			</fieldset>
 	      </div>
 	    </div>
 	</div>

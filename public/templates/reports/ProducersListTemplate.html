@@ -32,8 +32,8 @@
                 <samp>Producer Statement</samp>                    
             </h2>   
             <h6 class="text-danger text-center">               
-                <strong><samp><% if(date_from != '') { %><%= formatDateBy(date_from, 'F d, Y') %> -  <% } %></samp></strong><strong><samp><% if(date_end != '') { %><%= formatDateBy(date_end, 'F d, Y') %> <% } %></samp></strong>
-            </h6>  
+                <strong><samp><% if(!_.isEmpty(date_from)) { %><%= formatDateBy(date_from, 'F d, Y') %> -  <% } %></samp></strong><strong><samp><% if(!_.isEmpty(date_end)) { %><%= formatDateBy(date_end, 'F d, Y') %> <% } %></samp></strong>
+            </h6>    
         </div>
     </div>
     <div class="row margin-top-20 margin-bottom-0">
@@ -81,46 +81,49 @@
                     _.each(location.section, function(section){ 
                     var tot_amount = 0; 
                     var total_bales = 0;
-                    var total_tons = 0;   
-                    if(!_.isEmpty(section.productorder)){           
+                    var total_tons = 0;                               
                         %>
                         <h3 class="margin-top-0"><strong><samp><%= location.name %> - <%= section.name %></samp></strong></h3>                           
                         <table id="operator-list" class="no-border table margin-bottom-0">
                             <thead class="no-border">
                                 <tr>
-                                    <th><strong>Date</strong></th>
-                                    <th><strong>Order No.</strong></th>
-                                    <th><strong>Weight Ticket No.</strong></th>
-                                    <th><strong>Price</strong></th>
-                                    <th><strong>Net Pounds</strong></th>
-                                    <th><strong>Bales</strong></th>                                    
-                                    <th><strong>Tons</strong></th>                                    
-                                    <th><strong>Amount</strong></th>
+                                    <th class="width-100"><strong>Date</strong></th>
+                                    <th class="width-150"><strong>Order No.</strong></th>
+                                    <th class="width-150"><strong>Weight Ticket No.</strong></th>
+                                    <th class="width-150"><strong>Price</strong></th>
+                                    <th class="width-150"><strong>Net Pounds</strong></th>
+                                    <th class="width-100"><strong>Bales</strong></th>                                    
+                                    <th class="width-150"><strong>Tons</strong></th>                                    
+                                    <th class="width-100"><strong>Amount</strong></th>
                                 </tr>
                             </thead>
+                            <%
+                            if(!_.isEmpty(section.productorder)) { %>
                             <tbody class="no-border-y">  
-                                <%                                                             
-                                _.each(section.productorder, function(order){                                         
-                                    var amount = parseFloat(order.unitprice) * parseFloat(order.tons);
-                                    total_bales += parseInt(order.bales);
-                                    total_tons += parseFloat(order.tons);
-                                %>                                                                    
-                                <tr>                        
-                                    <td>
-                                        <%= 
-                                            formatDate(order.updated_at)
-                                        %>                                           
-                                    </td>
-                                    <td><%= order.order_number %></td>
-                                    <td><code><%= order.weightticketnumber %></code></td>
-                                    <td>$ <%= numberFormat(order.unitprice) %></td>
-                                    <td><%= order.pounds %></td>                                    
-                                    <td><%= order.bales %></td>                                        
-                                    <td><%= order.tons %></td> 
-                                    <% tot_amount += amount %>                                       
-                                    <td>$ <%= numberFormat(amount) %></td>                                                                     
-                                </tr>                                                                          
-                                <% });  %>
+                                <%                                                                                             
+                                    _.each(section.productorder, function(order){                                         
+                                        var amount = parseFloat(order.unitprice) * parseFloat(order.tons);
+                                        total_bales += parseInt(order.bales);
+                                        total_tons += parseFloat(order.tons);
+                                    %>                                                                    
+                                    <tr>                        
+                                        <td>
+                                            <%= 
+                                                formatDate(order.updated_at)
+                                            %>                                           
+                                        </td>
+                                        <td><%= order.order_number %></td>
+                                        <td><code><%= order.weightticketnumber %></code></td>
+                                        <td>$ <%= numberFormat(order.unitprice) %></td>
+                                        <td><%= order.pounds %></td>                                    
+                                        <td><%= order.bales %></td>                                        
+                                        <td><%= order.tons %></td> 
+                                        <% tot_amount += amount %>                                       
+                                        <td>$ <%= numberFormat(amount) %></td>                                                                     
+                                    </tr>                                                                          
+                                <% 
+                                    });  
+                                %>                                
                             </tbody>               
                             <tfoot class="no-border-y">
                                 <tr>
@@ -133,17 +136,25 @@
                                     <td><strong>$ <%= numberFormat(tot_amount) %></strong></td>
                                 </tr>
                             </tfoot>
+                            <%
+                            }
+                            else  {
+                                %>
+                            <tbody class="no-border-y"> 
+                                    <tr>
+                                        <td colspan="8">
+                                            <p class="text-danger margin-bottom-0">No order found.</p>
+                                        </td>
+                                    </tr>
+                            </tbody>       
+                            <%
+                            }
+                            %>
                         </table>  
                         <div class="progress width-1000 margin-bottom-20 height-1">
                             <div style="width: %" class="progress-bar progress-bar-primary"></div>
                         </div>
                     <%
-                    }
-                    else  {
-                    %>
-                        <p class="text-danger">No order found.</p>
-                    <%
-                    }
                     });
                 }  
                 else {

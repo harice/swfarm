@@ -47,7 +47,7 @@ define([
 			this.model = new Report();	
 			this.model.fetchGrossProfit(data['reporttype'], data['transportdatestart'], data['transportdateend']);
 			this.model.on('change', function() {
-				thisObj.processData(thisObj.model, grossProfitListTemplate);
+				thisObj.processData(thisObj.model, grossProfitListTemplate, data['transportdatestart'], data['transportdateend']);
 				this.off("change");
 			});	
 		},		

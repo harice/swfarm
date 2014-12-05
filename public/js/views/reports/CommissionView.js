@@ -68,11 +68,11 @@ define([
 
 		onclickgenerate: function(data) {
 			var thisObj = this;	
-				
+
 			this.model = new Report();		
 			this.model.fetchStatement(data['reporttype'], data['filtername'], data['transportdatestart'], data['transportdateend']);										
 			this.model.on('change', function() {
-				thisObj.processData(thisObj.model, commissionListTemplate);
+				thisObj.processData(thisObj.model, commissionListTemplate, data['transportdatestart'], data['transportdateend']);
 				this.off("change");
 			});	
 		},	

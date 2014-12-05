@@ -81,22 +81,12 @@ define([
 		},
 
 		setEndDate: function(date){
-			this.endDate = date;
+			this.endDate = date;			
 		},
 
 		setFilterId: function(ev) {
 			this.filterId = $(ev.target).val();
-		},
-
-		getStartDate: function(){
-			return this.startDate;
-
-			console.log(this.startDate());
-		},
-
-		getEndDate: function(){
-			return this.endDate;
-		},
+		},		
 
 		getTitle: function(){
 			return this.title;
@@ -268,7 +258,7 @@ define([
 				var selectedDate = $('#filter-operator-date-start .input-group.date input').val();
 				thisObj.$el.find('#filter-operator-date-end .input-group.date').datepicker('setStartDate', selectedDate);
 				$("#generateReportForm").bootstrapValidator('revalidateField', 'transportdatestart');
-								
+				thisObj.setStartDate(selectedDate);		
 			});
 			
 			$('#filter-operator-date-end .input-group.date').datepicker({
@@ -282,6 +272,7 @@ define([
 				var selectedDate = $('#filter-operator-date-end .input-group.date input').val();
 				thisObj.$el.find('#filter-operator-date-start .input-group.date').datepicker('setEndDate', selectedDate);
 				$("#generateReportForm").bootstrapValidator('revalidateField', 'transportdateend');
+				thisObj.setEndDate(selectedDate);		
 			});
 			
 		},
@@ -375,32 +366,28 @@ define([
 			if(data['transportdatestart'] != '')					
 				newData['transportdatestart'] = this.convertDateFormat(data['transportdatestart'], this.dateFormat, 'yyyy-mm-dd', '-');
 			else 
-				newData['transportdatestart'] = '';
-
-			this.setStartDate(newData['transportdatestart']);
+				newData['transportdatestart'] = '';		
 
 			if(data['transportdateend'] != '')
 				newData['transportdateend'] = this.convertDateFormat(data['transportdateend'], this.dateFormat, 'yyyy-mm-dd', '-');				
 			else
-				newData['transportdateend'] = '';										
-
-			this.setEndDate(newData['transportdateend']);
+				newData['transportdateend'] = '';												
 
 			return newData;
 		},
 
-		processData: function(models, template) {
-			var thisObj = this;		
-
+		processData: function(models, template, startDate, endDate) {
+			var thisObj = this;				
+			
 			var innerTemplateVariables= {
 				'cur_date': this.setCurDate(),				
 				'models': models,
-				'date_from': this.startDate,
-				'date_end': this.endDate,
-				'export_pdf_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'pdf', model:this.dataModel, dateStart:this.startDate, dateEnd:this.endDate})),
-				'export_xlsx_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'xlsx', model:this.dataModel, dateStart:this.startDate, dateEnd:this.endDate})),
-				'export_xls_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'xls', model:this.dataModel, dateStart:this.startDate, dateEnd:this.endDate})),
-				'export_csv_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'csv', model:this.dataModel, dateStart:this.startDate, dateEnd:this.endDate}))
+				'date_from': startDate,
+				'date_end': endDate,
+				'export_pdf_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'pdf', model:this.dataModel, dateStart:startDate, dateEnd:endDate})),
+				'export_xlsx_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'xlsx', model:this.dataModel, dateStart:startDate, dateEnd:endDate})),
+				'export_xls_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'xls', model:this.dataModel, dateStart:startDate, dateEnd:endDate})),
+				'export_csv_url': Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({filterId:this.filterId, type:'excel', format:'csv', model:this.dataModel, dateStart:startDate, dateEnd:endDate}))
 			}
 
 			_.extend(innerTemplateVariables,Backbone.View.prototype.helpers);

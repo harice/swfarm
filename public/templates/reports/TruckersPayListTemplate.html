@@ -32,8 +32,8 @@
                 <samp>Trucking Statement</samp>                    
             </h2>  
             <h6 class="text-danger text-center">               
-                <strong><samp><% if(date_from != '') { %><%= formatDateBy(date_from, 'F d, Y') %> -  <% } %></samp></strong><strong><samp><% if(date_end != '') { %><%= formatDateBy(date_end, 'F d, Y') %> <% } %></samp></strong>
-            </h6>  
+                <strong><samp><% if(!_.isEmpty(date_from)) { %><%= formatDateBy(date_from, 'F d, Y') %> -  <% } %></samp></strong><strong><samp><% if(!_.isEmpty(date_end)) { %><%= formatDateBy(date_end, 'F d, Y') %> <% } %></samp></strong>
+            </h6>   
         </div>
     </div>
     <div class="row margin-top-20 margin-bottom-0">
@@ -99,11 +99,11 @@
                 var handling_i = 0;
         %>
             <h3 class="margin-top-0"><strong><samp><%= order.order_number %></samp></strong></h3>               
-            <table id="operator-list" class="table no-border margin-bottom-0">
+            <table id="trucker-list" class="table no-border margin-bottom-0">
                 <thead class="no-border">
                     <tr>         
-                        <th><strong>Date</strong></th>
-                        <th><strong>Weight Ticket No.</strong></th>                        
+                        <th class="width-70"><strong>Date</strong></th>
+                        <th class="width-100"><strong>Weight Ticket No.</strong></th>                        
                         <th class="width-100"><strong>Origin Loader</strong></th>
                         <th class="width-100"><strong>Destination Loader</strong></th>
                         <th><strong>Loaders Fee</strong></th>                            
@@ -141,19 +141,19 @@
                         <% pounds_i += parseFloat(schedule.pounds) %>
                         <td><%= numberFormatTons(schedule.tons) %></td>
                         <% tons_i += parseFloat(schedule.tons) %>
-                        <td>$ <%= numberFormat(schedule.handlingfee) %></td>
+                        <td>$<%= numberFormat(schedule.handlingfee) %></td>
                         <% handling_i += parseFloat(schedule.handlingfee) %>
-                        <td>$ <%= numberFormat(schedule.truckingrate) %></td>
+                        <td>$<%= numberFormat(schedule.truckingrate) %></td>
                         <% trucking_i += parseFloat(schedule.truckingrate) %>
-                        <td>$ <%= numberFormat(schedule.gross) %></td>
+                        <td>$<%= numberFormat(schedule.gross) %></td>
                         <% gross_i += parseFloat(schedule.gross) %>
-                        <td>$ <%= numberFormat(schedule.trailerrate) %></td>
+                        <td>$<%= numberFormat(schedule.trailerrate) %></td>
                         <% trailer_i += parseFloat(schedule.trailerrate) %>
-                        <td>$ <%= numberFormat(schedule.fuelcharge) %></td>
+                        <td>$<%= numberFormat(schedule.fuelcharge) %></td>
                         <% fuelcharge_i += parseFloat(schedule.fuelcharge) %>
-                        <td>$ <%= numberFormat(schedule.adminfee) %></td>
+                        <td>$<%= numberFormat(schedule.adminfee) %></td>
                         <% adminfee_i += parseFloat(schedule.adminfee) %>
-                        <td>$ <%= numberFormat(schedule.amount) %></td>
+                        <td>$<%= numberFormat(schedule.amount) %></td>
                         <% amount_i += parseFloat(schedule.amount) %>
                     </tr>
                 <%
@@ -165,17 +165,17 @@
                         <td colspan="4" align="right">
                             <strong>Total</strong>
                         </td>
-                        <td>$ <%= numberFormat(loader_i) %></td>
+                        <td>$<%= numberFormat(loader_i) %></td>
                         <td><%= bales_i %></td>
                         <td><%= numberFormatLbs(pounds_i) %></td>
                         <td><%= numberFormatTons(tons_i) %></td>
                         <td><%= numberFormat(handling_i) %></td>
-                        <td>$ <%= numberFormat(trucking_i) %></td>
-                        <td>$ <%= numberFormat(gross_i) %></td>
-                        <td>$ <%= numberFormat(trailer_i) %></td>
-                        <td>$ <%= numberFormat(fuelcharge_i) %></td>
-                        <td>$ <%= numberFormat(adminfee_i) %></td>
-                        <td>$ <%= numberFormat(amount_i) %></td>
+                        <td>$<%= numberFormat(trucking_i) %></td>
+                        <td>$<%= numberFormat(gross_i) %></td>
+                        <td>$<%= numberFormat(trailer_i) %></td>
+                        <td>$<%= numberFormat(fuelcharge_i) %></td>
+                        <td>$<%= numberFormat(adminfee_i) %></td>
+                        <td>$<%= numberFormat(amount_i) %></td>
                     </tr>
                 </tfoot>              
             </table> 

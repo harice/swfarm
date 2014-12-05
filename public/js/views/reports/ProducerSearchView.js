@@ -71,7 +71,7 @@ define([
 			this.model = new Report();		
 			this.model.fetchStatement(data['reporttype'], data['filtername'], data['transportdatestart'], data['transportdateend']);										
 			this.model.on('change', function() {
-				thisObj.processData(thisObj.model, producersListTemplate);
+				thisObj.processData(thisObj.model, producersListTemplate, data['transportdatestart'], data['transportdateend']);
 				this.off("change");
 			});	
 		},		

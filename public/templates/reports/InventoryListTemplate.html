@@ -32,7 +32,7 @@
                 <samp>Inventory Report</samp>                    
             </h2>   
             <h6 class="text-danger text-center">               
-                <strong><samp><% if(date_from != '') { %><%= formatDateBy(date_from, 'F d, Y') %> -  <% } %></samp></strong><strong><samp><% if(date_end != '') { %><%= formatDateBy(date_end, 'F d, Y') %> <% } %></samp></strong>
+                <strong><samp><% if(!_.isEmpty(date_from)) { %><%= formatDateBy(date_from, 'F d, Y') %> -  <% } %></samp></strong><strong><samp><% if(!_.isEmpty(date_end)) { %><%= formatDateBy(date_end, 'F d, Y') %> <% } %></samp></strong>
             </h6>    
         </div>
     </div>
@@ -57,15 +57,15 @@
                 <table id="operator-list" class="table no-border margin-bottom-0">
                     <thead class="no-border">
                         <tr>
-                            <th><strong>Order Number</strong></th>
-                            <th><strong>Date</strong></th>
-                            <th><strong>Weight Number</strong></th>
-                            <th><strong>Producer</strong></th>
-                            <th><strong>Contract #</strong></th>
-                            <th><strong>Bales</strong></th>
-                            <th><strong>Tons</strong></th>
-                            <th><strong>Cost</strong></th>
-                            <th><strong>Cost Total</strong></th>
+                            <th class="width-100"><strong>Order Number</strong></th>
+                            <th class="width-100"><strong>Date</strong></th>
+                            <th class="width-150"><strong>Weight Number</strong></th>
+                            <th class="width-100"><strong>Producer</strong></th>
+                            <th class="width-100"><strong>Contract #</strong></th>
+                            <th class="width-100"><strong>Bales</strong></th>
+                            <th class="width-100"><strong>Tons</strong></th>
+                            <th class="width-100"><strong>Cost</strong></th>
+                            <th class="width-100"><strong>Cost Total</strong></th>
                         </tr>
                     </thead>
                     <tbody class="no-border-y">

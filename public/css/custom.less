@@ -612,7 +612,7 @@ table tr.product-stack {
 .content-inner.table-responsive table tr { background:#ffffff; }
 .content-inner.table-responsive .table-condensed > thead > tr > th { color:#ffffff; }
 .content-inner.table-responsive .table-condensed > thead > tr > th,
-.content-inner.table-responsive .table-condensed > tfoot > tr > td { padding:5px 3px; font-weight:600; }
+.content-inner.table-responsive .table-condensed > tfoot > tr > td { padding:5px 3px; font-weight:500; }
 .content-inner.table-responsive .table-condensed > tfoot > tr > td {  }
 
 .content-inner.table-responsive .table-bordered > thead > tr > th, 
@@ -714,7 +714,18 @@ h2.entity-header { padding:10px; background:#3D566D; color:#ffffff; }
 
 /*#report-accordion { background:#708090; color:#ffffff; padding:5px; border-radius:3px; }*/
 
-#report-list table thead tr th { background:#eaeaea; }
+#report-list table { table-layout:fixed; }
+#report-list table thead tr th {
+    background: #efefef; /* Old browsers */
+    background: -moz-linear-gradient(top, #efefef 1%, #d1d1d1 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#efefef), color-stop(100%,#d1d1d1)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #efefef 1%,#d1d1d1 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #efefef 1%,#d1d1d1 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #efefef 1%,#d1d1d1 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #efefef 1%,#d1d1d1 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#efefef', endColorstr='#d1d1d1',GradientType=0 ); /* IE6-9 */ 
+}
 #report-list table tbody tr:nth-child(even) td { background:#fafafa; }
+#report-list #trucker-list td { font-size:11px; }
 #report-list h5 samp { font-size:14px; }
 #report-filter .btn.multiselect { margin-bottom:0 !important; }

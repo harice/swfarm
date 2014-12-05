@@ -1,7 +1,7 @@
 <% if (!_.isEmpty(pos)) { %>
 	<% _.each(pos, function(po){ 		
 	%>
-	<tr class="<% if(_.isNull(po.get("location")) || (!_.isNull(po.get("location")) && po.get('location').location == swfarm_location)) { %> collapse-trigger cursor-pointer<% } %>" data-id="<%= po.get("id") %>">
+	<tr <% if(_.isNull(po.get("location_id")) || (!_.isNull(po.get("location_id")) && po.get('location_id') == swfarm_location)) { %> class="collapse-trigger cursor-pointer"<% } %> data-id="<%= po.get("id") %>">
 		<td>
 			<%
 			if(_.isNull(po.get("location")) || (!_.isNull(po.get("location")) && po.get('location').id == swfarm_location)) { %>
@@ -43,7 +43,7 @@
 		</td>
 		<td class="text-right">$ <%= numberFormat(po.get("totalPrice")) %></td>
 	</tr>
-	<% if(_.isNull(po.get("location")) || (!_.isNull(po.get("location")) && po.get('location').location == swfarm_location)) { %>
+	<% if(_.isNull(po.get("location_id")) || (!_.isNull(po.get("location_id")) && po.get('location_id') == swfarm_location)) { %>
 		<tr>
 			<td colspan="9" style="padding:0;">
 				<div class="order-collapsible-item list-view-collapse collapse" id="<%= collapsible_id %><%= po.get("id") %>">

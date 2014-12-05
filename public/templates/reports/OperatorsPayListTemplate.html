@@ -32,8 +32,8 @@
                 <samp>Admin - Operator Pay</samp>                    
             </h2>
             <h6 class="text-danger text-center">               
-                <strong><samp><% if(date_from != '') { %><%= formatDateBy(date_from, 'F d, Y') %> -  <% } %></samp></strong><strong><samp><% if(date_end != '') { %><%= formatDateBy(date_end, 'F d, Y') %> <% } %></samp></strong>
-            </h6>  
+                <strong><samp><% if(!_.isEmpty(date_from)) { %><%= formatDateBy(date_from, 'F d, Y') %> -  <% } %></samp></strong><strong><samp><% if(!_.isEmpty(date_end)) { %><%= formatDateBy(date_end, 'F d, Y') %> <% } %></samp></strong>
+            </h6>   
         </div>
     </div>
     <div class="row margin-top-20 margin-bottom-0">
@@ -70,12 +70,12 @@
         <table id="operator-list" class="table no-border margin-bottom-0">
             <thead class="no-border">
                 <tr>
-                    <th><strong>Date</strong></th>                                        
-                    <th><strong>Weight Ticket Number</strong></th>
-                    <th><strong>Origin Loader</strong></th>
-                    <th><strong>Origin Loader's Fee</strong></th>
-                    <th><strong>Destination Loader</strong></th>
-                    <th><strong>Destination Loader's Fee</strong></th>                      
+                    <th class="width-150"><strong>Date</strong></th>                                        
+                    <th class="width-200"><strong>Weight Ticket Number</strong></th>
+                    <th class="width-200"><strong>Origin Loader</strong></th>
+                    <th class="width-200"><strong>Origin Loader's Fee</strong></th>
+                    <th class="width-200"><strong>Destination Loader</strong></th>
+                    <th class="width-200"><strong>Destination Loader's Fee</strong></th>                      
                 </tr>
             </thead>
             <tbody class="no-border-y">
