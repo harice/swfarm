@@ -24,7 +24,7 @@ class ProcessorController extends BaseController
 	{
 		if(Input::has('process')) {
 			Queue::push(get_class($this->download), Input::all());
-			return Response::json(array( 'error' => false, 'message' => "Your request has been queued."), 200);
+			return Response::json(array( 'error' => false, 'message' => "Email has been sent."), 200);
 		} else {
 			if(Request::ajax()) return App::abort(501,'Not implemented');
 			else return Redirect::to('404')->withParameters($parameters);
