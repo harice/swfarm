@@ -375,7 +375,7 @@ define([
 		app_router.on('route:showProfilePage', function (action) {
 			this.closeView();
 			var profileController = new ProfileController();
-			this.currView = profileController.setAction(action, id);
+			this.currView = profileController.setAction(action);
 			this.currView.render();
 		});
 		

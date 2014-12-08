@@ -1,115 +1,112 @@
 <div class="row margin-top-0">
     <div class="col-md-12 no-padding">
         <div class="block-flat padding-top-0 padding-bottom-0">
-            <div class="content padding-top-0">
-              <div class="row margin-top-0">
+            <div class="row margin-top-0 margin-left-0 margin-right-0">
 
-                <div class="col-md-3 padding-top-10 padding-right-0">
-                  <a href="<%= po_add_url %>" class="btn btn-primary btn-sm btn-rad margin-left-0">+ Add PO</a>
-                  <a href="<%= bid_add_url %>" class="btn btn-warning btn-sm btn-rad">+ Add Bid</a>
+              <div class="col-md-3 padding-left-0">
+                <a href="<%= po_add_url %>" class="btn btn-primary btn-sm btn-rad margin-left-0">+ Add PO</a>
+                <a href="<%= bid_add_url %>" class="btn btn-warning btn-sm btn-rad">+ Add Bid</a>
+              </div>
+
+              <div class="col-md-2">
+                <div class="form-group margin-bottom-5 margin-top-0">
+                  <div id="filter-date-of-purchase" class="search-filter-field calendar-cont">
+                      <div class="input-group input-group-sm date datetime margin-bottom-0">
+                        <input class="form-control" size="16" type="text" value="" />
+                        <div class="input-group-btn input-group-addon cursor-pointer">
+                          <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                      </div>
+                      <p class="help-block margin-bottom-0 margin-top-0">Purchased Date</p>
+                  </div>  
                 </div>
+              </div>
 
-                <div class="col-md-2">
-                  <div class="form-group margin-bottom-5">
-                    <div id="filter-date-of-purchase" class="search-filter-field calendar-cont">
+              <div class="col-md-2">
+                <div class="form-group margin-bottom-5 margin-top-0">
+                    <div id="filter-pickup-start" class="search-filter-field calendar-cont">
                         <div class="input-group input-group-sm date datetime margin-bottom-0">
                           <input class="form-control" size="16" type="text" value="" />
-                          <div class="input-group-btn">
-                            <button class="btn btn-trans"><span class="fa fa-calendar"></span></button>
+                          <div class="input-group-btn input-group-addon cursor-pointer">
+                            <span class="glyphicon glyphicon-th"></span>
                           </div>
                         </div>
-                        <p class="help-block margin-bottom-0 margin-top-0">Purchased Date</p>
-                    </div>  
-                  </div>
-                </div>
-
-                <div class="col-md-2">
-                  <div class="form-group margin-bottom-5">
-                      <div id="filter-pickup-start" class="search-filter-field calendar-cont">
-                          <div class="input-group input-group-sm date datetime margin-bottom-0">
-                            <input class="form-control" size="16" type="text" value="" />
-                            <div class="input-group-btn">
-                              <button class="btn btn-trans"><span class="fa fa-calendar"></span></button>
-                            </div>
-                          </div>
-                          <p class="help-block margin-bottom-0 margin-top-0">Pick-up Start</p>
-                      </div>
-                  </div>
-                </div>
-
-                <div class="col-md-2">
-                  <div class="form-group margin-bottom-5">
-                      <div id="filter-pickup-end" class="search-filter-field calendar-cont">
-                          <div class="input-group input-group-sm date datetime margin-bottom-0">
-                            <input class="form-control" size="16" type="text" value="" />
-                            <div class="input-group-btn">
-                              <button class="btn btn-trans"><span class="fa fa-calendar"></span></button>
-                            </div>
-                          </div>
-                          <p class="help-block margin-bottom-0 margin-top-0">Pick-up End</p>
-                      </div>
-                  </div>
-                </div>
-
-                <div class="col-md-3 padding-top-10">
-                  <form id="searchLocal" name="searchLocal" class="form-inline searchLocal" role="form">
-                    <div class="input-group input-group-sm">
-                      <label class="sr-only" for="search">Search</label>
-                      <input type="text" class="search form-control" id="search-keyword" placeholder="" style="border-radius:3px 0 0 3px;">
-
-                      <div class="input-group-btn">
-                        <button type="button" class="btn btn-trans dropdown-toggle" data-toggle="dropdown" style="border-radius:0;">
-                          <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu pull-right filter" role="menu">
-                          <li class="dropdown-header"><i class="fa fa-truck"></i>Filter By Destination</li>
-                          <li><input class="location_id" type="radio" name="location_id" value="" checked> All</li>
-                          <%= destination_filters %>
-                          <li class="dropdown-header"><i class="fa fa-tags"></i>Filter By Status</li>
-                          <li><input class="statusFilter" type="radio" name="statusFilter" value="" checked> All</li>
-                          <%= status_filters %>
-                        </ul>
-                        <button type="button" class="btn btn-default search-local">Search</button>
-                      </div>
+                        <p class="help-block margin-bottom-0 margin-top-0">Pick-up Start</p>
                     </div>
-                  </form>
-                </div>
-              </div>
-                
-              <div class="content-inner table-responsive margin-top-10">
-                <table id="po-list" class="table-condensed table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <th class="width-150">PO No.</th>
-                      <th class="width-200">Producer</th>
-                      <th class="width-110">Destination</th>
-                      <th class="width-100">Status</th>
-                      <th class="sortable sort-date-of-po cursor-pointer width-110"><i class="fa fa-sort"></i> Purchased Date</span></th>
-                      <th class="width-110">Pickup Start</th>
-                      <th class="width-110">Pickup End</th>
-                      <th class="width-150">Progress</th>
-                      <th class="width-130">Total Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody id="order-accordion" class="accordion-list-cont"></tbody>
-                </table>
-                  
-                <div class="clearfix footer-pagination" style="display:none">
-                    <select class="form-control width-100 pull-left margin-top-0 margin-bottom-0 margin-left-0 margin-right-0 input-sm display-items" id="perpage" name="perpage" style="display:none">
-                        <option value="15">15 rows</option>
-                        <option value="25">25 rows</option>
-                        <option value="50">50 rows</option>
-                    </select>
-                    <ul class="pagination pagination-sm pull-right margin-top-0 margin-bottom-0 margin-left-0 margin-right-0" style="display:none;">
-                        <li><a class="first-page btn" href="#"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
-                        <li><a class="prev-page btn" href="#"><span class="glyphicon glyphicon-step-backward"></span></a></li>
-                        <li><a class="next-page btn" href="#"><span class="glyphicon glyphicon-step-forward"></span></a></li>
-                        <li><a class="last-page btn" href="#"><span class="glyphicon glyphicon-fast-forward"></span></a></li>
-                    </ul>
                 </div>
               </div>
 
-            </div> <!-- /.content -->
+              <div class="col-md-2">
+                <div class="form-group margin-bottom-5 margin-top-0">
+                    <div id="filter-pickup-end" class="search-filter-field calendar-cont">
+                        <div class="input-group input-group-sm date datetime margin-bottom-0">
+                          <input class="form-control" size="16" type="text" value="" />
+                          <div class="input-group-btn input-group-addon cursor-pointer">
+                            <span class="glyphicon glyphicon-th"></span>
+                          </div>
+                        </div>
+                        <p class="help-block margin-bottom-0 margin-top-0">Pick-up End</p>
+                    </div>
+                </div>
+              </div>
+
+              <div class="col-md-3 padding-right-0">
+                <form id="searchLocal" name="searchLocal" class="form-inline searchLocal" role="form">
+                  <div class="input-group input-group-sm">
+                    <label class="sr-only" for="search">Search</label>
+                    <input type="text" class="search form-control" id="search-keyword" placeholder="" style="border-radius:3px 0 0 3px;">
+
+                    <div class="input-group-btn">
+                      <button type="button" class="btn btn-trans dropdown-toggle" data-toggle="dropdown" style="border-radius:0;">
+                        <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu pull-right filter" role="menu">
+                        <li class="dropdown-header"><i class="fa fa-truck"></i>Filter By Destination</li>
+                        <li><input class="location_id" type="radio" name="location_id" value="" checked> All</li>
+                        <%= destination_filters %>
+                        <li class="dropdown-header"><i class="fa fa-tags"></i>Filter By Status</li>
+                        <li><input class="statusFilter" type="radio" name="statusFilter" value="" checked> All</li>
+                        <%= status_filters %>
+                      </ul>
+                      <button type="button" class="btn btn-default search-local">Search</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+              
+            <div class="content-inner table-responsive margin-top-10">
+              <table id="po-list" class="table-condensed table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th class="width-150">PO No.</th>
+                    <th class="width-200">Producer</th>
+                    <th class="width-110">Destination</th>
+                    <th class="width-100">Status</th>
+                    <th class="sortable sort-date-of-po cursor-pointer width-110"><i class="fa fa-sort"></i> Purchased Date</span></th>
+                    <th class="width-110">Pickup Start</th>
+                    <th class="width-110">Pickup End</th>
+                    <th class="width-150">Progress</th>
+                    <th class="width-130">Total Amount</th>
+                  </tr>
+                </thead>
+                <tbody id="order-accordion" class="accordion-list-cont"></tbody>
+              </table>
+                
+              <div class="clearfix footer-pagination" style="display:none">
+                  <select class="form-control width-100 pull-left margin-top-0 margin-bottom-0 margin-left-0 margin-right-0 input-sm display-items" id="perpage" name="perpage" style="display:none">
+                      <option value="15">15 rows</option>
+                      <option value="25">25 rows</option>
+                      <option value="50">50 rows</option>
+                  </select>
+                  <ul class="pagination pagination-sm pull-right margin-top-0 margin-bottom-0 margin-left-0 margin-right-0" style="display:none;">
+                      <li><a class="first-page btn" href="#"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
+                      <li><a class="prev-page btn" href="#"><span class="glyphicon glyphicon-step-backward"></span></a></li>
+                      <li><a class="next-page btn" href="#"><span class="glyphicon glyphicon-step-forward"></span></a></li>
+                      <li><a class="last-page btn" href="#"><span class="glyphicon glyphicon-fast-forward"></span></a></li>
+                  </ul>
+              </div>
+            </div>
         </div> <!-- /.block-flat -->
     </div>
 </div>

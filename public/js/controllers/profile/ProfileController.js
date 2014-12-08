@@ -7,7 +7,7 @@ define([
 	
 	function ProfileController () {	
 		
-		this.setAction = function (action, id) {
+		this.setAction = function (action) {
 			
 			switch (action) {
 				case Const.CRUD.EDIT:
@@ -19,8 +19,8 @@ define([
 			}
 		};
 		
-		this.edit = function (id) {
-			return new ProfileEditView({'id':id});
+		this.edit = function () {
+			return new ProfileEditView();
 		};
 		
 		this.view = function () {

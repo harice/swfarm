@@ -48,7 +48,7 @@ textarea.form-control { resize:none; }
 }
 
 .cl-mcont {
-    padding:5px 21px;
+    padding:6px 21px;
     .margin-top-0 {
         margin-top: 0;
     }
@@ -57,6 +57,8 @@ textarea.form-control { resize:none; }
             margin-top:10px;
         }
     }
+    .block-flat,
+    .block-wizard { padding:7px; }
 }
 .cont {
     h2 {
@@ -143,7 +145,7 @@ h2, .h2 { font-size:20px; }
 h3, .h3 { font-size:16px; }
 
 label { font-size:12px; font-weight:normal;}
-.form-group { margin-bottom:5px; }
+.form-group { margin-bottom:5px; margin-top:5px; }
 
 .padding-5 { padding:5px; }
 .padding-10 { padding:10px; }
@@ -185,6 +187,20 @@ body {
         }
         .dropdown-header {
             margin-top:5px;
+            background:#4c6e93;
+            color:#ffffff;
+            padding:5px;
+
+            &:before {
+                background: url("../images/menu-tail-up.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+                content: "";
+                display: inline-block;
+                height: 43px;
+                position: absolute;
+                right: 66px;
+                top: -10px;
+                width: 17px;
+            }
         }
     }
 }
@@ -400,6 +416,7 @@ ul.autocomplete, .ui-autocomplete {
 .max-width-80 { max-width: 130px; }
 .min-width-100 { min-width: 100px; }
 .width-10 { width:10px; }
+.width-30  { width: 30px; }
 .width-40  { width: 40px; }
 .width-50  { width: 50px; }
 .width-60  { width: 60px; }
@@ -612,7 +629,7 @@ table tr.product-stack {
 .content-inner.table-responsive table tr { background:#ffffff; }
 .content-inner.table-responsive .table-condensed > thead > tr > th { color:#ffffff; }
 .content-inner.table-responsive .table-condensed > thead > tr > th,
-.content-inner.table-responsive .table-condensed > tfoot > tr > td { padding:5px 3px; font-weight:500; }
+.content-inner.table-responsive .table-condensed > tfoot > tr > td { padding: 3px; font-weight:500; }
 .content-inner.table-responsive .table-condensed > tfoot > tr > td {  }
 
 .content-inner.table-responsive .table-bordered > thead > tr > th, 
@@ -632,6 +649,8 @@ table tr.product-stack {
 .content-inner.table-responsive .table-hover > tbody > tr:hover > th { background:#f5f5f5; }
 .content-inner.table-responsive .table-hover > tbody > tr td.subheader { background:#E5ECF2; }
 
+span.label-default,
+label.default,
 .content-inner.table-responsive .table-bordered > tbody td span.label-default { color:#666666; background:#f1efe2; display:inline-block; padding:3px 4px; margin-right:1px; }
 .content-inner.table-responsive .table-bordered .btn-xs { padding:0 3px; }
 .content-inner.table-responsive .table-bordered legend .btn-xs { padding:2px 6px; }
@@ -639,7 +658,7 @@ table tr.product-stack {
 .footer-pagination { background:#ffffff; border: 1px solid #dddddd; border-top-width:3px; border-top-color:#f5f5f5; padding:5px; }
 
 /** Forms **/
-fieldset legend h3 { font-size:15px; padding:5px 20px; min-width:95px; }
+fieldset legend h3 { font-size:15px; padding:5px 10px; min-width:95px; }
 fieldset legend h3, fieldset legend h4 { background:#E5F6FF; }
 fieldset legend h3, fieldset legend h4, fieldset legend h5, .modal-content fieldset h3 { display:inline-block; margin-bottom:0; }
 fieldset legend h5 { font-size:13px; font-weight:bold; padding:7px 45px; background:#f5f5f5; color:#505050; border-radius:3px 3px 0 0; }
@@ -647,15 +666,18 @@ fieldset legend h5 span { display:inline-block; padding:0 2px; }
 .block-flat .content fieldset legend h4 { font-size:14px; margin-top:5px; padding:5px 40px; }
 .list-view-collapse fieldset legend h3 { padding:5px; }
 fieldset legend button.margin-top-20 { margin-top: 20px; margin-bottom:4px !important; }
-fieldset .form-group { margin-top:5px; }
+fieldset .form-horizontal .form-group,
+.form-horizontal fieldset .form-group,
+.form-horizontal .form-group { margin-top:5px; margin-left:0; margin-right:0; }
 fieldset .form-group .btn.multiselect { margin-bottom:0 !important; }
+fieldset table.information td i { font-size:13px; width:auto; }
 
 fieldset.address-fields-group { border:1px solid #dddddd; padding:0 10px 10px; width:500px; }
 fieldset.address-fields-group legend,
 fieldset.report-fields-group legend { border:0; margin-bottom:0; width:auto; }
 fieldset.address-fields-group legend h3 { background:#f5f5f5; color:#505050; margin-top:0; }
 
-fieldset.report-fields-group { border:1px solid #dddddd; padding:0 10px 10px; background:#438696; color:#ffffff; }
+fieldset.report-fields-group { border:1px solid #dddddd; padding:0 8px 10px 8px; background:#438696; color:#ffffff; }
 fieldset.report-fields-group legend h3 { background:#ffffff; box-shadow:0 0 1px 1px #ccc inset; margin-top:0; }
 fieldset.report-fields-group label.error { margin-top:0; margin-bottom:0; color:#c00 !important; font-weight:bold; line-height:1; display:block; }
 
@@ -676,8 +698,20 @@ h2.content-header { margin-top:0; }
 h2.content-header span { background:#3D566D; padding:5px 10px; display:inline-block; color:#ffffff; font-family:Menlo,Monaco,Consolas,"Courier New",monospace; font-size:22px; }
 h2.entity-header { padding:10px; background:#3D566D; color:#ffffff; }
 
-.modal-content .modal-header { background:#FF5656; border-bottom:3px solid #f0f0f0; border-radius:5px 5px 0 0; padding:13px 10px; }
-.modal-content .modal-header h3 { font-weight:bold; color:#ffffff; }
+.modal-content .modal-header {
+    border-bottom:3px solid #f0f0f0; 
+    border-radius:5px 5px 0 0; 
+    padding:13px 10px;
+    background: #e1e1e1; /* Old browsers */
+    background: -moz-linear-gradient(top, #ffffff 0%, #e1e1e1 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e1e1e1)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #ffffff 0%,#e1e1e1 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #ffffff 0%,#e1e1e1 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #ffffff 0%,#e1e1e1 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #ffffff 0%,#e1e1e1 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e1e1e1',GradientType=0 ); /* IE6-9 */  
+}
+.modal-content .modal-header h3 { font-weight:500; }
 
 /** Weather **/
 .weather-box .fd-tile.header .icon img { width:100px; height:100px; }
@@ -729,3 +763,5 @@ h2.entity-header { padding:10px; background:#3D566D; color:#ffffff; }
 #report-list #trucker-list td { font-size:11px; }
 #report-list h5 samp { font-size:14px; }
 #report-filter .btn.multiselect { margin-bottom:0 !important; }
+
+.input-group-btn.open .dropdown-toggle { background:#f0f0f0; }

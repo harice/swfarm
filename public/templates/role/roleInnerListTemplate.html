@@ -4,7 +4,7 @@
       <td valign="top"><a href="<%= role_url %>/<%= role.get("id") %>"><%= role.get("name") %></a></td>
       <td><%= role.get("description") %></td>
       <td valign="top" align="center">
-        <a href="<%= role_edit_url %>/<%= role.get("id") %>" class="text-primary">
+        <a href="<%= role_edit_url %>/<%= role.get("id") %>">
           <span class="fa-stack">
             <i class="fa fa-square fa-stack-2x"></i>
             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -16,7 +16,7 @@
             <i class="fa fa-cogs fa-stack-1x fa-inverse"></i>
           </span>
         </a>
-        <a href="#" class="delete-role" data-id="<%= role.get('id') %>"> 
+        <a href="#" class="delete-role color-danger" data-id="<%= role.get('id') %>"> 
           <span class="fa-stack">
             <i class="fa fa-square fa-stack-2x"></i>
             <i class="fa fa-times fa-stack-1x fa-inverse"></i>

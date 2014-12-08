@@ -46,7 +46,13 @@ define([
 		},
 		
 		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
 			'click #delete' : 'removeProduct',
+			'click #delete-product': 'showDeleteConfirmationWindow'
+		},
+
+		showDeleteConfirmationWindow: function () {
+			this.showConfirmationWindow();
 		},
 		
 		removeProduct: function (){

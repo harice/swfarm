@@ -1,57 +1,53 @@
 <div class="row margin-top-0">
     <div class="col-md-12 no-padding">
         <div class="block-flat padding-top-0 padding-bottom-0">
-            <div class="content padding-top-0">
-
-                <div id="content-top" class="row margin-top-0">
-                    <div class="col-md-9 padding-top-10 padding-right-0">
-                        <a href="<%= contact_add_url %>" class="btn btn-primary btn-sm btn-rad margin-left-0">+ Add Contact</a>
-                    </div>
-                    <div class="col-md-3">
-                        <form class="form-inline" role="form">
-                            <div class="input-group input-group-sm margin-top-10">
-                                <label class="sr-only" for="search">Search</label>
-                                <input type="text" class="search form-control" id="search-keyword" placeholder="" style="border-radius:3px 0 0 3px;">
-                                <span class="input-group-btn">
-                                    <button type="button" class="btn btn-default search-local">Search</button>
-                                </span>
-                            </div>
-                        </form>
-                    </div>
+            <div id="content-top" class="row margin-top-0 margin-left-0 margin-right-0">
+                <div class="col-md-9 no-padding">
+                    <a href="<%= contact_add_url %>" class="btn btn-primary btn-sm btn-rad margin-left-0">+ Add Contact</a>
                 </div>
-
-                <div class="content-inner table-responsive">
-                    <table id="contact-list" class="table-condensed table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th class="width-250 sortable sort-name cursor-pointer"><i class="fa fa-sort"></i> Full Name</th>
-                                <th class="width-250 sortable sort-account cursor-pointer"><i class="fa fa-sort"></i> Account Name</th>
-                                <th class="width-300">Account Type</th>
-                                <th class="width-150">Position</th>
-                                <th class="width-120">Email Address</th>
-                                <th class="width-100">Phone No.</th>
-                                <th class="width-60">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-
-                    <div class="clearfix footer-pagination" style="display:none">
-                        <select class="form-control width-100 pull-left margin-top-0 margin-bottom-0 margin-left-0 margin-right-0 input-sm display-items" id="perpage" name="perpage" style="display:none">
-                            <option value="15">15 rows</option>
-                            <option value="25">25 rows</option>
-                            <option value="50">50 rows</option>
-                        </select>
-                        <ul class="pagination pagination-sm pull-right margin-top-0 margin-bottom-0 margin-left-0 margin-right-0" style="display:none;">
-                            <li><a class="first-page btn" href="#"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
-                            <li><a class="prev-page btn" href="#"><span class="glyphicon glyphicon-step-backward"></span></a></li>
-                            <li><a class="next-page btn" href="#"><span class="glyphicon glyphicon-step-forward"></span></a></li>
-                            <li><a class="last-page btn" href="#"><span class="glyphicon glyphicon-fast-forward"></span></a></li>
-                        </ul>
-                    </div>
+                <div class="col-md-3 no-padding">
+                    <form class="form-inline" role="form">
+                        <div class="input-group input-group-sm margin-top-0">
+                            <label class="sr-only" for="search">Search</label>
+                            <input type="text" class="search form-control" id="search-keyword" placeholder="" style="border-radius:3px 0 0 3px;">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default search-local">Search</button>
+                            </span>
+                        </div>
+                    </form>
                 </div>
+            </div>
 
-            </div> <!-- /.content -->
+            <div class="content-inner table-responsive">
+                <table id="contact-list" class="table-condensed table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th class="width-250 sortable sort-name cursor-pointer"><i class="fa fa-sort"></i> Full Name</th>
+                            <th class="width-250 sortable sort-account cursor-pointer"><i class="fa fa-sort"></i> Account Name</th>
+                            <th class="width-300">Account Type</th>
+                            <th class="width-150">Position</th>
+                            <th class="width-120">Email Address</th>
+                            <th class="width-100">Phone No.</th>
+                            <th class="width-60">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+                <div class="clearfix footer-pagination" style="display:none">
+                    <select class="form-control width-100 pull-left margin-top-0 margin-bottom-0 margin-left-0 margin-right-0 input-sm display-items" id="perpage" name="perpage" style="display:none">
+                        <option value="15">15 rows</option>
+                        <option value="25">25 rows</option>
+                        <option value="50">50 rows</option>
+                    </select>
+                    <ul class="pagination pagination-sm pull-right margin-top-0 margin-bottom-0 margin-left-0 margin-right-0" style="display:none;">
+                        <li><a class="first-page btn" href="#"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
+                        <li><a class="prev-page btn" href="#"><span class="glyphicon glyphicon-step-backward"></span></a></li>
+                        <li><a class="next-page btn" href="#"><span class="glyphicon glyphicon-step-forward"></span></a></li>
+                        <li><a class="last-page btn" href="#"><span class="glyphicon glyphicon-fast-forward"></span></a></li>
+                    </ul>
+                </div>
+            </div>
         </div> <!-- /.block-flat -->
     </div>
 </div>

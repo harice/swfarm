@@ -1,43 +1,35 @@
 <div class="row margin-top-0">
     <div class="col-md-12 no-padding">
         <div class="block-flat padding-top-0 padding-bottom-0">
-            <div class="content padding-top-0">
-              
-                <div class="row margin-top-0">
-                    <div class="col-md-12">
-                        <form id="addRolesForm" class="form-horizontal" role="form" method="post">
-                          <% if (typeof role_id !== "undefined") { %>
-                            <input type="hidden" id="id" name="id" value="<%= role_id %>" />
-                          <% } %>
-                          <fieldset>
-                            <legend>
-                              <h3>DETAILS</h3>
-                            </legend>
-                            <div class="form-group">
-                              <label for="name" class="col-sm-2 control-label">Role Name <i class="color-danger">*</i></label>
-                              <div class="col-sm-5">
-                                <input type="text" class="form-control input-sm capitalize" id="name" name="name" placeholder="" minlength="5" maxlength="50" required>
-                              </div>
-                            </div>
-                            <div class="form-group">
-                              <label for="description" class="col-sm-2 control-label">Description</label>
-                              <div class="col-sm-5">
-                                <textarea class="form-control" maxlength="200" rows="3" id="description" name="description"></textarea>
-                              </div>
-                            </div>
-                            <div class="form-group margin-top-10">
-                              <label for="" class="col-sm-2 control-label"></label>
-                              <div class="col-sm-5">
-                                 <button id="save" type="submit" class="save btn btn-primary btn-sm btn-rad margin-left-0"><i class="fa fa-save"></i> Save</button>
-                                 <a id="go-to-previous-page" class="btn btn-warning btn-sm btn-rad" href="#"><i class="fa fa-ban width-10"></i> Cancel</a>
-                              </div>
-                            </div>
-                          <fieldset>
-                        </form>
-                    </div>
+          <form id="addRolesForm" class="form-horizontal" role="form" method="post">
+            <% if (typeof role_id !== "undefined") { %>
+              <input type="hidden" id="id" name="id" value="<%= role_id %>" />
+            <% } %>
+            <fieldset>
+              <legend>
+                <h3 class="margin-top-0">DETAILS</h3>
+              </legend>
+              <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">Role Name <i class="color-danger">*</i></label>
+                <div class="col-sm-5">
+                  <input type="text" class="form-control input-sm capitalize" id="name" name="name" placeholder="" minlength="5" maxlength="50" required>
                 </div>
-              
-            </div> <!-- /.content -->
+              </div>
+              <div class="form-group">
+                <label for="description" class="col-sm-2 control-label">Description</label>
+                <div class="col-sm-5">
+                  <textarea class="form-control" maxlength="200" rows="3" id="description" name="description"></textarea>
+                </div>
+              </div>
+              <div class="form-group margin-top-10">
+                <label for="" class="col-sm-2 control-label"></label>
+                <div class="col-sm-5">
+                   <button id="save" type="submit" class="save btn btn-primary btn-sm btn-rad margin-left-0"><i class="fa fa-save"></i> Save</button>
+                   <a id="go-to-previous-page" class="btn btn-warning btn-sm btn-rad" href="#"><i class="fa fa-ban width-10"></i> Cancel</a>
+                </div>
+              </div>
+            <fieldset>
+          </form>
         </div> <!-- /.block-flat -->
     </div>
 </div>

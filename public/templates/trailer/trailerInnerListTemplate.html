@@ -4,13 +4,13 @@
 		<td><a href="<%= trailer_url %>/<%= trailer.get('id') %>"><%= trailer.get("number") %></a></td>
         <td><%= trailer.get("name") %></td>
 		<td align="center">
-			<a href="<%= trailer_edit_url %>/<%= trailer.get("id") %>" class="text-primary" title="edit">
+			<a href="<%= trailer_edit_url %>/<%= trailer.get("id") %>" title="edit">
 			  <span class="fa-stack">
 	            <i class="fa fa-square fa-stack-2x"></i>
 	            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
 	          </span>
 			</a>
-			<a href="#" class="text-danger delete-trailer" data-id="<%= trailer.get("id") %>">
+			<a href="#" class="color-danger delete-trailer" data-id="<%= trailer.get("id") %>">
 			  <span class="fa-stack">
 	            <i class="fa fa-square fa-stack-2x"></i>
 	            <i class="fa fa-times fa-stack-1x fa-inverse"></i>

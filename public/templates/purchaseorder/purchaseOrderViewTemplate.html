@@ -1,117 +1,114 @@
-<div class="content padding-top-0">
-  <h2 class="ponumber margin-bottom-0">
-    <%= po.get("order_number") %>
-    <div class='pull-right'>
-      <a href='<%= print_url %>' target='_blank' class='btn btn-link btn-sm padding-right-0'><i class='fa fa-print'></i>print</a>
-      <button class='btn btn-link btn-sm margin-left-0 sendmail'><i class='fa fa-envelope-o'></i>email</button>
-    </div>
-  </h2>
-  <div class="progress width-150 margin-bottom-0 height-3">
-  <div style="width: <%= po.get("weightPercentageDelivered") %>%" class="progress-bar progress-bar-<%= po.get("status").class %>"></div>
+<h2 class="ponumber margin-bottom-0">
+  <%= po.get("order_number") %>
+  <div class='pull-right'>
+    <a href='<%= print_url %>' target='_blank' class='btn btn-link btn-sm padding-right-0'><i class='fa fa-print'></i>print</a>
+    <button class='btn btn-link btn-sm margin-left-0 sendmail'><i class='fa fa-envelope-o'></i>email</button>
   </div>
-  <div class="row margin-top-0">
-    <div class="col-md-6">
-      <% if (typeof is_bid === "undefined") { %>
-        Purchased Date: <span class="text-danger"><%= formatDateAMPM(po.get("created_at")) %></span><br>
-        Pickup Start: <span class="text-danger"><%= formatDate(po.get("transportdatestart")) %></span><br>
-        Pickup End: <span class="text-danger"><%= formatDate(po.get("transportdateend")) %></span><br>
-        Destination: <span class="text-danger"><%= po.get("location").location %></span><br>
-      <% } else { %>
-        Bid Date: <span class="text-danger"><%= formatDateAMPM(po.get("created_at")) %></span><br>
-      <% } %>
-      Status: <label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label>
-      <% if(po.get("status").id == 5 || po.get("status").id == 6) { if(po.get("ordercancellingreason").reason.id != reason_others ) { %>
-      <br>Reason: <span class="text-danger"><%= po.get("ordercancellingreason").reason.reason %>
-      <% } else { %>
-      <br>Reason: <span class="text-danger"><%= po.get("ordercancellingreason").others %>
-      <% }} %>
-      <% if (po.get("notes").length > 0) { %>
-      <br>Notes: <%= po.get("notes") %>
-      <% } %>
-    </div>
-    <div class="col-md-6">
-      <span class="pull-left">Producer:</span>
-      <address class="margin-left-10 pull-left">
-        <p class="margin-bottom-0"><strong><%= po.get("contact").firstname %> <%= po.get("contact").lastname %> <%= po.get("contact").suffix %></strong></p>
-        <%= po.get("account").name %>
-        <br>
-        <%= po.get("orderaddress").street %>
-        <br>
-        <%= po.get("orderaddress").city %>,
-        <%= po.get("orderaddress").address_states.state_code %>
-        <%= po.get("orderaddress").zipcode %>
-      </address>
-    </div>
+</h2>
+<div class="progress width-150 margin-bottom-0 height-3">
+<div style="width: <%= po.get("weightPercentageDelivered") %>%" class="progress-bar progress-bar-<%= po.get("status").class %>"></div>
+</div>
+<div class="row margin-top-0 margin-left-0 margin-right-0">
+  <div class="col-md-6 no-padding">
+    <% if (typeof is_bid === "undefined") { %>
+      Purchased Date: <span class="text-danger"><%= formatDateAMPM(po.get("created_at")) %></span><br>
+      Pickup Start: <span class="text-danger"><%= formatDate(po.get("transportdatestart")) %></span><br>
+      Pickup End: <span class="text-danger"><%= formatDate(po.get("transportdateend")) %></span><br>
+      Destination: <span class="text-danger"><%= po.get("location").location %></span><br>
+    <% } else { %>
+      Bid Date: <span class="text-danger"><%= formatDateAMPM(po.get("created_at")) %></span><br>
+    <% } %>
+    Status: <label class="label label-<%= po.get("status").class %>"><%= po.get("status").name %></label>
+    <% if(po.get("status").id == 5 || po.get("status").id == 6) { if(po.get("ordercancellingreason").reason.id != reason_others ) { %>
+    <br>Reason: <span class="text-danger"><%= po.get("ordercancellingreason").reason.reason %>
+    <% } else { %>
+    <br>Reason: <span class="text-danger"><%= po.get("ordercancellingreason").others %>
+    <% }} %>
+    <% if (po.get("notes").length > 0) { %>
+    <br>Notes: <%= po.get("notes") %>
+    <% } %>
   </div>
-  <div class="row margin-top-10 padding-top-10">
-    <div class="col-md-12">
-      <fieldset>
-        <legend class="margin-bottom-5">
-          <h3 class="margin-top-0">PRODUCTS</h3>
-        </legend>
-        <div class="content-inner table-responsive">
-          <table id="product-list" class="table-condensed table-bordered table-hover">
-            <thead>
-              <tr>
-                <th class="width-200">Product</th>
-                <th>Tons</th>
-                <th class="width-150">
-                  <% if (typeof is_bid === "undefined") { %>
-                    Total Price
-                  <% } else { %>
-                    Bid Total Price
-                  <% } %>
-                </th>
-
-              </tr>
-            </thead>
-            <tbody></tbody>
-      		  <tfoot>
-      		    <tr>
-        			  <td class="text-right">Total</td>
-        			  <td class="text-right"><strong id="total-tons">0.0000</strong></td>
-        			  <td class="text-right"><strong id="total-price">$ 0.00</strong></td>
-        			</tr>
-      		  </tfoot>
-          </table>
-        </div>
-      </fieldset>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <div class="pull-right">
-        <% if (typeof editable !== "undefined") { %>
-          <% if (typeof is_bid === "undefined") { %>			
-            <a id="edit-po" class="btn btn-primary btn-trans btn-rad btn-sm editable-button" href="<%= po_edit_url %>">
-              <i class="fa fa-pencil width-10"></i> Edit PO
-            </a>
-            <% if(typeof swfarm_located != "undefined") { %>
-            <a id="close-order" class="btn btn-warning btn-trans btn-rad btn-sm editable-button" href="#">
-              <i class="fa fa-times width-10"></i> Close PO
-            </a>
-            <% } %>
-            <a href="#" class="btn btn-warning btn-trans btn-rad btn-sm cancel-po editable-button">
-              <i class="fa fa-ban width-10"></i> Cancel PO
-            </a>
-          <% } else {%>
-            <a id="edit-po" class="btn btn-trans btn-primary btn-rad btn-sm" href="<%= po_edit_url %>">
-              <i class="fa fa-pencil width-10"></i> Edit Bid
-            </a>
-            <a href="#" class="btn btn-warning btn-trans btn-rad btn-sm cancel-bid">
-              <i class="fa fa-ban width-10"></i> Cancel Bid
-            </a>
-          <% } %>
-        <% } else { %>
-			<% if (typeof so_link_label !== "undefined") { %>
-				<a id="create-dropship-so" class="btn btn-primary btn-trans btn-rad btn-sm" href="#">
-					<i class="fa fa-pencil width-10"></i> <%= so_link_label %>
-				</a>
-			<% } %>
-		<% } %>
-        <a class="btn btn-trans btn-rad btn-sm" href="<%= po_url %>"><i class="fa fa-history width-10"></i> Back</a>
-      </div>
-    </div>
+  <div class="col-md-6 no-padding">
+    <span class="pull-left">Producer:</span>
+    <address class="margin-left-10 pull-left">
+      <p class="margin-bottom-0"><strong><%= po.get("contact").firstname %> <%= po.get("contact").lastname %> <%= po.get("contact").suffix %></strong></p>
+      <%= po.get("account").name %>
+      <br>
+      <%= po.get("orderaddress").street %>
+      <br>
+      <%= po.get("orderaddress").city %>,
+      <%= po.get("orderaddress").address_states.state_code %>
+      <%= po.get("orderaddress").zipcode %>
+    </address>
   </div>
 </div>
-    
+<div class="row margin-top-10 padding-top-10 margin-left-0 margin-right-0">
+  <div class="col-md-12 no-padding">
+    <fieldset>
+      <legend class="margin-bottom-5">
+        <h3 class="margin-top-0">PRODUCTS</h3>
+      </legend>
+      <div class="content-inner table-responsive">
+        <table id="product-list" class="table-condensed table-bordered table-hover">
+          <thead>
+            <tr>
+              <th class="width-200">Product</th>
+              <th>Tons</th>
+              <th class="width-150">
+                <% if (typeof is_bid === "undefined") { %>
+                  Total Price
+                <% } else { %>
+                  Bid Total Price
+                <% } %>
+              </th>
+
+            </tr>
+          </thead>
+          <tbody></tbody>
+    		  <tfoot>
+    		    <tr>
+      			  <td class="text-right">Total</td>
+      			  <td class="text-right"><strong id="total-tons">0.0000</strong></td>
+      			  <td class="text-right"><strong id="total-price">$ 0.00</strong></td>
+      			</tr>
+    		  </tfoot>
+        </table>
+      </div>
+    </fieldset>
+  </div>
+</div>
+<div class="row margin-left-0 margin-right-0">
+  <div class="col-md-12 no-padding">
+    <div class="pull-right">
+      <% if (typeof editable !== "undefined") { %>
+        <% if (typeof is_bid === "undefined") { %>			
+          <a id="edit-po" class="btn btn-primary btn-trans btn-rad btn-sm editable-button" href="<%= po_edit_url %>">
+            <i class="fa fa-pencil width-10"></i> Edit PO
+          </a>
+          <% if(typeof swfarm_located != "undefined") { %>
+          <a id="close-order" class="btn btn-warning btn-trans btn-rad btn-sm editable-button" href="#">
+            <i class="fa fa-times width-10"></i> Close PO
+          </a>
+          <% } %>
+          <a href="#" class="btn btn-warning btn-trans btn-rad btn-sm cancel-po editable-button">
+            <i class="fa fa-ban width-10"></i> Cancel PO
+          </a>
+        <% } else {%>
+          <a id="edit-po" class="btn btn-trans btn-primary btn-rad btn-sm" href="<%= po_edit_url %>">
+            <i class="fa fa-pencil width-10"></i> Edit Bid
+          </a>
+          <a href="#" class="btn btn-warning btn-trans btn-rad btn-sm cancel-bid">
+            <i class="fa fa-ban width-10"></i> Cancel Bid
+          </a>
+        <% } %>
+      <% } else { %>
+		<% if (typeof so_link_label !== "undefined") { %>
+			<a id="create-dropship-so" class="btn btn-primary btn-trans btn-rad btn-sm" href="#">
+				<i class="fa fa-pencil width-10"></i> <%= so_link_label %>
+			</a>
+		<% } %>
+	<% } %>
+      <a class="btn btn-trans btn-rad btn-sm" href="<%= po_url %>"><i class="fa fa-history width-10"></i> Back</a>
+    </div>
+  </div>
+</div>    

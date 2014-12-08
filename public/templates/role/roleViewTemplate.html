@@ -5,25 +5,29 @@
             <h2 class="entity-header margin-top-0 margin-bottom-0 padding-bottom-10"><%= role.get('name') %></h2>
           </div>           
         </div>
-        <div class="block-flat">  
-          <dl class="dl-horizontal padding-top-10 margin-bottom-10">
-            <dt>Description</dt>
-            <dd>
-              <% if (role.get("description") != "") { %>
-                <%= role.get("description") %>
-              <% } else { %>
-                &nbsp;
-              <% } %>
-            </dd>
-            <dt></dt>
-            <dd>
-              <div class="clearfix"></div>
-              <a href="<%= role_edit_url %>/<%= role.get("id") %>" class="btn btn-primary btn-trans btn-rad btn-sm"><i class="fa fa-pencil width-10"></i> Edit</a>
-              <button id="delete-role" type="button" class="btn btn-danger btn-rad btn-trans btn-sm" value="Delete"><i class="fa fa-times width-10"></i> Delete</button>
-              <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a>
-            </dd>
-          </dl>
-          
+        <div class="block-flat"> 
+          <fieldset> 
+            <legend>
+              <h3 class="margin-top-0">DETAILS</h3>
+            </legend>
+            <dl class="dl-horizontal padding-top-10 margin-bottom-10">
+              <dt>Description</dt>
+              <dd>
+                <% if (role.get("description") != "") { %>
+                  <%= role.get("description") %>
+                <% } else { %>
+                  &nbsp;
+                <% } %>
+              </dd>
+              <dt></dt>
+              <dd>
+                <div class="clearfix"></div>
+                <a href="<%= role_edit_url %>/<%= role.get("id") %>" class="btn btn-primary btn-trans btn-rad btn-sm"><i class="fa fa-pencil width-10"></i> Edit</a>
+                <button id="delete-role" type="button" class="btn btn-danger btn-rad btn-trans btn-sm" value="Delete"><i class="fa fa-times width-10"></i> Delete</button>
+                <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a>
+              </dd>
+            </dl>
+          </fieldset>
         </div> <!-- /.block-flat -->
     </div>
 </div>

@@ -5,13 +5,13 @@
         <td><%= scale.get("account_name") %></td>
 		<td class="text-right width-100">$ <%= scale.get("rate") %></td>
 		<td align="center">
-			<a href="<%= scale_edit_url %>/<%= scale.get("id") %>" class="text-primary" title="edit">
+			<a href="<%= scale_edit_url %>/<%= scale.get("id") %>" title="edit">
 			  <span class="fa-stack">
 	            <i class="fa fa-square fa-stack-2x"></i>
 	            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
 	          </span>
 			</a>
-			<a href="#" class="text-danger delete-scale" data-id="<%= scale.get("id") %>">
+			<a href="#" class="color-danger delete-scale" data-id="<%= scale.get("id") %>">
 			  <span class="fa-stack">
 		          <i class="fa fa-square fa-stack-2x"></i>
 		          <i class="fa fa-times fa-stack-1x fa-inverse"></i>

@@ -16,13 +16,13 @@
 
 		<td>$ <%= numberFormat(trucker.get("fee")) %></td>
 		<td align="center">
-			<a href="<%= trucker_edit_url %>/<%= trucker.get("id") %>" class="text-primary" title="edit">
+			<a href="<%= trucker_edit_url %>/<%= trucker.get("id") %>" title="edit">
 			  <span class="fa-stack">
 	            <i class="fa fa-square fa-stack-2x"></i>
 	            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
 	          </span>
 			</a>
-			<a href="#" class="text-danger delete-trucker" data-id="<%= trucker.get("id") %>">
+			<a href="#" class="color-danger delete-trucker" data-id="<%= trucker.get("id") %>">
 			  <span class="fa-stack">
 	            <i class="fa fa-square fa-stack-2x"></i>
 	            <i class="fa fa-times fa-stack-1x fa-inverse"></i>

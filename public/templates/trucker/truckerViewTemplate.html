@@ -6,20 +6,25 @@
           </div>           
         </div>       
         <div class="block-flat">
-            <dl id="view-trucker" class="dl-horizontal padding-top-10">              
-                <dt>Account Name</dt>
-                <dd><%= trucker.get("account").name %></dd>
-                <dt>Trucker Type</dt>
-                <dd><%= trucker.get("account").accounttype[0].name %></dd>
-                <dt>Admin Fee</dt>
-                <dd>$ <%= numberFormat(trucker.get("fee")) %></dd>
-                <dd>
-                    <div class="clearfix"></div>
-                    <a href="<%= trucker_edit_url %>/<%= trucker.get('id') %>" class="btn btn-primary btn-trans btn-rad btn-sm"><i class="fa fa-pencil width-10"></i> Edit</a>
-                    <button id="delete-trucker" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
-                    <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a>
-                </dd>
-            </dl>
+            <fieldset>
+                <legend>
+                    <h3 class="margin-top-0">DETAILS</h3>
+                </legend>
+                <dl id="view-trucker" class="dl-horizontal padding-top-10">              
+                    <dt>Account Name</dt>
+                    <dd><%= trucker.get("account").name %></dd>
+                    <dt>Trucker Type</dt>
+                    <dd><%= trucker.get("account").accounttype[0].name %></dd>
+                    <dt>Admin Fee</dt>
+                    <dd>$ <%= numberFormat(trucker.get("fee")) %></dd>
+                    <dd>
+                        <div class="clearfix"></div>
+                        <a href="<%= trucker_edit_url %>/<%= trucker.get('id') %>" class="btn btn-primary btn-trans btn-rad btn-sm"><i class="fa fa-pencil width-10"></i> Edit</a>
+                        <button id="delete-trucker" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
+                        <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a>
+                    </dd>
+                </dl>
+            </fieldset>
         </div>
     </div>
 </div>

@@ -27,7 +27,9 @@
 								<div class="pull-right">
 									<input type="hidden" class="latitude" name="latitude" value="<%= sl.get("latitude") %>" />
 									<input type="hidden" class="longitude" name="longitude" value="<%= sl.get("longitude") %>" />
-									<span style="cursor:pointer;margin-right:10px;" class="glyphicon glyphicon-map-marker show-map" data-id="<%= sl.get("id") %>"></span>
+									<button id="show-map-all" class="btn btn-sm btn-primary btn-rad show-map" type="button" data-id="<%= sl.get("id") %>">
+				                        <span style="cursor: pointer;" class="glyphicon glyphicon-map-marker"></span> Show Location
+				                    </button>
 									<a href="<%= sl_edit_url %>/<%= sl.get("id") %>" class="btn btn-primary btn-rad btn-trans btn-sm editable-button"><i class="fa fa-pencil width-10"></i> Edit Location</a>
 								</div>
 							</div>

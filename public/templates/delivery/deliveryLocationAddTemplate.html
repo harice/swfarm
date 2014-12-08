@@ -1,84 +1,76 @@
 <div class="row margin-top-0">
 	<div class="col-md-12 no-padding">
 		<div class="block-flat padding-top-0 padding-bottom-0">
-			<div class="content padding-top-0">
-
-				<div class="row margin-top-0">
+			<form id="locationForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+				<% if (typeof dl_id !== "undefined") { %>
+				<input type="hidden" name="id" value="<%= dl_id %>" />
+				<% } %>
+				<fieldset class="margin-bottom-10">
+					<legend><h3 class="margin-bottom-0 margin-top-0">LOCATION DETAILS</h3></legend>                  
+					<div class="form-group">
+						<label for="account_id" class="col-sm-2 control-label">Account <i class="color-danger">*</i></label>
+						<div class="col-sm-4">
+							<select class="form-control width-250 input-sm" id="account_id" name="account_id" required>
+								<option value="">Select an account</option>
+								<%= account_list %>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="address" class="col-sm-2 control-label">Address <i class="color-danger">*</i></label>
+						<div class="col-sm-6">
+							<select class="form-control width-250 input-sm pull-left" id="address" name="address_id">
+								<option value="">Select an address</option>
+							</select>
+							<input type="hidden" id="latitude" name="latitude" value="" />
+							<input type="hidden" id="longitude" name="longitude" value="" />
+							<span id="map" style="display:inline-block;cursor:pointer;margin-left:10px;margin-right:10px;margin-top:8px" class="glyphicon glyphicon-map-marker"></span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="name" class="col-sm-2 control-label">Location Name <i class="color-danger">*</i></label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control input-sm capitalize" id="name" name="name" maxlength="50" required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="description" class="col-sm-2 control-label">Description</label>
+						<div class="col-sm-4">
+							<textarea class="form-control" rows="3" id="description" name="description" maxlength="200"></textarea>
+							
+						</div>
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend class="margin-top-10 margin-bottom-5">
+						<h3 class="pull-left margin-top-0 margin-bottom-0">SECTION</h3>
+						<button title="Add Section" id="add-section" type="button" class="pull-right btn btn-rad btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
+					</legend>
+					<div class="content-inner table-responsive">
+						<table id="section-list" class="table table-condensed table-bordered">
+							<thead>
+								<tr>
+									<th class="width-300">Stack No.</th>
+									<th>Description</th>
+									<th class="width-50"></th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+				</fieldset>
+				<div class="form-group">
 					<div class="col-md-12">
-						<form id="locationForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+						<div class="pull-right">
+							<button id="save" type="submit" class="save btn btn-primary btn-sm btn-rad"><i class="fa fa-save"></i>  Save</button>
 							<% if (typeof dl_id !== "undefined") { %>
-							<input type="hidden" name="id" value="<%= dl_id %>" />
+								<button id="delete-dl" type="button" class="btn btn-danger btn-sm btn-rad"><i class="fa fa-times width-10"></i> Delete</button>
 							<% } %>
-							<fieldset class="margin-bottom-10">
-								<legend><h3 class="margin-bottom-0">LOCATION DETAILS</h3></legend>                  
-								<div class="form-group">
-									<label for="account_id" class="col-sm-2 control-label">Account <i class="color-danger">*</i></label>
-									<div class="col-sm-4">
-										<select class="form-control width-250 input-sm" id="account_id" name="account_id" required>
-											<option value="">Select an account</option>
-											<%= account_list %>
-										</select>
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="address" class="col-sm-2 control-label">Address <i class="color-danger">*</i></label>
-									<div class="col-sm-6">
-										<select class="form-control width-250 input-sm pull-left" id="address" name="address_id">
-											<option value="">Select an address</option>
-										</select>
-										<input type="hidden" id="latitude" name="latitude" value="" />
-										<input type="hidden" id="longitude" name="longitude" value="" />
-										<span id="map" style="display:inline-block;cursor:pointer;margin-left:10px;margin-right:10px;margin-top:8px" class="glyphicon glyphicon-map-marker"></span>
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="name" class="col-sm-2 control-label">Location Name <i class="color-danger">*</i></label>
-									<div class="col-sm-4">
-										<input type="text" class="form-control input-sm capitalize" id="name" name="name" maxlength="50" required>
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="description" class="col-sm-2 control-label">Description</label>
-									<div class="col-sm-4">
-										<textarea class="form-control" rows="3" id="description" name="description" maxlength="200"></textarea>
-										
-									</div>
-								</div>
-							</fieldset>
-							<fieldset>
-								<legend class="margin-top-10 margin-bottom-5">
-									<h3 class="pull-left margin-top-0 margin-bottom-0">SECTION</h3>
-									<button title="Add Section" id="add-section" type="button" class="pull-right btn btn-rad btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
-								</legend>
-								<div class="content-inner table-responsive">
-									<table id="section-list" class="table table-condensed table-bordered">
-										<thead>
-											<tr>
-												<th class="width-300">Stack No.</th>
-												<th>Description</th>
-												<th class="width-50"></th>
-											</tr>
-										</thead>
-										<tbody></tbody>
-									</table>
-								</div>
-							</fieldset>
-							<div class="form-group">
-								<div class="col-md-12">
-									<div class="pull-right">
-										<button id="save" type="submit" class="save btn btn-primary btn-sm btn-rad"><i class="fa fa-save"></i>  Save</button>
-										<% if (typeof dl_id !== "undefined") { %>
-											<button id="delete-dl" type="button" class="btn btn-danger btn-sm btn-rad"><i class="fa fa-times width-10"></i> Delete</button>
-										<% } %>
-										<a id="go-to-previous-page" class="btn btn-warning btn-sm btn-rad" href="#"><i class="fa fa-ban width-10"></i> Cancel</a>
-									</div>
-								</div>
-							</div>
-						</form>
+							<a id="go-to-previous-page" class="btn btn-warning btn-sm btn-rad" href="#"><i class="fa fa-ban width-10"></i> Cancel</a>
+						</div>
 					</div>
 				</div>
-
-			</div> <!-- /.content -->
+			</form>
 		</div> <!-- /.block-flat -->
 	</div>
 </div>

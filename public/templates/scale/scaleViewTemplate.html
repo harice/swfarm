@@ -6,18 +6,23 @@
           </div>           
         </div> 
         <div class="block-flat">
-            <dl id="view-scale" class="dl-horizontal">
-                <dt>Scale Account</dt>
-                <dd><%= scale.get("account").name %></dd>
-                <dt>Scale Fee</dt>
-                <dd>$ <%= numberFormat(scale.get("rate")) %></dd>
-                <dd>
-                    <div class="clearfix"></div>
-                    <a href="<%= scale_edit_url %>/<%= scale.get('id') %>" class="btn btn-primary btn-trans btn-rad btn-sm"><i class="fa fa-pencil width-10"></i> Edit</a>
-                    <button id="delete-scale" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
-                    <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a>
-                </dd>
-            </dl>
+            <fieldset>
+                <legend>
+                    <h3 class="margin-top-0">DETAILS</h3>
+                </legend>
+                <dl id="view-scale" class="dl-horizontal">
+                    <dt>Scale Account</dt>
+                    <dd><%= scale.get("account").name %></dd>
+                    <dt>Scale Fee</dt>
+                    <dd>$ <%= numberFormat(scale.get("rate")) %></dd>
+                    <dd>
+                        <div class="clearfix"></div>
+                        <a href="<%= scale_edit_url %>/<%= scale.get('id') %>" class="btn btn-primary btn-trans btn-rad btn-sm"><i class="fa fa-pencil width-10"></i> Edit</a>
+                        <button id="delete-scale" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
+                        <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a>
+                    </dd>
+                </dl>
+            </fieldset>
         </div>
     </div>
 </div>

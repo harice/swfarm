@@ -1,130 +1,129 @@
 <div class="content padding-top-0">
-	<h2 class="ponumber margin-bottom-0"><%= formatDateAMPM(pu.get("date")) %></h2>
-	<div class="progress width-200 margin-bottom-5 height-3">
-		<div class="progress-bar progress-bar-success" style="width: %"></div>
+<h2 class="ponumber margin-bottom-0"><%= formatDateAMPM(pu.get("date")) %></h2>
+<div class="progress width-200 margin-bottom-5 height-3">
+	<div class="progress-bar progress-bar-success" style="width: %"></div>
+</div>
+Status: <label class="label label-<%= pu.get("status").class %>"><%= pu.get("status").name %></label><br>
+PO No.: <span class="text-danger"><%= po.get("order_number") %></span>
+<div class="row margin-top-0">
+	<div class="col-md-4">
+		<fieldset>
+			<legend class="margin-bottom-5">
+				<h3>Loader (<span class="text-danger">Origin</span>)</h3>
+			</legend>
+			Loader: <span class="text-danger"><%= pu.get("originloader").accountidandname.name %></span><br>
+	        Loader Contact: <span class="text-danger"><%= pu.get("originloader").lastname %>, <%= pu.get("originloader").firstname %> <%= pu.get("originloader").suffix %></span><br>
+        </fieldset>
+        <fieldset>
+        	<legend class="margin-bottom-5">
+				<h3>Loader (<span class="text-danger">Destination</span>)</h3>
+			</legend>
+			Loader: <span class="text-danger"><%= pu.get("destinationloader").accountidandname.name %></span><br>
+	        Loader Contact: <span class="text-danger"><%= pu.get("destinationloader").lastname %>, <%= pu.get("destinationloader").firstname %> <%= pu.get("destinationloader").suffix %></span>
+    	</fieldset>
 	</div>
-	Status: <label class="label label-<%= pu.get("status").class %>"><%= pu.get("status").name %></label><br>
-	PO No.: <span class="text-danger"><%= po.get("order_number") %></span>
-	<div class="row margin-top-0">
-    	<div class="col-md-4">
-    		<fieldset>
-    			<legend class="margin-bottom-5">
-					<h3>Loader (<span class="text-danger">Origin</span>)</h3>
-				</legend>
-				Loader: <span class="text-danger"><%= pu.get("originloader").accountidandname.name %></span><br>
-		        Loader Contact: <span class="text-danger"><%= pu.get("originloader").lastname %>, <%= pu.get("originloader").firstname %> <%= pu.get("originloader").suffix %></span><br>
-	        </fieldset>
-	        <fieldset>
-	        	<legend class="margin-bottom-5">
-					<h3>Loader (<span class="text-danger">Destination</span>)</h3>
-				</legend>
-				Loader: <span class="text-danger"><%= pu.get("destinationloader").accountidandname.name %></span><br>
-		        Loader Contact: <span class="text-danger"><%= pu.get("destinationloader").lastname %>, <%= pu.get("destinationloader").firstname %> <%= pu.get("destinationloader").suffix %></span>
-	    	</fieldset>
+	<div class="col-md-4">
+		<fieldset>
+			<legend class="margin-bottom-5">
+				<h3>Trucker</h3>
+			</legend>
+			Trucker: <span class="text-danger"><%= pu.get("trucker").accountidandname.name %></span><br>
+	        Trucker Contact: <span class="text-danger"><%= pu.get("trucker").lastname %>, <%= pu.get("trucker").firstname %> <%= pu.get("trucker").suffix %></span><br>
+	    </fieldset>
+	    <fieldset>
+	    	<legend class="margin-bottom-5">
+	        	<h3>Trailer</h3>
+	        </legend>
+			Trailer: <span class="text-danger"><%= pu.get("trailer").account.name %></span><br>
+			Trailer Number: <span class="text-danger"><%= pu.get("trailer").number %></span>
+		</fieldset>
+	</div>
+	<div class="col-md-4">
+		<div class="table-responsive margin-top-10">
+			<table class="table-condensed no-border">
+				<tbody class="no-border-x no-border-y">
+					<tr>
+						<td class="width-170">Distance :</td>
+						<td class="text-right text-danger"><%= numberFormat(pu.get("distance")) %></td>
+					</tr>
+					<tr>
+						<td>Fuel Charges :</td>
+						<td class="text-right text-danger">$ <%= numberFormat(pu.get("fuelcharge")) %></td>
+					</tr>
+					<tr>
+						<td>Handling Fee:</td>
+						<td class="text-right text-danger">$ <%= numberFormat(pu.get("handlingfee")) %></td>
+					</tr>
+					<tr>
+						<td>Loaders Fee (<span class="text-danger">Origin</span>) :</td>
+						<td class="text-right text-danger">$ <%= numberFormat(pu.get("originloaderfee")) %></td>
+					</tr>
+					<tr>
+						<td>Loaders Fee (<span class="text-danger">Destination</span>) :</td>
+						<td class="text-right text-danger">$ <%= numberFormat(pu.get("destinationloaderfee")) %></td>
+					</tr>
+					<tr>
+						<td>Trucking / Hauling Rate :</td>
+						<td class="text-right text-danger">$ <%= numberFormat(pu.get("truckingrate")) %></td>
+					</tr>
+					<tr>
+						<td>Trailer Rent :</td>
+						<td class="text-right text-danger">$ <%= numberFormat(pu.get("trailerrate")) %></td>
+					</tr>						
+				</tbody>
+			</table>
 		</div>
-		<div class="col-md-4">
-			<fieldset>
-				<legend class="margin-bottom-5">
-					<h3>Trucker</h3>
-				</legend>
-				Trucker: <span class="text-danger"><%= pu.get("trucker").accountidandname.name %></span><br>
-		        Trucker Contact: <span class="text-danger"><%= pu.get("trucker").lastname %>, <%= pu.get("trucker").firstname %> <%= pu.get("trucker").suffix %></span><br>
-		    </fieldset>
-		    <fieldset>
-		    	<legend class="margin-bottom-5">
-		        	<h3>Trailer</h3>
-		        </legend>
-				Trailer: <span class="text-danger"><%= pu.get("trailer").account.name %></span><br>
-				Trailer Number: <span class="text-danger"><%= pu.get("trailer").number %></span>
-			</fieldset>
-		</div>
-		<div class="col-md-4">
-			<div class="table-responsive margin-top-10">
-				<table class="table-condensed no-border">
-					<tbody class="no-border-x no-border-y">
-						<tr>
-							<td class="width-170">Distance :</td>
-							<td class="text-right text-danger"><%= numberFormat(pu.get("distance")) %></td>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<fieldset>
+			<legend class="margin-bottom-5">
+				<h3 class="margin-top-0">PRODUCTS</h3>
+			</legend>
+			<div class="content-inner table-responsive">
+				<table id="product-list" class="table-condensed table-hover table-bordered">
+					<thead>
+						<tr>							
+							<th class="width-200">Product</th>
+							<th>Stack No.</th>
+							<th>Location To</th>
+							<th class="width-150">Quantity</th>
 						</tr>
+					</thead>
+					<tbody></tbody>
+					<tfoot>
 						<tr>
-							<td>Fuel Charges :</td>
-							<td class="text-right text-danger">$ <%= numberFormat(pu.get("fuelcharge")) %></td>
+							<td class="text-right" colspan="3">Total</td>
+							<td class="text-right" id="total-quantity"></td>
 						</tr>
-						<tr>
-							<td>Handling Fee:</td>
-							<td class="text-right text-danger">$ <%= numberFormat(pu.get("handlingfee")) %></td>
-						</tr>
-						<tr>
-							<td>Loaders Fee (<span class="text-danger">Origin</span>) :</td>
-							<td class="text-right text-danger">$ <%= numberFormat(pu.get("originloaderfee")) %></td>
-						</tr>
-						<tr>
-							<td>Loaders Fee (<span class="text-danger">Destination</span>) :</td>
-							<td class="text-right text-danger">$ <%= numberFormat(pu.get("destinationloaderfee")) %></td>
-						</tr>
-						<tr>
-							<td>Trucking / Hauling Rate :</td>
-							<td class="text-right text-danger">$ <%= numberFormat(pu.get("truckingrate")) %></td>
-						</tr>
-						<tr>
-							<td>Trailer Rent :</td>
-							<td class="text-right text-danger">$ <%= numberFormat(pu.get("trailerrate")) %></td>
-						</tr>						
-					</tbody>
+					</tfoot>
 				</table>
 			</div>
-		</div>
+		</fieldset>
 	</div>
-	<div class="row">
-    	<div class="col-md-12">
-    		<fieldset>
-				<legend class="margin-bottom-5">
-					<h3 class="margin-top-0">PRODUCTS</h3>
-				</legend>
-				<div class="content-inner table-responsive">
-					<table id="product-list" class="table-condensed table-hover table-bordered">
-						<thead>
-							<tr>							
-								<th class="width-200">Product</th>
-								<th>Stack No.</th>
-								<th>Location To</th>
-								<th class="width-150">Quantity</th>
-							</tr>
-						</thead>
-						<tbody></tbody>
-						<tfoot>
-							<tr>
-								<td class="text-right" colspan="3">Total</td>
-								<td class="text-right" id="total-quantity"></td>
-							</tr>
-						</tfoot>
-					</table>
-				</div>
-			</fieldset>
-		</div>
-	</div>
-	<div class="row">
-	    <div class="col-md-12">
-			<div class="pull-right">
-				<% if (typeof editable !== "undefined") { %>
-					<a id="edit-schedule" class="btn btn-primary btn-trans btn-rad btn-sm editable-button" href="<%= schedule_edit_url %>">
-						<i class="fa fa-pencil width-10"></i> Edit Schedule
-					</a>
-					<% if(_.isNull(pu.get('weightticket'))) { %>
-					<a id="close-schedule" class="btn btn-warning btn-trans btn-rad btn-sm editable-button" href="#">
-						<i class="fa fa-times width-10"></i> Close Schedule
-					</a>
-					<a id="delete-schedule" class="btn btn-warning btn-trans btn-rad btn-sm editable-button">
-						<i class="fa fa-trash-o width-10"></i> Delete Schedule
-					</a>
-				<% } } %>
-				<a id="go-to-weight-info" class="btn btn-primary btn-trans btn-rad btn-sm" href="<%= weight_info_url %>">
-					<i class="fa fa-ticket width-10"></i> Weight Ticket
+</div>
+<div class="row">
+    <div class="col-md-12">
+		<div class="pull-right">
+			<% if (typeof editable !== "undefined") { %>
+				<a id="edit-schedule" class="btn btn-primary btn-trans btn-rad btn-sm editable-button" href="<%= schedule_edit_url %>">
+					<i class="fa fa-pencil width-10"></i> Edit Schedule
 				</a>
-				<a class="btn btn-trans btn-rad btn-sm" id="go-to-previous-page" href="#">
-					<i class="fa fa-history width-10"></i> Back
+				<% if(_.isNull(pu.get('weightticket'))) { %>
+				<a id="close-schedule" class="btn btn-warning btn-trans btn-rad btn-sm editable-button" href="#">
+					<i class="fa fa-times width-10"></i> Close Schedule
 				</a>
-			</div>
+				<a id="delete-schedule" class="btn btn-warning btn-trans btn-rad btn-sm editable-button">
+					<i class="fa fa-trash-o width-10"></i> Delete Schedule
+				</a>
+			<% } } %>
+			<a id="go-to-weight-info" class="btn btn-primary btn-trans btn-rad btn-sm" href="<%= weight_info_url %>">
+				<i class="fa fa-ticket width-10"></i> Weight Ticket
+			</a>
+			<a class="btn btn-trans btn-rad btn-sm" id="go-to-previous-page" href="#">
+				<i class="fa fa-history width-10"></i> Back
+			</a>
 		</div>
 	</div>
 </div>
