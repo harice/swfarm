@@ -45,6 +45,10 @@ define([
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.html(compiledTemplate);
 		},
+
+		events: {
+			'click #go-to-previous-page': 'goToPreviousPage',
+		}
 		
 	});
 

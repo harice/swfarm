@@ -89,24 +89,12 @@
       </tbody>
     </table>
   </fieldset>
-    <table>
-      <tbody class="no-border-x no-border-y">
-          <tr>
-              <td>&nbsp;</td>
-              <td>
-                  <table class="no-border no-strip">
-                      <tbody class="no-border-x no-border-y">
-                        <tr>                               
-                          <td>                                                
-                              <div class="clearfix"></div>
-                              <a href="<%= account_edit_url %>/<%= account.get("id") %>" class="btn btn-primary btn-trans btn-rad btn-sm margin-left-10"><i class="fa fa-pencil width-10"></i> Edit</a>
-                              <button id="delete-account" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
-                              <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a> 
-                          </td>
-                        </tr>
-                      </tbody>
-                  </table>
-              </td>
-          </tr>
-      </tbody>
-  </table>
+  <div class="row margin-left-0 margin-right-0">
+    <div class="col-md-12 no-padding">
+      <div class="pull-right clearfix">
+        <a href="<%= account_edit_url %>/<%= account.get("id") %>" class="btn btn-primary btn-trans btn-rad btn-sm margin-left-10"><i class="fa fa-pencil width-10"></i> Edit</a>
+        <button id="delete-account" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
+        <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a> 
+      </div>
+    </div>
+  </div>    

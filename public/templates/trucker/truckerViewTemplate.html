@@ -7,24 +7,53 @@
         </div>       
         <div class="block-flat">
             <fieldset>
-                <legend>
+                <legend class="margin-bottom-0">
                     <h3 class="margin-top-0">DETAILS</h3>
                 </legend>
-                <dl id="view-trucker" class="dl-horizontal padding-top-10">              
-                    <dt>Account Name</dt>
-                    <dd><%= trucker.get("account").name %></dd>
-                    <dt>Trucker Type</dt>
-                    <dd><%= trucker.get("account").accounttype[0].name %></dd>
-                    <dt>Admin Fee</dt>
-                    <dd>$ <%= numberFormat(trucker.get("fee")) %></dd>
-                    <dd>
-                        <div class="clearfix"></div>
-                        <a href="<%= trucker_edit_url %>/<%= trucker.get('id') %>" class="btn btn-primary btn-trans btn-rad btn-sm"><i class="fa fa-pencil width-10"></i> Edit</a>
-                        <button id="delete-trucker" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
-                        <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a>
-                    </dd>
-                </dl>
+                <table id="view-trucker" class="no-border no-strip information">
+                  <tbody class="no-border-x no-border-y">                
+                      <tr>
+                          <td class="width-50"></td>
+                          <td>
+                              <table class="no-border no-strip">
+                                  <tbody class="no-border-x no-border-y">                                
+                                    <tr>
+                                      <td style="width:3%;"><i class="fa fa-user"></i></td>
+                                      <td style="width:10%;"><i>Account Name</i></td>
+                                      <td>
+                                        <%= trucker.get("account").name %>
+                                      </td>
+                                    </tr>   
+                                    <tr>
+                                      <td style="width:3%;"><i class="fa fa-group"></i></td>
+                                      <td style="width:10%;"><i>Trucker Type</i></td>
+                                      <td>
+                                        <%= trucker.get("account").accounttype[0].name %>
+                                      </td>
+                                    </tr>  
+                                    <tr>
+                                      <td style="width:3%;"><i class="fa fa-dollar"></i></td>
+                                      <td style="width:10%;"><i>Admin Fee</i></td>
+                                      <td>
+                                        $ <%= numberFormat(trucker.get("fee")) %>
+                                      </td>
+                                    </tr>                               
+                                  </tbody>
+                              </table>
+                          </td>
+                      </tr>
+                  </tbody>
+                </table>                     
             </fieldset>
+            <div class="row margin-left-0 margin-right-0 margin-top-0">
+                <div class="col-md-12 no-padding">
+                  <div class="pull-right clearfix">
+                    <a href="<%= trucker_edit_url %>/<%= trucker.get('id') %>" class="btn btn-primary btn-trans btn-rad btn-sm"><i class="fa fa-pencil width-10"></i> Edit</a>
+                    <button id="delete-trucker" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
+                    <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a>
+                  </div>
+                </div>
+            </div> 
         </div>
     </div>
 </div>

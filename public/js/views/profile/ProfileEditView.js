@@ -28,15 +28,16 @@ define([
 			var thisObj = this;
 			this.model = new ProfileModel({id:parseInt(SessionModel.get('su'))});
 			this.model.on("change", function() {
-				if(this.hasChanged('firstname') && this.hasChanged('lastname') && this.hasChanged('email') && this.hasChanged('username')) {
-					thisObj.displayUser();
-					this.off("change");
-				}
+				console.log(thisObj.model);
+				thisObj.displayUser();
+				this.off("change");
+				// if(this.hasChanged('firstname') && this.hasChanged('lastname') && this.hasChanged('email') && this.hasChanged('username')) {
+				// }
 			});
 		},
 		
 		render: function(){
-			this.model.runFetch();
+			this.model.runFetch();			
 			Backbone.View.prototype.refreshTitle('Profile','settings');
 		},
 		
@@ -47,6 +48,8 @@ define([
 				user_id: this.model.get('id'),
 				'user_url' : '#/'+Const.URL.PROFILE
 			};
+
+			console.log(this.model.get('id'));
 			var innerTemplate = _.template(profileEditTemplate, innerTemplateVariables);
 			
 			var variables = {
@@ -143,6 +146,7 @@ define([
 			'change .profile-pic' : 'readFile',
 			'click .remove-image' : 'resetImageField',
 			'click .cancel-remove-image' : 'cancelRemoveImage',
+			'click #go-to-previous-page': 'goToPreviousPage',
 		},
 		
 		readFile: function (ev) {

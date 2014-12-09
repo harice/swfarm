@@ -6,99 +6,117 @@
 		  </div>		       
 		</div>
 	    <div class="block-flat profile-info">	    
-	      <div class="content padding-top-0">
-	        <!-- div class="col-sm-2">
-	          <div class="avatar">
-	          	<img class="profile-avatar" src="<% if (user.get("profileimg") != "" && user.get("profileimg") != null) { %><%= user.get("profileimg")+"?qwert="+(new Date().getTime()) %><% } else { %><%= user_pic_default %><% } %>" />
-	          </div>
-	        </div -->
-	        <fieldset>	
-	        	<legend>
-	        		<h3 class="margin-top-5">DETAILS</h3>
-	        	</legend>
-	        	<div class="row margin-top-0">
-	        		<div class="col-md-12">
-	        			<table class="no-border no-strip">
-                              <tbody class="no-border-x no-border-y">
-                              		<% if(!_.isEmpty(user.get('roles'))) { %>
-                              		<tr>
-                              			<td class="width-100" align="right">
-                              				<strong>Roles</strong>
-                              			</td>
-                              			<td>
-                              				<% _.each(user.get("roles"), function(role){ %>
-												<span class="label label-default margin-right-3"><%= role.name %></span>
-											<% }); %>
-                              			</td>
-                              		</tr>
-	        						<% } %>	 
-	        						<% if(!_.isEmpty(user.get('username'))) { %>
-	        						<tr>
-	        							<td class="width-100" align="right">
-	        								<i class="fa fa-sign-in"></i>
-	        							</td>
-	        							<td>
-	        								<%= user.get("username") %>
-	        							</td>
-	        						</tr>
-	        						<% } %> 
-	        						<% if(!_.isEmpty(user.get('position')) || !_.isEmpty(user.get('emp_no'))) { %>
-	        						<tr>
-	        							<td class="width-100" align="right">
-	        								<i class="fa fa-user"></i>
-	        							</td>
-	        							<td>
-	        								<%= user.get("position") %> <%= user.get("emp_no") %>
-	        							</td>
-	        						</tr>
-	        						<% } %> 
-	        						<% if(!_.isEmpty(user.get('email'))) { %>
-	        						<tr>
-	        							<td class="width-100" align="right">
-	        								<i class="fa fa-envelope"></i>
-	        							</td>
-	        							<td>
-	        								<%= user.get("email") %>
-	        							</td>
-	        						</tr>
-	        						<% } %> 
-	        						<% if(!_.isEmpty(user.get('phone'))) { %>
-	        						<tr>
-	        							<td class="width-100" align="right">
-	        								<i class="fa fa-phone"></i>
-	        							</td>
-	        							<td>
-	        								<%= user.get("phone") %>
-	        							</td>
-	        						</tr>
-	        						<% } %> 
-	        						<% if(!_.isEmpty(user.get('mobile'))) { %>
-	        						<tr>
-	        							<td class="width-100" align="right">
-	        								<i class="fa fa-mobile-phone"></i>
-	        							</td>
-	        							<td>
-	        								<%= user.get("mobile") %>
-	        							</td>
-	        						</tr>
-	        						<% } %> 
-                              </tbody>
-                              <tfoot class="no-border-x no-border-y">
-                              	<tr>
-                              		<td class="width-100">&nbsp;</td>
-                              		<td>
-                              			<a href="<%=profile_edit_url%>" class="btn btn-trans btn-primary btn-flat btn-rad btn-sm" data-modal="reply-ticket">
+	      <!-- div class="col-sm-2">
+          <div class="avatar">
+          	<img class="profile-avatar" src="<% if (user.get("profileimg") != "" && user.get("profileimg") != null) { %><%= user.get("profileimg")+"?qwert="+(new Date().getTime()) %><% } else { %><%= user_pic_default %><% } %>" />
+          </div>
+        </div -->
+        <fieldset>	
+        	<legend class="margin-bottom-0">
+        		<h3 class="margin-top-0">DETAILS</h3>
+        	</legend>
+        	<table class="no-border no-strip">
+              <tbody class="no-border-x no-border-y">
+              	<tr>
+              		<td class="width-50"></td>
+              		<td>
+              			<table class="no-border no-strip">
+              				<tbody class="no-border-x no-border-y">
+                      		<% if(!_.isEmpty(user.get('roles'))) { %>
+                      		<tr>
+                      			<td style="width:3%"><i class="fa fa-group"></i></td>
+                      			<td style="width:9%">
+                      				<i>Roles</i>
+                      			</td>
+                      			<td>
+                      				<% _.each(user.get("roles"), function(role){ %>
+										<span class="label label-default margin-right-3"><%= role.name %></span>
+									<% }); %>
+                      			</td>
+                      		</tr>
+    						<% } %>	 
+    						<% if(!_.isEmpty(user.get('username'))) { %>
+    						<tr>
+    							<td style="width:3%"><i class="fa fa-sign-in"></i></i></td>
+    							<td style="width:9%">
+                      				<i>Username</i>
+                      			</td>
+    							<td>
+    								<%= user.get("username") %>
+    							</td>
+    						</tr>
+    						<% } %> 
+    						<% if(!_.isEmpty(user.get('position')) || !_.isEmpty(user.get('emp_no'))) { %>
+    						<tr>
+    							<td style="width:3%"><i class="fa fa-user"></i></i></td>
+    							<td style="width:9%">
+                      				<i>User</i>
+                      			</td>		        							
+    							<td>
+    								<%= user.get("position") %> <%= user.get("emp_no") %>
+    							</td>
+    						</tr>
+    						<% } %> 
+    						<% if(!_.isEmpty(user.get('email'))) { %>
+    						<tr>
+    							<td style="width:3%"><i class="fa fa-envelope"></i></i></td>
+    							<td style="width:9%">
+                      				<i>Email</i>
+                      			</td>		        					        							
+    							<td>
+    								<%= user.get("email") %>
+    							</td>
+    						</tr>
+    						<% } %> 
+    						<% if(!_.isEmpty(user.get('phone'))) { %>
+    						<tr>
+    							<td style="width:3%"><i class="fa fa-phone"></i></i></td>
+    							<td style="width:9%">
+                      				<i>Phone</i>
+                      			</td>		        			        							
+    							<td>
+    								<%= user.get("phone") %>
+    							</td>
+    						</tr>
+    						<% } %> 
+    						<% if(!_.isEmpty(user.get('mobile'))) { %>
+    						<tr>
+    							<td style="width:3%"><i class="fa fa-mobile-phone"></i></i></td>
+    							<td style="width:9%">
+                      				<i>Mobile</i>
+                      			</td>		        							
+    							<td>
+    								<%= user.get("mobile") %>
+    							</td>
+    						</tr>
+    						<% } %> 
+    						</tbody>
+						</table>
+					</td>
+				</tr>
+              </tbody>
+              <tfoot class="no-border-x no-border-y">
+              	<tr>
+              		<td class="width-50">&nbsp;</td>
+              		<td>
+              			<table>
+              				<tbody>
+              					<tr>
+              						<td style="width:12%"></td>
+              						<td>
+	                          			<a href="<%=profile_edit_url%>" class="btn btn-trans btn-primary btn-flat btn-rad btn-sm" data-modal="reply-ticket">
 							            	<i class="fa fa-pencil-square-o"></i> Edit Profile
 							            </a>
-							            <a class="btn btn-warning btn-trans btn-rad btn-sm" href="#" id="go-to-previous-page"><i class="fa fa-ban width-10"></i> Cancel</a>
-                              		</td>
-                              	</tr>
-                              </tfoot>
-                        </table>
-	        		</div>
-	        	</div>	        	
-			</fieldset>
-	      </div>
+							            <a id="go-to-previous-page" class="btn btn-warning btn-sm btn-rad" href="#"><i class="fa fa-ban width-10"></i> Cancel</a>
+							        </td>
+							    </tr>
+							</tbody>
+						</table>
+              		</td>
+              	</tr>
+              </tfoot>
+        </table>        	
+		</fieldset>
 	    </div>
 	</div>
 </div>

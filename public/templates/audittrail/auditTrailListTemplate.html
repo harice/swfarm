@@ -20,7 +20,38 @@
 
             <ul class='timeline-value'>
             <% _.each(trail.get("value"), function(value, key){ %>
-              <li><%= key %>: <%= value %></li>
+              <li>
+                <% if(typeof value != "object") { %>
+                <%= key %>: <%= value %>
+                <% } 
+                else { %>
+                  <%= key %>                  
+                    <%
+                    _.each(value, function(val, k){ %>
+                    <ul class="margin-top-10">
+                    <% 
+                      _.each(val, function(v, field){
+                        if(typeof v != "object"){ %>
+                          <li><%= field %>: <%= v %></li>
+                      <% }
+                      else { 
+                      %>
+                      <li>
+                        <%= field %>
+                      <ul>
+                      <%
+                        _.each(v, function(fieldvalue, keyfield){
+                      %>
+                          <li><%= keyfield %>: <%= fieldvalue %></li>
+                      <% }); %>
+                      </ul> 
+                      </li>
+                      <% }
+                      }); %>
+                    </ul>                            
+                    <% }); %>                          
+                <% } %>
+              </li>
             <% }); %>
             <ul>
 

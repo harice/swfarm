@@ -7,120 +7,97 @@
         </div>
         <div class="block-flat">            
             <fieldset>
-              <legend>
+              <legend class="margin-bottom-0">
                 <h3 class="margin-top-0">DETAILS</h3>
               </legend>
-              <div class="row margin-top-0">
-                  <div class="col-md-12">
-                      <table class="no-border no-strip information">
-                          <tbody class="no-border-x no-border-y">
-                              <tr>
-                                  <td class="width-50"></td>
+              <table class="no-border no-strip">
+                <tbody class="no-border-x no-border-y">
+                    <tr>
+                        <td class="width-50"></td>
+                        <td>
+                            <table class="no-border no-strip">
+                                <tbody class="no-border-x no-border-y">
+                                  <% if(!_.isEmpty(contact.get("account"))) { %>  
+                                  <tr>
+                                    <td style="width:3%"><i class="fa fa-user"></i></td>
+                                    <td style="width:10%"><i>Account Name</i></td>
+                                    <td>
+                                        <span class="margin-left-10"><%= contact.get("account").name %></span>
+                                    </td>
+                                  </tr>
+                                  <% } %>
+                                  <% if(!_.isEmpty(contact.get("position"))) { %>
+                                  <tr>
+                                     <td style="width:3%"><i class="fa fa-group"></i></td>
+                                    <td style="width:10%"><i>Position</i></td>
+                                    <td><span class="margin-left-10"><%= contact.get("position") %></span></td>
+                                  </tr>
+                                  <% } %>
+                                  <% if(!_.isEmpty(contact.get("rate"))) { %>
+                                  <tr>
+                                    <td style="width:3%"><i class="fa fa-dollar"></i></td>
+                                    <td style="width:10%"><i>Rate</i></td>
+                                    <td><span class="margin-left-10"><%= contact.get("rate") %> %</span></td>
+                                  </tr>
+                                  <% } %>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </fieldset>
+            <fieldset>
+              <legend class="margin-bottom-0">
+                <h3>CONTACT</h3>
+              </legend>
+              <table class="no-border no-strip">
+                <tbody class="no-border-x no-border-y">
+                  <tr>   
+                      <td class="width-50"></td>                              
+                      <td>
+                          <table class="no-border no-strip">
+                              <tbody class="no-border-x no-border-y">
+                                <% if(!_.isEmpty(contact.get("email"))) { %>
+                                <tr>
+                                  <td style="width:3%"><i class="fa fa-envelope"></td>
+                                  <td style="width:10%"><i>Email</i></td>                                                
+                                  <td><span class="margin-left-10"><%= contact.get("email") %></span></td>
+                                </tr>
+                                <% } %>
+                                <% if(!_.isEmpty(contact.get("phone"))) { %>
+                                <tr>
+                                  <td style="width:3%"><i class="fa fa-phone"></i></td>
+                                  <td style="width:10%"><i>Phone</i></td>    
+                                  <td><span class="margin-left-10"><%= contact.get("phone") %></span></td>
+                                </tr>
+                                <% } %>
+                                <% if(!_.isEmpty(contact.get("mobile"))) { %>                                          
+                                <tr>
+                                  <td style="width:3%"><i class="fa fa-mobile"></td>
+                                  <td style="width:10%"><i>Mobile</i></td>    
                                   <td>
-                                      <table class="no-border no-strip">
-                                          <tbody class="no-border-x no-border-y">
-                                            <% if(!_.isEmpty(contact.get("account"))) { %>  
-                                            <tr>
-                                              <td style="width:3%"><i class="fa fa-user"></i></td>
-                                              <td style="width:10%"><i>Account Name</i></td>
-                                              <td>
-                                                  <span class="margin-left-10"><%= contact.get("account").name %></span>
-                                              </td>
-                                            </tr>
-                                            <% } %>
-                                            <% if(!_.isEmpty(contact.get("position"))) { %>
-                                            <tr>
-                                               <td style="width:3%"><i class="fa fa-group"></i></td>
-                                              <td style="width:10%"><i>Position</i></td>
-                                              <td><span class="margin-left-10"><%= contact.get("position") %></span></td>
-                                            </tr>
-                                            <% } %>
-                                            <% if(!_.isEmpty(contact.get("rate"))) { %>
-                                            <tr>
-                                              <td style="width:3%"><i class="fa fa-dollar"></i></td>
-                                              <td style="width:10%"><i>Rate</i></td>
-                                              <td><span class="margin-left-10"><%= contact.get("rate") %> %</span></td>
-                                            </tr>
-                                            <% } %>
-                                          </tbody>
-                                      </table>
+                                      <span class="margin-left-10"><%= contact.get("mobile") %></span>                                         
                                   </td>
-                              </tr>
-                            </tbody>
+                                </tr>
+                                <% } %>
+                              </tbody>                                    
                           </table>
-                      </div>
-                    </div>
-                  </fieldset>
-                  <fieldset>
-                    <legend>
-                      <h3>CONTACT</h3>
-                    </legend>  
-                    <div class="row margin-top-0">
-                      <div class="col-md-12">  
-                          <table class="no-border no-strip information">
-                            <tbody class="no-border-x no-border-y">
-                              <tr>   
-                                  <td class="width-50"></td>                              
-                                  <td>
-                                      <table class="no-border no-strip">
-                                          <tbody class="no-border-x no-border-y">
-                                            <% if(!_.isEmpty(contact.get("email"))) { %>
-                                            <tr>
-                                              <td style="width:3%"><i class="fa fa-envelope"></td>
-                                              <td style="width:10%"><i>Email</i></td>                                                
-                                              <td><span class="margin-left-10"><%= contact.get("email") %></span></td>
-                                            </tr>
-                                            <% } %>
-                                            <% if(!_.isEmpty(contact.get("phone"))) { %>
-                                            <tr>
-                                              <td style="width:3%"><i class="fa fa-phone"></i></td>
-                                              <td style="width:10%"><i>Phone</i></td>    
-                                              <td><span class="margin-left-10"><%= contact.get("phone") %></span></td>
-                                            </tr>
-                                            <% } %>
-                                            <% if(!_.isEmpty(contact.get("mobile"))) { %>                                          
-                                            <tr>
-                                              <td style="width:3%"><i class="fa fa-mobile"></td>
-                                              <td style="width:10%"><i>Mobile</i></td>    
-                                              <td>
-                                                  <span class="margin-left-10"><%= contact.get("mobile") %></span>                                         
-                                              </td>
-                                            </tr>
-                                            <% } %>
-                                          </tbody>                                    
-                                      </table>
-                                  </td>
-                              </tr>
-                          </tbody>
-                        </table>
-                      </fieldset>
-                    
-                      <table>
-                        <tbody class="no-border-x no-border-y">
-                            <tr>                                 
-                                <td class="width-50"></td> 
-                                <td>
-                                    <table class="no-border no-strip">
-                                        <tbody class="no-border-x no-border-y">
-                                          <tr>
-                                            <td style="width:13%"></td>
-                                            <td>  
-                                              <div class="margin-left-10">                                              
-                                                  <div class="clearfix"></div>
-                                                  <a href="<%= contact_edit_url %>/<%= contact.get("id") %>" class="btn btn-primary btn-trans btn-rad btn-sm margin-left-0"><i class="fa fa-pencil width-10"></i> Edit</a>
-                                                  <button id="delete-contact" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
-                                                  <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a>
-                                              </div>
-                                            </td>
-                                          </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                      </td>
+                  </tr>
+              </tbody>
+            </table>
+          </fieldset>
+
+          <div class="row margin-left-0 margin-right-0">
+            <div class="col-md-12 no-padding">
+              <div class="pull-right clearfix">
+                <a href="<%= contact_edit_url %>/<%= contact.get("id") %>" class="btn btn-primary btn-trans btn-rad btn-sm margin-left-0"><i class="fa fa-pencil width-10"></i> Edit</a>
+                <button id="delete-contact" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
+                <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a>
+              </div>
             </div>
+          </div>           
         </div> <!-- /.block-flat -->
     </div>
 </div>

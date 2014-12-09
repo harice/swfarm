@@ -1,23 +1,45 @@
 <div class="row margin-top-0">
     <div class="col-md-12 no-padding">
+        <div class="padding-top-5 padding-bottom-10 margin-bottom-10">
+          <div class="md-dark prusia">
+            <h2 class="entity-header margin-top-0 margin-bottom-0 padding-bottom-10"><%= trailer.get("number") %></h2>
+          </div>           
+        </div>
         <div class="block-flat">
             <fieldset>
-                <legend>
+                <legend class="margin-bottom-0">
                     <h3 class="margin-top-0">DETAILS</h3>
                 </legend>
-                <dl id="view-trailer" class="dl-horizontal padding-top-10">
-                    <dt>Trailer No.</dt>
-                    <dd><%= trailer.get("number") %></dd>
-                    <dt>Trailer Account</dt>
-                    <dd><%= trailer.get("account").name %></dd>
-                    <dd>
-                        <div class="clearfix"></div>
-                        <a href="<%= trailer_edit_url %>/<%= trailer.get('id') %>" class="btn btn-primary btn-sm btn-trans btn-rad"><i class="fa fa-pencil width-10"></i> Edit</a>
-                        <button id="delete-trailer" type="button" class="btn btn-danger btn-sm btn-rad btn-trans"><i class="fa fa-times width-10"></i> Delete</button>
-                        <a id="go-to-previous-page" href="#" class="btn btn-warning btn-sm btn-trans btn-rad"><i class="fa fa-ban width-10"></i> Cancel</a>
-                    </dd>
-                </dl>
+                <table id="view-trailer" class="no-border no-strip information">
+                  <tbody class="no-border-x no-border-y">                
+                      <tr>
+                          <td class="width-50"></td>
+                          <td>
+                              <table class="no-border no-strip">
+                                  <tbody class="no-border-x no-border-y">                                
+                                    <tr>
+                                      <td style="width:3%;"><i class="fa fa-align-justify"></i></td>
+                                      <td style="width:10%;"><i>Trailer Account</i></td>
+                                      <td>
+                                        <%= trailer.get("account").name %>
+                                      </td>
+                                    </tr>                                
+                                  </tbody>
+                              </table>
+                          </td>
+                      </tr>
+                  </tbody>
+                </table>                          
             </fieldset>
+            <div class="row margin-left-0 margin-right-0 margin-top-0">
+                <div class="col-md-12 no-padding">
+                  <div class="pull-right clearfix">
+                    <a href="<%= trailer_edit_url %>/<%= trailer.get('id') %>" class="btn btn-primary btn-sm btn-trans btn-rad"><i class="fa fa-pencil width-10"></i> Edit</a>
+                    <button id="delete-trailer" type="button" class="btn btn-danger btn-sm btn-rad btn-trans"><i class="fa fa-times width-10"></i> Delete</button>
+                    <a id="go-to-previous-page" href="#" class="btn btn-warning btn-sm btn-trans btn-rad"><i class="fa fa-ban width-10"></i> Cancel</a>
+                  </div>
+                </div>
+            </div>    
         </div>
     </div>
 </div>

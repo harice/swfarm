@@ -1,16 +1,16 @@
 <div class="row margin-top-0">
     <div class="col-md-12 no-padding">
         <div class="block-flat">
-            <div class="row margin-top-0">
-                <div class="col-md-12">
+            <div class="row margin-top-0 margin-left-0 margin-right-0">
+                <div class="col-md-12 no-padding">
                     <form id="soForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
                         <% if (typeof so_id !== "undefined") { %>
                         <input type="hidden" name="id" value="<%= so_id %>" />
                         <% } %>
                         <fieldset>
                             <legend><h3 class="margin-top-0 margin-bottom-0">DETAILS</h3></legend>
-                            <div class="row margin-top-0">
-                                <div class="col-md-6">
+                            <div class="row margin-top-0 margin-left-0 margin-right-0">
+                                <div class="col-md-6 padding-left-0">
                                     <% if (typeof so_id !== "undefined") { %>
                                     <div class="form-group">
                                         <label for="sonumber" class="col-sm-3 control-label">SO Number</label>
@@ -71,7 +71,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 padding-right-0">
                                     <% if (typeof so_id !== "undefined") { %>
                                     <div class="form-group">
                                         <label for="dateofsale" class="col-sm-3 control-label">Date of Sale</label>
@@ -139,7 +139,7 @@
                                 <button title="Add Product" id="add-product" type="button" class="pull-right btn btn-rad btn-info btn-xs margin-top-20"><span class="glyphicon glyphicon-plus"></span></button>
                             </legend>
                             <div class="content-inner table-responsive">
-                                <table id="product-list" class="table table-bordered table-condensed">
+                                <table id="product-list" class="table-bordered table-condensed">
                                     <thead>
                                         <tr>
                                             <th class="width-200">Product</th>
@@ -167,7 +167,7 @@
                             </div>
                         </fieldset>
                         <div class="form-group form-button-container">
-                            <div class="col-md-12">
+                            <div class="col-md-12 no-padding">
                                 <div class="pull-right">
                                     <% if (typeof readonly_products == "undefined") { %>
                                         <% if (typeof verified === "undefined") { %>

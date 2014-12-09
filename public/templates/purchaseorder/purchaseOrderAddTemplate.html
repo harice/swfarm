@@ -8,8 +8,8 @@
                     <legend>
                        <h3 class='margin-top-5 margin-bottom-0'>DETAILS</h3>                    
                     </legend>
-                    <div class="row margin-top-0">
-                        <div class="col-md-6">
+                    <div class="row margin-top-0 margin-left-0 margin-right-0">
+                        <div class="col-md-6 padding-left-0">
                             <% if (typeof po_id !== "undefined") { %>
                             <div class="form-group">
                                 <label for="ponumber" class="col-sm-3 control-label">PO No.</label>
@@ -89,7 +89,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 padding-right-0">
                             <% if (typeof po_id !== "undefined") { %>
                             <div class="form-group">
                                 <label for="dateofpurchase" class="col-sm-3 control-label">Purchased Date</label>
@@ -165,7 +165,7 @@
                     </div>
                 </fieldset>
                 <div class="form-group form-button-container">
-                    <div class="col-md-12">
+                    <div class="col-md-12 no-padding">
                         <div class="pull-right">
                             <% if (typeof is_bid === "undefined") { %>
                                 <button id="save-and-check-in" type="button" class="save-and-close btn btn-sm btn-primary btn-rad">Save & Close</button>

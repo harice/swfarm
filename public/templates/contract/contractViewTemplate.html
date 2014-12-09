@@ -7,8 +7,8 @@
         </div>      
         <div class="block-flat padding-top-5 padding-bottom-0">          
             <div id="view-contract">               
-                <div class="row margin-top-0 margin-bottom-10">
-                    <div class="col-md-4">
+                <div class="row margin-top-0 margin-bottom-10 margin-left-0 margin-right-0">
+                    <div class="col-md-4 padding-left-0">
                         Customer: <span class="text-danger"><%= contract.get("account").name %></span><br>                                              
                         Status: <label class="label label-<%= contract.get('status').class %>"><%= contract.get("status").name %></label>
                     </div>
@@ -16,7 +16,7 @@
                         Contract Date Start: <span class="text-danger"><%= contract.get("contract_date_start") %></span><br>
                         Contract Date End: <span class="text-danger"><%= contract.get("contract_date_end") %></span><br>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 padding-right-0">
                         Total Est Tons: <span class="text-danger"><%= numberFormatTons(total_tons) %> tons</span><br>
                         Total Est Bales: <span class="text-danger"><%= numberFormatBales(total_bales) %> bales</span><br>
                     </div>
@@ -29,8 +29,8 @@
                         <legend class="margin-bottom-0">
                             <h5><span><%= product["product_name"] %></span></h5>
                         </legend>                       
-                        <div class="row margin-top-0 margin-bottom-10">
-                            <div class="col-md-12">
+                        <div class="row margin-top-0 margin-bottom-0 margin-left-0 margin-right-0">
+                            <div class="col-md-12 no-padding">
                                 <div class="content-inner table-responsive">
                                     <table class="table-condensed table-bordered table-hover">
                                         <thead>
@@ -84,8 +84,8 @@
 
                 </div> <!-- /.sales-order-details-by-product -->
 
-                <div class="row">
-                    <div class="col-md-12">
+                <div class="row margin-left-0 margin-right-0">
+                    <div class="col-md-12 no-padding">
                         <div class="pull-right">
                             <% if(contract.get("status_id") == 1) { %>
                             <a href="<%= contract_edit_url %>/<%= contract.get('id') %>" class="btn btn-primary btn-trans btn-rad btn-sm"><i class="fa fa-pencil width-10"></i> Edit</a>

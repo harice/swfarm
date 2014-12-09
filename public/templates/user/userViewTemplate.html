@@ -12,59 +12,94 @@
                 </div -->
                 <div class="col-md-12">
                     <fieldset>
-                        <legend>
+                        <legend class="margin-bottom-0">
                             <h3 class="margin-top-0">PERSONAL INFORMATION</h3>
                         </legend>
-                        <dl class="dl-horizontal padding-top-5 margin-bottom-0">
-                            <dt><i class="fa fa-user"></i> Position</dt>
-                            <dd>
-                                <% if (user.get("position") != null) { %>
-                                <%= user.get("position") %>
-                                <% } else { %>
-                                &nbsp;
-                                <% } %>
-                            </dd>    
-                            <dt><i class="fa fa-envelope"></i> Email</dt><dd><%= user.get("email") %></dd>                                
-                            <dt><i class="fa fa-phone"></i> Phone</dt>
-                            <dd>
-                                <% if (user.get("phone") != null) { %>
-                                <%= user.get("phone") %>
-                                <% } else { %>
-                                &nbsp;
-                                <% } %>
-                            </dd>
-                            <dt><i class="fa fa-mobile-phone"></i> Mobile</dt>
-                            <dd>
-                                <% if (user.get("mobile") != null) { %>
-                                <%= user.get("mobile") %>
-                                <% } else { %>
-                                &nbsp;
-                                <% } %>
-                            </dd>                                                         
-                        </dl>
+                        <table class="no-border no-strip">
+                            <tbody class="no-border-x no-border-y">
+                              <tr>   
+                                  <td class="width-50"></td>                              
+                                  <td>
+                                      <table class="no-border no-strip">
+                                          <tbody class="no-border-x no-border-y">
+                                            <% if (user.get("position") != null) { %>
+                                            <tr>
+                                              <td style="width:3%"><i class="fa fa-user"></td>
+                                              <td style="width:10%"><i>Position</i></td>                                                
+                                              <td><%= user.get("position") %></td>
+                                            </tr>
+                                            <% } %>
+                                            <% if (user.get("email") != null) { %>
+                                            <tr>
+                                              <td style="width:3%"><i class="fa fa-envelope"></td>
+                                              <td style="width:10%"><i>Email</i></td>                                                
+                                              <td><%= user.get("email") %></td>
+                                            </tr>
+                                            <% } %>
+                                            <% if (user.get("phone") != null) { %>
+                                            <tr>
+                                              <td style="width:3%"><i class="fa fa-phone"></td>
+                                              <td style="width:10%"><i>Phone</i></td>                                                
+                                              <td><%= user.get("phone") %></td>
+                                            </tr>
+                                            <% } %>
+                                            <% if (user.get("mobile") != null) { %>
+                                            <tr>
+                                              <td style="width:3%"><i class="fa fa-mobile-phone"></td>
+                                              <td style="width:10%"><i>Mobile</i></td>                                                
+                                              <td><%= user.get("mobile") %></td>
+                                            </tr>
+                                            <% } %>
+                                          </tbody>
+                                      </table>
+                                  </td>
+                              </tr>
+                            </tbody>
+                        </table>                        
                     </fieldset>
 
                     <fieldset>
-                        <legend>
+                        <legend class="margin-bottom-0">
                             <h3>USER SETTINGS</h3>
                         </legend>
-                        <dl class="dl-horizontal padding-top-5 margin-bottom-0">                                
-                            <dt><i class="fa fa-group"></i> Roles</dt>
-                            <dd>
-                                <% _.each(user.get("roles"), function(role){ %>
-                                <%= role.name %><br />
-                                <% }); %>
-                            </dd>
-                            <dt></dt>
-                            <dd>
-                                <div class="clearfix"></div>
-                                <br />
-                                <a href="<%= user_edit_url %>/<%= user.get("id") %>" class="btn btn-primary btn-trans btn-rad btn-sm"><i class="fa fa-pencil width-10"></i> Edit</a>
-                                <button data-toggle="modal" data-target="#mod-success" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
-                                <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a>
-                            </dd>
-                        </dl>
+                        <table class="no-border no-strip">
+                            <tbody class="no-border-x no-border-y">
+                              <tr>   
+                                  <td class="width-50"></td>                              
+                                  <td>
+                                      <table class="no-border no-strip">
+                                          <tbody class="no-border-x no-border-y">
+                                            
+                                            <tr>
+                                              <td style="width:3%"><i class="fa fa-group"></td>
+                                              <td style="width:10%"><i>Roles</i></td>                                                
+                                              <td>
+                                                <% if (user.get("position") != null) { %>
+                                                    <% _.each(user.get("roles"), function(role){ %>
+                                                    <%= role.name %><br />
+                                                    <% }); 
+                                                } 
+                                                else { %>
+                                                    <span class="text-danger">None</span>
+                                                <% } %>
+                                              </td>
+                                            </tr>                                            
+                                          </tbody>
+                                      </table>
+                                  </td>
+                              </tr>
+                            </tbody>
+                        </table>                                      
                     </fieldset>
+                    <div class="row margin-left-0 margin-right-0">
+                        <div class="col-md-12 no-padding">
+                          <div class="pull-right clearfix">
+                            <a href="<%= user_edit_url %>/<%= user.get("id") %>" class="btn btn-primary btn-trans btn-rad btn-sm"><i class="fa fa-pencil width-10"></i> Edit</a>
+                            <button data-toggle="modal" data-target="#mod-success" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
+                            <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a>
+                          </div>
+                        </div>
+                      </div>  
                     
                 </div>
 
