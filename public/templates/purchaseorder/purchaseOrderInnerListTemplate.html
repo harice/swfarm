@@ -37,9 +37,16 @@
 			<% } %>
 		</td>
 		<td>
-			<div class="progress">
-				<div style="width: <%= po.get("weightPercentageDelivered") %>%" class="progress-bar progress-bar-<%= po.get("status").class %>"><%= po.get("weightPercentageDelivered") %>%</div>
-			</div>
+			<% if(!_.isNull(po.get("location")) && po.get('location').id != swfarm_location && po.get("status").id == po_status_closed) { %>
+				<div class="progress">
+					<div style="width: 100%" class="progress-bar progress-bar-<%= po.get("status").class %>">100%</div>
+				</div>
+			<% }
+			else { %>
+				<div class="progress">
+					<div style="width: <%= po.get("weightPercentageDelivered") %>%" class="progress-bar progress-bar-<%= po.get("status").class %>"><%= po.get("weightPercentageDelivered") %>%</div>
+				</div>
+			<% } %>
 		</td>
 		<td class="text-right">$ <%= numberFormat(po.get("totalPrice")) %></td>
 	</tr>
