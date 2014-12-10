@@ -148,13 +148,18 @@ define([
 							},
 							error: function (model, response, options) {
 								if(typeof response.responseJSON.error == 'undefined')
-									validate.showErrors(response.responseJSON);
+									validate.showErrors(response);
 								else
 									thisObj.displayMessage(response);
 							},
 							headers: accountModel.getAuth(),
 						}
 					);
+				},
+
+				showErrors: function(response) {
+					if(!_.isEmpty(response.responseJSON))
+						thisObj.displayMessage(response);
 				},
 				
 				rules: {

@@ -366,7 +366,7 @@ define([
 			else
 				responseJSON = data;
 
-			if(responseJSON.error != 'undefined') {
+			if(typeof responseJSON.error != 'undefined') {
 				var error = responseJSON.error;
 				var type = (error == false)? 'success' : 'error';
 				var message = responseJSON.message;
@@ -380,6 +380,11 @@ define([
 				}
 				else 
 					alert(message);
+			}
+			else {
+				for(var key in responseJSON){
+					this.displayGritter(key + ":" + responseJSON[key], 'error');
+				}
 			}
 		};
         
