@@ -2,7 +2,14 @@
     <div class="col-md-12 no-padding">
         <div class="padding-top-5 padding-bottom-10 margin-bottom-10">
           <div class="md-dark prusia">
-            <h2 class="entity-header margin-top-0 margin-bottom-0 padding-bottom-10"><%= product.get("name") %></span></h2>
+            <h2 class="entity-header margin-top-0 margin-bottom-0 padding-bottom-10 clearfix">
+                <span class="pull-left"><%= product.get("name") %></span>
+                <span class="pull-right">
+                    <a href="<%= product_edit_url %>/<%= product.get("id") %>" class="btn btn-primary btn-rad btn-sm"><i class="fa fa-pencil width-10"></i> Edit</a>
+                    <button id="delete-product" data-toggle="modal" data-target="#mod-success" type="button" class="btn btn-danger btn-rad btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
+                    <a id="go-to-previous-page" class="btn btn-warning btn-sm btn-rad" href="#"><i class="fa fa-ban width-10"></i> Cancel</a>
+                </span>
+            </h2>
           </div>           
         </div>
         <div class="block-flat">           
@@ -11,29 +18,30 @@
                     <legend>
                         <h3 class="margin-top-5">DETAILS</h3>
                     </legend>
-                    <div class="row margin-top-0">
-                        <div class="col-md-12">
-                            <dl class="dl-horizontal">
-                                <dt>Description</dt>
-                                <dd>
-                                    <% if (product.get("description") != "") { %>
-                                    <%= product.get("description") %>
-                                    <% } else { %>
-                                    &nbsp;
-                                    <% } %>
-                                </dd>                               
-                            </dl>
-                            <div class="row margin-left-0 margin-right-0">
-                                <div class="col-md-12 no-padding">
-                                  <div class="pull-right clearfix">
-                                    <a href="<%= product_edit_url %>/<%= product.get("id") %>" class="btn btn-primary btn-trans btn-rad btn-sm"><i class="fa fa-pencil width-10"></i>Edit</a>
-                                    <button id="delete-product" data-toggle="modal" data-target="#mod-success" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i>Delete</button>
-                                    <a id="go-to-previous-page" class="btn btn-warning btn-sm btn-rad" href="#"><i class="fa fa-ban width-10"></i> Cancel</a>
-                                  </div>
-                                </div>
-                            </div>   
-                        </div>
-                    </div>
+                    <table class="no-border no-strip information">
+                      <tbody class="no-border-x no-border-y">                
+                          <tr>
+                              <td class="width-50"></td>
+                              <td>
+                                  <table class="no-border no-strip">
+                                      <tbody class="no-border-x no-border-y">                                        
+                                        <tr>
+                                          <td style="width:3%;"><i class="fa fa-align-justify"></i></td>
+                                          <td style="width:10%;"><i>Description</i></td>
+                                          <td>
+                                            <% if (product.get("description") != "") { %>
+                                            <%= product.get("description") %>
+                                            <% } else { %>
+                                            &nbsp;
+                                            <% } %>
+                                          </td>
+                                        </tr>                                       
+                                      </tbody>
+                                  </table>
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>                    
                 </fieldset>              
             </div>
 

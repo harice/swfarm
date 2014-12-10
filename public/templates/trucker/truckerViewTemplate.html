@@ -2,7 +2,14 @@
     <div class="col-md-12 no-padding"> 
         <div class="padding-top-5 padding-bottom-10 margin-bottom-10">
           <div class="md-dark prusia">
-            <h2 class="entity-header margin-top-0 margin-bottom-0 padding-bottom-10"><%= trucker.get("trucknumber") %></h2>
+            <h2 class="entity-header margin-top-0 margin-bottom-0 padding-bottom-10 clearfix">
+              <span class="pull-left"><%= trucker.get("trucknumber") %></span>
+              <span class="pull-right">
+                <a href="<%= trucker_edit_url %>/<%= trucker.get('id') %>" class="btn btn-primary btn-rad btn-sm"><i class="fa fa-pencil width-10"></i> Edit</a>
+                <button id="delete-trucker" type="button" class="btn btn-danger btn-rad btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
+                <a id="go-to-previous-page" href="#" class="btn btn-warning btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a>
+              </span>
+            </h2>
           </div>           
         </div>       
         <div class="block-flat">
@@ -44,16 +51,7 @@
                       </tr>
                   </tbody>
                 </table>                     
-            </fieldset>
-            <div class="row margin-left-0 margin-right-0 margin-top-0">
-                <div class="col-md-12 no-padding">
-                  <div class="pull-right clearfix">
-                    <a href="<%= trucker_edit_url %>/<%= trucker.get('id') %>" class="btn btn-primary btn-trans btn-rad btn-sm"><i class="fa fa-pencil width-10"></i> Edit</a>
-                    <button id="delete-trucker" type="button" class="btn btn-danger btn-rad btn-trans btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
-                    <a id="go-to-previous-page" href="#" class="btn btn-warning btn-trans btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a>
-                  </div>
-                </div>
-            </div> 
+            </fieldset>           
         </div>
     </div>
 </div>

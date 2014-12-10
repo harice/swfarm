@@ -157,10 +157,13 @@ define([
 					);
 				},
 
-				showErrors: function(response) {
-					if(!_.isEmpty(response.responseJSON))
-						thisObj.displayMessage(response);
-				},
+				errorPlacement: function (error, element) {
+					if($(element).hasClass("accounttype")) {
+						$(element).parent().append(error);
+					}
+					else
+						error.insertAfter(element);
+				},	
 				
 				rules: {
 					website: {

@@ -18,7 +18,7 @@
                     <div class="form-group">
                         <label for="accounttype" class="col-sm-2 control-label">Account Type <i class="color-danger">*</i></label>
                         <div class="col-sm-5">
-                            <select class="form-control" id="accounttype" multiple='multiple'>
+                            <select class="form-control accounttype" name="accounttype" id="accounttype" multiple='multiple' required>
                                 <% _.each(account_types, function(account_type){ %>
                                 <option value="<%= account_type.id %>"><%= account_type.name %></option>
                                 <% }); %>

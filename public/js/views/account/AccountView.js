@@ -54,6 +54,8 @@ define([
 		displayAccount: function () {
 			var data = {
 				accountName: this.model.get('name'),
+				accountId:this.model.get('id'),
+				account_edit_url:'#/'+Const.URL.ACCOUNT+'/'+Const.CRUD.EDIT,
 				account_types: this.generateAccountTypesTabs()
 			};
 			var innerTemplate = _.template(accountViewTemplate, data);
@@ -147,42 +149,47 @@ define([
 		getProfile: function(){
 			var innerTemplateVariables = {
 				account:this.model,
-				account_url:'#/'+Const.URL.ACCOUNT,
-				account_edit_url:'#/'+Const.URL.ACCOUNT+'/'+Const.CRUD.EDIT,				
+				account_url:'#/'+Const.URL.ACCOUNT,						
 			}
 			var innerTemplate = _.template(profileViewTemplate, innerTemplateVariables);
-			
+						
 			this.$el.find("#account-tabpanes").html(innerTemplate);
+			this.$el.find(".header-buttons").show();
 		},
 
 		getStackLocation: function(id, name){
 			this.closeView();
 			this.currView = new warehouseAccountView({id: id, name: name});
 			this.currView.setElement($("#account-tabpanes")).render();		
+			this.$el.find(".header-buttons").hide();
 		},
 
 		getTruckers: function(id, name){
 			this.closeView();
 			this.currView = new truckersAccountView({id: id, name: name});
-			this.currView.setElement($("#account-tabpanes")).render();		
+			this.currView.setElement($("#account-tabpanes")).render();	
+			this.$el.find(".header-buttons").hide();	
 		},	
 
 		getTrailers: function(id, name){
 			this.closeView();
 			this.currView = new trailersAccountView({id: id, name: name});
-			this.currView.setElement($("#account-tabpanes")).render();		
+			this.currView.setElement($("#account-tabpanes")).render();	
+			this.$el.find(".header-buttons").hide();	
 		},		
 
 		getScaleProviders: function(id, name){
 			this.closeView();
 			this.currView = new scaleAccountView({id: id, name: name});
 			this.currView.setElement($("#account-tabpanes")).render();	
+			this.$el.find(".header-buttons").hide();
 		},						
 
 		getContacts: function(id, name){
 			this.closeView();
 			this.currView = new contactsAccountView({id: id, name: name});
-			this.currView.setElement($("#account-tabpanes")).render();				
+			this.currView.setElement($("#account-tabpanes")).render();	
+			this.$el.find(".header-buttons").hide();			
 		},
 
 		closeView: function () {

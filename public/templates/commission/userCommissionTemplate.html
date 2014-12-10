@@ -2,7 +2,12 @@
     <div class="col-md-12 no-padding">
         <div class="padding-top-5 padding-bottom-10 margin-bottom-10">
           <div class="md-dark prusia">
-            <h2 class="entity-header margin-top-0 margin-bottom-0 padding-bottom-10"><%= user_fullname %></h2>
+            <h2 class="entity-header margin-top-0 margin-bottom-0 padding-bottom-10 clearfix">
+                <span class="pull-left"><%= user_fullname %></span>
+                <span class="pull-right">
+                    <a id="go-to-previous-page" class="btn btn-rad btn-sm" href="#"><i class="fa fa-reply width-10"></i> Back</a>
+                </span>
+            </h2>
           </div>           
         </div>
         <div class="block-flat">
@@ -37,14 +42,7 @@
                         <li><a class="last-page btn" href="#"><span class="glyphicon glyphicon-fast-forward"></span></a></li>
                     </ul>
                 </div>
-            </div>
-            <div class="row margin-top-10">
-                <div class="col-md-12">
-                    <div class="pull-right">
-                        <a id="go-to-previous-page" class="btn btn-trans btn-rad btn-sm" href="#"><i class="fa fa-reply width-10"></i> Back</a>
-                    </div>
-                </div>
-            </div>
+            </div>            
         </div> <!-- /.block-flat -->
     </div>
 </div>

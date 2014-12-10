@@ -2,7 +2,14 @@
     <div class="col-md-12 no-padding">
         <div class="padding-top-5 padding-bottom-10 margin-bottom-10">
 		  <div class="md-dark prusia">
-		    <h2 class="entity-header margin-top-0 margin-bottom-0 padding-bottom-10"><%= accountName %></h2>
+		    <h2 class="entity-header margin-top-0 margin-bottom-0 padding-bottom-10 clearfix">
+                <span class="pull-left"><%= accountName %></span>               
+                <span class="pull-right header-buttons">
+                    <a href="<%= account_edit_url %>/<%= accountId %>" class="btn btn-primary btn-rad btn-sm margin-left-10"><i class="fa fa-pencil width-10"></i> Edit</a>
+                    <button id="delete-account" type="button" class="btn btn-danger btn-rad btn-sm"><i class="fa fa-times width-10"></i> Delete</button>
+                    <a id="go-to-previous-page" href="#" class="btn btn-warning btn-rad btn-sm"><i class="fa fa-ban width-10"></i> Cancel</a> 
+                </span>
+            </h2>
 		  </div>		       
 		</div>
     </div>

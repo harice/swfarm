@@ -670,9 +670,11 @@ fieldset .form-horizontal .form-group,
 .form-horizontal fieldset .form-group,
 .form-horizontal .form-group { margin-top:5px; margin-left:0; margin-right:0; }
 fieldset .form-group .btn.multiselect { margin-bottom:0 !important; }
-fieldset table.information td i { font-size:13px; width:auto; }
+fieldset table.information td i,
+fieldset table td i,
+table td i { font-size:13px; width:auto; }
 
-fieldset.address-fields-group { border:1px solid #dddddd; padding:0 10px 10px; width:500px; }
+fieldset.address-fields-group { border:1px solid #dddddd; padding:0 10px 10px; }
 fieldset.address-fields-group legend,
 fieldset.report-fields-group legend { border:0; margin-bottom:0; width:auto; }
 fieldset.address-fields-group legend h3 { background:#f5f5f5; color:#505050; margin-top:0; }
@@ -697,6 +699,8 @@ select.form-control.input-sm { height:30px; padding: 0; }
 h2.content-header { margin-top:0; }
 h2.content-header span { background:#3D566D; padding:5px 10px; display:inline-block; color:#ffffff; font-family:Menlo,Monaco,Consolas,"Courier New",monospace; font-size:22px; }
 h2.entity-header { padding:10px; background:#3D566D; color:#ffffff; }
+h2.entity-header span { height:30px; line-height:30px; display:block; }
+h2.entity-header .btn { margin-bottom: 0 !important; margin-top:-5px !important; }
 
 .modal-content .modal-header {
     border-bottom:3px solid #f0f0f0; 
@@ -765,3 +769,5 @@ h2.entity-header { padding:10px; background:#3D566D; color:#ffffff; }
 #report-filter .btn.multiselect { margin-bottom:0 !important; }
 
 .input-group-btn.open .dropdown-toggle { background:#f0f0f0; }
+
+#accounttype { display:block !important; opacity:0; height:0; padding:0; }

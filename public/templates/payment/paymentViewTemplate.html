@@ -2,43 +2,68 @@
     <div class="col-md-12 no-padding">
         <div class="padding-top-5 padding-bottom-10 margin-bottom-10">
           <div class="md-dark prusia">
-            <h2 class="entity-header margin-top-0 margin-bottom-0 padding-bottom-10"><%= payment.get("transactionnumber") %></h2>
+            <h2 class="entity-header margin-top-0 margin-bottom-0 padding-bottom-10 clearfix">
+                <span class="pull-left"><%= payment.get("transactionnumber") %></span>
+                <span class="pull-right">
+                    <% if(!payment.get('isCancel')) { %>
+                        <a href="<%= payment_edit_url %>/<%= payment.get('id') %>" class="btn btn-primary btn-sm btn-rad"><i class="fa fa-pencil width-10"></i> Edit</a>
+                    <% } %> 
+                    <button id="delete-payment" data-id="<%= payment.get("id") %>" type="button" class="btn btn-danger btn-sm btn-rad"><i class="fa fa-times width-10"></i> Delete Payment</button>                               
+                    <a id="go-to-previous-page" href="#" class="btn btn-warning btn-sm btn-rad"><i class="fa fa-ban width-10"></i> Cancel</a>
+                </span>
+            </h2>
           </div>           
         </div>
         <div class="block-flat">           
             <fieldset>
-                <legend>
+                <legend class="margin-bottom-10">
                     <h3 class="margin-top-0">DETAILS</h3>
                 </legend>
-                <div class="row margin-top-0">
-                    <div class="col-md-12 no-padding">
-                        <dl id="view-trailer" class="dl-horizontal">
-                            <dt>Posting Date</dt>
-                            <dd><%= payment.get("created_at") %></dd>
-                            <dt>PO No.</dt>
-                            <dd><%= payment.get("order").order_number %></dd>
-                            <dt>Producer</dt>
-                            <dd><%= payment.get('account').name %></dd>
-                            <dt>Check No.</dt>
-                            <dd><%= payment.get("checknumber") %></dd>
-                            <dt>Amount Paid</dt>
-                            <dd>$ <%= payment.get("amount") %></dd>                            
-                            <dt>Notes</dt>
-                            <dd><%= payment.get("notes") %></dd>                            
-                        </dl>
-                    </div>
-                </div>  
-                <div class="row margin-left-0 margin-right-0">
-                    <div class="col-md-12 no-padding">
-                      <div class="pull-right clearfix">
-                        <% if(!payment.get('isCancel')) { %>
-                            <a href="<%= payment_edit_url %>/<%= payment.get('id') %>" class="btn btn-primary btn-sm btn-trans btn-rad"><i class="fa fa-pencil width-10"></i> Edit</a>
-                        <% } %> 
-                        <button id="delete-payment" data-id="<%= payment.get("id") %>" type="button" class="btn btn-danger btn-trans btn-sm btn-rad"><i class="fa fa-times width-10"></i> Delete Payment</button>                               
-                        <a id="go-to-previous-page" href="#" class="btn btn-warning btn-sm btn-trans btn-rad"><i class="fa fa-ban width-10"></i> Cancel</a>
-                      </div>
-                    </div>
-                </div>                                                
+                <table class="no-border no-strip information">
+                  <tbody class="no-border-x no-border-y">                
+                      <tr>
+                          <td class="width-50"></td>
+                          <td>
+                              <table class="no-border no-strip">
+                                  <tbody class="no-border-x no-border-y">
+                                    <tr>
+                                      <td style="width:3%;"><i class="fa fa-calendar"></i></td>
+                                      <td style="width:10%;"><i>Posting Date</i></td>
+                                      <td>
+                                          <%= payment.get("created_at") %>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td style="width:3%;"><i class="fa fa-ticket"></i></td>
+                                      <td style="width:10%;"><i>PO No.</i></td>
+                                      <td><%= payment.get("order").order_number %></td>
+                                    </tr>
+                                    <tr>
+                                      <td style="width:3%;"><i class="fa fa-user"></i></td>
+                                      <td style="width:10%;"><i>Producer</i></td>
+                                      <td><%= payment.get('account').name %></td>
+                                    </tr>
+                                    <tr>
+                                      <td style="width:3%;"><i class="fa fa-barcode"></i></td>
+                                      <td style="width:10%;"><i>Check No.</i></td>
+                                      <td><%= payment.get("checknumber") %></td>
+                                    </tr>
+                                    <tr>
+                                      <td style="width:3%;"><i class="fa fa-money"></i></td>
+                                      <td style="width:10%;"><i>Amount Paid</i></td>
+                                      <td>$ <%= payment.get("amount") %></td>
+                                    </tr>
+                                    <tr>
+                                      <td style="width:3%;"><i class="fa fa-pencil-square-o"></i></td>
+                                      <td style="width:10%;"><i>Notes</i></td>
+                                      <td><%= payment.get("notes") %></td>
+                                    </tr>
+                                  </tbody>
+                              </table>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>                                            
             </fieldset>                
         </div>
     </div>
