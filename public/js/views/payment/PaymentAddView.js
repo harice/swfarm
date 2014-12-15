@@ -129,6 +129,13 @@ define([
 						}
 					);
 				},
+				errorPlacement: function(error, element) {
+					if(element.hasClass('amount')) {
+						element.closest('.input-group').next('.error-msg-cont').html(error);
+					}
+					else
+						error.insertAfter(element);					
+				},
 				
 			});
 		},		
