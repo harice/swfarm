@@ -296,11 +296,14 @@ define([
 				Global.getGlobalVars().app_router.navigate('#/'+Const.URL.DASHBOARD, { trigger : true });
 			}else{
 				return next();
-			}
+			}	
+
+
 		},
 
 		after : function(){
-			//empty
+			//Scroll to top of page after navigation
+			window.scrollTo(0,0);
 		},
 
 		fetchError : function(error){

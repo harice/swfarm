@@ -93,7 +93,7 @@ define([
 			this.googleMaps = new GoogleMapsView();
 			this.googleMaps.initGetMapLocation(function (data) {
 				var index = $("#google-maps-modal-getlocation").attr('data-id', index);
-				if(typeof data.location !== 'undefined') {
+				if(typeof data.location !== 'undefined') {					
 					thisObj.subContainer.find(".latitude[name='latitude."+ index +"']").val(data.location.lat());
 					thisObj.subContainer.find(".longitude[name='longitude."+ index +"']").val(data.location.lng());
 				}
@@ -204,8 +204,8 @@ define([
 			      geocoder.geocode({ 'address': address }, function (results, status) {
 			         if (status == google.maps.GeocoderStatus.OK) {
 			         	$(".country").next('.error-msg-cont').fadeOut();
-			         	$(".latitude[name='latitude."+ index +"']").val(results[0].geometry.location.k);
-			         	$(".longitude[name='longitude."+ index +"']").val(results[0].geometry.location.B);
+			         	$(".latitude[name='latitude."+ index +"']").val(results[0].geometry.location.lat());
+			         	$(".longitude[name='longitude."+ index +"']").val(results[0].geometry.location.lng());			         
 			         }
 			         else {
 			         	$(".country").next('.error-msg-cont').fadeOut();

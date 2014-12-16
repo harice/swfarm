@@ -353,7 +353,7 @@ define([
 			      geocoder.geocode({ 'address': address }, function (results, status) {
 			         if (status == google.maps.GeocoderStatus.OK) {
 			         	$("#map").next('.error-msg-cont').fadeOut();
-			            thisObj.googleMaps.showModalGetLocation({lat: results[0].geometry.location.k, lng: results[0].geometry.location.B, draggableMarker: false});			            
+			            thisObj.googleMaps.showModalGetLocation({lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng(), draggableMarker: false});			            
 			         }
 			         else {
 			         	$("#map").next('.error-msg-cont').fadeOut();
@@ -386,10 +386,10 @@ define([
 		      geocoder.geocode({ 'address': address }, function (results, status) {
 		         if (status == google.maps.GeocoderStatus.OK) {
 		         	$("#map").next('.error-msg-cont').fadeOut();
-		         	$("#latitude").val(results[0].geometry.location.k);
-		            $("#longitude").val(results[0].geometry.location.B);
-		            $(".latitude").val(results[0].geometry.location.k);
-		            $(".longitude").val(results[0].geometry.location.B);
+		         	$("#latitude").val(results[0].geometry.location.lat());
+		            $("#longitude").val(results[0].geometry.location.lng());
+		            $(".latitude").val(results[0].geometry.location.lat());
+		            $(".longitude").val(results[0].geometry.location.lng());
 		         }
 		         else {
 		         	$("#map").next('.error-msg-cont').fadeOut();

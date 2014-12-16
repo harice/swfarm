@@ -72,10 +72,22 @@ define([
 				}
 				this.off('change');
 			});
+
+			this.cancellingReasonCollection = new CancellingReasonCollection();
+			this.cancellingReasonCollection.on('sync', function() {	
+				//thisObj.originCollection.getModels();
+				//thisObj.natureOfSaleCollection.getModels();
+				this.off('sync');
+			});
+			
+			this.cancellingReasonCollection.on('error', function(collection, response, options) {
+				this.off('error');
+			});
 		},
 		
 		render: function(){
 			this.model.runFetch();
+			this.cancellingReasonCollection.getModels();
 			Backbone.View.prototype.refreshTitle('Sales Order','view');
 		},
 		
@@ -103,6 +115,8 @@ define([
 			};
 			var compiledTemplate = _.template(contentTemplate, variables);
 			this.subContainer.find('#with-tab-content').html(compiledTemplate);
+
+			this.initCancelWindow();
 		},
 		
 		supplySOData: function () {

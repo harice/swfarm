@@ -506,8 +506,8 @@ define([
 			var city = '';
 			var state = '';
 			var zipcode = '';
-			var lat = data.location.k;
-			var lng = data.location.B;
+			var lat = data.location.lat();
+			var lng = data.location.lng();
 			var statecode;
 
 			var geocoder = new google.maps.Geocoder();
@@ -543,7 +543,7 @@ define([
 		         	});
 		       
 		         	$('.latitude[name="latitude.'+ index +'"]').val(latlng.k);
-		         	$('.longitude[name="longitude.'+ index +'"]').val(latlng.B);
+		         	$('.longitude[name="longitude.'+ index +'"]').val(latlng.D);
 		         	$('.street[name="street.'+ index +'"]').val(street);
 		         	$('.city[name="city.'+ index +'"]').val(city);
 		         	$('.state[name="state.'+ index +'"]').val(statecode);
@@ -560,8 +560,8 @@ define([
 		updateSectionCoordinates: function(data){
 			var index = $('#google-maps-modal-getlocation').attr('data-id');	
 
-			var lat = data.location.k;
-			var lng = data.location.B;
+			var lat = data.location.lat();
+			var lng = data.location.lng();
 			var latField = '.latitude[name="latitude.'+ index +'"]';
 			var lngField = '.longitude[name="longitude.'+ index +'"]';
 		
