@@ -136,13 +136,15 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
             $orderby = isset($params['orderby']) ? $params['orderby'] : 'asc';
             $searchWord = $params['search'];
 
-            return StorageLocation::join('account', 'account_id', '=', 'account.id')
+            return StorageLocation::with('address.state')
+                ->join('account', 'account_id', '=', 'account.id')
                 ->select(
                     'storagelocation.id',
                     'storagelocation.name',
                     'storagelocation.description',
                     'storagelocation.account_id',
-                    'account.name as account_name'
+                    'account.name as account_name',
+                    'storagelocation.address_id'
                 )
                 ->where(function ($query) use ($searchWord) {
                     $query->orWhere('storagelocation.name','like','%'.$searchWord.'%');
