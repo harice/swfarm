@@ -21,7 +21,7 @@ class Section extends BaseModel {
      * 
      * @var array
      */
-    protected $fillable = array('storagelocation_id', 'name', 'description');
+    protected $fillable = array('storagelocation_id', 'name', 'description', 'longitude', 'latitude');
 
     /**
      * Define field validation rules.
