@@ -38,8 +38,8 @@ define([
 			this.options = {
 				sectionFieldClone: null,
 				sectionFieldCounter: 0,
-				sectionFieldClass: ['name', 'description', 'id'],
-				sectionFieldClassRequired: ['name'],
+				sectionFieldClass: ['name', 'description', 'latitude', 'longitude', 'id', 'map'],
+				sectionFieldClassRequired: ['name', 'latitude', 'longitude'],
 				sectionFieldExempt: [],
 				sectionFieldSeparator: '.',
 				removeComma: [],
@@ -110,6 +110,8 @@ define([
 				sectionFields.find('.id').val(s.id);
 				sectionFields.find('.name').val(s.name);
 				sectionFields.find('.description').val(s.description);
+				sectionFields.find('.latitude').val(s.latitude);
+				sectionFields.find('.longitude').val(s.longitude);
 			});
 		},
 
