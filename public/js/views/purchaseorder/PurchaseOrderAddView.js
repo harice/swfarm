@@ -112,7 +112,7 @@ define([
 			
 			this.destinationCollection = new DestinationCollection();
 			this.destinationCollection.on('sync', function() {	
-				thisObj.productCollection.getModels();
+				thisObj.productCollection.getAllModel();
 				this.off('sync');
 			});
 			
