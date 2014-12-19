@@ -144,6 +144,13 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                 }
             }
 
+            //check if net is equal to total weight of products
+            if(!$this->isNetWeightIsEqualToTotalProductWeight($data)){
+                return array(
+                  'error' => true,
+                  'message' => 'Net weight and total weight of product(s) are not equal.');
+            }
+
             if(isset($data['pickup_info'])){
                 if($toBeClose){
                     //for pickup data
@@ -296,6 +303,14 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                   'error' => false,
                   'message' => 'You cannot edit a Weight Ticket that was already closed.');
             }
+
+            //check if net is equal to total weight of products
+            if(!$this->isNetWeightIsEqualToTotalProductWeight($data)){
+                return array(
+                  'error' => true,
+                  'message' => 'Net weight and total weight of product(s) are not equal.');
+            }
+
             $weightticket->fill($data);
             $weightticket->save();
             if(isset($data['pickup_info'])){
@@ -818,6 +833,30 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
         {
             return $e->getMessage();
         }
+    }
+
+    public function isNetWeightIsEqualToTotalProductWeight($data){
+        if(isset($data['pickup_info'])){
+            $weightticket = $data['pickup_info'];
+        } else {
+            $weightticket = $data['dropoff_info'];
+        }
+
+        $netWeight = $weightticket['gross']-$weightticket['tare'];
+        $totalProductWeightInPounds = 0;
+        foreach ($weightticket['products'] as $product) {
+            $totalProductWeightInPounds += $product['pounds'];
+        }
+
+        $totalProductWeightInTons = $totalProductWeightInPounds * 0.0005;
+
+        //formatting
+        $netWeight = number_format($netWeight, 4);
+        $totalProductWeightInTons = number_format($totalProductWeightInTons, 4);
+        // var_dump($netWeight);
+        // var_dump($totalProductWeightInTons);
+        // var_dump($netWeight == $totalProductWeightInTons);
+        return $netWeight == $totalProductWeightInTons;
     }
 
     /**

@@ -32,7 +32,10 @@ class WeightTicketController extends BaseController {
 	public function store()
 	{
 		$model = $this->weightticket->store(Input::all());
-        return Response::json($model);
+        if($model['error'] == true)
+			return Response::json($model, 500);
+		else
+        	return Response::json($model);
 	}
 
 	/**
@@ -56,7 +59,10 @@ class WeightTicketController extends BaseController {
 	public function update($id)
 	{
 		$model = $this->weightticket->update($id, Input::all());
-        return Response::json($model);
+		if($model['error'] == true)
+			return Response::json($model, 500);
+		else
+        	return Response::json($model);
 	}
 
 	/**
