@@ -16,6 +16,12 @@ class PermissioncategoryTableSeeder extends Seeder {
 			array('name' => 'Account Management', 'sort' => 7),
 			array('name' => 'Reports', 'sort' => 8),
 			array('name' => 'Admin', 'sort' => 9),
+			array('name' => 'Contract Management', 'sort' => 10),
+			array('name' => 'Sales', 'sort' => 11),
+			array('name' => 'Purchases', 'sort' => 12),
+			array('name' => 'Fees & Rates Management', 'sort' => 13),
+			array('name' => 'Logistics', 'sort' => 14),
+			array('name' => 'Inventory', 'sort' => 15),
 		);
 		
 		DB::table('permissioncategory')->insert($permissioncategory);
