@@ -285,7 +285,11 @@ define([
 								else {
 									thisObj.verifyOrder = false;
 									thisObj.displayMessage(response);
-									Backbone.history.history.back();
+									if(thisObj.fromPOId != 0)
+										Global.getGlobalVars().app_router.navigate(Const.URL.SO, {trigger: true});
+									else 
+										Backbone.history.history.back();
+									
 								}
 							},
 							error: function (model, response, options) {
