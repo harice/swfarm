@@ -347,8 +347,10 @@ class ContractRepository implements ContractRepositoryInterface {
 
                         if ($_so['transportschedule']) {
                             foreach ($_so['transportschedule'] as $schedule) {
+                                $stackNumberFound = false;
                                 foreach ($schedule['transportscheduleproduct'] as $transportscheduleproduct) {
                                     if ($transportscheduleproduct['productorder']['product_id'] == $_product['product_id']) {
+                                        $stackNumberFound = true;
                                         // Stack Number
                                         $_so['stacknumber'] = $transportscheduleproduct['productorder']['stacknumber'];
 
@@ -363,6 +365,17 @@ class ContractRepository implements ContractRepositoryInterface {
                                             }
                                         }
                                     }
+
+                                    //if no stack number found
+                                    if($stackNumberFound){
+                                        foreach($_so['productorder'] as $productorder){
+                                            if ($productorder['product_id'] == $_product['product_id']) {
+                                                    // Stack Number
+                                                    $_so['stacknumber'] = $productorder['stacknumber'];
+                                            }
+                                        }
+                                    }
+                                    
                                 }
                             }
                         } else {
