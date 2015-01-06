@@ -76,9 +76,12 @@ class ContactRepository implements ContactRepositoryInterface {
             }
             $this->validate($data, $rules);
         } else {
-            $data['rate'] = (int)str_replace(array('.', ','), '' , number_format(floatval($data['rate']), 2, '.', ''));
-            $this->validate($data, $rules);
-            $data['rate'] = number_format(($data['rate'] / 100), 2, '.', '');
+            if(isset($data['rate'])){
+                $data['rate'] = (int)str_replace(array('.', ','), '' , number_format(floatval($data['rate']), 2, '.', ''));
+                $this->validate($data, $rules);
+                $data['rate'] = number_format(($data['rate'] / 100), 2, '.', '');
+            }
+            
         }
 
         $contact = new Contact;
@@ -127,9 +130,11 @@ class ContactRepository implements ContactRepositoryInterface {
             }
             $this->validate($data, $rules);
         } else {
-            $data['rate'] = (int)str_replace(array('.', ','), '' , number_format(floatval($data['rate']), 2, '.', ''));
-            $this->validate($data, $rules);
-            $data['rate'] = number_format(($data['rate'] / 100), 2, '.', '');
+            if(isset($data['rate'])){
+                $data['rate'] = (int)str_replace(array('.', ','), '' , number_format(floatval($data['rate']), 2, '.', ''));
+                $this->validate($data, $rules);
+                $data['rate'] = number_format(($data['rate'] / 100), 2, '.', '');
+            }
         }
 
         $contact = Contact::find($id);

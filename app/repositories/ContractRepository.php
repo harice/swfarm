@@ -319,7 +319,7 @@ class ContractRepository implements ContractRepositoryInterface {
                     // Get Sales Orders
                     $salesorders = $this->getSalesOrders($id, $_product['product_id']);
                     $_product['salesorders'] = $salesorders->toArray();
-
+                    // var_dump($_product['salesorders']);
                     // Process SO
                     foreach ($_product['salesorders'] as &$_so) {
                         $_so['tons'] = 0.000;
@@ -363,6 +363,13 @@ class ContractRepository implements ContractRepositoryInterface {
                                             }
                                         }
                                     }
+                                }
+                            }
+                        } else {
+                            foreach($_so['productorder'] as $productorder){
+                                if ($productorder['product_id'] == $_product['product_id']) {
+                                        // Stack Number
+                                        $_so['stacknumber'] = $productorder['stacknumber'];
                                 }
                             }
                         }
@@ -454,9 +461,40 @@ class ContractRepository implements ContractRepositoryInterface {
     {
         try
         {
-            $orders = Order::with('transportschedule.transportscheduleproduct.weightticketproducts')
+            $orders = Order::with('productorder')
+                ->with('transportschedule.transportscheduleproduct.weightticketproducts')
                 ->with('transportschedule.transportscheduleproduct.weightticketproducts.weightticketscale.pickup')
                 ->with('transportschedule.transportscheduleproduct.productorder')
+                ->with('purchaseorder')
+                ->where('contract_id', '=', $contract_id)
+                ->where('ordertype', '=', 2);
+
+            if ($product_id) {
+                $orders = $orders->whereHas('productorder', function($q) use($product_id)
+                {
+                    $q->where('product_id', '=', $product_id);
+                });
+            }
+
+            $orders = $orders->get();
+
+            if(!$orders) {
+                throw new NotFoundException('No Orders found for this contract.', 401);
+            }
+
+            return $orders;
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
+    }
+
+    public function getSalesOrdersProductStackNumber($contract_id, $product_id = null)
+    {
+        try
+        {
+            $orders = Order::with('productorder')
                 ->with('purchaseorder')
                 ->where('contract_id', '=', $contract_id)
                 ->where('ordertype', '=', 2);
