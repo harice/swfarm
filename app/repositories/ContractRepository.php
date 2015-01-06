@@ -368,7 +368,7 @@ class ContractRepository implements ContractRepositoryInterface {
                                 }
 
                                 //if no stack number found
-                                if($stackNumberFound){
+                                if(!$stackNumberFound){
                                     foreach($_so['productorder'] as $productorder){
                                         if ($productorder['product_id'] == $_product['product_id']) {
                                                 // Stack Number
