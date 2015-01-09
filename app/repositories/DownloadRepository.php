@@ -1564,9 +1564,11 @@ class DownloadRepository implements DownloadInterface
                                 ->groupBy('order.id')
                                 ->select(array(
                                             'order.id', 
+                                            'order.location_id',
                                             'account_id', 
                                             'order_number',
-                                            'location.location'
+                                            'location.location',
+                                            'order.totalPayment as payment'
                                         ));
                         }))
                         ->where('id','=',$_params['filterId'])
@@ -1575,34 +1577,134 @@ class DownloadRepository implements DownloadInterface
 	    if(!$report_o) return false;
 
 	    $report_a = $report_o->toArray();
+	    // var_dump($report_a);
 	    $report_a['report_date'] = $_dateBetween;
 	    $report_a['amount'] = 0.00;
+	    $report_a['payment'] = 0.00;
 	    $amount_i = 0.00;
+	    $totalScaleFee = 0.00;
+	    $totalLoads = 0;
 	    
 	    if($report_o->order->count() == 0) return $this->parse($report_a);
 
 	    foreach ($report_a['order'] as $order_key => $order_a) {
+	    	if($order_a['location_id'] == Config::get('constants.LOCATION_DROPSHIP')){
+	    		$temp = array('bales'=>null);
+	            		//get SO information
+	            		$poId = $order_a['id'];
+	            		$soInfoProductOrder = Productorder::with('order')->whereHas('order', function($query) use ($poId){
+	            												$query->where('purchaseorder_id', '=', $poId);
+	            											})
+	            											->where('stacknumber', 'like', $product_a['stacknumber'])
+	            											->first();
+	            		$stackNumberProductorder = $product_a['stacknumber'];
+
+	            		$soInfo = Order::join('productorder', 'order.id', '=', 'productorder.order_id')
+	            						->join('transportscheduleproduct', 'productorder.id', '=', 'transportscheduleproduct.productorder_id')
+	            						->join('weightticketproducts', 'transportscheduleproduct.id', '=', 'weightticketproducts.transportScheduleProduct_id')
+	            						->join('weightticketscale', 'weightticketproducts.weightTicketScale_id', '=', 'weightticketscale.id')
+	            						->join('weightticket', 'weightticketscale.id', '=', 'weightticket.pickup_id')
+	            						->where('productorder.stacknumber', '=', $stackNumberProductorder)
+	            						->where('order.purchaseorder_id', '=', $poId)
+	            						->where('weightticketscale.type', '=', Config::get('constants.WEIGHTTICKETSCALETYPE_PICKUP'))
+	            						->where('weightticket.status_id', Config::get('constants.STATUS_CLOSED'))
+	            						->addSelect(
+	            							array(
+	            								'order.id as orderId', 
+	            								'order.order_number',
+	            								'productorder.stacknumber',
+	            								'weightticketproducts.bales',
+	            								'weightticketproducts.pounds',
+	            								'weightticketscale.type as weighttickettype',
+	            								'weightticketscale.fee as scalefee',
+	            								'weightticket.weightTicketNumber'
+	            								)
+	            						)
+	            						->first();
+	            		
+	            		if($soInfo != null){
+	            			$soInfo = $soInfo->toArray();
+	            		} else {
+	            			unset($report_a['storagelocation'][$skey]['section'][$ckey]['productorder'][$pkey]); //remove dropship order that does not have SO
+	            			continue;
+	            		}
+
+	            		var_dump($soInfo);
+	            		$scale_i += floatval($soInfo['scalefee']);
+	            		$temp['bales'] = number_format($soInfo['bales'],0);
+                        $temp['pounds'] = number_format($soInfo['pounds'],2,'.',',');
+                        $temp['tons'] = number_format($soInfo['pounds'] * 0.0005,4,'.',',');
+                        $temp['updated_at'] = $product_a['orderUpdateAt'];
+                        $temp['unitprice'] = number_format($product_a['unitprice'],4,'.',',');
+                        $temp['weightticketnumber'] = $soInfo['weightTicketNumber'];
+                        $totalp_i = ($soInfo['pounds'] * 0.0005) * $product_a['unitprice']; //use the unitprice of PO and Tons of SO for dropship
+                        $amount_i += $totalp_i;
+	            		$product_a = array_merge($product_a,$temp);
+
+		                $report_a['storagelocation'][$skey]['section'][$ckey]['productorder'][$pkey] = $product_a;
+		            	
+		                
+	    	}
+	    	$report_a['payment'] += $order_a['payment'];
 	    	$product_a = ProductOrderSummary::join('products','products.id','=','productordersummary.product_id')
 	    					->with(array('productorder.transportscheduleproduct.transportschedule.weightticket' => function($query) use($_dateBetween) {
 	    						$query->where('weightticket.status_id','=',Config::get('constants.STATUS_CLOSED'))
 	                                ->whereBetween('weightticket.updated_at',array_values($_dateBetween))
-	                                ->whereNotNull('weightticket.pickup_id')
-	                                ->select(array('weightticket.id as wid','transportSchedule_id','weightTicketNumber','updated_at','pickup_id'));
+	                                // ->whereNotNull('weightticket.pickup_id')
+	                                ->select(array('weightticket.id as wid','transportSchedule_id','weightTicketNumber','updated_at','pickup_id', 'dropoff_id'));
 	    					}))
                             ->where('order_id','=',$order_a['id'])
                             ->orderBy('products.name','ASC')
                             ->select(array('productordersummary.id','products.name as product','unitprice'))
                             ->get()
-                            ->each(function($productordersummary){
-                            	$productordersummary->productorder->each(function($productorder){ 
-                            		$productorder->transportscheduleproduct->each(function($transportscheduleproduct) use($productorder) {
-                            			$weightticketproduct_o = WeightTicketProducts::join('transportscheduleproduct','transportscheduleproduct.id','=','weightticketproducts.transportscheduleproduct_id')
-                            										->where('weightticketproducts.transportscheduleproduct_id','=',$transportscheduleproduct->id)
-                            										->where('weightticketproducts.weightticketscale_id','=',$transportscheduleproduct->transportschedule->weightticket->pickup_id)
-                            										->where('transportscheduleproduct.productorder_id','=',$productorder->id)
-                            										->select(array('bales','pounds'))
-                            										->first();
+                            ->each(function($productordersummary)  use (&$totalScaleFee, &$totalLoads){
+                            	$productordersummary->productorder->each(function($productorder) use (&$totalScaleFee, &$totalLoads){
+                            		$tempWid = null;
+                            		$productorder->transportscheduleproduct->each(function($transportscheduleproduct) use($productorder, &$totalScaleFee, &$totalLoads, $tempWid) {
+                            			if($tempWid != $transportscheduleproduct->transportschedule->weightticket->wid){
+                            				$totalLoads++;
+                            				//get weight ticket scale data
+	                            			$ticket_o = WeightTicket::with('weightticketscale_pickup')
+			                                            ->with('weightticketscale_dropoff')
+			                                            ->select(array('id','pickup_id','dropoff_id'))
+			                                            ->find($transportscheduleproduct->transportschedule->weightticket->wid);
+			                                $ticket_a = $ticket_o->toArray();
 
+			                                if($ticket_a['pickup_id'] != null && $ticket_a['dropoff_id'] != null){ //check if who has the lower weight value
+			                                	$pickupWeight = $ticket_a['weightticketscale_pickup']['gross'] - $ticket_a['weightticketscale_pickup']['tare'];
+			                                	$dropoffWeight = $ticket_a['weightticketscale_dropoff']['gross'] - $ticket_a['weightticketscale_dropoff']['tare'];
+
+			                                	if($pickupWeight < $dropoffWeight){
+			                                		//use pickup weight
+			                                		$weightScaleId = $transportscheduleproduct->transportschedule->weightticket->pickup_id;
+			                                		$totalScaleFee += $ticket_a['weightticketscale_pickup']['fee'];
+			                                	} else {
+			                                		//use dropoff weight
+			                                		$weightScaleId = $transportscheduleproduct->transportschedule->weightticket->dropoff_id;
+			                                		$totalScaleFee += $ticket_a['weightticketscale_dropoff']['fee'];
+			                                	}
+			                                	$weightToUseIsSet = true;
+			                                } else if($ticket_a['pickup_id'] != null){
+			                                	$weightScaleId = $transportscheduleproduct->transportschedule->weightticket->pickup_id;
+			                                	$weightToUseIsSet = true;
+			                                	$totalScaleFee += $ticket_a['weightticketscale_pickup']['fee'];
+			                                } else {
+			                                	$weightScaleId = $transportscheduleproduct->transportschedule->weightticket->dropoff_id;
+			                                	$weightToUseIsSet = true;
+			                                	$totalScaleFee += $ticket_a['weightticketscale_dropoff']['fee'];
+			                                }
+                            			} else {
+                            				$tempWid = $transportscheduleproduct->transportschedule->weightticket->wid;
+                            			}
+                            			
+		                                
+                        				$weightticketproduct_o = WeightTicketProducts::join('transportscheduleproduct','transportscheduleproduct.id','=','weightticketproducts.transportscheduleproduct_id')
+                        										->where('weightticketproducts.transportscheduleproduct_id','=',$transportscheduleproduct->id)
+                        										->where('weightticketproducts.weightticketscale_id','=', $weightScaleId)
+                        										->where('transportscheduleproduct.productorder_id','=',$productorder->id)
+                        										->select(array('bales','pounds'))
+                        										->first();
+                            			
 										$transportscheduleproduct->bales = $weightticketproduct_o->bales;
 										$transportscheduleproduct->pounds = $weightticketproduct_o->pounds;
 										$transportscheduleproduct->tons = $weightticketproduct_o->tons;
@@ -1617,7 +1719,7 @@ class DownloadRepository implements DownloadInterface
                             	});
                             })
                             ->toArray();
-
+                         // var_dump($product_a);   
             foreach ($product_a as $product_key => $product) {
 	            $productorder_a = array();
 	            $_tons = 0.0000;
@@ -1642,7 +1744,9 @@ class DownloadRepository implements DownloadInterface
 	        $report_a['order'][$order_key]['productsummary'] = $product_a;
 	    }
 
+	    $report_a['scale_fees'] = $totalScaleFee;
 	    $report_a['amount'] = $amount_i;
+	    $report_a['total_load'] = $totalLoads;
 	    return $this->parse($report_a);
 	}
 
