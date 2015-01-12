@@ -45,7 +45,7 @@ class PermissioncategorytypeTableSeeder extends Seeder {
 			array('permissioncategory' => 7, 'permissiontype' => 30),
 
 			array('permissioncategory' => 8, 'permissiontype' => 31),
-			array('permissioncategory' => 8, 'permissiontype' => 32),
+			//array('permissioncategory' => 8, 'permissiontype' => 32),
 
 			array('permissioncategory' => 9, 'permissiontype' => 33),
 			array('permissioncategory' => 9, 'permissiontype' => 34),
