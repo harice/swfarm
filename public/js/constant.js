@@ -94,11 +94,8 @@ define(function () {
 				'EDIT'	:37,
 				'DELETE':38
 			},
-			'FEES': {
+			'SETTINGS': {
 				'VIEW'	:39,
-				'ADD'	:40,
-				'EDIT'	:41,
-				'DELETE':42
 			},
 			'LOGISTICS': {
 				'VIEWSCHEDULE':43,
@@ -155,10 +152,7 @@ define(function () {
 				'ADD'	:78,
 				'EDIT'	:79,
 				'DELETE':80
-			}, 
-			// 'SETTINGS': {
-			// 	'EDIT'  :81,
-			// },			         												
+			}, 					         											
 		},
 		'CRUD': {
 			'ADD': 'add',
