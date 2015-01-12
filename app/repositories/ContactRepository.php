@@ -76,9 +76,12 @@ class ContactRepository implements ContactRepositoryInterface {
             }
             $this->validate($data, $rules);
         } else {
-            $data['rate'] = (int)str_replace(array('.', ','), '' , number_format(floatval($data['rate']), 2, '.', ''));
-            $this->validate($data, $rules);
-            $data['rate'] = number_format(($data['rate'] / 100), 2, '.', '');
+            if(isset($data['rate'])){
+                $data['rate'] = (int)str_replace(array('.', ','), '' , number_format(floatval($data['rate']), 2, '.', ''));
+                $this->validate($data, $rules);
+                $data['rate'] = number_format(($data['rate'] / 100), 2, '.', '');
+            }
+            
         }
 
         $contact = new Contact;
@@ -127,9 +130,11 @@ class ContactRepository implements ContactRepositoryInterface {
             }
             $this->validate($data, $rules);
         } else {
-            $data['rate'] = (int)str_replace(array('.', ','), '' , number_format(floatval($data['rate']), 2, '.', ''));
-            $this->validate($data, $rules);
-            $data['rate'] = number_format(($data['rate'] / 100), 2, '.', '');
+            if(isset($data['rate'])){
+                $data['rate'] = (int)str_replace(array('.', ','), '' , number_format(floatval($data['rate']), 2, '.', ''));
+                $this->validate($data, $rules);
+                $data['rate'] = number_format(($data['rate'] / 100), 2, '.', '');
+            }
         }
 
         $contact = Contact::find($id);
@@ -257,7 +262,7 @@ class ContactRepository implements ContactRepositoryInterface {
      */
     public function hasRate($account_id)
     {
-        $types = array(3,4,8,9); // Loader, Operator, Trucker, Southwest Farms
+        $types = array(3,4,8); // Loader, Operator, Southwest Farms
         $account = Account::where('id','=',$account_id)
                         ->whereHas('accounttype', function($q) use($types) { $q->whereIn('accounttype_id', $types); } )
                         ->groupBy('id')->count();

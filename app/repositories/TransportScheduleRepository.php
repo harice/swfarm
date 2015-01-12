@@ -97,7 +97,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           $data['trailerrate'] = $trailerPercentageRate * $data['truckingrate'];
           $data['adminfee'] = Truck::find($data['truck_id'])->fee;
 
-          if($data['truckerAccountType_id'] == 9) { //for SFS account type
+          if($data['truckerAccountType_id'] == 8) { //for SFS account type
               $freightRateArr = Settings::where('name','=','freight_rate')->first(array('value'))->toArray();
               $freightRate = floatval($freightRateArr['value']);
 

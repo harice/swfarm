@@ -36,14 +36,10 @@ class AccountTypeTableSeeder extends Seeder {
             ),
             array(
                 'id' => 8,
-                'name' => 'Trucker'
-            ),
-            array(
-                'id' => 9,
                 'name' => 'Southwest Farms Trucker'
             ),
             array(
-                'id' => 10,
+                'id' => 9,
                 'name' => 'Warehouse'
             )
 		);
