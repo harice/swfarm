@@ -156,9 +156,9 @@ define(function () {
 				'EDIT'	:79,
 				'DELETE':80
 			}, 
-			'SETTINGS': {
-				'EDIT'  :81,
-			},			         												
+			// 'SETTINGS': {
+			// 	'EDIT'  :81,
+			// },			         												
 		},
 		'CRUD': {
 			'ADD': 'add',
