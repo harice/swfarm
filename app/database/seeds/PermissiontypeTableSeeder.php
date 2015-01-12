@@ -46,7 +46,42 @@ class PermissiontypeTableSeeder extends Seeder {
 			array('name' => 'Generate Report', 'description' => NULL),
 
 			array('name' => 'View Dashboard', 'description' => NULL),
-			array('name' => 'Audit Trail', 'description' => NULL)
+			array('name' => 'Audit Trail', 'description' => NULL),
+
+			array('name' => 'View Stack Location', 'description' => NULL),
+			array('name' => 'Add Stack Location', 'description' => NULL),
+			array('name' => 'Edit Stack Location', 'description' => NULL),
+			array('name' => 'Delete Stack Location', 'description' => NULL),
+
+			array('name' => 'View Delivery Location', 'description' => NULL),
+			array('name' => 'Add Delivery Location', 'description' => NULL),
+			array('name' => 'Edit Delivery Location', 'description' => NULL),
+			array('name' => 'Delete Delivery Location', 'description' => NULL),
+
+			array('name' => 'View Trailer', 'description' => NULL),
+			array('name' => 'Add Trailer', 'description' => NULL),
+			array('name' => 'Edit Trailer', 'description' => NULL),
+			array('name' => 'Delete Trailer', 'description' => NULL),
+
+			array('name' => 'View Trucker', 'description' => NULL),
+			array('name' => 'Add Trucker', 'description' => NULL),
+			array('name' => 'Edit Trucker', 'description' => NULL),
+			array('name' => 'Delete Trucker', 'description' => NULL),
+
+			array('name' => 'View Scale', 'description' => NULL),
+			array('name' => 'Add Scale', 'description' => NULL),
+			array('name' => 'Edit Scale', 'description' => NULL),
+			array('name' => 'Delete Scale', 'description' => NULL),
+
+			array('name' => 'View Payments', 'description' => NULL),
+			array('name' => 'Add Payments', 'description' => NULL),
+			array('name' => 'Edit Payments', 'description' => NULL),
+			array('name' => 'Delete Payments', 'description' => NULL),
+
+			array('name' => 'View Commission', 'description' => NULL),
+			array('name' => 'Add Commission', 'description' => NULL),
+			array('name' => 'Edit Commission', 'description' => NULL),
+			array('name' => 'Delete Commission', 'description' => NULL)
 		);
 
 		DB::table('permissiontype')->insert($permissiontype);

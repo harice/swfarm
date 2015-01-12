@@ -47,6 +47,41 @@ class PermissioncategorytypeTableSeeder extends Seeder {
 
 			array('permissioncategory' => 9, 'permissiontype' => 31),
 			array('permissioncategory' => 9, 'permissiontype' => 32),
+
+			array('permissioncategory' => 10, 'permissiontype' => 33),
+			array('permissioncategory' => 10, 'permissiontype' => 34),
+			array('permissioncategory' => 10, 'permissiontype' => 35),
+			array('permissioncategory' => 10, 'permissiontype' => 36),
+
+			array('permissioncategory' => 11, 'permissiontype' => 37),
+			array('permissioncategory' => 11, 'permissiontype' => 38),
+			array('permissioncategory' => 11, 'permissiontype' => 39),
+			array('permissioncategory' => 11, 'permissiontype' => 40),
+
+			array('permissioncategory' => 12, 'permissiontype' => 41),
+			array('permissioncategory' => 12, 'permissiontype' => 42),
+			array('permissioncategory' => 12, 'permissiontype' => 43),
+			array('permissioncategory' => 12, 'permissiontype' => 44),
+
+			array('permissioncategory' => 13, 'permissiontype' => 45),
+			array('permissioncategory' => 13, 'permissiontype' => 46),
+			array('permissioncategory' => 13, 'permissiontype' => 47),
+			array('permissioncategory' => 13, 'permissiontype' => 48),
+
+			array('permissioncategory' => 14, 'permissiontype' => 49),
+			array('permissioncategory' => 14, 'permissiontype' => 50),
+			array('permissioncategory' => 14, 'permissiontype' => 51),
+			array('permissioncategory' => 14, 'permissiontype' => 52),
+
+			array('permissioncategory' => 15, 'permissiontype' => 53),
+			array('permissioncategory' => 15, 'permissiontype' => 54),
+			array('permissioncategory' => 15, 'permissiontype' => 55),
+			array('permissioncategory' => 15, 'permissiontype' => 56),
+
+			array('permissioncategory' => 16, 'permissiontype' => 57),
+			array('permissioncategory' => 16, 'permissiontype' => 58),
+			array('permissioncategory' => 16, 'permissiontype' => 59),
+			array('permissioncategory' => 16, 'permissiontype' => 60)
 		);
 
 		DB::table('permissioncategorytype')->insert($permissioncategorytype);
