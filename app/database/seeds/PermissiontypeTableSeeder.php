@@ -44,7 +44,7 @@ class PermissiontypeTableSeeder extends Seeder {
 			array('name' => 'Edit Account', 'description' => NULL),
 			array('name' => 'Delete Account', 'description' => NULL),
 
-			array('name' => 'View Report', 'description' => NULL),
+			// array('name' => 'View Report', 'description' => NULL),
 			array('name' => 'Generate Report', 'description' => NULL),
 
 			array('name' => 'View Dashboard', 'description' => NULL),
