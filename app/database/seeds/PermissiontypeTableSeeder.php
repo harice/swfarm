@@ -55,10 +55,7 @@ class PermissiontypeTableSeeder extends Seeder {
 			array('name' => 'Edit Contract', 'description' => NULL),
 			array('name' => 'Close Contract', 'description' => NULL),
 
-			array('name' => 'View Fees and Rates', 'description' => NULL),
-			array('name' => 'Add Fees and Rates', 'description' => NULL),
 			array('name' => 'Edit Fees and Rates', 'description' => NULL),
-			array('name' => 'Delete Fees and Rates', 'description' => NULL),
 
 			array('name' => 'View Schedule', 'description' => NULL),
 			array('name' => 'Add Schedule', 'description' => NULL),
