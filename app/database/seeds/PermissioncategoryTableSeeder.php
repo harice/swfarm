@@ -20,7 +20,7 @@ class PermissioncategoryTableSeeder extends Seeder {
 			array('name' => 'Contract Management', 'sort' => 10),
 			// array('name' => 'Sales', 'sort' => 11),
 			// array('name' => 'Purchases', 'sort' => 12),
-			array('name' => 'Fees & Rates Management', 'sort' => 11),
+			array('name' => 'Settings', 'sort' => 11),
 			array('name' => 'Logistics', 'sort' => 12),
 			array('name' => 'Inventory', 'sort' => 13),
 
