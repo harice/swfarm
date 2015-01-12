@@ -73,7 +73,6 @@ class PermissioncategorytypeTableSeeder extends Seeder {
 
 			array('permissioncategory' => 15, 'permissiontype' => 51),
 			array('permissioncategory' => 15, 'permissiontype' => 52),
-
 		);
 
 		DB::table('permissioncategorytype')->insert($permissioncategorytype);
