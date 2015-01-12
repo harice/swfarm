@@ -70,7 +70,7 @@ class PermissiontypeTableSeeder extends Seeder {
 			array('name' => 'Close Weight Info', 'description' => NULL),
 
 			array('name' => 'Add Manual Inventory Transaction', 'description' => NULL),
-			array('name' => 'View Manual and Auto Inventory Transaction', 'description' => NULL)
+			array('name' => 'View Manual and Auto Inventory Transaction', 'description' => NULL),
 
 			array('name' => 'View Stack Location', 'description' => NULL),
 			array('name' => 'Add Stack Location', 'description' => NULL),
