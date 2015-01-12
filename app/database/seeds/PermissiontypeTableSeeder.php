@@ -11,11 +11,13 @@ class PermissiontypeTableSeeder extends Seeder {
 			array('name' => 'Add Purchase Order', 'description' => NULL),
 			array('name' => 'Edit Purchase Order', 'description' => NULL),
 			array('name' => 'Cancel Purchase Order', 'description' => NULL),
+			array('name' => 'Close Purchase Order', 'description' => NULL),
 
 			array('name' => 'View Sales Order', 'description' => NULL),
 			array('name' => 'Add Sales Order', 'description' => NULL),
 			array('name' => 'Edit Sales Order', 'description' => NULL),
 			array('name' => 'Cancel Sales Order', 'description' => NULL),
+			array('name' => 'Close Sales Order', 'description' => NULL),
 
 			array('name' => 'View Product', 'description' => NULL),
 			array('name' => 'Add Product', 'description' => NULL),
@@ -53,10 +55,6 @@ class PermissiontypeTableSeeder extends Seeder {
 			array('name' => 'Edit Contract', 'description' => NULL),
 			array('name' => 'Close Contract', 'description' => NULL),
 
-			array('name' => 'Close Sales Order', 'description' => NULL),
-
-			array('name' => 'Close Purchase Order', 'description' => NULL),
-
 			array('name' => 'View Fees and Rates', 'description' => NULL),
 			array('name' => 'Add Fees and Rates', 'description' => NULL),
 			array('name' => 'Edit Fees and Rates', 'description' => NULL),
@@ -73,6 +71,7 @@ class PermissiontypeTableSeeder extends Seeder {
 
 			array('name' => 'Add Manual Inventory Transaction', 'description' => NULL),
 			array('name' => 'View Manual and Auto Inventory Transaction', 'description' => NULL)
+
 			array('name' => 'View Stack Location', 'description' => NULL),
 			array('name' => 'Add Stack Location', 'description' => NULL),
 			array('name' => 'Edit Stack Location', 'description' => NULL),
