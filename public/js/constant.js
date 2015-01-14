@@ -85,80 +85,74 @@ define(function () {
 				'GENERATE':31,
 			},
 			'ADMIN': {
-				'VIEW'	:33,
-				'TRAIL'	:34
+				'VIEW'	:32,
+				'TRAIL'	:33
 			},
 			'CONTRACT': {
-				'VIEW'	:35,
-				'ADD'	:36,
-				'EDIT'	:37,
-				'DELETE':38
+				'VIEW'	:34,
+				'ADD'	:35,
+				'EDIT'	:36,
+				'DELETE':37
 			},
-			'FEES': {
-				'VIEW'	:39,
-				'ADD'	:40,
-				'EDIT'	:41,
-				'DELETE':42
+			'SETTINGS': {
+				'EDIT'	:38,
 			},
 			'LOGISTICS': {
-				'VIEWSCHEDULE':43,
-				'ADDSCHEDULE':44,
-				'EDITSCHEDULE'45,
-				'DELETESCHEDULE':46,
-				'VIEWWEIGHTINFO': 47,
-				'ADDWEIGHTINFO':48,
-				'EDITWEIGHTINFO':49,
-				'CLOSEWEIGHTINFO':50
+				'VIEWSCHEDULE':39,
+				'ADDSCHEDULE':40,
+				'EDITSCHEDULE':41,
+				'DELETESCHEDULE':42,
+				'VIEWWEIGHTINFO': 43,
+				'ADDWEIGHTINFO':44,
+				'EDITWEIGHTINFO':45,
+				'CLOSEWEIGHTINFO':46
 			},
 			'INVENTORY': {
-				'ADD'	:51,
-				'VIEW'	:52,			
+				'ADD'	:47,
+				'VIEW'	:48,			
 			},
 			'STACKLOCATION': {
+				'VIEW'	:49,
+				'ADD'	:50,
+				'EDIT'	:51,
+				'DELETE':52
+			},
+			'DELIVERYLOCATION': {
 				'VIEW'	:53,
 				'ADD'	:54,
 				'EDIT'	:55,
 				'DELETE':56
 			},
-			'DELIVERYLOCATION': {
+			'TRAILER': {
 				'VIEW'	:57,
 				'ADD'	:58,
 				'EDIT'	:59,
 				'DELETE':60
 			},
-			'TRAILER': {
+			'TRUCKER': {
 				'VIEW'	:61,
 				'ADD'	:62,
 				'EDIT'	:63,
 				'DELETE':64
 			},
-			'TRUCKER': {
+			'SCALE': {
 				'VIEW'	:65,
 				'ADD'	:66,
 				'EDIT'	:67,
 				'DELETE':68
-			},
-			'SCALE': {
+			},  
+			'PAYMENTS': {
 				'VIEW'	:69,
 				'ADD'	:70,
 				'EDIT'	:71,
-				'DELETE':72
-			},  
-			'PAYMENTS': {
+				'DELETE':72,
+			},	
+			'COMMISSION': {
 				'VIEW'	:73,
 				'ADD'	:74,
 				'EDIT'	:75,
-				'DELETE':76,
-			},	
-			'COMMISSION': {
-				'VIEW'	:77,
-				'ADD'	:78,
-				'EDIT'	:79,
-				'DELETE':80
-			}, 
-			// 'SETTINGS': {
-			// 	'EDIT'  :81,
-			// },			         												
+				'DELETE':76
+			}, 					         											
 		},
 		'CRUD': {
 			'ADD': 'add',
