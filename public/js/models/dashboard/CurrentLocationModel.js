@@ -5,7 +5,7 @@ define([
 ], function(Backbone, Global, Const) {
 
 	var CurrentLocationModel = Backbone.Model.extend({		
-		urlRoot: 'http://ipinfo.io/json',
+		urlRoot: 'https://ipinfo.io/json',
 		defaults: {
 			woeid: ''
                 },
