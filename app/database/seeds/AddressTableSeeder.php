@@ -1,114 +1,178 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- * Description of AddressTableSeeder
- *
- * @author Das
- */
 class AddressTableSeeder extends Seeder {
     
     public function run()
 	{
-        $now = new DateTime('NOW');
-        $date = $now->format('Y-m-d H:i:s');
-        
-		$address = array(
-			array(
-                'account' => '1',
-                'street' => 'North St.',
-                'city' => 'Sin City',
-                'state' => '2',
-                'zipcode' => '29620',
-                'country' => '1',
-                'type' => '1',
-                'created_at' => $date,
-                'updated_at' => $date
-            ),
-            array(
-                'account' => '6',
-                'street' => 'North St.',
-                'city' => 'Sin City',
-                'state' => '2',
-                'zipcode' => '29620',
-                'country' => '1',
-                'type' => '1',
-                'created_at' => $date,
-                'updated_at' => $date
-            ),
-            array(
-                'account' => '12',
-                'street' => 'North St.',
-                'city' => 'Sin City',
-                'state' => '2',
-                'zipcode' => '29620',
-                'country' => '1',
-                'type' => '1',
-                'created_at' => $date,
-                'updated_at' => $date
-            ),
-            array(
-                'account' => '13',
-                'street' => 'North St.',
-                'city' => 'Sin City',
-                'state' => '2',
-                'zipcode' => '29620',
-                'country' => '1',
-                'type' => '1',
-                'created_at' => $date,
-                'updated_at' => $date
-            ),
-            array(
-                'account' => '14',
-                'street' => 'North St.',
-                'city' => 'Sin City',
-                'state' => '2',
-                'zipcode' => '29620',
-                'country' => '1',
-                'type' => '1',
-                'created_at' => $date,
-                'updated_at' => $date
-            ),
-            array(
-                'account' => 15,
-                'street' => 'North St.',
-                'city' => 'Sin City',
-                'state' => '2',
-                'zipcode' => '29620',
-                'country' => '1',
-                'type' => '1',
-                'created_at' => $date,
-                'updated_at' => $date
-            ),
-            array(
-                'account' => 16,
-                'street' => 'North St.',
-                'city' => 'Sin City',
-                'state' => '2',
-                'zipcode' => '29620',
-                'country' => '1',
-                'type' => '1',
-                'created_at' => $date,
-                'updated_at' => $date
-            ),
-            array(
-                'account' => 17,
-                'street' => 'North St.',
-                'city' => 'Sin City',
-                'state' => '2',
-                'zipcode' => '29620',
-                'country' => '1',
-                'type' => '1',
-                'created_at' => $date,
-                'updated_at' => $date
-            )
-		);
-
-		DB::table('address')->insert($address);
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::unprepared("INSERT INTO `address` SET `id` =1, `account` =1, `street` = 'P.O. Box 5069', `city` ='Mohave Valley', `state`=4, `zipcode`='86446', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =2, `account` =2, `street` = 'P.O. Box 808', `city` ='Willcox', `state`=4, `zipcode`='85644', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =3, `account` =3, `street` = 'P.O. Box 48', `city` ='Palo Verde', `state`=4, `zipcode`='85343', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =4, `account` =4, `street` = 'P.O. Box 128', `city` ='Parker', `state`=4, `zipcode`='85344', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =5, `account` =5, `street` = '14929 W. Broadway Rd.', `city` ='Goodyear', `state`=4, `zipcode`='85338', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =6, `account` =6, `street` = '17100 S. Lovekin', `city` ='Blythe', `state`=5, `zipcode`='92225', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =7, `account` =7, `street` = 'P.O. Box 349', `city` ='Deming', `state`=33, `zipcode`='88031', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =8, `account` =8, `street` = '38989 Cherry Valley Blvd', `city` ='Cherry Valley', `state`=5, `zipcode`='92223', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =9, `account` =9, `street` = 'PO Box 1079', `city` ='Deming', `state`=33, `zipcode`='88031', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =10, `account` =10, `street` = 'P.O. Box 37', `city` ='Tolleson', `state`=4, `zipcode`='85353', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =11, `account` =11, `street` = '10265 W. Camelback #104', `city` ='Phoenix', `state`=4, `zipcode`='85037', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =12, `account` =12, `street` = '109 E. Bird Lane', `city` ='Litchfield Park', `state`=4, `zipcode`='85340', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =13, `account` =13, `street` = '50621 Agua Caliente Rd', `city` ='Dateland', `state`=4, `zipcode`='85333', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =14, `account` =14, `street` = '15005 S. Old US 80', `city` ='Arlington', `state`=4, `zipcode`='85322', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =15, `account` =15, `street` = 'P.O. Box 76', `city` ='Palo Verde', `state`=4, `zipcode`='85343', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =16, `account` =16, `street` = 'P.O. Box 5229', `city` ='Mohave Valley', `state`=4, `zipcode`='86446', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =17, `account` =17, `street` = '8775 Riverside Dr.', `city` ='Ontario', `state`=5, `zipcode`='91761', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =18, `account` =18, `street` = '20260 N. 93rd Lane', `city` ='Peoria', `state`=4, `zipcode`='85382', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =19, `account` =19, `street` = '6020 Bradley Drive', `city` ='Mohave Valley', `state`=4, `zipcode`='86440', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =20, `account` =20, `street` = 'P.O. Box 2706', `city` ='Yuma', `state`=4, `zipcode`='85366', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =21, `account` =21, `street` = 'P.O. Box 2370', `city` ='Winnemucca', `state`=34, `zipcode`='89446', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =22, `account` =22, `street` = '76 Franklin Road', `city` ='Virden', `state`=33, `zipcode`='88045', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =23, `account` =23, `street` = 'P.O. Box 275', `city` ='Roll', `state`=4, `zipcode`='85347', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =24, `account` =24, `street` = '6910 S. Perryville Ave', `city` ='Buckeye', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =25, `account` =25, `street` = '8921 W. Broadway', `city` ='Tolleson', `state`=4, `zipcode`='85353', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =26, `account` =26, `street` = '3900 N. Citrus Rd.', `city` ='Goodyear', `state`=4, `zipcode`='85338', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =27, `account` =27, `street` = '40664 W. Smith-Enke Rd.', `city` ='Maricopa', `state`=4, `zipcode`='85239', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =28, `account` =28, `street` = '233 W. Markham', `city` ='Perris', `state`=4, `zipcode`='92571', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =29, `account` =29, `street` = '604 E. Mead Rd.', `city` ='Brawley', `state`=4, `zipcode`='92227', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =30, `account` =30, `street` = 'P.O. Box 76', `city` ='Palo Verde', `state`=4, `zipcode`='85343', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =31, `account` =31, `street` = '1002 Palm Row Dr.', `city` ='Lakeside', `state`=5, `zipcode`='92040', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =32, `account` =32, `street` = 'P.O. Box 309', `city` ='Tonopah', `state`=4, `zipcode`='85354', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =33, `account` =33, `street` = '53308 W. Dobbins Rd.', `city` ='Tonopah', `state`=4, `zipcode`='85354', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =34, `account` =34, `street` = '3511 Hwy 47', `city` ='Bosque Farms', `state`=33, `zipcode`='87068', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =35, `account` =35, `street` = '21650 Agnes Wilson Rd', `city` ='Parker', `state`=4, `zipcode`='85344', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =36, `account` =36, `street` = 'P.O. Box 2', `city` ='Animas', `state`=33, `zipcode`='88020', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =37, `account` =37, `street` = 'P.O. Box 5660', `city` ='Yuma', `state`=4, `zipcode`='85366', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =38, `account` =38, `street` = 'P.O. Box 272', `city` ='Pleasant View', `state`=6, `zipcode`='81331', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =39, `account` =39, `street` = '14134 W. Bent Tree Cir N', `city` ='Litchfield Park', `state`=4, `zipcode`='85340-5068', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =40, `account` =40, `street` = 'P.O. Box 1044', `city` ='Parker', `state`=4, `zipcode`='85344', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =41, `account` =41, `street` = 'P.O. Box 1095', `city` ='Walnut', `state`=5, `zipcode`='91789', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =42, `account` =42, `street` = '18138 W. San Esteban Dr.', `city` ='Goodyear', `state`=4, `zipcode`='85338', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =43, `account` =43, `street` = 'P.O. Box 386', `city` ='Buckeye', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =44, `account` =44, `street` = 'P.O. Box 100', `city` ='Palo Verde', `state`=4, `zipcode`='85343', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =45, `account` =45, `street` = '1853 N. Fuqua Rd.', `city` ='Stanfield', `state`=4, `zipcode`='85272', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =46, `account` =46, `street` = '13802 S. Airport Rd', `city` ='Buckeye', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =47, `account` =47, `street` = '2202 Cool Waters', `city` ='Blythe', `state`=5, `zipcode`='92225', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =48, `account` =48, `street` = '19250 S. Defrain Blvd.', `city` ='Blythe', `state`=5, `zipcode`='92225', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =49, `account` =49, `street` = 'HC1 Box 61', `city` ='Dateland', `state`=4, `zipcode`='85333', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =50, `account` =50, `street` = '2209 N. 99th Ave', `city` ='Buckeye', `state`=4, `zipcode`='85037', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =51, `account` =51, `street` = '9502 W. Polk', `city` ='Tolleson', `state`=4, `zipcode`='85353', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =52, `account` =52, `street` = 'P.O. Box 6785', `city` ='Mohave Valley', `state`=4, `zipcode`='86440', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =53, `account` =53, `street` = '7487 W. Williams Rd.', `city` ='Willcox', `state`=4, `zipcode`='85643', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =54, `account` =54, `street` = 'P.O. Box 698', `city` ='Buckeye', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =55, `account` =55, `street` = 'P.O. Box 462', `city` ='Eureka', `state`=34, `zipcode`='89316', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =56, `account` =56, `street` = 'P.O.Box 970', `city` ='Parker', `state`=4, `zipcode`='85344', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =57, `account` =57, `street` = '1201 W. Afton', `city` ='La Mesa', `state`=33, `zipcode`='88044', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =58, `account` =58, `street` = '1105 E. Alamo Rd.', `city` ='Holtville', `state`=4, `zipcode`='92250', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =59, `account` =59, `street` = 'P.O. Box 1447', `city` ='Tacna', `state`=4, `zipcode`='85352', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =60, `account` =60, `street` = 'P.O. Box 29', `city` ='Eureka', `state`=34, `zipcode`='89316', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =61, `account` =61, `street` = '23175 Bloat Rd', `city` ='Buckeye', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =62, `account` =62, `street` = 'P.O. Box 696', `city` ='Parker', `state`=4, `zipcode`='85344', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =63, `account` =63, `street` = 'P.O. Box 397', `city` ='Maricopa', `state`=4, `zipcode`='85247', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =64, `account` =64, `street` = 'P.O. Box 1061', `city` ='Buckeye', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =65, `account` =65, `street` = '2241 E. Colter Street', `city` ='Phoenix', `state`=4, `zipcode`='85016', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =66, `account` =66, `street` = 'Box 20', `city` ='Stanfield', `state`=4, `zipcode`='85272', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =67, `account` =67, `street` = 'P.O. Box 66', `city` ='Tolleson', `state`=4, `zipcode`='85353', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =68, `account` =68, `street` = 'P.O. Box 428', `city` ='Buckeye', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =69, `account` =69, `street` = '220 W. Main St. Suite B', `city` ='Brawley', `state`=5, `zipcode`='92227', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =70, `account` =70, `street` = '580 Needles Hwy', `city` ='Needles', `state`=5, `zipcode`='92363', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =71, `account` =71, `street` = '14291 N. Anderson RD', `city` ='Maricopa', `state`=4, `zipcode`='85138', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =72, `account` =72, `street` = 'P.O. Box 2291', `city` ='Camp Verde', `state`=4, `zipcode`='86322', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =73, `account` =73, `street` = '1282 N. Fort Grant Rd.', `city` ='Willcox', `state`=4, `zipcode`='85643', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =74, `account` =74, `street` = '7683 Hwy 54/70', `city` ='Tularosa', `state`=33, `zipcode`='88352', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =75, `account` =75, `street` = 'P.O. Box 668', `city` ='Buckeye', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =76, `account` =76, `street` = '2396 W. Vaughn Road', `city` ='El Centro', `state`=5, `zipcode`='92243', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =77, `account` =77, `street` = 'P.O. Box 128', `city` ='Eureka', `state`=34, `zipcode`='89316', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =78, `account` =78, `street` = 'P.O. Box 2034', `city` ='Yuma', `state`=4, `zipcode`='85366', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =79, `account` =79, `street` = '19729 E. Warner', `city` ='Higley', `state`=4, `zipcode`='85236', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =80, `account` =80, `street` = 'P.O. Box 151', `city` ='Palo Verde', `state`=4, `zipcode`='85343', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =81, `account` =81, `street` = '1196 E. Gonder Rd.', `city` ='Brawley', `state`=5, `zipcode`='92227', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =82, `account` =82, `street` = 'P.O. Box 2405', `city` ='Deming', `state`=33, `zipcode`='88031', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =83, `account` =83, `street` = '1395 Bonds Corner Rd.', `city` ='Holtville', `state`=5, `zipcode`='92250', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =84, `account` =84, `street` = 'PO Box 399', `city` ='Goodyear', `state`=4, `zipcode`='85338', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =85, `account` =85, `street` = '2241 E. Colter St.', `city` ='Laveen', `state`=4, `zipcode`='85016', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =86, `account` =86, `street` = '50102 W. Broadway', `city` ='Tonopah', `state`=4, `zipcode`='85354', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =87, `account` =87, `street` = '2209 N. 99th Ave', `city` ='Phoenix', `state`=4, `zipcode`='85037', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =88, `account` =88, `street` = '2209 N. 99th Ave', `city` ='Phoenix', `state`=4, `zipcode`='85037', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =89, `account` =89, `street` = '9702 W. Glendale Ave', `city` ='Glendale', `state`=4, `zipcode`='85303', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =90, `account` =90, `street` = '34401 W. Desert Rose Rd.', `city` ='Arlington', `state`=4, `zipcode`='85322', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =91, `account` =91, `street` = 'Box 81', `city` ='Palo Verde', `state`=4, `zipcode`='85343', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =92, `account` =92, `street` = 'P.O. Box 356', `city` ='Buckeye', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =93, `account` =93, `street` = '8383 W. Cottonblossom Trail', `city` ='Glendale', `state`=4, `zipcode`='85305', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =94, `account` =94, `street` = 'P.O. Box 35', `city` ='Arlington', `state`=4, `zipcode`='85322', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =95, `account` =95, `street` = 'PO Box 68', `city` ='Bowie', `state`=4, `zipcode`='85605', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =96, `account` =96, `street` = 'P.O. Box 2319', `city` ='Blythe', `state`=5, `zipcode`='92226', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =97, `account` =97, `street` = 'P.O. Box 76', `city` ='Palo Verde', `state`=4, `zipcode`='85343', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =98, `account` =98, `street` = '5578 S. Ave 37E', `city` ='Roll', `state`=4, `zipcode`='85347', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =99, `account` =99, `street` = 'HC62 Box 62128 N. 11th St', `city` ='Eureka', `state`=34, `zipcode`='89316', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =100, `account` =100, `street` = '894 E. Sillimann Road', `city` ='Brawley', `state`=5, `zipcode`='92227', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =101, `account` =101, `street` = 'P.O. Box 70', `city` ='Animas', `state`=33, `zipcode`='88020', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =102, `account` =102, `street` = 'P.O. Box 5069', `city` ='Mohave Valley', `state`=4, `zipcode`='86446', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =103, `account` =103, `street` = 'PO Box 399', `city` ='Buckeye', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =104, `account` =104, `street` = 'P.O. Box 7095', `city` ='Roll', `state`=4, `zipcode`='85347', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =105, `account` =105, `street` = 'P.O. Box 49', `city` ='Laveen', `state`=4, `zipcode`='85339', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =106, `account` =106, `street` = '19617 W. Corto Lane', `city` ='Buckeye', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =107, `account` =107, `street` = '7711 W. Northern Ave', `city` ='Glendale', `state`=4, `zipcode`='85303', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =108, `account` =108, `street` = '38401 W. Highway 8 Unit 12', `city` ='Gila Bend', `state`=4, `zipcode`='85337', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =109, `account` =109, `street` = '7976 N. Tweedy Road', `city` ='Coolidge', `state`=4, `zipcode`='85228', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =110, `account` =110, `street` = '1102 E. Evan Hewes', `city` ='El Centro', `state`=5, `zipcode`='92243', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =111, `account` =111, `street` = 'HC 62 Box 186', `city` ='Eureka', `state`=34, `zipcode`='89316', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =112, `account` =112, `street` = 'P.O. Box 153', `city` ='Palo Verde', `state`=4, `zipcode`='85343', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =113, `account` =113, `street` = 'P.O. Box 1198', `city` ='Buckeye', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =114, `account` =114, `street` = '320 S. Sycamore Dr.', `city` ='Brawley', `state`=4, `zipcode`='92227', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =115, `account` =115, `street` = '20260 N. 93rd Lane', `city` ='Peoria', `state`=4, `zipcode`='85382', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =116, `account` =116, `street` = 'PO Box 937', `city` ='Laveen', `state`=4, `zipcode`='85339', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =117, `account` =117, `street` = '4124 W. Elliot', `city` ='Laveen', `state`=4, `zipcode`='85339', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =118, `account` =118, `street` = 'P.O. Box 100', `city` ='Tolleson', `state`=4, `zipcode`='85353', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =119, `account` =119, `street` = '19300 W. Yuma Rd', `city` ='Buckeye', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =120, `account` =120, `street` = '4007 S. 107th Ave', `city` ='Tolleson', `state`=4, `zipcode`='85353', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =121, `account` =121, `street` = '8711 E. Pinnacle Peak Rd.', `city` ='Scottsdale', `state`=4, `zipcode`='85255', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =122, `account` =122, `street` = 'P.O. Box 171', `city` ='Bowie', `state`=4, `zipcode`='85605', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =123, `account` =123, `street` = 'PO Box 699', `city` ='Stanfield', `state`=4, `zipcode`='85172', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =124, `account` =124, `street` = 'P.O. Box 62', `city` ='Harquahala', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =125, `account` =125, `street` = '30251 W. Lower River', `city` ='Buckeye', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =126, `account` =126, `street` = 'P.O. Box 280', `city` ='Stanfield', `state`=4, `zipcode`='85272-0280', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =127, `account` =127, `street` = 'P.O. Box 20208', `city` ='Wickenburg', `state`=4, `zipcode`='85358', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =128, `account` =128, `street` = 'HC1 Box48', `city` ='Dateland', `state`=4, `zipcode`='85333', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =129, `account` =129, `street` = '1956 Chambers Lane', `city` ='Holtville', `state`=5, `zipcode`='92250', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =130, `account` =130, `street` = '9801 W. Broadway', `city` ='Tolleson', `state`=4, `zipcode`='85353', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =131, `account` =131, `street` = 'HC 62 Box 127', `city` ='Eureka', `state`=34, `zipcode`='89316', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =132, `account` =132, `street` = '22238 W. Meads Ln', `city` ='Buckeye', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =133, `account` =133, `street` = '2209 N. 99th Ave', `city` ='Phoenix', `state`=4, `zipcode`='85037', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =134, `account` =134, `street` = '5201 S. Bruner Rd.', `city` ='Buckeye', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =135, `account` =135, `street` = 'P.O. Box 772', `city` ='Calipatria', `state`=5, `zipcode`='92233', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =136, `account` =136, `street` = '37249 E. Country 8th St.', `city` ='Wellton', `state`=4, `zipcode`='85356', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =137, `account` =137, `street` = '670 W. Main Rd.', `city` ='El Centro', `state`=5, `zipcode`='92243', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =138, `account` =138, `street` = 'PO Box 727', `city` ='Parker', `state`=4, `zipcode`='85344', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =139, `account` =139, `street` = '180 Marjorie Ave Suite E.', `city` ='Brawley', `state`=4, `zipcode`='92227', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =140, `account` =140, `street` = '6101 S. Highway 85', `city` ='Buckeye', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =141, `account` =141, `street` = '328 Terrace Circle', `city` ='Brawley', `state`=5, `zipcode`='92227', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =142, `account` =142, `street` = '53308 W. Dobbins Road', `city` ='Tonopah', `state`=4, `zipcode`='85354', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =143, `account` =143, `street` = 'P.O. Box 2099', `city` ='Blythe', `state`=5, `zipcode`='92226', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =144, `account` =144, `street` = 'P.O. Box 5354', `city` ='Mohave Valley', `state`=4, `zipcode`='86446', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =145, `account` =145, `street` = '2241 E. Colter Streer', `city` ='Phoenix', `state`=4, `zipcode`='85037', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =146, `account` =146, `street` = 'P.O. Box 737', `city` ='Tolleson', `state`=4, `zipcode`='85353', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =147, `account` =147, `street` = 'P.O. Box 5748', `city` ='Mohave Valley', `state`=4, `zipcode`='86446', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =148, `account` =148, `street` = 'P.O. Box 308', `city` ='Tacna', `state`=4, `zipcode`='85352', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =149, `account` =149, `street` = '2618 E. Carson Rd.', `city` ='Phoenix', `state`=4, `zipcode`='85042', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =150, `account` =150, `street` = '925 W. 24th Street', `city` ='Ogden', `state`=45, `zipcode`='84401', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =151, `account` =151, `street` = 'P.O. Box 1110', `city` ='Brawley', `state`=5, `zipcode`='92227', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =152, `account` =152, `street` = 'One Potatoe Place', `city` ='Winnemucca', `state`=34, `zipcode`='89445', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =153, `account` =153, `street` = '22921 W. Gibson Lane', `city` ='Buckeye', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =154, `account` =154, `street` = '3825 S. 99th Ave', `city` ='Tolleson', `state`=4, `zipcode`='85353', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =155, `account` =155, `street` = '12099 NW 144th', `city` ='Newton', `state`=17, `zipcode`='67114', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =156, `account` =156, `street` = '16227 Oak Valley Trl', `city` ='Homer Glen', `state`=15, `zipcode`='60491', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =157, `account` =157, `street` = '22133 W Yavapai Street', `city` ='Buckeye', `state`=4, `zipcode`='85326', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =158, `account` =158, `street` = '3404 B Metro Drive', `city` ='Fort Wayne', `state`=16, `zipcode`='46818', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =159, `account` =159, `street` = '4335 Paysphere Circle', `city` ='Chicago', `state`=15, `zipcode`='67604', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =160, `account` =160, `street` = '5736 W. Laurie Ln.', `city` ='Glendale', `state`=4, `zipcode`='85302-5936', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =161, `account` =161, `street` = '6203 E County Road 57', `city` ='Midland', `state`=44, `zipcode`='79705', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =162, `account` =162, `street` = 'PO Box 1015', `city` ='Chesterton', `state`=16, `zipcode`='46304', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =163, `account` =163, `street` = 'PO Box 1638', `city` ='Mt. Vernon', `state`=44, `zipcode`='75457', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =164, `account` =164, `street` = 'PO Box 8', `city` ='Seminole', `state`=44, `zipcode`='79360', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =165, `account` =165, `street` = '425 W Belford Rd', `city` ='Imperial', `state`=5, `zipcode`='92251', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =166, `account` =166, `street` = 'P.O. Box 338', `city` ='El Centro', `state`=5, `zipcode`='92244', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::unprepared("INSERT INTO `address` SET `id` =167, `account` =167, `street` = '1256 W. Chandler Blvd', `city` ='Chandler', `state`=4, `zipcode`='85224', `type`=1, `country`=1, `created_at`=CURDATE(), `updated_at`=CURDATE();");
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 	}
     
 }
