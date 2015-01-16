@@ -2396,11 +2396,15 @@ class DownloadRepository implements DownloadInterface
 
     public function generateReserveCustomerReport($_params){
     	$_dateBetween = $this->generateBetweenDates($_params);
-    	$result = Account::with(array('contract.order.productorder' => function($query){
+    	$result = Account::with('contract.order.status')
+    					 ->with(array('contract.order.productorder' => function($query){
     						$query->addSelect(array('id', 'order_id', 'product_id', 'stacknumber', 'tons', 'bales', 'unitprice'));
     					}))
+    					->with(array('contract.order.payment' => function($query){
+    						$query->addSelect(array('id', 'order_id', 'account_id', 'amount', 'isCancel'));
+    					}))
     					->with(array('contract.order' => function($query) use ($_dateBetween){
-    					 	$query->addSelect(array('id', 'order_number', 'account_id', 'contract_id', 'location_id', 'ordertype', 'totalPayment'))
+    					 	$query->addSelect(array('id', 'order_number', 'account_id', 'contract_id', 'location_id', 'ordertype', 'totalPayment as totalPurchase', 'status_id'))
     					 		  ->whereBetween('order.created_at',array_values($_dateBetween))
     					 		  ->where('ordertype', '=', Config::get('constants.ORDERTYPE_PO'))
     					 		  ->where('location_id', '=', Config::get('constants.LOCATION_DROPSHIP'));
@@ -2428,19 +2432,16 @@ class DownloadRepository implements DownloadInterface
 		    							$query->addSelect(array('id', 'stacknumber', 'unitprice', 'order_id'))
 		    								  ->has('transportscheduleproduct');
 		    						}))
-		    						// ->whereHas('productorder', function($query){
-		    						// 	$query->whereHas('transportscheduleproduct', function($query){
-		    						// 		$query->whereHas('weightticketproducts', function ($query){
-		    						// 			$query->whereHas('weightticketscale', function ($query){
-		    						// 				$query->where('weightticketscale.type', '=', Config::get('constants.WEIGHTTICKETSCALETYPE_PICKUP'));
-		    						// 			});
-		    						// 		});
-		    						// 	});
-		    						// })
 		    						->where('purchaseorder_id', '=', $order['id'])
 		    						->first(array('id', 'order_number', 'purchaseorder_id'));
 		    					// return $this->parse($soDetails->toArray());
 
+		    	//compute total payment
+		    	$order['totalPayment'] = 0.0;
+		    	foreach($order['payment'] as $payment){
+		    		$order['totalPayment'] += $payment['amount'];
+		    	}
+		    	unset($order['payment']);
 		    	//init
 		    	foreach($order['productorder'] as &$productorder){
 		    		$productorder['soNumber'] = '';
