@@ -2415,7 +2415,6 @@ class DownloadRepository implements DownloadInterface
     					 ->where('id', '=', $_params['filterId'])
     					 ->first(array('id', 'name'))->toArray();
 
-    	//return $this->parse($result);
     	foreach($result['contract'] as &$contract){
     		foreach($contract['order'] as &$order){
 		    	$soDetails = Order::with(array('productorder.transportscheduleproduct.weightticketproducts.weightticketscale' => function($query){
@@ -2434,7 +2433,6 @@ class DownloadRepository implements DownloadInterface
 		    						}))
 		    						->where('purchaseorder_id', '=', $order['id'])
 		    						->first(array('id', 'order_number', 'purchaseorder_id'));
-		    					// return $this->parse($soDetails->toArray());
 
 		    	//compute total payment
 		    	$order['totalPayment'] = 0.0;
