@@ -2398,6 +2398,9 @@ class DownloadRepository implements DownloadInterface
     	$_dateBetween = $this->generateBetweenDates($_params);
     	$result = Account::with('contract.status')
     					 ->with('contract.order.status')
+    					 ->with(array('contract.order.account' => function($query){
+    					 	$query->addSelect('id', 'name');
+    					 }))
     					 ->with(array('contract.order.productorder' => function($query){
     						$query->addSelect(array('id', 'order_id', 'product_id', 'stacknumber', 'tons', 'bales', 'unitprice'));
     					}))
