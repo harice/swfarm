@@ -32,18 +32,16 @@
         <div class="payment-collapsible-item list-view-collapse collapse" id="<%= collapsible_id %><%= po.get("id") %>">
           <div class="container">
             <div class="order-stack-details">
+              <% var postatus = po.get("status").id %>                  
+              <% if (postatus == po_status_closed || postatus == po_status_open || postatus == po_status_testing) { %>
               <div class="col-md-12 no-padding">
-                <div class="pull-right">
-                  <% var postatus = po.get("status").id %>                  
-                  <% if (postatus == po_status_pending || postatus == po_status_pending_status_open || postatus == po_status_pending_status_testing) { %>
-                    <% if (postatus != po_status_pending) { %>
-                      <a href="<%= payment_url %>/<%= add %>/<%= po.get("id") %>" class="btn btn-trans btn-primary btn-rad btn-sm editable-button">
-                        <i class="fa fa-dollar width-10"></i> Add Payment
-                      </a>
-                    <% } %>
-                  <% } %>
+                <div class="pull-right">                  
+                  <a href="<%= payment_url %>/<%= add %>/<%= po.get("id") %>" class="btn btn-trans btn-primary btn-rad btn-sm editable-button">
+                    <i class="fa fa-dollar width-10"></i> Add Payment
+                  </a>                  
                 </div>
               </div>
+              <% } %>
               <div class="payment-list-by-order padding-top-10"></div>
             </div>
           </div>

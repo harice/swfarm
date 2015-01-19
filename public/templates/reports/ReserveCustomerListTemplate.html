@@ -89,7 +89,7 @@
                             <%
                             _.each(order.productorder, function(productorder){ %>
                             <tr>
-                                <td><%= order.account_id %></td>
+                                <td><%= order.account.name %></td>
                                 <td><%= productorder.stacknumber %></td>
                                 <td><%= productorder.bales %></td>
                                 <td><%= productorder.balesDelivered %></td>
