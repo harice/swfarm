@@ -62,14 +62,15 @@
         <%
             _.each(models.get('contract'), function(contract){                                     
         %>
-            <h3 class="margin-top-0"><strong>Contract No: <samp><%= contract.contract_number %></samp></strong></h3>               
-            <h3 class="margin-top-0"><strong>Contract Period: <samp><%= formatDateBy(contract.contract_date_start, 'F d, Y') %></samp> to <samp><%= formatDateBy(contract.contract_date_end, 'F d, Y') %></samp></strong></h3>               
-            <h3 class="margin-top-0"><strong>Contract Status: <samp></samp></strong></h3>  <br />
-            <% 
+            <h3 class="margin-top-0 margin-bottom-0"><strong><samp><%= contract.contract_number %></samp></strong></h3>               
+            <p class="margin-top-0 margin-bottom-0">Period: <i><samp><%= formatDateBy(contract.contract_date_start, 'F d, Y') %></samp></i> - <i><samp><%= formatDateBy(contract.contract_date_end, 'F d, Y') %></samp></i></p>               
+            <p class="margin-top-0 margin-bottom-0">Status: <label class="label label-<%= contract.status.class %>"><%= contract.status.name %></label></p>  <br />
+            <%
+            if(!_.isEmpty(contract.order)) {
                 _.each(contract.order, function(order){ %>
-                    <h3 class="margin-top-0"><strong>PO No: </strong><samp><%= order.order_number %></samp></h3>            
-                    <h3 class="margin-top-0"><strong>PO Status: </strong><samp><%= order.status.name %></samp></h3>            
-                    <h3 class="margin-top-0"><strong>Advance: </strong><samp><%= order.totalPayment %></samp></h3>            
+                    <p class="margin-top-0 margin-bottom-0"><strong>PO No: </strong><samp><%= order.order_number %></samp></p>            
+                    <p class="margin-top-0 margin-bottom-0"><strong>PO Status: </strong><label class="label label-<%= order.status.class %>"><%= order.status.name %></label></p>            
+                    <p class="margin-top-0"><strong>Advance: </strong><samp><%= order.totalPayment %></samp></p>            
                     <table id="reservecustomer-list" class="table no-border margin-bottom-0">
                         <thead class="no-border">
                             <tr>         
@@ -89,12 +90,13 @@
                             _.each(order.productorder, function(productorder){ %>
                             <tr>
                                 <td><%= order.account_id %></td>
+                                <td><%= productorder.stacknumber %></td>
                                 <td><%= productorder.bales %></td>
                                 <td><%= productorder.balesDelivered %></td>
-                                <td><% if(!_.isEmpty(productorder.balesRemaining)) { %><%= productorder.balesRemaining %><% } %></td>
+                                <td><%= productorder.balesRemaining %></td>
                                 <td><%= productorder.tons %></td>
                                 <td><%= productorder.poundsDelivered * lb2ton %></td>
-                                <td><% if(!_.isEmpty(productorder.tonsRemaining)) { %><%= productorder.tonsRemaining %><% } %></td>
+                                <td><%= productorder.tonsRemaining %></td>
                                 <td><%= productorder.unitprice %></td>
                             </tr>
                             <%
@@ -110,6 +112,11 @@
                     </div> 
             <%
                 });
+            }
+            else { %>
+                <p class="text-danger">No results found.</p>
+            <% } 
+
             })
         %>  
     </div>
