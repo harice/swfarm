@@ -6,7 +6,7 @@ define([
 	'text!templates/layout/googleMapsDistanceLegTemplate.html',
 	'text!templates/layout/locationMarkerInfoWindowTemplate.html',
 	'constant',
-	'async!http://maps.googleapis.com/maps/api/js?key=AIzaSyAyTqNUdaMOVp8vYoyheHK4_Hk6ZkUb9Ow&libraries=places'
+	'async!https://maps.googleapis.com/maps/api/js?key=AIzaSyAyTqNUdaMOVp8vYoyheHK4_Hk6ZkUb9Ow&libraries=places'
 ], function(Backbone,
 			AppView,
 			googleMapsModalTemplate,
@@ -43,8 +43,8 @@ define([
 			this.destinationLeg = [];
 			this.loadedDistances = [];
 			
-			this.markerIconDefault = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
-			this.markerIconAlphabetPre = 'http://www.google.com/mapfiles/marker';
+			this.markerIconDefault = 'https://maps.google.com/mapfiles/ms/icons/red-dot.png';
+			this.markerIconAlphabetPre = 'https://www.google.com/mapfiles/marker';
 			this.markerIconAlphabets = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
 			this.markerIconAlphabetPost = '.png';
 			

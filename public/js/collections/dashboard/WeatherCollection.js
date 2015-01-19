@@ -3,27 +3,15 @@ define([
 ], function(Backbone){
     
 	var WeatherCollection = Backbone.Collection.extend({
-		query: 'select item from weather.forecast where woeid in (select woeid from geo.places where text=',
-		url: 'http://query.yahooapis.com/v1/public/yql',
+		query: 'select item from weather.forecast where woeid =',
+		url: 'https://query.yahooapis.com/v1/public/yql',
 		format: 'json',
 		timeout: 10000,
 		dataType: 'jsonp',	
 
-		initialize: function(options){			
-			var city = '';
-			var region = '';
+		initialize: function(options){						
 
-			if(options.city != null){
-				city = options.city + ' ';
-			}
-
-			if(options.region != null)
-				region = options.region + ' ';
-
-			var address = city + region + options.country;
-			
-			
-			this.query += '\"' + address + '\"' + ') and u="c"';
+			this.query += options.woeid;			
 		},		
 
 		fetch: function (options) {	

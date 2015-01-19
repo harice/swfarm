@@ -32,7 +32,6 @@ class PermissioncategoryTableSeeder extends Seeder {
 			array('name' => 'Payments', 'sort' => 19),
 			array('name' => 'Commission', 'sort' => 20)
 
-
 		);
 		
 		DB::table('permissioncategory')->insert($permissioncategory);

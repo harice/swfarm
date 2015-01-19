@@ -41,107 +41,118 @@ define(function () {
 				'VIEW'	:1,
 				'ADD'	:2,
 				'EDIT'	:3,
-				'CANCEL':4
+				'CANCEL':4,
+				'CLOSE': 5,
 			},
 			'SALES': {
-				'VIEW'	:5,
-				'ADD'	:6,
-				'EDIT'	:7,
-				'CANCEL':8
+				'VIEW'	:6,
+				'ADD'	:7,
+				'EDIT'	:8,
+				'CANCEL':9,
+				'CLOSE':10
 			},
 			'PRODUCTS': {
-				'VIEW'	:9,
-				'ADD'	:10,
-				'EDIT'	:11,
-				'DELETE':12
+				'VIEW'	:11,
+				'ADD'	:12,
+				'EDIT'	:13,
+				'DELETE':14
 			},
 			'CONTACTS': {
-				'VIEW'	:13,
-				'ADD'	:14,
-				'EDIT'	:15,
-				'DELETE':16
+				'VIEW'	:15,
+				'ADD'	:16,
+				'EDIT'	:17,
+				'DELETE':18
 			},
 			'USERS': {
-				'VIEW'	:17,
-				'ADD'	:18,
-				'EDIT'	:19,
-				'DELETE':20
+				'VIEW'	:19,
+				'ADD'	:20,
+				'EDIT'	:21,
+				'DELETE':22
 			},
 			'ROLES': {
-				'VIEW'	:21,
-				'ADD'	:22,
-				'EDIT'	:23,
-				'DELETE':24
+				'VIEW'	:23,
+				'ADD'	:24,
+				'EDIT'	:25,
+				'DELETE':26
 			},
 			'ACCOUNTS': {
-				'VIEW'	:25,
-				'ADD'	:26,
-				'EDIT'	:27,
-				'DELETE':28
+				'VIEW'	:27,
+				'ADD'	:28,
+				'EDIT'	:29,
+				'DELETE':30
 			},
 			'REPORTS': {
-				'VIEW':29,
+				'GENERATE':31,
 			},
 			'ADMIN': {
-				'VIEW'	:30,
-				'TRAIL'	:31
-			},
-			'STACKLOCATION': {
 				'VIEW'	:32,
-				'ADD'	:33,
-				'EDIT'	:34,
-				'DELETE':35
+				'TRAIL'	:33
 			},
-			'TRAILER': {
-				'VIEW'	:36,
-				'ADD'	:37,
-				'EDIT'	:38,
-				'DELETE':39
+			'CONTRACT': {
+				'VIEW'	:34,
+				'ADD'	:35,
+				'EDIT'	:36,
+				'DELETE':37
 			},
 			'SETTINGS': {
-				'EDIT'  :40,
+				'EDIT'	:38,
 			},
-			'SCALE': {
-				'VIEW'	:41,
-				'ADD'	:42,
-				'EDIT'	:43,
-				'DELETE':44
+			'LOGISTICS': {
+				'VIEWSCHEDULE':39,
+				'ADDSCHEDULE':40,
+				'EDITSCHEDULE':41,
+				'DELETESCHEDULE':42,
+				'VIEWWEIGHTINFO': 43,
+				'ADDWEIGHTINFO':44,
+				'EDITWEIGHTINFO':45,
+				'CLOSEWEIGHTINFO':46
 			},
-            'CONTRACT': {
-				'VIEW'	:45,
-				'ADD'	:46,
-				'EDIT'	:47,
-				'DELETE':48
+			'INVENTORY': {
+				'ADD'	:47,
+				'VIEW'	:48,			
 			},
-			'TRUCKER': {
+			'STACKLOCATION': {
 				'VIEW'	:49,
 				'ADD'	:50,
 				'EDIT'	:51,
 				'DELETE':52
 			},
-			'INVENTORY': {
+			'DELIVERYLOCATION': {
 				'VIEW'	:53,
 				'ADD'	:54,
 				'EDIT'	:55,
 				'DELETE':56
 			},
-			'COMMISSION': {
-				'VIEW'	:58,
-				'ADD'	:59,
-				'EDIT'	:60,
-				'DELETE':61
+			'TRAILER': {
+				'VIEW'	:57,
+				'ADD'	:58,
+				'EDIT'	:59,
+				'DELETE':60
 			},
-			'PAYMENTS': {
-				'VIEW'	:62,
-				'ADD'	:63,
-				'EDIT'	:64,
+			'TRUCKER': {
+				'VIEW'	:61,
+				'ADD'	:62,
+				'EDIT'	:63,
+				'DELETE':64
 			},
-			'DELIVERYLOCATION': {
+			'SCALE': {
 				'VIEW'	:65,
 				'ADD'	:66,
 				'EDIT'	:67,
 				'DELETE':68
-			},
+			},  
+			'PAYMENTS': {
+				'VIEW'	:69,
+				'ADD'	:70,
+				'EDIT'	:71,
+				'DELETE':72,
+			},	
+			'COMMISSION': {
+				'VIEW'	:73,
+				'ADD'	:74,
+				'EDIT'	:75,
+				'DELETE':76
+			}, 					         											
 		},
 		'CRUD': {
 			'ADD': 'add',

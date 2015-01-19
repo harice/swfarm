@@ -103,7 +103,6 @@ class PermissiontypeTableSeeder extends Seeder {
 			array('name' => 'Add Commission', 'description' => NULL),
 			array('name' => 'Edit Commission', 'description' => NULL),
 			array('name' => 'Delete Commission', 'description' => NULL)
-
 		);
 
 		DB::table('permissiontype')->insert($permissiontype);
