@@ -1,0 +1,119 @@
+<div class="content padding-top-0">  
+    <div class="row margin-top-0">
+        <div class="col-md-12">              
+            <div class="btn-group pull-right">
+                <button data-toggle="dropdown" class="btn btn-link btn-sm btn-rad dropdown-toggle" type="button">
+                    <i class="fa fa-envelope-o"></i>
+                    <span class="margin-right-5">Email</span>
+                    <span class="caret"></span>
+                </button>                       
+                <ul role="menu" class="dropdown-menu">
+                    <li><a class="sendmail" href="/" data-type="pdf" data-model="trucking-statement" data-id='<%= models.get("id") %>' data-title="Trucking Statement">Adobe PDF (*.pdf)</a></li>
+                    <li><a class="sendmail" href="/" data-type="xlsx" data-model="trucking-statement" data-id='<%= models.get("id") %>' data-title="Trucking Statement">Excel (*.xlsx)</a></li>
+                    <li><a class="sendmail" href="/" data-type="xls" data-model="trucking-statement" data-id='<%= models.get("id") %>' data-title="Trucking Statement">Excel (*.xls)</a></li>
+                    <li><a class="sendmail" href="/" data-type="csv" data-model="trucking-statement" data-id='<%= models.get("id") %>' data-title="Trucking Statement">Excel (*.csv)</a></li>
+                </ul>
+            </div>
+            <div class="btn-group pull-right">
+                <button data-toggle="dropdown" class="btn btn-link btn-sm btn-rad dropdown-toggle" type="button">
+                    <i class="fa fa-print"></i>
+                    <span class="margin-right-5">Export</span>
+                    <span class="caret"></span>
+                </button>
+                <ul role="menu" class="dropdown-menu">
+                    <li><a href="<%= export_pdf_url %>" target="_blank">Adobe PDF (*.pdf)</a></li>
+                    <li><a href="<%= export_xlsx_url %>">Excel (*.xlsx)</a></li>
+                    <li><a href="<%= export_xls_url %>">Excel (*.xls)</a></li>
+                    <li><a href="<%= export_csv_url %>">Excel (*.csv)</a></li>
+                </ul>
+            </div>
+            <div class="clearfix"></div>
+            <h2 class="text-center">
+                <samp>Reserve Customer Report</samp>                    
+            </h2>  
+            <h6 class="text-danger text-center">               
+                <strong><samp><% if(!_.isEmpty(date_from)) { %><%= formatDateBy(date_from, 'F d, Y') %> -  <% } %></samp></strong><strong><samp><% if(!_.isEmpty(date_end)) { %><%= formatDateBy(date_end, 'F d, Y') %> <% } %></samp></strong>
+            </h6>   
+        </div>
+    </div>
+    <div class="row margin-top-20 margin-bottom-0">
+        <div class="col-md-4">
+            <h3 class="margin-bottom-5 margin-top-0">
+                <samp>
+                    Customer:
+                    <strong>
+                        <code><%= models.get('name') %></code>
+                    </strong>
+                </samp>
+            </h3>          
+        </div> 
+        <div class="col-md-3 col-md-offset-3 text-right">
+            <h5 class="margin-top-0 margin-bottom-5"><samp>Statement Date:</samp></h5>           
+        </div>
+        <div class="col-md-2 text-right">
+            <h5 class="margin-top-0 margin-bottom-5"><strong><samp><%= formatDateBy(cur_date, 'F d, Y') %></samp></strong></h5>            
+        </div>  
+    </div> 
+    <div class="progress width-1000 margin-bottom-20 height-1">
+        <div style="width: %" class="progress-bar progress-bar-primary"></div>
+    </div>                 
+    <% if (!_.isEmpty(models.get('contract'))) { %>   
+    <div class="table-responsive">
+        <%
+            _.each(models.get('contract'), function(contract){                                     
+        %>
+            <h3 class="margin-top-0"><strong>Contract No: <samp><%= contract.contract_number %></samp></strong></h3>               
+            <h3 class="margin-top-0"><strong>Contract Period: <samp><%= formatDateBy(contract.contract_date_start, 'F d, Y') %></samp> to <samp><%= formatDateBy(contract.contract_date_end, 'F d, Y') %></samp></strong></h3>               
+            <h3 class="margin-top-0"><strong>Contract Status: <samp></samp></strong></h3>  <br />
+            <% 
+                _.each(contract.order, function(order){ %>
+                    <h3 class="margin-top-0"><strong>PO No: </strong><samp><%= order.order_number %></samp></h3>            
+                    <h3 class="margin-top-0"><strong>PO Status: </strong><samp><%= order.status.name %></samp></h3>            
+                    <h3 class="margin-top-0"><strong>Advance: </strong><samp><%= order.totalPayment %></samp></h3>            
+                    <table id="reservecustomer-list" class="table no-border margin-bottom-0">
+                        <thead class="no-border">
+                            <tr>         
+                                <th><strong>Producer</strong></th>                               
+                                <th><strong>Stack No.</strong></th>                               
+                                <th><strong>Bales Purchased</strong></th>                               
+                                <th><strong>Bales Delivered</strong></th>      
+                                <th><strong>Bales Remaining</strong></th>                               
+                                <th><strong>Tons Purchased</strong></th>      
+                                <th><strong>Tons Delivered</strong></th>                               
+                                <th><strong>Tons Remaining</strong></th>      
+                                <th><strong>Price</strong></th>      
+                            </tr>
+                        </thead>
+                        <tbody class="no-border-y">               
+                            <%
+                            _.each(order.productorder, function(productorder){ %>
+                            <tr>
+                                <td><%= order.account_id %></td>
+                                <td><%= productorder.bales %></td>
+                                <td><%= productorder.balesDelivered %></td>
+                                <td><% if(!_.isEmpty(productorder.balesRemaining)) { %><%= productorder.balesRemaining %><% } %></td>
+                                <td><%= productorder.tons %></td>
+                                <td><%= productorder.poundsDelivered * lb2ton %></td>
+                                <td><% if(!_.isEmpty(productorder.tonsRemaining)) { %><%= productorder.tonsRemaining %><% } %></td>
+                                <td><%= productorder.unitprice %></td>
+                            </tr>
+                            <%
+                                }); 
+                            %>     
+                        </tbody>  
+                        <tfoot class="no-border-y">
+                            
+                        </tfoot>              
+                    </table> 
+                    <div class="progress width-1000 margin-bottom-20 height-1">
+                        <div style="width: %" class="progress-bar progress-bar-primary"></div>
+                    </div> 
+            <%
+                });
+            })
+        %>  
+    </div>
+    <% } else { %>
+    <p class="text-danger">No transactions found.</p>
+    <% } %>
+</div> 

@@ -2,16 +2,16 @@ define([
 	'backbone',
 	'views/base/ReportView',
 	'models/reports/ReportModel',
-	'collections/trucker/TruckerCollection',
-	'text!templates/reports/TruckersPayListTemplate.html',
+	'collections/account/AccountCustomerCollection',
+	'text!templates/reports/ReserveCustomerListTemplate.html',
 	'global',
 	'constant',
 ], function(
 	Backbone,
 	ReportView,			
 	Report,
-	TruckerCollection,
-	truckerListTemplate,
+	AccountCustomerCollection,
+	ReserveCustomerListTemplate,
 	Global,
 	Const
 ){
@@ -20,11 +20,11 @@ define([
 		
 		initialize: function() {
 			var thisObj = this;			
-			this.filtername = "Truck Name";
+			this.filtername = "Customer Name";
 			this.title = "Reserve Customer";
 			this.dataModel = "reserve-customer";					
 
-			this.collection = new TruckerCollection();
+			this.collection = new AccountCustomerCollection();
 
 			//Only display form when finished synching
 			this.collection.on('sync', function (){																
@@ -54,14 +54,12 @@ define([
 		},			
 
 		getFilterName: function (){
-			var truckers = '<option disabled selected>Select Truck</option>';				
-			_.each(this.collection.models, function (model) {	
-				_.each(model.get('data'), function (truck) {
-					truckers += '<option value="'+truck.id+'">'+truck.trucknumber +'</option>';													
-				});						
+			var customers = '<option disabled selected>Select Customer</option>';				
+			_.each(this.collection.models, function (customer) {	
+				customers += '<option value="'+customer.id +'">'+ customer.get('name') +'</option>';						
 			});
 			
-			return truckers;
+			return customers;
 		},	
 
 		onclickgenerate: function(data) {
@@ -70,7 +68,7 @@ define([
 			this.model = new Report();		
 			this.model.fetchStatement(data['reporttype'], data['filtername'], data['transportdatestart'], data['transportdateend']);										
 			this.model.on('change', function() {
-				thisObj.processData(thisObj.model, truckerListTemplate, data['transportdatestart'], data['transportdateend']);
+				thisObj.processData(thisObj.model, ReserveCustomerListTemplate, data['transportdatestart'], data['transportdateend']);
 				this.off("change");
 			});	
 		},							

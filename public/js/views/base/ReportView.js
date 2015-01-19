@@ -386,6 +386,7 @@ define([
 			var thisObj = this;				
 			
 			var innerTemplateVariables= {
+				'lb2ton': Const.LB2TON,
 				'cur_date': this.setCurDate(),				
 				'models': models,
 				'date_from': startDate,
