@@ -2449,6 +2449,7 @@ class DownloadRepository implements DownloadInterface
 		    		$productorder['soNumber'] = '';
 		    		$productorder['balesDelivered'] = 0.0;
 		    		$productorder['poundsDelivered'] = 0.0;
+		    		$productorder['tonsDelivered'] = 0.0;
 		    	}
 
 		    	if($soDetails == null){
@@ -2480,6 +2481,7 @@ class DownloadRepository implements DownloadInterface
 		    		$productorder['soNumber'] = isset($stacks[$productorder['stacknumber']]) ? $stacks[$productorder['stacknumber']]['sonumber'] : '';
 		    		$productorder['balesDelivered'] = isset($stacks[$productorder['stacknumber']]) ? $stacks[$productorder['stacknumber']]['bales']: 0.0;
 		    		$productorder['poundsDelivered'] = isset($stacks[$productorder['stacknumber']]) ? $stacks[$productorder['stacknumber']]['pounds'] : 0.0;
+		    		$productorder['tonsDelivered'] = isset($stacks[$productorder['stacknumber']]) ? $stacks[$productorder['stacknumber']]['pounds'] * 0.0005 : 0.0;
 
 		    		$productorder['balesRemaining'] = $productorder['bales'] - $productorder['balesDelivered'];
 		    		$productorder['tonsRemaining'] = $productorder['tons'] - ($productorder['poundsDelivered'] * 0.0005);
