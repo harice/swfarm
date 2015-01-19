@@ -2396,7 +2396,8 @@ class DownloadRepository implements DownloadInterface
 
     public function generateReserveCustomerReport($_params){
     	$_dateBetween = $this->generateBetweenDates($_params);
-    	$result = Account::with('contract.order.status')
+    	$result = Account::with('contract.status')
+    					 ->with('contract.order.status')
     					 ->with(array('contract.order.productorder' => function($query){
     						$query->addSelect(array('id', 'order_id', 'product_id', 'stacknumber', 'tons', 'bales', 'unitprice'));
     					}))
@@ -2410,7 +2411,7 @@ class DownloadRepository implements DownloadInterface
     					 		  ->where('location_id', '=', Config::get('constants.LOCATION_DROPSHIP'));
     					 }))
     					->with(array('contract' => function($query){
-    						$query->addSelect(array('id', 'contract_number','account_id', 'contract_date_start', 'contract_date_end'));
+    						$query->addSelect(array('id', 'contract_number','account_id', 'contract_date_start', 'contract_date_end', 'status_id'));
  					   	 }))
     					 ->where('id', '=', $_params['filterId'])
     					 ->first(array('id', 'name'))->toArray();
