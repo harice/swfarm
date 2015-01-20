@@ -134,7 +134,7 @@ class Contract extends BaseModel {
      */
     public function status()
     {
-        return $this->belongsTo('Status');
+        return $this->hasOne('Status', 'id', 'status_id');
     }
     
     /**
