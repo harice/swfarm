@@ -1220,6 +1220,9 @@ class DownloadRepository implements DownloadInterface
 				// $report_o = $this->generateProducerStatementByOrder($q);
 				//$report_o = $this->generateProducerStatementByOrder2($q);
 
+				// $report_o = $this->generateProducerStatement($q);
+				// $report_o = $this->generateProducerStatementByOrder($q);
+				
 				if(!$report_o) { $_notfound = true; break; }
 				break;
 
@@ -2605,7 +2608,7 @@ class DownloadRepository implements DownloadInterface
 		    			
 			}
 		}
-
+		$result['report_date'] = $_dateBetween;
     	return $this->parse($result);
 
     }
@@ -2680,6 +2683,22 @@ class DownloadRepository implements DownloadInterface
     								$q->where('weightticket.status_id','=',Config::get('constants.STATUS_CLOSED'));
 	                            	$q->whereBetween('weightticket.updated_at',array_values($_dateBetween));
     						   }))
+    						   ->with(array('productorder.transportscheduleproduct.transportschedule.weightticket' => function($q){
+    						   		$q->addSelect(array('id', 'transportSchedule_id', 'weightTicketNumber', 'pickup_id', 'dropoff_id', 'status_id', 'created_at', 'updated_at'));
+    						   }))
+    						   ->with(array('productorder.transportscheduleproduct.transportschedule' => function($q){
+    						   		$q->addSelect(array('id', 'order_id'));
+    						   }))
+    						   ->with('productorder.transportscheduleproduct.sectionto.storagelocation')
+    	 					   ->with(array('productorder.transportscheduleproduct' => function($q){
+    						   		$q->addSelect(array('id', 'transportschedule_id', 'productorder_id', 'quantity', 'sectionto_id'));
+    						   }))
+    						   ->with(array('productorder.product' => function($q){
+    						   		$q->addSelect(array('id', 'name'));
+    						   }))
+    						   ->with(array('productorder' => function($q){
+    						   		$q->addSelect(array('id', 'order_id', 'stacknumber', 'tons', 'bales', 'unitprice', 'product_id'));
+    						   }))
     						  //  ->whereHas('productorder', function($q) use($_dateBetween){
     						  //  		$q->whereHas('transportscheduleproduct', function($q) use($_dateBetween){
 	    					 	// 		$q->whereHas('transportschedule', function($q) use($_dateBetween){
@@ -2692,6 +2711,15 @@ class DownloadRepository implements DownloadInterface
     					 		// 	});
 	    					 	// })
     						   ->where('order.account_id','=',$_params['filterId'])
+    						   ->select(array(
+    						   			'id',
+    						   			'order_number',
+    						   			'location_id',
+    						   			'account_id',
+    						   			'status_id',
+    						   			'created_at',
+    						   			'updated_at'
+    						   ))
     						   ->get()->toArray();
     	//Get Producer location order
 
