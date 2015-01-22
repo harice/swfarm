@@ -9,6 +9,7 @@ define([
 	'views/reports/InventorySearchView',
 	'views/reports/GrossProfitView',
 	'views/reports/CommissionView',	
+	'views/reports/ReserveCustomerView',	
 	'models/reports/ReportModel',	
 	'text!templates/reports/ReportFormTemplate.html',
 	'global',
@@ -23,6 +24,7 @@ define([
 			Inventory,
 			GrossProfit,
 			CommissionView,
+			ReserveCustomerView,
 			Report,			
 			reportFormTemplate,
 			Global,
@@ -91,7 +93,11 @@ define([
 			this.currView.setElement($("#report-filter")).render();	
 		},
 
-		
+		reservecustomer:function() {
+			this.closeView();
+			this.currView = new ReserveCustomerView();
+			this.currView.setElement($("#report-filter")).render();
+		}, 
 
 	});
 

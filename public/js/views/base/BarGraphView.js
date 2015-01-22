@@ -559,7 +559,7 @@ define([
 			googleMaps.showGetDestinationRoute(markers, options);					
 		},
 
-		getForecast: function(city, region, country){
+		getForecast: function(address){
 			var thisObj = this;
 			var model = this.weatherCollection.models[0];
 			var channels = model.get('query').results.channel.item;		
@@ -573,19 +573,7 @@ define([
 
 			_.extend(variables,Backbone.View.prototype.helpers);
 			var weatherInnerTemplate = _.template(weatherTemplate, variables);
-			thisObj.subContainer.find('#weather-forecast').append(weatherInnerTemplate);
-			
-			var address = '';
-
-			if(city != null)
-				addresss = city;
-			else {
-				if(region != null)
-					addresss = region;
-				else {
-					address = country;
-				}
-			}			
+			thisObj.subContainer.find('#weather-forecast').append(weatherInnerTemplate);					
 
 			$('.placeholder').html("<h2 class='margin-bottom-0'><i class='fa fa-map-marker'></i> " + address + "</h2>");
 

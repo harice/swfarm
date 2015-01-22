@@ -2,8 +2,9 @@ define([
 	'backbone',	
 	'views/base/BarGraphView',
 	'views/base/GoogleMapsView',
+	'models/session/SessionModel',
 	'models/dashboard/GraphModel',
-	'models/dashboard/CurrentLocationModel',
+	'models/dashboard/WoeIdModel',
 	'collections/dashboard/WeatherCollection',
 	'collections/dashboard/GraphCollection',	
 	'text!templates/layout/contentTemplate.html',
@@ -14,8 +15,9 @@ define([
 	Backbone,
 	BarGraphView, 
 	GoogleMapsView,
+	SessionModel,
 	GraphModel,
-	CurrentLocationModel,
+	WoeIdModel,
 	WeatherCollection,
 	GraphCollection,
 	contentTemplate,
@@ -95,32 +97,54 @@ define([
 			
 			this.graphCollection.on('error', function(collection, response, options) {
 				
-			});	
+			});			
 
-			this.currentLocationModel = new CurrentLocationModel();
-			this.currentLocationModel.on('sync', function(){
-				thisObj.getWoeId(thisObj.currentLocationModel.get('city'), thisObj.currentLocationModel.get('region'), thisObj.currentLocationModel.get('country'));
-				this.off('sync');
-			});
+			var geolocation = SessionModel.get('Latitude');				
+
+			if(geolocation == null) {
+				if(navigator.geolocation){
+					navigator.geolocation.getCurrentPosition(function(position) {					
+						SessionModel.set('Latitude', position.coords.latitude);
+						SessionModel.set('Longitude', position.coords.longitude);	
+						thisObj.getLocationResults();						
+					});
+				}	
+			}
+			else 			
+				this.getLocationResults();
+			
 			
 		},
 		render: function(){	
 			this.graphCollection.getModels();			
-			Backbone.View.prototype.refreshTitle('Dashboard','View');
+			Backbone.View.prototype.refreshTitle('Dashboard','View');			
 		},
-
+		
 		updateTime: function(){
 
 			this.$el.find("#curtime").text(Backbone.View.prototype.formatDate('h:i A', this.clockModel.get('time')));
 			
 		},
 
-		getWoeId: function(city, region, country){		
+		getLocationResults: function(){
+			var thisObj = this;
+
+			this.woeIdModel = new WoeIdModel({latitude: SessionModel.get('Latitude'), longitude: SessionModel.get('Longitude')});	
+			this.woeIdModel.fetch();								
+			this.woeIdModel.on('sync', function(){	
+				thisObj.getWoeId(thisObj.woeIdModel.get('query').results.Result.woeid, thisObj.woeIdModel.get('query').results.Result.city, thisObj.woeIdModel.get('query').results.Result.country);
+				this.off('sync');
+			});
+		},
+
+		getWoeId: function(woeid, city, country){	
 			var thisObj = this;			
-			this.weatherCollection = new WeatherCollection({city: city, region:region, country: country});
+			var address = city + ', ' +  country;
+
+			this.weatherCollection = new WeatherCollection({woeid: woeid});
 			this.weatherCollection.fetch();		
-			this.weatherCollection.on('sync', function(){					
-				thisObj.getForecast(city, region, country);			
+			this.weatherCollection.on('sync', function(){						
+				thisObj.getForecast(address);			
 				this.off('sync');
 			});
 

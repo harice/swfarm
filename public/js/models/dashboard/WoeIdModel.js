@@ -5,31 +5,38 @@ define([
 ], function(Backbone, Global, Const) {
 
 	var WoeIdModel = Backbone.Model.extend({		
-		urlRoot: '',
-		defaults: {
-			woeid: ''
-                },
+		urlRoot: 'https://query.yahooapis.com/v1/public/yql',               
+		query: 'select * from geo.placefinder where text="', 
+                format: 'json',
+                timeout: 10000,
+                dataType: 'jsonp',      
 
-                initialize: function(options){
-                	var address = options.city + ' ' + options.country;
-                        var url = 'http://query.yahooapis.com/v1/public/yql?q=';
-                        var query = 'select * from geo.placefinder where text=' +"\'" + address + "\'" + '&format=json&diagnostics=true&callback=';   	
+                initialize: function(options){ 
 
-                        this.urlRoot = url + query;
-                        this.runFetch();
+                        this.coord = options.latitude + ',' + options.longitude;
+                        this.query += this.coord +'" and gflags="R"';     
                 },	
 
-                runFetch: function(){
-                	var thisObj = this;
+                fetch: function (options) {     
+                        options = options ? _.clone(options) : {};
+                        options.data = options.data ? _.clone(options.data) : {};
 
-                	this.fetch({
-                		success: function(model, response, options){
+                        if (!options.data.q) {
+                                options.data.q = _.result(this, 'query');
+                        }
+                        if (!options.data.format) {
+                                options.data.format = _.result(this, 'format');
+                        }                       
 
-                		},
-                		error: function(model, response, options){},
-                		headers: thisObj.getAuth(),
-                	});
+                        return Backbone.Model.prototype.fetch.call(this, options);
                 },
+
+                sync: function(method, model, options){
+                        options.timeout = _.result(this, 'timeout');
+                        options.dataType = _.result(this, 'dataType');
+
+                        return Backbone.sync(method, model, options);
+                },               
 
         });
 

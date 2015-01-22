@@ -51,6 +51,10 @@ class Account extends Eloquent {
         return $this->hasMany('Order', 'account_id', 'id')->select(array('id', 'account_id', 'order_number'));
     }
 
+    public function contract(){
+        return $this->hasMany('Contract', 'account_id', 'id');
+    }
+
     public static function boot()
     {
         parent::boot();

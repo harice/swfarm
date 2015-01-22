@@ -1119,6 +1119,15 @@ class DownloadRepository implements DownloadInterface
 				$report_o = $this->generateInventoryReportMultipleStack($q);
 				if(!$report_o) { $_notfound = true; break; }
 				break;
+
+			case Config::get('constants.REPORT_RESERVE_CUSTOMERS'):
+				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
+
+
+				$report_o = $this->generateReserveCustomerReport($q);
+
+				if(!$report_o) { $_notfound = true; break; }
+				break;
 		}
 
 		if($_error) return App::abort(501,'Not implemented');
@@ -1588,7 +1597,7 @@ class DownloadRepository implements DownloadInterface
 	    if($report_o->order->count() == 0) return $this->parse($report_a);
 
 	    foreach ($report_a['order'] as $order_key => $order_a) {
-	    	if($order_a['location_id'] == Config::get('constants.LOCATION_DROPSHIP')){
+	    	/*if($order_a['location_id'] == Config::get('constants.LOCATION_DROPSHIP')){
 	    		$temp = array('bales'=>null);
 	            		//get SO information
 	            		$poId = $order_a['id'];
@@ -1644,7 +1653,7 @@ class DownloadRepository implements DownloadInterface
 		                $report_a['storagelocation'][$skey]['section'][$ckey]['productorder'][$pkey] = $product_a;
 		            	
 		                
-	    	}
+	    	}*/
 	    	$report_a['payment'] += $order_a['payment'];
 	    	$product_a = ProductOrderSummary::join('products','products.id','=','productordersummary.product_id')
 	    					->with(array('productorder.transportscheduleproduct.transportschedule.weightticket' => function($query) use($_dateBetween) {
@@ -2383,5 +2392,105 @@ class DownloadRepository implements DownloadInterface
 	public function getStackListByProduct($productId){
         $stackList = Stack::where('product_id', '=', $productId)->orderBy('stacknumber', 'ASC')->get(array('id', 'stacknumber', 'product_id'))->toArray();
         return $stackList;
+    }
+
+    public function generateReserveCustomerReport($_params){
+    	$_dateBetween = $this->generateBetweenDates($_params);
+    	$result = Account::with('contract.status')
+    					 ->with('contract.order.status')
+    					 ->with(array('contract.order.account' => function($query){
+    					 	$query->addSelect('id', 'name');
+    					 }))
+    					 ->with(array('contract.order.productorder' => function($query){
+    						$query->addSelect(array('id', 'order_id', 'product_id', 'stacknumber', 'tons', 'bales', 'unitprice'));
+    					}))
+    					->with(array('contract.order.payment' => function($query){
+    						$query->addSelect(array('id', 'order_id', 'account_id', 'amount', 'isCancel'));
+    					}))
+    					->with(array('contract.order' => function($query) use ($_dateBetween){
+    					 	$query->addSelect(array('id', 'order_number', 'account_id', 'contract_id', 'location_id', 'ordertype', 'totalPayment as totalPurchase', 'status_id'))
+    					 		  ->whereBetween('order.created_at',array_values($_dateBetween))
+    					 		  ->where('ordertype', '=', Config::get('constants.ORDERTYPE_PO'))
+    					 		  ->where('location_id', '=', Config::get('constants.LOCATION_DROPSHIP'));
+    					 }))
+    					->with(array('contract' => function($query){
+    						$query->addSelect(array('id', 'contract_number','account_id', 'contract_date_start', 'contract_date_end', 'status_id'));
+ 					   	 }))
+    					 ->where('id', '=', $_params['filterId'])
+    					 ->first(array('id', 'name'))->toArray();
+
+    	foreach($result['contract'] as &$contract){
+    		foreach($contract['order'] as &$order){
+		    	$soDetails = Order::with(array('productorder.transportscheduleproduct.weightticketproducts.weightticketscale' => function($query){
+		    							$query->addSelect(array('id', 'type'))
+		    								  ->where('type', '=', Config::get('constants.WEIGHTTICKETSCALETYPE_PICKUP'));
+		    						}))
+		    						->with(array('productorder.transportscheduleproduct.weightticketproducts' => function($query){
+		    							$query->addSelect(array('id', 'weightTicketScale_id', 'transportScheduleProduct_id', 'bales', 'pounds'));
+		    						}))
+		    						->with(array('productorder.transportscheduleproduct' => function($query){
+		    							$query->has('weightticketproducts');
+		    						}))
+		    						->with(array('productorder' => function($query){
+		    							$query->addSelect(array('id', 'stacknumber', 'unitprice', 'order_id'))
+		    								  ->has('transportscheduleproduct');
+		    						}))
+		    						->where('purchaseorder_id', '=', $order['id'])
+		    						->first(array('id', 'order_number', 'purchaseorder_id'));
+
+		    	//compute total payment
+		    	$order['totalPayment'] = 0.0;
+		    	foreach($order['payment'] as $payment){
+		    		$order['totalPayment'] += $payment['amount'];
+		    	}
+		    	unset($order['payment']);
+		    	//init
+		    	foreach($order['productorder'] as &$productorder){
+		    		$productorder['soNumber'] = '';
+		    		$productorder['balesDelivered'] = 0.0;
+		    		$productorder['poundsDelivered'] = 0.0;
+		    		$productorder['tonsDelivered'] = 0.0;
+		    	}
+
+		    	if($soDetails == null){
+		    		continue;
+		    	}
+		    	$soDetails = $soDetails->toArray();
+		    	$stacks = array();
+		    	$soNumber = $soDetails['order_number'];
+		    	foreach($soDetails['productorder'] as $productorder_a){
+		    		$stacks[$productorder_a['stacknumber']]['sonumber'] = $soNumber;
+		    		$stacks[$productorder_a['stacknumber']]['unitprice'] = $productorder_a['unitprice'];
+		    		$stacks[$productorder_a['stacknumber']]['bales'] = 0.0;
+		    		$stacks[$productorder_a['stacknumber']]['pounds'] = 0.0;
+		    		foreach($productorder_a['transportscheduleproduct'] as $transportscheduleproduct){
+		    			foreach($transportscheduleproduct['weightticketproducts'] as $weightticketproducts){
+		    				if($weightticketproducts['weightticketscale'] == null){
+		    					continue;
+		    				} else {
+		    					if($weightticketproducts['weightticketscale']['type'] == Config::get('constants.WEIGHTTICKETSCALETYPE_PICKUP')){
+				    				$stacks[$productorder_a['stacknumber']]['bales'] += $weightticketproducts['bales'];
+				    				$stacks[$productorder_a['stacknumber']]['pounds'] += $weightticketproducts['pounds'];
+		    					}
+		    				}
+		    			}
+		    		}
+		    	}
+
+		    	foreach($order['productorder'] as &$productorder){
+		    		$productorder['soNumber'] = isset($stacks[$productorder['stacknumber']]) ? $stacks[$productorder['stacknumber']]['sonumber'] : '';
+		    		$productorder['balesDelivered'] = isset($stacks[$productorder['stacknumber']]) ? $stacks[$productorder['stacknumber']]['bales']: 0.0;
+		    		$productorder['poundsDelivered'] = isset($stacks[$productorder['stacknumber']]) ? $stacks[$productorder['stacknumber']]['pounds'] : 0.0;
+		    		$productorder['tonsDelivered'] = isset($stacks[$productorder['stacknumber']]) ? $stacks[$productorder['stacknumber']]['pounds'] * 0.0005 : 0.0;
+
+		    		$productorder['balesRemaining'] = $productorder['bales'] - $productorder['balesDelivered'];
+		    		$productorder['tonsRemaining'] = $productorder['tons'] - ($productorder['poundsDelivered'] * 0.0005);
+		    	}
+		    			
+			}
+		}
+
+    	return $this->parse($result);
+
     }
 }
