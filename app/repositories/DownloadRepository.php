@@ -384,7 +384,7 @@ class DownloadRepository implements DownloadInterface
 					}
 
 					switch($q['model']) {
-						case 'reserve':
+						case 'reserve-customer':
 							if(!$this->filterParams($q,array('filterId'))) { 
 								if($mail) return false;
 								else $_404 = true;
