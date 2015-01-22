@@ -110,7 +110,7 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
     {
         $storagelocation = StorageLocation::with('section')->whereHas('account', function($account){
             $account->whereHas('accounttype', function($accounttype){
-                $accounttype->where('accounttype_id', '=', 10); //warehouse account type
+                $accounttype->where('accounttype_id', '=', 9); //warehouse account type
             });
         })->get();
 

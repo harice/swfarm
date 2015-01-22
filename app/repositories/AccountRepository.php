@@ -370,7 +370,7 @@ class AccountRepository implements AccountRepositoryInterface {
   }
 
   public function getProducerAndWarehouseAccount(){
-    $types = array(5, 8, 9); //producer and warehouse [accounttype ids]
+    $types = array(5, 9); //producer and warehouse [accounttype ids]
     $accounts = Account::with('accounttype')
                 ->whereHas('accounttype', function($q) use($types) { $q->whereIn('accounttype_id', $types); } )
                 ->groupBy('id')
