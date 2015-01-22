@@ -384,7 +384,7 @@ class DownloadRepository implements DownloadInterface
 					}
 
 					switch($q['model']) {
-						case 'reserve':
+						case 'reserve-customer':
 							if(!$this->filterParams($q,array('filterId'))) { 
 								if($mail) return false;
 								else $_404 = true;
@@ -1217,7 +1217,11 @@ class DownloadRepository implements DownloadInterface
 
 				// $report_o = $this->generateProducerStatement($q);
 				// $report_o = $this->generateProducerStatementByOrder($q);
+<<<<<<< HEAD
 				$report_o = $this->generateProducerStatementByOrder2($q);
+=======
+				// $report_o = $this->generateProducerStatementByOrder2($q);
+>>>>>>> cef70a15babe65651adc0163acb443329a11a0ce
 				if(!$report_o) { $_notfound = true; break; }
 				break;
 
