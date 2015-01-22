@@ -58,7 +58,11 @@ define([
 			{
 				name: "Trucking Statement Report",
 				id: 8
-			}, 			 											
+			}, 		
+			{
+				name: "Reserve Customer Report",
+				id: 10
+			}, 		 											
 		],
 		startDate: '',
 		endDate: '',
@@ -233,6 +237,8 @@ define([
 					break;
 				case '8':				
 					return this.trucker();
+				case '10':				
+					return this.reservecustomer();
 					break;
 			}			
 			

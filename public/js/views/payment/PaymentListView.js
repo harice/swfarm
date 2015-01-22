@@ -63,9 +63,9 @@ define([
 				pos: this.collection.models,
 				add: Const.CRUD.ADD,
 				collapsible_id: Const.PAYMENT.COLLAPSIBLE.ID,
-				po_status_pending: Const.STATUSID.PENDING,
-				po_status_pending_status_open: Const.STATUSID.OPEN,
-				po_status_pending_status_testing: Const.STATUSID.TESTING,
+				po_status_closed: Const.STATUSID.CLOSED,
+				po_status_open: Const.STATUSID.OPEN,
+				po_status_testing: Const.STATUSID.TESTING,
 				_: _ 
 			};
 			
