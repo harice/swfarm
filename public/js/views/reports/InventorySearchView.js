@@ -80,6 +80,9 @@ define([
 			var thisObj = this;
 			var prodId = $(ev.target).val();
 			var variables = {};	
+
+			this.setFilterId(ev);
+
 			this.productCollection.getStackNumbersByProduct(prodId);			
 
 			this.productCollection.on('sync', function(){
@@ -120,11 +123,11 @@ define([
 		},		
 
 		onclickgenerate: function(data) {
-			var thisObj = this;				
-			
+			var thisObj = this;	
+	
 			this.model = new Report();		
 			this.model.fetchInventory(data['stacknumbers'], data['transportdatestart'], data['transportdateend']);													
-			this.model.on('change', function() {
+			this.model.on('change', function(model, response, options) {
 				thisObj.processData(thisObj.model, inventoryListTemplate, data['transportdatestart'], data['transportdateend']);
 				this.off("change");
 			});				

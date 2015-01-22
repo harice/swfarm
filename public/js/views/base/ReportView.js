@@ -88,7 +88,7 @@ define([
 			this.endDate = date;			
 		},
 
-		setFilterId: function(ev) {
+		setFilterId: function(ev) {			
 			this.filterId = $(ev.target).val();
 		},		
 
@@ -384,8 +384,6 @@ define([
 
 		processData: function(models, template, startDate, endDate) {
 			var thisObj = this;		
-
-			console.log(models);		
 			
 			var innerTemplateVariables= {
 				'cur_date': this.setCurDate(),				
