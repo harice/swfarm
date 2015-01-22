@@ -324,14 +324,7 @@ class DownloadRepository implements DownloadInterface
 							}
 							break;
 
-						default:
-							if($mail) return false;
-							else $_404 = true;
-							break;
-					}
-					break;
-
-					case 'reserve-customer':
+						case 'reserve-customer':
 							if(!$this->filterParams($q,array('filterId'))) { 
 								if($mail) return false;
 								else $_404 = true;
@@ -340,7 +333,7 @@ class DownloadRepository implements DownloadInterface
 
 							$report_o = $this->generateReserveCustomerReport($q);
 							if($report_o) { 
-								$pdf = PDF::loadView('pdf.base',array('child' => View::make('reports.reserve-customer-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.customer-content', array('report_o' => $report_o))));
+								$pdf = PDF::loadView('pdf.base',array('child' => View::make('reports.reserve-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.reserve-content', array('report_o' => $report_o))));
 								if($mail) {
 									$_pathtoFile = storage_path('queue/RC-'.$report_o->name.'.pdf');
 									$_data['pathtofile'] = $_pathtoFile;
@@ -357,6 +350,14 @@ class DownloadRepository implements DownloadInterface
 								else $_404 = true;
 							}
 							break;
+
+						default:
+							if($mail) return false;
+							else $_404 = true;
+							break;
+					}
+					break;
+					
 
 				case 'excel':
 					if(!$this->filterParams($q,array('model'))) { 
@@ -399,10 +400,10 @@ class DownloadRepository implements DownloadInterface
 											        $excel->sheet($report_o->name, function($sheet) use($report_o) {
 											        	$sheet->setColumnFormat(array('E' => '0.00','F' => '0.0000','G' => '0.00','H' => '0.00'));
 											        	$sheet->loadView(
-											        		'reports.customer-header-excel',
+											        		'reports.reserve-header-excel',
 											        		array(
 											        			'report_o' => $report_o,
-											        			'_nest_content' => View::make('reports.customer-content', array('report_o' => $report_o))
+											        			'_nest_content' => View::make('reports.reserve-content', array('report_o' => $report_o))
 										        			)
 									        			);
 											        });
@@ -443,7 +444,7 @@ class DownloadRepository implements DownloadInterface
 										        	$sheet->loadView(
 										        		'excel.base',
 										        		array(
-										        			'child' => View::make('reports.customer-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.customer-content', array('report_o' => $report_o, 'excel' => true ))
+										        			'child' => View::make('reports.reserve-header-excel',array('report_o' => $report_o))->nest('_nest_content', 'reports.reserve-content', array('report_o' => $report_o, 'excel' => true ))
 									        			)
 								        			);
 										        });
@@ -1215,13 +1216,10 @@ class DownloadRepository implements DownloadInterface
 			case Config::get('constants.REPORT_PRODUCER'):
 				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
 
-				// $report_o = $this->generateProducerStatement($q);
+				$report_o = $this->generateProducerStatement($q);
 				// $report_o = $this->generateProducerStatementByOrder($q);
-<<<<<<< HEAD
-				$report_o = $this->generateProducerStatementByOrder2($q);
-=======
-				// $report_o = $this->generateProducerStatementByOrder2($q);
->>>>>>> cef70a15babe65651adc0163acb443329a11a0ce
+				//$report_o = $this->generateProducerStatementByOrder2($q);
+
 				if(!$report_o) { $_notfound = true; break; }
 				break;
 

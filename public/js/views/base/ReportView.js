@@ -383,7 +383,10 @@ define([
 		},
 
 		processData: function(models, template, startDate, endDate) {
-			var thisObj = this;				
+			var thisObj = this;		
+
+			console.log(this.filterId);
+			console.log(this.dataModel);		
 			
 			var innerTemplateVariables= {
 				'cur_date': this.setCurDate(),				
