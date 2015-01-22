@@ -18,6 +18,7 @@ return array(
 
     'LOCATION_DROPSHIP' => 3,
     'LOCATION_PRODUCER' => 2,
+    'LOCATION_SOUTHWESTFARM' => 1,
 
     'STATUS_OPEN' => 1,
     'STATUS_CLOSED' => 2,
