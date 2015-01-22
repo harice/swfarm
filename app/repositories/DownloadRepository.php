@@ -1215,9 +1215,9 @@ class DownloadRepository implements DownloadInterface
 			case Config::get('constants.REPORT_PRODUCER'):
 				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
 
-				// $report_o = $this->generateProducerStatement($q);
+				$report_o = $this->generateProducerStatement($q);
 				// $report_o = $this->generateProducerStatementByOrder($q);
-				$report_o = $this->generateProducerStatementByOrder2($q);
+				// $report_o = $this->generateProducerStatementByOrder2($q);
 				if(!$report_o) { $_notfound = true; break; }
 				break;
 
