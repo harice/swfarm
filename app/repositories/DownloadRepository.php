@@ -1217,8 +1217,7 @@ class DownloadRepository implements DownloadInterface
 				if(!$this->filterParams($q,array('filterId'))) { $_error = true; break; }
 
 				// $report_o = $this->generateProducerStatement($q);
-				// $report_o = $this->generateProducerStatementByOrder($q);
-				$report_o = $this->generateProducerStatementByOrder2($q);
+				$report_o = $this->generateProducerStatementByOrder($q);
 				if(!$report_o) { $_notfound = true; break; }
 				break;
 
@@ -1671,7 +1670,7 @@ class DownloadRepository implements DownloadInterface
 	}
 */
 
-	private function generateProducerStatementByOrder($_params = array()) {
+	private function generateProducerStatementByOrderOld($_params = array()) {
 		$_dateBetween = $this->generateBetweenDates($_params);
 		$report_o = Account::with('businessaddress.state')
                         ->with(array('order' => function($query) use($_dateBetween) {
@@ -2609,7 +2608,7 @@ class DownloadRepository implements DownloadInterface
 
     }
 
-    public function generateProducerStatementByOrder2($_params = array()){
+    public function generateProducerStatementByOrder($_params = array()){
     	$_dateBetween = $this->generateBetweenDates($_params);
     	$accountDetails = Account::find($_params['filterId'])->first()->toArray();
     	$loadcount = 0;
@@ -2719,6 +2718,7 @@ class DownloadRepository implements DownloadInterface
     							->where('location_id', '=', Config::get('constants.LOCATION_PRODUCER'))
     							->where('status_id', '=', Config::get('constants.STATUS_CLOSED'))
     							->where('account_id','=',$_params['filterId'])
+			                    ->whereBetween('updated_at',array_values($_dateBetween))
     							->get()
     							->toArray();
     							// return $this->parse($producerOrder);
