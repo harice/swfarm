@@ -47,8 +47,8 @@
                 </samp>
             </h3> 
             <p>
-                <i><samp><%= models.get('businessaddress').street %></samp></i><br /> 
-                <i><samp><%= models.get('businessaddress').city %>, <%= models.get('businessaddress').state.state %>, <%= models.get('businessaddress').zipcode %></samp></i>
+                <i><samp><%= models.get('account').businessaddress.street %></samp></i><br /> 
+                <i><samp><%= models.get('account').businessaddress.city %>, <%= models.get('account').businessaddress.state.state %>, <%= models.get('account').businessaddress.zipcode %></samp></i>
             </p>
         </div> 
         <div class="col-md-2 col-md-offset-4 text-right">
@@ -62,34 +62,33 @@
         </div>
         <div class="col-md-2 text-right">
             <h5 class="margin-top-0 margin-bottom-5"><samp><%= formatDateBy(cur_date, 'F d, Y') %></samp></h5>
-            <h5 class="margin-top-0 margin-bottom-5"><samp><%= models.get('total_load') %></samp></h5>
-            <h5 class="margin-top-0 margin-bottom-5"><samp>$ <%= numberFormat(models.get('amount')) %></samp></h5>
-            <h5 class="margin-top-0 margin-bottom-5"><span class="text-danger"><samp>- $ <%= numberFormat(models.get('scale_fees')) %></samp></span></h5>
-            <% var amount_due = models.get('amount') - models.get('scale_fees') %>
+            <h5 class="margin-top-0 margin-bottom-5"><samp><%= models.get('account').loadcount %></samp></h5>
+            <h5 class="margin-top-0 margin-bottom-5"><samp>$ <%= numberFormat(models.get('account').totalAmount) %></samp></h5>
+            <h5 class="margin-top-0 margin-bottom-5"><span class="text-danger"><samp>- $ <%= numberFormat(models.get('account').totalScaleFee) %></samp></span></h5>
+            <% var amount_due = models.get('account').totalAmount - models.get('account').totalScaleFee %>
             <h5 class="margin-top-10 margin-bottom-5"><strong><label class="label label-success"><samp>$ <%= numberFormat(amount_due)  %></samp></label></strong></h5>
-            <h5 class="margin-top-5"><span class="text-danger"><samp>- $ <%= numberFormat(models.get('payment')) %></samp></span></h5>                
-            <h5 class="margin-top-5"><strong><label class="label label-success"><samp>$ <%= numberFormat(amount_due - models.get('payment'))  %></samp></label></strong></h5>
+            <h5 class="margin-top-5"><span class="text-danger"><samp>- $ <%= numberFormat(models.get('account').totalPayment) %></samp></span></h5>                
+            <h5 class="margin-top-5"><strong><label class="label label-success"><samp>$ <%= numberFormat(amount_due - models.get('account').totalPayment)  %></samp></label></strong></h5>
         </div>                 
     </div>
     <div class="progress width-1000 margin-bottom-20 height-1">
         <div style="width: %" class="progress-bar progress-bar-primary"></div>
     </div>
-    <% if (!_.isEmpty(models.get('storagelocation'))) { %>          
+    <% if (models.get('account').orders != null && !_.isEmpty(models.get('account').orders)) { %>          
     <div class="table-responsive">
         <%                                                               
-            _.each(models.get('storagelocation'),function(location){  
-                if(!_.isEmpty(location.section)){                                  
-                    _.each(location.section, function(section){ 
+            _.each(models.get('account').orders,function(order){  
+                                                           
                     var tot_amount = 0; 
                     var total_bales = 0;
                     var total_tons = 0;                               
                         %>
-                        <h3 class="margin-top-0"><strong><samp><%= location.name %> - <%= section.name %></samp></strong></h3>                           
+                        <h3 class="margin-top-0"><strong><samp><%= order.ordernumber %></samp></strong></h3>                           
                         <table id="operator-list" class="no-border table margin-bottom-0">
                             <thead class="no-border">
                                 <tr>
                                     <th class="width-100"><strong>Date</strong></th>
-                                    <th class="width-150"><strong>Order No.</strong></th>
+                                    <th class="width-150"><strong>Location</strong></th>
                                     <th class="width-150"><strong>Weight Ticket No.</strong></th>
                                     <th class="width-150"><strong>Price</strong></th>
                                     <th class="width-150"><strong>Net Pounds</strong></th>
@@ -98,71 +97,31 @@
                                     <th class="width-100"><strong>Amount</strong></th>
                                 </tr>
                             </thead>
-                            <%
-                            if(!_.isEmpty(section.productorder)) { %>
-                            <tbody class="no-border-y">  
-                                <%                                                                                             
-                                    _.each(section.productorder, function(order){                                         
-                                        var amount = parseFloat(order.unitprice) * parseFloat(order.tons);
-                                        total_bales += parseInt(order.bales);
-                                        total_tons += parseFloat(order.tons);
-                                    %>                                                                    
-                                    <tr>                        
-                                        <td>
-                                            <%= 
-                                                formatDate(order.updated_at)
-                                            %>                                           
-                                        </td>
-                                        <td><%= order.order_number %></td>
-                                        <td><code><%= order.weightticketnumber %></code></td>
-                                        <td>$ <%= numberFormat(order.unitprice) %></td>
-                                        <td><%= order.pounds %></td>                                    
-                                        <td><%= order.bales %></td>                                        
-                                        <td><%= order.tons %></td> 
-                                        <% tot_amount += amount %>                                       
-                                        <td>$ <%= numberFormat(amount) %></td>                                                                     
-                                    </tr>                                                                          
-                                <% 
-                                    });  
-                                %>                                
-                            </tbody>               
-                            <tfoot class="no-border-y">
-                                <tr>
-                                    <td colspan="4">
-                                        Load Count: <%= section.load_count %>
-                                    </td>
-                                    <td><strong>Total</strong></td>
-                                    <td><strong><%= total_bales %></strong></td>
-                                    <td><strong><%= total_tons %></strong></td>
-                                    <td><strong>$ <%= numberFormat(tot_amount) %></strong></td>
-                                </tr>
-                            </tfoot>
-                            <%
-                            }
-                            else  {
+                            <tbody class="no-border-y">                              
+                                <% _.each(order, function(o){ 
+                                    if(typeof o == "object") {
                                 %>
-                            <tbody class="no-border-y"> 
                                     <tr>
-                                        <td colspan="8">
-                                            <p class="text-danger margin-bottom-0">No order found.</p>
+                                        <td>
+                                           <%= formatDate(o.date) %> 
                                         </td>
+                                        <td><%= o.location %></td>
+                                        <td><%= o.weightticket %></td>
+                                        <td>$ <%= o.price %></td>
+                                        <td><%= o.pounds %></td>
+                                        <td><%= o.bales %></td>
+                                        <td><%= o.tons %></td>
+                                        <td>$ <%= numberFormat(o.amount) %></td>
                                     </tr>
-                            </tbody>       
-                            <%
-                            }
-                            %>
+                                <% }
+                                }); %>
+                            </tbody>
                         </table>  
                         <div class="progress width-1000 margin-bottom-20 height-1">
                             <div style="width: %" class="progress-bar progress-bar-primary"></div>
                         </div>
                     <%
-                    });
-                }  
-                else {
-                %>
-                    <p class="text-danger">No location found.</p>
-                <%
-                }                                    
+                                            
             }); %>                               
     </div>        
     <% } else { %>
