@@ -2,13 +2,13 @@
 <p class='text-center text-danger margin-bottom-30'>{{ date('F d, Y',strtotime($report_o->report_date->start)) }} - {{ date('F d, Y',strtotime($report_o->report_date->end)) }}</p>
 
 <div class='width-50 float-left'>
-	<h2 class='margin-bottom-0'>{{ $report_o->name }}</h2>
+	<h2 class='margin-bottom-0'>{{ $report_o->account->name }}</h2>
 	<address>
-		{{ $report_o->businessaddress->street }}
+		{{ $report_o->account->businessaddress->street }}
 		<br>
-		{{ $report_o->businessaddress->city }},
-		{{ $report_o->businessaddress->state->state_code }}
-		{{ $report_o->businessaddress->zipcode }}
+		{{ $report_o->account->businessaddress->city }},
+		{{ $report_o->account->businessaddress->state->state_code }}
+		{{ $report_o->account->businessaddress->zipcode }}
 	</address>
 </div>
 
@@ -33,19 +33,19 @@
 	<div class='width-60 float-right text-right'>
 		{{ date('F d, Y') }}
 		<br>
-		{{ $report_o->total_load }}
+		{{ $report_o->account->loadcount }}
 		<br><br>
-		<strong>$ {{ number_format($report_o->amount, 2, '.', ',') }}</strong>
+		<strong>$ {{ number_format($report_o->account->totalAmount, 2, '.', ',') }}</strong>
 		<br>
-		<span class='text-danger'>- $ {{ number_format($report_o->scale_fees, 2, '.', ',') }}</span>
-		<br>
-		<hr>
-		<strong class='padding-right-5'>$ {{ number_format(($report_o->amount - $report_o->scale_fees), 2, '.', ',') }}</strong>
-		<br>
-		<span class='text-danger'>- $ {{ number_format($report_o->payment, 2, '.', ',') }}</span>
+		<span class='text-danger'>- $ {{ number_format($report_o->account->totalScaleFee, 2, '.', ',') }}</span>
 		<br>
 		<hr>
-		<strong class='padding-right-5'>$ {{ number_format(($report_o->amount - $report_o->scale_fees - $report_o->payment), 2, '.', ',') }} </strong>
+		<strong class='padding-right-5'>$ {{ number_format(($report_o->account->totalAmount - $report_o->account->totalScaleFee), 2, '.', ',') }}</strong>
+		<br>
+		<span class='text-danger'>- $ {{ number_format($report_o->account->totalPayment, 2, '.', ',') }}</span>
+		<br>
+		<hr>
+		<strong class='padding-right-5'>$ {{ number_format(($report_o->account->totalAmount - $report_o->account->totalScaleFee - $report_o->account->totalPayment), 2, '.', ',') }} </strong>
 	</div>
 
 	<span class='clear'></span>
