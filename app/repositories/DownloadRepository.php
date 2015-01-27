@@ -121,7 +121,7 @@ class DownloadRepository implements DownloadInterface
 								break; 
 							}
 							
-							$report_o = $this->generateProducerStatement($q);
+							$report_o = $this->generateProducerStatementByOrder($q);
 							if($report_o) {
 								$pdf = PDF::loadView('pdf.base',array('child' => View::make('reports.producer-header-pdf', array('report_o' => $report_o))->nest('_nest_content', 'reports.producer-content', array('report_o' => $report_o))));
 								if($mail) {
