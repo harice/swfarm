@@ -1,4 +1,3 @@
-<% console.log(models) %>
 <div class="content padding-top-0">
     <div class="row margin-top-0">
         <div class="col-md-12">             
@@ -110,12 +109,23 @@
                                         <td>$ <%= o.price %></td>
                                         <td><%= o.pounds %></td>
                                         <td><%= o.bales %></td>
+                                        <% total_bales += o.bales %>
                                         <td><%= o.tons %></td>
+                                        <% total_tons += o.tons %>
                                         <td>$ <%= numberFormat(o.amount) %></td>
+                                        <% tot_amount += o.amount %>
                                     </tr>
                                 <% }
                                 }); %>
                             </tbody>
+                            <tfoot class="no-border-y">
+                                <tr>
+                                    <td colspan="5"><strong>Total</strong></td>
+                                    <td><%= total_bales %></td>
+                                    <td><%= total_tons %></td>
+                                    <td>$ <%= numberFormat(tot_amount) %></td>
+                                </tr>
+                            </tfoot>
                         </table>  
                         <div class="progress width-1000 margin-bottom-20 height-1">
                             <div style="width: %" class="progress-bar progress-bar-primary"></div>
