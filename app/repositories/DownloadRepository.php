@@ -2610,7 +2610,7 @@ class DownloadRepository implements DownloadInterface
 
     public function generateProducerStatementByOrder($_params = array()){
     	$_dateBetween = $this->generateBetweenDates($_params);
-    	$accountDetails = Account::find($_params['filterId'])->first()->toArray();
+    	$accountDetails = Account::find($_params['filterId'])->toArray();
     	$loadcount = 0;
     	$totalAmount = 0.0;
     	$totalScaleFee = 0.0;
