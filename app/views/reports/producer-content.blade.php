@@ -14,13 +14,13 @@
 			<thead>
 				<tr>
 					<th class='width-10' {{$border_s}}>Date</th>
-					<th class='width-12' {{$border_s}}>Stack No.</th>
+					<th class='width-20' {{$border_s}}>Location</th>
 					<th class='width-15' {{$border_s}}>Weight Ticket No.</th>
-					<th class='width-8' {{$border_s}}>Price</th>
-					<th class='width-12' {{$border_s}}>Net Pounds</th>
-					<th class='width-12' {{$border_s}}>Net Tons</th>
-					<th class='width-8' {{$border_s}}>Bales</th>
-					<th class='width-12' {{$border_s}}>Amount</th>
+					<th class='width-10' {{$border_s}}>Price</th>
+					<th class='width-10' {{$border_s}}>Net Pounds</th>
+					<th class='width-10' {{$border_s}}>Bales</th>
+					<th class='width-12' {{$border_s}}>Tons</th>					
+					<th class='width-10' {{$border_s}}>Amount</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -35,7 +35,7 @@
 						{? $t_bales += $o->bales ?}
 						<td class='text-right' align='right' {{$border_s}}>{{ $o->bales }}</td>
 						{? $t_tons += $o->tons ?}
-						<td class='text-right' align='right' {{$border_s}}>{{ $o->tons }}</td>
+						<td class='text-right' align='right' {{$border_s}}>{{ number_format($o->tons,4,'.',',') }}</td>
 						{? $t_amount += $o->amount ?}
 						<td class='text-right' align='right' {{$border_s}}>$ {{ number_format($o->amount,2,'.',',') }}</td>
 					</tr>
@@ -44,12 +44,14 @@
 			</tbody>
 			<tfoot>
 				<tr>
-					<td colspan='5' {{$border_s}}><strong>Total</strong></td>
-					<td class='text-right' align='right' {{$border_s}}><strong>{{ number_format($t_tons,4,'.',',') }}</strong></td>
+					<td colspan='5' class='text-right' align='right'><strong>Total</strong></td>
 					<td class='text-right' align='right' {{$border_s}}><strong>{{ $t_bales }}</strong></td>
+					<td class='text-right' align='right' {{$border_s}}><strong>{{ number_format($t_tons,4,'.',',') }}</strong></td>					
 					<td class='text-right' align='right' {{$border_s}}><strong>$ {{ number_format($t_amount,2,'.',',') }}</strong></td>
 				</tr>
 			</tfoot>
 		</table>			
 	@endforeach
+@else
+	<p class="text-danger">No transactions found.</p>	
 @endif

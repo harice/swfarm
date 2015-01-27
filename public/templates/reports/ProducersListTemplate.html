@@ -110,7 +110,7 @@
                                         <td><%= o.pounds %></td>
                                         <td><%= o.bales %></td>
                                         <% total_bales += o.bales %>
-                                        <td><%= o.tons %></td>
+                                        <td><%= numberFormatTons(o.tons) %></td>
                                         <% total_tons += o.tons %>
                                         <td>$ <%= numberFormat(o.amount) %></td>
                                         <% tot_amount += o.amount %>
@@ -122,7 +122,7 @@
                                 <tr>
                                     <td colspan="5"><strong>Total</strong></td>
                                     <td><%= total_bales %></td>
-                                    <td><%= total_tons %></td>
+                                    <td><%= numberFormatTons(total_tons) %></td>
                                     <td>$ <%= numberFormat(tot_amount) %></td>
                                 </tr>
                             </tfoot>

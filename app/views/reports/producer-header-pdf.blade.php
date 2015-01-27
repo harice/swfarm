@@ -7,7 +7,7 @@
 		{{ $report_o->account->businessaddress->street }}
 		<br>
 		{{ $report_o->account->businessaddress->city }},
-		{{ $report_o->account->businessaddress->state->state_code }}
+		{{ $report_o->account->businessaddress->state->state }}
 		{{ $report_o->account->businessaddress->zipcode }}
 	</address>
 </div>

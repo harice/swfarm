@@ -32,4 +32,6 @@
 	@endforeach
 	</tbody>
 </table>
+@else
+	<p class="text-danger">No transactions found.</p>
 @endif

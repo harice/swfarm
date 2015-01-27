@@ -134,7 +134,7 @@ class DownloadRepository implements DownloadInterface
 
 									$pdf->save($_pathtoFile);
 									return $this->processMail($q,$_data);
-								} else return $pdf->stream('SOA-'.$report_o->name.'.pdf');     
+								} else return $pdf->stream('SOA-'.$report_o->account->name.'.pdf');     
 							} else { 
 								if($mail) return false;
 								else $_404 = true;
@@ -478,13 +478,14 @@ class DownloadRepository implements DownloadInterface
 								break; 
 							}
 							
-							$report_o = $this->generateProducerStatement($q);
+							$report_o = $this->generateProducerStatementByOrder($q);
+
 							if($report_o) {
 								if(strcmp($format,'csv') === 0) {
-									$excel_o = Excel::create('SOA - '.$report_o->name, function($excel) use($report_o) {
-												$excel->setDescription('Producer Statement : '.$report_o->name)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
-										        $excel->sheet($report_o->name, function($sheet) use($report_o) {
-										        	$sheet->setColumnFormat(array('E' => '0.00','F' => '0.00','G' => '0.0000','I' => '0.00'));
+									$excel_o = Excel::create('SOA - '.$report_o->account->name, function($excel) use($report_o) {
+												$excel->setDescription('Producer Statement : '.$report_o->account->name)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
+										        $excel->sheet($report_o->account->name, function($sheet) use($report_o) {
+										        	$sheet->setColumnFormat(array('E' => '0.00','F' => '0.00','G' => '0.0000'));
 										        	$sheet->loadView(
 										        		'reports.producer-header-excel',
 										        		array(
@@ -495,9 +496,9 @@ class DownloadRepository implements DownloadInterface
 										        });
 										    });
 								} else {
-									$excel_o = Excel::create('SOA - '.$report_o->name, function($excel) use($report_o) {
-												$excel->setDescription('Producer Statement : '.$report_o->name)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
-										        $excel->sheet($report_o->name, function($sheet) use($report_o) {
+									$excel_o = Excel::create('SOA - '.$report_o->account->name, function($excel) use($report_o) {
+												$excel->setDescription('Producer Statement : '.$report_o->account->name)->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
+										        $excel->sheet($report_o->account->name, function($sheet) use($report_o) {
 									        		$sheet->setShowGridlines(false);
 													$sheet->setAutoSize(true);
 										        	$sheet->mergeCells('A1:A3');
@@ -525,8 +526,8 @@ class DownloadRepository implements DownloadInterface
 										        	$objDrawing->setWorksheet($sheet);
 
 										        	$sheet->getStyle('G11')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
-										        	$sheet->setColumnFormat(array('E' => '0.00','F' => '0.00','G' => '0.0000','I' => '0.00'));
-										        	$sheet->setWidth(array('A' =>  24,'B' =>  15,'C' =>  20,'D' =>  20,'E' =>  10,'F' =>  15,'G' =>  12,'H' =>  10,'I' =>  15));
+										        	$sheet->setColumnFormat(array('E' => '0.00','F' => '0.00','G' => '0.0000'));
+										        	$sheet->setWidth(array('A' =>  15,'B' =>  25,'C' =>  20,'D' =>  15,'E' =>  15,'F' =>  15,'G' =>  12,'H' =>  15));
 
 										        	$sheet->loadView(
 										        		'excel.base',
@@ -546,8 +547,8 @@ class DownloadRepository implements DownloadInterface
 									finfo_close($finfo);
 									
 									$_data['pathtofile'] = $store_a['full'];
-									$_data['display_name'] = 'Producer Statement : '.$report_o->name;
-									$_data['subject'] = 'Producer Statement : '.$report_o->name;
+									$_data['display_name'] = 'Producer Statement : '.$report_o->account->name;
+									$_data['subject'] = 'Producer Statement : '.$report_o->account->name;
 									$_data['recipients'] = array_filter(preg_split( "/[;,]/", $q['recipients'] ));
 
 									return $this->processMail($q,$_data);

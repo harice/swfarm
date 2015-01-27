@@ -47,4 +47,6 @@
 			</tfoot>
 		</table>
 	@endforeach
+@else
+	<p class="text-danger">No transactions found.</p>	
 @endif
