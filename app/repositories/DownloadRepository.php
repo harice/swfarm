@@ -2866,7 +2866,7 @@ class DownloadRepository implements DownloadInterface
     			}
     		}
     	}
-
+    	$result['report_date'] = $_dateBetween;
     	$result['account']['loadcount'] = $loadcount; 
     	$result['account']['totalAmount'] = $totalAmount; 
     	$result['account']['totalScaleFee'] = $totalScaleFee; 
