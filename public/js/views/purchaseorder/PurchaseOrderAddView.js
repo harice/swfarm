@@ -1312,7 +1312,7 @@ define([
 		},
 		
 		onChangeDestination: function (ev) {
-			var value = parseInt($(ev.currentTarget).val());
+			var value = parseInt($(ev.currentTarget).val());			
 
 			if(value == Const.PO.DESTINATION.SWFARMS && $("#save-and-check-in").is(":visible"))
 				$("#save-and-check-in").hide();
@@ -1320,8 +1320,7 @@ define([
 			this.toggleSOFields(value);			
 		},
 		
-		toggleSOFields: function (destinationId) {
-
+		toggleSOFields: function (destinationId) {			
 			var field = '.so-field';
 			var inp = '#account_customer';
 			var hide = '#account_id_customer';
@@ -1346,7 +1345,7 @@ define([
 				this.subContainer.find(field).attr('disabled', true);
 				this.subContainer.find(field).hide();
 				if(this.isInitCustomerAutoCompleteView) {
-					if(!this.model.get('location_id') == Const.PO.DESTINATION.DROPSHIP){
+					if(typeof this.model != 'undefined' && !this.model.get('location_id') == Const.PO.DESTINATION.DROPSHIP){
 						$(inp).val('');
 						$(hide).val('');
 					}
