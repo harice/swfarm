@@ -655,7 +655,7 @@ class OrderRepository implements OrderRepositoryInterface {
     {
         return NatureOfSale::all()->toArray(); //return statuses for orders
     }
-    
+    /* old format P20150101-0001
     private function generateOrderNumber($type = 1){ //type default is PO
         $prefix = 'P';
         if($type == 2)
@@ -666,6 +666,16 @@ class OrderRepository implements OrderRepositoryInterface {
                       ->where('ordertype', '=', $type)->count()+1;
         
         return $prefix.date('Ymd').'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
+    }*/
+    //new format of order number
+    private function generateOrderNumber($type = 1){ //type default is PO
+        $prefix = 'P1';
+        if($type == 2)
+            $prefix = 'S1';
+
+        $count = Order::where('ordertype', '=', $type)->count()+1;
+        
+        return $prefix.str_pad($count, 6, '0', STR_PAD_LEFT);
     }
 
     private function addProductToOrder($order_id, $products = array(), $isUpdate = false)

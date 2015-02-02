@@ -77,6 +77,7 @@ class AccountRepository implements AccountRepositoryInterface {
       $account->website = isset($data['website']) ? $data['website'] : '';
       $account->description = isset($data['description']) ? $data['description'] : '';
       $account->phone = isset($data['phone']) ? $data['phone'] : '';
+      $account->accountnumber = isset($data['accountnumber']) ? $data['accountnumber'] : null;  
       $account->save();
 
       if(!is_array($data['accounttype'])) $data['accounttype'] = explode(',',$data['accounttype']);
@@ -142,6 +143,7 @@ class AccountRepository implements AccountRepositoryInterface {
       $account->website = isset($data['website']) ? $data['website'] : '';
       $account->description = isset($data['description']) ? $data['description'] : '';
       $account->phone = isset($data['phone']) ? $data['phone'] : '';
+      $account->accountnumber = isset($data['accountnumber']) ? $data['accountnumber'] : null;  
       $account->save();
 
       if(!is_array($data['accounttype'])) $data['accounttype'] = explode(',',$data['accounttype']);

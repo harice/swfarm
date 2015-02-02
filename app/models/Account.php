@@ -1,7 +1,7 @@
 <?php
 
 class Account extends Eloquent {
-    protected $fillable = array('name', 'website', 'description', 'phone', 'accounttype');
+    protected $fillable = array('name', 'accountnumber', 'website', 'description', 'phone', 'accounttype');
 
     protected $softDelete = true;
     /**
