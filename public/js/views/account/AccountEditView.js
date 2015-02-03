@@ -74,6 +74,7 @@ define([
 		
 		supplyAccountData: function () {
 			var thisObj = this;
+			$('#accountnumber').val(this.model.get('accountnumber'));
 			$('#name').val(this.model.get('name'));
 			
 			var acctype = [];
