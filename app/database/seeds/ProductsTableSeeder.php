@@ -10,19 +10,46 @@ class ProductsTableSeeder extends Seeder {
 		$products = array(
 			array(
                 'name' => 'Alfalfa',
-                'description' => "Alfalfa is a genus of nine species of grasses, native to warm temperate to tropical regions of the Old World. The genus as a whole as well as its species are commonly known as Bermuda Grass.",
                 'created_at' => $date,
                 'updated_at' => $date
             ),
             array(
                 'name' => 'Bermuda',
-                'description' => "Bermuda is a genus of nine species of grasses, native to warm temperate to tropical regions of the Old World. The genus as a whole as well as its species are commonly known as Bermuda Grass.",
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
+            array(
+                'name' => 'Bermuda Straw',
                 'created_at' => $date,
                 'updated_at' => $date
             ),
             array(
                 'name' => 'Cow Hay',
-                'description' => "Cow Hay is a genus of nine species of grasses, native to warm temperate to tropical regions of the Old World. The genus as a whole as well as its species are commonly known as Bermuda Grass.",
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
+            array(
+                'name' => 'Haul',
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
+            array(
+                'name' => 'Oat',
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
+            array(
+                'name' => 'Sudan Hay',
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
+            array(
+                'name' => 'Timothy',
+                'created_at' => $date,
+                'updated_at' => $date
+            ),
+            array(
+                'name' => 'Wheat Straw',
                 'created_at' => $date,
                 'updated_at' => $date
             )
