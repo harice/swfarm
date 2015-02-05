@@ -105,10 +105,25 @@ class ContactRepository implements ContactRepositoryInterface {
             );
         }
 
-        return Response::json(array(
+        if(isset($data['object_id'])){
+            $isMobile = true;
+        } else {
+            $isMobile = false;
+        }
+
+        if($isMobile){
+            return Response::json(array(
+                'error' => false,
+                'message' => Lang::get('messages.success.created', array('entity' => 'Contact')),
+                'data' => array('id' => $contact->id, 'object_id' => $data['object_id'])), 200
+            );
+        } else {
+            return Response::json(array(
                 'error' => false,
                 'message' => Lang::get('messages.success.created', array('entity' => 'Contact'))), 200
-        );
+            );
+        }
+        
     }
 
     public function update($id, $data)
@@ -158,10 +173,25 @@ class ContactRepository implements ContactRepositoryInterface {
             );
         }
 
-        return Response::json(array(
+        if(isset($data['object_id'])){
+            $isMobile = true;
+        } else {
+            $isMobile = false;
+        }
+
+        if($isMobile){
+            return Response::json(array(
+                'error' => false,
+                'message' => Lang::get('messages.success.updated', array('entity' => 'Contact')),
+                'data' => array('id' => $contact->id, 'object_id' => $data['object_id'])), 200
+            );
+        } else {
+            return Response::json(array(
                 'error' => false,
                 'message' => Lang::get('messages.success.updated', array('entity' => 'Contact'))), 200
-        );
+            );
+        }
+        
     }
 
     public function search($_search)

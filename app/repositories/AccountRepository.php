@@ -58,7 +58,6 @@ class AccountRepository implements AccountRepositoryInterface {
 
   public function store($data, $isMobile = false)
   {
-
     $this->validateExtras();
 
     $rules = array(
@@ -70,8 +69,14 @@ class AccountRepository implements AccountRepositoryInterface {
 
     $this->validate($data, $rules);
 
-    $accountId = DB::transaction(function() use ($data){
+    if(isset($data['object_id'])){
+      $isMobile = true;
+    } else {
+      $isMobile = false;
+    }
 
+    $result = DB::transaction(function() use ($data, $isMobile){
+      $mobileJsonReturn = array();
       $account = new Account;
       $account->name = $data['name'];
       $account->website = isset($data['website']) ? $data['website'] : '';
@@ -94,6 +99,7 @@ class AccountRepository implements AccountRepositoryInterface {
         'latitude' => 'required'
       );
 
+      $temp = array();
       foreach($data['address'] as $addressData){
         $this->validate($addressData, $addressRules);
 
@@ -109,14 +115,23 @@ class AccountRepository implements AccountRepositoryInterface {
         $address->latitude = $addressData['latitude'];
 
         $address->save();
+
+        if($isMobile){
+          array_push($temp, array('id' => $address->id, 'object_id' => $addressData['object_id']));
+        }
       }
 
-      return $account->id;
+      if($isMobile){
+        $mobileJsonReturn = array('id' => $account->id, 'object_id' => $data['object_id'], 'address' => $temp);
+      }
+        
 
+      // return $account->id;
+      return array('account_id' => $account->id, 'mobileJson' => $mobileJsonReturn);
     });
     
     if($isMobile){
-        return array('accountid' => $accountId, 'tpid' => $data['tpid']);
+        return Response::json(array( 'error' => false, 'message' => Lang::get('messages.success.created', array('entity' => 'Account')), 'data' => $result['mobileJson']), 200);  
     } else {
         return Response::json(array( 'error' => false, 'message' => Lang::get('messages.success.created', array('entity' => 'Account'))), 200);  
     }
@@ -136,8 +151,14 @@ class AccountRepository implements AccountRepositoryInterface {
 
     $this->validate($data, $rules);
 
-    DB::transaction(function() use ($id, $data){
+    if(isset($data['object_id'])){
+      $isMobile = true;
+    } else {
+      $isMobile = false;
+    }
 
+    $result = DB::transaction(function() use ($id, $data, $isMobile){
+      $mobileJsonReturn = array();
       $account = Account::find($id);
       $account->name = $data['name'];
       $account->website = isset($data['website']) ? $data['website'] : '';
@@ -169,6 +190,7 @@ class AccountRepository implements AccountRepositoryInterface {
 
       $this->deleteAddresses($account->id, $existingAddressId); //delete addresses that is not pass excluding the new addresses
 
+      $temp = array();
       foreach($data['address'] as $addressData) {
         $this->validate($addressData, $addressRules);
 
@@ -186,15 +208,26 @@ class AccountRepository implements AccountRepositoryInterface {
         $address->latitude = $addressData['latitude'];
 
         $address->save();
+
+        if($isMobile){
+          array_push($temp, array('id' => $address->id, 'object_id' => $addressData['object_id']));
+        }
       }
 
+      if($isMobile){
+        $mobileJsonReturn = array('id' => $account->id, 'object_id' => $data['object_id'], 'address' => $temp);
+      }
+
+      return array('account_id' => $account->id, 'mobileJson' => $mobileJsonReturn);
     });
     
     if($isMobile){
-        return array('accountid' => $id, 'tpid' => $data['tpid'], 'data' => Account::with('address')->find($id)->toArray());  //return data back
+        return Response::json(array( 'error' => false, 'message' => Lang::get('messages.success.updated', array('entity' => 'Account')), 'data' => $result['mobileJson']), 200);  
     } else {
         return Response::json( array( 'error' => false, 'message' => Lang::get('messages.success.updated', array('entity' => 'Account'))), 200 );  
     }
+
+
     
   }
 

@@ -295,7 +295,13 @@ class OrderRepository implements OrderRepositoryInterface {
             $order->fill($data);
             $order->save();
 
-            $productResult = $this->addProductToOrder($order->id, $data['products']);
+            if(isset($data['object_id'])){
+                $isMobile = true;
+            } else {
+                $isMobile = false;
+            }
+
+            $productResult = $this->addProductToOrder($order->id, $data['products'], $isMobile);
             if(isset($productResult['stacknumberError'])){ //duplicate stack number with different product
                 $result = array(
                     "error" => true,
@@ -351,22 +357,33 @@ class OrderRepository implements OrderRepositoryInterface {
             return $result['data'];
         }
 
-        if($data['ordertype'] == 1){
-            DB::commit();
+        if($isMobile){ //request came from mobile app
             return array(
                 "error" => false,
-                'message' => Lang::get('messages.success.created', array('entity' => 'Purchase Order'))
+                "message" => Lang::get('messages.success.created', array('entity' => 'Order')),
+                "data" => array(
+                            'id' => $order->id, 
+                            'object_id' => $data['object_id'], 
+                            'products' => $productResult['mobileJson']
+                            )
             );
+        } else {
+           if($data['ordertype'] == 1){
+                DB::commit();
+                return array(
+                    "error" => false,
+                    "message" => Lang::get('messages.success.created', array('entity' => 'Purchase Order')
+                    )
+                );
+            }
+            else {
+                DB::commit();
+                return array(
+                    "error" => false,
+                    'message' => Lang::get('messages.success.created', array('entity' => 'Sales Order'))
+                );
+            } 
         }
-        else {
-            DB::commit();
-            return array(
-                "error" => false,
-                'message' => Lang::get('messages.success.created', array('entity' => 'Sales Order'))
-            );
-        }
-                
-        // }
        
     }
     
@@ -413,9 +430,15 @@ class OrderRepository implements OrderRepositoryInterface {
             $order->fill($data);
             $order->save();
 
+            if(isset($data['object_id'])){
+                $isMobile = true;
+            } else {
+                $isMobile = false;
+            }
+
             if(isset($data['products'])){
                 $this->deleteProductOrderSummary($id, $data['products']); //delete product order that is remove by client
-                $productResult = $this->addProductToOrder($order->id, $data['products'], true);
+                $productResult = $this->addProductToOrder($order->id, $data['products'], $isMobile, true);
             } else {
                 $this->deleteProductOrderSummary($id, null);
             }
@@ -505,20 +528,31 @@ class OrderRepository implements OrderRepositoryInterface {
             return $result['data'];
         }
 
-        if($data['ordertype'] == 1){
-            DB::commit();
+        if($isMobile){ //request came from mobile app
             return array(
                 "error" => false,
-                'message' => Lang::get('messages.success.updated', array('entity' => 'Purchase Order'))
+                "message" => Lang::get('messages.success.updated', array('entity' => 'Order')),
+                "data" => array(
+                            'id' => $order->id, 
+                            'object_id' => $data['object_id'], 
+                            'products' => $productResult['mobileJson']
+                            )
             );
         } else {
-            DB::commit();
-            return array(
-                "error" => false,
-                'message' => Lang::get('messages.success.updated', array('entity' => 'Sales Order'))
-            );
-        }
-            
+            if($data['ordertype'] == 1){
+                DB::commit();
+                return array(
+                    "error" => false,
+                    'message' => Lang::get('messages.success.updated', array('entity' => 'Purchase Order'))
+                );
+            } else {
+                DB::commit();
+                return array(
+                    "error" => false,
+                    'message' => Lang::get('messages.success.updated', array('entity' => 'Sales Order'))
+                );
+            }
+        }     
         // }
     }
 
@@ -678,13 +712,16 @@ class OrderRepository implements OrderRepositoryInterface {
         return $prefix.str_pad($count, 6, '0', STR_PAD_LEFT);
     }
 
-    private function addProductToOrder($order_id, $products = array(), $isUpdate = false)
+    private function addProductToOrder($order_id, $products = array(), $isMobile = false, $isUpdate = false)
     {   
         if($this->checkIfHasRepeatingProductType($products)){
             return array("productTypeRepeatedError" => true);
         }
-        $result = array('hasHoldProduct' => false);
+        $result = array('hasHoldProduct' => false, 'mobileJson' => null);
         $stacknumbersUsed = array();
+        
+        $mobileJson = array();
+        
         foreach ($products as $product){
             if(isset($product['id'])){
                 $productordersummary = ProductOrderSummary::find($product['id']);
@@ -705,7 +742,10 @@ class OrderRepository implements OrderRepositoryInterface {
                 }
             }
 
-            $stacks = $this->addStacksToOrder($order_id, $product['stacks'], $productordersummary->id);
+            $stacks = $this->addStacksToOrder($order_id, $product['stacks'], $productordersummary->id, $isMobile);
+
+            if($isMobile)
+                array_push($mobileJson, array('id' => $productordersummary->id, 'object_id' => $product['object_id'], 'stacks' => $stacks['mobileJson']));
 
             if(isset($stacks['stacknumberError'])){
                 if($stacks['stacknumberError']){
@@ -727,13 +767,18 @@ class OrderRepository implements OrderRepositoryInterface {
             }
             
         }
+
+        if($isMobile)
+            $result['mobileJson'] = $mobileJson;
+
         return $result;
     }
     
-    private function addStacksToOrder($order_id, $products = array(), $productordersummary_id){
-        $result = array('hasHoldProduct' => false);
+    private function addStacksToOrder($order_id, $products = array(), $productordersummary_id, $isMobile = false){
+        $result = array('hasHoldProduct' => false, 'mobileJson' => null);
         
         $stacknumbersUsed = array();
+        $stackTempVar = array();
         foreach ($products as $product) 
         {
             // tocheck
@@ -769,6 +814,9 @@ class OrderRepository implements OrderRepositoryInterface {
             $productorder->fill($product);
             $productorder->save();
 
+            if($isMobile)
+                array_push($stackTempVar, array('id' => $productorder->id, 'object_id' => $product['object_id']));
+
             if($product['stacknumber'] != ''){ //insert in stack table
                 //get the account id who owns the stacknumber
                 $account = Order::find($order_id)->first(array('id'));
@@ -780,6 +828,10 @@ class OrderRepository implements OrderRepositoryInterface {
             }
 
         }
+
+        if($isMobile)
+            $result['mobileJson'] = $stackTempVar;
+
         return $result;
     }
 
