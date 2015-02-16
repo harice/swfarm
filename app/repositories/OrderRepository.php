@@ -364,6 +364,7 @@ class OrderRepository implements OrderRepositoryInterface {
                 "message" => Lang::get('messages.success.created', array('entity' => 'Order')),
                 "data" => array(
                             'id' => $order->id, 
+                            'ordernumber' => $order->order_number,
                             'object_id' => $data['object_id'], 
                             'products' => $productResult['mobileJson']
                             )
