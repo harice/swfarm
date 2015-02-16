@@ -531,6 +531,7 @@ class OrderRepository implements OrderRepositoryInterface {
         }
 
         if($isMobile){ //request came from mobile app
+            DB::commit();
             return array(
                 "error" => false,
                 "message" => Lang::get('messages.success.updated', array('entity' => 'Order')),
