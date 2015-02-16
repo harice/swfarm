@@ -16,8 +16,8 @@
 Route::group(array('prefix' => 'apiv1'), function()
 {
     Route::get('verifyAccount', 'APIv1\UsersController@verifyAccount');
-    Route::get('file/filesCleanUp', 'APIv1\FileController@filesCleanUp');
-    Route::get('file/{data}', 'APIv1\FileController@show');
+    // Route::get('file/filesCleanUp', 'APIv1\FileController@filesCleanUp');
+    // Route::get('file/{data}', 'APIv1\FileController@show');
 
 });
 
@@ -33,27 +33,32 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokeniz
     Route::resource('queue','APIv1\ProcessorController', array('only' => array('store')));
 
     // Mail
-    Route::put('weightticket/mailLoadingTicket/{id}', 'APIv1\WeightTicketController@mailLoadingTicket');
-    Route::put('weightticket/mailWeightTicket/{id}', 'APIv1\WeightTicketController@mailWeightTicket');
-    Route::put('weightticket/{id}/mail', 'APIv1\WeightTicketController@mailWeightTicket');
+    // Route::put('weightticket/mailLoadingTicket/{id}', 'APIv1\WeightTicketController@mailLoadingTicket');
+    // Route::put('weightticket/mailWeightTicket/{id}', 'APIv1\WeightTicketController@mailWeightTicket');
+    // Route::put('weightticket/{id}/mail', 'APIv1\WeightTicketController@mailWeightTicket');
 
     // User
 	Route::get('users/search', 'APIv1\UsersController@search');
 	Route::get('users/auth', 'APIv1\UsersController@auth');
 	Route::put('users/updateprofile/{id}', 'APIv1\UsersController@updateProfile');
-	Route::resource('users', 'APIv1\UsersController');
+	Route::resource('users', 'APIv1\UsersController', array('except' => array('edit','create')));
 
+    // User Roles
 	Route::get('roles/all', 'APIv1\RolesController@all');
-	Route::resource('roles', 'APIv1\RolesController');
+	Route::resource('roles', 'APIv1\RolesController', array('except' => array('edit','create')));
 
+    // User Role Permission Categorized
 	Route::get('permission/getAllPermissionCategoryType', 'APIv1\PermissionController@getAllPermissionCategoryType');
-	Route::resource('permission', 'APIv1\PermissionController');
+	Route::resource('permission', 'APIv1\PermissionController', array('except' => array('edit','create')));
 
-  	Route::resource('audit', 'APIv1\AuditController');
+    // ERP Audit Trail
+  	Route::resource('audit', 'APIv1\AuditController', array('only' => array('index')));
 
+    // ERP Product Calls
     Route::get('product/search', 'APIv1\ProductController@search');
-    Route::resource('product', 'APIv1\ProductController');
+    Route::resource('product', 'APIv1\ProductController', array('except' => array('edit','create')));
 
+    // Account Management Calls and Form Requirements
     // Route::get('account/{id}/contracts', 'APIv1\AccountController@getContracts');
     Route::get('account/getContracts/{id}', 'APIv1\AccountController@getContracts');
 	Route::get('account/getProducerAndWarehouseAccount', 'APIv1\AccountController@getProducerAndWarehouseAccount');
@@ -74,11 +79,12 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokeniz
     Route::get('account/truckerAccountTypes', 'APIv1\AccountController@getTruckerAccountTypes');
     Route::get('account/accountsByType', 'APIv1\AccountController@getAccountsByType');
     Route::get('account/contact', 'APIv1\AccountController@getAllContactOnAccount');
-	Route::resource('account', 'APIv1\AccountController');
+	Route::resource('account', 'APIv1\AccountController', array('except' => array('edit','create')));
 
+    // Contact Management Calls and Form Requirements
     Route::get('contact/hasRate/{id}', 'APIv1\ContactController@hasRate');
 	Route::get('contact/search', 'APIv1\ContactController@search');
-	Route::resource('contact', 'APIv1\ContactController');
+	Route::resource('contact', 'APIv1\ContactController', array('except' => array('edit','create')));
 
 	// Route::get('po', 'APIv1\BidController@getPurchaseOrder');
 	// Route::put('po/addUnitPriceToBidProduct/{bidId}', 'APIv1\BidController@addUnitPriceToBidProduct');
@@ -87,6 +93,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokeniz
 	// Route::put('po/closePurchaseOrder/{id}', 'APIv1\BidController@closePurchaseOrder');
 	// Route::get('po/search', 'APIv1\BidController@searchPurchaseOrder');
 
+    // Weight Ticket Management and Form Requirements
     // Route::get('weightticket/getWeightTicketOfSchedule', 'APIv1\WeightTicketController@getWeightTicketOfSchedule');
     // Route::get('weightticket/getAllBidProductOnBid', 'APIv1\WeightTicketController@getAllBidProductOnBid');
     // Route::get('weightticket/getAllScaleProviderAccount', 'APIv1\WeightTicketController@getAllScaleProviderAccount');
@@ -94,7 +101,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokeniz
     Route::get('weightticket/getAllWeightticketOfOrder', 'APIv1\WeightTicketController@getAllWeightticketOfOrder');
     Route::put('weightticket/closeWeightTicket/{id}', 'APIv1\WeightTicketController@closeWeightTicket');
     Route::get('weightticket/getScheduleProducts', 'APIv1\WeightTicketController@getScheduleProducts');
-    Route::resource('weightticket', 'APIv1\WeightTicketController');
+    Route::resource('weightticket', 'APIv1\WeightTicketController', array('except' => array('edit','create')));
 
     //tranport schedule
     Route::put('transportschedule/closeSchedule/{id}', 'APIv1\TransportScheduleController@closeSchedule');
@@ -123,7 +130,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokeniz
     Route::post('purchaseorder', 'APIv1\OrderController@addPurchaseOrder');
     Route::put('purchaseorder/{id}', 'APIv1\OrderController@updatePurchaseOrder');
     Route::get('purchaseorder/{id}', 'APIv1\OrderController@getPurchaseOrder');
-    Route::delete('purchaseorder/{id}', 'APIv1\OrderController@destroy');
+    // Route::delete('purchaseorder/{id}', 'APIv1\OrderController@destroy');
     // Route::resource('purchaseorder', 'APIv1\OrderController');
 
     //Sales Order
@@ -140,52 +147,50 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokeniz
 
     Route::post('salesorder', 'APIv1\OrderController@addSalesOrder');
     Route::put('salesorder/{id}', 'APIv1\OrderController@updateSalesOrder');
-    Route::delete('salesorder/{id}', 'APIv1\OrderController@destroy');
+    // Route::delete('salesorder/{id}', 'APIv1\OrderController@destroy');
 
     // Farm Location
-    Route::resource('farmlocation', 'APIv1\FarmLocationController');
+    Route::resource('farmlocation', 'APIv1\FarmLocationController', array('except' => array('edit','create')));
 
     // Stack
     Route::get('stack/search', 'APIv1\StackController@search');
-    Route::resource('stack', 'APIv1\StackController');
+    Route::resource('stack', 'APIv1\StackController', array('except' => array('edit','create')));
 
     // Scale
     Route::get('scale/search', 'APIv1\ScaleController@search');
-    Route::resource('scale', 'APIv1\ScaleController');
+    Route::resource('scale', 'APIv1\ScaleController', array('except' => array('edit','create')));
 
     // Trailer
     Route::get('trailer/search', 'APIv1\TrailerController@search');
-    Route::resource('trailer', 'APIv1\TrailerController');
+    Route::resource('trailer', 'APIv1\TrailerController', array('except' => array('edit','create')));
 
     // Truck
     Route::get('truck/listByAccount', 'APIv1\TruckController@getTruckerListByAccount');
     Route::get('truck/search', 'APIv1\TruckController@search');
-    Route::resource('truck', 'APIv1\TruckController');
+    Route::resource('truck', 'APIv1\TruckController', array('except' => array('edit','create')));
 
     // Fee
-    Route::resource('fee', 'APIv1\FeeController');
+    Route::resource('fee', 'APIv1\FeeController', array('except' => array('edit','create')));
 
     // settings
     Route::get('settings/getTransportSettings', 'APIv1\SettingsController@getTransportSettings');
     Route::post('settings/bulkUpdateSettings', 'APIv1\SettingsController@bulkUpdateSettings');
     Route::put('settings', 'APIv1\SettingsController@updateSettings');
-    Route::resource('settings', 'APIv1\SettingsController');
+    Route::resource('settings', 'APIv1\SettingsController', array('except' => array('edit','create')));
 
     // File
-    Route::resource('document', 'APIv1\DocumentController');
+    Route::resource('document', 'APIv1\DocumentController', array('except' => array('edit','create','update','destroy','index')));
 
     // Contract
     Route::put('contract/close/{id}', 'APIv1\ContractController@closeContract');
     Route::put('contract/open/{id}', 'APIv1\ContractController@openContract');
-
     Route::get('contract/getProducts/{id}', 'APIv1\ContractController@products');
     Route::get('contract/getSalesOrderByProduct/{id}', 'APIv1\ContractController@salesorder');
-
     Route::get('contract/{id}/weighttickets', 'APIv1\ContractController@weighttickets');
     Route::get('contract/{id}/products', 'APIv1\ContractController@products');
     Route::get('contract/{id}/salesorders', 'APIv1\ContractController@salesorder');
     Route::get('contract/search', 'APIv1\ContractController@search');
-    Route::resource('contract', 'APIv1\ContractController');
+    Route::resource('contract', 'APIv1\ContractController', array('except' => array('edit','create')));
 
     // Storage location
     Route::get('storagelocation/warehouse', 'APIv1\StorageLocationController@getStorageLocationOfWarehouse');
@@ -193,37 +198,36 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokeniz
     Route::get('storagelocation/locations', 'APIv1\StorageLocationController@getAllStorageLocation');
     Route::get('storagelocation/locationlist', 'APIv1\StorageLocationController@getAllStorageLocationWithSection');
     Route::get('storagelocation/search', 'APIv1\StorageLocationController@search');
-    Route::resource('storagelocation', 'APIv1\StorageLocationController');
+    Route::resource('storagelocation', 'APIv1\StorageLocationController', array('except' => array('edit','create')));
 
     // Inventory
     Route::get('inventory/getUsingAccount', 'APIv1\OrderController@getSalesOrderUsingAccountId');
     Route::get('inventory/getProductsOfOrder', 'APIv1\InventoryController@getProductsOfOrder');
-
     Route::get('inventory/summaryByStack', 'APIv1\InventoryController@getInventorySummaryByStack');
     Route::get('inventory/stackListByProduct', 'APIv1\InventoryController@getStackListByProduct');
     Route::get('inventory/stacklist', 'APIv1\InventoryController@stackList');
     Route::get('inventory/transactiontype', 'APIv1\InventoryController@transactionType');
     Route::post('inventory/purchaseorder', 'APIv1\InventoryController@store');
-    Route::resource('inventory', 'APIv1\InventoryController');
+    Route::resource('inventory', 'APIv1\InventoryController', array('except' => array('edit','create')));
 
     //Commission
     Route::get('commission/getClosedWeightTicketByUserIncludingWithCommission', 'APIv1\CommissionController@getAllClosedWeightTicketByUserIncludingWithCommission');
     Route::get('commission/getClosedWeightTicketByUser', 'APIv1\CommissionController@getAllClosedWeightTicketByUser');
     Route::get('commission/getClosedWeightTicketById', 'APIv1\CommissionController@getClosedWeightTicketById');
     Route::get('commission/users', 'APIv1\UsersController@userList');
-    Route::resource('commission', 'APIv1\CommissionController');
+    Route::resource('commission', 'APIv1\CommissionController', array('except' => array('edit','create')));
 
     // Reports
-    Route::get('report/commission/{id}', 'APIv1\ReportController@generateCommissionReport');
-    Route::get('report/gross-profit', 'APIv1\ReportController@generateGrossProfit');
-    Route::get('report/trucking-statement/{id}', 'APIv1\ReportController@generateTruckingStatement');
-    Route::get('report/operator-pay/{id}', 'APIv1\ReportController@generateOperatorPay');
-    Route::get('report/driver-pay/{id}', 'APIv1\ReportController@generateDriverPay');
-    Route::get('report/sales/{id}', 'APIv1\ReportController@generateSales');
-    Route::get('report/producer-statement/{id}', 'APIv1\ReportController@generateProducerStatement');
-    Route::get('report/inventoryPerLocation', 'APIv1\ReportController@inventoryReportPerLocation');
+    // Route::get('report/commission/{id}', 'APIv1\ReportController@generateCommissionReport');
+    // Route::get('report/gross-profit', 'APIv1\ReportController@generateGrossProfit');
+    // Route::get('report/trucking-statement/{id}', 'APIv1\ReportController@generateTruckingStatement');
+    // Route::get('report/operator-pay/{id}', 'APIv1\ReportController@generateOperatorPay');
+    // Route::get('report/driver-pay/{id}', 'APIv1\ReportController@generateDriverPay');
+    // Route::get('report/sales/{id}', 'APIv1\ReportController@generateSales');
+    // Route::get('report/producer-statement/{id}', 'APIv1\ReportController@generateProducerStatement');
+    // Route::get('report/inventoryPerLocation', 'APIv1\ReportController@inventoryReportPerLocation');
 
-    Route::resource('reports/getStackListByProduct', 'APIv1\ReportsController@getStackListByProduct');
+    Route::get('reports/getStackListByProduct', 'APIv1\ReportsController@getStackListByProduct');
     Route::resource('reports', 'APIv1\ReportsController',array('only' => array('show')));
 
     //Dashboard
@@ -237,7 +241,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokeniz
     Route::get('payment/purchaseOrderList', 'APIv1\PaymentController@getAllPurchaseOrderList');
     Route::get('payment/paymentListOfOrder', 'APIv1\PaymentController@paymentListOfOrder');
     Route::put('payment/cancel/{id}', 'APIv1\PaymentController@cancel');
-    Route::resource('payment', 'APIv1\PaymentController');
+    Route::resource('payment', 'APIv1\PaymentController', array('except' => array('edit','create')));
 
 });
 
