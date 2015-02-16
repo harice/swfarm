@@ -59,7 +59,7 @@ App::error(function(PermissionException $e, $code)
 
 App::error(function(ValidationException $e, $code)
 {
-	return Response::json($e->getMessages(), $code);
+	return Response::json($e->getMessages(), $e->getCode());
 });
 
 App::error(function(NotFoundException $e)
