@@ -33,7 +33,8 @@ class ProcessorController extends BaseController
 
 	public function missingMethod($parameters = array())
 	{
-	    return Redirect::to('404')->withParameters($parameters);
+	    if(Request::ajax()) return App::abort(501,'Not implemented');
+		else return Redirect::to('404')->withParameters($parameters);
 	}
 
 
