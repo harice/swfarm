@@ -90,7 +90,7 @@ define([
 				var innerTemplate = _.template(inventoryFormTemplate, variables);
 				$('.additional-filter').html(innerTemplate);
 
-				$('#stacknumbers').multiselect({
+				$('#stacknumber').multiselect({
 					buttonClass: 'btn btn-default btn-sm',
 					includeSelectAllOption: true,
 					includeSelectAllIfMoreThan:5,
@@ -99,7 +99,7 @@ define([
 		        	disableIfEmpty: true,
 		        	maxHeight: 250,
 		        	nonSelectedText: 'Select Stack Number(s)',
-		        	nSelectedText: 'stacknumbers selected',
+		        	nSelectedText: 'Stacknumbers selected',
 		        	selectedClass: null,
 		        	selectAllValue: '',
 		        	checkboxName: 'stacknumbers',

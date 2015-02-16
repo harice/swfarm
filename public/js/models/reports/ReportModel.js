@@ -43,10 +43,11 @@ define([
         },
 
         fetchInventory: function(stackNumbers, startDate, endDate) {
+        	console.log(stackNumbers.length);
         	var startIndex = 0;
 
-        	if(stackNumbers.length > 1)
-        		startIndex = 1;
+        	// if(stackNumbers.length > 1)
+        	// 	startIndex = 1;
 
         	var stackids = '';
         	this.setDefaultURL();
@@ -54,7 +55,6 @@ define([
 
         	for(var i = startIndex; i < stackNumbers.length; i++){
         		stackids += 'stackIds[]=' + stackNumbers[i];
-
         		if(i < stackNumbers.length-1)
         			stackids += '&';
         	};
