@@ -747,9 +747,6 @@ class OrderRepository implements OrderRepositoryInterface {
 
             $stacks = $this->addStacksToOrder($order_id, $product['stacks'], $productordersummary->id, $isMobile);
 
-            if($isMobile)
-                array_push($mobileJson, array('id' => $productordersummary->id, 'object_id' => $product['object_id'], 'stacks' => $stacks['mobileJson']));
-
             if(isset($stacks['stacknumberError'])){
                 if($stacks['stacknumberError']){
                     $result['stacknumberError'] = true;
@@ -759,6 +756,10 @@ class OrderRepository implements OrderRepositoryInterface {
                 if($stacks['stacknumberRepeatedError']){
                     $result['stacknumberRepeatedError'] = true;
                     $result['stacknumber'] = $stacks['stacknumber'];
+                }
+            } else {
+                if($isMobile && isset($stacks['mobileJson'])){
+                    array_push($mobileJson, array('id' => $productordersummary->id, 'object_id' => $product['object_id'], 'stacks' => $stacks['mobileJson']));
                 }
             }
             
