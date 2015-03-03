@@ -290,7 +290,7 @@ define([
 					var totalprice = unitprice * tons;
 					var variablesSub = {
 						stacknumber: productSub.stacknumber,
-						location_from: productSub.sectionfrom.storagelocation.name+' - '+productSub.sectionfrom.name,
+						location_from: (productSub.sectionfrom) ? productSub.sectionfrom.storagelocation.name+' - '+productSub.sectionfrom.name : '',
 						description: productSub.description,
 						unitprice: Backbone.View.prototype.helpers.numberFormat(unitprice),
 						tons: Backbone.View.prototype.helpers.numberFormatTons(tons),
