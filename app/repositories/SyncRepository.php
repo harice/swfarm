@@ -95,6 +95,18 @@ class SyncRepository implements SyncInterface {
 			case 'orderreason':
 				$result = OrderCancellingReason::all();
 				break;
+
+			case 'truck':
+				$result = Truck::all();
+				break;
+
+			case 'transportschedule':
+				$result = TransportSchedule::all();
+				break;
+
+			case 'transportscheduleproduct':
+				$result = TransportScheduleProduct::all();
+				break;
 		}
 
 		return Response::json($result);
