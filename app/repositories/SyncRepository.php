@@ -129,7 +129,7 @@ class SyncRepository implements SyncInterface {
 				break;
 
 			case 'inventorytransactiontype':
-				$result = InvetoryTransactionType::all();
+				$result = InventoryTransactionType::all();
 				break;
 
 			case 'inventory':
