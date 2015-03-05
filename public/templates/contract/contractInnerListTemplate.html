@@ -7,7 +7,7 @@
 			<span class="throbber_wrap" style="display: none;"><i class="fa fa-spinner fa-spin throbber_ajax"></i></span>
 		</td>
 		<td>
-			<% if(typeof contract.get("account") != "undefined") { %>
+			<% if(typeof contract.get("account") != null) { %>
 				<a href="<%= account_url %>/<%= contract.get("account").id %>" class="stop-propagation"><%= contract.get("account_name") %></a>
 			<% } %>
 		</td>
