@@ -6,7 +6,11 @@
 			<a class="stop-propagation" href="<%= contract_url %>/<%= contract.get('id') %>"><%= contract.get("contract_number") %></a>
 			<span class="throbber_wrap" style="display: none;"><i class="fa fa-spinner fa-spin throbber_ajax"></i></span>
 		</td>
-		<td><a href="<%= account_url %>/<%= contract.get("account").id %>" class="stop-propagation"><%= contract.get("account_name") %></a></td>
+		<td>
+			<% if(typeof contract.get("account") != "undefined") { %>
+			<a href="<%= account_url %>/<%= contract.get("account").id %>" class="stop-propagation"><%= contract.get("account_name") %></a>
+			<% } %>
+		</td>
 		<td><%= contract.get("contract_date_start") %></td>
 		<td><%= contract.get("contract_date_end") %></td>
         <td><%= numberFormatTons(contract.get("total_expected")) %></td>
