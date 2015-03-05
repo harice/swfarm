@@ -132,4 +132,19 @@ class Order extends BaseModel {
     {
         return array('created_at', 'updated_at');
     }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function($order)
+        {  
+            NotificationLibrary::pushNotification(Config::get('constants.PO_CREATED_NOTIFICATIONTYPE'), $order->id);
+        });
+
+        static::updated(function($order)
+        {  
+            NotificationLibrary::pushNotification(Config::get('constants.PO_UPDATED_NOTIFICATIONTYPE'), $order->id);
+        });
+    }
 }
