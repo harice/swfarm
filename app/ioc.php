@@ -38,3 +38,4 @@ App::bind('DownloadInterface', 'DownloadRepository');
 App::bind('SyncInterface', 'SyncRepository');
 App::bind('DashboardRepositoryInterface', 'DashboardRepository');
 App::bind('PaymentRepositoryInterface', 'PaymentRepository');
+App::bind('NotificationRepositoryInterface', 'NotificationRepository');

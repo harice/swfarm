@@ -30,6 +30,8 @@ class DatabaseSeeder extends Seeder {
         $this->call('AccountTableSeeder');
         $this->call('AccountAccountTypeTableSeeder');
         $this->call('AddressTableSeeder');	
+
+        $this->call('NotificationTypeTableSeeder');
 		
         // Testing
         // $this->call('ProductsTableSeeder');

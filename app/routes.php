@@ -243,6 +243,9 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokeniz
     Route::put('payment/cancel/{id}', 'APIv1\PaymentController@cancel');
     Route::resource('payment', 'APIv1\PaymentController', array('except' => array('edit','create')));
 
+    Route::get('notification/getNotificationList/{userId}', 'APIv1\NotificationController@pullNotification');
+    Route::get('notification/getNumberOfNotification/{userId}', 'APIv1\NotificationController@getNumberOfNotification');
+
 });
 
 Route::group(array('before' => 'auth.session'),function(){

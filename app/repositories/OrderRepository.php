@@ -1322,4 +1322,5 @@ class OrderRepository implements OrderRepositoryInterface {
                             ->get(array('id', 'order_number'));
         return $salesOrder->toArray();
     }
+
 }
