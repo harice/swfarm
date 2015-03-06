@@ -1,4 +1,4 @@
-<% var total_amount = parseFloat(models.get('amount') + models.get('handling')) %>
+<% var total_amount = parseFloat(models.get('amount')) + parseFloat(models.get('handling')) %>
 <div class="content padding-top-0">  
     <div class="row margin-top-0">
         <div class="col-md-12">
@@ -98,7 +98,7 @@
                             <td><%= schedule.bales %></td>
                             <td><%= schedule.tons %></td>
                             <td>$ <%= numberFormat(schedule.gross) %></td>
-                            <td>$ <%= numberFormat(models.get('rate')) %></td>
+                            <td><%= numberFormat(models.get('rate')) %> %</td>
                             <td>$ <%= numberFormat(schedule.handlingfee) %></td>
                             <% total_pay += parseFloat(schedule.pay) %>
                             <td>$ <%= numberFormat(schedule.pay) %></td>
