@@ -123,6 +123,12 @@ class Order extends BaseModel {
         return $this->hasMany('Payment', 'order_id', 'id');
     }
 
+    public function ordertype()
+    {
+        return $this->ordertype;
+    }
+
+
     /**
      * Make dates compatible with Carbon
      * 
@@ -139,12 +145,18 @@ class Order extends BaseModel {
 
         static::created(function($order)
         {  
-            NotificationLibrary::pushNotification(Config::get('constants.PO_CREATED_NOTIFICATIONTYPE'), $order->id);
+            if($order->ordertype == Config::get('constants.ORDERTYPE_PO'))
+                NotificationLibrary::pushNotification(Config::get('constants.PO_CREATED_NOTIFICATIONTYPE'), $order->id);
+            else
+                NotificationLibrary::pushNotification(Config::get('constants.SO_CREATED_NOTIFICATIONTYPE'), $order->id);
         });
 
         static::updated(function($order)
         {  
-            NotificationLibrary::pushNotification(Config::get('constants.PO_UPDATED_NOTIFICATIONTYPE'), $order->id);
+            if($order->ordertype == Config::get('constants.ORDERTYPE_PO'))
+                NotificationLibrary::pushNotification(Config::get('constants.PO_UPDATED_NOTIFICATIONTYPE'), $order->id);
+            else
+                NotificationLibrary::pushNotification(Config::get('constants.SO_UPDATED_NOTIFICATIONTYPE'), $order->id);
         });
     }
 }
