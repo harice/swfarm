@@ -31,7 +31,7 @@ class NotificationController extends BaseController {
     }
 
     public function getSeenNotifications($userId){
-        $model = $this->repo->pullSeenNotificationList($userId);
+        $model = $this->repo->pullSeenNotificationList($userId, Input::all());
         return Response::json($model);
     }
 
