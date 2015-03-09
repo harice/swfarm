@@ -52,8 +52,13 @@ class NotificationLibrary {
         return $notification;
 	}
 
-	public static function pullSeenNotificationList($userId, $perPage = 20){
-         $notification = NotificationObject::with('notificationtype')->whereHas('notification', function($query) use ($userId){
+	public static function pullSeenNotificationList($userId, $params){
+		$params = array_filter($params);
+
+	    $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
+	    $page = isset($params['page']) ? $params['page'] : 1;
+	    
+        $notification = NotificationObject::with('notificationtype')->whereHas('notification', function($query) use ($userId){
         					$query->where('user_id', '=', $userId);
         				})
          				->orderby('created_at', 'desc')
