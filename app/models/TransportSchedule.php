@@ -114,4 +114,20 @@ class TransportSchedule extends Eloquent {
     public function transportscheduleproduct(){
       return $this->hasMany('TransportScheduleProduct', 'transportschedule_id', 'id');
     }
+
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function($schedule)
+        {  
+              NotificationLibrary::pushNotification(Config::get('constants.ORDER_SCHEDULE_CREATED_NOTIFICATIONTYPE'), $schedule->id);
+        });
+
+        static::updated(function($schedule)
+        {  
+              NotificationLibrary::pushNotification(Config::get('constants.ORDER_SCHEDULE_UPDATED_NOTIFICATIONTYPE'), $schedule->id);
+        });
+    }
 }

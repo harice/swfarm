@@ -65,4 +65,21 @@ class WeightTicket extends BaseModel {
         return parent::delete();
     }
 
+
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function($weighticket)
+        {  
+            NotificationLibrary::pushNotification(Config::get('constants.ORDER_WEIGHTTICKET_CREATED_NOTIFICATIONTYPE'), $weighticket->id);
+        });
+
+        static::updated(function($weighticket)
+        {  
+            NotificationLibrary::pushNotification(Config::get('constants.ORDER_WEIGHTTICKET_UPDATED_NOTIFICATIONTYPE'), $weighticket->id);
+        });
+    }
+
 }
