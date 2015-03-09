@@ -15,5 +15,9 @@ class NotificationRepository implements NotificationRepositoryInterface {
     	return NotificationLibrary::getNumberOfNotification($userId);
     }
 
+    public function pullSeenNotificationList($userId){
+    	return NotificationLibrary::pullSeenNotificationList($userId);
+    }
+
 }
 ?>
