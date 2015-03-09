@@ -139,6 +139,14 @@ class SyncRepository implements SyncInterface {
 			case 'inventoryproduct':
 				$result = InventoryProduct::all();
 				break;
+				
+			case 'contractproduct':
+				$result = ContractProducts::all();
+				break;
+
+			case 'weightticketproduct':
+				$result = WeightTicketProducts::all();
+				break;
 		}
 
 		return Response::json($result);
