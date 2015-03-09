@@ -245,6 +245,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokeniz
 
     Route::get('notification/getNotificationList/{userId}', 'APIv1\NotificationController@pullNotification');
     Route::get('notification/getNumberOfNotification/{userId}', 'APIv1\NotificationController@getNumberOfNotification');
+    Route::get('notification/getSeenNotifications/{userId}', 'APIv1\NotificationController@getSeenNotifications');
 
 });
 

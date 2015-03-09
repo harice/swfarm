@@ -16,25 +16,20 @@ class NotificationLibrary {
 	public static function pushNotification($module, $data = null){
 		$notificationLib = new NotificationLibrary();
 		switch ($module) {
-			case Config::get('constants.PO_CREATED_NOTIFICATIONTYPE'):
-			case Config::get('constants.PO_UPDATED_NOTIFICATIONTYPE'):
+			case Config::get('constants.ORDER_CREATED_NOTIFICATIONTYPE'):
+			case Config::get('constants.ORDER_UPDATED_NOTIFICATIONTYPE'):
 				$notificationLib->orderNotification($module, $data);
 				break;
-			case Config::get('constants.SO_CREATED_NOTIFICATIONTYPE'):
-			case Config::get('constants.SO_UPDATED_NOTIFICATIONTYPE'):
-				$notificationLib->orderNotification($module, $data, false);
-				break;
-			case Config::get('constants.PO_SCHEDULE_CREATED_NOTIFICATIONTYPE'):
-			case Config::get('constants.PO_SCHEDULE_UPDATED_NOTIFICATIONTYPE'):
+			case Config::get('constants.ORDER_SCHEDULE_CREATED_NOTIFICATIONTYPE'):
+			case Config::get('constants.ORDER_SCHEDULE_UPDATED_NOTIFICATIONTYPE'):
 				$notificationLib->transportScheduleNotification($module, $data);
 				break;
-			case Config::get('constants.SO_SCHEDULE_CREATED_NOTIFICATIONTYPE'):
-			case Config::get('constants.SO_SCHEDULE_UPDATED_NOTIFICATIONTYPE'):
-				$notificationLib->transportScheduleNotification($module, $data, false);
-				break;
-			case Config::get('constants.PO_WEIGHTTICKET_CREATED_NOTIFICATIONTYPE'):
-			case Config::get('constants.PO_WEIGHTTICKET_UPDATED_NOTIFICATIONTYPE'):
+			case Config::get('constants.ORDER_WEIGHTTICKET_CREATED_NOTIFICATIONTYPE'):
+			case Config::get('constants.ORDER_WEIGHTTICKET_UPDATED_NOTIFICATIONTYPE'):
 				$notificationLib->weightticketNotification($module, $data);
+				break;
+			case Config::get('constants.INVENTORY_CREATED_NOTIFICATIONTYPE'):
+				$notificationLib->inventoryNotification($module, $data);
 				break;
 			default:
 				# code...
@@ -48,11 +43,21 @@ class NotificationLibrary {
         						  ->where('isSeen', '=', false);
         				})
          				->orderby('created_at', 'desc')
-         				->get()->toArray();
+         				->get(array('id', 'notificationtype_id', 'details', 'updated_at'))->toArray();
 
         //call the notificationMarkAsSeen here
         $notificatinoLib = new NotificationLibrary;
         $notificatinoLib->notificationMarkAsSeen($userId);
+
+        return $notification;
+	}
+
+	public static function pullSeenNotificationList($userId, $perPage = 20){
+         $notification = NotificationObject::with('notificationtype')->whereHas('notification', function($query) use ($userId){
+        					$query->where('user_id', '=', $userId);
+        				})
+         				->orderby('created_at', 'desc')
+         				->paginate($perPage)->toArray();
 
         return $notification;
 	}
@@ -65,30 +70,32 @@ class NotificationLibrary {
 		}
 	}
 
-	private function orderNotification($module, $orderId, $isPO = true){
+	private function orderNotification($module, $orderId){
 		//get data
-		DB::transaction(function() use ($module, $orderId, $isPO){
+		DB::transaction(function() use ($module, $orderId){
 			$order = Order::find($orderId);
-			if($isPO)
-				$category_role = Config::get('constants.PURCHASE_ORDER_PERMISSION_CATEGORY');
+			if($order->ordertype == Config::get('constants.ORDERTYPE_PO'))
+				$category_role = array(Config::get('constants.PURCHASE_ORDER_PERMISSION_CATEGORY'));
 			else
-				$category_role = Config::get('constants.SALES_ORDER_PERMISSION_CATEGORY');
+				$category_role = array(Config::get('constants.SALES_ORDER_PERMISSION_CATEGORY'));
 
 			if(!is_null($order)){
 				$roles_a = $this->getAllRolesWithPermissionCategoryGiven($category_role);
 				$users_a = $this->getAllUserWithRolesGiven($roles_a);
-
-				if($module == Config::get('constants.PO_CREATED_NOTIFICATIONTYPE')){
-					$data = array('details' =>'Purchase order '.$order->order_number.' created by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $order->id);
-				}
-				else if($module == Config::get('constants.PO_UPDATED_NOTIFICATIONTYPE')){
-					$data = array('details' =>'Purchase order '.$order->order_number.' updated by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $order->id);
-				}
-				else if($module == Config::get('constants.SO_CREATED_NOTIFICATIONTYPE')){
-					$data = array('details' =>'Sales order '.$order->order_number.' created by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $order->id);
-				}
-				else if($module == Config::get('constants.SO_UPDATED_NOTIFICATIONTYPE')){
-					$data = array('details' =>'Sales order '.$order->order_number.' updated by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $order->id);
+				if($order->ordertype == Config::get('constants.ORDERTYPE_PO')){ //PO
+					if($module == Config::get('constants.ORDER_CREATED_NOTIFICATIONTYPE')){
+						$data = array('details' =>'Purchase order '.$order->order_number.' created by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $order->id);
+					}
+					else {
+						$data = array('details' =>'Purchase order '.$order->order_number.' updated by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $order->id);
+					}
+				} else {
+					if($module == Config::get('constants.ORDER_CREATED_NOTIFICATIONTYPE')){
+						$data = array('details' =>'Sales order '.$order->order_number.' created by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $order->id);
+					}
+					else {
+						$data = array('details' =>'Sales order '.$order->order_number.' updated by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $order->id);
+					}
 				}
 
 				if(!is_null($users_a)){
@@ -102,39 +109,32 @@ class NotificationLibrary {
 		});
 	}
 
-	private function transportScheduleNotification($module, $scheduleId, $isPO = true){
-		DB::transaction(function() use ($module, $scheduleId, $isPO){
+	private function transportScheduleNotification($module, $scheduleId){
+		DB::transaction(function() use ($module, $scheduleId){
 			$schedule = TransportSchedule::with('order')->find($scheduleId);
-			if($isPO)
-				$category_role = Config::get('constants.PURCHASE_ORDER_PERMISSION_CATEGORY');
+			if($schedule->order->ordertype == Config::get('constants.ORDERTYPE_PO'))
+				$category_role = array(Config::get('constants.PURCHASE_ORDER_PERMISSION_CATEGORY'));
 			else
-				$category_role = Config::get('constants.SALES_ORDER_PERMISSION_CATEGORY');
+				$category_role = array(Config::get('constants.SALES_ORDER_PERMISSION_CATEGORY'));
 
 			if(!is_null($schedule)){
 				$roles_a = $this->getAllRolesWithPermissionCategoryGiven($category_role);
 				$users_a = $this->getAllUserWithRolesGiven($roles_a);
 
 				if($schedule->order->ordertype == Config::get('constants.ORDERTYPE_PO')){ //PO
-					if($module == Config::get('constants.PO_SCHEDULE_CREATED_NOTIFICATIONTYPE')){
+					if($module == Config::get('constants.ORDER_SCHEDULE_CREATED_NOTIFICATIONTYPE')){
 						$data = array('details' =>'Schedule for purchase order '.$schedule->order->order_number.' is created by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $schedule->id);
 					} else {
 						$data = array('details' =>'Schedule for purchase order '.$schedule->order->order_number.' is updated by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $schedule->id);
 					}
 				} else { //SO
-					if($module == Config::get('constants.PO_SCHEDULE_CREATED_NOTIFICATIONTYPE')){
+					if($module == Config::get('constants.ORDER_SCHEDULE_CREATED_NOTIFICATIONTYPE')){
 						$data = array('details' =>'Schedule for sales order '.$schedule->order->order_number.' is created by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $schedule->id);
 					} else {
 						$data = array('details' =>'Schedule for sales order '.$schedule->order->order_number.' is updated by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $schedule->id);
 					}
 				}
-					
-				// else if($module == Config::get('constants.PO_SCHEDULE_UPDATED_NOTIFICATIONTYPE'))
-				// 	$data = array('details' =>'Schedule for purchase order '.$schedule->order->order_number.' is updated by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $schedule->id);
-				// else if($module == Config::get('constants.SO_SCHEDULE_CREATED_NOTIFICATIONTYPE'))
-				// 	$data = array('details' =>'Schedule for sales order '.$schedule->order->order_number.' is created by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $schedule->id);
-				// else if($module == Config::get('constants.SO_SCHEDULE_UPDATED_NOTIFICATIONTYPE'))
-				// 	$data = array('details' =>'Schedule for sales order '.$schedule->order->order_number.' is updated by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $schedule->id);
-
+				
 				if(!is_null($users_a)){
 					foreach($users_a as $user){
 						//get the notification id on notification table which is unseen, else create a new notification id
@@ -146,21 +146,71 @@ class NotificationLibrary {
 		});
 	}
 
-	private function weightticketNotification($module, $weightticketId, $isPO = true){
-		DB::transaction(function() use ($module, $weightticketId, $isPO){
+	private function weightticketNotification($module, $weightticketId){
+		DB::transaction(function() use ($module, $weightticketId){
 			$weightticket = WeightTicket::with('transportschedule.order')->find($weightticketId);
-			if($isPO)
-				$category_role = Config::get('constants.PURCHASE_ORDER_PERMISSION_CATEGORY');
+			if($weightticket->transportschedule->order->ordertype == Config::get('constants.ORDERTYPE_PO'))
+				$category_role = array(Config::get('constants.PURCHASE_ORDER_PERMISSION_CATEGORY'));
 			else
-				$category_role = Config::get('constants.SALES_ORDER_PERMISSION_CATEGORY');
+				$category_role = array(Config::get('constants.SALES_ORDER_PERMISSION_CATEGORY'));
 
 			if(!is_null($weightticket)){
 				$roles_a = $this->getAllRolesWithPermissionCategoryGiven($category_role);
 				$users_a = $this->getAllUserWithRolesGiven($roles_a);
-				if($module == Config::get('constants.PO_WEIGHTTICKET_CREATED_NOTIFICATIONTYPE'))
-					$data = array('details' => 'Weight ticket('.$weightticket->weightTicketNumber.') for purchase order '.$weightticket->transportschedule->order->order_number.' is created by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $weightticket->id);
-				else if($module == Config::get('constants.PO_WEIGHTTICKET_UPDATED_NOTIFICATIONTYPE'))
-					$data = array('details' => 'Weight ticket('.$weightticket->weightTicketNumber.') for purchase order '.$weightticket->transportschedule->order->order_number.' is updated by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $weightticket->id);
+
+				if($weightticket->transportschedule->order->ordertype == Config::get('constants.ORDERTYPE_PO')){ //PO
+					if($module == Config::get('constants.ORDER_WEIGHTTICKET_CREATED_NOTIFICATIONTYPE'))
+						$data = array('details' => 'Weight ticket('.$weightticket->weightTicketNumber.') for purchase order '.$weightticket->transportschedule->order->order_number.' is created by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $weightticket->id);
+					else if($module == Config::get('constants.ORDER_WEIGHTTICKET_UPDATED_NOTIFICATIONTYPE'))
+						$data = array('details' => 'Weight ticket('.$weightticket->weightTicketNumber.') for purchase order '.$weightticket->transportschedule->order->order_number.' is updated by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $weightticket->id);
+				} else {
+					if($module == Config::get('constants.ORDER_WEIGHTTICKET_CREATED_NOTIFICATIONTYPE'))
+						$data = array('details' => 'Weight ticket('.$weightticket->weightTicketNumber.') for sales order '.$weightticket->transportschedule->order->order_number.' is created by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $weightticket->id);
+					else if($module == Config::get('constants.ORDER_WEIGHTTICKET_UPDATED_NOTIFICATIONTYPE'))
+						$data = array('details' => 'Weight ticket('.$weightticket->weightTicketNumber.') for sales order '.$weightticket->transportschedule->order->order_number.' is updated by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $weightticket->id);
+				}
+				
+				if(!is_null($users_a)){
+					foreach($users_a as $user){
+						//get the notification id on notification table which is unseen, else create a new notification id
+						$notification_id = $this->generateNotificationId($user['id']);	
+						$this->addNotificationobject($notification_id, $module, $data);
+					}
+				}
+			}
+		});
+	}
+
+	private function inventoryNotification($module, $inventoryId){
+		//get data
+		DB::transaction(function() use ($module, $inventoryId){
+			$inventory = Inventory::find($inventoryId);
+			$categoryRole_a = array(Config::get('constants.PRODUCT_MANAGEMENT_PERMISSION_CATEGORY'), Config::get('constants.ADMIN_PERMISSION_CATEGORY'));
+		
+			if(!is_null($inventory)){
+				$roles_a = $this->getAllRolesWithPermissionCategoryGiven($categoryRole_a);
+				$users_a = $this->getAllUserWithRolesGiven($roles_a);
+				switch ($inventory->transactiontype_id) {
+					case Config::get('constants.INVENTORY_TRANSACTIONTYPE_SO'):
+						$data = array('details' =>'Inventory has been deducted for sales order by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $inventory->id);
+						break;
+					case Config::get('constants.INVENTORY_TRANSACTIONTYPE_PO'):
+						$data = array('details' =>'Inventory has been added for purchase order by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $inventory->id);
+						break;
+					case Config::get('constants.INVENTORY_TRANSACTIONTYPE_TRANSFER'):
+						$data = array('details' =>'Inventory has been updated, transfer products by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $inventory->id);
+						break;
+					case Config::get('constants.INVENTORY_TRANSACTIONTYPE_ISSUE'):
+						$data = array('details' =>'Inventory has been deducted because of issue operation by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $inventory->id);
+						break;
+					case Config::get('constants.INVENTORY_TRANSACTIONTYPE_RECEIPT'):
+						$data = array('details' =>'Inventory has been updated because of receipt operation by '.Auth::user()->firstname, 'actor' => Auth::user()->id, 'extra' => $inventory->id);
+						break;
+					default:
+						# code...
+						break;
+				}
+
 				if(!is_null($users_a)){
 					foreach($users_a as $user){
 						//get the notification id on notification table which is unseen, else create a new notification id
@@ -210,10 +260,10 @@ class NotificationLibrary {
 		}
 	}
 
-	private function getAllRolesWithPermissionCategoryGiven($permissionCategory){
-		$roles = Roles::whereHas('permissionCategoryType', function($query) use ($permissionCategory) {
-					$query->wherehas('permissionCategory', function($query) use ($permissionCategory){
-						$query->where('id', '=', $permissionCategory);
+	private function getAllRolesWithPermissionCategoryGiven($permissionCategory_a){
+		$roles = Roles::whereHas('permissionCategoryType', function($query) use ($permissionCategory_a) {
+					$query->wherehas('permissionCategory', function($query) use ($permissionCategory_a){
+						$query->whereIn('id', $permissionCategory_a);
 					});
 				})
 				->has('permissionCategoryType')

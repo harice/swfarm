@@ -122,12 +122,12 @@ class TransportSchedule extends Eloquent {
 
         static::created(function($schedule)
         {  
-              NotificationLibrary::pushNotification(Config::get('constants.PO_SCHEDULE_CREATED_NOTIFICATIONTYPE'), $schedule->id);
+              NotificationLibrary::pushNotification(Config::get('constants.ORDER_SCHEDULE_CREATED_NOTIFICATIONTYPE'), $schedule->id);
         });
 
         static::updated(function($schedule)
         {  
-              NotificationLibrary::pushNotification(Config::get('constants.PO_SCHEDULE_UPDATED_NOTIFICATIONTYPE'), $schedule->id);
+              NotificationLibrary::pushNotification(Config::get('constants.ORDER_SCHEDULE_UPDATED_NOTIFICATIONTYPE'), $schedule->id);
         });
     }
 }

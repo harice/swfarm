@@ -65,4 +65,15 @@ class Inventory extends Eloquent {
     //     return parent::delete();
     // }
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function($invetory)
+        {  
+            NotificationLibrary::pushNotification(Config::get('constants.INVENTORY_CREATED_NOTIFICATIONTYPE'), $invetory->id);
+        });
+
+    }
+
 }

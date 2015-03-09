@@ -73,12 +73,12 @@ class WeightTicket extends BaseModel {
 
         static::created(function($weighticket)
         {  
-            NotificationLibrary::pushNotification(Config::get('constants.PO_WEIGHTTICKET_CREATED_NOTIFICATIONTYPE'), $weighticket->id);
+            NotificationLibrary::pushNotification(Config::get('constants.ORDER_WEIGHTTICKET_CREATED_NOTIFICATIONTYPE'), $weighticket->id);
         });
 
         static::updated(function($weighticket)
         {  
-            NotificationLibrary::pushNotification(Config::get('constants.PO_WEIGHTTICKET_UPDATED_NOTIFICATIONTYPE'), $weighticket->id);
+            NotificationLibrary::pushNotification(Config::get('constants.ORDER_WEIGHTTICKET_UPDATED_NOTIFICATIONTYPE'), $weighticket->id);
         });
     }
 

@@ -145,18 +145,12 @@ class Order extends BaseModel {
 
         static::created(function($order)
         {  
-            if($order->ordertype == Config::get('constants.ORDERTYPE_PO'))
-                NotificationLibrary::pushNotification(Config::get('constants.PO_CREATED_NOTIFICATIONTYPE'), $order->id);
-            else
-                NotificationLibrary::pushNotification(Config::get('constants.SO_CREATED_NOTIFICATIONTYPE'), $order->id);
+            NotificationLibrary::pushNotification(Config::get('constants.ORDER_CREATED_NOTIFICATIONTYPE'), $order->id);
         });
 
         static::updated(function($order)
         {  
-            if($order->ordertype == Config::get('constants.ORDERTYPE_PO'))
-                NotificationLibrary::pushNotification(Config::get('constants.PO_UPDATED_NOTIFICATIONTYPE'), $order->id);
-            else
-                NotificationLibrary::pushNotification(Config::get('constants.SO_UPDATED_NOTIFICATIONTYPE'), $order->id);
+            NotificationLibrary::pushNotification(Config::get('constants.ORDER_UPDATED_NOTIFICATIONTYPE'), $order->id);
         });
     }
 }
