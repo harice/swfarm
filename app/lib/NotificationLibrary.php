@@ -8,9 +8,11 @@
 class NotificationLibrary {
 
 	public static function getNumberOfNotification($userId){
-		return NotificationObject::whereHas('notification', function($query) use ($userId){
+		$count = NotificationObject::whereHas('notification', function($query) use ($userId){
 					$query->where('user_id', '=', $userId)->where('isSeen', '=', false);
 				})->count();
+
+		return array('count' => $count);
 	}
 
 	public static function pushNotification($module, $data = null){
