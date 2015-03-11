@@ -278,13 +278,13 @@ class NotificationLibrary {
 	}
 
 	private function getAllUserWithRolesGiven($roles){
-		if(is_null($roles))
-			return null;
-
 		$roles_a = array();
 		foreach($roles as $role){
 			array_push($roles_a, $role['id']);
 		}
+
+		if(count($roles_a) == 0)
+			return null;
 
 		$users = User::whereHas('roles', function($query) use ($roles_a) {
 					$query->whereIn('roles.id', $roles_a);
