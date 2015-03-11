@@ -28,7 +28,7 @@ define([
 					var token = Base64.encode(data.username+':'+data.password);
 					Session.login(token);
 				}
-			});
+			});			
 		}
 
 	});

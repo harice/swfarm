@@ -35,6 +35,7 @@ define(function () {
 			'COMMISSION': 'administration/commission',
 			'PAYMENT': 'payment',
 			'DELIVERYLOCATION': 'administration/delivery',
+			'NOTIFICATIONS': 'notifications'
 		},
 		'MENU': {
 			'PURCHASES': {
@@ -307,6 +308,24 @@ define(function () {
 				'LOGISTICSSUMMARY': 11
 			}
 		},
+		'NOTIFICATIONS': {
+			'TYPE': {
+				'CREATEPO': 1,
+				'UPDATEPO': 2,
+				'CREATEORDERSCHED': 3,
+				'UPDATEORDERSCHED': 4,
+				'CREATEORDERTICKET': 5,
+				'UPDATEORDERTICKET': 6
+			},
+			'CLASS': {
+				'CREATEPO': 'fa-file-text-o',
+				'UPDATEPO': 'fa-file-text',
+				'CREATEORDERSCHED': 'fa-calendar',
+				'UPDATEORDERSCHED': 'fa-calendar-o',
+				'CREATEORDERTICKET': 'fa-ticket',
+				'UPDATEORDERTICKET': 'fa-ticket fa-inverse'
+			}
+		}
 	};
 	
 	return constant;

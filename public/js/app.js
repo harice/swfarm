@@ -23,7 +23,7 @@ define([
 	        return Backbone.$.ajax.apply(Backbone.$, arguments);
 	    };
 		
-		var headerView;
+		var headerView = null;
 		var sideMenu;
 		var overrideNavigateAwayFromForm = false;
 
@@ -291,21 +291,27 @@ define([
 		};
 
 		Backbone.View.prototype.refreshTitle = function(title,desc) {
-			this.headerView = new HeaderView();
-			this.headerView.render(title,desc);
+			if(headerView)
+				headerView.close();
+
+			headerView = new HeaderView();
+			headerView.render(title,desc);
 		}
 
 		Backbone.View.prototype.refreshHeader = function () {
-			this.headerView = new HeaderView();
-			this.headerView.render();
+			if(headerView)
+				headerView.close();
+			
+			headerView = new HeaderView();
+			headerView.render();
 
 			this.sideMenu = new SideMenuView();
 			this.sideMenu.render();
 		};
 
 		Backbone.View.prototype.showLogin = function () {
-			if( this.headerView != null) {
-				this.headerView.close();
+			if( headerView != null) {
+				headerView.close();
 				this.sideMenu.close();
 			}
 			$('body').addClass('texture');

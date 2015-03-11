@@ -143,7 +143,7 @@ require.config({
 		'jqueryphonenumber': {
 			deps: ['jquery'],
 			exports: 'PhoneNumber',
-		},
+		},		
         'jqueryselect': {
 			deps: ['jquery'],
 			exports: 'Select 2',
