@@ -1,10 +1,11 @@
 define([
 	'backbone',
+	'models/notification/NotificationModel',
 	'text!templates/layout/headerTemplate.html',
 	'collections/notification/NotificationCollection',
 	'constant',
 	'models/session/SessionModel',
-], function(Backbone, headerTemplate, NotificationCollection, Const, Session){
+], function(Backbone, NotificationModel, headerTemplate, NotificationCollection, Const, Session){
 
 	var HeaderView = Backbone.View.extend({
 		el: $("#head-nav"),
@@ -15,13 +16,15 @@ define([
 
 			_.bindAll(this,'profileMenuHandler');
 
+			this.notificationModel = new NotificationModel();
+	        this.notificationModel.on('fetch_model_success', function(model, response, options) {          
+	          thisObj.displayNotifications(model.get('count'));       	                  
+	        });
+
 			this.notificationCollection = new NotificationCollection();
 			this.notificationCollection.on('sync', function(collection, response, options, otherOptions){
 				if(typeof otherOptions != "undefined") {
-					if(typeof otherOptions.seen != "undefined")
-						$(".notifications_menu .new-notifications").html(thisObj.getNotificationList(this.models, true));
-					else
-						thisObj.fetchNotifications('', this.models);
+					$(".notifications_menu .new-notifications").html(thisObj.getNotificationList(this.models, true));						
 				}
 				else {
 					if(!_.isEmpty(this.models))
@@ -62,21 +65,23 @@ define([
 			$("ul.cl-vnavigation li").removeClass('active');
 		},
 
-		fetchNotifications: function(ev, data) {			
-			if(typeof data == "undefined")
-				this.notificationCollection.getNotificationCount(Session.get('su'), {count: 1});
-			else {
-				if(_.isEmpty(data)) {					
-					if($(".notifications_menu .new-notifications").children().length == 0) {
-						$(".notifications_menu .new-notifications").html('<div class="notification loading">Loading ...</div>');
-						this.notificationCollection.getNotificationList(Session.get('su'));	
-					}
-				}
-				else {
+		fetchNotifications: function(ev) {	
+			$(".notifications_menu").removeClass("notified").find(".notification-count").text('').hide();
+
+			this.notificationModel.getNotificationCount(Session.get('su'));			
+		},
+
+		displayNotifications: function(count) {
+			if(count == 0) {					
+				if($(".notifications_menu .new-notifications").children().length == 0) {
 					$(".notifications_menu .new-notifications").html('<div class="notification loading">Loading ...</div>');
 					this.notificationCollection.getNotificationList(Session.get('su'));	
-				}				
-			}				
+				}
+			}
+			else {
+				$(".notifications_menu .new-notifications").html('<div class="notification loading">Loading ...</div>');
+				this.notificationCollection.getNotificationList(Session.get('su'));	
+			}		
 		},
 
 		getNotificationList: function(data, seen) {			

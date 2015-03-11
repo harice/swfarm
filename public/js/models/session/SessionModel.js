@@ -2,9 +2,10 @@ define([
   'jquery',
   'backbone',
   'router',
+  'models/notification/NotificationModel',
   'collections/notification/NotificationCollection',
   'constant'
-], function($, Backbone, Router, NotificationCollection, Const){
+], function($, Backbone, Router, NotificationModel, NotificationCollection, Const){
 
   var SessionModel = Backbone.Model.extend({
       
@@ -97,12 +98,11 @@ define([
         var that = this;
         var count = 0;
 
-        this.notificationCollection = new NotificationCollection();
-        this.notificationCollection.on('sync', function() {
-          that.notificationDone = true;
-          console.log(this.models);
-          if(!_.isEmpty(this.models)) {           
-            count = this.models;            
+        this.notificationModel = new NotificationModel();
+        this.notificationModel.on('fetch_model_success', function(model, response, options) {          
+          that.notificationDone = true;          
+          if(model.get('count') > 0) {           
+            count = model.get('count');            
             $(".notifications_menu").addClass("notified").find(".notification-count").text(count).show();
           }          
         });
@@ -110,7 +110,7 @@ define([
         setInterval(function(){  
           console.log("Test1: ", that.notificationDone);        
           if(that.notificationDone == true) {
-            that.notificationCollection.getNotificationCount(id);            
+            that.notificationModel.getNotificationCount(id);            
             that.notificationDone = false;
           }     console.log("Test2");
         }, 5000)
