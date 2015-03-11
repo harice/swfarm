@@ -272,13 +272,15 @@ class NotificationLibrary {
 					});
 				})
 				->has('permissionCategoryType')
-				->get(array('id', 'name'))
-				->toArray();
+				->get(array('id', 'name'));
 
-		return $roles;
+		return (!is_null($roles)) ? $roles->toArray() : null;
 	}
 
 	private function getAllUserWithRolesGiven($roles){
+		if(is_null($roles))
+			return null;
+
 		$roles_a = array();
 		foreach($roles as $role){
 			array_push($roles_a, $role['id']);
@@ -286,9 +288,9 @@ class NotificationLibrary {
 
 		$users = User::whereHas('roles', function($query) use ($roles_a) {
 					$query->whereIn('roles.id', $roles_a);
-				})->get(array('id', 'firstname', 'lastname'))->toArray();
+				})->get(array('id', 'firstname', 'lastname'));
 
-		return $users;
+		return (!is_null($users)) ? $users->toArray() : null;
 	}
 
 }
