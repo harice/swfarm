@@ -8,9 +8,11 @@
 class NotificationLibrary {
 
 	public static function getNumberOfNotification($userId){
-		return NotificationObject::whereHas('notification', function($query) use ($userId){
+		$count = NotificationObject::whereHas('notification', function($query) use ($userId){
 					$query->where('user_id', '=', $userId)->where('isSeen', '=', false);
 				})->count();
+
+		return array('count' => $count);
 	}
 
 	public static function pushNotification($module, $data = null){
@@ -272,10 +274,9 @@ class NotificationLibrary {
 					});
 				})
 				->has('permissionCategoryType')
-				->get(array('id', 'name'))
-				->toArray();
+				->get(array('id', 'name'));
 
-		return $roles;
+		return (!is_null($roles)) ? $roles->toArray() : null;
 	}
 
 	private function getAllUserWithRolesGiven($roles){
@@ -284,14 +285,14 @@ class NotificationLibrary {
 			array_push($roles_a, $role['id']);
 		}
 
+		if(count($roles_a) == 0)
+			return null;
+
 		$users = User::whereHas('roles', function($query) use ($roles_a) {
 					$query->whereIn('roles.id', $roles_a);
-				})->get(array('id', 'firstname', 'lastname'))->toArray();
+				})->get(array('id', 'firstname', 'lastname'));
 
-		return $users;
+		return (!is_null($users)) ? $users->toArray() : null;
 	}
 
-	private function getPermissionCategoryOfRole($roleId){
-
-	}
 }
