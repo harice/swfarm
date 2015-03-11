@@ -291,7 +291,4 @@ class NotificationLibrary {
 		return $users;
 	}
 
-	private function getPermissionCategoryOfRole($roleId){
-
-	}
 }
