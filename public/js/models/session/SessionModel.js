@@ -2,12 +2,15 @@ define([
   'jquery',
   'backbone',
   'router',
+  'models/notification/NotificationModel',
+  'collections/notification/NotificationCollection',
   'constant'
-], function($, Backbone, Router, Const){
+], function($, Backbone, Router, NotificationModel, NotificationCollection, Const){
 
   var SessionModel = Backbone.Model.extend({
       
       url : '/apiv1/users/auth',
+      notificationDone: true,
 
       initialize : function(){
           //Check for sessionStorage support
@@ -74,6 +77,8 @@ define([
               that.set('permission', response.permission);
               that.set('token', token);
 
+              //that.initNotificationLoop(response.user.id);
+
               if(that.get('redirectFrom')){
                 var path = that.get('redirectFrom');
                 that.unset('redirectFrom');
@@ -87,6 +92,29 @@ define([
               Backbone.View.prototype.displayGritter('Login failed. Invalid Email Address and Password.', 'danger');
               Backbone.history.navigate('#/'+Const.URL.LOGIN, { trigger : true });
           });
+      },
+
+      initNotificationLoop: function(id) {
+        var that = this;
+        var count = 0;
+
+        this.notificationModel = new NotificationModel();
+        this.notificationModel.on('fetch_model_success', function(model, response, options) {          
+          that.notificationDone = true;          
+          if(model.get('count') > 0) {           
+            count = model.get('count');            
+            $(".notifications_menu").addClass("notified").find(".notification-count").text(count).show();
+          }          
+        });
+
+        setInterval(function(){  
+          console.log("Test1: ", that.notificationDone);        
+          if(that.notificationDone == true) {
+            that.notificationModel.getNotificationCount(id);            
+            that.notificationDone = false;
+          }     console.log("Test2");
+        }, 5000)
+        
       }
   });
 

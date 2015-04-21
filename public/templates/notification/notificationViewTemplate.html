@@ -1,0 +1,38 @@
+<div class="row margin-top-0">
+    <div class="col-md-12 no-padding">
+        <div class="block-flat padding-top-0 padding-bottom-0">
+            <div id="notification-list">
+                <% if(!_.isEmpty(notifications)) { %>
+                <ul>
+                    <% _.each(notifications, function(n){ 
+                        var type = n.get('notificationtype_id');
+                        var nClass = '';
+                        switch(type) {
+                            case types.CREATEPO: 
+                                nClass = classes.CREATEPO;
+                                break;
+                            case types.UPDATEPO: 
+                                nClass = classes.UPDATEPO;
+                                break;
+                            case types.CREATEORDERSCHED: 
+                                nClass = classes.CREATEORDERSCHED;
+                                break;
+                            case types.UPDATEORDERSCHED: 
+                                nClass = classes.UPDATEORDERSCHED;
+                                break;
+                            case types.CREATEORDERTICKET: 
+                                nClass = classes.CREATEORDERTICKET;
+                                break;
+                            default:
+                                nClass = classes.UPDATEORDERTICKET;
+                                break;
+                        }                       
+                    %>
+                    <li class="notification"><span class="fa <%= nClass %>"></span><span><%= n.get('details') %></span>. <small>Updated at <%= formatDateAMPM(n.get('updated_at')) %></small></li>
+                    <% }); %>
+                </ul>
+                <% } %>
+            </div> <!-- end of notification list -->
+        </div>
+    </div>
+</div>

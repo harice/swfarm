@@ -13,9 +13,9 @@
 						<%= formatDateAMPM(info.get("transportScheduleDate")) %>
 					</a>
 				</td>
-				<td class="text-right"><%= numberFormatTons(info.get("gross")) %></td>
-				<td class="text-right"><%= numberFormatTons(info.get("tare")) %></td>
-				<td class="text-right"><%= numberFormatTons(info.get("netWeight")) %></td>
+				<td class="text-right"><%= numberFormatLbs(info.get("gross")) %></td>
+				<td class="text-right"><%= numberFormatLbs(info.get("tare")) %></td>
+				<td class="text-right"><%= numberFormatLbs(info.get("netWeight")) %></td>
 			</tr>
 		<% } %>
 	<% }); %>

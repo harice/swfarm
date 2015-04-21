@@ -36,6 +36,7 @@ define([
 	'controllers/reports/ReportController',
 	'controllers/dashboard/DashboardController',
 	'controllers/payment/PaymentController',
+	'controllers/notification/NotificationController',
 	'global',
 	'constant',
 	'models/session/SessionModel'
@@ -75,6 +76,7 @@ define([
 			ReportController,
 			DashboardController,
 			PaymentController,
+			NotificationController,
 			Global,
 			Const,
 			Session) {
@@ -216,6 +218,9 @@ define([
 	
 	//settings
 	routerRoutes[Const.URL.SETTINGS] = 'showSettingsPage';
+
+	//notifications
+	routerRoutes[Const.URL.NOTIFICATIONS] = 'showNotificationsPage';
 	
 	//scale
 	routerRoutes[Const.URL.SCALE] = 'showScalePage';
@@ -476,6 +481,13 @@ define([
 			this.currView = settingsController.setAction();
 			this.currView.render();
 		});
+
+		app_router.on('route:showNotificationsPage', function () {
+			this.closeView();
+			var notificationController = new NotificationController();
+			this.currView = notificationController.setAction();
+			this.currView.render();
+		});		
 		
 		app_router.on('route:showScalePage', function (action, id) {
 			this.closeView();

@@ -8,7 +8,25 @@ p { font-size:12px; }
 }
 .well { background-color:#fafafa; }
 .navbar { height:45px; min-height:45px; }
-.profile_menu .dropdown-toggle { padding: 13px 10px; }
+.profile_menu .dropdown-toggle,
+.notifications_menu .dropdown-toggle  { padding: 13px 10px; }
+.notifications_menu .dropdown-toggle { position: relative; }
+.notifications_menu.notified .dropdown-toggle { padding: 13px 22px; }
+.notifications_menu .dropdown-toggle .notification-count {
+    display:none;
+    background: none repeat scroll 0 0 red;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 11px;
+    height: 15px;
+    left: 4px;
+    line-height: 15px;
+    position: absolute;
+    top: 16px; 
+    width: 15px;   
+    z-index: 0;
+    text-align: center;
+}
 
 select.error,
 input.error { border-color: #CC0000 !important; }
@@ -772,3 +790,21 @@ h2.entity-header .btn { margin-bottom: 0 !important; margin-top:-5px !important;
 .input-group-btn.open .dropdown-toggle { background:#f0f0f0; }
 
 #accounttype { display:block !important; opacity:0; height:0; padding:0; }
+
+.notifications_menu .dropdown-menu { padding:0; }
+.notifications_menu .dropdown-menu li a.see-all { font-weight: bold; color:#4aa3df; text-align: center; }
+.notifications_menu .dropdown-menu li a.see-all:hover { color:#ffffff; }
+.notifications_menu .new-notifications { border-bottom: 1px dotted #ddd; }
+.notifications_menu .new-notifications { max-height: 300px; min-width: 280px; padding:5px 10px; overflow-y: auto; overflow-x: hidden; }
+.notifications_menu .new-notifications .notification { padding: 0 5px; font-size:12px; padding:5px; border-top: 1px dotted #ddd; }
+.notifications_menu .new-notifications .notification:first-child { border-top:0; }
+.notifications_menu .new-notifications .notification span { color:#00a8e3; }
+.notifications_menu .new-notifications .notification.seen span { color:#888888; }
+.notifications_menu .new-notifications .notification small { font-size: 11px; }
+.notifications_menu .new-notifications .notification.loading { color:#999; }
+#notification-list { min-height: 500px; }
+#notification-list ul { padding: 10px 0 0 0; margin:0; }
+#notification-list ul li { list-style:none; border-bottom: 1px dotted #ddd; padding: 5px 10px; }
+#notification-list ul li.notification span { color:#00a8e3; }
+#notification-list ul li.notification small { font-size:11px; }
+#notification-list ul li.notification .fa { margin-right: 8px; color:#909090; }

@@ -55,6 +55,7 @@ class NotificationLibrary {
 	}
 
 	public static function pullSeenNotificationList($userId, $params){
+		/* old as of 16-April-2015
 		$params = array_filter($params);
 
 	    $perPage = isset($params['perpage']) ? $params['perpage'] : Config::get('constants.GLOBAL_PER_LIST');
@@ -65,8 +66,37 @@ class NotificationLibrary {
         				})
          				->orderby('created_at', 'desc')
          				->paginate($perPage)->toArray();
+		*/
 
-        return $notification;
+        /* new as of 16-April-2015  */
+        $notification = NotificationObject::with('notificationtype')
+        					->whereHas('notification', function($query) use ($userId)
+        					{
+        						$query->where('user_id', '=', $userId);
+        					})
+         				->orderby('created_at', 'desc');
+
+        $total = $notification->count();
+
+        $total_search_results = $notification->count();
+
+
+        if ( isset($params['limit']) )
+		{
+			$notification = $notification->take($params['limit']);
+
+			if ( isset($params['page']) )
+			{
+				$notification = $notification->skip( $params['limit'] * ( $params['page'] - 1 ) );
+			}
+		}
+
+		$list_results = $notification->get();
+
+        return ['total' => $total, 
+        		'total_search_results' => $total_search_results, 
+        		'list_results' => $list_results->toArray()
+        		];
 	}
 
 	private function notificationMarkAsSeen($userId){

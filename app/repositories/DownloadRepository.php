@@ -2009,8 +2009,10 @@ class DownloadRepository implements DownloadInterface
                                         !is_null($transportschedule->weightticket->weightticketscale_pickup) && 
                                         !is_null($transportschedule->weightticket->weightticketscale_dropoff)
                                     ) {
-                                        $pickup_net = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare);
-                                        $dropoff_net = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare);
+                                        //#$pickup_net = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare); # April 21 2015
+                                        //#$dropoff_net = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare); # April 21 2015
+                                        $pickup_net = (floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare) ) * 0.0005; # new April 21 2015
+                                        $dropoff_net = (floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare) ) * 0.0005; # new April 21 2015
                                         $ii = bccomp($pickup_net,$dropoff_net,4);
                                         switch ($ii) {
                                             case -1:
@@ -2032,11 +2034,13 @@ class DownloadRepository implements DownloadInterface
                                             is_null($transportschedule->weightticket->weightticketscale_dropoff
                                         )) {
                                         $transportschedule->bales = $transportschedule->weightticket->weightticketscale_pickup->bales;
-                                        $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare);
+                                        //#$transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare); # April 21 2015
+                                        $transportschedule->tons = (floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare) ) * 0.0005; # new April 21 2015
                                         unset($transportschedule->weightticket);
                                     } else {
                                         $transportschedule->bales = $transportschedule->weightticket->weightticketscale_dropoff->bales;
-                                        $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare);
+                                        //#$transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare); #  April 21 2015
+                                        $transportschedule->tons = (floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare) ) * 0.0005;  # April 21 2015
                                         unset($transportschedule->weightticket);
                                     }
 
@@ -2111,19 +2115,21 @@ class DownloadRepository implements DownloadInterface
                                     	));
 
                                     	$transportschedule->weightticketnumber = $transportschedule->weightticket->weightTicketNumber;
-
-	                                    if(
+                                    
+                                    	if(
 	                                        !is_null($transportschedule->weightticket->weightticketscale_pickup) && 
 	                                        !is_null($transportschedule->weightticket->weightticketscale_dropoff)
 	                                    ) {
-	                                        $pickup_net = bcsub($transportschedule->weightticket->weightticketscale_pickup->gross,$transportschedule->weightticket->weightticketscale_pickup->tare,4);
-	                                        $dropoff_net = bcsub($transportschedule->weightticket->weightticketscale_dropoff->gross,$transportschedule->weightticket->weightticketscale_dropoff->tare,4);
-	                                        $ii = bccomp($pickup_net,$dropoff_net,4);
+	                                        //#$pickup_net = bcsub($transportschedule->weightticket->weightticketscale_pickup->gross,$transportschedule->weightticket->weightticketscale_pickup->tare,4); #  20-April-2015
+	                                        //#$dropoff_net = bcsub($transportschedule->weightticket->weightticketscale_dropoff->gross,$transportschedule->weightticket->weightticketscale_dropoff->tare,4); #  20-April-2015
+	                                        $pickup_net = bcsub($transportschedule->weightticket->weightticketscale_pickup->gross,$transportschedule->weightticket->weightticketscale_pickup->tare,2) * 0.0005; # new 20-April-2015
+	                                        $dropoff_net = bcsub($transportschedule->weightticket->weightticketscale_dropoff->gross,$transportschedule->weightticket->weightticketscale_dropoff->tare,2) * 0.0005; # new 20-April-2015
+	                                        $ii = bccomp($pickup_net,$dropoff_net,2);
 	                                        switch ($ii) {
 	                                            case -1:
 	                                                $transportschedule->bales = $transportschedule->weightticket->weightticketscale_pickup->bales;
 	                                                $transportschedule->tons = $pickup_net;
-	                                                $transportschedule->pounds = bcmul($transportschedule->tons,2000,2);
+	                                                //$transportschedule->pounds = bcmul($transportschedule->tons,2000,2);
 	                                                unset($transportschedule->weightticket);
 	                                                break;
 
@@ -2141,13 +2147,17 @@ class DownloadRepository implements DownloadInterface
 	                                            is_null($transportschedule->weightticket->weightticketscale_dropoff
 	                                        )) {
 	                                        $transportschedule->bales = $transportschedule->weightticket->weightticketscale_pickup->bales;
-	                                        $transportschedule->tons = bcsub($transportschedule->weightticket->weightticketscale_pickup->gross,$transportschedule->weightticket->weightticketscale_pickup->tare,4);
-	                                        $transportschedule->pounds = bcmul($transportschedule->tons,2000,2);
+	                                        //#$transportschedule->tons = bcsub($transportschedule->weightticket->weightticketscale_pickup->gross,$transportschedule->weightticket->weightticketscale_pickup->tare,4); # 20-April-2015
+	                                        //#$transportschedule->pounds = bcmul($transportschedule->tons,2000,2); # 20-April-2015
+	                                        $transportschedule->tons = bcsub($transportschedule->weightticket->weightticketscale_pickup->gross,$transportschedule->weightticket->weightticketscale_pickup->tare,3) * 0.0005; # new 20-April-2015
+	                                        $transportschedule->pounds = bcsub($transportschedule->weightticket->weightticketscale_pickup->gross,$transportschedule->weightticket->weightticketscale_pickup->tare,2); # new 20-April-2015
 	                                        unset($transportschedule->weightticket);
 	                                    } else {
 	                                        $transportschedule->bales = $transportschedule->weightticket->weightticketscale_dropoff->bales;
-	                                        $transportschedule->tons = bcsub($transportschedule->weightticket->weightticketscale_dropoff->gross,$transportschedule->weightticket->weightticketscale_dropoff->tare,4);
-	                                        $transportschedule->pounds = bcmul($transportschedule->tons,2000,2);
+	                                        //#$transportschedule->tons = bcsub($transportschedule->weightticket->weightticketscale_dropoff->gross,$transportschedule->weightticket->weightticketscale_dropoff->tare,3); # 20-April-2015
+	                                        //#$transportschedule->pounds = bcmul($transportschedule->tons,2000,2); # 20-April-2015
+	                                        $transportschedule->tons = bcsub($transportschedule->weightticket->weightticketscale_dropoff->gross,$transportschedule->weightticket->weightticketscale_dropoff->tare,3) * 0.0005; # new 20-April-2015
+	                                        $transportschedule->pounds = bcsub($transportschedule->weightticket->weightticketscale_dropoff->gross,$transportschedule->weightticket->weightticketscale_dropoff->tare,2); # new 20-April-2015
 	                                        unset($transportschedule->weightticket);
 	                                    }
 
