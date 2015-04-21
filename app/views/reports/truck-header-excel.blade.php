@@ -30,7 +30,7 @@
 		<td colspan='9'>{{ $report_o->account->businessaddress->city }}, {{ $report_o->account->businessaddress->state->state_code }} {{ $report_o->account->businessaddress->zipcode }}</td>
 		<td></td>
 		<td colspan='2'>Total Tons:</td>
-		<td colspan='3' align='right'><strong>{{ number_format($report_o->tons, 4, '.', ',') }}</strong></td>
+		<td colspan='3' align='right'><strong>{{ number_format($report_o->tons, 3, '.', ',') }}</strong></td>
 	</tr>
 	<tr>
 		<td colspan='15'></td>

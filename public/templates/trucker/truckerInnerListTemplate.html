@@ -14,7 +14,7 @@
     	}) %>
         </td>
 
-		<td>$ <%= numberFormat(trucker.get("fee")) %></td>
+		<td><%= numberFormat(trucker.get("fee")) %> %</td>
 		<td align="center">
 			<a href="<%= trucker_edit_url %>/<%= trucker.get("id") %>" title="edit">
 			  <span class="fa-stack">

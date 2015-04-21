@@ -77,7 +77,17 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
 
   public function addOrUpdateTransportSchedule($data, $transportScheduleId = null){
       $this->validate($data, 'TransportSchedule');
+     
       DB::beginTransaction();
+
+          if(isset($data['object_id']))
+          {
+              $isMobile = true;
+          } 
+          else 
+          {
+              $isMobile = false;
+          }
           if(!$this->checkIfAllowedToCreateSchedule($data['order_id'])){
               return Response::json(array('error' => true, 'message' => 'Cannot create schedule if destination of order is not Southwest Farms'), 500);
           }
@@ -95,8 +105,14 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           $trailerPercentageRateArr = Settings::where('name','=','trailer_percentage_rate')->first(array('value'))->toArray();
           $trailerPercentageRate = floatval($trailerPercentageRateArr['value'])/100; //get trailer perentage and convert it to decimal
           $data['trailerrate'] = $trailerPercentageRate * $data['truckingrate'];
-          $data['adminfee'] = Truck::find($data['truck_id'])->fee;
+          #$data['adminfee'] = Truck::find($data['truck_id'])->fee; // admin fee 
 
+          //new admin fee - 04-April-2015
+          $totalWeight = $this->getTotalWeightOfSchedule($data['products']);
+          $trucker_percentage = Truck::find($data['truck_id'])->fee; // fee is PERCENTAGE 
+          $data['adminfee'] = ($totalWeight * $data['truckingrate']) * ( $trucker_percentage / 100 );
+          
+          
           if($data['truckerAccountType_id'] == 8) { //for SFS account type
               $freightRateArr = Settings::where('name','=','freight_rate')->first(array('value'))->toArray();
               $freightRate = floatval($freightRateArr['value']);
@@ -123,16 +139,20 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           }
 
           $ordertype = $this->getOrderType($data['order_id']);
-          
-          $addProductResult = $this->addProductToSchedule($transportschedule->id, $data['products'], $ordertype);
-          if($addProductResult != false){
+          $addProductResult = $this->addProductToSchedule($transportschedule->id, $data['products'], $ordertype, $isMobile);
+
+          if($addProductResult['error'] != false)
+          {
             DB::rollback();
             return Response::json($addProductResult, 500);
           }
-         
+
          //save schedule map points
-          if(isset($data['scheduleMap'])){
-              if(!$this->saveMapPointsForSchedule($transportschedule->id, $data['scheduleMap'], $isAddOperation)){
+          if(isset($data['scheduleMap']))
+          {
+              $mdlMapPoints = $this->saveMapPointsForSchedule($transportschedule->id, $data['scheduleMap'], $isAddOperation, $isMobile);
+              if( $mdlMapPoints['success'] != true )
+              {
                 DB::rollback();
                 return Response::json(array('error' => true, 'message' => 'Problem encountered during adding map data.'), 500);
               }
@@ -151,12 +171,49 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
           $message = 'Schedule successfully updated.';
       }
 
+      if($isMobile){ //request came from mobile app
+            return array(
+                "error" => false,
+                "message" => $message,
+                "data" => array(
+                            'products' => $addProductResult['transportProduct'],
+                            'scheduleMap' => $mdlMapPoints['scheduleMap'],
+                            'schedule'  => [
+                                              'id' => $transportschedule->id, 
+                                              'order_id' => $transportschedule->order_id,
+                                              'date' => $transportschedule->date,
+                                              'truckerAccountType_id' => $transportschedule->truckerAccountType_id,
+                                              'trucker_id' => $transportschedule->trucker_id,
+                                              'truck_id' => $transportschedule->truck_id,
+                                              'trailer_id' => $transportschedule->trailer_id,
+                                              'distance' => $transportschedule->distance,
+                                              'fuelcharge' => $transportschedule->fuelcharge,
+                                              'originloader_id' => $transportschedule->originloader_id,
+                                              'originloaderfee' => $transportschedule->originloaderfee,
+                                              'destinationloader_id' => $transportschedule->destinationloader_id,
+                                              'destinationloaderfee' => $transportschedule->destinationloaderfee,
+                                              'truckingrate' => $transportschedule->truckingrate,
+                                              'handlingfee' => $transportschedule->handlingfee,
+                                              'trailerrate' => $transportschedule->trailerrate,
+                                              'adminfee' => $transportschedule->adminfee,
+                                              'type' => $transportschedule->type,
+                                              'status_id' => $transportschedule->status_id,
+                                              'object_id' =>$data['object_id']
+                                            ]
+                            )
+            );
+      }
+      
       return Response::json(array(
           'error' => false,
           'message' => $message), 200);
   }
 
-  private function saveMapPointsForSchedule($transportscheduleId, $scheduleMapData, $isAddOperation = true){
+  private function saveMapPointsForSchedule($transportscheduleId, $scheduleMapData, $isAddOperation = true, $isMobile = false){
+    
+      $data = array('mobileJson' => null);
+      $mJson = array();  
+
       //when update operation only
       if(!$isAddOperation){
           $clearMapData = false;
@@ -183,6 +240,25 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
                   $transportMap->save();
 
                   $sequenceNo++;
+
+                  # 13-Apr-2015 Additional
+                  if($isMobile)
+                  {
+
+                    array_push($mJson, 
+                              array('id' => $transportMap->id, 
+                                    'transportschedule_id' => $transportMap->transportschedule_id,
+                                    'sequenceNo' => $transportMap->quantity,
+                                    'longitudeFrom' => $transportMap->longitudeFrom,
+                                    'latitudeFrom' => $transportMap->latitudeFrom,
+                                    'longitudeTo' => $transportMap->longitudeTo,
+                                    'latitudeTo' => $transportMap->latitudeTo,
+                                    'distance' => $transportMap->distance,
+                                    'isLoadedDistance' => $transportMap->isLoadedDistance      
+                    ));
+
+                  }
+                  # end 13-Apr-2015 Additional
               }
           }
       } else {
@@ -198,10 +274,35 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
               $transportMap->save();
 
               $sequenceNo++;
+
+              # 13-Apr-2015 Additional
+              if($isMobile)
+              {
+
+                array_push($mJson, 
+                          array('id' => $transportMap->id, 
+                                'transportschedule_id' => $transportMap->transportschedule_id,
+                                'sequenceNo' => $transportMap->quantity,
+                                'longitudeFrom' => $transportMap->longitudeFrom,
+                                'latitudeFrom' => $transportMap->latitudeFrom,
+                                'longitudeTo' => $transportMap->longitudeTo,
+                                'latitudeTo' => $transportMap->latitudeTo,
+                                'distance' => $transportMap->distance,
+                                'isLoadedDistance' => $transportMap->isLoadedDistance      
+                ));
+
+              }
+              # end 13-Apr-2015 Additional
+
           }
       }
 
-      return true;
+      if($isMobile) 
+      {
+         $data['mobileJson'] = $mJson;
+      }
+
+      return ['scheduleMap' => $data, 'success' => true];
   }
 
   private function checkIfAllowedToCreateSchedule($orderId){
@@ -248,7 +349,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
       return $result; //total weight remaining to be scheduled
   }
 
-  private function addProductToSchedule($schedule_id, $products = array(), $ordertype = null)
+  private function addProductToSchedule($schedule_id, $products = array(), $ordertype = null, $isMobile = false)
   {   
       if($this->checkRepeatedProductOrderUsed($products)){
           return array(
@@ -256,6 +357,8 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
                 'message' => "Cannot select the same stack number in creating a schedule.");
       }
 
+      $data = array('mobileJson' => null);
+      $mJson = array();
       foreach ($products as $product) {
           $product['transportschedule_id'] = $schedule_id;
 
@@ -273,7 +376,8 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
                       'message' => "Weight inputed exceeded for ".$productOrderDetails['stacknumber'].". <br />Weight already scheduled: ".number_format($result['totalQuantitySchedule'], 4)." <br />Weight remaining: ".number_format($result['quantityRemaining'], 4)." <br />Total weight allowed for this product: ".$productOrderDetails['tons']);
           }
 
-          $result = DB::transaction(function() use ($product){
+          /* 13-April-2015
+            $result = DB::transaction(function() use ($product){
               if(isset($product['id']))
                   $transportscheduleproduct = TransportScheduleProduct::find($product['id']);
               else
@@ -285,10 +389,40 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
               
               $transportscheduleproduct->fill($product);
               $transportscheduleproduct->save();
+
           });
+          */
+              if(isset($product['id']))
+                  $transportscheduleproduct = TransportScheduleProduct::find($product['id']);
+              else
+                  $transportscheduleproduct = new TransportScheduleProduct();
+
+              if($product['sectionto_id'] == '')
+              {
+                  $product['sectionto_id'] = null;
+              }
+
+              $transportscheduleproduct->fill($product);
+              $transportscheduleproduct->save();
+
+              if($isMobile)
+              {
+
+                array_push($mJson, array('id' => $transportscheduleproduct->id, 
+                                          'sectionto_id' => $transportscheduleproduct->sectionto_id,
+                                          'quantity' => $transportscheduleproduct->quantity,
+                                          'transportschedule_id' => $transportscheduleproduct->transportschedule_id
+                ));
+
+              }
       }
 
-      return false;
+      if($isMobile)
+      {
+         $data['mobileJson'] = $mJson;
+      }
+
+      return ['transportProduct' => $data, 'error' => false];
   }
 
   private function checkRepeatedProductOrderUsed($stacks){

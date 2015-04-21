@@ -189,3 +189,17 @@
 		</tr>
 	</tfoot>
 </table>
+<table class='no-border'>
+ 	<tr class='no-border'>
+		<td class='text-center' colspan='7'>&nbsp;</td>
+	</tr>
+    <tr class='no-border'>
+		<td class='text-center' colspan='7'>We Gladly Accept VISA, MasterCard & Discover </td>
+	</tr>
+	<tr class='no-border'>
+		<td class='text-center' colspan='7'>If payment for this invoice has already been made... We Thank You! </td>
+	</tr>
+	<tr class='no-border'>
+		<td class='text-center' colspan='7'>Email us at: Info@WeSellHay.com</td>
+	</tr>
+</table>

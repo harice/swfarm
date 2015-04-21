@@ -42,7 +42,7 @@
 					{? $bales_i += $transportschedule_o->bales ?}
 					<td {{$border_s}} class='text-right' align='right'>{{ number_format($transportschedule_o->pounds,2,'.',',') }}</td>
 					{? $pounds_i += $transportschedule_o->pounds ?}
-					<td {{$border_s}} class='text-right' align='right'>{{ number_format($transportschedule_o->tons,4,'.',',') }}</td>
+					<td {{$border_s}} class='text-right' align='right'>{{ number_format($transportschedule_o->tons,3,'.',',') }}</td>
 					{? $tons_i += $transportschedule_o->tons ?}
 					<td {{$border_s}} class='text-right' align='right'>$ {{ number_format($transportschedule_o->truckingrate,2,'.',',') }}</td>
 					{? $trucking_i += $transportschedule_o->truckingrate ?}
@@ -68,7 +68,7 @@
 					<td {{$border_s}} class='text-right' align='right'><strong>$ {{ number_format($loader_i,2,'.',',') }}</strong></td>
 					<td {{$border_s}} class='text-right' align='right'><strong>{{ number_format($bales_i,0,'.',',') }}</strong></td>
 					<td {{$border_s}} class='text-right' align='right'><strong>{{ number_format($pounds_i,2,'.',',') }}</strong></td>
-					<td {{$border_s}} class='text-right' align='right'><strong>{{ number_format($tons_i,4,'.',',') }}</strong></td>
+					<td {{$border_s}} class='text-right' align='right'><strong>{{ number_format($tons_i,3,'.',',') }}</strong></td>
 					<td {{$border_s}} class='text-right' align='right'><strong>$ {{ number_format($trucking_i,2,'.',',') }}</strong></td>
 					<td {{$border_s}} class='text-right' align='right'><strong>$ {{ number_format($gross_i,2,'.',',') }}</strong></td>
 					<td {{$border_s}} class='text-right' align='right'><strong>$ {{ number_format($handlingfee_i,2,'.',',') }}</strong></td>

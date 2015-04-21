@@ -307,9 +307,9 @@ define([
 			'change #scales': 'onChangeScales',
 			'keyup .mask-bales': 'formatNumber',
 			'keyup .gross': 'onKeyUpGross',
-			'blur .gross': 'onBlurTon',
+			'blur .gross': 'onBlurPound',
 			'keyup .tare': 'onKeyUpTare',
-			'blur .tare': 'onBlurTare',
+			'blur .tare': 'onBlurPound',
 			'keyup .product-bales': 'onKeyUpProductBales',
 			'keyup .product-pounds': 'onKeyUpPounds',
 			'blur .product-pounds': 'onBlurPound',
@@ -344,7 +344,7 @@ define([
 		},
 		
 		onKeyUpGross: function (ev) {
-			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 4);
+			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 2);
 			
 			var gross = this.removeCommaFromNumber($(ev.target).val());
 			gross = (isNaN(gross))? 0 : gross;
@@ -352,11 +352,11 @@ define([
 			tare = (isNaN(tare))? 0 : tare;
 			var net = gross - tare;
 			
-			this.$el.find('.net').text(this.addCommaToNumber(net.toFixed(4), 4));
+			this.$el.find('.net').text(this.addCommaToNumber(net.toFixed(2), 2));
 		},
 		
 		onKeyUpTare: function (ev) {
-			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 4);
+			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 2);
 			
 			var tare = this.removeCommaFromNumber($(ev.target).val());
 			tare = (isNaN(tare))? 0 : tare;
@@ -364,7 +364,7 @@ define([
 			gross = (isNaN(gross))? 0 : gross;
 			var net = gross - tare;
 			
-			this.$el.find('.net').text(this.addCommaToNumber(net.toFixed(4), 4));
+			this.$el.find('.net').text(this.addCommaToNumber(net.toFixed(2), 2));
 		},
 
 		onBlurTare: function (ev) {

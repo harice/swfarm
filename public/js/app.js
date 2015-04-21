@@ -33,7 +33,7 @@ define([
 			formatDateAMPM 			: function(string) { return Backbone.View.prototype.formatDate('m-d-Y h:i A',Backbone.View.prototype.strToTime(string)); },
 			numberFormat 			: function(number) { return Backbone.View.prototype.numberFormat(number,2,'.',','); },
 			numberFormatLbs 		: function(number) { return Backbone.View.prototype.numberFormat(number,2,'.',','); },
-			numberFormatTons 		: function(number) { return Backbone.View.prototype.numberFormat(number,2,'.',','); },
+			numberFormatTons 		: function(number) { return Backbone.View.prototype.numberFormat(number,3,'.',','); },
 			numberFormatBales 		: function(number) { return Backbone.View.prototype.numberFormat(number,0,'.',','); },
 			convertLbsToTons 		: function(number) { return Backbone.View.prototype.numberFormat((number * Const.LB2TON),2,'.',','); },
 			ucfirst					: function(string) { return Backbone.View.prototype.ucfirst(string); },
