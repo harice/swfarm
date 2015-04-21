@@ -28,7 +28,7 @@
 					<td {{$border_s}}>{{ strtoupper($transportschedule->truck) }}</td>
 					<td class='text-right' align='right' {{$border_s}}>$ {{ number_format($transportschedule->truckingrate,2,'.',',') }}</td>
 					<td class='text-right' align='right' {{$border_s}}>{{ number_format($transportschedule->bales,0,'.',',') }}</td>
-					<td class='text-right' align='right' {{$border_s}}>{{ number_format($transportschedule->tons,4,'.',',') }}</td>
+					<td class='text-right' align='right' {{$border_s}}>{{ number_format($transportschedule->tons,3,'.',',') }}</td>
 					<td class='text-right' align='right' {{$border_s}}>$ {{ number_format($transportschedule->gross,2,'.',',') }}</td>
 					<td class='text-right' align='right' {{$border_s}}>{{ number_format($report_o->rate,2,'.',',') }} %</td>
 					{? $handling_i = bcadd($handling_i,$transportschedule->handlingfee,2) ?}

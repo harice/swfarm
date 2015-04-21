@@ -2009,8 +2009,10 @@ class DownloadRepository implements DownloadInterface
                                         !is_null($transportschedule->weightticket->weightticketscale_pickup) && 
                                         !is_null($transportschedule->weightticket->weightticketscale_dropoff)
                                     ) {
-                                        $pickup_net = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare);
-                                        $dropoff_net = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare);
+                                        //#$pickup_net = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare); # April 21 2015
+                                        //#$dropoff_net = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare); # April 21 2015
+                                        $pickup_net = (floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare) ) * 0.0005; # new April 21 2015
+                                        $dropoff_net = (floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare) ) * 0.0005; # new April 21 2015
                                         $ii = bccomp($pickup_net,$dropoff_net,4);
                                         switch ($ii) {
                                             case -1:
@@ -2032,11 +2034,13 @@ class DownloadRepository implements DownloadInterface
                                             is_null($transportschedule->weightticket->weightticketscale_dropoff
                                         )) {
                                         $transportschedule->bales = $transportschedule->weightticket->weightticketscale_pickup->bales;
-                                        $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare);
+                                        //#$transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare); # April 21 2015
+                                        $transportschedule->tons = (floatval($transportschedule->weightticket->weightticketscale_pickup->gross) - floatval($transportschedule->weightticket->weightticketscale_pickup->tare) ) * 0.0005; # new April 21 2015
                                         unset($transportschedule->weightticket);
                                     } else {
                                         $transportschedule->bales = $transportschedule->weightticket->weightticketscale_dropoff->bales;
-                                        $transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare);
+                                        //#$transportschedule->tons = floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare); #  April 21 2015
+                                        $transportschedule->tons = (floatval($transportschedule->weightticket->weightticketscale_dropoff->gross) - floatval($transportschedule->weightticket->weightticketscale_dropoff->tare) ) * 0.0005;  # April 21 2015
                                         unset($transportschedule->weightticket);
                                     }
 
