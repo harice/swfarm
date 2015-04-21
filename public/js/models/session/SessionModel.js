@@ -77,7 +77,7 @@ define([
               that.set('permission', response.permission);
               that.set('token', token);
 
-              that.initNotificationLoop(response.user.id);
+              //that.initNotificationLoop(response.user.id);
 
               if(that.get('redirectFrom')){
                 var path = that.get('redirectFrom');
