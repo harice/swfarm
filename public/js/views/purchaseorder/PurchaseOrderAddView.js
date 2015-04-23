@@ -853,7 +853,7 @@ define([
 		},
 		
 		onKeyUpTons: function (ev) {
-			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 4);
+			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 3);
 			
 			var tonsfield = $(ev.target);
 			if(tonsfield.closest('.product-stack-item').find('.unitprice').length > 0 && tonsfield.closest('.product-stack-item').find('.unit-price').length > 0) {
@@ -889,7 +889,7 @@ define([
 				var value = thisObj.removeCommaFromNumber($(this).val());
 				total += (!isNaN(parseFloat(value)))? parseFloat(value) : 0;
 			});
-			tableElement.find('tfoot .total-tons').val(thisObj.addCommaToNumber(total.toFixed(4)));
+			tableElement.find('tfoot .total-tons').val(thisObj.addCommaToNumber(total.toFixed(3)));
 		},
 		
 		computeTotalPrice: function (price, tonsOrBales, unitePriceField) {
