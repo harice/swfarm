@@ -45,6 +45,6 @@ class Truck extends BaseModel {
 
     public function order()
     {
-        return $this->hasMany('Transportschedule','truck_id','id')->join('order','order.id','=','transportschedule.order_id')->groupBy('transportschedule.order_id');
+        return $this->hasMany('TransportSchedule','truck_id','id')->join('order','order.id','=','transportschedule.order_id')->groupBy('transportschedule.order_id');
     }
 }
