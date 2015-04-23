@@ -189,7 +189,7 @@ define([
 					
 					if(productSub.tons != null && typeof productSub.tons !== 'undefined') { 
 						totalTonsPerProduct += parseFloat(productSub.tons);
-						productSubFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(productSub.tons).toFixed(4)));
+						productSubFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(productSub.tons).toFixed(3)));
 					}
 					
 					if(productSub.unitprice != null && typeof productSub.unitprice !== 'undefined')
@@ -210,7 +210,7 @@ define([
 				var formattedTotalTotalPriceProduct = thisObj.addCommaToNumber(totalTotalPriceProduct.toFixed(2));
 				productFields.find('.product-item-field.unit-price').val(formattedTotalTotalPriceProduct);
 				productFields.find('.product-stack-table tfoot .total-price').val(formattedTotalTotalPriceProduct);
-				productFields.find('.product-stack-table tfoot .total-tons').val(thisObj.addCommaToNumber(totalTonsPerProduct.toFixed(4)));
+				productFields.find('.product-stack-table tfoot .total-tons').val(thisObj.addCommaToNumber(totalTonsPerProduct.toFixed(3)));
 				
 			});
 			
