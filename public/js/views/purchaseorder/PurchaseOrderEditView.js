@@ -164,7 +164,7 @@ define([
 				productFields.find('.id').val(product.id);
 				productFields.find('.product_id').val(product.productname.id);
 				//productFields.find('.unitprice').val(thisObj.addCommaToNumber(parseFloat(product.unitprice).toFixed(2)));
-				productFields.find('.product-item-field.tons').val(thisObj.addCommaToNumber(parseFloat(product.tons).toFixed(4)));
+				productFields.find('.product-item-field.tons').val(thisObj.addCommaToNumber(parseFloat(product.tons).toFixed(3)));
 				//var unitPrice = parseFloat(product.unitprice) * parseFloat(product.tons);
 				//productFields.find('.unit-price').val(thisObj.addCommaToNumber(unitPrice.toFixed(2)));
 				
