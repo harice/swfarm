@@ -164,7 +164,7 @@ define([
 				var tons = 0
 				if(typeof product.tons !== 'undefined' && product.tons != null) {
 					tons = parseFloat(product.tons);
-					productFields.find('.tons').val(thisObj.addCommaToNumber(tons.toFixed(4)));
+					productFields.find('.tons').val(thisObj.addCommaToNumber(tons.toFixed(3)));
 				}
 				
 				var unitPrice = unitprice * tons;
