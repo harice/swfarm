@@ -121,7 +121,7 @@ define([
 
 				productFields.find('.id').val(product.id);
 				productFields.find('.product_id').val(product.id);
-				productFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(product.pivot.tons).toFixed(4)));
+				productFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(product.pivot.tons).toFixed(3)));
 				productFields.find('.bales').val(thisObj.addCommaToNumber(product.pivot.bales));
 			});
 		},
