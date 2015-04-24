@@ -395,7 +395,7 @@ define([
 			this.fieldAddCommaToNumber($(ev.target).val(), ev.target);
 			var pound = this.removeCommaFromNumber($(ev.target).val());
 			pound = (isNaN(pound))? 0 : pound;
-			$(ev.target).closest('tr').find('.product-net').text(this.addCommaToNumber((pound * Const.LB2TON).toFixed(4)));
+			$(ev.target).closest('tr').find('.product-net').text(this.addCommaToNumber((pound * Const.LB2TON).toFixed(3)));
 			
 			var thisObj = this;
 			var totalPounds = 0;
@@ -417,7 +417,7 @@ define([
 				totalNet += (isNaN(value))? 0 : value;
 			});
 			
-			field.text(this.addCommaToNumber(totalNet.toFixed(4)));
+			field.text(this.addCommaToNumber(totalNet.toFixed(3)));
 		},
 		
 		resetSelect: function (select) {
