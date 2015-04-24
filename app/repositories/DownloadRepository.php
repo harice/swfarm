@@ -2273,13 +2273,13 @@ class DownloadRepository implements DownloadInterface
 				case Config::get('constants.TRANSACTIONTYPE_SO'):
 				case Config::get('constants.TRANSACTIONTYPE_ISSUE'):
 					$report_o->bales_out = bcadd($report_o->bales_out, $inventory->bales,0);
-					$report_o->tons_out = bcadd($report_o->tons_out, $inventory->tons,4);
+					$report_o->tons_out = bcadd($report_o->tons_out, $inventory->tons,3);
 					break;
 
 				case Config::get('constants.TRANSACTIONTYPE_PO'):
 				case Config::get('constants.TRANSACTIONTYPE_RECEIPT'):
 					$report_o->bales_in = bcadd($report_o->bales_in, $inventory->bales,0);
-					$report_o->tons_in = bcadd($report_o->tons_in, $inventory->tons,4);
+					$report_o->tons_in = bcadd($report_o->tons_in, $inventory->tons,3);
 					break;
 			}
 		});
