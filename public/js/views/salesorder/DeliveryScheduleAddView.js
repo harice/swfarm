@@ -721,7 +721,7 @@ define([
 		},
 		
 		onKeyUpQuantity: function (ev) {
-			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 4);
+			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 3);
 			this.computeTotalQuantity();
 		},
 		
@@ -736,7 +736,7 @@ define([
 			});
 			
 			if(total != 0)
-				$('#total-quantity').val(this.addCommaToNumber(total.toFixed(4)));
+				$('#total-quantity').val(this.addCommaToNumber(total.toFixed(3)));
 			else
 				$('#total-quantity').val('');
 				

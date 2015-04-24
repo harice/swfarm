@@ -151,7 +151,7 @@ define([
 					
 				if(typeof pickupInfo.gross != 'undefined' && pickupInfo.gross != null && typeof pickupInfo.tare != 'undefined' && pickupInfo.tare != null) {
 					var pickupNet = parseFloat(pickupInfo.gross) - parseFloat(pickupInfo.tare);
-					this.$el.find('#pickup-info .net').text(this.addCommaToNumber(pickupNet.toFixed(4)));
+					this.$el.find('#pickup-info .net').text(this.addCommaToNumber(pickupNet.toFixed(3)));
 				}
 				
 				var pickupProductsBalesTotal = 0;
@@ -171,7 +171,7 @@ define([
 						name: (typeof product.transportscheduleproduct.productorder.product.name != 'undefined' && product.transportscheduleproduct.productorder.product.name != null)? product.transportscheduleproduct.productorder.product.name : 0,
 						bales: thisObj.addCommaToNumber(bales),
 						pounds: thisObj.addCommaToNumber(pounds),
-						net: net.toFixed(4),
+						net: net.toFixed(3),
 					};
 					
 					var productItemTemplate = _.template(weightInfoViewProductItemTemplate, variables);
@@ -179,7 +179,7 @@ define([
 				});
 				thisObj.$el.find('#pickup-product-list tfoot .total-bales').text(this.addCommaToNumber(pickupProductsBalesTotal.toString()));
 				thisObj.$el.find('#pickup-product-list tfoot .total-pounds').text(this.addCommaToNumber(pickupProductsPoundsTotal.toFixed(2)));
-				thisObj.$el.find('#pickup-product-list tfoot .total-net-tons').text(this.addCommaToNumber(pickupProductsNetTotal.toFixed(4)));
+				thisObj.$el.find('#pickup-product-list tfoot .total-net-tons').text(this.addCommaToNumber(pickupProductsNetTotal.toFixed(3)));
 			}
 			
 			if(dropoffInfo != null) {
@@ -199,7 +199,7 @@ define([
 					
 				if(typeof dropoffInfo.gross != 'undefined' && dropoffInfo.gross != null && typeof dropoffInfo.tare != 'undefined' && dropoffInfo.tare != null) {
 					var pickupNet = parseFloat(dropoffInfo.gross) - parseFloat(dropoffInfo.tare);
-					this.$el.find('#dropoff-info .net').text(this.addCommaToNumber(pickupNet.toFixed(4)));
+					this.$el.find('#dropoff-info .net').text(this.addCommaToNumber(pickupNet.toFixed(3)));
 				}
 				
 				var dropoffProductsBalesTotal = 0;
@@ -219,7 +219,7 @@ define([
 						name: (typeof product.transportscheduleproduct.productorder.product.name != 'undefined' && product.transportscheduleproduct.productorder.product.name != null)? product.transportscheduleproduct.productorder.product.name : 0,
 						bales: thisObj.addCommaToNumber(bales),
 						pounds: thisObj.addCommaToNumber(pounds.toFixed(2)),
-						net: net.toFixed(4),
+						net: net.toFixed(3),
 					};
 					
 					var productItemTemplate = _.template(weightInfoViewProductItemTemplate, variables);
@@ -227,7 +227,7 @@ define([
 				});
 				thisObj.$el.find('#dropoff-product-list tfoot .total-bales').text(this.addCommaToNumber(dropoffProductsBalesTotal.toString()));
 				thisObj.$el.find('#dropoff-product-list tfoot .total-pounds').text(this.addCommaToNumber(dropoffProductsPoundsTotal.toFixed(2)));
-				thisObj.$el.find('#dropoff-product-list tfoot .total-net-tons').text(this.addCommaToNumber(dropoffProductsNetTotal.toFixed(4)));
+				thisObj.$el.find('#dropoff-product-list tfoot .total-net-tons').text(this.addCommaToNumber(dropoffProductsNetTotal.toFixed(3)));
 			}
 		},
 		

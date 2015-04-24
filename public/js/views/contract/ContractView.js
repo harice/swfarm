@@ -68,7 +68,7 @@ define([
 				contract:this.model,
 				contract_url:'#/'+Const.URL.CONTRACT,
 				contract_edit_url:'#/'+Const.URL.CONTRACT+'/'+Const.CRUD.EDIT,
-                total_tons: total_tons.toFixed(4),
+                total_tons: total_tons.toFixed(3),
                 total_bales: total_bales,
                 sales_order_url: '#/'+Const.URL.SO,
                 purchase_order_url: '#/'+Const.URL.PO

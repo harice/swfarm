@@ -411,7 +411,7 @@ define([
 		},
 		
 		onKeyUpGross: function (ev) {
-			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 4);
+			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 3);
 			
 			var gross = this.removeCommaFromNumber($(ev.target).val());
 			gross = (isNaN(gross))? 0 : gross;
@@ -419,11 +419,11 @@ define([
 			tare = (isNaN(tare))? 0 : tare;
 			var net = gross - tare;
 			
-			$(ev.target).closest('tr').find('.net').text(this.addCommaToNumber(net.toFixed(4), 4));
+			$(ev.target).closest('tr').find('.net').text(this.addCommaToNumber(net.toFixed(3), 3));
 		},
 		
 		onKeyUpTare: function (ev) {
-			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 4);
+			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 3);
 			
 			var tare = this.removeCommaFromNumber($(ev.target).val());
 			tare = (isNaN(tare))? 0 : tare;
@@ -431,7 +431,7 @@ define([
 			gross = (isNaN(gross))? 0 : gross;
 			var net = gross - tare;
 			
-			$(ev.target).closest('tr').find('.net').text(this.addCommaToNumber(net.toFixed(4), 4));
+			$(ev.target).closest('tr').find('.net').text(this.addCommaToNumber(net.toFixed(3), 3));
 		},
 		
 		onKeyUpProductBales: function (ev) {
@@ -451,7 +451,7 @@ define([
 			this.fieldAddCommaToNumber($(ev.target).val(), ev.target);
 			var pound = this.removeCommaFromNumber($(ev.target).val());
 			pound = (isNaN(pound))? 0 : pound;
-			$(ev.target).closest('tr').find('.product-net').text(this.addCommaToNumber((pound * Const.LB2TON).toFixed(4)));
+			$(ev.target).closest('tr').find('.product-net').text(this.addCommaToNumber((pound * Const.LB2TON).toFixed(3)));
 			
 			var thisObj = this;
 			var totalPounds = 0;
@@ -473,7 +473,7 @@ define([
 				totalNet += (isNaN(value))? 0 : value;
 			});
 			
-			field.text(this.addCommaToNumber(totalNet.toFixed(4)));
+			field.text(this.addCommaToNumber(totalNet.toFixed(3)));
 		},
 		
 		resetSelect: function (select) {
