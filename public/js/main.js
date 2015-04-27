@@ -18,6 +18,7 @@ require.config({
 		jqueryflotlabels: 'libs/jquery.flot/jquery.flot.labels',
 		jqueryflotstackpercent: 'libs/jquery.flot/jquery.flot.stackpercent',
 		jqueryflotbarnumbers: 'libs/jquery.flot/jquery.flot.barnumbers',
+		jqueryinfinitescroll: 'libs/jquery/jquery-ias.min.js',
 		bootstrapmultiselect: 'libs/bootstrap.multiselect/js/bootstrap-multiselect',
 		underscore: 'libs/underscore/underscore-min',
 		backbone: 'libs/backbone/backbone-min',
@@ -71,6 +72,11 @@ require.config({
 		'jqueryflotbarnumbers': {
 			deps: ['jquery', 'jqueryflot'],
 			exports: 'FlotBarNumbers'
+		},
+
+		'jqueryinfinitescroll': {
+			deps: ['jquery'],
+			exports: 'InfiniteScroll'
 		},
 
 		'bootstrapvalidator': {

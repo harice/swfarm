@@ -1,11 +1,12 @@
 define([
 	'backbone',
+	'InfiniteScroll',
 	'views/base/AppView',
 	'collections/notification/NotificationCollection',
 	'text!templates/layout/contentTemplate.html',
 	'text!templates/notification/notificationViewTemplate.html',
 	'constant',
-], function(Backbone, AppView, NotificationCollection, contentTemplate, notificationViewTemplate, Const){
+], function(Backbone, InfiniteScroll, AppView, NotificationCollection, contentTemplate, notificationViewTemplate, Const){
 
 	var View = AppView.extend({
 		el: $("#"+Const.CONTAINER.MAIN),
