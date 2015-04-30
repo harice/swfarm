@@ -234,7 +234,7 @@ class ContractRepository implements ContractRepositoryInterface {
             if ($this->hasOpenOrders($id)) {
                 return array(
                     'error' => true,
-                    'message' => 'Contract cannot be closed while having Open Sales Orders.'
+                    'message' => 'Contract with Open Sales Orders cannot be closed.'
                 );
             }
 

@@ -49,7 +49,7 @@ class CommissionRepository implements CommissionRepositoryInterface {
         if($this->isWeightTickethasCommission($data['weightticket_id'])){
             return array(
                     'error' => true,
-                    'message' => 'This weight ticket has already a commission.'
+                    'message' => 'Commission has been recorded for this weight ticket.'
                 );
         }
 
