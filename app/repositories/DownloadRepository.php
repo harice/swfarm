@@ -11,8 +11,7 @@ class DownloadRepository implements DownloadInterface
 		} else {
 			$q = $params;
 		}
-		
-
+	
 		if(!$_404) {
 			switch ($q['type']) {
 				case 'doc':
@@ -1182,7 +1181,7 @@ class DownloadRepository implements DownloadInterface
 							$format = $q['format'];
 
 							$data_o = $this->generateOrder($q, 2);
-							
+							return $data_o; exit();
 							$excel_o = Excel::create('SO-Report-'.date('Ymd'), function($excel) use($data_o) {
 											$excel->setDescription('Sales Order : '.date('Ymd'))->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
 									        $excel->sheet(date('Ymd'), function($sheet) use($data_o) {
@@ -1220,6 +1219,8 @@ class DownloadRepository implements DownloadInterface
 
 	public function generateOrder($_params = array(), $ordertype)
 	{
+		$_dateBetween = $this->generateBetweenDates($_params);
+   		
 		$rpoOrder = new OrderRepository;
 		$order = Order::with('productsummary.productname')
                 ->with('productsummary.productorder.product')
@@ -1233,7 +1234,9 @@ class DownloadRepository implements DownloadInterface
         if($ordertype == 2) //for SO only
             $order = $order->with('natureofsale', 'contract');
 
+
         $order = $order->where('ordertype', $ordertype)
+        		->whereBetween('created_at',array_values($_dateBetween))
         		->get();
        	//get the total price of products (unit price x tons)
         foreach($order as $item){
