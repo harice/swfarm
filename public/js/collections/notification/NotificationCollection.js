@@ -45,6 +45,11 @@ define([
 		getSeenNotificationsPerPage: function(id, numPerPage, options) {
 			this.url = '/apiv1/notification/getSeenNotifications/' + id + '?perpage=' +numPerPage;
 			this.getModels(options);
+		},
+
+		getAllNotifications: function(id, limit, page) {
+			this.url = '/apiv1/notification/getSeenNotifications/' + id + '?page=' + page + '&limit=' + limit;
+			this.getModels();
 		}	
 	});
 

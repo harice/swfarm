@@ -108,11 +108,11 @@ define([
         });
 
         setInterval(function(){  
-          console.log("Test1: ", that.notificationDone);        
+          //console.log("Test1: ", that.notificationDone);        
           if(that.notificationDone == true) {
             that.notificationModel.getNotificationCount(id);            
             that.notificationDone = false;
-          }     console.log("Test2");
+          }     //console.log("Test2");
         }, 5000)
         
       }

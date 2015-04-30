@@ -18,14 +18,12 @@ require.config({
 		jqueryflotlabels: 'libs/jquery.flot/jquery.flot.labels',
 		jqueryflotstackpercent: 'libs/jquery.flot/jquery.flot.stackpercent',
 		jqueryflotbarnumbers: 'libs/jquery.flot/jquery.flot.barnumbers',
-		jqueryinfinitescroll: 'libs/jquery/jquery-ias.min.js',
 		bootstrapmultiselect: 'libs/bootstrap.multiselect/js/bootstrap-multiselect',
 		underscore: 'libs/underscore/underscore-min',
 		backbone: 'libs/backbone/backbone-min',
         autocomplete: 'libs/fatiherikli/backbone-autocomplete/src/backbone.autocomplete',
 		base64: 'libs/base64/base64.min',
         growl: 'libs/bootstrap-growl/jquery.bootstrap-growl.min',
-
         behaviourcore: 'libs/behaviour/core',
         jqueryparsley: 'libs/jquery.parsley/parsley',
         jquerypushmenu: 'libs/jquery.pushmenu/js/jPushMenu',
@@ -47,7 +45,7 @@ require.config({
 		'backbone': {
 			deps: ['underscore', 'jquery', 'bootstrap', 'growl', 'jquerygritter', 'jqueryselect', 'icheck', 'jquerypushmenu','jquerynanoscroller','behaviourcore', 'maskedinput'],
 			exports: 'Backbone'
-		},
+		},		
 
 		'jqueryflot': {
 			deps: ['jquery'],
@@ -72,12 +70,7 @@ require.config({
 		'jqueryflotbarnumbers': {
 			deps: ['jquery', 'jqueryflot'],
 			exports: 'FlotBarNumbers'
-		},
-
-		'jqueryinfinitescroll': {
-			deps: ['jquery'],
-			exports: 'InfiniteScroll'
-		},
+		},		
 
 		'bootstrapvalidator': {
 			deps: ['jquery', 'bootstrap'],
