@@ -554,7 +554,6 @@ class DashboardRepository implements DashboardRepositoryInterface {
                         ->addSelect('productorder.id as productorder_id', 'productorder.tons as productorderTons')
                         ->addSelect('weightticket.id as weightticketId', 'weightticket.pickup_id', 'weightticket.dropoff_id')
                         ->union($order1)->get();
-        dd($orders);
         $response = array();
         foreach($orders as $item){
             if(!array_key_exists($item->name, $response)){
