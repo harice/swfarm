@@ -75,37 +75,37 @@
             <div class="row margin-top-0 margin-left-0 margin-right-0">
               <div class="col-md-2 col-md-offset-7">
                 <div class="form-group margin-bottom-5 margin-top-0">
-                    <div id="filter-pickup-start" class="search-filter-field calendar-cont">
+                    <div id="filter-export-start" class="search-filter-field calendar-cont">
                         <div class="input-group input-group-sm date datetime margin-bottom-0">
-                          <input class="form-control" size="16" type="text" value="" />
-                          <div class="input-group-btn input-group-addon cursor-pointer">
-                            <span class="glyphicon glyphicon-th"></span>
-                          </div>
-                        </div>
-                        <p class="help-block margin-bottom-0 margin-top-0">From</p>
+                            <input type="text" id="exportdatestart" class="form-control form-date" name="exportdatestart" size="16" value="">
+                            <div class="input-group-btn input-group-addon cursor-pointer">
+                              <span class="glyphicon glyphicon-th"></span>
+                            </div>
+                        </div>                        
                     </div>
+                    <p class="help-block margin-bottom-0 margin-top-0">From</p>
                 </div>
               </div>
 
               <div class="col-md-2">
                 <div class="form-group margin-bottom-5 margin-top-0">
-                    <div id="filter-pickup-end" class="search-filter-field calendar-cont">
-                        <div class="input-group input-group-sm date datetime margin-bottom-0">
-                          <input class="form-control" size="16" type="text" value="" />
+                    <div id="filter-export-end" class="search-filter-field calendar-cont">
+                      <div class="input-group input-group-sm date datetime margin-bottom-0">
+                          <input type="text" id="exportdateend" class="form-control form-date" name="exportdateend" size="16" value="">
                           <div class="input-group-btn input-group-addon cursor-pointer">
                             <span class="glyphicon glyphicon-th"></span>
                           </div>
-                        </div>
-                        <p class="help-block margin-bottom-0 margin-top-0">To</p>
+                      </div>                       
                     </div>
+                    <p class="help-block margin-bottom-0 margin-top-0">To</p>
                 </div>
               </div>
 
               <div class="col-md-1">
                 <div class="form-group margin-bottom-5 margin-top-0">
-                  <button type="submit" class="btn btn-primary btn-sm btn-rad">
-                    <i class="fa fa-print"></i>Export
-                  </button>
+                  <a href="#" target="_blank" disabled="" id="export-po" class="btn btn-primary btn-sm btn-rad">
+                    <i class="fa fa-print"></i>&nbsp;Export
+                  </a>
                 </div>
               </div>
             </div>
