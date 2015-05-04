@@ -235,7 +235,7 @@ define([
 				autoclose: true,
 				clearBtn: true,
 				todayHighlight: true,
-				fformat: 'yyyy-mm-dd',
+				format: 'yyyy-mm-dd',
 				forceParse:false,
 			}).on('changeDate', function (ev) {
 				var selectedDate = $('#filter-export-start .input-group.date input').val();
