@@ -201,8 +201,8 @@ class InventoryRepository implements InventoryRepositoryInterface {
                 // if($product['stacklocation'] == null){
                 //     continue;
                 // }
-                $result['data'][$index]['committed'] = number_format($this->getCommittedByStack($product['stacknumber']), 4);
-                $result['data'][$index]['ordered'] = number_format($this->getOrderedByStack($product['stacknumber']), 4);
+                $result['data'][$index]['committed'] = number_format($this->getCommittedByStack($product['stacknumber']), 3);
+                $result['data'][$index]['ordered'] = number_format($this->getOrderedByStack($product['stacknumber']), 3);
 
                 $result['data'][$index]['productname'] = $product['product_name']['name'];
                 $result['data'][$index]['stacknumber'] = $product['stacknumber'];
@@ -219,7 +219,7 @@ class InventoryRepository implements InventoryRepositoryInterface {
                         $result['data'][$index]['onHandTons'] += $stacklocation['tons'];
                     }                        
                 }
-                $result['data'][$index]['available'] = number_format($result['data'][$index]['onHandTons'] - $result['data'][$index]['committed'] + $result['data'][$index]['ordered'], 4);
+                $result['data'][$index]['available'] = number_format($result['data'][$index]['onHandTons'] - $result['data'][$index]['committed'] + $result['data'][$index]['ordered'], 3);
                 $result['data'][$index]['stacklocation'] = substr($result['data'][$index]['stacklocation'], 0, -2); //remove extra | on last
                 $index++;
             }
