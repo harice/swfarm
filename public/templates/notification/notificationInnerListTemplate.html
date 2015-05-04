@@ -1,0 +1,31 @@
+<% if(!_.isEmpty(notifications)) {    
+    _.each(notifications, function(n){                         
+        var type = n.notificationtype_id;                        
+        var nClass = '';
+        switch(type) {
+            case types.CREATEPO: 
+                nClass = classes.CREATEPO;
+                break;
+            case types.UPDATEPO: 
+                nClass = classes.UPDATEPO;
+                break;
+            case types.CREATEORDERSCHED: 
+                nClass = classes.CREATEORDERSCHED;
+                break;
+            case types.UPDATEORDERSCHED: 
+                nClass = classes.UPDATEORDERSCHED;
+                break;
+            case types.CREATEORDERTICKET: 
+                nClass = classes.CREATEORDERTICKET;
+                break;
+            default:
+                nClass = classes.UPDATEORDERTICKET;
+                break;
+        }                       
+    %>
+    <div class="notification"><span class="fa <%= nClass %>"></span><span><%= n.details %></span>. <small>Updated at <%= formatDateAMPM(n.updated_at) %></small></div>
+    <% });
+} 
+else { %>
+<p>No notifications found.</p>
+<% } %>

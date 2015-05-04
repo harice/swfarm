@@ -221,6 +221,33 @@ define([
 				thisObj.collection.setFilter('transportend', date);
 				thisObj.renderList(1);
 			});
+
+			this.$el.find('#filter-export-start .input-group.date').datepicker({
+				orientation: "top left",
+				autoclose: true,
+				clearBtn: true,
+				todayHighlight: true,
+				format: 'mm-dd-yyyy',
+				forceParse:false,
+			}).on('changeDate', function (ev) {
+				var selectedDate = $('#filter-export-start .input-group.date input').val();
+				//thisObj.$el.find('#filter-export-end .input-group.date').datepicker('setStartDate', selectedDate);		
+
+				thisObj.$el.find('#filter-export-end .input-group.date').datepicker('setDate', selectedDate)
+			});
+			
+			this.$el.find('#filter-export-end .input-group.date').datepicker({
+				orientation: "top left",
+				autoclose: true,
+				clearBtn: true,
+				todayHighlight: true,
+				format: 'mm-dd-yyyy',
+				forceParse:false,
+			}).on('changeDate', function (ev) {
+				var selectedDate = $('#filter-export-end .input-group.date input').val();
+				thisObj.$el.find('#filter-export-start .input-group.date').datepicker('setEndDate', selectedDate);
+				
+			});
 		},		
 		
 		events: {
@@ -234,6 +261,8 @@ define([
 			'click .stop-propagation': 'linkStopPropagation',
 			'click .close-po': 'showCloseConfirmationWindow',
 			'click #confirm-close-order': 'closeOrder',
+			'change #exportdatestart': 'exportPO',
+			'change #exportdateend': 'exportPO'
 		},	
 		
 		sortPODate: function () {
@@ -414,6 +443,13 @@ define([
 			
 			return false;
 		},
+
+		exportPO: function() {
+			var dataModel = "purchase-order";
+			var export_csv_url = Const.URL.FILE +'?q='+ Base64.encode(Backbone.View.prototype.serialize({type:'excel', format:'csv', model: dataModel, dateStart: $("#exportdatestart").val(), dateEnd: $("#exportdateend").val()}));						
+
+			$("#export-po").attr('href', export_csv_url).removeAttr('disabled');
+		}
 	});
 
   return PurchaseOrderListView;

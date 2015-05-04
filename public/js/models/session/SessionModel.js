@@ -77,7 +77,7 @@ define([
               that.set('permission', response.permission);
               that.set('token', token);
 
-              //that.initNotificationLoop(response.user.id);
+              that.initNotificationLoop(response.user.id);
 
               if(that.get('redirectFrom')){
                 var path = that.get('redirectFrom');
@@ -108,11 +108,11 @@ define([
         });
 
         setInterval(function(){  
-          console.log("Test1: ", that.notificationDone);        
+          //console.log("Test1: ", that.notificationDone);        
           if(that.notificationDone == true) {
             that.notificationModel.getNotificationCount(id);            
             that.notificationDone = false;
-          }     console.log("Test2");
+          }     //console.log("Test2");
         }, 5000)
         
       }

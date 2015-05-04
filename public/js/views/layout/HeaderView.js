@@ -22,15 +22,21 @@ define([
 	        });
 
 			this.notificationCollection = new NotificationCollection();
-			this.notificationCollection.on('sync', function(collection, response, options, otherOptions){
+			this.notificationCollection.on('sync', function(collection, response, options, otherOptions){				
 				if(typeof otherOptions != "undefined") {
-					$(".notifications_menu .new-notifications").html(thisObj.getNotificationList(this.models, true));						
+					console.log("If: "+collection.list_results);
+					$(".notifications_menu .new-notifications").html(thisObj.getNotificationList(collection.list_results, true));						
 				}
 				else {
-					if(!_.isEmpty(this.models))
-						$(".notifications_menu .new-notifications").html(thisObj.getNotificationList(this.models));
-					else 
+					if(!_.isEmpty(collection.list_results)) {
+						
+						console.log("Else if");
+						$(".notifications_menu .new-notifications").html(thisObj.getNotificationList(collection.list_results));
+					}
+					else {
+						console.log("Else Else");
 						thisObj.getSeenNotification();
+					}
 				}
 			});
 		},
@@ -65,7 +71,7 @@ define([
 			$("ul.cl-vnavigation li").removeClass('active');
 		},
 
-		fetchNotifications: function(ev) {	
+		fetchNotifications: function(ev) {				
 			$(".notifications_menu").removeClass("notified").find(".notification-count").text('').hide();
 
 			this.notificationModel.getNotificationCount(Session.get('su'));			
@@ -86,12 +92,17 @@ define([
 
 		getNotificationList: function(data, seen) {			
 			var notifications = '';
-			var nClass = (seen) ? 'notification seen' : 'notification';
-			console.log(seen);
+			var nClass = (seen) ? 'notification seen' : 'notification';			
 
-			_.each(data, function(n){
-				notifications += '<div class="'+nClass+'"><span>'+n.get('details')+'. </span><small>'+ Backbone.View.prototype.helpers.formatDateAMPM(n.get('updated_at'))+'</small></div>';
-			});
+			if(!_.isEmpty(data)) {
+				_.each(data, function(n){
+					notifications += '<div class="'+nClass+'"><span>'+n.details+'. </span><small>'+ Backbone.View.prototype.helpers.formatDateAMPM(n.updated_at)+'</small></div>';
+				});
+			}
+
+			else {
+				notifications = '<div class="notification loading">No notifications found.</div>'	
+			}
 
 			return notifications;
 		},
