@@ -163,8 +163,10 @@ class StorageLocationRepository implements StorageLocationRepositoryInterface {
     public function store($data)
     {
         DB::beginTransaction();
+        
         $this->validate($data, 'StorageLocation');
         $storagelocation = $this->instance();
+
         $storagelocation->fill($data);
 
         if (!$storagelocation->save()) {

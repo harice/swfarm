@@ -222,7 +222,7 @@ define([
 					schedule_product_id: model.get('id'),
 					stock_number: model.get('productorder').stacknumber,
 					name: model.get('productorder').product.name,
-					net: '0.00',
+					net: '0.000',
 					number: '.'+ctr++,
 				};
 				var productItemTemplate = _.template(weightInfoProductItemTemplate, templateVariables);

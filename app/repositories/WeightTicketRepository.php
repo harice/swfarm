@@ -148,7 +148,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             if(!$this->isNetWeightIsEqualToTotalProductWeight($data)){
                 return array(
                   'error' => true,
-                  'message' => 'Net weight and total weight of product(s) are not equal.');
+                  'message' => 'Net Lbs. and total Lbs. of all products are not equal.');
             }
 
             if(isset($data['pickup_info'])){
@@ -308,7 +308,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             if(!$this->isNetWeightIsEqualToTotalProductWeight($data)){
                 return array(
                   'error' => true,
-                  'message' => 'Net weight and total weight of product(s) are not equal.');
+                  'message' => 'Net Lbs. and total Lbs. of all products are not equal.');
             }
 
             $weightticket->fill($data);
