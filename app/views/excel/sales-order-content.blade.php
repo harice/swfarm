@@ -39,7 +39,7 @@
 						<td {{$border_s}}>{{ strtoupper(date('M-d-Y',strtotime($so->transportdateend))) }}</td>
 						<td {{$border_s}}> {{ $prodsum['productname']['name'] }} </td>
 						<td {{$border_s}}> {{ $prodorder['stacknumber'] }}</td>
-						<td {{$border_s}}> {{ $prodorder['unitprice'] }}</td>
+						<td {{$border_s}}> $ {{ number_format($prodorder['unitprice'],2,'.',',') }}</td>
 						<td {{$border_s}}> {{ $prodorder['bales'] }}</td>
 						<td {{$border_s}}>&nbsp; {{ number_format($prodorder['tons'],3,'.',',') }}</td>
 						<td {{$border_s}}>{{ $so->weightPercentageDelivered }} % </td>
