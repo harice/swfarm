@@ -298,7 +298,7 @@ define([
 		},
 
 		onBlurTon: function (ev) {
-			this.toFixedValueWithComma($(ev.target), 4);
+			this.toFixedValueWithComma($(ev.target), 3);
 		},
 
 		onBlurPound: function (ev) {

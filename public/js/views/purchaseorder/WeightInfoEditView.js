@@ -88,7 +88,7 @@ define([
 				var weightInfoTare = (typeof weightInfo.tare != 'undefined' && weightInfo.tare != null)? this.addCommaToNumber(weightInfo.tare) : '';
 				this.$el.find('.tare').val(weightInfoTare);
 				var wiNet = (typeof weightInfo.gross != 'undefined' && weightInfo.gross != null && typeof weightInfo.tare != 'undefined' && weightInfo.tare != null)? parseFloat(weightInfo.gross) - parseFloat(weightInfo.tare) : 0;
-				this.$el.find('.net').text(this.addCommaToNumber(wiNet.toFixed(4)));
+				this.$el.find('.net').text(this.addCommaToNumber(wiNet.toFixed(3)));
 				
 				var productsBalesTotal = 0;
 				var productsPoundsTotal = 0;
@@ -111,7 +111,7 @@ define([
 						number: '.'+piCtr++,
 						bales: (parseInt(thisObj.addCommaToNumber(bales)) != 0)? thisObj.addCommaToNumber(bales) : '',
 						pounds: (parseFloat(thisObj.addCommaToNumber(pounds)) != 0)? thisObj.addCommaToNumber(pounds.toFixed(2)) : '',
-						net: net.toFixed(4),
+						net: net.toFixed(3),
 					};
 					
 					var productItemTemplate = _.template(weightInfoProductItemTemplate, variables);
@@ -119,7 +119,7 @@ define([
 				});
 				thisObj.$el.find('#product-list tfoot .total-bales').text(this.addCommaToNumber(productsBalesTotal.toString()));
 				thisObj.$el.find('#product-list tfoot .total-pounds').text(this.addCommaToNumber(productsPoundsTotal.toFixed(2)));
-				thisObj.$el.find('#product-list tfoot .total-net-tons').text(this.addCommaToNumber(productsNetTotal.toFixed(4)));
+				thisObj.$el.find('#product-list tfoot .total-net-tons').text(this.addCommaToNumber(productsNetTotal.toFixed(3)));
 				
 				if(weightInfo.document != null) {
 					this.subContainer.find('#uploadedfile').val(weightInfo.document.id);

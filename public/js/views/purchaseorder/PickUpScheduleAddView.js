@@ -780,7 +780,7 @@ define([
 			});
 			
 			if(total != 0)
-				$('#total-quantity').val(this.addCommaToNumber(total.toFixed(4)));
+				$('#total-quantity').val(this.addCommaToNumber(total.toFixed(3)));
 			else
 				$('#total-quantity').val('');
 				

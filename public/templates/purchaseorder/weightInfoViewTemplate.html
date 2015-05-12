@@ -136,15 +136,15 @@ PO No.: <span class="text-danger"><%= po.get("order_number") %></span><br>
 								</tr>
 								<tr>
 									<td>Gross :</td>
-									<td><%= numberFormatTons(wi.get("weightticketscale_pickup").gross) %></td>
+									<td><%= numberFormatLbs(wi.get("weightticketscale_pickup").gross) %></td>
 								</tr>
 								<tr>
 									<td>Tare :</td>
-									<td><%= numberFormatTons(wi.get("weightticketscale_pickup").tare) %></td>
+									<td><%= numberFormatLbs(wi.get("weightticketscale_pickup").tare) %></td>
 								</tr>
 								<tr>
 									<td>Net :</td>
-									<td><%= numberFormatTons(wi.get("weightticketscale_pickup").gross - wi.get("weightticketscale_pickup").tare)%></td>
+									<td><%= numberFormatLbs(wi.get("weightticketscale_pickup").gross - wi.get("weightticketscale_pickup").tare)%></td>
 								</tr>
 								<tr>
 									<td>Uploaded PDF</td>

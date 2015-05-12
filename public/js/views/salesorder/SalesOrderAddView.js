@@ -836,7 +836,7 @@ define([
 				var value = thisObj.removeCommaFromNumber($(this).val());
 				total += (!isNaN(parseFloat(value)))? parseFloat(value) : 0;
 			});
-			this.subContainer.find('#total-tons').val(thisObj.addCommaToNumber(total.toFixed(4)));
+			this.subContainer.find('#total-tons').val(thisObj.addCommaToNumber(total.toFixed(3)));
 		},
 		
 		computeTotalPrice: function (price, tonsOrBales, unitePriceField) {
@@ -1047,7 +1047,7 @@ define([
 				
 				productFields.find('.product_id').val(product.productname.id);
 				thisObj.convertProductFieldToReadOnly(productFields, product.productname.id, true);
-				productFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(product.tons).toFixed(4)));
+				productFields.find('.tons').val(thisObj.addCommaToNumber(parseFloat(product.tons).toFixed(3)));
 				
 				var j = 0;
 				_.each(product.productorder, function (productSub) {

@@ -148,7 +148,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             if(!$this->isNetWeightIsEqualToTotalProductWeight($data)){
                 return array(
                   'error' => true,
-                  'message' => 'Net weight and total weight of product(s) are not equal.');
+                  'message' => 'Net Lbs. and total Lbs. of all products are not equal.');
             }
 
             if(isset($data['pickup_info'])){
@@ -308,7 +308,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             if(!$this->isNetWeightIsEqualToTotalProductWeight($data)){
                 return array(
                   'error' => true,
-                  'message' => 'Net weight and total weight of product(s) are not equal.');
+                  'message' => 'Net Lbs. and total Lbs. of all products are not equal.');
             }
 
             $weightticket->fill($data);
@@ -842,21 +842,24 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             $weightticket = $data['dropoff_info'];
         }
 
-        $netWeight = $weightticket['gross']-$weightticket['tare'];
-        $totalProductWeightInPounds = 0;
+        # $netWeight = $weightticket['gross']-$weightticket['tare']; // old as of 16-April-2015
+        $netWeight = ($weightticket['gross']-$weightticket['tare']) * 0.0005; // new as of 16-April-2015
+        $totalProductWeightInPounds = 0;  
         foreach ($weightticket['products'] as $product) {
             $totalProductWeightInPounds += $product['pounds'];
         }
 
         $totalProductWeightInTons = $totalProductWeightInPounds * 0.0005;
-
         //formatting
         $netWeight = number_format($netWeight, 4);
         $totalProductWeightInTons = number_format($totalProductWeightInTons, 4);
         // var_dump($netWeight);
         // var_dump($totalProductWeightInTons);
         // var_dump($netWeight == $totalProductWeightInTons);
-        return $netWeight == $totalProductWeightInTons;
+
+        return $netWeight == $totalProductWeightInTons; 
+
+
     }
 
     /**

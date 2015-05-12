@@ -41,13 +41,13 @@
 		Total Amount Due:
 	</div>
 	<div class='width-60 float-right text-right'>
-		{{ date('F d, Y') }}
+		{{ date('F d, Y') }} 
 		<br>
 		{{ number_format($report_o->bales, 0, '.', ',') }}
 		<br>
 		{{ number_format($report_o->pounds, 2, '.', ',') }}
 		<br>
-		{{ number_format($report_o->tons, 4, '.', ',') }}
+		{{ number_format($report_o->tons, 3, '.', ',') }}
 		<br>
 		<br>
 		<strong>$ {{ number_format($report_o->hauling, 2, '.', ',') }}</strong>

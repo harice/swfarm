@@ -97,9 +97,9 @@ define([
 				
 				productFields.find('.id').val(product.id);
 				productFields.find('.productorder_id').val(product.productorder_id).change();
-				productFields.find('.quantity').val(thisObj.addCommaToNumber(quantity.toFixed(4)));
+				productFields.find('.quantity').val(thisObj.addCommaToNumber(quantity.toFixed(3)));
 			});
-			this.$el.find('#total-quantity').val(this.addCommaToNumber(totalQuantity.toFixed(4)));
+			this.$el.find('#total-quantity').val(this.addCommaToNumber(totalQuantity.toFixed(3)));
 			
 			this.$el.find('#truckerAccountType_id').val(truckerAccountTypeId);
 			this.fetchTruckerAccounts(truckerAccountTypeId, trucker.accountidandname.id, trucker.id, truckerNumber.id, this.model.get('truckingrate'));

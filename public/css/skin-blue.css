@@ -285,7 +285,8 @@ pre {
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 }
-.dropdown.profile_menu .dropdown-menu:before {
+.dropdown.profile_menu .dropdown-menu:before,
+.dropdown.notifications_menu .dropdown-menu:before {
   background: url(../images/menu-tail-up.png) no-repeat;
   top: -10px;
   content: "";

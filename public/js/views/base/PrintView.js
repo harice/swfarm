@@ -246,11 +246,11 @@ define([
 		},
 		
 		formatTon: function (ev) {
-			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 4);
+			this.fieldAddCommaToNumber($(ev.target).val(), ev.target, 3);
 		},
 		
 		onBlurTon: function (ev) {
-			this.toFixedValueWithComma($(ev.target), 4);
+			this.toFixedValueWithComma($(ev.target), 3);
 		},
 		
 		onBlurPound: function (ev) {
