@@ -11,7 +11,6 @@ class DownloadRepository implements DownloadInterface
 		} else {
 			$q = $params;
 		}
-
 		if(!$_404) {
 			switch ($q['type']) {
 				case 'doc':
@@ -1151,6 +1150,54 @@ class DownloadRepository implements DownloadInterface
 							}
 							break;
 
+						## 29April2015 from PO
+						case 'purchase-order':
+
+							$format = $q['format'];
+
+							$data_o = $this->generateOrder($q, 1);
+							
+							$excel_o = Excel::create('PO-Report-'.date('Ymd'), function($excel) use($data_o) {
+											$excel->setDescription('Purchase Order : '.date('Ymd'))->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
+									        $excel->sheet(date('Ymd'), function($sheet) use($data_o) {
+								        	$sheet->setColumnFormat(array('I' => '0.00'));
+								        	$sheet->loadView(
+									        		'excel.purchase-order-header',
+									        		array(
+									        			'data_o' => $data_o,
+									        			'_nest_content' => View::make('excel.purchase-order-content', array('data_o' => $data_o))
+								        			)
+							        			);
+									        });
+										});
+							$excel_o->download($format);
+
+							break;
+
+
+						case 'sales-order':
+
+							$format = $q['format'];
+
+							$data_o = $this->generateOrder($q, 2);
+							
+							$excel_o = Excel::create('SO-Report-'.date('Ymd'), function($excel) use($data_o) {
+											$excel->setDescription('Sales Order : '.date('Ymd'))->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
+									        $excel->sheet(date('Ymd'), function($sheet) use($data_o) {
+								        	$sheet->setColumnFormat(array('I' => '0.00'));
+								        	$sheet->loadView(
+									        		'excel.sales-order-header',
+									        		array(
+									        			'data_o' => $data_o,
+									        			'_nest_content' => View::make('excel.sales-order-content', array('data_o' => $data_o))
+								        			)
+							        			);
+									        });
+										});
+							$excel_o->download($format);
+							break;
+						## 29April2015 from PO
+
 						default:
 							if($mail) return false;
 							else $_404 = true;
@@ -1168,6 +1215,47 @@ class DownloadRepository implements DownloadInterface
 		if($_404) return Redirect::to('404')->withPage('file');
 		exit();
 	}
+
+	public function generateOrder($_params = array(), $ordertype)
+	{
+		$_dateBetween = $this->generateBetweenDates($_params);
+   
+		$rpoOrder = new OrderRepository;
+		$order = Order::with('productsummary.productname')
+                ->with('productsummary.productorder.product')
+                ->with('account')
+                ->with('contact')
+                ->with('orderaddress', 'orderaddress.addressStates')
+                ->with('location')
+                ->with('status')
+                ->with('ordercancellingreason.reason');
+
+        if($ordertype == 2) //for SO only
+            $order = $order->with('natureofsale', 'contract');
+
+
+        $order = $order->where('ordertype', $ordertype)
+        		->whereBetween('created_at',array_values($_dateBetween))
+        		->get();
+       	//get the total price of products (unit price x tons)
+        foreach($order as $item){
+         	$item['totalPrice'] = 0.00;
+         	$item['weightPercentageDelivered'] = $rpoOrder->getExpectedDeliveredData($item['id']);
+         	$item['transportscheduleDetails'] = $rpoOrder->getOrderWeightDetailsByStack($item['id']);
+          	foreach($item['productsummary'] as $productsummary)
+          	{
+            	foreach($productsummary['productorder'] as $productorder)
+            	{
+	                if($productorder['unitprice'] != null)
+	                {
+	                  $item['totalPrice'] += $productorder['unitprice'] * $productorder['tons'];
+	                }
+            	}
+        	}
+        }
+        return $order;
+	}
+
 
 	public function report($q, $type){
 		$_error = false;
