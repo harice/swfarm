@@ -3,6 +3,7 @@
 class DownloadRepository implements DownloadInterface 
 {
 	public function download($params,$mail) {
+
 		$_404 = false;
 
 		if(!$mail) {
@@ -1152,27 +1153,371 @@ class DownloadRepository implements DownloadInterface
 
 						## 29April2015 from PO
 						case 'purchase-order':
+						
+						$format = $q['format'];
 
-							$format = $q['format'];
-
-							$data_o = $this->generateOrder($q, 1);
+						$data_o = $this->generateOrder($q, 1);
+						
+						if(count($data_o) > 0)
+						{
 							
-							$excel_o = Excel::create('PO-Report-'.date('Ymd'), function($excel) use($data_o) {
-											$excel->setDescription('Purchase Order : '.date('Ymd'))->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
-									        $excel->sheet(date('Ymd'), function($sheet) use($data_o) {
-								        	$sheet->setColumnFormat(array('I' => '0.00'));
-								        	$sheet->loadView(
-									        		'excel.purchase-order-header',
-									        		array(
-									        			'data_o' => $data_o,
-									        			'_nest_content' => View::make('excel.purchase-order-content', array('data_o' => $data_o))
-								        			)
-							        			);
-									        });
-										});
-							$excel_o->download($format);
+							foreach ($data_o as $po):
+								
+								foreach ($po->transportscheduleDetails as $transportschedule):
+									
+									foreach ($po->productsummary as $val1):
+										foreach ($val1['productorder'] as $val2):
+										
+											if($val2['stacknumber']  == $transportschedule['stackNumber'])
+											{
+												$prod_sum['summary'] = [
+													'po_num' => $po->order_number, 
+													'acount' => $po->account->name,
+													'address' => (!is_null($po->orderaddress_id)) ? $po->orderaddress->street.' '.$po->orderaddress->city.', '.$po->orderaddress->address_states->state.', '.$po->orderaddress->zipcode : null,
+													'location' => (!is_null($po->location_id)) ? $po->location->location : null,
+													'purchased_date' => date('Y-m-d h:i:s A', strtotime($po->created_at)),
+													'pick_up_start' =>	date('Y-m-d h:i:s A', strtotime($po->transportdatestart)),
+													'pick_up_end'	=> date('Y-m-d h:i:s A', strtotime($po->transportdateend)),
+													'notes' => $po->notes,
+													'product_name' => $val2['product']['name'],
+													'stack_number' => $val2['stacknumber'],
+													'tons' => $val2['tons'], 
+													'bales'=>$val2['bales'], 
+													'unit_price' => $val2['unitprice'],
+													'total_payment' => $po->totalPayment,
+													'testing' => $val2['ishold'],
+													'rfv' => $val2['rfv'],	
+													];
+											}
+										endforeach;
 
-							break;
+									endforeach;
+
+								if( count($transportschedule['schedule']) > 0 )
+								{
+
+									foreach ($transportschedule['schedule'] as $schedule):
+
+										$weighttickets = $this->weightticket($schedule['transportschedule_id']);
+
+										$schedetails = $this->getSchedule($schedule['transportschedule_id']);
+										
+										foreach($schedetails['transportscheduleproduct'] as $row):
+				
+											if($row['productorder']['stacknumber']  == $transportschedule['stackNumber'])
+											{
+												$schedule['productorder'] = [
+																			'stacknumber' => $row['productorder']['stacknumber'], 
+																			'po_no' => $po->order_number, 
+																			'tons' => $row['productorder']['tons'], 
+																			'bales'=>$row['productorder']['bales'], 
+																			'unit_price' => $row['productorder']['unitprice'],
+																			'testing' => $row['productorder']['ishold'],
+																			'rfv' => $row['productorder']['rfv'],
+																			't_date' => $schedetails['date'],
+																			'product'  => $row['productorder']['product']['name'],
+																			'section' => $row['sectionto']['storagelocation']['name'],
+																			'quantity' => $row['quantity'],
+																			'origin_loader' => $schedetails['originloader']['accountidandname']['name'],
+																			'origin_loader_contact' => $schedetails['originloader']['firstname'].' '.$schedetails['originloader']['lastname'],
+																			'origin_loader_fee' => $schedetails['originloaderfee'],
+																			'destination_loader' =>  $schedetails['destinationloader']['accountidandname']['name'],
+																			'destination_loader_contact' => $schedetails['destinationloader']['firstname'].' '.$schedetails['destinationloader']['lastname'],
+																			'destination_loader_fee' => $schedetails['destinationloaderfee'],
+																			'trucker' => $schedetails['trucker']['accountidandname']['name'],
+																			'trucker_contact' => $schedetails['trucker']['firstname'].' '.$schedetails['trucker']['lastname'],
+																			'truck_vehicle' => $schedetails['truckvehicle']['trucknumber'],
+																			'trailer' =>  $schedetails['trailer']['account']['name'],
+																			'trailer_number' =>  $schedetails['trailer']['number'],
+																			'distance' =>  $schedetails['distance'],
+																			'fuel_charge' => $schedetails['fuelcharge'],
+																			'trucking_rate' => $schedetails['truckingrate'],
+																			'handling_fee' => $schedetails['handlingfee'],
+																			'trailer_rate' => $schedetails['trailerrate'],
+																			'admin_fee' => $schedetails['adminfee'],
+																			];
+											}
+										endforeach;
+
+										if(!is_null($weighttickets))
+										{
+											if(!is_null($weighttickets['weightticketscale_pickup']))
+											{
+												foreach($weighttickets['weightticketscale_pickup']['weightticketproducts'] as $row1):
+													
+													if($row1['transportscheduleproduct']['productorder']['stacknumber']  == $transportschedule['stackNumber'])
+													{
+														$pickup_details = [
+											 	 	 			'l_scale'	=> $weighttickets['weightticketscale_pickup']['scaler_account']['name'],
+											 	 	 			'l_scaler_account'=> $weighttickets['weightticketscale_pickup']['scale']['name'],
+											 	 	 			'l_scale_fee'	=> $weighttickets['weightticketscale_pickup']['fee'],
+											 	 	 			'l_gross'	=> $weighttickets['weightticketscale_pickup']['gross'],
+											 	 	 			'l_tare'	=> $weighttickets['weightticketscale_pickup']['tare'],
+											 	 	 			'l_bales'	=> $weighttickets['weightticketscale_pickup']['bales'],
+											 	 	 			'l_net'	=> $weighttickets['weightticketscale_pickup']['gross'] - $weighttickets['weightticketscale_pickup']['tare'],
+											 	 	 			'l_product' => $row1['transportscheduleproduct']['productorder']['product']['name'],
+											 	 	 			'l_stack_number' => $row1['transportscheduleproduct']['productorder']['stacknumber'],
+											 	 	 			'l_prod_bales' => $row1['bales'],
+											 	 	 			'l_prod_tons'	=> $row1['tons'],
+											 	 	 			'l_prod_pounds'	=> $row1['pounds'],
+											 	 	 			];
+													}
+												
+												endforeach;
+											}
+
+											if(!is_null($weighttickets['weightticketscale_dropoff']))
+											{
+												foreach($weighttickets['weightticketscale_dropoff']['weightticketproducts'] as $row2):
+													
+													if($row2['transportscheduleproduct']['productorder']['stacknumber']  == $transportschedule['stackNumber'])
+													{
+														$dropoff_details = [
+											 	 	 			'u_scale'	=> $weighttickets['weightticketscale_dropoff']['scaler_account']['name'],
+											 	 	 			'u_scaler_account'=> $weighttickets['weightticketscale_dropoff']['scale']['name'],
+											 	 	 			'u_scale_fee'	=> $weighttickets['weightticketscale_dropoff']['fee'],
+											 	 	 			'u_gross'	=> $weighttickets['weightticketscale_dropoff']['gross'],
+											 	 	 			'u_tare'	=> $weighttickets['weightticketscale_dropoff']['tare'],
+											 	 	 			'u_bales'	=> $weighttickets['weightticketscale_dropoff']['bales'],
+											 	 	 			'u_net'	=> $weighttickets['weightticketscale_dropoff']['gross'] - $weighttickets['weightticketscale_dropoff']['tare'],
+											 	 	 			'u_product' => $row2['transportscheduleproduct']['productorder']['product']['name'],
+											 	 	 			'u_stack_number' => $row2['transportscheduleproduct']['productorder']['stacknumber'],
+											 	 	 			'u_prod_bales' => $row2['bales'],
+											 	 	 			'u_prod_tons'	=> $row2['tons'],
+											 	 	 			'u_prod_pounds'	=> $row2['pounds'],
+											 	 	 			];
+													}
+												
+												endforeach;
+											}
+											else
+											{
+												$dropoff_details = [
+											 	 	'u_scale'	=> null,
+											 	 	'u_scaler_account'=> null,
+											 	 	'u_scale_fee'	=> null,
+											 	 	'u_gross'	=> null,
+											 	 	'u_tare'	=> null,
+											 	 	'u_bales'	=> null,
+											 	 	'u_net'	=> null,
+											 	 	'u_product' => null,
+											 	 	'u_stack_number' => null,
+											 	 	'u_prod_bales' => null,
+											 	 	'u_prod_tons'	=> null,
+											 	 	'u_prod_pounds'	=> null,
+											 	 	];
+											}
+
+											$with_data_ticket = array_merge($pickup_details, $dropoff_details);
+										}
+										else
+										{
+											$with_data_ticket = [
+														'weight_ticket' => null,
+														'loading_ticket' => null,
+														'unloading_ticket' => null,
+														'l_scale'	=> null,
+											 	 	 	'l_scaler_account'=> null,
+											 	 	 	'l_scale_fee'	=> null,
+											 	 	 	'l_gross'	=> null,
+											 	 	 	'l_tare'	=> null,
+											 	 	 	'l_bales'	=> null,
+											 	 	 	'l_net'	=> null,
+											 	 	 	'l_product' => null,
+											 	 	 	'l_stack_number' => null,
+											 	 	 	'l_prod_bales' => null,
+											 	 	 	'l_prod_tons'	=> null,
+											 	 	 	'l_prod_pounds'	=> null,
+											 	 	 	'u_scale'	=> null,
+												 	 	'u_scaler_account'=> null,
+												 	 	'u_scale_fee'	=> null,
+												 	 	'u_gross'	=> null,
+												 	 	'u_tare'	=> null,
+												 	 	'u_bales'	=> null,
+												 	 	'u_net'	=> null,
+												 	 	'u_product' => null,
+												 	 	'u_stack_number' => null,
+												 	 	'u_prod_bales' => null,
+												 	 	'u_prod_tons'	=> null,
+												 	 	'u_prod_pounds'	=> null,
+													];
+										}
+										$ticket['data'] = array_merge($with_data_ticket,[
+														'weight_ticket' => $weighttickets['weightTicketNumber'],
+											 	 		'loading_ticket' => $weighttickets['loadingTicketNumber'],
+											 	 		'unloading_ticket' => $weighttickets['unloadingTicketNumber'],
+
+										]);
+
+										$data_o_final[] = [
+													'_po_num' => $po->order_number, 
+													'_acount' => $po->account->name,
+													'_address' => (!is_null($po->orderaddress_id)) ? $po->orderaddress->street.' '.$po->orderaddress->city.', '.$po->orderaddress->address_states->state.', '.$po->orderaddress->zipcode : null,
+													'_location' => (!is_null($po->location_id)) ? $po->location->location : null,
+													'_purchased_date' => date('Y-m-d h:i:s A', strtotime($po->created_at)),
+													'_pick_up_start' =>	date('Y-m-d h:i:s A', strtotime($po->transportdatestart)),
+													'_pick_up_end'	=> date('Y-m-d h:i:s A', strtotime($po->transportdateend)),
+													'_notes' => $po->notes,
+													'_product_name' => $transportschedule['productName'], 
+													'_stack_number' => $transportschedule['stackNumber'], 
+													'_product_name' => $transportschedule['productName'],
+													'_tons' => number_format($schedule['productorder']['tons'],3,'.',','), 
+													'_bales' => $schedule['productorder']['bales'], 
+													'_unit_price' => '$'.number_format($schedule['productorder']['unit_price'],2,'.',','),
+													'_total_payment' => '$'.number_format($po->totalPayment,2,'.',','),
+													'_testing' => ($schedule['productorder']['testing'] == 0) ? "No" : "Yes",
+													'_rfv' => $schedule['productorder']['rfv'],
+													'_transport_date' => date('Y-m-d h:i:s A', strtotime($schedule['transportscheduledate'])), 
+													'_transport_date_c' => date('Y-m-d h:i:s A', strtotime($schedule['productorder']['t_date'])), 
+													'_ts_stack_number' => $schedule['productorder']['stacknumber'],
+													'_ts_product_name' => $schedule['productorder']['product'],
+													'_ts_section' => $schedule['productorder']['section'],
+													'_ts_quantity' => number_format($schedule['productorder']['quantity'],3,'.',','),
+													'_ts_origin_loader'	=> $schedule['productorder']['origin_loader'],
+													'_ts_origin_loader_contact'	=> $schedule['productorder']['origin_loader_contact'],
+													'_ts_origin_loader_fee'	=> '$'.number_format($schedule['productorder']['origin_loader_fee'],2,'.',','),
+													'_ts_destination_loader'	=> $schedule['productorder']['destination_loader'],
+													'_ts_destination_loader_contact' => $schedule['productorder']['destination_loader_contact'],
+													'_ts_destination_loader_fee'	=> '$'.number_format($schedule['productorder']['destination_loader_fee'],2,'.',','),
+													'_ts_trucker' => $schedule['productorder']['trucker'],
+													'_ts_trucker_contact' => $schedule['productorder']['trucker_contact'],
+													'_ts_trailer' => $schedule['productorder']['trailer'],
+													'_ts_trailer_number' => $schedule['productorder']['trailer_number'],
+													'_ts_distance' =>  $schedetails['distance'],
+													'_ts_fuel_charge' => '$'.number_format($schedule['productorder']['fuel_charge'],2,'.',','),
+													'_ts_trucking_rate' => '$'.number_format($schedule['productorder']['trucking_rate'],2,'.',','),
+													'_ts_handling_fee' => '$'.number_format($schedule['productorder']['handling_fee'],2,'.',','),
+													'_ts_trailer_rate' => '$'.number_format($schedule['productorder']['trailer_rate'],2,'.',','),
+													'_weight_ticket' => $schedule['weightTicketNumber'],
+													'_weight_ticket_n' => $ticket['data']['weight_ticket'],
+													'_loading_ticket' => $ticket['data']['loading_ticket'],
+													'_l_scale' =>			$ticket['data']['l_scale'],
+											 	 	'_l_scaler_account'=> 	$ticket['data']['l_scaler_account'],
+											 	 	'_l_scale_fee'	=> '$'.number_format($ticket['data']['l_scale_fee'],2,'.',','),
+											 	 	'_l_gross'	=> 	number_format($ticket['data']['l_gross'],2,'.',','),
+											 	 	'_l_tare'	=> 	number_format($ticket['data']['l_tare'],2,'.',','),
+											 	 	'_l_bales'	=> 	$ticket['data']['l_bales'],
+											 	 	'_l_net'	=> number_format($ticket['data']['l_net'],2,'.',','),
+											 	 	'_l_product' => $ticket['data']['l_product'],
+											 	 	'_l_stack_number' => $ticket['data']['l_stack_number'],
+											 	 	'_l_prod_bales' => $ticket['data']['l_prod_bales'],
+											 	 	'_l_tons'	=> number_format($ticket['data']['l_prod_tons'],3,'.',','),
+											 	 	'_l_pounds'	=> number_format($ticket['data']['l_prod_pounds'],2,'.',','),		
+
+													'_unloading_ticket' => $ticket['data']['unloading_ticket'],
+													'_u_scale' =>			$ticket['data']['u_scale'],
+											 	 	'_u_scaler_account'=> 	$ticket['data']['u_scaler_account'],
+											 	 	'_u_scale_fee'	=> '$'.number_format($ticket['data']['u_scale_fee'],2,'.',','),
+											 	 	'_u_gross'	=> 	number_format($ticket['data']['u_gross'],2,'.',','),
+											 	 	'_u_tare'	=> 	number_format($ticket['data']['u_tare'],2,'.',','),
+											 	 	'_u_bales'	=> 	$ticket['data']['u_bales'],
+											 	 	'_u_net'	=> number_format($ticket['data']['u_net'],2,'.',','),
+											 	 	'_u_product' => $ticket['data']['u_product'],
+											 	 	'_u_stack_number' => $ticket['data']['u_stack_number'],
+											 	 	'_u_prod_bales' => $ticket['data']['u_prod_bales'],
+											 	 	'_u_prod_tons'	=> number_format($ticket['data']['u_prod_tons'],3,'.',','),
+											 	 	'_u_prod_pounds'	=> number_format($ticket['data']['u_prod_pounds'],2,'.',','),		
+													];
+									endforeach;
+
+								}
+								else
+								{
+									$data_o_final[] = [
+													'_po_num' => $po->order_number, 
+													'_acount' => $po->account->name,
+													'_address' => (!is_null($po->orderaddress_id)) ? $po->orderaddress->street.' '.$po->orderaddress->city.', '.$po->orderaddress->address_states->state.', '.$po->orderaddress->zipcode : null,
+													'_location' => (!is_null($po->location_id)) ? $po->location->location : null,
+													'_purchased_date' => date('Y-m-d h:i:s A', strtotime($po->created_at)),
+													'_pick_up_start' =>	date('Y-m-d h:i:s A', strtotime($po->transportdatestart)),
+													'_pick_up_end'	=> date('Y-m-d h:i:s A', strtotime($po->transportdateend)),
+													'_notes' => $po->notes,
+													'_product_name' => $transportschedule['productName'], 
+													'_stack_number' => $transportschedule['stackNumber'], 
+													'_product_name' => $transportschedule['productName'],
+													'_tons' => number_format($prod_sum['summary']['tons'],3,'.',','), 
+													'_bales' => $prod_sum['summary']['bales'], 
+													'_unit_price' => '$'.number_format($prod_sum['summary']['unit_price'],2,'.',','),
+													'_total_payment' => '$'.number_format($prod_sum['summary']['total_payment'],2,'.',','),
+													'_testing' => ($prod_sum['summary']['testing'] ==0) ? "No" : "Yes",
+													'_rfv' => $prod_sum['summary']['rfv'],
+													'_transport_date' => null, 
+													'_transport_date_c' => null, 
+													'_ts_stack_number' => null,
+													'_ts_product_name' => null,
+													'_ts_section' => null,
+													'_ts_quantity' => null,
+													'_ts_origin_loader'	=> null,
+													'_ts_origin_loader_contact'	=> null,
+													'_ts_origin_loader_fee'	=> null,
+													'_ts_destination_loader'	=> null,
+													'_ts_destination_loader_contact' => null,
+													'_ts_destination_loader_fee'	=> null,
+													'_ts_trucker' => null,
+													'_ts_trucker_contact' => null,
+													'_ts_trailer' => null,
+													'_ts_trailer_number' => null,
+													'_ts_distance' =>  null,
+													'_ts_fuel_charge' => null,
+													'_ts_trucking_rate' => null,
+													'_ts_handling_fee' => null,
+													'_ts_trailer_rate' => null,
+													'_weight_ticket' => null,
+													'_weight_ticket_n' => null,
+													'_loading_ticket' => null,
+													'_l_scale' =>	null,
+											 	 	'_l_scaler_account'=> null,
+											 	 	'_l_scale_fee'	=> null,
+											 	 	'_l_gross'	=> 	null,
+											 	 	'_l_tare'	=> 	null,
+											 	 	'_l_bales'	=> 	null,
+											 	 	'_l_net'	=> null,
+											 	 	'_l_product' => null,
+											 	 	'_l_stack_number' => null,
+											 	 	'_l_prod_bales' => null,
+											 	 	'_l_tons'	=> null,
+											 	 	'_l_pounds'	=> null,		
+
+													'_unloading_ticket' => null,
+													'_u_scale' =>	null,
+											 	 	'_u_scaler_account'=> null,
+											 	 	'_u_scale_fee'	=> null,
+											 	 	'_u_gross'	=> 	null,
+											 	 	'_u_tare'	=> 	null,
+											 	 	'_u_bales'	=> 	null,
+											 	 	'_u_net'	=> null,
+											 	 	'_u_product' => null,
+											 	 	'_u_stack_number' => null,
+											 	 	'_u_prod_bales' => null,
+											 	 	'_u_prod_tons'	=> null,
+											 	 	'_u_prod_pounds'	=> null,		
+													];
+								}
+								endforeach;
+
+
+							endforeach;
+						}
+						else
+						{
+							$data_o_final = null;
+						}
+
+						$excel_o = Excel::create('PO-Report-'.date('Ymd'), function($excel) use($data_o_final) {
+										$excel->setDescription('Purchase Order : '.date('Ymd'))->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
+								        $excel->sheet(date('Ymd'), function($sheet) use($data_o_final) {
+							        	$sheet->loadView(
+								        		'excel.purchase-order-header',
+								        		array(
+								        			'data_o' => $data_o_final,
+								        			'_nest_content' => View::make('excel.purchase-order-content', array('data_o' => $data_o_final))
+							        			)
+						        			);
+								        });
+									});
+						$excel_o->download($format);
+
+						break;
 
 
 						case 'sales-order':
@@ -1180,16 +1525,361 @@ class DownloadRepository implements DownloadInterface
 							$format = $q['format'];
 
 							$data_o = $this->generateOrder($q, 2);
+
+							if(count($data_o) > 0)
+							{
 							
-							$excel_o = Excel::create('SO-Report-'.date('Ymd'), function($excel) use($data_o) {
+							foreach ($data_o as $so):
+							
+								foreach ($so->transportscheduleDetails as $transportschedule):
+									
+									foreach ($so->productsummary as $val1):
+								
+										foreach ($val1['productorder'] as $val2):
+
+											if($val2['stacknumber']  == $transportschedule['stackNumber'])
+											{
+												$prod_sum['summary'] = [
+													'so_num' => $so->order_number, 
+													'acount' => $so->account->name,
+													'address' => (!is_null($so->orderaddress_id)) ? $so->orderaddress->street.' '.$so->orderaddress->city.', '.$so->orderaddress->address_states->state.', '.$so->orderaddress->zipcode : null,
+													'nature_of_sales' => (!is_null($so->natureofsale_id)) ? $so->natureofsale->name : null,
+													'sales_date' => date('Y-m-d h:i:s A', strtotime($so->created_at)),
+													'pick_up_start' =>	date('Y-m-d h:i:s A', strtotime($so->transportdatestart)),
+													'pick_up_end'	=> date('Y-m-d h:i:s A', strtotime($so->transportdateend)),
+													'notes' => $so->notes,
+													'product_name' => $val2['product']['name'],
+													'stack_number' => $val2['stacknumber'],
+													'tons' => $val2['tons'], 
+													'bales'=>$val2['bales'], 
+													'unit_price' => $val2['unitprice'],
+													'total_price' => $val2['unitprice'] * $val2['tons'] ,
+													'testing' => $val2['ishold'],
+													'rfv' => $val2['rfv'],	
+													'section_from' =>  $val2['sectionfrom']['storagelocation']['name'].' - '.$val2['sectionfrom']['name'],
+													];
+											}
+										endforeach;
+
+									endforeach;
+
+								if( count($transportschedule['schedule']) > 0 )
+								{
+									foreach ($transportschedule['schedule'] as $schedule):
+
+										$weighttickets = $this->weightticket($schedule['transportschedule_id']);
+
+										$schedetails = $this->getSchedule($schedule['transportschedule_id']);
+										
+										foreach($schedetails['transportscheduleproduct'] as $row):
+											
+											if($row['productorder']['stacknumber']  == $transportschedule['stackNumber'])
+											{
+												$schedule['productorder'] = [
+																			'stacknumber' => $row['productorder']['stacknumber'], 
+																			'so_no' => $so->order_number, 
+																			'tons' => $row['productorder']['tons'], 
+																			'bales'=>$row['productorder']['bales'], 
+																			'unit_price' => $row['productorder']['unitprice'],
+																			'testing' => $row['productorder']['ishold'],
+																			'rfv' => $row['productorder']['rfv'],
+																			't_date' => $schedetails['date'],
+																			'product'  => $row['productorder']['product']['name'],
+																			'section' => $prod_sum['summary']['section_from'],
+																			'quantity' => $row['quantity'],
+																			'origin_loader' => $schedetails['originloader']['accountidandname']['name'],
+																			'origin_loader_contact' => $schedetails['originloader']['firstname'].' '.$schedetails['originloader']['lastname'],
+																			'origin_loader_fee' => $schedetails['originloaderfee'],
+																			'destination_loader' =>  $schedetails['destinationloader']['accountidandname']['name'],
+																			'destination_loader_contact' => $schedetails['destinationloader']['firstname'].' '.$schedetails['destinationloader']['lastname'],
+																			'destination_loader_fee' => $schedetails['destinationloaderfee'],
+																			'trucker' => $schedetails['trucker']['accountidandname']['name'],
+																			'trucker_contact' => $schedetails['trucker']['firstname'].' '.$schedetails['trucker']['lastname'],
+																			'truck_vehicle' => $schedetails['truckvehicle']['trucknumber'],
+																			'trailer' =>  $schedetails['trailer']['account']['name'],
+																			'trailer_number' =>  $schedetails['trailer']['number'],
+																			'distance' =>  $schedetails['distance'],
+																			'fuel_charge' => $schedetails['fuelcharge'],
+																			'trucking_rate' => $schedetails['truckingrate'],
+																			'handling_fee' => $schedetails['handlingfee'],
+																			'trailer_rate' => $schedetails['trailerrate'],
+																			'admin_fee' => $schedetails['adminfee'],
+																			];
+											}
+										endforeach;
+
+										if(!is_null($weighttickets))
+										{
+											if(!is_null($weighttickets['weightticketscale_pickup']))
+											{
+												foreach($weighttickets['weightticketscale_pickup']['weightticketproducts'] as $row1):
+													
+													if($row1['transportscheduleproduct']['productorder']['stacknumber']  == $transportschedule['stackNumber'])
+													{
+														$pickup_details = [
+											 	 	 			'l_scale'	=> $weighttickets['weightticketscale_pickup']['scaler_account']['name'],
+											 	 	 			'l_scaler_account'=> $weighttickets['weightticketscale_pickup']['scale']['name'],
+											 	 	 			'l_scale_fee'	=> $weighttickets['weightticketscale_pickup']['fee'],
+											 	 	 			'l_gross'	=> $weighttickets['weightticketscale_pickup']['gross'],
+											 	 	 			'l_tare'	=> $weighttickets['weightticketscale_pickup']['tare'],
+											 	 	 			'l_bales'	=> $weighttickets['weightticketscale_pickup']['bales'],
+											 	 	 			'l_net'	=> $weighttickets['weightticketscale_pickup']['gross'] - $weighttickets['weightticketscale_pickup']['tare'],
+											 	 	 			'l_product' => $row1['transportscheduleproduct']['productorder']['product']['name'],
+											 	 	 			'l_stack_number' => $row1['transportscheduleproduct']['productorder']['stacknumber'],
+											 	 	 			'l_prod_bales' => $row1['bales'],
+											 	 	 			'l_prod_tons'	=> $row1['tons'],
+											 	 	 			'l_prod_pounds'	=> $row1['pounds'],
+											 	 	 			];
+													}
+												
+												endforeach;
+											}
+
+											if(!is_null($weighttickets['weightticketscale_dropoff']))
+											{
+												foreach($weighttickets['weightticketscale_dropoff']['weightticketproducts'] as $row2):
+													
+													if($row2['transportscheduleproduct']['productorder']['stacknumber']  == $transportschedule['stackNumber'])
+													{
+														$dropoff_details = [
+											 	 	 			'u_scale'	=> $weighttickets['weightticketscale_dropoff']['scaler_account']['name'],
+											 	 	 			'u_scaler_account'=> $weighttickets['weightticketscale_dropoff']['scale']['name'],
+											 	 	 			'u_scale_fee'	=> $weighttickets['weightticketscale_dropoff']['fee'],
+											 	 	 			'u_gross'	=> $weighttickets['weightticketscale_dropoff']['gross'],
+											 	 	 			'u_tare'	=> $weighttickets['weightticketscale_dropoff']['tare'],
+											 	 	 			'u_bales'	=> $weighttickets['weightticketscale_dropoff']['bales'],
+											 	 	 			'u_net'	=> $weighttickets['weightticketscale_dropoff']['gross'] - $weighttickets['weightticketscale_dropoff']['tare'],
+											 	 	 			'u_product' => $row2['transportscheduleproduct']['productorder']['product']['name'],
+											 	 	 			'u_stack_number' => $row2['transportscheduleproduct']['productorder']['stacknumber'],
+											 	 	 			'u_prod_bales' => $row2['bales'],
+											 	 	 			'u_prod_tons'	=> $row2['tons'],
+											 	 	 			'u_prod_pounds'	=> $row2['pounds'],
+											 	 	 			];
+													}
+												
+												endforeach;
+											}
+											else
+											{
+												$dropoff_details = [
+											 	 	'u_scale'	=> null,
+											 	 	'u_scaler_account'=> null,
+											 	 	'u_scale_fee'	=> null,
+											 	 	'u_gross'	=> null,
+											 	 	'u_tare'	=> null,
+											 	 	'u_bales'	=> null,
+											 	 	'u_net'	=> null,
+											 	 	'u_product' => null,
+											 	 	'u_stack_number' => null,
+											 	 	'u_prod_bales' => null,
+											 	 	'u_prod_tons'	=> null,
+											 	 	'u_prod_pounds'	=> null,
+											 	 	];
+											}
+
+											$with_data_ticket = array_merge($pickup_details, $dropoff_details);
+										}
+										else
+										{
+											$with_data_ticket = [
+														'weight_ticket' => null,
+														'loading_ticket' => null,
+														'unloading_ticket' => null,
+														'l_scale'	=> null,
+											 	 	 	'l_scaler_account'=> null,
+											 	 	 	'l_scale_fee'	=> null,
+											 	 	 	'l_gross'	=> null,
+											 	 	 	'l_tare'	=> null,
+											 	 	 	'l_bales'	=> null,
+											 	 	 	'l_net'	=> null,
+											 	 	 	'l_product' => null,
+											 	 	 	'l_stack_number' => null,
+											 	 	 	'l_prod_bales' => null,
+											 	 	 	'l_prod_tons'	=> null,
+											 	 	 	'l_prod_pounds'	=> null,
+											 	 	 	'u_scale'	=> null,
+												 	 	'u_scaler_account'=> null,
+												 	 	'u_scale_fee'	=> null,
+												 	 	'u_gross'	=> null,
+												 	 	'u_tare'	=> null,
+												 	 	'u_bales'	=> null,
+												 	 	'u_net'	=> null,
+												 	 	'u_product' => null,
+												 	 	'u_stack_number' => null,
+												 	 	'u_prod_bales' => null,
+												 	 	'u_prod_tons'	=> null,
+												 	 	'u_prod_pounds'	=> null,
+													];
+										}
+										$ticket['data'] = array_merge($with_data_ticket,[
+														'weight_ticket' => $weighttickets['weightTicketNumber'],
+											 	 		'loading_ticket' => $weighttickets['loadingTicketNumber'],
+											 	 		'unloading_ticket' => $weighttickets['unloadingTicketNumber'],
+
+										]);
+
+										$data_o_final[] = [
+													'_so_num' => $so->order_number, 
+													'_acount' => $so->account->name,
+													'_address' => (!is_null($so->orderaddress_id)) ? $so->orderaddress->street.' '.$so->orderaddress->city.', '.$so->orderaddress->address_states->state.', '.$so->orderaddress->zipcode : null,
+													'_nature_of_sales' => (!is_null($so->natureofsale_id)) ? $so->natureofsale->name : null,
+													'_sales_date' => date('Y-m-d h:i:s A', strtotime($so->created_at)),
+													'_pick_up_start' =>	date('Y-m-d h:i:s A', strtotime($so->transportdatestart)),
+													'_pick_up_end'	=> date('Y-m-d h:i:s A', strtotime($so->transportdateend)),
+													'_notes' => $so->notes,
+													'_product_name' => $transportschedule['productName'], 
+													'_stack_number' => $transportschedule['stackNumber'], 
+													'_product_name' => $transportschedule['productName'],
+													'_tons' => number_format($schedule['productorder']['tons'],3,'.',','), 
+													'_bales' => $schedule['productorder']['bales'], 
+													'_unit_price' => '$'.number_format($schedule['productorder']['unit_price'],2,'.',','),
+													'_total_payment' => '$'.number_format($prod_sum['summary']['total_price'],2,'.',','),
+													'_testing' => ($schedule['productorder']['testing'] == 0) ? "No" : "Yes",
+													'_rfv' => $schedule['productorder']['rfv'],
+													'_transport_date' => date('Y-m-d h:i:s A', strtotime($schedule['transportscheduledate'])), 
+													'_transport_date_c' => date('Y-m-d h:i:s A', strtotime($schedule['productorder']['t_date'])), 
+													'_ts_stack_number' => $schedule['productorder']['stacknumber'],
+													'_ts_product_name' => $schedule['productorder']['product'],
+													'_ts_section' => $prod_sum['summary']['section_from'],
+													'_ts_quantity' => number_format($schedule['productorder']['quantity'],3,'.',','),
+													'_ts_origin_loader'	=> $schedule['productorder']['origin_loader'],
+													'_ts_origin_loader_contact'	=> $schedule['productorder']['origin_loader_contact'],
+													'_ts_origin_loader_fee'	=> '$'.number_format($schedule['productorder']['origin_loader_fee'],2,'.',','),
+													'_ts_destination_loader'	=> $schedule['productorder']['destination_loader'],
+													'_ts_destination_loader_contact' => $schedule['productorder']['destination_loader_contact'],
+													'_ts_destination_loader_fee'	=> '$'.number_format($schedule['productorder']['destination_loader_fee'],2,'.',','),
+													'_ts_trucker' => $schedule['productorder']['trucker'],
+													'_ts_trucker_contact' => $schedule['productorder']['trucker_contact'],
+													'_ts_trailer' => $schedule['productorder']['trailer'],
+													'_ts_trailer_number' => $schedule['productorder']['trailer_number'],
+													'_ts_distance' =>  $schedetails['distance'],
+													'_ts_fuel_charge' => '$'.number_format($schedule['productorder']['fuel_charge'],2,'.',','),
+													'_ts_trucking_rate' => '$'.number_format($schedule['productorder']['trucking_rate'],2,'.',','),
+													'_ts_handling_fee' => '$'.number_format($schedule['productorder']['handling_fee'],2,'.',','),
+													'_ts_trailer_rate' => '$'.number_format($schedule['productorder']['trailer_rate'],2,'.',','),
+													'_weight_ticket' => $schedule['weightTicketNumber'],
+													'_weight_ticket_n' => $ticket['data']['weight_ticket'],
+													'_loading_ticket' => $ticket['data']['loading_ticket'],
+													'_l_scale' =>			$ticket['data']['l_scale'],
+											 	 	'_l_scaler_account'=> 	$ticket['data']['l_scaler_account'],
+											 	 	'_l_scale_fee'	=> '$'.number_format($ticket['data']['l_scale_fee'],2,'.',','),
+											 	 	'_l_gross'	=> 	number_format($ticket['data']['l_gross'],2,'.',','),
+											 	 	'_l_tare'	=> 	number_format($ticket['data']['l_tare'],2,'.',','),
+											 	 	'_l_bales'	=> 	$ticket['data']['l_bales'],
+											 	 	'_l_net'	=> number_format($ticket['data']['l_net'],2,'.',','),
+											 	 	'_l_product' => $ticket['data']['l_product'],
+											 	 	'_l_stack_number' => $ticket['data']['l_stack_number'],
+											 	 	'_l_prod_bales' => $ticket['data']['l_prod_bales'],
+											 	 	'_l_tons'	=> number_format($ticket['data']['l_prod_tons'],3,'.',','),
+											 	 	'_l_pounds'	=> number_format($ticket['data']['l_prod_pounds'],2,'.',','),		
+
+													'_unloading_ticket' => $ticket['data']['unloading_ticket'],
+													'_u_scale' =>			$ticket['data']['u_scale'],
+											 	 	'_u_scaler_account'=> 	$ticket['data']['u_scaler_account'],
+											 	 	'_u_scale_fee'	=> '$'.number_format($ticket['data']['u_scale_fee'],2,'.',','),
+											 	 	'_u_gross'	=> 	number_format($ticket['data']['u_gross'],2,'.',','),
+											 	 	'_u_tare'	=> 	number_format($ticket['data']['u_tare'],2,'.',','),
+											 	 	'_u_bales'	=> 	$ticket['data']['u_bales'],
+											 	 	'_u_net'	=> number_format($ticket['data']['u_net'],2,'.',','),
+											 	 	'_u_product' => $ticket['data']['u_product'],
+											 	 	'_u_stack_number' => $ticket['data']['u_stack_number'],
+											 	 	'_u_prod_bales' => $ticket['data']['u_prod_bales'],
+											 	 	'_u_prod_tons'	=> number_format($ticket['data']['u_prod_tons'],3,'.',','),
+											 	 	'_u_prod_pounds'	=> number_format($ticket['data']['u_prod_pounds'],2,'.',','),		
+													];
+									endforeach;
+
+								}
+								else
+								{
+									$data_o_final[] = [
+													'_so_num' => $so->order_number, 
+													'_acount' => $so->account->name,
+													'_address' => (!is_null($so->orderaddress_id)) ? $so->orderaddress->street.' '.$so->orderaddress->city.', '.$so->orderaddress->address_states->state.', '.$so->orderaddress->zipcode : null,
+													'_nature_of_sales' => (!is_null($so->natureofsale_id)) ? $so->natureofsale->name : null,
+													'_sales_date' => date('Y-m-d h:i:s A', strtotime($so->created_at)),
+													'_pick_up_start' =>	date('Y-m-d h:i:s A', strtotime($so->transportdatestart)),
+													'_pick_up_end'	=> date('Y-m-d h:i:s A', strtotime($so->transportdateend)),
+													'_notes' => $so->notes,
+													'_product_name' => $transportschedule['productName'], 
+													'_stack_number' => $transportschedule['stackNumber'], 
+													'_product_name' => $transportschedule['productName'],
+													'_tons' => number_format($prod_sum['summary']['tons'],3,'.',','), 
+													'_bales' => $prod_sum['summary']['bales'], 
+													'_unit_price' => '$'.number_format($prod_sum['summary']['unit_price'],2,'.',','),
+													'_total_payment' => '$'.number_format($prod_sum['summary']['total_price'],2,'.',','),
+													'_testing' => ($prod_sum['summary']['testing'] ==0) ? "No" : "Yes",
+													'_rfv' => $prod_sum['summary']['rfv'],
+													'_transport_date' => null, 
+													'_transport_date_c' => null, 
+													'_ts_stack_number' => null,
+													'_ts_product_name' => null,
+													'_ts_section' => null,
+													'_ts_quantity' => null,
+													'_ts_origin_loader'	=> null,
+													'_ts_origin_loader_contact'	=> null,
+													'_ts_origin_loader_fee'	=> null,
+													'_ts_destination_loader'	=> null,
+													'_ts_destination_loader_contact' => null,
+													'_ts_destination_loader_fee'	=> null,
+													'_ts_trucker' => null,
+													'_ts_trucker_contact' => null,
+													'_ts_trailer' => null,
+													'_ts_trailer_number' => null,
+													'_ts_distance' =>  null,
+													'_ts_fuel_charge' => null,
+													'_ts_trucking_rate' => null,
+													'_ts_handling_fee' => null,
+													'_ts_trailer_rate' => null,
+													'_weight_ticket' => null,
+													'_weight_ticket_n' => null,
+													'_loading_ticket' => null,
+													'_l_scale' =>	null,
+											 	 	'_l_scaler_account'=> null,
+											 	 	'_l_scale_fee'	=> null,
+											 	 	'_l_gross'	=> 	null,
+											 	 	'_l_tare'	=> 	null,
+											 	 	'_l_bales'	=> 	null,
+											 	 	'_l_net'	=> null,
+											 	 	'_l_product' => null,
+											 	 	'_l_stack_number' => null,
+											 	 	'_l_prod_bales' => null,
+											 	 	'_l_tons'	=> null,
+											 	 	'_l_pounds'	=> null,		
+
+													'_unloading_ticket' => null,
+													'_u_scale' =>	null,
+											 	 	'_u_scaler_account'=> null,
+											 	 	'_u_scale_fee'	=> null,
+											 	 	'_u_gross'	=> 	null,
+											 	 	'_u_tare'	=> 	null,
+											 	 	'_u_bales'	=> 	null,
+											 	 	'_u_net'	=> null,
+											 	 	'_u_product' => null,
+											 	 	'_u_stack_number' => null,
+											 	 	'_u_prod_bales' => null,
+											 	 	'_u_prod_tons'	=> null,
+											 	 	'_u_prod_pounds'	=> null,		
+													];
+								}
+								endforeach;
+
+
+							endforeach;
+						}
+						else
+						{
+							$data_o_final = null;
+						}
+						
+							$excel_o = Excel::create('SO-Report-'.date('Ymd'), function($excel) use($data_o_final) {
 											$excel->setDescription('Sales Order : '.date('Ymd'))->setCompany('Southwest Farm Services')->setCreator('Southwest Farm Services');
-									        $excel->sheet(date('Ymd'), function($sheet) use($data_o) {
-								        	$sheet->setColumnFormat(array('I' => '0.00'));
+									        $excel->sheet(date('Ymd'), function($sheet) use($data_o_final) {
 								        	$sheet->loadView(
 									        		'excel.sales-order-header',
 									        		array(
-									        			'data_o' => $data_o,
-									        			'_nest_content' => View::make('excel.sales-order-content', array('data_o' => $data_o))
+									        			'data_o' => $data_o_final,
+									        			'_nest_content' => View::make('excel.sales-order-content', array('data_o' => $data_o_final))
 								        			)
 							        			);
 									        });
@@ -1231,16 +1921,18 @@ class DownloadRepository implements DownloadInterface
                 ->with('ordercancellingreason.reason');
 
         if($ordertype == 2) //for SO only
-            $order = $order->with('natureofsale', 'contract');
+            $order = $order->with('productsummary.productorder.sectionfrom.storagelocation')
+            			->with('natureofsale', 'contract');
 
 
         $order = $order->where('ordertype', $ordertype)
         		->whereBetween('created_at',array_values($_dateBetween))
         		->get();
+
        	//get the total price of products (unit price x tons)
         foreach($order as $item){
          	$item['totalPrice'] = 0.00;
-         	$item['weightPercentageDelivered'] = $rpoOrder->getExpectedDeliveredData($item['id']);
+         	//$item['weightPercentageDelivered'] = $rpoOrder->getExpectedDeliveredData($item['id']);
          	$item['transportscheduleDetails'] = $rpoOrder->getOrderWeightDetailsByStack($item['id']);
           	foreach($item['productsummary'] as $productsummary)
           	{
@@ -1255,6 +1947,52 @@ class DownloadRepository implements DownloadInterface
         }
         return $order;
 	}
+
+	public function getSchedule($id){ //default sked is pickup
+      $transportSchedule = TransportSchedule::with('trucker')
+                        ->with('status')
+                        ->with('originloader')
+                        ->with('destinationloader')
+                        ->with('trucker.accountidandname.accounttype')
+                        ->with('truckvehicle')
+                        ->with('originloader.accountidandname')
+                        ->with('destinationloader.accountidandname')
+                        ->with('trailer.account')
+                        ->with('transportscheduleproduct.productorder.product')
+                        ->with('weightticket')
+                        ->with('weightticket.status')
+                        ->with('transportscheduleproduct.sectionto.storagelocation')
+                        ->where('id', '=', $id)->first();
+      if($transportSchedule){
+          $transportSchedule = $transportSchedule->toArray();
+          return $transportSchedule;
+        
+      } else {
+          return array(
+            'error' => true,
+            'message' => "Schedule not found.");
+      }
+ 	}
+
+ 	 public function weightticket($schedule_id)
+    {
+        
+            $weightticket = WeightTicket::with('status')
+                            ->with('weightticketscale_dropoff.weightticketproducts.transportscheduleproduct.productorder.product')
+                            ->with('weightticketscale_dropoff.scalerAccount')
+                            ->with('weightticketscale_dropoff.scale')
+                            ->with('weightticketscale_pickup.weightticketproducts.transportscheduleproduct.productorder.product')
+                            ->with('weightticketscale_pickup.scalerAccount')
+                            ->with('weightticketscale_pickup.scale')
+                            ->where('transportSchedule_id', '=', $schedule_id)->first();
+
+            if($weightticket){
+          		$weightticket = $weightticket->toArray();
+          		return $weightticket;
+        
+      		}
+        
+    }
 
 
 	public function report($q, $type){
