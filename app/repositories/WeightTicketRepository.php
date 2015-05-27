@@ -108,6 +108,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
     public function store($data)
     {
+     
         $hasExisitingTicket = WeightTicket::where('transportSchedule_id', '=', $data['transportSchedule_id'])->first();
         if($hasExisitingTicket != null){
             if(isset($data['dropoff_info'])){
@@ -133,7 +134,18 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             }
         }
 
+
         $result = DB::transaction(function() use ($data){
+
+            if(isset($data['object_id']))
+            {
+                $isMobile = true;
+            }
+            else
+            {
+                $isMobile = false;
+            }
+            
             $isPickup = false;
             $isDropoff = false;
             //do not required fields if not to be close
@@ -151,6 +163,8 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                   'message' => 'Net Lbs. and total Lbs. of all products are not equal.');
             }
 
+            $mobileData = array();
+
             if(isset($data['pickup_info'])){
                 if($toBeClose){
                     //for pickup data
@@ -162,6 +176,11 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                 $data['pickup_info']['type'] = 1; //for pickup type
                 $weightticketscale_pickup->fill($data['pickup_info']);
                 $weightticketscale_pickup->save();
+                
+                if($isMobile)
+                {
+                    $mobileData['pickup_info'] = array_merge(['object_id' => $data['pickup_info']['object_id']],$weightticketscale_pickup->toArray());
+                }
 
                 foreach($data['pickup_info']['products'] as $product){
                     $product['weightTicketScale_id'] = $weightticketscale_pickup->id;
@@ -173,7 +192,17 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                     $weightticketproduct = new WeightTicketProducts;
                     $weightticketproduct->fill($product);
                     $weightticketproduct->save();
+
+                    if($isMobile)
+                    {
+                        $pickup_info_product[] = array_merge(['object_id' => $product['object_id']],$weightticketproduct->toArray());
+                    }
                 }
+                if($isMobile)
+                {
+                    $mobileData['pickup_info']['product'] = $pickup_info_product;
+                }
+
                 $isPickup = true;
 
                 if(isset($data['pickup_info']['uploadedfile']) && !empty($data['pickup_info']['uploadedfile'])){
@@ -193,6 +222,11 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                 $weightticketscale_dropoff->fill($data['dropoff_info']);
                 $weightticketscale_dropoff->save();
 
+                if($isMobile)
+                {
+                    $mobileData['dropoff_info'] = array_merge(['object_id' => $data['dropoff_info']['object_id']],$weightticketscale_dropoff->toArray());
+                }
+
                 foreach($data['dropoff_info']['products'] as $product){
                     $product['weightTicketScale_id'] = $weightticketscale_dropoff->id;
                     if($toBeClose){
@@ -203,7 +237,19 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                     $weightticketproduct = new WeightTicketProducts;
                     $weightticketproduct->fill($product);
                     $weightticketproduct->save();
+
+                    if($isMobile)
+                    {
+                        $dropoff_info_product[] = array_merge(['object_id' => $product['object_id']],$weightticketproduct->toArray());
+                    }
+
                 }
+
+                if($isMobile)
+                {
+                    $mobileData['dropoff_info']['product'] = $dropoff_info_product;
+                }
+
                 $isDropoff = true;
 
                 if(isset($data['dropoff_info']['uploadedfile']) && !empty($data['dropoff_info']['uploadedfile'])){
@@ -230,11 +276,25 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             $weightticket->fill($data);
             $weightticket->save();
 
+            if(isset($data['object_id'])){
+                return array_merge($weightticket->toArray(),$mobileData);
+            }
+
             return $weightticket->id;
+
+
         });
 
+        if(isset($data['object_id']))
+        {
+            return array(
+               'error' => false,
+               'data' => $result
+            );
+        }
+
         if(is_array($result)){
-            return $result;
+            return $result; 
         }
 
         return array(
