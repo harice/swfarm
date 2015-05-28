@@ -254,7 +254,8 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
                                     'longitudeTo' => $transportMap->longitudeTo,
                                     'latitudeTo' => $transportMap->latitudeTo,
                                     'distance' => $transportMap->distance,
-                                    'isLoadedDistance' => $transportMap->isLoadedDistance      
+                                    'isLoadedDistance' => $transportMap->isLoadedDistance,
+                                    'object_id' => isset($item['object_id']) ? $item['object_id']:''    
                     ));
 
                   }
@@ -411,7 +412,8 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
                 array_push($mJson, array('id' => $transportscheduleproduct->id, 
                                           'sectionto_id' => $transportscheduleproduct->sectionto_id,
                                           'quantity' => $transportscheduleproduct->quantity,
-                                          'transportschedule_id' => $transportscheduleproduct->transportschedule_id
+                                          'transportschedule_id' => $transportscheduleproduct->transportschedule_id,
+                                          'object_id' => isset($transportscheduleproduct->object_id) ? $transportscheduleproduct->object_id:''
                 ));
 
               }
