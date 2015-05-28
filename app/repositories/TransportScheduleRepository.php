@@ -413,7 +413,7 @@ class TransportScheduleRepository implements TransportScheduleRepositoryInterfac
                                           'sectionto_id' => $transportscheduleproduct->sectionto_id,
                                           'quantity' => $transportscheduleproduct->quantity,
                                           'transportschedule_id' => $transportscheduleproduct->transportschedule_id,
-                                          'object_id' => isset($transportscheduleproduct->object_id) ? $transportscheduleproduct->object_id:''
+                                          'object_id' => isset($product->object_id) ? $product->object_id:''
                 ));
 
               }
