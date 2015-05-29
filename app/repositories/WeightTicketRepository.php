@@ -165,6 +165,10 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
             $mobileData = array();
 
+            if($isMobile){
+                $mobileData['object_id'] = $data['object_id'];
+            }
+
             if(isset($data['pickup_info'])){
                 if($toBeClose){
                     //for pickup data
