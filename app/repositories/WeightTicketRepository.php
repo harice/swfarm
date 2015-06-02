@@ -130,10 +130,12 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             if(is_array($result)){
                 if(isset($result['data']['error']) && $result['data']['error']){
                     return $result['data'];
-                } else {
+                } else if(isset($data['object_id'])){ // mobile request
+                    return $result;
+                } else { // web request
                     return array(
-                  'error' => false,
-                  'message' => 'Weight ticket successfully created');
+                      'error' => false,
+                      'message' => 'Weight ticket successfully created');
                 }
             }
         }
