@@ -213,7 +213,7 @@ class ContactRepository implements ContactRepositoryInterface {
             ->whereNull('deleted_at')
             ->count();
 
-        $contact = Contact::with('account')
+        $contact = Contact::with('account.accounttype')
             ->whereHas('account', function($query) use ($searchWord) {
                     $query->where('name', 'like', '%' . $searchWord . '%');
                 })
