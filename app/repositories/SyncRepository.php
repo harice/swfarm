@@ -147,6 +147,35 @@ class SyncRepository implements SyncInterface {
 			case 'weightticketproduct':
 				$result = WeightTicketProducts::all();
 				break;
+
+			case 'permissioncategory':
+				$result = PermissionCategory::all();
+				break;
+
+			case 'permissioncategorytype':
+				$result = PermissionCategoryType::all();
+				break;
+
+			case 'permissiontype':
+				$result = PermissionType::all();
+				break;
+
+			case 'permission':
+				$result = Permission::all();
+				break;
+
+			case 'roles':
+				$result = Roles::all();
+				break;
+
+			case 'userroles':
+				$result = UserRoles::all();
+				break;
+
+			case 'user':
+				$result = User::all();
+				break;
+
 		}
 
 		return Response::json($result);

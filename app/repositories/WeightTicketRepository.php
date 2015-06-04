@@ -108,7 +108,6 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
     public function store($data)
     {
-     
         $hasExisitingTicket = WeightTicket::where('transportSchedule_id', '=', $data['transportSchedule_id'])->first();
         if($hasExisitingTicket != null){
             if(isset($data['dropoff_info'])){
@@ -127,10 +126,17 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             }
 
             $result = $this->update($data['transportSchedule_id'], $data);
+            
             if(is_array($result)){
-                return array(
-                  'error' => false,
-                  'message' => 'Weight ticket successfully created');
+                if(isset($result['data']['error']) && $result['data']['error']){
+                    return $result['data'];
+                } else if(isset($data['object_id'])){ // mobile request
+                    return $result;
+                } else { // web request
+                    return array(
+                      'error' => false,
+                      'message' => 'Weight ticket successfully created');
+                }
             }
         }
 
@@ -164,6 +170,10 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             }
 
             $mobileData = array();
+
+            if($isMobile){
+                $mobileData['object_id'] = $data['object_id'];
+            }
 
             if(isset($data['pickup_info'])){
                 if($toBeClose){
@@ -347,6 +357,11 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
     public function update($id, $data)
     {
         $result = DB::transaction(function() use ($id, $data){
+            if(isset($data['object_id'])){
+                $isMobile = true;
+            } else {
+                $isMobile = false;
+            }
 
             $toBeClose = false;
             if(isset($data['status_id'])){
@@ -360,7 +375,7 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
             $weightticket = WeightTicket::where('transportSchedule_id', '=', $id)->first();
             if($weightticket->status_id == 2){ //if close, cannot be edit
                 return array(
-                  'error' => false,
+                  'error' => true,
                   'message' => 'You cannot edit a Weight Ticket that was already closed.');
             }
 
@@ -373,6 +388,13 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
 
             $weightticket->fill($data);
             $weightticket->save();
+
+            $mobileData = array();
+
+            if($isMobile){
+                $mobileData['object_id'] = $data['object_id'];
+            }
+
             if(isset($data['pickup_info'])){
                 if($toBeClose){
                 //for pickup data
@@ -386,6 +408,10 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                     $weightticketscale_pickup->fill($data['pickup_info']);
                     $weightticketscale_pickup->save();
 
+                    if($isMobile){
+                        $mobileData['pickup_info'] = array_merge(['object_id' => $data['pickup_info']['object_id']],$weightticketscale_pickup->toArray());
+                    }
+
                     foreach($data['pickup_info']['products'] as $product){
                         $product['weightTicketScale_id'] = $weightticketscale_pickup->id;
                         if($toBeClose){
@@ -396,14 +422,27 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                         $weightticketproduct = new WeightTicketProducts;
                         $weightticketproduct->fill($product);
                         $weightticketproduct->save();
+
+                        if($isMobile){
+                            $pickup_info_product[] = array_merge(['object_id' => $product['object_id']],$weightticketproduct->toArray());
+                        }
                     }
 
                     $weightticket->pickup_id = $weightticketscale_pickup->id;
                     $weightticket->save();
+
+                    if($isMobile){
+                        $mobileData['pickup_info']['product'] = $pickup_info_product;
+                    }
                 } else {
                     $weightticketscale_pickup = WeightTicketScale::find($weightticket->pickup_id);
                     $weightticketscale_pickup->fill($data['pickup_info']);
                     $weightticketscale_pickup->save();
+
+                    if($isMobile)
+                    {
+                        $mobileData['pickup_info'] = array_merge(['object_id' => $data['pickup_info']['object_id']],$weightticketscale_pickup->toArray());
+                    }
 
                     foreach($data['pickup_info']['products'] as $product){
                         $product['weightTicketScale_id'] = $weightticketscale_pickup->id;
@@ -415,6 +454,13 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                         $weightticketproduct = WeightTicketProducts::find($product['id']);
                         $weightticketproduct->fill($product);
                         $weightticketproduct->save();
+
+                        if($isMobile){
+                            $pickup_info_product[] = array_merge(['object_id' => $product['object_id']],$weightticketproduct->toArray());
+                        }
+                    }
+                    if($isMobile){
+                        $mobileData['pickup_info']['product'] = $pickup_info_product;
                     }
                 }
 
@@ -436,6 +482,10 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                     $weightticketscale_dropoff->fill($data['dropoff_info']);
                     $weightticketscale_dropoff->save();
 
+                    if($isMobile){
+                        $mobileData['dropoff_info'] = array_merge(['object_id' => $data['dropoff_info']['object_id']],$weightticketscale_dropoff->toArray());
+                    }
+
                     foreach($data['dropoff_info']['products'] as $product){
                         $product['weightTicketScale_id'] = $weightticketscale_dropoff->id;
                         if($toBeClose){
@@ -446,14 +496,26 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                         $weightticketproduct = new WeightTicketProducts;
                         $weightticketproduct->fill($product);
                         $weightticketproduct->save();
+
+                        if($isMobile){
+                            $dropoff_info_product[] = array_merge(['object_id' => $product['object_id']],$weightticketproduct->toArray());
+                        }
                     }
 
                     $weightticket->dropoff_id = $weightticketscale_dropoff->id;
                     $weightticket->save();
+
+                    if($isMobile){
+                        $mobileData['dropoff_info']['product'] = $dropoff_info_product;
+                    }
                 } else {
                     $weightticketscale_dropoff = WeightTicketScale::find($weightticket->dropoff_id);
                     $weightticketscale_dropoff->fill($data['dropoff_info']);
                     $weightticketscale_dropoff->save();
+
+                    if($isMobile){
+                        $mobileData['dropoff_info'] = array_merge(['object_id' => $data['dropoff_info']['object_id']],$weightticketscale_dropoff->toArray());
+                    }
 
                     foreach($data['dropoff_info']['products'] as $product){
                         $product['weightTicketScale_id'] = $weightticketscale_dropoff->id;
@@ -465,6 +527,14 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                         $weightticketproduct = WeightTicketProducts::find($product['id']);
                         $weightticketproduct->fill($product);
                         $weightticketproduct->save();
+
+                        if($isMobile){
+                            $dropoff_info_product[] = array_merge(['object_id' => $product['object_id']],$weightticketproduct->toArray());
+                        }
+                    }
+
+                    if($isMobile){
+                        $mobileData['dropoff_info']['product'] = $dropoff_info_product;
                     }
                 }
 
@@ -473,8 +543,21 @@ class WeightTicketRepository implements WeightTicketRepositoryInterface {
                 }
             }
 
-            return $weightticket->id;
+            if($isMobile){
+                return array_merge($weightticket->toArray(),$mobileData);
+            } else {
+                return $weightticket->id;    
+            }
+            
         });
+
+        if(isset($data['object_id'])) //from mobile device
+        {
+            return array(
+               'error' => false,
+               'data' => $result
+            );
+        }
 
         if(is_array($result)){
             return $result;
