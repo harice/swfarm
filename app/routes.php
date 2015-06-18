@@ -179,6 +179,7 @@ Route::group(array('prefix' => 'apiv1', 'before' => 'basic', 'after' => 'tokeniz
     Route::resource('settings', 'APIv1\SettingsController', array('except' => array('edit','create')));
 
     // File
+    Route::post('documentMobile', 'APIv1\DocumentController@store_mobile');
     Route::resource('document', 'APIv1\DocumentController', array('except' => array('edit','create','update','destroy','index')));
 
     // Contract
