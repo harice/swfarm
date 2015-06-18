@@ -30,6 +30,32 @@ class DocumentRepository implements DocumentRepositoryInterface {
  
     }
 
+     public function uploadDocument_2($data){
+          // var_dump($data);
+          $this->validate($data);
+
+          if(!(strstr($data['type'], 'application/pdf'))){
+            return  array(
+              'error' => true,
+              'message' => 'file extension must be in pdf'
+              );
+          } else if(intval($data['size']) > 3145728) { //3mb max file size
+            return array(
+              'error' => true,
+              'message' => 'file size exceeded(3MB).'
+              );
+          }
+          
+          $file = new Document;
+          $file->fill($data);
+          $file->save();
+         
+          return array(
+                    'file_id' => $file->id
+                );
+ 
+    }
+
     public function displayDocument($dataEncrypted){
         $data = base64_decode($dataEncrypted);
         
