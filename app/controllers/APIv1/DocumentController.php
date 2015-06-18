@@ -42,12 +42,6 @@ class DocumentController extends BaseController {
         return Response::json($response);
 	}
 
-	public function store_mobile()
-	{
-		$response = $this->repo->uploadDocument_2( Input::all() );
-        return Response::json($response);
-	}
-
 	/**
 	 * Display the specified resource.
 	 *
