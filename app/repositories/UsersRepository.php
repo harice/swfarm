@@ -123,10 +123,6 @@ class UsersRepository implements UsersRepositoryInterface {
     $user->confirmcode = Hash::make(Str::random(5)); //use for email verification
     $user->password = Hash::make($generatedPassword);
     
-    if(isset($data['position']) && Str::lower($data['position']) === 'driver')
-    {
-      $user->validated = 1;
-    }
 
     //saving profile image
     $isImgSave = $this->saveImage($data);
@@ -141,6 +137,11 @@ class UsersRepository implements UsersRepositoryInterface {
     }
 
     $user->save();
+
+    if(isset($data['position']) && Str::lower($data['position']) === 'driver')
+    {
+      $this->sendEmailDriverNotification($user, $generatedPassword);
+    }
 
     //send email verification
     $emailStatus = $this->sendEmailVerification($user, $generatedPassword);
@@ -324,6 +325,28 @@ class UsersRepository implements UsersRepositoryInterface {
                     ->orderBy($sortby, $orderby)
                     ->get();
     return Response::json(array('data' => $_user->toArray(), 'total' => $_cnt),200);
+  }
+
+  public function sendEmailDriverNotification($userObj, $password)
+  {
+    $admin = User::find(1);
+    $user = array(
+        'email'=>$admin->email,
+        'name'=>$admin->firstname.' '.$admin->lastname
+    );
+     
+    // the data that will be passed into the mail view blade template
+    $data = array(
+        'username' => $userObj->email,
+        'password' => $password,
+    );
+    //Mail::pretend();
+    // use Mail::send function to send email passing the data and using the $user variable in the closure
+    return Mail::send('emails.emailDriverNotification', $data, function($message) use ($user)
+    {
+      $message->from('donotreply@swfarm.com', 'Southwest Farm Admnistrator');
+      $message->to($user['email'], $user['name'])->subject('Southwest Farm - Trucker/Driver Login' );
+    });
   }
 
   public function sendEmailVerification($userObj, $password){
