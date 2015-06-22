@@ -2,6 +2,7 @@
 
 use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableInterface;
+use App\Models\Users as Users;
 
 class User extends Eloquent implements UserInterface, RemindableInterface {
 
