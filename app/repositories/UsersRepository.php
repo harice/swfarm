@@ -123,6 +123,10 @@ class UsersRepository implements UsersRepositoryInterface {
     $user->confirmcode = Hash::make(Str::random(5)); //use for email verification
     $user->password = Hash::make($generatedPassword);
     
+    if(isset($data['position']) && Str::lower($data['position']) === 'driver')
+    {
+      $user->validated = 1;
+    }
 
     //saving profile image
     $isImgSave = $this->saveImage($data);
