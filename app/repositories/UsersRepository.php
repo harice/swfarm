@@ -148,7 +148,8 @@ class UsersRepository implements UsersRepositoryInterface {
     //saving user roles posted by client
     if(isset($data['roles']) && $data['roles'] != ''){
         $roleIds = explode(',', $data['roles']);
-        Event::fire('user.roles',$roleIds);
+        $sync = $user->roles()->sync($roleIds);
+        Event::fire('user.roles',$sync);
     }
 
   	return Response::json(array(
