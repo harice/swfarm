@@ -189,6 +189,7 @@ class OrderRepository implements OrderRepositoryInterface {
             }
             
         }
+
         $result['delivered'] = $result['delivered']-$result['returned']; //deduct all the returned product        
 
         if($result['delivered'] != null && $result['delivered'] != 0){
