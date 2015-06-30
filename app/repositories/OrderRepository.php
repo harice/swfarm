@@ -124,8 +124,8 @@ class OrderRepository implements OrderRepositoryInterface {
                     $weightTicketDropoff = $weightTicket['weightticketscale_dropoff'];
                     //compute net weight
                     if($weightTicketPickup['gross'] != null && $weightTicketPickup['tare'] != null){
-                        $pickupNetWeight = number_format($weightTicketPickup['gross'] - $weightTicketPickup['tare'], 3);
-                        $dropoffNetWeight = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 3);
+                        $pickupNetWeight = number_format(($weightTicketPickup['gross'] - $weightTicketPickup['tare']) * 0.0005, 3);
+                        $dropoffNetWeight = number_format(($weightTicketDropoff['gross'] - $weightTicketDropoff['tare']) * 0.0005, 3);
                     } else {
                         $pickupNetWeight = 0;
                         $dropoffNetWeight = 0;
@@ -156,7 +156,7 @@ class OrderRepository implements OrderRepositoryInterface {
                         $deliveredWeight = $this->getWeightTicketProductTobeUsed(1, $transportscheduleproduct['weightticketproducts']);
                     } else {
                         if($weightTicketPickup['gross'] != null && $weightTicketPickup['tare'] != null){
-                            $deliveredWeight = number_format($weightTicketPickup['gross'] - $weightTicketPickup['tare'], 3);
+                            $deliveredWeight = number_format(($weightTicketPickup['gross'] - $weightTicketPickup['tare']) * 0.0005, 3);
                         } else {
                             $deliveredWeight = number_format(0, 3);
                         }
@@ -168,7 +168,7 @@ class OrderRepository implements OrderRepositoryInterface {
                         $deliveredWeight = $this->getWeightTicketProductTobeUsed(2, $transportscheduleproduct['weightticketproducts']);
                     } else {
                         if($weightTicketDropoff['gross'] != null && $weightTicketDropoff['tare'] != null){
-                            $deliveredWeight = number_format($weightTicketDropoff['gross'] - $weightTicketDropoff['tare'], 3);
+                            $deliveredWeight = number_format(($weightTicketDropoff['gross'] - $weightTicketDropoff['tare']) * 0.0005, 3);
                         } else {
                             $deliveredWeight = number_format(0, 3);
                         }
@@ -189,7 +189,6 @@ class OrderRepository implements OrderRepositoryInterface {
             }
             
         }
-        $result['delivered'] = $result['delivered'] * 0.0005; // convert pounds to tons
         $result['delivered'] = $result['delivered']-$result['returned']; //deduct all the returned product        
 
         if($result['delivered'] != null && $result['delivered'] != 0){
