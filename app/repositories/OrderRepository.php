@@ -189,7 +189,7 @@ class OrderRepository implements OrderRepositoryInterface {
             }
             
         }
-
+        $result['delivered'] = $result['delivered'] / 0.0005; // convert pounds to tons
         $result['delivered'] = $result['delivered']-$result['returned']; //deduct all the returned product        
 
         if($result['delivered'] != null && $result['delivered'] != 0){
