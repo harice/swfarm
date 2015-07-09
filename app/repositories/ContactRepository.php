@@ -129,7 +129,7 @@ class ContactRepository implements ContactRepositoryInterface {
                 'suffix' => $data['suffix'],
                 'phone' => $data['phone'],
                 'mobile' => $data['mobile'],
-                'position' => 'Truck driver',
+                'position' => isset($data['position']) ? $data['position'] : null,
                 'contact_id' => $contact->id
             );
 
@@ -236,7 +236,7 @@ class ContactRepository implements ContactRepositoryInterface {
                     'suffix' => $data['suffix'],
                     'phone' => $data['phone'],
                     'mobile' => $data['mobile'],
-                    'position' => 'Truck driver'
+                    'position' => isset($data['position']) ? $data['position'] : null
                 );
 
                 try {
