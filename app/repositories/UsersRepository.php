@@ -122,7 +122,13 @@ class UsersRepository implements UsersRepositoryInterface {
   	$user->position = isset($data['position']) ? $data['position'] : null;
     $generatedPassword = Str::random(10); //replace with this if the system has already email to user features - Hash::make(Str::random(10));
     $user->confirmcode = Hash::make(Str::random(5)); //use for email verification
-    $user->password = Hash::make($generatedPassword);
+    if(isset($data['contact_id'])) { //created from contact module
+      $user->validated = true; // auto validated
+      $user->password = Hash::make('defaultpassword'); // default password for user from contact module
+    } else {
+      $user->password = Hash::make($generatedPassword);  
+    }
+    
     
     if(isset($data['position']) && Str::lower($data['position']) === 'driver')
     {
@@ -303,6 +309,10 @@ class UsersRepository implements UsersRepositoryInterface {
     $user['id'] = Auth::user()->id;
     $user['firstname'] = Auth::user()->firstname;
     $user['lastname'] = Auth::user()->lastname;
+    $user['suffix'] = Auth::user()->suffix;
+    if(!is_null(Auth::user()->contact_id)){
+      $user['contact_id'] = Auth::user()->contact_id;
+    }
     $user['suffix'] = Auth::user()->suffix;
 
     return Response::json(array(
