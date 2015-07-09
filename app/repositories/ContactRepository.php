@@ -1,5 +1,7 @@
 <?php
 
+// use UsersRepository;
+
 class ContactRepository implements ContactRepositoryInterface {
 
     public function findAll($params)
@@ -69,12 +71,13 @@ class ContactRepository implements ContactRepositoryInterface {
             'mobile' => 'between:14,14',
             'rate' => 'sometimes|numeric|min:0|max:10000'
         );
+
+        //
         
         if (!$this->hasRate($data['account'])) {
             if (isset($data['rate'])) {
                 unset($data['rate']);
             }
-            $this->validate($data, $rules);
         } else {
             if(isset($data['rate'])){
                 $data['rate'] = (int)str_replace(array('.', ','), '' , number_format(floatval($data['rate']), 2, '.', ''));
@@ -83,6 +86,13 @@ class ContactRepository implements ContactRepositoryInterface {
             }
             
         }
+
+        $this->validate($data, $rules);
+
+        //check if account is SWF trucker
+        $isSWFTrucker = $this->isContactAccountSWFTrucker($data['account']);
+
+        DB::beginTransaction();
 
         $contact = new Contact;
 
@@ -98,12 +108,46 @@ class ContactRepository implements ContactRepositoryInterface {
 
         try {
             $contact->save();
+            if(!$isSWFTrucker){
+                DB::commit();
+            }
         } catch (Exception $e) {
+            DB::rollback();
             return Response::json(array(
                     'error' => true,
                     'message' => $e->errorInfo[2]), 200
             );
         }
+
+        if($isSWFTrucker){ // if SWF trucker, create an entry to user table for him to be logged in into the system
+            //create a user account
+            $userData = array(
+                'email' => $data['email'],
+                'firstname' => $data['firstname'],
+                'lastname' => $data['lastname'],
+                'emp_no' => Hash::make(Str::random(3)),
+                'suffix' => $data['suffix'],
+                'phone' => $data['phone'],
+                'mobile' => $data['mobile'],
+                'position' => 'Truck driver',
+                'contact_id' => $contact->id
+            );
+
+            try {
+                $userRepo = new UsersRepository;
+                $userRepo->store($userData);
+                DB::commit();
+            } catch (Exception $e) {
+                DB::rollback();
+                return Response::json(array(
+                        'error' => true,
+                        'message' => $e->errorInfo[2]), 200
+                );
+            }
+            
+        }
+
+        
 
         if(isset($data['object_id'])){
             $isMobile = true;
@@ -152,6 +196,8 @@ class ContactRepository implements ContactRepositoryInterface {
             }
         }
 
+        $isSWFTrucker = $this->isContactAccountSWFTrucker($data['account']);
+
         $contact = Contact::find($id);
 
         $contact->account = $data['account'];
@@ -166,11 +212,46 @@ class ContactRepository implements ContactRepositoryInterface {
 
         try {
             $contact->save();
+            if(!$isSWFTrucker){
+                DB::commit();
+            }
         } catch (Exception $e) {
             return Response::json(array(
                     'error' => true,
                     'message' => $e->errorInfo[2]), 200
             );
+        }
+
+        if($isSWFTrucker){ // if SWF trucker, update an entry to user table for him to be logged in into the system
+            //create a user account
+
+            $user = User::where('contact_id', '=', $contact->id)->first();
+            
+            if($user){
+                $userData = array(
+                    'email' => $data['email'],
+                    'firstname' => $data['firstname'],
+                    'lastname' => $data['lastname'],
+                    'emp_no' => Hash::make(Str::random(3)),
+                    'suffix' => $data['suffix'],
+                    'phone' => $data['phone'],
+                    'mobile' => $data['mobile'],
+                    'position' => 'Truck driver'
+                );
+
+                try {
+                    $userRepo = new UsersRepository;
+                    $userRepo->update($user->id, $userData);
+                    DB::commit();
+                } catch (Exception $e) {
+                    DB::rollback();
+                    return Response::json(array(
+                            'error' => true,
+                            'message' => $e->errorInfo[2]), 200
+                    );
+                }
+            }
+            
         }
 
         if(isset($data['object_id'])){
@@ -247,6 +328,12 @@ class ContactRepository implements ContactRepositoryInterface {
             } else {
                 $contact->delete();
             }
+            //find a contact which is also a user
+            $userRepo = new UsersRepository;
+            $user = User::where('contact_id', '=', $contact->id)->first();
+            if($user){
+                $userRepo->destroy($user->id);
+            }
 
             $response = Response::json(array(
                     'error' => false,
@@ -299,5 +386,15 @@ class ContactRepository implements ContactRepositoryInterface {
         
         if($account) return true;
         return false;
+    }
+
+    public function isContactAccountSWFTrucker($account_id){
+        $accountTypes = array(Config::get('constants.ACCOUNTTYPE_SWFTRUCKER'));
+        $accounts = Account::with('accounttype')
+                  ->whereHas('accounttype', function($q) use ($accountTypes) { 
+                        $q->whereIn('accounttype_id', $accountTypes); 
+                  } )->where('id', '=', $account_id)
+                  ->count();
+        return $accounts > 0 ? true:false;
     }
 }

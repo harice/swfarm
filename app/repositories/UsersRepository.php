@@ -117,6 +117,7 @@ class UsersRepository implements UsersRepositoryInterface {
   	$user->suffix = isset($data['suffix']) ? $data['suffix'] : null;
   	$user->emp_no = $data['emp_no'];
   	$user->mobile = isset($data['mobile']) ? $data['mobile'] : null;
+    $user->contact_id = isset($data['contact_id']) ? $data['contact_id'] : null; // for SWF Trucker contact
   	$user->phone = isset($data['phone']) ? $data['phone'] : null;
   	$user->position = isset($data['position']) ? $data['position'] : null;
     $generatedPassword = Str::random(10); //replace with this if the system has already email to user features - Hash::make(Str::random(10));
@@ -236,7 +237,11 @@ class UsersRepository implements UsersRepositoryInterface {
     $user = User::find($id);
 
     if($user){
-      $user->delete();
+      if(!is_null($user->contact_id)){
+        $user->forceDelete();
+      } else {
+        $user->delete();  
+      }
 
       $response = Response::json(array(
           'error' => false,
